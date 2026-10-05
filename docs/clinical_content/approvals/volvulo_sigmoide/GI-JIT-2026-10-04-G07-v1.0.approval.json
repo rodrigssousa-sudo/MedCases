@@ -1,0 +1,17 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 56,
+  "owner": "volvulo_sigmoide",
+  "approvedClinicalPayloadSHA256": "d19587cf6e38644229002dab03c1d9a3eb7f7caf21fe2c0c19fb0b5b9f67eb90",
+  "selectedApprovedFactIds": [
+    "g056_f01",
+    "g056_f02",
+    "g056_f03",
+    "g056_f04",
+    "g056_f05"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

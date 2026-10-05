@@ -1,0 +1,172 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 29,
+  "requested_items": [
+    29
+  ],
+  "existing_ids": [
+    "crohn_complicado_2025",
+    "crohn_flare_luminal_2025"
+  ],
+  "title": {
+    "pt": "Doença de Crohn",
+    "es": "Enfermedad de Crohn"
+  },
+  "facts": [
+    {
+      "id": "g029_f01",
+      "section": "definition",
+      "pt": "Inflamação intestinal crônica, segmentar e transmural, que pode causar estenose, fístula ou abscesso. Atividade luminal e complicação penetrante ou obstrutiva exigem decisões diferentes.",
+      "es": "Inflamación intestinal crónica, segmentaria y transmural, que puede causar estenosis, fístula o absceso. La actividad luminal y la complicación penetrante u obstructiva requieren decisiones diferentes.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g029_f02",
+      "section": "diagnosis",
+      "pt": "Combinar ileocolonoscopia com biópsias, investigação de infecção e imagem do intestino delgado. Hemograma, proteína C reativa, albumina e calprotectina ajudam na avaliação, mas nenhum resultado isolado confirma ou exclui toda a doença.",
+      "es": "Combinar ileocolonoscopia con biopsias, estudio de infección e imágenes del intestino delgado. El hemograma, proteína C reactiva, albúmina y calprotectina ayudan en la evaluación, pero ningún resultado aislado confirma o descarta toda la enfermedad.",
+      "references": [
+        4
+      ]
+    },
+    {
+      "id": "g029_f03",
+      "section": "initial",
+      "pt": "No Plantão, procurar febre, massa dolorosa, sinais peritoneais, vômitos ou parada de eliminação de gases. Suspeita de abscesso, obstrução ou perfuração exige imagem e avaliação cirúrgica antes de escalonar imunossupressão.",
+      "es": "En la Guardia, buscar fiebre, masa dolorosa, signos peritoneales, vómitos o ausencia de eliminación de gases. La sospecha de absceso, obstrucción o perforación requiere imágenes y evaluación quirúrgica antes de aumentar la inmunosupresión.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g029_f04",
+      "section": "doses",
+      "pt": "Adulto com atividade leve a moderada ileocecal, sem complicação: budesonida de liberação ileal 9 mg por via oral uma vez ao dia pela manhã, por até 8 semanas. Não usar como manutenção nem substituir por outra formulação sem conferir o local de liberação.",
+      "es": "Adulto con actividad ileocecal leve a moderada, sin complicaciones: budesonida de liberación ileal 9 mg por vía oral una vez al día por la mañana, durante un máximo de 8 semanas. No usar como mantenimiento ni sustituir por otra formulación sin comprobar el sitio de liberación.",
+      "references": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "g029_f05",
+      "section": "treatment",
+      "pt": "Doença moderada ou grave exige estratégia poupadora de corticoide com gastroenterologia; terapia avançada pode ser necessária precocemente. Mesalazina não é tratamento rotineiro eficaz para indução ou manutenção de Crohn. Abscesso requer controle do foco.",
+      "es": "La enfermedad moderada o grave requiere una estrategia ahorradora de corticoides con gastroenterología; puede necesitarse tratamiento avanzado temprano. La mesalazina no es un tratamiento rutinario eficaz para la inducción o el mantenimiento de Crohn. Un absceso requiere control del foco.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g029_f06",
+      "section": "monitoring",
+      "pt": "Monitorar nutrição, anemia, atividade objetiva e resposta ao tratamento. Preparar rastreamento infeccioso e vacinação antes de imunossupressão, quando viável. Definir vigilância endoscópica conforme extensão e duração da doença.",
+      "es": "Controlar nutrición, anemia, actividad objetiva y respuesta al tratamiento. Preparar estudios de infecciones y vacunación antes de la inmunosupresión cuando sea viable. Definir vigilancia endoscópica según la extensión y duración de la enfermedad.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g029_f07",
+      "section": "special",
+      "pt": "Budesonida pode causar supressão adrenal; evitar inibidores fortes de CYP3A4 e revisar hepatopatia. Dose adulta não é prescrição pediátrica; gestação e lactação precisam de escolha individual que também considere o risco da doença ativa.",
+      "es": "La budesonida puede causar supresión suprarrenal; evitar inhibidores potentes de CYP3A4 y revisar la hepatopatía. La dosis del adulto no es una prescripción pediátrica; el embarazo y la lactancia requieren una elección individual que también considere el riesgo de la enfermedad activa.",
+      "references": [
+        3,
+        2
+      ]
+    },
+    {
+      "id": "g029_f08",
+      "section": "disposition",
+      "pt": "Internar diante de sepse, desidratação importante, sangramento relevante, obstrução, abscesso ou falha do cuidado ambulatorial. Alta exige estabilidade, alimentação ou suporte viável e retorno especializado definido.",
+      "es": "Internar ante sepsis, deshidratación importante, sangrado relevante, obstrucción, absceso o fracaso del cuidado ambulatorio. El alta requiere estabilidad, alimentación o soporte viable y seguimiento especializado definido.",
+      "references": [
+        2
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "Inflamação luminal, estenose e abscesso podem produzir dor, mas têm alvos terapêuticos diferentes. A natureza transmural ajuda a compreender complicações penetrantes. Antes de intensificar imunossupressão, o raciocínio precisa excluir situações em que drenagem ou cirurgia são prioritárias.",
+      "es": "La inflamación luminal, estenosis y absceso pueden producir dolor, pero tienen objetivos terapéuticos distintos. El carácter transmural ayuda a comprender las complicaciones penetrantes. Antes de intensificar inmunosupresión, el razonamiento debe excluir situaciones en que el drenaje o la cirugía son prioritarios.",
+      "sources": [
+        "cd",
+        "nid",
+        "bud",
+        "bsg"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "cd",
+      "title": "ACG guideline update: Crohn’s disease",
+      "url": "https://gi.org/journals-publications/ebgi/zhai_dalal_sep2025/",
+      "organization_or_authors": "ACG",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "ACG",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "bsg",
+      "title": "British Society of Gastroenterology guidelines on inflammatory bowel disease in adults",
+      "url": "https://gut.bmj.com/content/74/Suppl_2/s1/",
+      "organization_or_authors": "BSG",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "BSG",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "bud",
+      "title": "Budesonide enteric-coated capsules: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4a8e79df-3946-4e9a-b214-e9fdd824b565",
+      "organization_or_authors": "DailyMed",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_product_label",
+      "publication": "DailyMed",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "nid",
+      "title": "Diagnosis of Crohn’s Disease",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/crohns-disease/diagnosis",
+      "organization_or_authors": "NIDDK",
+      "year": 2024,
+      "status": "SUPPORTIVE",
+      "scope": "",
+      "source_type": "supportive_evidence",
+      "publication": "NIDDK",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

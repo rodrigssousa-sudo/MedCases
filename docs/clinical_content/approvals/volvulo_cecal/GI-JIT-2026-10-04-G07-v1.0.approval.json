@@ -1,0 +1,17 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 57,
+  "owner": "volvulo_cecal",
+  "approvedClinicalPayloadSHA256": "082995d40f5c023ac12121218870a5c65ba915127a795f23270eeef8c0ca1662",
+  "selectedApprovedFactIds": [
+    "g057_f01",
+    "g057_f02",
+    "g057_f03",
+    "g057_f04",
+    "g057_f05"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

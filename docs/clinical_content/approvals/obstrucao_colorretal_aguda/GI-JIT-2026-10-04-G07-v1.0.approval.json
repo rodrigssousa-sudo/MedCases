@@ -1,0 +1,16 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 52,
+  "owner": "obstrucao_colorretal_aguda",
+  "approvedClinicalPayloadSHA256": "02fe0eaaa1725d863659804a9cc550f6cca67e060957e704d4653b7f0d11e90b",
+  "selectedApprovedFactIds": [
+    "g052_f01",
+    "g052_f02",
+    "g052_f03",
+    "g052_f04"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

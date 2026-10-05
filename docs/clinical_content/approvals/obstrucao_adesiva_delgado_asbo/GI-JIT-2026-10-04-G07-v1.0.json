@@ -1,0 +1,118 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 50,
+  "requested_items": [
+    50
+  ],
+  "existing_ids": [
+    "obstrucao_adesiva_delgado_asbo"
+  ],
+  "title": {
+    "pt": "Obstrução do intestino delgado por aderências",
+    "es": "Obstrucción del intestino delgado por adherencias"
+  },
+  "facts": [
+    {
+      "id": "g050_f01",
+      "section": "definition",
+      "pt": "Aderências após cirurgia ou inflamação podem produzir bloqueio mecânico parcial ou completo. Episódios prévios não tornam uma nova crise automaticamente benigna.",
+      "es": "Las adherencias tras cirugía o inflamación pueden producir un bloqueo mecánico parcial o completo. Los episodios previos no hacen que una nueva crisis sea automáticamente benigna.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g050_f02",
+      "section": "initial",
+      "pt": "Manter jejum, obter acesso venoso, corrigir perdas e eletrólitos e administrar analgesia. Descompressão por sonda é indicada conforme vômitos, distensão e risco de aspiração; solicitar avaliação cirúrgica precoce.",
+      "es": "Mantener ayuno, obtener acceso venoso, corregir pérdidas y electrolitos y administrar analgesia. La descompresión con sonda se indica según vómitos, distensión y riesgo de aspiración; solicitar evaluación quirúrgica temprana.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g050_f03",
+      "section": "diagnosis",
+      "pt": "Tomografia com contraste intravenoso, quando apropriada, identifica nível, causa e sinais de isquemia. Hemograma, eletrólitos, função renal e lactato ajudam a avaliar gravidade; lactato normal não exclui sofrimento intestinal.",
+      "es": "La tomografía con contraste intravenoso, cuando corresponde, identifica nivel, causa y signos de isquemia. El hemograma, electrolitos, función renal y lactato ayudan a evaluar la gravedad; un lactato normal no descarta sufrimiento intestinal.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g050_f04",
+      "section": "disposition",
+      "pt": "Peritonismo, dor contínua crescente, choque, alça fechada ou sinais de isquemia/perfuração exigem intervenção urgente. Obstrução confirmada exige cuidado hospitalar e reavaliação clínica seriada.",
+      "es": "El peritonismo, dolor continuo creciente, choque, asa cerrada o signos de isquemia/perforación requieren intervención urgente. La obstrucción confirmada requiere atención hospitalaria y reevaluación clínica seriada.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g050_f05",
+      "section": "treatment",
+      "pt": "Na ausência de peritonite, estrangulamento ou isquemia, pode-se tentar tratamento conservador hospitalar. Um período de até 72 horas é frequentemente aceitável em pacientes estáveis, mas deterioração exige cirurgia antes disso. Contraste hidrossolúvel pode auxiliar a decisão em protocolo supervisionado.",
+      "es": "En ausencia de peritonitis, estrangulación o isquemia puede intentarse tratamiento conservador hospitalario. Un período de hasta 72 horas suele ser aceptable en pacientes estables, pero el deterioro requiere cirugía antes. El contraste hidrosoluble puede ayudar en la decisión dentro de un protocolo supervisado.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g050_f06",
+      "section": "monitoring",
+      "pt": "Registrar dor, exame abdominal, diurese, débito da sonda e trânsito intestinal. Alta somente após resolução clínica, tolerância alimentar e plano de retorno; explicar risco de recorrência.",
+      "es": "Registrar dolor, examen abdominal, diuresis, débito de la sonda y tránsito intestinal. Dar el alta solo tras la resolución clínica, tolerancia alimentaria y plan de regreso; explicar el riesgo de recurrencia.",
+      "references": [
+        2
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "Uma história cirúrgica favorece aderências, mas não elimina outras causas. Observação conservadora é uma estratégia ativa com exames seriados e critérios de falha. Um período máximo de tentativa não autoriza esperar diante de deterioração ou sinais de sofrimento intestinal.",
+      "es": "Un antecedente quirúrgico favorece adherencias, pero no elimina otras causas. La observación conservadora es una estrategia activa con exámenes seriados y criterios de fracaso. Un período máximo de intento no autoriza esperar ante deterioro o signos de sufrimiento intestinal.",
+      "sources": [
+        "adh",
+        "bol"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "bol",
+      "title": "Bologna guidelines for adhesive small bowel obstruction: 2017 update",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6006983/",
+      "organization_or_authors": "WSES",
+      "year": 2018,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "WSES",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "adh",
+      "title": "Abdominal Adhesions",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/abdominal-adhesions",
+      "organization_or_authors": "NIDDK",
+      "year": 2019,
+      "status": "SUPPORTIVE",
+      "scope": "",
+      "source_type": "supportive_evidence",
+      "publication": "NIDDK",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

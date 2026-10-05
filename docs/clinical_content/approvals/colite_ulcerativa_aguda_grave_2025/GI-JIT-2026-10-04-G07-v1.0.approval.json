@@ -1,0 +1,21 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 30,
+  "owner": "colite_ulcerativa_aguda_grave_2025",
+  "approvedClinicalPayloadSHA256": "b4efa01c491189954287720c872fb7b00038939403fafc72df512d6e1262c083",
+  "selectedApprovedFactIds": [
+    "g030_f01",
+    "g030_f02",
+    "g030_f03",
+    "g030_f04",
+    "g030_f05",
+    "g030_f06",
+    "g030_f07",
+    "g030_f08",
+    "g030_f09"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

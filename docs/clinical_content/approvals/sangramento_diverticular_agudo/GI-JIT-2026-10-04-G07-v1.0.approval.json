@@ -1,0 +1,17 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 44,
+  "owner": "sangramento_diverticular_agudo",
+  "approvedClinicalPayloadSHA256": "26204911044a8b1badfbe901c5b6a4c88e4393b650bf7dbea9ff97eb917ceb5d",
+  "selectedApprovedFactIds": [
+    "g044_f01",
+    "g044_f02",
+    "g044_f03",
+    "g044_f04",
+    "g044_f05"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

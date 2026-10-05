@@ -1,0 +1,24 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 7,
+  "owner": "infeccao_clostridioides_difficile",
+  "approvedClinicalPayloadSHA256": "115f00265189ecf8b8076bf3a21cb4f3088dc602b138d77f335a190dbcdfd492",
+  "selectedApprovedFactIds": [
+    "g007_f01",
+    "g007_f02",
+    "g007_f03",
+    "g007_f04",
+    "g007_f05",
+    "g007_f06",
+    "g007_f07",
+    "g007_f08",
+    "g007_f09",
+    "g007_f10",
+    "g007_f11",
+    "g007_f12"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

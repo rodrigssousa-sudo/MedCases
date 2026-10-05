@@ -1,0 +1,190 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 46,
+  "requested_items": [
+    46,
+    47,
+    48,
+    49
+  ],
+  "existing_ids": [
+    "apendicite_aguda"
+  ],
+  "title": {
+    "pt": "Apendicite aguda, complicada, abscesso e plastrão",
+    "es": "Apendicitis aguda, complicada, absceso y plastrón"
+  },
+  "facts": [
+    {
+      "id": "g046_f01",
+      "section": "definition",
+      "pt": "Inflamação apendicular que pode evoluir para gangrena, perfuração, abscesso ou massa inflamatória organizada (plastrão). Essas apresentações diferem em gravidade e necessidade de controle do foco.",
+      "es": "Inflamación apendicular que puede evolucionar a gangrena, perforación, absceso o masa inflamatoria organizada (plastrón). Estas presentaciones difieren en gravedad y necesidad de controlar el foco.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g046_f02",
+      "section": "diagnosis",
+      "pt": "Combinar história, exame, laboratório e imagem; escores ajudam a estimar risco, mas não substituem avaliação. Considerar causas ginecológicas, urinárias e ileíte; crianças, gestantes e idosos podem ter apresentação atípica.",
+      "es": "Combinar historia, examen, laboratorio e imágenes; las escalas ayudan a estimar el riesgo, pero no sustituyen la evaluación. Considerar causas ginecológicas, urinarias e ileítis; niños, embarazadas y personas mayores pueden presentar cuadros atípicos.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g046_f03",
+      "section": "initial",
+      "pt": "Manter jejum, analgesia, reposição conforme necessidade e avaliação cirúrgica. Peritonite ou instabilidade exigem ação urgente; não usar melhora após analgésico para excluir o diagnóstico.",
+      "es": "Mantener ayuno, analgesia, reposición según necesidad y evaluación quirúrgica. La peritonitis o inestabilidad requieren acción urgente; no usar la mejoría tras analgesia para descartar el diagnóstico.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g046_f04",
+      "section": "treatment",
+      "pt": "Apendicectomia laparoscópica permanece abordagem padrão. Antibióticos sem cirurgia podem ser opção em apendicite não complicada selecionada, após discutir falha, recorrência e acesso ao retorno. Não generalizar para doença complicada.",
+      "es": "La apendicectomía laparoscópica sigue siendo el abordaje estándar. Los antibióticos sin cirugía pueden ser una opción en apendicitis no complicada seleccionada, tras discutir fracaso, recurrencia y acceso al seguimiento. No generalizar a enfermedad complicada.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g046_f05",
+      "section": "treatment",
+      "pt": "Abscesso ou plastrão: cirurgia ou antibióticos com eventual drenagem dependem da anatomia, estabilidade e experiência local. Após manejo não operatório de abscesso, programar avaliação para neoplasia conforme risco.",
+      "es": "Absceso o plastrón: cirugía o antibióticos con eventual drenaje dependen de la anatomía, estabilidad y experiencia local. Tras el manejo no operatorio de un absceso, programar evaluación de neoplasia según el riesgo.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g046_f06",
+      "section": "monitoring",
+      "pt": "Após controle adequado do foco em doença complicada, a edição WSES atual favorece antibiótico pós-operatório curto, de 2 a 3 dias, com reavaliação se febre ou sinais persistentes. Duração não substitui confirmação de controle do foco.",
+      "es": "Tras un control adecuado del foco en enfermedad complicada, la edición WSES actual favorece antibióticos posoperatorios breves, de 2 a 3 días, con reevaluación ante fiebre o signos persistentes. La duración no sustituye la confirmación del control del foco.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g046_f07",
+      "section": "doses",
+      "pt": "Opção intravenosa adulta para infecção comunitária, sem choque nem risco elevado de resistência, com função orgânica adequada: ceftriaxona 2 g a cada 24 horas mais metronidazol 500 mg a cada 8 horas. Ajustar à cultura e ao protocolo local. Não aplicar automaticamente a infecção hospitalar, risco de ESBL ou choque.",
+      "es": "Opción intravenosa adulta para infección comunitaria, sin choque ni riesgo elevado de resistencia, con función orgánica adecuada: ceftriaxona 2 g cada 24 horas más metronidazol 500 mg cada 8 horas. Ajustar al cultivo y protocolo local. No aplicar automáticamente a infección hospitalaria, riesgo de BLEE o choque.",
+      "references": [
+        3
+      ]
+    },
+    {
+      "id": "g046_f08",
+      "section": "special",
+      "pt": "Ceftriaxona: infusão em 30 minutos, concentração de 10 a 40 mg/mL, sem diluente contendo cálcio. Metronidazol: apresentação 500 mg/100 mL em 1 hora. Confirmar produtos, compatibilidade e alergias; Child-Pugh C exige redução de 50% do metronidazol. Esquema adulto; crianças e gestação exigem avaliação específica.",
+      "es": "Ceftriaxona: infusión en 30 minutos, concentración de 10 a 40 mg/mL, sin diluyente con calcio. Metronidazol: presentación 500 mg/100 mL en 1 hora. Confirmar productos, compatibilidad y alergias; Child-Pugh C requiere reducción del 50% del metronidazol. Esquema adulto; niños y embarazo requieren evaluación específica.",
+      "references": [
+        4,
+        5
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "O estágio da doença modifica a utilidade das opções operatórias e não operatórias. A seleção para antibiótico isolado depende de excluir complicações e de garantir reavaliação. Após intervenção, a duração do antibiótico deve ser interpretada junto da efetividade do controle do foco.",
+      "es": "El estadio de la enfermedad modifica la utilidad de opciones operatorias y no operatorias. La selección para antibiótico solo depende de excluir complicaciones y garantizar reevaluación. Tras una intervención, la duración del antibiótico debe interpretarse junto con la efectividad del control del foco.",
+      "sources": [
+        "napp",
+        "app"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "app",
+      "title": "Diagnosis and Treatment of Acute Appendicitis: 2025 WSES Jerusalem Guidelines",
+      "url": "https://doi.org/10.1001/jamasurg.2025.6218",
+      "organization_or_authors": "WSES",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "WSES",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "napp",
+      "title": "Appendicitis",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/appendicitis",
+      "organization_or_authors": "NIDDK",
+      "year": 2021,
+      "status": "SUPPORTIVE",
+      "scope": "",
+      "source_type": "supportive_evidence",
+      "publication": "NIDDK",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "pathway",
+      "title": "WSES/GAIS/SIS-E/WSIS/AAST global clinical pathways for intra-abdominal infections",
+      "url": "https://doi.org/10.1186/s13017-021-00387-8",
+      "organization_or_authors": "Sartelli et al.; multisociety consensus",
+      "year": 2021,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_clinical_source",
+      "publication": "Sartelli et al.; multisociety consensus",
+      "doi": "",
+      "scoped_check_at": "2026-10-04",
+      "scoped_check_locator": "Clinical pathway tables, pages 16 and 27–28"
+    },
+    {
+      "key": "cef_label",
+      "title": "Ceftriaxone for Injection: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=7ea1db43-40fa-417b-8911-ae98092070a0",
+      "organization_or_authors": "DailyMed",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_product_label",
+      "publication": "DailyMed",
+      "doi": "",
+      "scoped_check_at": "2026-10-04",
+      "scoped_check_locator": "Dosage and Administration; Patients with Renal or Hepatic Impairment"
+    },
+    {
+      "key": "metro_label",
+      "title": "Metronidazole Injection: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9d762edb-12ac-429d-b1f0-7af5d3b909d4",
+      "organization_or_authors": "DailyMed",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_product_label",
+      "publication": "DailyMed",
+      "doi": ""
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

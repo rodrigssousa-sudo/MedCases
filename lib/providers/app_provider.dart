@@ -1,3 +1,4 @@
+import '../services/gi_batch01_publication_state.dart';
 import '../services/approved_pathology_time_output.dart';
 import '../data/new_pathology_approved_context.dart';
 import 'dart:async';
@@ -1574,7 +1575,13 @@ class AppProvider extends ChangeNotifier {
   // Prefixo por uid garante que usuários diferentes não compartilhem cache
   String _k(String key, String? uid) => uid != null ? '${uid}_$key' : key;
 
+  bool _giPublicationHookInstalled = false;
   Future<void> loadPrefs() async {
+    if (!_giPublicationHookInstalled) {
+      _giPublicationHookInstalled = true;
+      GiBatch01PublicationState.active.addListener(notifyListeners);
+      GiBatch01PublicationState.start();
+    }
     await _loadFromLocal();
     await _loadOfflineState();
   }
@@ -14655,6 +14662,12 @@ class AppProvider extends ChangeNotifier {
       'role': 'Perfil',
     },
   };
+  @override
+  void dispose() {
+    if (_giPublicationHookInstalled) GiBatch01PublicationState.active.removeListener(notifyListeners);
+    super.dispose();
+  }
+
 }
 
 // ---------------------------------------------------------------------------

@@ -1,0 +1,198 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 30,
+  "requested_items": [
+    30,
+    41
+  ],
+  "existing_ids": [
+    "colite_ulcerativa_aguda_grave_2025",
+    "colite_ulcerativa_flare_2025"
+  ],
+  "title": {
+    "pt": "Retocolite ulcerativa, incluindo proctite ulcerativa",
+    "es": "Colitis ulcerosa, incluida la proctitis ulcerosa"
+  },
+  "facts": [
+    {
+      "id": "g030_f01",
+      "section": "definition",
+      "pt": "Doença inflamatória da mucosa do cólon, geralmente contínua a partir do reto. Proctite ulcerativa é extensão limitada da mesma doença; gravidade clínica não depende apenas do comprimento acometido.",
+      "es": "Enfermedad inflamatoria de la mucosa del colon, generalmente continua desde el recto. La proctitis ulcerosa es una extensión limitada de la misma enfermedad; la gravedad clínica no depende solo de la longitud afectada.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g030_f02",
+      "section": "diagnosis",
+      "pt": "Confirmar com endoscopia e biópsias, excluindo infecção. Em exacerbação, pesquisar C. difficile; em quadro grave ou refratário, considerar CMV em biópsia. Colite grave demanda avaliação endoscópica limitada e cuidadosa.",
+      "es": "Confirmar con endoscopia y biopsias, descartando infección. En una exacerbación, buscar C. difficile; en enfermedad grave o refractaria, considerar CMV en biopsia. La colitis grave requiere una evaluación endoscópica limitada y cuidadosa.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g030_f03",
+      "section": "doses",
+      "pt": "Proctite leve a moderada no adulto: mesalazina em supositório 1 g por via retal uma vez ao dia ao deitar, inicialmente por 3 a 6 semanas, com reavaliação da resposta e plano de manutenção. Verificar função renal e alergia a salicilatos.",
+      "es": "Proctitis leve a moderada en el adulto: mesalazina en supositorio 1 g por vía rectal una vez al día al acostarse, inicialmente durante 3 a 6 semanas, con reevaluación de la respuesta y plan de mantenimiento. Verificar función renal y alergia a salicilatos.",
+      "references": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "g030_f04",
+      "section": "treatment",
+      "pt": "Doença mais extensa exige mesalazina oral e, quando pertinente, retal; refratariedade ou maior gravidade exige terapia sistêmica orientada por gastroenterologia. Corticoide induz remissão, mas não deve ser manutenção.",
+      "es": "La enfermedad más extensa requiere mesalazina oral y, cuando corresponde, rectal; la refractariedad o mayor gravedad requieren tratamiento sistémico dirigido por gastroenterología. Los corticoides inducen remisión, pero no deben ser mantenimiento.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g030_f05",
+      "section": "doses",
+      "pt": "Colite aguda grave hospitalizada no adulto: metilprednisolona 60 mg intravenosa por dia. Reavaliar resposta em 3 dias para resgate com infliximabe ou ciclosporina e decisão cirúrgica. Não prolongar tratamento ineficaz diante de deterioração.",
+      "es": "Colitis aguda grave hospitalizada en el adulto: metilprednisolona 60 mg intravenosa por día. Reevaluar la respuesta a los 3 días para rescate con infliximab o ciclosporina y decisión quirúrgica. No prolongar un tratamiento ineficaz ante deterioro.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g030_f06",
+      "section": "initial",
+      "pt": "Na doença grave, corrigir perdas, avaliar anemia e eletrólitos, iniciar profilaxia farmacológica de tromboembolismo se não houver contraindicação e envolver cirurgia precocemente. Não usar antibiótico de amplo espectro rotineiramente sem indicação infecciosa.",
+      "es": "En la enfermedad grave, corregir las pérdidas, evaluar anemia y electrolitos, iniciar profilaxis farmacológica de tromboembolismo si no hay contraindicaciones e involucrar tempranamente a cirugía. No usar antibióticos de amplio espectro rutinariamente sin indicación infecciosa.",
+      "references": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "g030_f07",
+      "section": "disposition",
+      "pt": "Megacólon tóxico, perfuração, hemorragia não controlada ou falência orgânica exigem avaliação cirúrgica urgente. Alta depende de resposta sustentada, tolerância oral e estratégia de manutenção e seguimento.",
+      "es": "El megacolon tóxico, perforación, hemorragia no controlada o falla orgánica requieren evaluación quirúrgica urgente. El alta depende de una respuesta sostenida, tolerancia oral y estrategia de mantenimiento y seguimiento.",
+      "references": [
+        4
+      ]
+    },
+    {
+      "id": "g030_f08",
+      "section": "monitoring",
+      "pt": "Registrar frequência de evacuações, sangue, dor, sinais vitais, hemograma e marcadores inflamatórios. Vigiar efeitos dos fármacos e necessidade de rastreamento de displasia conforme risco individual.",
+      "es": "Registrar frecuencia de deposiciones, sangre, dolor, signos vitales, hemograma y marcadores inflamatorios. Vigilar los efectos de los fármacos y la necesidad de vigilancia de displasia según el riesgo individual.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g030_f09",
+      "section": "special",
+      "pt": "Metilprednisolona intravenosa: a bula consultada orienta administrar doses de até 250 mg em pelo menos 5 minutos. Reconstituir conforme produto; a apresentação de 40 mg consultada usa 1 mL de água estéril para injeção. Não substituir apresentações sem conferir concentração. Monitorar glicemia, eletrólitos e infecção; infecção fúngica sistêmica é contraindicação salvo tratamento anti-infeccioso específico.",
+      "es": "Metilprednisolona intravenosa: la ficha consultada indica administrar dosis de hasta 250 mg en al menos 5 minutos. Reconstituir según el producto; la presentación de 40 mg consultada utiliza 1 mL de agua estéril para inyección. No sustituir presentaciones sin comprobar concentración. Controlar glucemia, electrolitos e infección; la infección fúngica sistémica es contraindicación salvo tratamiento antiinfeccioso específico.",
+      "references": [
+        5
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "Extensão e gravidade são dimensões diferentes: doença distal pode exigir tratamento local, enquanto repercussão sistêmica muda o ambiente de cuidado. A resposta ao corticoide na internação precisa ser reavaliada objetivamente para não atrasar resgate ou cirurgia.",
+      "es": "La extensión y gravedad son dimensiones distintas: la enfermedad distal puede requerir tratamiento local, mientras que la repercusión sistémica modifica el ámbito de atención. La respuesta al corticoide durante la internación debe reevaluarse objetivamente para no retrasar rescate o cirugía.",
+      "sources": [
+        "bsg",
+        "uc",
+        "mes"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "uc",
+      "title": "ACG guideline update: ulcerative colitis in adults",
+      "url": "https://gi.org/journals-publications/ebgi/alkazzi_aug2025/",
+      "organization_or_authors": "ACG",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "ACG",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "bsg",
+      "title": "British Society of Gastroenterology guidelines on inflammatory bowel disease in adults",
+      "url": "https://gut.bmj.com/content/74/Suppl_2/s1/",
+      "organization_or_authors": "BSG",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "BSG",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "mes",
+      "title": "Mesalamine suppositories: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f458d574-7b5b-44f1-86be-8b18880dc67f",
+      "organization_or_authors": "DailyMed",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_product_label",
+      "publication": "DailyMed",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "surgery",
+      "title": "Surgical Management of Ulcerative Colitis",
+      "url": "https://www.ascrsu.com/ascrs/view/ASCRS-Evidence-Based-Guidelines-and-Expert-Consensus/3982033/all/Surgical_Management_of_Ulcerative_Colitis__2026_",
+      "organization_or_authors": "ASCRS",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "ASCRS",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "methyl_label",
+      "title": "Solu-Medrone 40 mg for injection: SmPC",
+      "url": "https://www.medicines.org.uk/emc/product/1550/smpc",
+      "organization_or_authors": "Pfizer / emc",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_product_label",
+      "publication": "Pfizer / emc",
+      "doi": "",
+      "scoped_check_at": "2026-10-04",
+      "scoped_check_locator": "Sections 2, 4.2 and 4.3"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

@@ -1,0 +1,20 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 25,
+  "owner": "sindrome_ma_absorcao",
+  "approvedClinicalPayloadSHA256": "2064551e658f183c2a579b2c61a6870472d007a87c3531671e03a5a427c8f31a",
+  "selectedApprovedFactIds": [
+    "g025_f01",
+    "g025_f02",
+    "g025_f03",
+    "g025_f04",
+    "g025_f05",
+    "g025_f06",
+    "g025_f07",
+    "g025_f08"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

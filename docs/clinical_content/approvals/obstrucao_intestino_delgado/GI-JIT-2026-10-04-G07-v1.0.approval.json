@@ -1,0 +1,17 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 51,
+  "owner": "obstrucao_intestino_delgado",
+  "approvedClinicalPayloadSHA256": "fda4b3fd9c28c97a0731f310ca140add001f65bd909a18991fa491e26e845f69",
+  "selectedApprovedFactIds": [
+    "g051_f01",
+    "g051_f02",
+    "g051_f03",
+    "g051_f04",
+    "g051_f05"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

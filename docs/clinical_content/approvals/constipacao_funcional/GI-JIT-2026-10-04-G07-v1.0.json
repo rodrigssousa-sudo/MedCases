@@ -1,0 +1,213 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 2,
+  "requested_items": [
+    2
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Constipação funcional — adultos",
+    "es": "Estreñimiento funcional — adultos"
+  },
+  "facts": [
+    {
+      "id": "g002_f01",
+      "section": "definition",
+      "pt": "Constipação crônica combina evacuação difícil, fezes endurecidas, esforço ou sensação de esvaziamento incompleto. Diferenciar trânsito lento, distúrbio de evacuação e causas secundárias; o componente funcional não é definido apenas pela frequência.",
+      "es": "El estreñimiento crónico combina evacuación difícil, heces duras, esfuerzo o sensación de vaciamiento incompleto. Diferenciar tránsito lento, trastorno evacuatorio y causas secundarias; el componente funcional no se define solo por la frecuencia.",
+      "references": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "g002_f02",
+      "section": "diagnosis",
+      "pt": "Rever fármacos, dieta, hábitos e comorbidades; fazer exame abdominal e avaliação anorretal quando indicada. Sangramento, anemia, emagrecimento ou rastreamento colorretal pendente podem indicar colonoscopia; não solicitá-la automaticamente em todo quadro sem alarme.",
+      "es": "Revisar fármacos, dieta, hábitos y comorbilidades; realizar examen abdominal y evaluación anorrectal cuando corresponda. Sangrado, anemia, adelgazamiento o tamizaje colorrectal pendiente pueden indicar colonoscopia; no solicitarla automáticamente en todo cuadro sin alarma.",
+      "references": [
+        6
+      ]
+    },
+    {
+      "id": "g002_f03",
+      "section": "initial",
+      "pt": "Antes de laxativos, excluir obstrução ou impactação quando houver vômitos, distensão, dor importante ou ausência de eliminação de gases. Diferenciar diarreia por transbordamento de verdadeira diarreia.",
+      "es": "Antes de laxantes, excluir obstrucción o impactación ante vómitos, distensión, dolor importante o ausencia de eliminación de gases. Diferenciar diarrea por rebosamiento de diarrea verdadera.",
+      "references": [
+        6,
+        5
+      ]
+    },
+    {
+      "id": "g002_f04",
+      "section": "treatment",
+      "pt": "Individualizar aumento de fibras, hidratação e rotina de evacuação. Polietilenoglicol é opção com recomendação forte; ajustar à resposta. Distúrbio de evacuação pode necessitar biofeedback, não apenas mais laxante.",
+      "es": "Individualizar aumento de fibra, hidratación y rutina evacuatoria. Polietilenglicol es una opción con recomendación fuerte; ajustar a la respuesta. Un trastorno evacuatorio puede necesitar biorretroalimentación, no solo más laxantes.",
+      "references": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": "g002_f05",
+      "section": "doses",
+      "pt": "Adulto elegível: polietilenoglicol 3350, 17 g por via oral uma vez ao dia, dissolvido conforme apresentação. Uso prolongado deve ser acompanhado por profissional; a rotulagem de automedicação limita o uso a 7 dias. Dor, sangramento ou piora exigem reavaliação.",
+      "es": "Adulto elegible: polietilenglicol 3350, 17 g por vía oral una vez al día, disuelto según presentación. El uso prolongado debe estar supervisado por un profesional; el etiquetado de automedicación limita el uso a 7 días. Dolor, sangrado o empeoramiento exigen reevaluación.",
+      "references": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": "g002_f06",
+      "section": "doses",
+      "pt": "Após resposta insuficiente a opções iniciais, linaclotida para constipação idiopática crônica adulta: 145 microgramas por via oral uma vez ao dia; 72 microgramas podem ser usados conforme tolerância e apresentação. Tomar em jejum pelo menos 30 minutos antes de refeição. Não confundir com 290 microgramas usados para intestino irritável com constipação.",
+      "es": "Tras respuesta insuficiente a opciones iniciales, linaclotida para estreñimiento idiopático crónico adulto: 145 microgramos por vía oral una vez al día; pueden usarse 72 microgramos según tolerancia y presentación. Tomar en ayunas al menos 30 minutos antes de una comida. No confundir con 290 microgramos usados para intestino irritable con estreñimiento.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g002_f07",
+      "section": "monitoring",
+      "pt": "Registrar frequência, consistência, esforço e efeitos adversos. Antes de classificar como refratária, avaliar manometria anorretal e expulsão de balão; quando indicado, completar biofeedback. Cirurgia exige avaliação especializada e documentação objetiva do mecanismo.",
+      "es": "Registrar frecuencia, consistencia, esfuerzo y efectos adversos. Antes de clasificar como refractario, evaluar manometría anorrectal y expulsión de balón; cuando corresponda, completar biorretroalimentación. La cirugía exige evaluación especializada y documentación objetiva del mecanismo.",
+      "references": [
+        4
+      ]
+    },
+    {
+      "id": "g002_f08",
+      "section": "disposition",
+      "pt": "Abdome agudo, sangramento importante ou desidratação exigem atendimento urgente. Alta em quadro não complicado pressupõe estabilidade, plano terapêutico e retorno; não usar sucessivos resgates sem investigar persistência.",
+      "es": "Abdomen agudo, sangrado importante o deshidratación requieren atención urgente. El alta en un cuadro no complicado presupone estabilidad, plan terapéutico y seguimiento; no usar rescates sucesivos sin investigar la persistencia.",
+      "references": [
+        6,
+        5
+      ]
+    },
+    {
+      "id": "g002_f09",
+      "section": "special",
+      "pt": "Este guia apresenta o manejo adulto; constipação pediátrica exige avaliação própria. Gestantes, crianças e pessoas com doença renal precisam seleção individual dos produtos. Linaclotida é contraindicada em obstrução mecânica; interromper diante de diarreia intensa e corrigir desidratação.",
+      "es": "Esta guía presenta el manejo adulto; el estreñimiento pediátrico requiere evaluación propia. Las embarazadas, niños y personas con enfermedad renal necesitan selección individual de productos. La linaclotida está contraindicada en obstrucción mecánica; suspender ante diarrea intensa y corregir la deshidratación.",
+      "references": [
+        2,
+        5
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "Trânsito e evacuação são etapas diferentes. Aumentar água nas fezes pode ajudar no trânsito, mas não corrige necessariamente uma dificuldade de coordenação anorretal. Essa distinção explica por que a avaliação de refratariedade inclui testes de evacuação antes de sucessivas trocas de laxantes.",
+      "es": "El tránsito y la evacuación son etapas diferentes. Aumentar el agua en las heces puede ayudar al tránsito, pero no corrige necesariamente una dificultad de coordinación anorrectal. Esta distinción explica por qué la evaluación de refractariedad incluye pruebas de evacuación antes de cambiar repetidamente los laxantes.",
+      "sources": [
+        "ROME",
+        "AGA26",
+        "EVAL",
+        "AGA23",
+        "PEG",
+        "LIN"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "ROME",
+      "title": "Rome V Diagnostic Criteria",
+      "url": "https://theromefoundation.org/rome-v-criteria/",
+      "organization_or_authors": "Rome Foundation",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "Rome Foundation",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "LIN",
+      "title": "LINZESS: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=09beda19-56d6-4a56-afdc-9a77b70b2ef3",
+      "organization_or_authors": "DailyMed / Allergan",
+      "year": 2026,
+      "status": "REGULATORY_LABEL",
+      "scope": "Bula dos Estados Unidos; conferir registro e formulação locais",
+      "source_type": "official_product_label",
+      "publication": "DailyMed / Allergan",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "AGA23",
+      "title": "AGA–ACG Clinical Practice Guideline: Pharmacological Management of Chronic Idiopathic Constipation",
+      "url": "https://www.cghjournal.org/article/S0016-5085%2823%2900513-9/fulltext",
+      "organization_or_authors": "AGA / ACG",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "AGA / ACG",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "AGA26",
+      "title": "Evaluation and management of refractory constipation",
+      "url": "https://gastro.org/clinical-guidance/evaluation-and-management-of-refractory-constipation/",
+      "organization_or_authors": "AGA",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "AGA",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "PEG",
+      "title": "Polyethylene glycol 3350: Drug Facts",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=219bcbc4-b84a-4209-9f34-ef2b0ef0d273&version=16",
+      "organization_or_authors": "DailyMed",
+      "year": 2026,
+      "status": "REGULATORY_LABEL",
+      "scope": "",
+      "source_type": "official_product_label",
+      "publication": "DailyMed",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "EVAL",
+      "title": "Evaluation and management of constipation",
+      "url": "https://gastro.org/clinical-guidance/evaluation-and-management-of-constipation/",
+      "organization_or_authors": "AGA",
+      "year": 2013,
+      "status": "AUTHORITATIVE_OLDER_COMPLEMENTED",
+      "scope": "Complementado pelo documento de refratariedade de 2026",
+      "source_type": "official_clinical_source",
+      "publication": "AGA",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

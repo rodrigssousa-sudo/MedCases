@@ -1,0 +1,142 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 17,
+  "requested_items": [
+    17
+  ],
+  "existing_ids": [
+    "ancilostomiase"
+  ],
+  "title": {
+    "pt": "Ancilostomíase",
+    "es": "Anquilostomiasis"
+  },
+  "facts": [
+    {
+      "id": "g017_f01",
+      "section": "definition",
+      "pt": "Infecção intestinal por ancilostomídeos pode causar perda de sangue e anemia; não equivale à larva migrans cutânea por espécies zoonóticas.",
+      "es": "La infección intestinal por anquilostómidos puede causar pérdida de sangre y anemia; no equivale a larva migrans cutánea por especies zoonóticas.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g017_f02",
+      "section": "initial",
+      "pt": "Pesquisar exposição a solo contaminado, sintomas gastrointestinais, palidez e fadiga; avaliar gravidade e estado nutricional.",
+      "es": "Investigar exposición a suelo contaminado, síntomas gastrointestinales, palidez y fatiga; evaluar gravedad y estado nutricional.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g017_f03",
+      "section": "diagnosis",
+      "pt": "Confirmar por investigação parasitológica fecal quando possível e avaliar hemograma e deficiência de ferro conforme apresentação; eosinofilia isolada não identifica a espécie.",
+      "es": "Confirmar mediante investigación parasitológica fecal cuando sea posible y evaluar hemograma y deficiencia de hierro según presentación; la eosinofilia aislada no identifica la especie.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g017_f04",
+      "section": "treatment",
+      "pt": "Tratar a infecção e a anemia documentada; orientar saneamento, higiene e proteção contra contato com solo contaminado para reduzir reinfecção.",
+      "es": "Tratar la infección y la anemia documentada; orientar saneamiento, higiene y protección contra contacto con suelo contaminado para reducir reinfección.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g017_f05",
+      "section": "doses",
+      "pt": "Esquema CDC: albendazol 400 mg por via oral em dose única, em jejum. Alternativa: mebendazol 100 mg por via oral duas vezes ao dia por 3 dias, ou 500 mg em dose única; escolher um esquema, não associar rotineiramente.",
+      "es": "Esquema CDC: albendazol 400 mg por vía oral en dosis única, en ayunas. Alternativa: mebendazol 100 mg por vía oral dos veces al día durante 3 días, o 500 mg en dosis única; elegir un esquema, no asociarlos de rutina.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g017_f06",
+      "section": "monitoring",
+      "pt": "Reavaliar sintomas e correção da anemia; persistência exige verificar adesão, reinfecção e outros diagnósticos, não repetir tratamento sem revisão.",
+      "es": "Reevaluar síntomas y corrección de anemia; la persistencia exige verificar adherencia, reinfección y otros diagnósticos, no repetir tratamiento sin revisión.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g017_f07",
+      "section": "disposition",
+      "pt": "Anemia sintomática importante ou deterioração clínica exige atendimento e suporte conforme gravidade, além do antiparasitário.",
+      "es": "La anemia sintomática importante o el deterioro clínico exige atención y apoyo según gravedad, además del antiparasitario.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g017_f08",
+      "section": "special",
+      "pt": "Gestação exige decisão individual de benefício e risco; recomendações de campanhas não equivalem a prescrição automática. Crianças pequenas requerem avaliação própria; verificar indicação e bula locais.",
+      "es": "El embarazo exige decisión individual de beneficio y riesgo; las recomendaciones de campañas no equivalen a prescripción automática. Los niños pequeños requieren evaluación propia; verificar indicación y ficha locales.",
+      "references": [
+        1
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "Tratar o parasita remove uma causa de perda sanguínea, mas não recompõe imediatamente a reserva de ferro. Por isso, resposta clínica inclui recuperar a anemia e avaliar outras fontes de perda. A larva migrans cutânea pertence a outro quadro e não deve substituir o diagnóstico intestinal.",
+      "es": "Tratar el parásito elimina una causa de pérdida sanguínea, pero no repone inmediatamente la reserva de hierro. Por eso la respuesta clínica incluye recuperar la anemia y evaluar otras fuentes de pérdida. La larva migrans cutánea corresponde a otro cuadro y no reemplaza el diagnóstico intestinal.",
+      "sources": [
+        "H1",
+        "H2"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "H1",
+      "title": "Clinical care of soil-transmitted helminths",
+      "url": "https://www.cdc.gov/sth/hcp/clinical-care/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "OPENED_CURRENT_SOURCE_REQUIRES_CLAIM_AUDIT",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "scoped_check_at": "2026-10-04",
+      "scoped_check_locator": "Treatment options table"
+    },
+    {
+      "key": "H2",
+      "title": "About soil-transmitted helminths",
+      "url": "https://www.cdc.gov/sth/about/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2024,
+      "status": "SUPPORTIVE_OFFICIAL",
+      "scope": "",
+      "verified_at": null,
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "RECHECK_PENDING",
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

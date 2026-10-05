@@ -1,0 +1,187 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 61,
+  "requested_items": [
+    61,
+    62
+  ],
+  "existing_ids": [
+    "perfuracao_viscera_oca_peritonite_secundaria"
+  ],
+  "title": {
+    "pt": "Perfuração intestinal e colônica",
+    "es": "Perforación intestinal y colónica"
+  },
+  "facts": [
+    {
+      "id": "g061_f01",
+      "section": "definition",
+      "pt": "Perda da integridade da parede intestinal com contaminação peritoneal, localizada ou difusa. Localização, causa e grau de contaminação definem a intervenção.",
+      "es": "Pérdida de integridad de la pared intestinal con contaminación peritoneal localizada o difusa. La localización, causa y grado de contaminación definen la intervención.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g061_f02",
+      "section": "initial",
+      "pt": "ABCDE, jejum, acesso venoso, analgesia, reposição guiada pela perfusão e avaliação cirúrgica imediata. Se sepse ou choque, iniciar tratamento em paralelo à investigação; não esperar todos os exames para controlar o foco.",
+      "es": "ABCDE, ayuno, acceso venoso, analgesia, reposición guiada por perfusión y evaluación quirúrgica inmediata. Ante sepsis o choque, iniciar tratamiento en paralelo al estudio; no esperar todos los estudios para controlar el foco.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g061_f03",
+      "section": "diagnosis",
+      "pt": "Tomografia em paciente estável ajuda a localizar o foco; ausência de ar livre não exclui perfuração contida. Obter culturas e exames de gravidade conforme contexto, sem retardar intervenção necessária.",
+      "es": "La tomografía en un paciente estable ayuda a localizar el foco; la ausencia de aire libre no descarta perforación contenida. Obtener cultivos y estudios de gravedad según el contexto, sin retrasar una intervención necesaria.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g061_f04",
+      "section": "treatment",
+      "pt": "Antibiótico intravenoso deve cobrir flora entérica e anaeróbios, adaptado a alergia, função renal, exposição prévia e resistência local. Cirurgia ou drenagem para controle do foco é essencial; tratamento conservador somente em seleção especializada e monitorizada.",
+      "es": "Los antibióticos intravenosos deben cubrir flora entérica y anaerobios, adaptados a alergias, función renal, exposición previa y resistencia local. La cirugía o drenaje para controlar el foco es esencial; el tratamiento conservador solo corresponde a una selección especializada y monitorizada.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g061_f05",
+      "section": "monitoring",
+      "pt": "Internar; reavaliar perfusão, diurese, lactato quando indicado e falência orgânica. Persistência de sepse após intervenção exige procurar foco residual, não apenas prolongar antibiótico.",
+      "es": "Internar; reevaluar perfusión, diuresis, lactato cuando esté indicado y falla orgánica. La sepsis persistente tras la intervención requiere buscar un foco residual, no solo prolongar los antibióticos.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g061_f06",
+      "section": "doses",
+      "pt": "Opção intravenosa adulta para infecção comunitária, sem choque nem risco elevado de resistência, com função orgânica adequada: ceftriaxona 2 g a cada 24 horas mais metronidazol 500 mg a cada 8 horas. Ajustar à cultura e ao protocolo local. Não aplicar automaticamente a infecção hospitalar, risco de ESBL ou choque.",
+      "es": "Opción intravenosa adulta para infección comunitaria, sin choque ni riesgo elevado de resistencia, con función orgánica adecuada: ceftriaxona 2 g cada 24 horas más metronidazol 500 mg cada 8 horas. Ajustar al cultivo y protocolo local. No aplicar automáticamente a infección hospitalaria, riesgo de BLEE o choque.",
+      "references": [
+        3
+      ]
+    },
+    {
+      "id": "g061_f07",
+      "section": "special",
+      "pt": "Ceftriaxona: infusão em 30 minutos, concentração de 10 a 40 mg/mL, sem diluente contendo cálcio. Metronidazol: apresentação 500 mg/100 mL em 1 hora. Confirmar produtos, compatibilidade e alergias; Child-Pugh C exige redução de 50% do metronidazol. Esquema adulto; crianças e gestação exigem avaliação específica.",
+      "es": "Ceftriaxona: infusión en 30 minutos, concentración de 10 a 40 mg/mL, sin diluyente con calcio. Metronidazol: presentación 500 mg/100 mL en 1 hora. Confirmar productos, compatibilidad y alergias; Child-Pugh C requiere reducción del 50% del metronidazol. Esquema adulto; niños y embarazo requieren evaluación específica.",
+      "references": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": "g061_f08",
+      "section": "monitoring",
+      "pt": "Após controle adequado do foco em adulto imunocompetente selecionado, um curso de 4 dias pode ser suficiente. Persistência de sinais infecciosos exige procurar falha de controle do foco e individualizar, em vez de estender o antibiótico automaticamente.",
+      "es": "Después de controlar adecuadamente el foco en un adulto inmunocompetente seleccionado, un curso de 4 días puede ser suficiente. La persistencia de signos infecciosos requiere buscar falta de control del foco e individualizar, en vez de prolongar automáticamente el antibiótico.",
+      "references": [
+        3
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "O antibiótico atua sobre a infecção, mas não elimina um vazamento ou tecido inviável. Por isso, controle do foco e suporte fisiológico ocorrem junto da terapia antimicrobiana. Persistência de sepse exige reconsiderar a adequação da intervenção.",
+      "es": "El antibiótico actúa sobre la infección, pero no elimina una fuga o tejido no viable. Por eso el control del foco y soporte fisiológico se realizan junto con el tratamiento antimicrobiano. La persistencia de sepsis exige reconsiderar la adecuación de la intervención.",
+      "sources": [
+        "src",
+        "iai"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "iai",
+      "title": "IDSA 2024 Guideline Update: Complicated Intra-abdominal Infections",
+      "url": "https://www.idsociety.org/practice-guideline/intra-abdominal-infections/",
+      "organization_or_authors": "IDSA",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "IDSA",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "src",
+      "title": "Source control in emergency general surgery: WSES/GAIS/SIS-E/SIS-A guidelines",
+      "url": "https://doi.org/10.1186/s13017-023-00509-4",
+      "organization_or_authors": "WSES/GAIS/SIS-E/SIS-A",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "WSES/GAIS/SIS-E/SIS-A",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "pathway",
+      "title": "WSES/GAIS/SIS-E/WSIS/AAST global clinical pathways for intra-abdominal infections",
+      "url": "https://doi.org/10.1186/s13017-021-00387-8",
+      "organization_or_authors": "Sartelli et al.; multisociety consensus",
+      "year": 2021,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_clinical_source",
+      "publication": "Sartelli et al.; multisociety consensus",
+      "doi": "",
+      "scoped_check_at": "2026-10-04",
+      "scoped_check_locator": "Clinical pathway tables, pages 16 and 27–28"
+    },
+    {
+      "key": "cef_label",
+      "title": "Ceftriaxone for Injection: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=7ea1db43-40fa-417b-8911-ae98092070a0",
+      "organization_or_authors": "DailyMed",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_product_label",
+      "publication": "DailyMed",
+      "doi": "",
+      "scoped_check_at": "2026-10-04",
+      "scoped_check_locator": "Dosage and Administration; Patients with Renal or Hepatic Impairment"
+    },
+    {
+      "key": "metro_label",
+      "title": "Metronidazole Injection: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9d762edb-12ac-429d-b1f0-7af5d3b909d4",
+      "organization_or_authors": "DailyMed",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_product_label",
+      "publication": "DailyMed",
+      "doi": ""
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

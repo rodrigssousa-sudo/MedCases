@@ -1,0 +1,19 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 36,
+  "owner": "colite_citomegalovirus",
+  "approvedClinicalPayloadSHA256": "b0d2e36d8e68979f89efcd2c698a35f362682ee6678731bdb774dcf9cccf217e",
+  "selectedApprovedFactIds": [
+    "g036_f01",
+    "g036_f02",
+    "g036_f03",
+    "g036_f04",
+    "g036_f05",
+    "g036_f06",
+    "g036_f07"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

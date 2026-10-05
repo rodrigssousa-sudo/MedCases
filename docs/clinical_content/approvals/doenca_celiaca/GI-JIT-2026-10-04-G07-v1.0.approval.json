@@ -1,0 +1,20 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 21,
+  "owner": "doenca_celiaca",
+  "approvedClinicalPayloadSHA256": "ac3f3c7c7b0c086a4f9adabaebfe94a1aa50de6cc0843282a907411d9e03918b",
+  "selectedApprovedFactIds": [
+    "g021_f01",
+    "g021_f02",
+    "g021_f03",
+    "g021_f04",
+    "g021_f05",
+    "g021_f06",
+    "g021_f07",
+    "g021_f08"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

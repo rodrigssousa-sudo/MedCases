@@ -1,0 +1,21 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 4,
+  "owner": "diarreia_cronica",
+  "approvedClinicalPayloadSHA256": "a0bdec2ff6124015f0987dc1dc1ecb6c5606cbaf6a4e9f4a8020b6f560bc65f7",
+  "selectedApprovedFactIds": [
+    "g004_f01",
+    "g004_f02",
+    "g004_f03",
+    "g004_f04",
+    "g004_f05",
+    "g004_f06",
+    "g004_f07",
+    "g004_f08",
+    "g004_f09"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

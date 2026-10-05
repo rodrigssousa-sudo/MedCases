@@ -1,0 +1,16 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 55,
+  "owner": "pseudo_obstrucao_intestinal_cronica",
+  "approvedClinicalPayloadSHA256": "2e538cf7642cbdc025933a9ee8ead5aeb8b789ed288a0c0517a80a354f8a03ff",
+  "selectedApprovedFactIds": [
+    "g055_f01",
+    "g055_f02",
+    "g055_f03",
+    "g055_f04"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

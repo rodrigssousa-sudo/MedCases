@@ -1,0 +1,203 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 7,
+  "requested_items": [
+    7
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Infecção intestinal por Clostridioides difficile",
+    "es": "Infección intestinal por Clostridioides difficile"
+  },
+  "facts": [
+    {
+      "id": "g007_f01",
+      "section": "definition",
+      "pt": "Colite mediada por toxinas após perturbação da microbiota, frequentemente associada a antibióticos. Colonização ou teste molecular positivo isolado não comprovam doença sintomática.",
+      "es": "Colitis mediada por toxinas tras la alteración de la microbiota, frecuentemente asociada a antibióticos. La colonización o un resultado molecular positivo aislado no demuestran enfermedad sintomática.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g007_f02",
+      "section": "diagnosis",
+      "pt": "Pesquisar em fezes não formadas diante de pelo menos 3 evacuações inexplicadas em 24 horas. Interpretar toxina e teste molecular no contexto clínico. Não realizar teste de cura em assintomáticos.",
+      "es": "Estudiar heces no formadas ante al menos 3 deposiciones inexplicadas en 24 horas. Interpretar la toxina y la prueba molecular en el contexto clínico. No realizar pruebas de curación en personas asintomáticas.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g007_f03",
+      "section": "initial",
+      "pt": "Suspender antibiótico desencadeante quando possível, instituir precauções de contato e corrigir perdas. Choque, íleo ou megacólon definem apresentação fulminante e exigem internação, avaliação cirúrgica e suporte intensivo.",
+      "es": "Suspender el antibiótico desencadenante cuando sea posible, establecer precauciones de contacto y corregir las pérdidas. El choque, íleo o megacolon definen una presentación fulminante y requieren internación, evaluación quirúrgica y soporte intensivo.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g007_f04",
+      "section": "doses",
+      "pt": "Adulto, episódio inicial não fulminante: fidaxomicina 200 mg por via oral a cada 12 horas por 10 dias, preferida quando disponível. Alternativa: vancomicina 125 mg por via oral a cada 6 horas por 10 dias. São alternativas, não associação rotineira.",
+      "es": "Adulto, episodio inicial no fulminante: fidaxomicina 200 mg por vía oral cada 12 horas durante 10 días, preferida cuando está disponible. Alternativa: vancomicina 125 mg por vía oral cada 6 horas durante 10 días. Son alternativas, no una combinación rutinaria.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g007_f05",
+      "section": "doses",
+      "pt": "Doença fulminante no adulto: vancomicina 500 mg por via oral ou sonda a cada 6 horas, associada a metronidazol 500 mg intravenoso a cada 8 horas. Se íleo, discutir vancomicina retal com equipe experiente. Vancomicina intravenosa não substitui a administração enteral para tratar a colite.",
+      "es": "Enfermedad fulminante en el adulto: vancomicina 500 mg por vía oral o sonda cada 6 horas, asociada a metronidazol 500 mg intravenoso cada 8 horas. Si hay íleo, discutir vancomicina rectal con un equipo experimentado. La vancomicina intravenosa no sustituye la administración enteral para tratar la colitis.",
+      "references": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": "g007_f06",
+      "section": "monitoring",
+      "pt": "Acompanhar evacuações, distensão, pressão arterial, hemograma, creatinina e eletrólitos. Piora sistêmica, peritonismo ou falência orgânica exigem escalonamento imediato; recorrência requer estratégia própria com gastroenterologia ou infectologia.",
+      "es": "Controlar deposiciones, distensión, presión arterial, hemograma, creatinina y electrolitos. El deterioro sistémico, peritonismo o falla orgánica requieren escalamiento inmediato; la recurrencia requiere una estrategia específica con gastroenterología o infectología.",
+      "references": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": "g007_f07",
+      "section": "special",
+      "pt": "Este esquema é adulto. Crianças, gestação e disfunção hepática importante exigem revisão específica; em colite grave com insuficiência renal, pode haver absorção sistêmica de vancomicina enteral.",
+      "es": "Este esquema es para adultos. Los niños, el embarazo y la disfunción hepática importante requieren una revisión específica; en la colitis grave con insuficiencia renal puede haber absorción sistémica de vancomicina enteral.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g007_f08",
+      "section": "special",
+      "pt": "Metronidazol intravenoso: a apresentação consultada contém 500 mg em 100 mL e é infundida em 1 hora; não administrar em bolus. Na insuficiência hepática grave Child-Pugh C, a bula orienta reduzir a dose em 50%, com decisão hospitalar individual. Confirmar compatibilidade e produto dispensado.",
+      "es": "Metronidazol intravenoso: la presentación consultada contiene 500 mg en 100 mL y se infunde en 1 hora; no administrar en bolo. En insuficiencia hepática grave Child-Pugh C, la ficha indica reducir la dosis un 50%, con decisión hospitalaria individual. Confirmar compatibilidad y producto dispensado.",
+      "references": [
+        3
+      ]
+    },
+    {
+      "id": "g007_f09",
+      "section": "treatment",
+      "pt": "Recorrência: reavaliar diagnóstico e risco. A AGA 2026 orienta fidaxomicina ou vancomicina em redução gradual na primeira recorrência; após a segunda, oferecer avaliação para terapia de microbiota. Imunossupressão e disponibilidade exigem seleção especializada.",
+      "es": "Recurrencia: reevaluar diagnóstico y riesgo. La AGA 2026 indica fidaxomicina o vancomicina en pauta descendente en la primera recurrencia; después de la segunda, ofrecer evaluación para terapia de microbiota. La inmunosupresión y disponibilidad requieren selección especializada.",
+      "references": [
+        4
+      ]
+    },
+    {
+      "id": "g007_f10",
+      "section": "special",
+      "pt": "Não usar metronidazol isolado no episódio não fulminante. Não associar colestiramina ao antibiótico específico. Terapias de microbiota destinadas à prevenção de recorrência não são intercambiáveis com tratamento da doença fulminante.",
+      "es": "No usar metronidazol solo en el episodio no fulminante. No asociar colestiramina al antibiótico específico. Las terapias de microbiota destinadas a prevenir recurrencias no son intercambiables con el tratamiento de la enfermedad fulminante.",
+      "references": [
+        4
+      ]
+    },
+    {
+      "id": "g007_f11",
+      "section": "doses",
+      "pt": "Se houver íleo na doença fulminante, a equipe hospitalar pode acrescentar vancomicina retal 500 mg em aproximadamente 100 mL de solução salina normal, a cada 6 horas, como enema de retenção. Exige preparo farmacêutico e equipe experiente; não substitui o manejo cirúrgico quando indicado.",
+      "es": "Si hay íleo en enfermedad fulminante, el equipo hospitalario puede añadir vancomicina rectal 500 mg en aproximadamente 100 mL de solución salina normal, cada 6 horas, como enema de retención. Requiere preparación farmacéutica y equipo experimentado; no sustituye el manejo quirúrgico cuando está indicado.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g007_f12",
+      "section": "monitoring",
+      "pt": "Na doença fulminante, reavaliar diariamente dose, via, duração e necessidade de cirurgia. A duração depende da resposta e das complicações; a ausência de melhora exige escalonamento, sem aguardar o término de um curso predefinido.",
+      "es": "En enfermedad fulminante, reevaluar a diario dosis, vía, duración y necesidad de cirugía. La duración depende de la respuesta y complicaciones; la falta de mejoría exige escalar el manejo sin esperar a completar un curso predefinido.",
+      "references": [
+        2,
+        4
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "O teste detecta um componente do processo infeccioso, não a síndrome clínica inteira. Por isso, fezes e sintomas precisam ser interpretados juntos. Na forma fulminante, a motilidade reduzida e a repercussão sistêmica mudam a via e a estratégia terapêutica; não se trata apenas de aumentar um esquema ambulatorial.",
+      "es": "La prueba detecta un componente del proceso infeccioso, no el síndrome clínico completo. Por eso deben interpretarse juntos las heces y los síntomas. En la forma fulminante, la motilidad reducida y la repercusión sistémica modifican la vía y estrategia terapéutica; no se trata simplemente de aumentar un esquema ambulatorio.",
+      "sources": [
+        "cdi17",
+        "cdi21"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "cdi21",
+      "title": "SHEA/IDSA 2021 Focused Update: Clostridioides difficile Infection in Adults",
+      "url": "https://www.idsociety.org/practice-guideline/clostridioides-difficile-2021-focused-update/",
+      "organization_or_authors": "SHEA/IDSA",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "SHEA/IDSA",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "cdi17",
+      "title": "SHEA/IDSA: CDI diagnosis, infection control and fulminant disease",
+      "url": "https://www.idsociety.org/practice-guideline/clostridium-difficile/",
+      "organization_or_authors": "SHEA/IDSA",
+      "year": 2017,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "SHEA/IDSA",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "metro_label",
+      "title": "Metronidazole Injection: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=9d762edb-12ac-429d-b1f0-7af5d3b909d4",
+      "organization_or_authors": "DailyMed, official product labeling",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LIVING",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_product_label",
+      "publication": "DailyMed, official product labeling",
+      "doi": ""
+    },
+    {
+      "key": "aga26",
+      "title": "AGA Clinical Practice Update on Management of Clostridioides difficile Infection in Adults: Expert Review",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42383946/",
+      "organization_or_authors": "Fischer, Vaughn, Peery and Kelly; AGA",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "Adult best-practice expert review; not a new GRADE systematic guideline",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_CLAIM_AUDIT",
+      "source_type": "society_expert_review",
+      "publication": "Fischer, Vaughn, Peery and Kelly; AGA",
+      "doi": "10.1016/j.cgh.2026.05.007"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

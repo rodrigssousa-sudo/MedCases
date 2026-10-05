@@ -1,0 +1,153 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 28,
+  "requested_items": [
+    28
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Síndrome do intestino curto",
+    "es": "Síndrome de intestino corto"
+  },
+  "facts": [
+    {
+      "id": "g028_f01",
+      "section": "definition",
+      "pt": "Redução ou dano extenso do delgado causa absorção insuficiente; a capacidade depende dos segmentos remanescentes e da continuidade do cólon. Nem todo intestino curto implica dependência parenteral permanente.",
+      "es": "La reducción o daño extenso del intestino delgado causa absorción insuficiente; la capacidad depende de los segmentos remanentes y continuidad del colon. No todo intestino corto implica dependencia parenteral permanente.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g028_f02",
+      "section": "diagnosis",
+      "pt": "Rever relatório cirúrgico, anatomia, estoma, ingestão, perdas e suporte. Exames avaliam deficiências e complicações.",
+      "es": "Revisar informe quirúrgico, anatomía, ostomía, ingesta, pérdidas y soporte. Los estudios evalúan carencias y complicaciones.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g028_f03",
+      "section": "initial",
+      "pt": "Avaliar desidratação, diurese, função renal e eletrólitos; comparar débito intestinal ao basal. Aumento agudo exige procurar infecção ou outra complicação.",
+      "es": "Evaluar deshidratación, diuresis, función renal y electrolitos; comparar débito intestinal con el basal. El aumento agudo exige buscar infección u otra complicación.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g028_f04",
+      "section": "treatment",
+      "pt": "Individualizar dieta, solução de reidratação e suporte enteral ou parenteral. Reabilitação busca otimizar absorção e reduzir dependência de suporte quando seguro.",
+      "es": "Individualizar dieta, solución de rehidratación y soporte enteral o parenteral. La rehabilitación busca optimizar absorción y reducir dependencia de soporte cuando sea seguro.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g028_f05",
+      "section": "doses",
+      "pt": "Antissecretores e antimotilidade podem ser usados conforme anatomia e resposta. Doses elevadas não devem ser copiadas sem supervisão; terapias de reabilitação intestinal requerem centro especializado.",
+      "es": "Pueden usarse antisecretores y antimotilidad según anatomía y respuesta. Las dosis elevadas no deben copiarse sin supervisión; las terapias de rehabilitación intestinal requieren centro especializado.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g028_f06",
+      "section": "monitoring",
+      "pt": "Acompanhar peso, perdas, eletrólitos, micronutrientes e complicações renais ou hepáticas; ajustar suporte conforme evolução.",
+      "es": "Vigilar peso, pérdidas, electrolitos, micronutrientes y complicaciones renales o hepáticas; ajustar soporte según evolución.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g028_f07",
+      "section": "disposition",
+      "pt": "Incapacidade de compensar perdas, lesão renal, distúrbio eletrolítico ou suspeita de sepse exige hospital. Alta requer plano de hidratação e suporte viável.",
+      "es": "Incapacidad de compensar pérdidas, lesión renal, trastorno electrolítico o sospecha de sepsis requiere hospital. El alta exige plan de hidratación y soporte viable.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g028_f08",
+      "section": "special",
+      "pt": "Crianças precisam acompanhamento de crescimento; gestação e doença orgânica associada modificam necessidades. Não usar uma dieta universal para todas as anatomias.",
+      "es": "Los niños requieren seguimiento del crecimiento; embarazo y enfermedad orgánica asociada modifican necesidades. No usar una dieta universal para todas las anatomías.",
+      "references": [
+        1,
+        2
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A anatomia remanescente determina quais perdas e deficiências predominam. Assim, um plano que funciona para determinada configuração de estoma ou continuidade colônica pode ser inadequado para outra. A redução do suporte deve acompanhar capacidade funcional comprovada, não apenas melhora subjetiva.",
+      "es": "La anatomía remanente determina qué pérdidas y deficiencias predominan. Por eso un plan útil para determinada configuración de estoma o continuidad colónica puede ser inadecuado para otra. La reducción del soporte debe acompañar una capacidad funcional demostrada, no solo una mejoría subjetiva.",
+      "sources": [
+        "SBS",
+        "AGASBS"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "SBS",
+      "title": "Short Bowel Syndrome",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/short-bowel-syndrome",
+      "organization_or_authors": "NIDDK",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "scope": "Consulta em 2026",
+      "source_type": "official_clinical_source",
+      "publication": "NIDDK",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "AGASBS",
+      "title": "Management of short bowel syndrome",
+      "url": "https://gastro.org/clinical-guidance/management-of-short-bowel-syndrome-sbs/",
+      "organization_or_authors": "AGA",
+      "year": 2022,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "AGA",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "ESPEN",
+      "title": "ESPEN guideline on chronic intestinal failure in adults — Update 2023",
+      "url": "https://www.espen.org/files/ESPEN-Guidelines/ESPEN_guideline_on_chronic_intestinal_failure_in_adults.pdf",
+      "organization_or_authors": "ESPEN",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "ESPEN",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

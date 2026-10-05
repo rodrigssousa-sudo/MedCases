@@ -1,0 +1,137 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 13,
+  "requested_items": [
+    13
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Balantidíase",
+    "es": "Balantidiasis"
+  },
+  "facts": [
+    {
+      "id": "g013_f01",
+      "section": "definition",
+      "pt": "Balantidium coli é protozoário ciliado transmitido por ingestão de cistos em água ou alimentos contaminados. Suínos são reservatório importante. A infecção pode ser assintomática ou produzir colite ulcerativa e disenteria.",
+      "es": "Balantidium coli es un protozoo ciliado transmitido por ingestión de quistes en agua o alimentos contaminados. Los cerdos son un reservorio importante. La infección puede ser asintomática o producir colitis ulcerativa y disentería.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g013_f02",
+      "section": "diagnosis",
+      "pt": "Identificar trofozoítos ou cistos nas fezes; material deve ser examinado por laboratório habilitado. Diferenciar amebíase, disenteria bacteriana e doença inflamatória intestinal; epidemiologia isolada não confirma o agente.",
+      "es": "Identificar trofozoítos o quistes en materia fecal; el material debe ser examinado por laboratorio capacitado. Diferenciar amebiasis, disentería bacteriana y enfermedad inflamatoria intestinal; la epidemiología aislada no confirma el agente.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g013_f03",
+      "section": "initial",
+      "pt": "Avaliar hidratação, sangramento, dor e sinais de peritonite. Corrigir perdas em paralelo ao diagnóstico; colite invasiva não deve ser tratada somente com antidiarreico.",
+      "es": "Evaluar hidratación, sangrado, dolor y signos de peritonitis. Corregir pérdidas en paralelo al diagnóstico; una colitis invasiva no debe tratarse solo con antidiarreico.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g013_f04",
+      "section": "doses",
+      "pt": "Esquema adulto elegível: tetraciclina 500 mg por via oral quatro vezes ao dia durante 10 dias. Tomar 1 hora antes ou 2 horas após alimentos ou laticínios. É contraindicada na gestação e em crianças menores de 8 anos.",
+      "es": "Esquema adulto elegible: tetraciclina 500 mg por vía oral cuatro veces al día durante 10 días. Tomar 1 hora antes o 2 horas después de alimentos o lácteos. Está contraindicada en embarazo y en menores de 8 años.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g013_f05",
+      "section": "doses",
+      "pt": "Alternativa adulta: metronidazol 500–750 mg por via oral três vezes ao dia durante 5 dias. Escolher um esquema adequado; não associar rotineiramente tetraciclina e metronidazol. Seleção depende de contraindicações e disponibilidade local.",
+      "es": "Alternativa adulta: metronidazol 500–750 mg por vía oral tres veces al día durante 5 días. Elegir un esquema adecuado; no asociar rutinariamente tetraciclina y metronidazol. La selección depende de contraindicaciones y disponibilidad local.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g013_f06",
+      "section": "monitoring",
+      "pt": "Reavaliar hidratação, frequência das evacuações, sangue e resposta. Persistência exige revisão do diagnóstico, adesão e reinfecção. Reforçar saneamento, água segura e higiene após contato com fezes e animais.",
+      "es": "Reevaluar hidratación, frecuencia de evacuaciones, sangre y respuesta. La persistencia exige revisar diagnóstico, adherencia y reinfección. Reforzar saneamiento, agua segura e higiene tras contacto con heces y animales.",
+      "references": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": "g013_f07",
+      "section": "disposition",
+      "pt": "Disenteria importante, desidratação grave, instabilidade ou sinais de perfuração exigem hospital. Alta somente se estável, tolerando líquidos e com tratamento e retorno assegurados.",
+      "es": "La disentería importante, deshidratación grave, inestabilidad o signos de perforación requieren hospital. Alta solo si está estable, tolera líquidos y tiene tratamiento y seguimiento asegurados.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g013_f08",
+      "section": "special",
+      "pt": "Gestação, lactação, crianças e disfunção renal ou hepática precisam escolha individual e conferência da bula. Não extrapolar dose adulta nem substituir tetraciclina por outro fármaco da classe sem evidência específica.",
+      "es": "Embarazo, lactancia, niños y disfunción renal o hepática requieren selección individual y verificación de ficha técnica. No extrapolar la dosis adulta ni sustituir tetraciclina por otro fármaco de la clase sin evidencia específica.",
+      "references": [
+        1
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "O aspecto de disenteria aproxima balantidíase de outras colites invasivas, mas não identifica o agente. História epidemiológica orienta a coleta; a confirmação laboratorial evita aplicar indevidamente o tratamento de amebíase ou de uma doença inflamatória.",
+      "es": "El aspecto de disentería aproxima la balantidiasis a otras colitis invasivas, pero no identifica el agente. Los antecedentes epidemiológicos orientan la toma de muestras; la confirmación de laboratorio evita aplicar indebidamente el tratamiento de amebiasis o de una enfermedad inflamatoria.",
+      "sources": [
+        "DX",
+        "TX"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "TX",
+      "title": "Clinical Treatment of Balantidium coli infection",
+      "url": "https://www.cdc.gov/balantidium/hcp/clinical-care/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "scoped_check_at": "2026-10-04",
+      "scoped_check_locator": "Medication options"
+    },
+    {
+      "key": "DX",
+      "title": "DPDx: Balantidiasis",
+      "url": "https://www.cdc.gov/dpdx/balantidiasis/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "scope": "Ano de consulta",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

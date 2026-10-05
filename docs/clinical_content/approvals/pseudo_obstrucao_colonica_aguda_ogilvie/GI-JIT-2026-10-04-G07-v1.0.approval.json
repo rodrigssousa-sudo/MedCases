@@ -1,0 +1,19 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 54,
+  "owner": "pseudo_obstrucao_colonica_aguda_ogilvie",
+  "approvedClinicalPayloadSHA256": "51714ba8f4fd3939ccabdc4c1bff0004c1e11d0825f2a6b518404f1414dc1342",
+  "selectedApprovedFactIds": [
+    "g054_f01",
+    "g054_f02",
+    "g054_f03",
+    "g054_f04",
+    "g054_f05",
+    "g054_f06",
+    "g054_f07"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

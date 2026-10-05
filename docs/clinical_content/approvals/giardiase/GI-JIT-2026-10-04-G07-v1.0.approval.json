@@ -1,0 +1,24 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 9,
+  "owner": "giardiase",
+  "approvedClinicalPayloadSHA256": "e5f511a64823bc346d1ce4e300be7c46e3d9747a583f8c88f047e6091e58bd8e",
+  "selectedApprovedFactIds": [
+    "g009_f01",
+    "g009_f02",
+    "g009_f03",
+    "g009_f04",
+    "g009_f05",
+    "g009_f06",
+    "g009_f07",
+    "g009_f08",
+    "g009_f09",
+    "g009_f10",
+    "g009_f11",
+    "g009_f12"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

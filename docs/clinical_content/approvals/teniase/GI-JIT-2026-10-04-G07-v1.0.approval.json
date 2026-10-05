@@ -1,0 +1,20 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 19,
+  "owner": "teniase",
+  "approvedClinicalPayloadSHA256": "7735e5b61b4953768ee03d108bc94aee535af394eaf7ea1a1b5b1a3d7d47944e",
+  "selectedApprovedFactIds": [
+    "g019_f01",
+    "g019_f02",
+    "g019_f03",
+    "g019_f04",
+    "g019_f05",
+    "g019_f06",
+    "g019_f07",
+    "g019_f08"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

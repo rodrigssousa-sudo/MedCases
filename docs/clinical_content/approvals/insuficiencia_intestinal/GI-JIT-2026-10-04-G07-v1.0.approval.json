@@ -1,0 +1,20 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 27,
+  "owner": "insuficiencia_intestinal",
+  "approvedClinicalPayloadSHA256": "c973d57f61bd967b150347e2c38eec010668396fb04688427d02211d206a5cac",
+  "selectedApprovedFactIds": [
+    "g027_f01",
+    "g027_f02",
+    "g027_f03",
+    "g027_f04",
+    "g027_f05",
+    "g027_f06",
+    "g027_f07",
+    "g027_f08"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

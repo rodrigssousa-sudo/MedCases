@@ -1,0 +1,21 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 2,
+  "owner": "constipacao_funcional",
+  "approvedClinicalPayloadSHA256": "4aa0c1458c2c6897e8e5426b2ef818303dd17285cf645a2576d1342cddc66f5e",
+  "selectedApprovedFactIds": [
+    "g002_f01",
+    "g002_f02",
+    "g002_f03",
+    "g002_f04",
+    "g002_f05",
+    "g002_f06",
+    "g002_f07",
+    "g002_f08",
+    "g002_f09"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

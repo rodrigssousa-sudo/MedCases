@@ -1,0 +1,205 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 18,
+  "requested_items": [
+    18
+  ],
+  "existing_ids": [
+    "estrongiloidiase"
+  ],
+  "title": {
+    "pt": "Estrongiloidíase",
+    "es": "Estrongiloidiasis"
+  },
+  "facts": [
+    {
+      "id": "g018_f01",
+      "section": "definition",
+      "pt": "Strongyloides stercoralis é helminto adquirido por penetração de larvas na pele em contato com solo contaminado. Autoinfecção pode manter infecção durante muitos anos. Pode ser assintomático ou causar manifestações cutâneas, gastrointestinais e pulmonares; eosinofilia ausente não exclui doença grave.",
+      "es": "Strongyloides stercoralis es helminto adquirido por penetración de larvas cutánea en contacto con suelo contaminado. Autoinfección puede mantener infección durante años. Puede ser asintomático o causar manifestaciones cutáneas, digestivas y pulmonares; ausencia de eosinofilia no excluye enfermedad grave.",
+      "references": [
+        2,
+        5
+      ]
+    },
+    {
+      "id": "g018_f02",
+      "section": "diagnosis",
+      "pt": "Investigar residência/viagem mesmo remota em área endêmica, contato com solo, eosinofilia, corticoides, transplante, HTLV e neoplasia hematológica. Diagnóstico pode combinar sorologia e testes fecais seriados especializados; amostra isolada negativa não exclui. Em forma grave, pesquisar larvas em fezes e escarro e complicações sistêmicas.",
+      "es": "Investigar residencia/viaje incluso remoto en área endémica, suelo, eosinofilia, corticoides, trasplante, HTLV y neoplasia hematológica. Diagnóstico puede combinar serología y pruebas fecales seriadas especializadas; muestra negativa aislada no excluye. En forma grave, buscar larvas en heces y esputo y complicaciones sistémicas.",
+      "references": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "g018_f03",
+      "section": "diagnosis",
+      "pt": "Considerar outras parasitoses, alergia/causas de eosinofilia e causas de diarreia/pneumonia. Hiperinfecção pode produzir bacteremia/sepse por bactérias entéricas, insuficiência respiratória e sangramento. Não atribuir piora pós-corticoide apenas à doença de base sem reconsiderar Strongyloides.",
+      "es": "Considerar otras parasitosis, alergia/causas de eosinofilia y causas de diarrea/neumonía. Hiperinfección puede causar bacteriemia/sepsis por bacterias entéricas, insuficiencia respiratoria y hemorragia. No atribuir empeoramiento tras corticoide solo a enfermedad basal sin reconsiderar Strongyloides.",
+      "references": [
+        2,
+        4
+      ]
+    },
+    {
+      "id": "g018_f04",
+      "section": "treatment",
+      "pt": "Na infecção não complicada, ivermectina é primeira escolha quando elegível. Avaliar risco de Loa loa antes de tratamento em quem viveu em área endêmica correspondente; carga alta pode gerar encefalopatia grave. Priorizar avaliação/tratamento antes de iniciar imunossupressão em pessoa de risco, sem atrasar cuidado vital sem decisão especializada.",
+      "es": "En infección no complicada, ivermectina es primera elección si elegible. Evaluar riesgo de Loa loa antes de tratar quien vivió en área endémica correspondiente; carga alta puede causar encefalopatía grave. Priorizar evaluación/tratamiento antes de inmunosupresión en persona de riesgo, sin retrasar cuidados vitales sin decisión especializada.",
+      "references": [
+        1,
+        3,
+        4
+      ]
+    },
+    {
+      "id": "g018_f05",
+      "section": "doses",
+      "pt": "Infecção não complicada elegível: ivermectina 200 microgramas/kg (=0,2 mg/kg) oral uma vez; CDC admite curso de 1–2 dias, com definição na prescrição. Esta opção inicial usa dose única conforme bula, em jejum com água. Comprimido humano 3 mg: converter dose em mg e conferir tabela/forma dispensável, sem usar produto veterinário. Não transformar microgramas/kg em mg/kg.",
+      "es": "Infección no complicada elegible: ivermectina 200 microgramos/kg (=0,2 mg/kg) oral una vez; CDC admite curso de 1–2 días, definido en receta. Esta opción inicial usa dosis única según ficha, en ayunas con agua. Comprimido humano 3 mg: convertir a mg y revisar tabla/forma dispensable, sin producto veterinario. No convertir microgramos/kg en mg/kg.",
+      "references": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "g018_f06",
+      "section": "special",
+      "pt": "Monitorar resposta e efeitos adversos; sintomas neurológicos graves, hipotensão ou reação importante exige avaliação. Conferir alergias, interação com anticoagulante e doença hepática. Ajustes e vias alternativas exigem protocolo específico; a dose oral não define uma dose injetável equivalente. Falha pode resultar de malabsorção/íleo, persistência ou reinfecção e requer avaliação específica.",
+      "es": "Vigilar respuesta y efectos adversos; síntomas neurológicos graves, hipotensión o reacción importante exige evaluación. Revisar alergias, anticoagulante y hepatopatía. Los ajustes y vías alternativas requieren un protocolo específico; la dosis oral no define una dosis inyectable equivalente. Fallo puede deberse a malabsorción/íleo, persistencia o reinfección y exige valoración específica.",
+      "references": [
+        3,
+        1
+      ]
+    },
+    {
+      "id": "g018_f07",
+      "section": "disposition",
+      "pt": "Hiperinfecção/disseminação é emergência hospitalar: ivermectina 200 microgramas/kg por dia oral até fezes e/ou escarro negativos por 2 semanas, sob monitorização especializada. Reduzir/suspender imunossupressão se possível; tratar sepse/complicações. Íleo, obstrução ou absorção inadequada exige especialista e via excepcional regulada; não converter esta prescrição em injeção veterinária.",
+      "es": "Hiperinfección/diseminación es urgencia hospitalaria: ivermectina 200 microgramos/kg por día oral hasta heces y/o esputo negativos por 2 semanas, con vigilancia especializada. Reducir/suspender inmunosupresión si posible; tratar sepsis/complicaciones. Íleo, obstrucción o absorción insuficiente exige especialista y vía excepcional regulada; no convertir receta en inyección veterinaria.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g018_f08",
+      "section": "special",
+      "pt": "Peso<15 kg, gestação/lactação e Loa loa conhecido/suspeito exigem balanço especializado; não aplicar automaticamente esquema comum. Evidência de campanha populacional não elimina restrição de bula em caso individual. Imunossuprimidos precisam controle de cura mais rigoroso; não liberar para corticoide apenas por melhora subjetiva.",
+      "es": "Peso<15 kg, embarazo/lactancia y Loa loa conocido/sospechado exigen balance especializado; no aplicar automáticamente pauta común. Evidencia de campaña poblacional no elimina restricción de ficha en caso individual. Inmunosuprimidos precisan control de curación más riguroso; no autorizar corticoide solo por mejoría subjetiva.",
+      "references": [
+        1,
+        3,
+        4
+      ]
+    },
+    {
+      "id": "g018_f09",
+      "section": "monitoring",
+      "pt": "Alta se infecção não complicada, estável e com seguimento. Em fezes positivas e sintomas persistentes, CDC orienta exame de controle em 2–4 semanas; larvas persistentes exigem retratamento. Sorologia/controle adicional depende contexto e especialista. Orientar calçado, saneamento e evitar contato com solo contaminado; registrar resposta antes de futuras imunossupressões.",
+      "es": "Alta si infección no complicada, estable y con seguimiento. En heces positivas y síntomas persistentes, CDC indica control en 2–4 semanas; larvas persistentes exigen retratamiento. Serología/control adicional depende de contexto y especialista. Indicar calzado, saneamiento y evitar suelo contaminado; registrar respuesta antes de futuras inmunosupresiones.",
+      "references": [
+        1,
+        5
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "O risco clínico aumenta quando imunossupressão favorece amplificação da infecção. Sintomas digestivos e respiratórios podem fazer parte do mesmo processo. O tratamento da hiperinfecção depende de documentar controle parasitológico, e a absorção comprometida pode tornar inadequada a simples repetição da via oral.",
+      "es": "El riesgo clínico aumenta cuando la inmunosupresión favorece la amplificación de la infección. Los síntomas digestivos y respiratorios pueden formar parte del mismo proceso. El tratamiento de la hiperinfección depende de documentar control parasitológico y la absorción deficiente puede volver inadecuada la simple repetición de la vía oral.",
+      "sources": [
+        "S2",
+        "S5",
+        "S4",
+        "S1",
+        "S3"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "S1",
+      "title": "Clinical care of Strongyloides",
+      "url": "https://www.cdc.gov/strongyloides/hcp/clinical-care/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_CLINICAL_GUIDANCE",
+      "scope": "16/02/2024; dose comum, hiperinfecção, followup e contraindicações relativas.",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "OPENED_CURRENT_SOURCE_REQUIRES_CLAIM_AUDIT",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "S2",
+      "title": "Clinical overview of Strongyloides",
+      "url": "https://www.cdc.gov/strongyloides/hcp/clinical-overview/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "scope": "Panorama clínico, autoinfecção, diagnóstico e gravidade.",
+      "verified_at": null,
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "RECHECK_PENDING",
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "S3",
+      "title": "Ivermectin tablets3mg — prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=2de5ee45-0465-4996-ac00-5bdd352b4ed7&version=1",
+      "organization_or_authors": "DailyMed",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LABEL_CURRENT",
+      "scope": "Registro2026; dose200mcg/kg, jejum, neurotoxicidade e Loa loa.",
+      "verified_at": null,
+      "source_type": "official_product_label",
+      "publication": "DailyMed",
+      "doi": "",
+      "review_state": "RECHECK_PENDING",
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "S4",
+      "title": "Intestinal parasites — refugee domestic guidance",
+      "url": "https://www.cdc.gov/immigrant-refugee-health/hcp/domestic-guidance/intestinal-parasites.html",
+      "organization_or_authors": "CDC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_POPULATION_GUIDANCE",
+      "scope": "Triagem em imunossupressão e riscoLoa loa; protocolo refugiado não tratamento universal.",
+      "verified_at": null,
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "RECHECK_PENDING",
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "S5",
+      "title": "About Strongyloides",
+      "url": "https://www.cdc.gov/strongyloides/about/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "scope": "10/09/2024; aquisição e prevenção.",
+      "verified_at": null,
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "RECHECK_PENDING",
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

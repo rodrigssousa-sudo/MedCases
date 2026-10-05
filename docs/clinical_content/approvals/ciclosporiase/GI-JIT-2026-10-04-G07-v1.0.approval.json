@@ -1,0 +1,21 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 11,
+  "owner": "ciclosporiase",
+  "approvedClinicalPayloadSHA256": "9b7e291925f970b255c73e8e8cb4b213d6c7fcbc897a206ff059d07886a90be3",
+  "selectedApprovedFactIds": [
+    "g011_f01",
+    "g011_f02",
+    "g011_f03",
+    "g011_f04",
+    "g011_f05",
+    "g011_f06",
+    "g011_f07",
+    "g011_f08",
+    "g011_f09"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

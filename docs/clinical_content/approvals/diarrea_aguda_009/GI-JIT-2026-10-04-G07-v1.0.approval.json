@@ -1,0 +1,19 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 3,
+  "owner": "diarrea_aguda_009",
+  "approvedClinicalPayloadSHA256": "6e9ace1216c68f5eadbc4e3aa4bc4195b33f41f3f12e1f9ebfd116d73386b802",
+  "selectedApprovedFactIds": [
+    "g003_f01",
+    "g003_f02",
+    "g003_f03",
+    "g003_f04",
+    "g003_f05",
+    "g003_f06",
+    "g003_f07"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

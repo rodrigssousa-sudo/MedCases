@@ -1,0 +1,136 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 27,
+  "requested_items": [
+    27
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Insuficiência intestinal",
+    "es": "Insuficiencia intestinal"
+  },
+  "facts": [
+    {
+      "id": "g027_f01",
+      "section": "definition",
+      "pt": "Função intestinal insuficiente para manter saúde ou crescimento sem suplementação intravenosa de nutrientes, água ou eletrólitos. Não é sinônimo de toda má absorção.",
+      "es": "Función intestinal insuficiente para mantener salud o crecimiento sin suplementación intravenosa de nutrientes, agua o electrolitos. No es sinónimo de toda malabsorción.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g027_f02",
+      "section": "diagnosis",
+      "pt": "Caracterizar causa e duração; intestino curto, fístula, obstrução, dismotilidade e lesão mucosa extensa exigem estratégias diferentes.",
+      "es": "Caracterizar causa y duración; intestino corto, fístula, obstrucción, dismotilidad y lesión mucosa extensa requieren estrategias distintas.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g027_f03",
+      "section": "initial",
+      "pt": "No plantão, documentar suporte habitual, débito de estoma ou fístula, diurese e acesso venoso. Avaliar desidratação e sepse.",
+      "es": "En guardia, documentar soporte habitual, débito de ostomía o fístula, diuresis y acceso venoso. Evaluar deshidratación y sepsis.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g027_f04",
+      "section": "treatment",
+      "pt": "Repor perdas e manter suporte necessário, com equipe de nutrição e reabilitação intestinal. Prescrição parenteral é individual.",
+      "es": "Reponer pérdidas y mantener soporte necesario, con equipo de nutrición y rehabilitación intestinal. La prescripción parenteral es individual.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g027_f05",
+      "section": "doses",
+      "pt": "Não existe bolsa, volume ou velocidade universal. Conferir composição, via, bomba e plano assistencial antes de reiniciar infusão.",
+      "es": "No existe bolsa, volumen ni velocidad universal. Verificar composición, vía, bomba y plan asistencial antes de reiniciar infusión.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g027_f06",
+      "section": "monitoring",
+      "pt": "Controlar balanço, eletrólitos, função renal, nutrição e complicações do acesso; manter acompanhamento longitudinal.",
+      "es": "Controlar balance, electrolitos, función renal, nutrición y complicaciones del acceso; mantener seguimiento longitudinal.",
+      "references": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": "g027_f07",
+      "section": "disposition",
+      "pt": "Instabilidade, febre com cateter, perdas não compensáveis ou distúrbios metabólicos requerem hospital. Alta depende de suporte domiciliar seguro.",
+      "es": "Inestabilidad, fiebre con catéter, pérdidas no compensables o trastornos metabólicos requieren hospital. El alta depende de soporte domiciliario seguro.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g027_f08",
+      "section": "special",
+      "pt": "Planejar gestação, transição pediátrica e eventual transplante em centro especializado; não interromper suporte por melhora isolada dos sintomas.",
+      "es": "Planificar embarazo, transición pediátrica y eventual trasplante en centro especializado; no interrumpir soporte por mejoría aislada de síntomas.",
+      "references": [
+        1
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A definição se baseia na função e na dependência de suporte intravenoso, não somente na anatomia. No atendimento agudo, o plano habitual é uma informação clínica essencial: sua interrupção ou inadequação pode explicar desidratação e distúrbios metabólicos. A recuperação exige coordenação longitudinal.",
+      "es": "La definición se basa en la función y dependencia de soporte intravenoso, no solo en la anatomía. En la atención aguda, el plan habitual es información clínica esencial: su interrupción o inadecuación puede explicar deshidratación y alteraciones metabólicas. La recuperación requiere coordinación longitudinal.",
+      "sources": [
+        "ESPEN",
+        "SBS"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "ESPEN",
+      "title": "ESPEN guideline on chronic intestinal failure in adults — Update 2023",
+      "url": "https://www.espen.org/files/ESPEN-Guidelines/ESPEN_guideline_on_chronic_intestinal_failure_in_adults.pdf",
+      "organization_or_authors": "ESPEN",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "ESPEN",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "SBS",
+      "title": "Short Bowel Syndrome",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/short-bowel-syndrome",
+      "organization_or_authors": "NIDDK",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "scope": "Consulta em 2026",
+      "source_type": "official_clinical_source",
+      "publication": "NIDDK",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

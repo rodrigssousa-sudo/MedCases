@@ -1,0 +1,173 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 10,
+  "requested_items": [
+    10
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Criptosporidiose",
+    "es": "Criptosporidiosis"
+  },
+  "facts": [
+    {
+      "id": "g010_f01",
+      "section": "definition",
+      "pt": "Cryptosporidium infecta o epitélio intestinal após ingestão de oocistos. Produz diarreia aquosa, cólica e má absorção; pode persistir e acometer vias biliares na imunossupressão. Água recreacional, animais e transmissão fecal-oral são exposições relevantes.",
+      "es": "Cryptosporidium infecta el epitelio intestinal tras ingerir ooquistes. Produce diarrea acuosa, cólicos y malabsorción; puede persistir y afectar la vía biliar en inmunosupresión. Agua recreativa, animales y transmisión fecal-oral son exposiciones relevantes.",
+      "references": [
+        3
+      ]
+    },
+    {
+      "id": "g010_f02",
+      "section": "diagnosis",
+      "pt": "Solicitar teste fecal específico por PCR, antígeno ou microscopia apropriada; a eliminação intermitente pode exigir amostras em 3 dias. Diferenciar Giardia, Cyclospora, causas bacterianas e diarreia relacionada a medicamentos.",
+      "es": "Solicitar estudio fecal específico mediante PCR, antígeno o microscopía apropiada; la eliminación intermitente puede requerir muestras durante 3 días. Diferenciar Giardia, Cyclospora, causas bacterianas y diarrea relacionada con medicamentos.",
+      "references": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": "g010_f03",
+      "section": "initial",
+      "pt": "Avaliar hidratação, ingestão, diurese, peso e imunidade. Repor água e eletrólitos por via oral ou intravenosa conforme gravidade e tolerância; na infecção pelo HIV, avaliar tratamento antirretroviral e restauração imune.",
+      "es": "Evaluar hidratación, ingesta, diuresis, peso e inmunidad. Reponer agua y electrolitos por vía oral o intravenosa según gravedad y tolerancia; en infección por VIH, evaluar tratamiento antirretroviral y recuperación inmunitaria.",
+      "references": [
+        3
+      ]
+    },
+    {
+      "id": "g010_f04",
+      "section": "doses",
+      "pt": "Nitazoxanida para imunocompetentes: a partir de 12 anos, 500 mg; de 1 a 3 anos, 100 mg; de 4 a 11 anos, 200 mg por tomada, por via oral a cada 12 horas por 3 dias, com alimento. Suspensão consultada: 100 mg/5 mL, correspondendo a 5 mL e 10 mL nas faixas pediátricas citadas. Confirmar concentração e agitar; não administrar comprimido adulto a menores de 12 anos.",
+      "es": "Nitazoxanida para inmunocompetentes: desde los 12 años, 500 mg; de 1 a 3 años, 100 mg; de 4 a 11 años, 200 mg por toma, por vía oral cada 12 horas durante 3 días, con alimento. Suspensión consultada: 100 mg/5 mL, correspondiente a 5 mL y 10 mL en los grupos pediátricos citados. Confirmar concentración y agitar; no administrar comprimido adulto a menores de 12 años.",
+      "references": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "g010_f05",
+      "section": "treatment",
+      "pt": "Na imunossupressão, o esquema curto para imunocompetentes não deve ser presumido eficaz. Reidratação e restauração imune são centrais; eventual antiparasitário adjuvante exige plano especializado e não substitui terapia antirretroviral.",
+      "es": "En inmunosupresión, no debe presumirse eficaz el esquema corto para inmunocompetentes. La rehidratación y recuperación inmunitaria son centrales; un eventual antiparasitario adyuvante requiere un plan especializado y no sustituye el tratamiento antirretroviral.",
+      "references": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "g010_f06",
+      "section": "monitoring",
+      "pt": "Acompanhar perdas, peso, eletrólitos e função renal se diarreia importante. Repetir teste após tratamento somente se persistirem sintomas; o CDC sugere considerar coleta pelo menos 1 semana após a última dose. Persistência também pode significar reinfecção ou outra etiologia.",
+      "es": "Vigilar pérdidas, peso, electrolitos y función renal ante diarrea importante. Repetir la prueba tras tratar solo si persisten síntomas; los CDC sugieren considerar la toma al menos 1 semana después de la última dosis. La persistencia también puede indicar reinfección u otra etiología.",
+      "references": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "g010_f07",
+      "section": "disposition",
+      "pt": "Desidratação grave, incapacidade de repor perdas, deterioração renal ou imunossupressão com doença prolongada exigem avaliação hospitalar. Alta requer hidratação e ingestão adequadas, plano de retorno e acesso ao tratamento.",
+      "es": "La deshidratación grave, incapacidad de reponer pérdidas, deterioro renal o inmunosupresión con enfermedad prolongada requieren evaluación hospitalaria. El alta requiere hidratación e ingesta adecuadas, plan de retorno y acceso al tratamiento.",
+      "references": [
+        3
+      ]
+    },
+    {
+      "id": "g010_f08",
+      "section": "special",
+      "pt": "Gestação e lactentes abaixo de 1 ano precisam avaliação própria, sem extrapolação da dose adulta. Orientar higiene das mãos e água segura; evitar nadar até 2 semanas após resolução dos sintomas, pois a cloração habitual não elimina adequadamente o parasita.",
+      "es": "El embarazo y los lactantes menores de 1 año necesitan evaluación específica, sin extrapolar la dosis adulta. Indicar higiene de manos y agua segura; evitar nadar hasta 2 semanas después de desaparecer los síntomas, porque la cloración habitual no elimina adecuadamente el parásito.",
+      "references": [
+        1,
+        3
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A imunidade do hospedeiro modifica a capacidade de controlar a infecção. Isso torna inadequado usar a resposta esperada do imunocompetente para prever cura em imunossupressão. Reposição de perdas e recuperação imune têm funções diferentes e complementares ao eventual antiparasitário.",
+      "es": "La inmunidad del huésped modifica la capacidad de controlar la infección. Por eso no corresponde usar la respuesta esperada del inmunocompetente para predecir curación en inmunosupresión. La reposición de pérdidas y recuperación inmunitaria tienen funciones distintas y complementarias al eventual antiparasitario.",
+      "sources": [
+        "HIV",
+        "DX",
+        "CARE"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "CARE",
+      "title": "Clinical Care of Crypto",
+      "url": "https://www.cdc.gov/cryptosporidium/hcp/clinical-care/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "DX",
+      "title": "Clinical Testing and Diagnosis for Crypto",
+      "url": "https://www.cdc.gov/cryptosporidium/hcp/diagnosis-testing/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "HIV",
+      "title": "Cryptosporidiosis: Adult and Adolescent Opportunistic Infections",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/cryptosporidiosis",
+      "organization_or_authors": "NIH",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LIVING",
+      "scope": "Revisado em março de 2026; população com HIV",
+      "source_type": "official_clinical_source",
+      "publication": "NIH",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "alinia",
+      "title": "ALINIA (nitazoxanide): prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=e90f98d9-3c9b-4e75-ba18-5517283eadf0",
+      "organization_or_authors": "Romark / DailyMed",
+      "year": 2016,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_product_label",
+      "publication": "Romark / DailyMed",
+      "doi": "",
+      "scoped_check_at": "2026-10-04",
+      "scoped_check_locator": "Revised 7/2016; table 1, sections 2.1, 3.2 and 8",
+      "label_posting_date": "2024-03-20"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

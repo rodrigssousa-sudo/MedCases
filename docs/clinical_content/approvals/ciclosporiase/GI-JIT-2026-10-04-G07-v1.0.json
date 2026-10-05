@@ -1,0 +1,159 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 11,
+  "requested_items": [
+    11
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Ciclosporíase",
+    "es": "Ciclosporiasis"
+  },
+  "facts": [
+    {
+      "id": "g011_f01",
+      "section": "definition",
+      "pt": "Cyclospora cayetanensis causa diarreia aquosa prolongada ou recorrente, distensão, anorexia e perda de peso. Água e vegetais contaminados são exposições; o oocisto precisa amadurecer no ambiente, de modo que transmissão direta imediata entre pessoas é improvável.",
+      "es": "Cyclospora cayetanensis causa diarrea acuosa prolongada o recurrente, distensión, anorexia y pérdida de peso. Agua y vegetales contaminados son exposiciones; el ooquiste debe madurar en el ambiente, por lo que la transmisión directa inmediata entre personas es improbable.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g011_f02",
+      "section": "diagnosis",
+      "pt": "Solicitar explicitamente pesquisa de Cyclospora nas fezes; nem todo parasitológico ou painel molecular inclui o agente. Pode ser necessário repetir amostras. Considerar outras coccidioses e Giardia; sangue nas fezes ou toxicidade importante exige investigação adicional.",
+      "es": "Solicitar expresamente búsqueda de Cyclospora en materia fecal; no todo coproparasitológico o panel molecular incluye el agente. Puede ser necesario repetir muestras. Considerar otras coccidiosis y Giardia; sangre en las heces o toxicidad importante exige estudio adicional.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g011_f03",
+      "section": "initial",
+      "pt": "Avaliar desidratação, tolerância oral, perda ponderal, viagem, alimentos compartilhados e imunossupressão. Reidratar e corrigir perdas, com investigação epidemiológica de possíveis surtos conforme normas locais.",
+      "es": "Evaluar deshidratación, tolerancia oral, pérdida de peso, viajes, alimentos compartidos e inmunosupresión. Rehidratar y corregir pérdidas, con investigación epidemiológica de posibles brotes según normas locales.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g011_f04",
+      "section": "doses",
+      "pt": "Adulto imunocompetente elegível: trimetoprima 160 mg + sulfametoxazol 800 mg por via oral duas vezes ao dia durante 7–10 dias. Registrar os dois componentes; a dose não corresponde a 960 mg de trimetoprima.",
+      "es": "Adulto inmunocompetente elegible: trimetoprima 160 mg + sulfametoxazol 800 mg por vía oral dos veces al día durante 7–10 días. Registrar ambos componentes; la dosis no corresponde a 960 mg de trimetoprima.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g011_f05",
+      "section": "special",
+      "pt": "Pediatria a partir de 2 meses: dose diária total de trimetoprima 8–10 mg/kg e sulfametoxazol 40–50 mg/kg, por via oral, dividida em 2 tomadas durante 7–10 dias. Conferir apresentação e função renal antes de dispensar; não transformar total diário em dose por tomada.",
+      "es": "Pediatría desde los 2 meses: dosis diaria total de trimetoprima 8–10 mg/kg y sulfametoxazol 40–50 mg/kg, por vía oral, dividida en 2 tomas durante 7–10 días. Verificar presentación y función renal antes de dispensar; no convertir el total diario en dosis por toma.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g011_f06",
+      "section": "treatment",
+      "pt": "Alergia ou intolerância ao esquema preferido exige avaliação especializada: nenhuma alternativa tem eficácia igualmente bem estabelecida. Imunossuprimidos podem precisar tratamento prolongado. Metronidazol e tinidazol não são substitutos eficazes.",
+      "es": "La alergia o intolerancia al esquema preferido requiere evaluación especializada: ninguna alternativa tiene eficacia igualmente establecida. Las personas inmunosuprimidas pueden necesitar tratamiento prolongado. Metronidazol y tinidazol no son sustitutos eficaces.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g011_f07",
+      "section": "monitoring",
+      "pt": "Acompanhar hidratação, peso, tolerância ao medicamento e resolução. Recaída exige confirmar diagnóstico, adesão e imunidade; evitar ciclos empíricos indefinidos. Alertar para reação alérgica e revisar interações antes da prescrição.",
+      "es": "Vigilar hidratación, peso, tolerancia al medicamento y resolución. La recaída exige confirmar diagnóstico, adherencia e inmunidad; evitar ciclos empíricos indefinidos. Advertir sobre reacción alérgica y revisar interacciones antes de prescribir.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g011_f08",
+      "section": "disposition",
+      "pt": "Desidratação ou incapacidade de ingestão requer escalonamento assistencial. Gestação exige decisão de benefício e risco; lactação com bebê prematuro, ictérico, doente ou com deficiência de G6PD exige evitar prescrição automática de sulfametoxazol-trimetoprima.",
+      "es": "La deshidratación o incapacidad de ingesta requiere escalamiento asistencial. El embarazo exige una decisión de beneficio y riesgo; en lactancia de un bebé prematuro, ictérico, enfermo o con déficit de G6PD debe evitarse la prescripción automática de sulfametoxazol-trimetoprima.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g011_f09",
+      "section": "special",
+      "pt": "Antes de sulfametoxazol-trimetoprima, verificar alergia, potássio, função renal e medicamentos associados. Pela bula adulta: clearance de creatinina >30 mL por minuto permite esquema habitual; entre 15 e 30 mL por minuto, metade do esquema usual; <15 mL por minuto, uso não recomendado. Doença renal instável ou diálise exige plano especializado. Monitorar hemograma e hipercalemia conforme risco.",
+      "es": "Antes de sulfametoxazol-trimetoprima, verificar alergia, potasio, función renal y medicamentos asociados. Según la ficha adulta: aclaramiento de creatinina >30 mL por minuto permite el esquema habitual; entre 15 y 30 mL por minuto, la mitad del esquema habitual; <15 mL por minuto, uso no recomendado. La enfermedad renal inestable o diálisis requiere un plan especializado. Controlar hemograma e hiperpotasemia según riesgo.",
+      "references": [
+        3
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A necessidade de amadurecimento ambiental do oocisto ajuda a interpretar exposições alimentares e surtos. A investigação depende de solicitar o agente correto ao laboratório. Um resultado de parasitológico rotineiro negativo pode ser insuficiente se a técnica não inclui essa pesquisa.",
+      "es": "La necesidad de maduración ambiental del ooquiste ayuda a interpretar exposiciones alimentarias y brotes. La investigación depende de solicitar el agente correcto al laboratorio. Un examen parasitológico rutinario negativo puede ser insuficiente si la técnica no incluye esa búsqueda.",
+      "sources": [
+        "DX",
+        "CARE"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "CARE",
+      "title": "Clinical Care of Cyclosporiasis",
+      "url": "https://www.cdc.gov/cyclosporiasis/hcp/clinical-care/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "DX",
+      "title": "Clinical Overview of Cyclosporiasis",
+      "url": "https://www.cdc.gov/cyclosporiasis/hcp/clinical-overview/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "tmp_label",
+      "title": "BACTRIM: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f59d0c04-9c66-4d53-a0e1-cb55570deb62",
+      "organization_or_authors": "DailyMed, official product labeling",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LIVING",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_product_label",
+      "publication": "DailyMed, official product labeling",
+      "doi": ""
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

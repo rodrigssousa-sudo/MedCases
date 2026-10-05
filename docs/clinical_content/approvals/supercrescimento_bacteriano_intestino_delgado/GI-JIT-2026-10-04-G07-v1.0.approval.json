@@ -1,0 +1,22 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 26,
+  "owner": "supercrescimento_bacteriano_intestino_delgado",
+  "approvedClinicalPayloadSHA256": "7df0c40c72824ae7ae11ac0622afa388bab32e387bed46a8814801fb65e96dc1",
+  "selectedApprovedFactIds": [
+    "g026_f01",
+    "g026_f02",
+    "g026_f03",
+    "g026_f04",
+    "g026_f05",
+    "g026_f06",
+    "g026_f07",
+    "g026_f08",
+    "g026_f09",
+    "g026_f10"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

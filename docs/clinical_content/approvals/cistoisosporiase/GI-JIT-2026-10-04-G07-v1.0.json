@@ -1,0 +1,188 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 12,
+  "requested_items": [
+    12
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Cistoisosporíase",
+    "es": "Cistoisosporiasis"
+  },
+  "facts": [
+    {
+      "id": "g012_f01",
+      "section": "definition",
+      "pt": "Cystoisospora belli, antes Isospora belli, invade o epitélio do intestino delgado e causa diarreia aquosa, cólica, perda de peso e má absorção. Imunossupressão favorece doença grave, prolongada e recorrente; eosinofilia pode ocorrer.",
+      "es": "Cystoisospora belli, antes Isospora belli, invade el epitelio del intestino delgado y causa diarrea acuosa, cólicos, pérdida de peso y malabsorción. La inmunosupresión favorece enfermedad grave, prolongada y recurrente; puede haber eosinofilia.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g012_f02",
+      "section": "diagnosis",
+      "pt": "Confirmar oocistos em exame fecal dirigido com técnicas apropriadas; a eliminação intermitente pode exigir amostras repetidas e concentração. Se suspeita persistir com exames negativos, gastroenterologia pode considerar investigação duodenal.",
+      "es": "Confirmar ooquistes mediante estudio fecal dirigido con técnicas apropiadas; la eliminación intermitente puede exigir muestras repetidas y concentración. Si persiste la sospecha con estudios negativos, gastroenterología puede considerar evaluación duodenal.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g012_f03",
+      "section": "initial",
+      "pt": "Reidratar e avaliar perdas, nutrição e imunidade. Em doença prolongada, investigar HIV e outras causas de imunossupressão conforme contexto e consentimento. Diferenciar outras infecções oportunistas, medicamentos e enteropatias.",
+      "es": "Rehidratar y evaluar pérdidas, nutrición e inmunidad. En enfermedad prolongada, investigar VIH y otras causas de inmunosupresión según contexto y consentimiento. Diferenciar otras infecciones oportunistas, medicamentos y enteropatías.",
+      "references": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": "g012_f04",
+      "section": "doses",
+      "pt": "Adulto imunocompetente elegível: trimetoprima 160 mg + sulfametoxazol 800 mg por via oral duas vezes ao dia durante 7–10 dias. Imunossupressão exige esquema e duração próprios, incluindo possível profilaxia secundária; não prolongar automaticamente a mesma prescrição.",
+      "es": "Adulto inmunocompetente elegible: trimetoprima 160 mg + sulfametoxazol 800 mg por vía oral dos veces al día durante 7–10 días. La inmunosupresión exige esquema y duración propios, incluida posible profilaxis secundaria; no prolongar automáticamente la misma prescripción.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g012_f05",
+      "section": "treatment",
+      "pt": "Na alergia, alternativas exigem infectologia. Pirimetamina deve ser acompanhada de ácido folínico por risco de supressão medular; ciprofloxacino é menos eficaz. Não tratar como giardíase nem escolher alternativa apenas por pertencer à categoria de antiparasitários.",
+      "es": "En alergia, las alternativas requieren infectología. La pirimetamina debe acompañarse de ácido folínico por riesgo de supresión medular; ciprofloxacino es menos eficaz. No tratar como giardiasis ni elegir una alternativa solo por pertenecer a la categoría de antiparasitarios.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g012_f06",
+      "section": "monitoring",
+      "pt": "Acompanhar diarreia, hidratação, peso e recuperação nutricional. Persistência exige revisar diagnóstico, adesão, absorção e imunossupressão; recaídas em pessoas com AIDS podem exigir manutenção orientada por especialista.",
+      "es": "Vigilar diarrea, hidratación, peso y recuperación nutricional. La persistencia exige revisar diagnóstico, adherencia, absorción e inmunosupresión; las recaídas en personas con sida pueden requerir mantenimiento indicado por especialista.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g012_f07",
+      "section": "special",
+      "pt": "Não extrapolar o esquema adulto para lactentes ou gestantes. Sulfametoxazol-trimetoprima geralmente não é recomendado abaixo de 2 meses; avaliar risco fetal, lactente vulnerável, interações e função renal. Ajustes numéricos dependem de bula e função orgânica verificadas.",
+      "es": "No extrapolar el esquema adulto a lactantes ni embarazadas. Sulfametoxazol-trimetoprima generalmente no se recomienda por debajo de 2 meses; evaluar riesgo fetal, lactante vulnerable, interacciones y función renal. Los ajustes numéricos dependen de ficha técnica y función orgánica verificadas.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g012_f08",
+      "section": "disposition",
+      "pt": "Diarreia intensa com desidratação, incapacidade de ingestão ou imunossupressão importante requer avaliação hospitalar. Tratamento ambulatorial exige estabilidade, acesso ao medicamento e seguimento; deterioração deve antecipar o retorno.",
+      "es": "La diarrea intensa con deshidratación, incapacidad de ingesta o inmunosupresión importante requiere evaluación hospitalaria. El tratamiento ambulatorio exige estabilidad, acceso al medicamento y seguimiento; el deterioro debe adelantar la consulta.",
+      "references": [
+        2,
+        1
+      ]
+    },
+    {
+      "id": "g012_f09",
+      "section": "doses",
+      "pt": "Adulto com HIV, conforme NIH: opção de trimetoprima 160 mg + sulfametoxazol 800 mg por via oral quatro vezes ao dia por 10 dias, com função renal adequada. A diretriz também admite esquema duas vezes ao dia por 7 dias; escolher explicitamente um regime. Persistência, má absorção ou necessidade de manutenção exigem infectologia.",
+      "es": "Adulto con VIH, según NIH: opción de trimetoprima 160 mg + sulfametoxazol 800 mg por vía oral cuatro veces al día durante 10 días, con función renal adecuada. La guía también admite un esquema dos veces al día durante 7 días; elegir explícitamente un régimen. La persistencia, malabsorción o necesidad de mantenimiento requieren infectología.",
+      "references": [
+        3
+      ]
+    },
+    {
+      "id": "g012_f10",
+      "section": "special",
+      "pt": "Antes de sulfametoxazol-trimetoprima, verificar alergia, potássio, função renal e medicamentos associados. Pela bula adulta: clearance de creatinina >30 mL por minuto permite esquema habitual; entre 15 e 30 mL por minuto, metade do esquema usual; <15 mL por minuto, uso não recomendado. Doença renal instável ou diálise exige plano especializado. Monitorar hemograma e hipercalemia conforme risco.",
+      "es": "Antes de sulfametoxazol-trimetoprima, verificar alergia, potasio, función renal y medicamentos asociados. Según la ficha adulta: aclaramiento de creatinina >30 mL por minuto permite el esquema habitual; entre 15 y 30 mL por minuto, la mitad del esquema habitual; <15 mL por minuto, uso no recomendado. La enfermedad renal inestable o diálisis requiere un plan especializado. Controlar hemograma e hiperpotasemia según riesgo.",
+      "references": [
+        4
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A repercussão da lesão intestinal combina perda de líquidos e absorção prejudicada. Em imunossupressão, recaída não significa necessariamente uma nova exposição: controle da infecção e manutenção dependem também da recuperação imune. O regime deve declarar a população a que se aplica.",
+      "es": "La repercusión de la lesión intestinal combina pérdida de líquidos y absorción deficiente. En inmunosupresión, una recaída no implica necesariamente una nueva exposición: el control de la infección y mantenimiento también dependen de la recuperación inmunitaria. El régimen debe declarar a qué población se aplica.",
+      "sources": [
+        "DX",
+        "CARE",
+        "nih_cysto"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "CARE",
+      "title": "Clinical Treatment of Cystoisosporiasis",
+      "url": "https://www.cdc.gov/cystoisospora/hcp/clinical-care/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "scoped_check_at": "2026-10-04",
+      "scoped_check_locator": "TMP-SMX medication options"
+    },
+    {
+      "key": "DX",
+      "title": "DPDx: Cystoisosporiasis",
+      "url": "https://www.cdc.gov/dpdx/cystoisosporiasis/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "scope": "Ano de consulta; não representa nova guideline",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "nih_cysto",
+      "title": "Cystoisosporiasis: Adult and Adolescent Opportunistic Infections",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/cystoisosporiasis",
+      "organization_or_authors": "NIH",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LIVING",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_clinical_source",
+      "publication": "NIH",
+      "doi": ""
+    },
+    {
+      "key": "tmp_label",
+      "title": "BACTRIM: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f59d0c04-9c66-4d53-a0e1-cb55570deb62",
+      "organization_or_authors": "DailyMed, official product labeling",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LIVING",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_product_label",
+      "publication": "DailyMed, official product labeling",
+      "doi": ""
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

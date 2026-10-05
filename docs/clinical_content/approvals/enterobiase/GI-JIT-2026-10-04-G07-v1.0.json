@@ -1,0 +1,223 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 15,
+  "requested_items": [
+    15
+  ],
+  "existing_ids": [
+    "enterobiase"
+  ],
+  "title": {
+    "pt": "Enterobíase (oxiuríase)",
+    "es": "Enterobiasis (oxiuriasis)"
+  },
+  "facts": [
+    {
+      "id": "g015_f01",
+      "section": "definition",
+      "pt": "Enterobíase/oxiuríase é infecção por Enterobius vermicularis. Ovos contaminam mãos, roupas e superfícies; autoinfecção e reinfecção domiciliar são comuns. Migração noturna da fêmea favorece prurido perianal e distúrbio do sono. Muitos infectados são assintomáticos.",
+      "es": "Enterobiasis/oxiuriasis es infección por Enterobius vermicularis. Huevos contaminan manos, ropa y superficies; autoinfección y reinfección doméstica son comunes. Migración nocturna de la hembra favorece prurito perianal y trastorno del sueño. Muchos infectados son asintomáticos.",
+      "references": [
+        1,
+        3,
+        5
+      ]
+    },
+    {
+      "id": "g015_f02",
+      "section": "initial",
+      "pt": "Prurido anal noturno é pista importante; pode haver verme fino branco na região anal/roupa. Escoriação e irritação são possíveis; vulvovaginite pode ocorrer. Dor abdominal importante, febre, sangramento ou outra manifestação atípica não deve ser atribuída automaticamente ao parasita.",
+      "es": "Prurito anal nocturno es pista importante; puede verse gusano fino blanco en zona anal/ropa. Puede haber excoriación e irritación; vulvovaginitis es posible. Dolor abdominal importante, fiebre, sangrado u otra manifestación atípica no debe atribuirse automáticamente al parásito.",
+      "references": [
+        1,
+        5
+      ]
+    },
+    {
+      "id": "g015_f03",
+      "section": "diagnosis",
+      "pt": "Confirmar com teste da fita adesiva perianal, pela manhã antes de banho, evacuação ou vestir-se, em 3 manhãs consecutivas, seguindo orientação do laboratório. Higienizar mãos após coleta. Parasitológico de fezes tem baixa utilidade para esse diagnóstico; exame de sangue não confirma enterobíase.",
+      "es": "Confirmar con cinta adhesiva perianal por la mañana antes de bañarse, defecar o vestirse, en 3 mañanas consecutivas, siguiendo laboratorio. Lavarse manos tras tomar muestra. Parasitológico de materia fecal tiene baja utilidad para este diagnóstico; análisis de sangre no confirma enterobiasis.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g015_f04",
+      "section": "diagnosis",
+      "pt": "Avaliar dermatite/irritação local, fissura, doença perianal e outras causas de prurido. Persistência após tratamento exige conferir reinfecção, diagnóstico e adesão, sem escalonar antiparasitários cegamente. Dor ou secreção genital persistente requer avaliação própria.",
+      "es": "Evaluar dermatitis/irritación local, fisura, enfermedad perianal y otras causas de prurito. Persistencia tras tratamiento exige revisar reinfección, diagnóstico y adherencia, sin escalar antiparasitarios a ciegas. Dolor o secreción genital persistente requiere evaluación propia.",
+      "references": [
+        1,
+        5
+      ]
+    },
+    {
+      "id": "g015_f05",
+      "section": "doses",
+      "pt": "Opção para adulto e criança maior de 2 anos elegíveis: mebendazol 100 mg por via oral, dose única, repetir 100 mg após 14 dias conforme CDC. A repetição trata vermes recém-eclodidos, pois o fármaco não elimina os ovos. Não trocar por 500 mg de campanhas de outras helmintíases.",
+      "es": "Opción para adulto y niño mayor de 2 años elegibles: mebendazol 100 mg por vía oral, dosis única, repetir 100 mg tras 14 días según CDC. La repetición trata gusanos recién eclosionados, pues el fármaco no elimina huevos. No sustituir por 500 mg de campañas de otras helmintiasis.",
+      "references": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "g015_f06",
+      "section": "doses",
+      "pt": "Confirmar comprimido 100 mg ou apresentação líquida equivalente antes de prescrever; não calcular mL sem concentração verificada. A bula permite mastigar ou engolir comprimido; criança necessita supervisão e apresentação adequada à deglutição. Não reutilizar esquema de 3 dias para enterobíase simples.",
+      "es": "Confirmar comprimido 100 mg o presentación líquida equivalente antes de indicar; no calcular mL sin concentración verificada. El prospecto permite masticar o tragar comprimido; niño necesita supervisión y presentación apta para deglución. No reutilizar pauta de 3 días para enterobiasis simple.",
+      "references": [
+        4
+      ]
+    },
+    {
+      "id": "g015_f07",
+      "section": "treatment",
+      "pt": "Tratar infectado, cuidadores e conviventes simultaneamente quando elegíveis, segundo CDC 2026. Verificar gestação, idade e contraindicações de cada contato; não distribuir fármaco indiscriminadamente. Não medicar animais: enterobíase humana não é adquirida de cães/gatos. Escolas/instituições precisam de coordenação sanitária própria.",
+      "es": "Tratar infectado, cuidadores y convivientes simultáneamente cuando sean elegibles según CDC 2026. Revisar embarazo, edad y contraindicaciones de cada contacto; no distribuir fármaco indiscriminadamente. No medicar animales: enterobiasis humana no se adquiere de perros/gatos. Escuelas/instituciones necesitan coordinación sanitaria propia.",
+      "references": [
+        3
+      ]
+    },
+    {
+      "id": "g015_f08",
+      "section": "monitoring",
+      "pt": "Lavar mãos com água e sabão após banheiro/fraldas e antes de comida, manter unhas curtas, evitar coçar/roer unhas, banho matinal e troca de roupa íntima. Lavar roupa de cama/toalhas sem sacudir e evitar compartilhamento. CDC orienta manter medidas por 2 semanas após última dose; higiene isolada pode ser necessária se medicamento não é elegível.",
+      "es": "Lavarse manos con agua y jabón tras baño/pañales y antes de comida, mantener uñas cortas, evitar rascarse/comerse uñas, baño matinal y cambiar ropa interior. Lavar sábanas/toallas sin sacudir y evitar compartirlas. CDC indica medidas por 2 semanas tras última dosis; higiene sola puede ser necesaria si medicación no es elegible.",
+      "references": [
+        3,
+        5
+      ]
+    },
+    {
+      "id": "g015_f09",
+      "section": "special",
+      "pt": "Mebendazol é contraindicado em alergia ao produto. Evitar associação com metronidazol por risco de reação cutânea grave; cimetidina pode aumentar exposição. Rash importante, sinais hepáticos ou reação alérgica exige avaliação. Doença hepática pode aumentar a exposição e exige avaliação individual antes de prescrever.",
+      "es": "El mebendazol está contraindicado ante alergia al producto. Evitar su asociación con metronidazol por riesgo de reacción cutánea grave; la cimetidina puede aumentar la exposición. Erupción importante, signos hepáticos o reacción alérgica requieren evaluación. La enfermedad hepática puede aumentar la exposición y requiere evaluación individual antes de prescribir.",
+      "references": [
+        4
+      ]
+    },
+    {
+      "id": "g015_f10",
+      "section": "special",
+      "pt": "Não usar automaticamente em menores de 2 anos: evidência limitada; a bula selecionada proíbe abaixo de 1 ano. Gestantes: priorizar higiene e avaliação obstétrica; Vermox selecionado é contraindicado na gestação, enquanto outras recomendações discutem exceções, sem transposição automática. Lactação: CDC não exige interrupção por mebendazol, com conferência do produto e contexto clínico.",
+      "es": "No usar automáticamente en menores de 2 años: evidencia limitada; el prospecto elegido prohíbe debajo de 1 año. Embarazadas: priorizar higiene y evaluación obstétrica; Vermox elegido está contraindicado en embarazo, mientras otras recomendaciones discuten excepciones sin traslado automático. Lactancia: CDC no exige interrumpir por mebendazol, revisando producto y contexto clínico.",
+      "references": [
+        1,
+        4,
+        5
+      ]
+    },
+    {
+      "id": "g015_f11",
+      "section": "monitoring",
+      "pt": "Geralmente ambulatorial, com segunda dose programada e orientação a conviventes. Reavaliar sintomas, reinfecção e higiene; não repetir cursos indefinidos. Dor abdominal intensa, febre, desidratação ou alteração sistêmica exige investigação urgente de outra doença. Alta depende de estabilidade e plano de retorno.",
+      "es": "Generalmente ambulatorio, con segunda dosis programada y orientación a convivientes. Reevaluar síntomas, reinfección e higiene; no repetir cursos indefinidamente. Dolor abdominal intenso, fiebre, deshidratación o alteración sistémica exige estudio urgente de otra enfermedad. Alta depende de estabilidad y plan de retorno.",
+      "references": [
+        1,
+        5
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "O ciclo de reinfecção explica por que o cuidado não termina na primeira tomada. A segunda dose e as medidas de higiene têm objetivos complementares. Persistência de prurido exige revisar exposição domiciliar e técnica diagnóstica antes de considerar falha farmacológica.",
+      "es": "El ciclo de reinfección explica por qué el cuidado no termina con la primera toma. La segunda dosis y las medidas de higiene tienen objetivos complementarios. La persistencia del prurito exige revisar exposición domiciliaria y técnica diagnóstica antes de considerar fracaso farmacológico.",
+      "sources": [
+        "E1",
+        "E3",
+        "E5",
+        "E2",
+        "E4"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "E1",
+      "title": "Clinical overview of pinworm infection",
+      "url": "https://www.cdc.gov/pinworm/hcp/clinical-overview/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "scope": "20/02/2024; doses, repetição e populações.",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "OPENED_CURRENT_SOURCE_REQUIRES_CLAIM_AUDIT",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "E2",
+      "title": "Diagnosing pinworms",
+      "url": "https://www.cdc.gov/pinworm/diagnosing/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "scope": "20/02/2024; fita3manhãs.",
+      "verified_at": null,
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "RECHECK_PENDING",
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "E3",
+      "title": "Preventing pinworm infection",
+      "url": "https://www.cdc.gov/pinworm/prevention/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_UPDATED",
+      "scope": "29/04/2026; contatos e higiene2semanas após última dose.",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "OPENED_CURRENT_SOURCE_REQUIRES_CLAIM_AUDIT",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "E4",
+      "title": "Vermox100mg tablets SmPC",
+      "url": "https://www.medicines.org.uk/emc/product/975/smpc",
+      "organization_or_authors": "Janssen / emc",
+      "year": 2024,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL_CURRENT_PORTAL",
+      "scope": "Atualizada05/06/2024; idade, gestação, interações.",
+      "verified_at": null,
+      "source_type": "official_product_label",
+      "publication": "Janssen / emc",
+      "doi": "",
+      "review_state": "RECHECK_PENDING",
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "E5",
+      "title": "Threadworms",
+      "url": "https://www.nhs.uk/conditions/threadworms/",
+      "organization_or_authors": "NHS",
+      "year": "data da página não registrada",
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "scope": "Higiene, tratamento doméstico e opção sem medicamento.",
+      "verified_at": null,
+      "source_type": "official_clinical_source",
+      "publication": "NHS",
+      "doi": "",
+      "review_state": "RECHECK_PENDING",
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

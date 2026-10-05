@@ -1,0 +1,137 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 23,
+  "requested_items": [
+    23
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Intolerância à lactose",
+    "es": "Intolerancia a la lactosa"
+  },
+  "facts": [
+    {
+      "id": "g023_f01",
+      "section": "definition",
+      "pt": "Má digestão de lactose por baixa atividade de lactase pode causar gases, distensão, cólica e diarreia. Má absorção sem sintomas não equivale a intolerância; não é alergia à proteína do leite.",
+      "es": "La mala digestión de lactosa por baja actividad de lactasa puede causar gases, distensión, cólicos y diarrea. La malabsorción sin síntomas no equivale a intolerancia; no es alergia a la proteína de leche.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g023_f02",
+      "section": "diagnosis",
+      "pt": "Relacionar ingestão e sintomas; teste respiratório de hidrogênio pode ajudar, interpretado junto da resposta clínica. Considerar doença celíaca, intestino irritável, inflamação e supercrescimento bacteriano.",
+      "es": "Relacionar ingesta y síntomas; la prueba respiratoria de hidrógeno puede ayudar, interpretada junto con la respuesta clínica. Considerar enfermedad celíaca, intestino irritable, inflamación y sobrecrecimiento bacteriano.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g023_f03",
+      "section": "initial",
+      "pt": "Avaliar hidratação e gravidade; sangue, febre ou perda ponderal não devem ser explicados apenas pela intolerância. Investigar lesão intestinal quando início é secundário a outra doença.",
+      "es": "Evaluar hidratación y gravedad; sangre, fiebre o pérdida de peso no deben explicarse solo por intolerancia. Investigar lesión intestinal cuando el inicio es secundario a otra enfermedad.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g023_f04",
+      "section": "treatment",
+      "pt": "Reduzir lactose conforme tolerância individual, sem excluir desnecessariamente todos os laticínios. Manter adequação nutricional e tratar a causa da deficiência secundária.",
+      "es": "Reducir lactosa según tolerancia individual, sin excluir innecesariamente todos los lácteos. Mantener adecuación nutricional y tratar la causa del déficit secundario.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g023_f05",
+      "section": "doses",
+      "pt": "Lactase oral pode ajudar antes de alimentos com lactose; atividade enzimática e apresentação variam entre produtos. Não existe dose em miligramas intercambiável universal; seguir produto validado.",
+      "es": "La lactasa oral puede ayudar antes de alimentos con lactosa; actividad enzimática y presentación varían entre productos. No existe dosis universal intercambiable en miligramos; seguir el producto validado.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g023_f06",
+      "section": "monitoring",
+      "pt": "Acompanhar resposta e adequação da dieta. Se não melhorar, revisar diagnóstico em vez de aumentar indefinidamente a restrição.",
+      "es": "Vigilar respuesta y adecuación de la dieta. Si no mejora, revisar diagnóstico en vez de aumentar indefinidamente la restricción.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g023_f07",
+      "section": "disposition",
+      "pt": "Geralmente ambulatorial; desidratação importante ou sinais de outra doença exigem avaliação urgente.",
+      "es": "Generalmente ambulatoria; la deshidratación importante o signos de otra enfermedad requieren evaluación urgente.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g023_f08",
+      "section": "special",
+      "pt": "Crianças pequenas, gestantes e lactantes exigem orientação antes de suplementos ou exclusões extensas. Deficiência secundária pode melhorar com tratamento da doença intestinal.",
+      "es": "Niños pequeños, embarazadas y personas que amamantan necesitan orientación antes de suplementos o exclusiones extensas. El déficit secundario puede mejorar al tratar la enfermedad intestinal.",
+      "references": [
+        2
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "Digestão reduzida e intolerância clínica não são sinônimos: o efeito depende da quantidade ingerida e do contexto alimentar. O objetivo é controlar sintomas preservando nutrição, e não impor a mesma exclusão a todos. Quando a deficiência é secundária, tratar a lesão intestinal pode modificar a tolerância.",
+      "es": "La digestión reducida y la intolerancia clínica no son sinónimos: el efecto depende de la cantidad ingerida y del contexto alimentario. El objetivo es controlar síntomas preservando la nutrición, no imponer la misma exclusión a todos. Cuando la deficiencia es secundaria, tratar la lesión intestinal puede modificar la tolerancia.",
+      "sources": [
+        "DX",
+        "TX"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "DX",
+      "title": "Diagnosis of Lactose Intolerance",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/lactose-intolerance/diagnosis",
+      "organization_or_authors": "NIDDK",
+      "year": 2018,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "NIDDK",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "TX",
+      "title": "Treatment for Lactose Intolerance",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/lactose-intolerance/treatment",
+      "organization_or_authors": "NIDDK",
+      "year": 2018,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "NIDDK",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

@@ -1,0 +1,18 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 40,
+  "owner": "proctite_infecciosa",
+  "approvedClinicalPayloadSHA256": "dbd7e53cb84f552ce2e36f6322161577f8832fdba42bd46cbebb03580320115e",
+  "selectedApprovedFactIds": [
+    "g040_f01",
+    "g040_f02",
+    "g040_f03",
+    "g040_f04",
+    "g040_f05",
+    "g040_f06"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

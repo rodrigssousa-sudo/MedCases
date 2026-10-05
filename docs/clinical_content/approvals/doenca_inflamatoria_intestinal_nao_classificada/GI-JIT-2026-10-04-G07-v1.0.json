@@ -1,0 +1,82 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 31,
+  "requested_items": [
+    31
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Doença inflamatória intestinal não classificada / colite indeterminada",
+    "es": "Enfermedad inflamatoria intestinal no clasificada / colitis indeterminada"
+  },
+  "facts": [
+    {
+      "id": "g031_f01",
+      "section": "definition",
+      "pt": "Termo provisório quando a avaliação não distingue com segurança Crohn de retocolite ulcerativa. Colite indeterminada é tradicionalmente um termo anatomopatológico; não confundir com qualquer colite ainda sem investigação.",
+      "es": "Término provisional cuando la evaluación no distingue con seguridad Crohn de colitis ulcerosa. Colitis indeterminada es tradicionalmente un término anatomopatológico; no confundir con cualquier colitis aún no estudiada.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g031_f02",
+      "section": "diagnosis",
+      "pt": "Revisar histologia, distribuição endoscópica, imagem do delgado e causas infecciosas ou medicamentosas. Manter a incerteza documentada; reavaliar a classificação conforme surgem novas evidências.",
+      "es": "Revisar histología, distribución endoscópica, imagen del intestino delgado y causas infecciosas o farmacológicas. Mantener documentada la incertidumbre; reevaluar la clasificación a medida que aparezcan nuevas evidencias.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g031_f03",
+      "section": "treatment",
+      "pt": "Tratar conforme fenótipo, extensão e gravidade, com especialista. A decisão cirúrgica reconstrutiva exige esclarecimento do risco de Crohn.",
+      "es": "Tratar según fenotipo, extensión y gravedad, con un especialista. Las decisiones quirúrgicas reconstructivas requieren aclarar el riesgo de Crohn.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g031_f04",
+      "section": "disposition",
+      "pt": "Colite com toxicidade sistêmica, dilatação, sangramento importante ou sinais peritoneais exige internação. A incerteza diagnóstica não deve atrasar estabilização.",
+      "es": "La colitis con toxicidad sistémica, dilatación, sangrado importante o signos peritoneales requiere internación. La incertidumbre diagnóstica no debe retrasar la estabilización.",
+      "references": [
+        1
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A incerteza classificatória deve permanecer explícita até que clínica, endoscopia e histologia permitam maior definição. Um rótulo provisório não dispensa avaliar gravidade ou excluir infecção. O diagnóstico pode ser refinado no seguimento sem inventar uma etiologia separada.",
+      "es": "La incertidumbre clasificatoria debe permanecer explícita hasta que clínica, endoscopia e histología permitan mayor definición. Una etiqueta provisional no exime de evaluar gravedad o excluir infección. El diagnóstico puede precisarse durante el seguimiento sin inventar una etiología separada.",
+      "sources": [
+        "bsg"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "bsg",
+      "title": "British Society of Gastroenterology guidelines on inflammatory bowel disease in adults",
+      "url": "https://gut.bmj.com/content/74/Suppl_2/s1/",
+      "organization_or_authors": "BSG",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "BSG",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

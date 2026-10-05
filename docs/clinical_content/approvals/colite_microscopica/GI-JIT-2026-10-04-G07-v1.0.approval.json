@@ -1,0 +1,17 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 32,
+  "owner": "colite_microscopica",
+  "approvedClinicalPayloadSHA256": "8a8f45e47b389f54208163d9e68ddf12a471fe3a406ffafab7666c802d992b6a",
+  "selectedApprovedFactIds": [
+    "g032_f01",
+    "g032_f02",
+    "g032_f03",
+    "g032_f04",
+    "g032_f05"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

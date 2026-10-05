@@ -1,0 +1,109 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 44,
+  "requested_items": [
+    44
+  ],
+  "existing_ids": [
+    "sangramento_diverticular_agudo"
+  ],
+  "title": {
+    "pt": "Hemorragia diverticular",
+    "es": "Hemorragia diverticular"
+  },
+  "facts": [
+    {
+      "id": "g044_f01",
+      "section": "definition",
+      "pt": "Sangramento vascular associado a divertículo, muitas vezes indolor e volumoso. Não implica diverticulite e não é indicação isolada de antibiótico.",
+      "es": "Sangrado vascular asociado a un divertículo, a menudo indoloro y abundante. No implica diverticulitis y no es una indicación aislada de antibióticos.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g044_f02",
+      "section": "initial",
+      "pt": "Estabilizar circulação e avaliar necessidade de transfusão. Não presumir origem diverticular apenas porque há diverticulose conhecida; excluir outras fontes.",
+      "es": "Estabilizar la circulación y evaluar la necesidad de transfusión. No asumir un origen diverticular solo por diverticulosis conocida; descartar otras fuentes.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g044_f03",
+      "section": "diagnosis",
+      "pt": "Em sangramento importante em curso, localizar por angiotomografia; em paciente estabilizado, colonoscopia com preparo permite diagnóstico e hemostasia.",
+      "es": "Ante sangrado importante activo, localizar mediante angiotomografía; en un paciente estabilizado, la colonoscopia con preparación permite diagnóstico y hemostasia.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g044_f04",
+      "section": "treatment",
+      "pt": "Hemostasia endoscópica ou embolização conforme achado; cirurgia se falha ou impossibilidade de controle por outros meios. Identificar o segmento antes de ressecção sempre que possível.",
+      "es": "Hemostasia endoscópica o embolización según el hallazgo; cirugía si fracasan o no son posibles otros medios de control. Identificar el segmento antes de resecar siempre que sea posible.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g044_f05",
+      "section": "monitoring",
+      "pt": "Vigiar ressangramento e anemia. Revisar anti-inflamatórios e antitrombóticos com plano explícito de continuidade ou retomada; sangramento recorrente exige nova avaliação.",
+      "es": "Vigilar resangrado y anemia. Revisar antiinflamatorios y antitrombóticos con un plan explícito de continuidad o reinicio; el sangrado recurrente requiere nueva evaluación.",
+      "references": [
+        1
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A origem diverticular do sangramento não implica diverticulite simultânea. A prioridade é estabilizar, localizar a fonte quando necessário e obter hemostasia. Confundir sangramento com infecção pode desviar o tratamento para antibióticos sem indicação.",
+      "es": "El origen diverticular del sangrado no implica diverticulitis simultánea. La prioridad es estabilizar, localizar la fuente cuando corresponde y lograr hemostasia. Confundir sangrado con infección puede desviar el tratamiento hacia antibióticos sin indicación.",
+      "sources": [
+        "div",
+        "acg"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "acg",
+      "title": "Management of Patients With Acute Lower Gastrointestinal Bleeding: Updated ACG Guideline",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/36735555/",
+      "organization_or_authors": "ACG",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "ACG",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "div",
+      "title": "Treatment for Diverticular Disease",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis/treatment",
+      "organization_or_authors": "NIDDK",
+      "year": 2021,
+      "status": "SUPPORTIVE",
+      "scope": "",
+      "source_type": "supportive_evidence",
+      "publication": "NIDDK",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

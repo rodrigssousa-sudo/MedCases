@@ -1,0 +1,20 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 24,
+  "owner": "ma_absorcao_frutose",
+  "approvedClinicalPayloadSHA256": "e024173ce42aad35438a84b3b808d6926e3da4db9dba52a25e2338df921210f3",
+  "selectedApprovedFactIds": [
+    "g024_f01",
+    "g024_f02",
+    "g024_f03",
+    "g024_f04",
+    "g024_f05",
+    "g024_f06",
+    "g024_f07",
+    "g024_f08"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

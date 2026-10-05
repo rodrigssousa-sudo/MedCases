@@ -1,0 +1,16 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 42,
+  "owner": "diverticulose_2026",
+  "approvedClinicalPayloadSHA256": "10685145738d0cda8bd14c39cb39c2238533739fe2124b550b59b3c18fbb7e29",
+  "selectedApprovedFactIds": [
+    "g042_f01",
+    "g042_f02",
+    "g042_f03",
+    "g042_f04"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

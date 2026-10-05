@@ -1,5 +1,6 @@
+import '../services/gi_batch01_publication_state.dart';
 // Exact owner and payload bindings approved by the human; clinical release only.
-const newPathologyApprovedHashes = <String, String>{
+const _preGiBatch01ApprovedHashes = <String, String>{
   "laringite_aguda":
       "ef79ff6e35e384d0d904c3ae0766604748381ea0cff8a0f2316df8fb9acf629e",
   "foliculite":
@@ -281,6 +282,334 @@ const newPathologyApprovedHashes = <String, String>{
   "exposicao_plantas_oxalato_insoluvel": "4d49aea5dd000657579ef835a4fcf9cd48a0ab3761eb1c4e60acf51bf0eb7ba0",
 
 };
+const _giBatch01ApprovedHashes = <String, String>{
+  "laringite_aguda":
+      "ef79ff6e35e384d0d904c3ae0766604748381ea0cff8a0f2316df8fb9acf629e",
+  "foliculite":
+      "374c11a526e80134b5f00b107fe984031b2dbac950f39e09b37b16ded5608180",
+  "paroniquia":
+      "40660a6a882c467eabf49c410f1a8fd12d01b960db8bd57fe775ef41a68346ef",
+  "doenca_hemorroidaria":
+      "cf3f9d249aff7dacd1c9435042fca5c35e17dbeaaa968ec875c545afdc906ec7",
+  "fissura_anal":
+      "1b23458fb07b9ccfe824431c90f3338855915aea9359ac89c6f8693824aa22ba",
+  "colelitiase_colica_biliar":
+      "85e077136b58b140e0779e54543eb41891d3548b22e484e93f028e7e8fbc2f3d",
+  "retencao_urinaria_aguda":
+      "95e0856650018f427d042cc5bc3261c02aa0c68a5329a87b79be47c624601dc9",
+  "infeccao_odontogenica_abscesso_dentario":
+      "028c7f892c0ee6180f1bff88a215608dc7bfca005bfbf594330730ed1514b1aa",
+  "abscesso_perianal_fistula_anal":
+      "e057d05b37bd90ee831d6f98825943c278ae5ea09eaed37201e62b5607f8f207",
+  "cisto_abscesso_bartholin":
+      "bfaf65ea7ddb7bfb0a605f143c2d5592cf7474119705f915c25d3036d7e27732",
+  "dismenorreia_primaria_secundaria":
+      "311f40d6a19584db941f129f911ddc2bde9a758b0bec1ccbff325c2b6244f5d0",
+  "constipacao_funcional_pediatrica":
+      "9d2df1ef4c904a1271b32f269b87dd67b6c74213c1f67a14be2868508184483b",
+  "hordeolo_calazio":
+      "44a0455079b6f06d7db2eeedcabbdf17365c38f721ca6f03902ff25314575c79",
+  "impactacao_cerumen":
+      "2c1ad0d2a71928f0e4c43a84114cc26d090f0823786fcabf7f03b859b0421237",
+  "candidiase_oral":
+      "d79598ed5a0ca975d18af49cc4e300e4e72d4c809e70fb974343347c7f78d983",
+  "herpes_labial_recorrente":
+      "f90ac18845135353c5a15bca8c2448a8438c0c68f6d3023f409c5480845ef54a",
+  "intertrigo":
+      "61e67bcc03433f7de4c4db5ef8275a662ab49e83587d83f962b4910b4a1b95c5",
+  "estomatite_aftosa_recorrente":
+      "b5d5dbeabbcb4fa9cc8ffa78a2790061c0ff20c1072b951864280d5a0903982a",
+  "giardiase":
+      "e5f511a64823bc346d1ce4e300be7c46e3d9747a583f8c88f047e6091e58bd8e",
+  "enterobiase":
+      "2baf91d275897cdded0413a9d7933c79eafcb36b363f64d1ac62b84d55a0444e",
+  "mastite_lactacional":
+      "c597aa42e0ebca193e93e0176e07df64cbf9eef804380d3398a38e66dd928a8a",
+  "linfadenite_cervical_bacteriana_aguda_pediatrica":
+      "05d2b6fb3f4854588b6397df0ec9d11458c9dc6863877b1b6192237d91a93c47",
+  "coledocolitiase":
+      "f7ba215c636e6d106d6b2b58068ce1734d61ab77faff0eb1f2ff3bac49cfc625",
+  "bursite_pre_patelar":
+      "4f3627c3c4f8efa8cb07ca3ce92e822ec45a19d93ec550fb3c23f0632ab683fa",
+  "epicondilite_lateral":
+      "ccac72e85fc280a0440f62ab6f10769874ec0f3363a2eb5435567c468aeccdee",
+  "fasciite_plantar":
+      "c01c4dab3fc21506041a60985fd7f5fe323992fded9302a45240505ffa61282a",
+  "radiculopatia_cervical":
+      "7ac6e2145b1aef3a5ad9f85a694920251eb13d598fed896b023068eec671fbc6",
+  "cefaleia_uso_excessivo_medicamentos":
+      "77b2c90c4f41a5d5b9e410b5b9cfde18acd624b102b7056f98787822d651750d",
+  "raiva_exposicao_raiva":
+      "8189fa9ccc84a34e084efcda418a2bec4af55f8809fe4136eca42631758d3081",
+  "cisto_ovariano_massa_anexial_benigna":
+      "db9aa158a8b89e2ad319499d80be8353de76eb637070485efee2a1bbf73e699d",
+  "blefarite_disfuncao_glandulas_meibomio":
+      "74fa6ffb17fa2b9e4286dc9882bfdcfd39a6f6ada3bde97b9b87af703d968dba",
+  "doenca_olho_seco":
+      "3bd7dda33cbf50a27690e096d72a702444e7b1efe4cd134e7a5d929059e30cbc",
+  "otite_media_com_efusao":
+      "b613a631e1628496465b092ae6ca9bd95249615be8560893fb017703ea2f42b3",
+  "disfuncao_tuba_auditiva":
+      "739cdb4e5545ef8af6d0fabc29692b31fe00d6d0f375ec907e1ffb81e19ac303",
+  "amebiase":
+      "29a5c550eca6992cdd06a3de8c8779e3005e574b3bb7b38a161ba2a147d2cbb1",
+  "estrongiloidiase":
+      "e3aae0f8d5e1e1676fd8d245a69940c09d3190cacf7c7b65ff676dd80226a1f5",
+  "pitiriase_rosea":
+      "a0786f81f790e97cace4123618ee700fdbb5de2f9f81918882c8652d89d1e77e",
+  "pitiriase_versicolor":
+      "120eded1c837c6d2a14233d70573cd9961a5cfbe54580a417348bd6048d9ce4b",
+  "molusco_contagioso":
+      "ae6121fc334cdd5cb31b996e3e49b1c6fd331fb4067dbfe1d1ac5e23cb2f25d1",
+  "verrugas_anogenitais_condiloma_acuminado":
+      "c40ec96907550f885718af9ffb0c12d10035b988f1e436bccac7c77bca1ba813",
+  "tendinopatia_aquiles":
+      "cd2e54d21fd13fb445e6ef3a10a2b1c61c45e750cfdccec49ba32bd40e860036",
+  "tenossinovite_de_quervain":
+      "ef0fd4e531097afda6a12273b9aa8696006dbabe8ef81fe5a36e744b70848d87",
+  "sindrome_dolorosa_trocanterica_maior":
+      "f709254bca315d770c124f4a007372d67313325e6709721b4e64d8d87e1424c3",
+  "sindrome_dor_femoropatelar":
+      "9006c4ab41ea0798acbe90805c1e4d6e86bf16b16c2d3d75f7cdf971f2176dae",
+  "bursite_pata_ganso":
+      "7cc3b97633ad590a15d12ce2c7338a1c31ec17ce5d875cdc06158031cf44b72d",
+  "capsulite_adesiva":
+      "1e2acfa1a1f084741e7518dc96d5cd9b4203170276e74353499694c61e66add8",
+  "doenca_meniere":
+      "63d9d0c03811743ea93ff25717f9732d0bb465637397d5c668407a341f6c2a8e",
+  "enurese_pediatrica":
+      "5064c99f88155c2d77f6d65c54296f90ac254a14fd7a1cea83e6fd2c959375ad",
+  "bacteriuria_assintomatica":
+      "a829329171003ed73dd58f9db015b2289cd5bac0bd9aef992e2e46f4a96502fc",
+  "amenorreia_secundaria":
+      "185db22456496bf9cfe3d80359b7e409102f1093320783bb5ec56b1147333ad8",
+  "carie_dentaria":
+      "b87dd0e7c11fb98dd2eb5bb4c822cb8faf0fdb480b5ada9260b700e45c7fdb0e",
+  "gengivite":
+      "32e31a1ee79731f051d1794b8e1ce304fc2cc82c9a7bd3bc067d125d976e1f57",
+  "periodontite":
+      "4e0903fe5d49084532594f48cdc2679a99786ca2b0d2ef1feae5ff44affcdeb8",
+  "disfuncao_temporomandibular":
+      "b686b758d244e002db59ca5a75b410d0cf4ca90069342465d1c59d2d67115da0",
+  "onicomicose":
+      "569ab12dec8e449e9ae1812fd49fd3a0f29add99ac61c01741167691e915ae21",
+  "cisto_baker":
+      "95b7c7f607c6bd6bdbc82ac71d745792e2d6c35d7195935724683b18eb1f379f",
+  "cisto_sinovial_punho":
+      "c3e6b79380e8a516beabde5276e260de1870ff00d4a75a811fe2f18d3eef30d2",
+  "dedo_em_gatilho":
+      "c230c68eda9eb6731a9264bba18fc3b428d053c5385e851cf82ef2ee12e1ddef",
+  "meralgia_parestesica":
+      "763ac910cd1b9e1c926d46924c9a4d4210bc9c103e5ff38ea39ebc9f411fbe4c",
+  "zumbido_tinnitus":
+      "ef4c15f42194355da93a33bf019524b724d562cf0d07f56cc4580869b42eabe1",
+  "prediabetes": "9774c09875969929abe08400d130e6d2e8fe3a84a3598c670dc6a7caf856c050",
+  "deficiencia_vitamina_d": "b6cf499ea4a199b78c3412a427870036c535a35966bdd19193050c2d3fd47d7c",
+  "nodulo_tireoidiano": "23a5ec5234aaf7afd4919bfb769f2ce04dba03c41ccdc3e9a74e8b8d2f89e0b8",
+  "tireoidite_subaguda": "f938152341dda21d2e3631f91c823b26722c7a531f5c69bfab23fc02f956180f",
+  "tireoidite_pos_parto": "8b396dfe3ab6d3e000ef9333a8ed6376d031ba2157e3b644643012bcaa1f5d48",
+  "ginecomastia": "da77c61fa882d91843de5cb7fb098f84fbb7affdd84d83a9bb580d45b9cd011d",
+  "bexiga_hiperativa": "612afae1a38eeb90e4cfb29644e8a6b21c1eebd3187b1a95222d06d89e8c9a15",
+  "incontinencia_urinaria_adulto": "f7ab0d1e3b64d9ec0150363e3c915296724e4f9769a185891c498bc81ed1aa70",
+  "disfuncao_eretil": "33a78b476acceab8cdd00f10261f74a83fb2298efe79761c969a8ee7a7a3ff30",
+  "hipogonadismo_masculino": "f484dc0c66ef049666f3bde9ebf466ba1bdc021f0dabc46d049ce2dc6ad411bd",
+  "prolapso_orgaos_pelvicos": "fbbd8b89fe9cb1c5de72bd943fad654710ed50e633a0456544031eedffa1ee2d",
+  "sindrome_premenstrual_pmdd": "ed060a063129f11821c9271d68eb2d43c88403344b00c3278e6b28d21bccb378",
+  "vulvodinia": "8aba81bc44e9aae1dbc9c38f97398f586a7b844e389999c13103225fb8d6cfaa",
+  "insuficiencia_ovariana_prematura": "8857a0426b7f4384eb63e7939f8ace37cbdd65953eed43bf5acd42bd6e118063",
+  "infertilidade": "8152cd8e50553f8867abca0db2c93262c8c00873b602755d681c1c349c6e6075",
+  "ceratose_actinica": "d809236945f9f6066ceb4c3960113646c4586ca0431f37259a4ce28e95d0a884",
+  "ceratose_seborreica": "80a30c88a46736721177fc867c11afc36b31c8090666d6f76715c20700eea431",
+  "liquen_plano": "281175d886f27f1e1c4ee5d45cba2b48ce33ffe53c3b0f3bde8e2b500387de6e",
+  "eritema_nodoso": "d92d6f3aabac2915d4a4b6cc8a0bb29c34c5dc28ef07f72b4a266f8fd3a89b0e",
+  "eritema_multiforme": "140273d2289651d81019b4866c130897a95c814d5bd3bd1281f9fcfaa5105472",
+  "queloide_cicatriz_hipertrofica": "0977a61f6011203a2afca119ce28bf411a97264800761eef6aad6551fde3b669",
+  "lesao_por_pressao": "0b27a9d8177b2d3f03e9a3f65211d62abdffe27e82776db4d7ec56ea5e81ba63",
+  "ulcera_venosa_membro_inferior": "10ff6643928946ba5f3fefa6d98db5fa510128405610c1d37881a76fd925fdb1",
+  "ulcera_arterial_membro_inferior": "ea26ffa5e125f4a87907cebb641a2d4d3420f5dc1754ea77d33a56629d8c6be2",
+  "ulcera_pe_diabetico": "5c5f861f9de387d830b23dd15702ce4cb6e1671847728963221d4c15bf686006",
+  "linfedema": "fb8320c8548c64e505a346e7638f47637bfb7e6f643ee696b423a8832836bbd6",
+  "sindrome_pos_trombotica": "b8c45ef9d00c3cf28d009c0534a3f7e06753c1e24811acc4449d8b1a10d70797",
+  "halux_valgo": "d48e9b3fc0513f1e332c866dbbf457db5e8d2f03b3e19e3490d626855f64d11b",
+  "neuroma_morton": "7248b1e8e3f0cf76354e35e576a901317be6c43045613c1c9bf7c3e69158e4cd",
+  "epicondilite_medial": "556ef3aa88b43dd0ce1d586356e2301e41d9987a6ede9e292f386e1955651498",
+  "contratura_dupuytren": "1ed93e17a5b2b58bdcdcb2f6932986bdd1cd63954886e8f166353668084e2e2a",
+  "sindrome_tunel_cubital_neuropatia_ulnar": "b43664681a8f943fa536a4b91aef2465de853af26e86c69c6a3f3b1b81ce8699",
+  "tendinopatia_biceps": "7ac4f400c01169bc477b894e956b3c0497c4a4b4802d2221c7a8d7a392408751",
+  "sindrome_desfiladeiro_toracico": "27c57af920ef064bfd8abfec5bf20dbe2e5b003f33aebcc6d5773939b50b8f3c",
+  "sarcopenia": "430e89f57803db3e3f9d4acd33b611d1ea2320a370d718dbe534ccffd1fc8b93",
+  "sindrome_fragilidade": "c59e05f1c432fda659617c3c82164b372a4a3de2e750cee16afe34cda9bd72b0",
+  "presbiacusia": "6f2d412968ff11cfd3c5b28ae1544c947798d7318b87d14763f935f4a5998b74",
+  "degeneracao_macular_relacionada_idade": "74230e648b282656962d444055702534ea4305ce104a73055888f21cc3b86ad5",
+  "retinopatia_diabetica": "caac1aa68e95bac20ce1c8bcf492e67975083a9f465fc5cca0a9ef8fdc30b039",
+  "descolamento_retina": "1df8e7e6c729e298191b6fc9ad5808abd3b1c3c5c9fa53dc1097dcde938d5d1c",
+  "alergia_alimentar": "ffe13c301a77706a2a9e1377e244d3e7c535542194f7aff8a8279269a2d61d0f",
+  "ancilostomiase": "3b06d9657ca22e6949c4a25aad517a8967120dd8c2506b691e487d734b1c667d",
+  "esquistossomose": "a60a73badf30eedc4059ed80e454d968f26c8c400d119066febd848bc31ea6e6",
+  "hepatite_e": "98c61088b1e16a8cad952584460ecb63debf0ec5175a278c491e50719ca9d689",
+  "acalasia": "4e256227db0191e60cc0e22d81184c176d421724a00ae7d12d39cb6bc5723692",
+  "dor_abdominal_funcional_pediatrica": "a3b78d811fccdc3853e4aaec3198b63a44a081dc12c88a85fc8843329f144c7a",
+  "crescimento_insuficiente_pediatrico": "c89a1f946ceb7b9bde831316e743a5162b768a64023f28a67da77e09d3bc2981",
+  "transtorno_uso_tabaco_dependencia_nicotina": "7e7f1270b5ce2fe7da7e758eb2fdeedd2a6816550dc440819975c61d2fa616e9",
+  "transtorno_uso_retirada_benzodiazepinicos": "ba86b9ae445b7379355a6a6bfebfea023d6e015defda87f82f08d2e54aada820",
+  "neuralgia_occipital": "f9e3270d8dd22a1f0a3648397972df913ed3d39d5eec6849653e7db715c7191d",
+  "acne_vulgar": "36417259f4095c8ae1861deacef9d18f8b8d5e8a9801395e672a1e1fc454a969",
+  "rosacea": "068899d62930f8785ce5b71ce470d4cfe8a8ffb145297b33c07c676572f2cd8b",
+  "psoriase": "5cc153e06d34d59124aca8fba719a44fa539f3d1a12091a3269c053c36aeb4c9",
+  "dermatite_atopica": "3b9ec693890305a3381c7a14ae64623475d2bbe7b2026e1d6de07115bd8a0f40",
+  "dermatite_contato": "f857e7496386a10c6171156aef7a7628231c3d536bfcbf130b0648360d727cc2",
+  "dermatite_seborreica": "6c8aea90614a5dbbfc544ab6de65856e431ab291f02eb966828b322eeb17308b",
+  "dermatite_periorificial": "c4932bdf5d0055eed0935683505541d7188aa04453eb38f5caa09612559180ce",
+  "urticaria": "3d0d11a45c03dbf758d1dd948fabcee5442214543fd7f06ed98656d2b5739303",
+  "vitiligo": "a9d3058763deb3352c6fdcbdd46a0a1e2fa22dfdf8f5169a2e58f803b4aa01b7",
+  "melasma": "6089ca6b5736950ed73f3cb0b59ad445335acefa9c36454513cb81a1161d72dc",
+  "alopecia_androgenetica": "b1bd792896aafd9f96d9e2499c87babef2f2ffe1f24b42641da2676511af0ee1",
+  "alopecia_areata": "2a2f931b153e44d675d6fbf6d105564e63f28e22da382fc4a26bcd087c001538",
+  "efluvio_telogeno": "9ac12bdeacbb488e879a43857b620cb53635e6c28f80e3fb171620487c488fef",
+  "hiperidrose": "123da0da2931eda739f2368cfde4efec8da271926d20811480ea6be11593d83d",
+  "ceratose_pilar": "5b0a90d6982df502f1efa66b9c757f26f376ce898e856384deffcfc87ea65620",
+  "xerose_cutanea": "6d131ae0cbfe47227be750dc5793368096dc337ae5512405ad7545f1f24b55e2",
+  "queimadura_solar": "e426a4f05568498f1506678b770d96e483ec497197aa7a9ae638c6df144905d4",
+  "cisto_epidermoide_cutaneo": "d7edae79a4d2582ded73d5c11452ace0ba579dbbd7f2a2f16a208174f777aae7",
+  "lipoma": "a7b98fbd681ece2250b366b658edf493e7adc6a34f8f96e32a049e466a6ba857",
+  "dermatofibroma": "ea0ccdc5db53ee62987a918305a88de374d5aa3c6fcf07361b83b3238adec75f",
+  "acrocordon": "74c489c0d32f77d870146f36e01ce431dc279b73bf42dfa8c522d73e3ed693eb",
+  "milia": "cf7f39c7ecb96ac81133749e63e00a8b313b517e0705d720fe893c888a63b1c9",
+  "angioma_rubi": "c28888606b04c4ef595ae26f65b699f444fa4f74bd860135a63d34c7f1d139c4",
+  "nevo_melanocitico": "2c6601cccebafcfa122b33985bc355cb798c9ab445e87a4b03914a974698f1d6",
+  "onicocriptose": "d2bb8da5f4bd7b12b552df9000c6ddd57f238806bf645e0f04dd4c57c024d9fa",
+  "hidradenite_supurativa": "37e220494c806b48332bd9d7e5495ec8994fbfdc5dea1318b83a115685b47d98",
+  "doenca_pilonidal": "770a50b01fad48982672a01cee3a1656b4ed1cbfc83ea44a75b2dd39eef75e43",
+  "liquen_simplex_cronico": "27435e8bd941df5cadab9d0976d83aac0d8a201fad93c7c4ae6548682a467acd",
+  "calos_calosidades": "6173b7aa1d275508845464967ded66776c413034c89eaea6dfaa342321fb8497",
+  "hiperpigmentacao_pos_inflamatoria": "8c25bfb752c92794dd8e481d7f82c4ba68c549711b287027ee4951e324c394d1",
+  "covid19": "c54ae5e151bb6ac453253b22ff915d323d694b798b8c6e5de89243310523dd99",
+  "mononucleose_infecciosa": "e96634e699652a7bbf3d2ace31fb0656896bea756407cbb85ec7baf5f43f458d",
+  "infeccao_hiv": "88b89f72fda1056ff102c61ad0bdd0e6634e641eba83cda1521b8455e384862e",
+  "hepatite_a": "52e4efab757f95396f366b18fdd7c32db5cb926d91db86fd5c272e4aed9023ef",
+  "sifilis": "b779ffbd36d3345d58f9bdd650ba7edd0e0c6f3f77ca90e646b82956b119e9fd",
+  "infeccao_gonococica": "89d7869f45009610ee1cdcc4c692f63055223a6349e973453ae2ef08d6fc3a16",
+  "infeccao_chlamydia_trachomatis": "eae762c3cb96e7811db1599ae467a6cab19a674b02b3bab8713b4d5a90c1426a",
+  "tricomoniase": "fbd6b5f157931d1b50d16841d2c391d57622ceef36cfc74bc3917c6ffa8f4c40",
+  "vaginose_bacteriana": "f8b84e37b3094a9cd5f2676d46a42b7e752a129d8d042373806529a8d43d726a",
+  "candidiase_vulvovaginal": "9a37a1da3ea131c280da7c602e0fc4cefe9b783e96a2a2cffd82be4c018b63dc",
+  "herpes_genital": "240f096f50b6db93c0197fdaa80bbb21276ce8d79f71b937edb923bc369bd73d",
+  "herpes_zoster": "19d5d61720ceb0eb075d4652aca708c39ca75121a44e17918cf2ed16a0165900",
+  "varicela": "c74a396aa50575189c1c7bbfba5880195b3e978ceef11ce17aab284763c2e437",
+  "impetigo": "88235cd4c90b234c9c9a9c537444fdfed0245d740ebdfe82f0f44cf570461fc4",
+  "escabiose": "f15152dd2756a532ed4c9a434ccf41d7e1979ba824c352ceffae4cbb25a57bbb",
+  "pediculose": "7f1a0684f8d6355d8e2c54e27e8b072e986a3f8deeddb548fc308bc2aa74b5a5",
+  "dermatofitose_cutanea": "b9e2f3abe586799b84c503f0a52696eb9d3d5dedd9056dd4443f0acbb01a8606",
+  "coqueluche": "f1ffe5dd0b859f671365256b0465b039b3ca9171fde9ca7a09765d5991c6dc18",
+  "doenca_mao_pe_boca": "6ce8630185eccafc10d0cec6582874fd1f54d3ef17695a30981af9eebbb75c56",
+  "roseola_infantil": "426ef01a883acf5a0e2fd77e5b9b2b604a7625349b7876592438874fa5abb335",
+  "otite_media_aguda": "ee88dba8289cffcb2e09909a3d46af4cc742e2c3d11e425555a65d57f31c390d",
+  "otite_externa_aguda": "f683f15eccef21078fc47feb8cb2fd4ade1d0ee3ea96509d6d19a936a4af5182",
+  "conjuntivite_infecciosa": "e8c7de814d176ea9f2bde63e08e30c032c40f3cfc96652a3dc9ea22ca57d73db",
+  "bronquite_aguda": "3a606b728c7fe18abbc0981468019a3c81b1ff5a8fc3ad4d37649c7afb9c28c1",
+  "resfriado_comum": "418b18b611f62ff8a90129bca0bba9a640dbdb791be02af224c595da88d53e82",
+  "abscesso_cutaneo": "5df897bb8efc0022051b4eb55a3348501f2f9d2fe90588e7b2419a56d3cd028e",
+  "prostatite_bacteriana_aguda": "01e366bab83cbcd5b06784215a46c52d41574bf321d3249b634b04825d7a1ac3",
+  "doenca_inflamatoria_pelvica": "9a6a466076003ab8af57c50e6d492e3668f375fc536f5b510039a67d12223017",
+  "infeccao_clostridioides_difficile": "115f00265189ecf8b8076bf3a21cb4f3088dc602b138d77f335a190dbcdfd492",
+  "osteomielite": "3797295b9b615986bb5ccc66d15b1f8c6539bfdd5467887a5c154c3274956e14",
+  "leptospirose": "9f156c0774adeda73c350d96f056d1b692cc34839f2b04f91fa80508284d2638",
+  "chikungunya": "b53cb7819e71c3bf81b6ba088e4efc0727fa757e43fc0643f0d390182ae9bdeb",
+  "zika": "0dc0ce6d5d599bc4eac2e23e8de80d3a3121c0833acae34d02cc32c1770c1891",
+  "malaria": "1bed25795539814592dd099cfdad058432942c031414cb3a1cce7f5ccff45f17",
+  "febre_maculosa": "58db77e8e522385511cd21d32ab89accc7026989382ae0a4f03de5701933d0f8",
+  "toxoplasmose": "e0778214ff694ef86a1c72d5aebc8c03c7e57fcd3f383b3f847cae8689d3d020",
+  "pneumocistose": "a8b627936fde6eac27c8f0e42a0b614acfe4a2d6f761b3f78371922f65ce8e69",
+  "criptococose": "0adda0dd59b5c4c8866cf241e9c931c77b747e8b2df16cfbafba91f2efce3fc5",
+  "candidiase_invasiva": "5107552e565b89f2f08e9da2670fbe09c4b94bc842896efb25b2afa4c0180315",
+  "caxumba": "1e2a4bea298cee46f966b1bf8338cef793597a50b4d43e75a14baf05ca03619f",
+  "rubeola": "58dcb9846d5d898fd5e573d4062fc8b5f52f425b7ff4a06f3d4e1b5efb8f4e25",
+  "eritema_infeccioso": "c2396412d7a6cd9e7d5a66aec572c762e871f02836de7e7701ee229f7832bcb3",
+  "ascaridiase": "b7302e6c3743c9a6ce38e7f5713f78804cedc2e60515486df46805a766334e7f",
+  "tricuriase": "46b58f016bd83416ae1b33f6cc6869d834a8e68f13a6729fa7c752127512ff4d",
+  "teniase": "7735e5b61b4953768ee03d108bc94aee535af394eaf7ea1a1b5b1a3d7d47944e",
+  "doenca_chagas": "135b5bcba78762e62996e2ea614c8f824aee6107edf87871b68f4ff1ebbe42ff",
+  "diabetes_mellitus_tipo2": "891812916204fc87da9fdedbbb2c7e07424d421d1a728df28733968ab570e4b5",
+  "diabetes_mellitus_tipo1": "ea1f52e00d88eab8cbe81af1d3f94b0ac098b5310f3ec337bb22ff9b7e7d2fe6",
+  "obesidade": "ea70cdfbf20b1bd0fc6dc7d76e0160c66ee3a0031ca3d7972fdff4f65c760ba3",
+  "dislipidemia": "54372a3408ec949b35af63da24382753b115e6628f5da9455f224204e89ba925",
+  "hipotireoidismo": "7f37889f2451d7682c899c88f07c7832ec23bec47b82e0546e663519d2447582",
+  "hipertireoidismo": "12ad39c0feeb2e861497d80e904f7a2986d2aafc15371ccf1536d80693166bf8",
+  "hipocalemia": "667edf46e4bbaf040096ce7b2070342205032cf6b489e07727d4c3f9e72c56f0",
+  "hipomagnesemia": "ded87c58105e52ab7bcfb6210527dd3f70f7ab59e28beababdcf479c7600b65f",
+  "hipermagnesemia": "a5cea85d2370ef61f2e8e4d8c10aeb1b52b29441f2e842e9bbfb9f4ff4adbb03",
+  "hipofosfatemia": "c7a6f6c3092bdca1f408977ab916ab1dd2c2dcaffd03805299a0c0158730668d",
+  "hiperfosfatemia": "9f21a64168df0d6c63cba997c8ce8ceb430a16d2eee816004836de9d3d8285c8",
+  "acidose_metabolica": "5d307924ed58c689bf5bcddf4b37d2949ca24cf557d86221d7e7b5dc218ee8fe",
+  "alcalose_metabolica": "dab03bc7783df3413c57fbf02483e1a5aa00c0d9d3ab03045e03924a6ad79a55",
+  "desidratacao_adulto": "51cabb965bfb427c0d5234b4cd8619d592b284aae0185dcaf6fe819ec9f322b5",
+  "desnutricao_adulto": "357e837f7fa653cd20cb3d856a2e2712162bf075740d6272b6d2faa873923836",
+  "deficiencia_vitamina_b12": "fc9bf5e2f56c240aaad8c1633955d203aac42ba6dd9ca17df8c8ffa28c8a6cfa",
+  "deficiencia_folato": "b0218d8b11258b5021c9b0e0a84bf09b8538b7a11c048ab416094ea0136fb64e",
+  "anemia_ferropriva": "64b640fb252f58f779f0f64b784c277310c4eb52a9da1e8958669b9aac18cc77",
+  "deficiencia_tiamina_wernicke": "985d3711debd8c1fd1b4a2b470fdff0dd9b0cdd01c5bef558fbd489d4aaeb950",
+  "doenca_hepatica_esteatotica_metabolica": "bd22434b0a0a3842ad78274133905324870f7b52f6f04492b8b66ff7170a83e7",
+  "sindrome_metabolica": "8b9f1f8ce4c1623243bdc33f39301ab4cbf937062e767ffa25b3305060ec7021",
+  "hiperparatireoidismo_primario": "ff529b76f454b88a2e09b2911a7ddc5609472da005d983fd6c08dc70eb13b7c2",
+  "cetoacidose_alcoolica": "35b2528b5e8194414660f7cb59a5f6f4c63fa4d21a83ff055426f24267a1d82b",
+  "osteoporose": "fd10f732256e5965266e4f03dd55a845f73c6905d268829fc5ab34f8f0e0d00d",
+  "intoxicacao_aguda_etanol": "be1cdc0682fdf5bad795a44fb0b52b3f40807d01439e7fc7a769dedd2f9539bc",
+  "intoxicacao_aguda_cannabis": "5fab540993e48c8e6c51c5ba78bfd0fcc2962c3c072882bd03948ab08b63ff7c",
+  "exposicao_causticos_corrosivos": "77218f833901d6258729ab0bbd08901eb7b1024d4c2145e833decde4b5756d94",
+  "intoxicacao_hidrocarbonetos": "007f36e66e100a1259c69087720a5740a8319d3d297c6fcdd109c9b596df1282",
+  "inalacao_cloro_cloraminas": "1f2d062880650c0bc30db56a9adef29216ada32d2acd7a63270a2e5d201b431e",
+  "intoxicacao_rodenticidas_anticoagulantes": "0632f6e5fa5a4c4b9f95919652052702a4ad6ca1280f7a80a9d101bd785de882",
+  "intoxicacao_cogumelos_amatoxinas": "f45ffa7407f077612089cb43258b95254524e30417ff10c627041345d0bc9532",
+  "intoxicacao_plantas_anticolinergicas": "9c1925eac5a5c74de0eaf1e98b562a7e97d1cda0f0bac794fb6370933e678894",
+  "exposicao_plantas_oxalato_insoluvel": "4d49aea5dd000657579ef835a4fcf9cd48a0ab3761eb1c4e60acf51bf0eb7ba0",
+
+  "sindrome_intestino_irritavel": "bae4f38d9ff9f215a4fa8344805fdd2efe719b6516fb0f6128532482d526485d",
+  "constipacao_funcional": "4aa0c1458c2c6897e8e5426b2ef818303dd17285cf645a2576d1342cddc66f5e",
+  "diarrea_aguda_009": "6e9ace1216c68f5eadbc4e3aa4bc4195b33f41f3f12e1f9ebfd116d73386b802",
+  "diarreia_cronica": "a0bdec2ff6124015f0987dc1dc1ecb6c5606cbaf6a4e9f4a8020b6f560bc65f7",
+  "criptosporidiose": "a380500b1892c967ef2d6a00f0d05aad61b0221c68794438ff88875dc903ffdf",
+  "ciclosporiase": "9b7e291925f970b255c73e8e8cb4b213d6c7fcbc897a206ff059d07886a90be3",
+  "cistoisosporiase": "4a1261917bfff3bb798ff60b13bb30645857741a7ae57624d80f0085b43263ea",
+  "balantidiase": "005f4fb9aac26a68e9eaa5bbcb5773294650a4bf2fbf7ffdb4b4a55bff674ece",
+  "difilobotriase": "d8589df1d549a441abe217ba70a01c706a0242d533485c7582b9e6f08865c5ac",
+  "doenca_celiaca": "ac3f3c7c7b0c086a4f9adabaebfe94a1aa50de6cc0843282a907411d9e03918b",
+  "sensibilidade_gluten_nao_celiaca": "a77673891e847cc27d100c718a77b19fac1ad3c3260e98a9a5f8d84b1ab5c567",
+  "intolerancia_lactose": "37c6a30b307899d15aeaa34fb29ce7bdda2a3591ef714106fb0ec5b1a3ae14eb",
+  "ma_absorcao_frutose": "e024173ce42aad35438a84b3b808d6926e3da4db9dba52a25e2338df921210f3",
+  "sindrome_ma_absorcao": "2064551e658f183c2a579b2c61a6870472d007a87c3531671e03a5a427c8f31a",
+  "supercrescimento_bacteriano_intestino_delgado": "7df0c40c72824ae7ae11ac0622afa388bab32e387bed46a8814801fb65e96dc1",
+  "insuficiencia_intestinal": "c973d57f61bd967b150347e2c38eec010668396fb04688427d02211d206a5cac",
+  "sindrome_intestino_curto": "a63933a1b5eaea10544679b752f35b6288a3314c2c5f184622582af0a4acf5b5",
+  "crohn_complicado_2025": "370257590b07de26557f2f6f8b191ea37239acfb8a3c46d1c1d72318e8b3b3b4",
+  "crohn_flare_luminal_2025": "370257590b07de26557f2f6f8b191ea37239acfb8a3c46d1c1d72318e8b3b3b4",
+  "colite_ulcerativa_aguda_grave_2025": "b4efa01c491189954287720c872fb7b00038939403fafc72df512d6e1262c083",
+  "colite_ulcerativa_flare_2025": "b4efa01c491189954287720c872fb7b00038939403fafc72df512d6e1262c083",
+  "doenca_inflamatoria_intestinal_nao_classificada": "a967a5cb5950742f1d05002dbb3333cb2686a6ee7c6dcedde336a7d9ef66ade1",
+  "colite_microscopica": "8a8f45e47b389f54208163d9e68ddf12a471fe3a406ffafab7666c802d992b6a",
+  "colite_citomegalovirus": "b0d2e36d8e68979f89efcd2c698a35f362682ee6678731bdb774dcf9cccf217e",
+  "colite_isquemica": "df633fd7c0b3d17173f094ddafe94bf5ff0b3d86550cb30a32e3d913c4dd4a09",
+  "lesao_intestinal_radiacao": "fa7b7e7ac341308afad70048692f4d2a1c66878769499e0eadb2d0e4ba5e3dc7",
+  "proctite_infecciosa": "dbd7e53cb84f552ce2e36f6322161577f8832fdba42bd46cbebb03580320115e",
+  "diverticulose_2026": "10685145738d0cda8bd14c39cb39c2238533739fe2124b550b59b3c18fbb7e29",
+  "diverticulitis_aguda_015": "44e46e4bbcd19deca1dc2fbff3effdb03b2d77588177fd2d690252476a24592d",
+  "diverticulitis_complicada_2026": "44e46e4bbcd19deca1dc2fbff3effdb03b2d77588177fd2d690252476a24592d",
+  "sangramento_diverticular_agudo": "26204911044a8b1badfbe901c5b6a4c88e4393b650bf7dbea9ff97eb917ceb5d",
+  "apendicite_aguda": "82004edbd1141d1f0b87d39b115d6aa4bbd907eeede4ca8149d00af4e882d450",
+  "obstrucao_adesiva_delgado_asbo": "7017b02035b7c5ba4de36a84e2757495aec94fcf1950404d5f6c139130c9f489",
+  "obstrucao_intestino_delgado": "fda4b3fd9c28c97a0731f310ca140add001f65bd909a18991fa491e26e845f69",
+  "obstrucao_colorretal_aguda": "02fe0eaaa1725d863659804a9cc550f6cca67e060957e704d4653b7f0d11e90b",
+  "ileo_paralitico": "85ae5ce4b5d5e8a1ca6a4f8dc5872e6948aa7b708a0f4181224074eccddedc90",
+  "pseudo_obstrucao_colonica_aguda_ogilvie": "51714ba8f4fd3939ccabdc4c1bff0004c1e11d0825f2a6b518404f1414dc1342",
+  "pseudo_obstrucao_intestinal_cronica": "2e538cf7642cbdc025933a9ee8ead5aeb8b789ed288a0c0517a80a354f8a03ff",
+  "volvulo_sigmoide": "d19587cf6e38644229002dab03c1d9a3eb7f7caf21fe2c0c19fb0b5b9f67eb90",
+  "volvulo_cecal": "082995d40f5c023ac12121218870a5c65ba915127a795f23270eeef8c0ca1662",
+  "intussuscepcao_intestinal_adulto": "d8130461793eb23799ba665c6833a06dd81386c9b033da14f7f92a062c8f3bf8",
+  "obstrucao_mecanica_alca_fechada_estrangulamento": "98641f25703791639937bce57e6b292c8ffcda34528e10e0e7a944c7333de95b",
+  "impactacao_fecal_fecaloma": "6876ad6d25ea544a2a8d5491047cb6f9db9de8008b888ff57dbd0b6ef7c564c7",
+  "colite_estercoral_impactacao_fecal": "6876ad6d25ea544a2a8d5491047cb6f9db9de8008b888ff57dbd0b6ef7c564c7",
+  "perfuracao_viscera_oca_peritonite_secundaria": "a93e53c5591ba184db72e44ea49ae1ca1644018d21f39a196b8a16a85b4e990e",
+};
+Map<String,String> get newPathologyApprovedHashes => GiBatch01PublicationState.active.value ? _giBatch01ApprovedHashes : _preGiBatch01ApprovedHashes;
 
 // Version metadata for the approved G02 owners only.
 const newPathologyG02Versions = <String, String>{
@@ -472,3 +801,62 @@ const newPathologyG06Versions = <String, String>{
   "intoxicacao_plantas_anticolinergicas": "TOX-JIT-2026-10-03-G06-v1.0",
   "exposicao_plantas_oxalato_insoluvel": "TOX-JIT-2026-10-03-G06-v1.0",
 };
+
+const _newPathologyG07Versions = <String, String>{
+  "sindrome_intestino_irritavel": "GI-JIT-2026-10-04-G07-v1.0",
+  "constipacao_funcional": "GI-JIT-2026-10-04-G07-v1.0",
+  "diarrea_aguda_009": "GI-JIT-2026-10-04-G07-v1.0",
+  "diarreia_cronica": "GI-JIT-2026-10-04-G07-v1.0",
+  "infeccao_clostridioides_difficile": "GI-JIT-2026-10-04-G07-v1.0",
+  "amebiase": "GI-JIT-2026-10-04-G07-v1.0",
+  "giardiase": "GI-JIT-2026-10-04-G07-v1.0",
+  "criptosporidiose": "GI-JIT-2026-10-04-G07-v1.0",
+  "ciclosporiase": "GI-JIT-2026-10-04-G07-v1.0",
+  "cistoisosporiase": "GI-JIT-2026-10-04-G07-v1.0",
+  "balantidiase": "GI-JIT-2026-10-04-G07-v1.0",
+  "ascaridiase": "GI-JIT-2026-10-04-G07-v1.0",
+  "enterobiase": "GI-JIT-2026-10-04-G07-v1.0",
+  "tricuriase": "GI-JIT-2026-10-04-G07-v1.0",
+  "ancilostomiase": "GI-JIT-2026-10-04-G07-v1.0",
+  "estrongiloidiase": "GI-JIT-2026-10-04-G07-v1.0",
+  "teniase": "GI-JIT-2026-10-04-G07-v1.0",
+  "difilobotriase": "GI-JIT-2026-10-04-G07-v1.0",
+  "doenca_celiaca": "GI-JIT-2026-10-04-G07-v1.0",
+  "sensibilidade_gluten_nao_celiaca": "GI-JIT-2026-10-04-G07-v1.0",
+  "intolerancia_lactose": "GI-JIT-2026-10-04-G07-v1.0",
+  "ma_absorcao_frutose": "GI-JIT-2026-10-04-G07-v1.0",
+  "sindrome_ma_absorcao": "GI-JIT-2026-10-04-G07-v1.0",
+  "supercrescimento_bacteriano_intestino_delgado": "GI-JIT-2026-10-04-G07-v1.0",
+  "insuficiencia_intestinal": "GI-JIT-2026-10-04-G07-v1.0",
+  "sindrome_intestino_curto": "GI-JIT-2026-10-04-G07-v1.0",
+  "crohn_complicado_2025": "GI-JIT-2026-10-04-G07-v1.0",
+  "crohn_flare_luminal_2025": "GI-JIT-2026-10-04-G07-v1.0",
+  "colite_ulcerativa_aguda_grave_2025": "GI-JIT-2026-10-04-G07-v1.0",
+  "colite_ulcerativa_flare_2025": "GI-JIT-2026-10-04-G07-v1.0",
+  "doenca_inflamatoria_intestinal_nao_classificada": "GI-JIT-2026-10-04-G07-v1.0",
+  "colite_microscopica": "GI-JIT-2026-10-04-G07-v1.0",
+  "colite_citomegalovirus": "GI-JIT-2026-10-04-G07-v1.0",
+  "colite_isquemica": "GI-JIT-2026-10-04-G07-v1.0",
+  "lesao_intestinal_radiacao": "GI-JIT-2026-10-04-G07-v1.0",
+  "proctite_infecciosa": "GI-JIT-2026-10-04-G07-v1.0",
+  "diverticulose_2026": "GI-JIT-2026-10-04-G07-v1.0",
+  "diverticulitis_aguda_015": "GI-JIT-2026-10-04-G07-v1.0",
+  "diverticulitis_complicada_2026": "GI-JIT-2026-10-04-G07-v1.0",
+  "sangramento_diverticular_agudo": "GI-JIT-2026-10-04-G07-v1.0",
+  "apendicite_aguda": "GI-JIT-2026-10-04-G07-v1.0",
+  "obstrucao_adesiva_delgado_asbo": "GI-JIT-2026-10-04-G07-v1.0",
+  "obstrucao_intestino_delgado": "GI-JIT-2026-10-04-G07-v1.0",
+  "obstrucao_colorretal_aguda": "GI-JIT-2026-10-04-G07-v1.0",
+  "ileo_paralitico": "GI-JIT-2026-10-04-G07-v1.0",
+  "pseudo_obstrucao_colonica_aguda_ogilvie": "GI-JIT-2026-10-04-G07-v1.0",
+  "pseudo_obstrucao_intestinal_cronica": "GI-JIT-2026-10-04-G07-v1.0",
+  "volvulo_sigmoide": "GI-JIT-2026-10-04-G07-v1.0",
+  "volvulo_cecal": "GI-JIT-2026-10-04-G07-v1.0",
+  "intussuscepcao_intestinal_adulto": "GI-JIT-2026-10-04-G07-v1.0",
+  "obstrucao_mecanica_alca_fechada_estrangulamento": "GI-JIT-2026-10-04-G07-v1.0",
+  "impactacao_fecal_fecaloma": "GI-JIT-2026-10-04-G07-v1.0",
+  "colite_estercoral_impactacao_fecal": "GI-JIT-2026-10-04-G07-v1.0",
+  "perfuracao_viscera_oca_peritonite_secundaria": "GI-JIT-2026-10-04-G07-v1.0",
+};
+
+Map<String,String> get newPathologyG07Versions => GiBatch01PublicationState.active.value ? _newPathologyG07Versions : const <String,String>{};

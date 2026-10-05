@@ -1,0 +1,21 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 8,
+  "owner": "amebiase",
+  "approvedClinicalPayloadSHA256": "29a5c550eca6992cdd06a3de8c8779e3005e574b3bb7b38a161ba2a147d2cbb1",
+  "selectedApprovedFactIds": [
+    "g008_f01",
+    "g008_f02",
+    "g008_f03",
+    "g008_f04",
+    "g008_f05",
+    "g008_f06",
+    "g008_f07",
+    "g008_f08",
+    "g008_f09"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

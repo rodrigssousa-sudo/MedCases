@@ -1,0 +1,108 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 58,
+  "requested_items": [
+    58
+  ],
+  "existing_ids": [
+    "intussuscepcao_intestinal_pediatrica"
+  ],
+  "title": {
+    "pt": "Intussuscepção intestinal",
+    "es": "Invaginación intestinal"
+  },
+  "facts": [
+    {
+      "id": "g058_f01",
+      "section": "definition",
+      "pt": "Invaginação de uma alça em outra, com obstrução e possível isquemia. Em crianças, dor episódica, palidez, vômitos ou letargia podem preceder sangue nas fezes.",
+      "es": "Invaginación de un asa dentro de otra, con obstrucción y posible isquemia. En niños, el dolor episódico, palidez, vómitos o letargo pueden preceder a la sangre en las heces.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g058_f02",
+      "section": "initial",
+      "pt": "Estabilizar circulação, manter jejum e acionar cirurgia pediátrica. Ultrassonografia é o exame inicial; ausência da tríade clássica não exclui a doença.",
+      "es": "Estabilizar la circulación, mantener ayuno y convocar a cirugía pediátrica. La ecografía es el estudio inicial; la ausencia de la tríada clásica no descarta la enfermedad.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g058_f03",
+      "section": "treatment",
+      "pt": "Invaginação ileocólica pediátrica estável pode ser reduzida por enema guiado por imagem em serviço com retaguarda cirúrgica. Choque, peritonite, perfuração ou instabilidade contraindicam essa tentativa.",
+      "es": "La invaginación ileocólica pediátrica estable puede reducirse mediante enema guiado por imágenes en un servicio con respaldo quirúrgico. El choque, peritonitis, perforación o inestabilidad contraindican este intento.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g058_f04",
+      "section": "monitoring",
+      "pt": "Observar resposta e risco de recorrência; alta e tempo de observação devem ser definidos pela equipe cirúrgica e capacidade de retorno.",
+      "es": "Observar la respuesta y el riesgo de recurrencia; el alta y el tiempo de observación deben definirse con el equipo quirúrgico y la posibilidad de regresar.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g058_f05",
+      "section": "special",
+      "pt": "Adultos: procurar lesão estrutural como ponto guia, inclusive neoplasia. Tomografia e avaliação cirúrgica orientam a conduta; não transpor automaticamente a redução por enema pediátrica. Obstrução, isquemia, perfuração ou suspeita de tumor favorecem tratamento cirúrgico; achados transitórios do delgado exigem seleção especializada.",
+      "es": "Adultos: buscar una lesión estructural como punto guía, incluida neoplasia. La tomografía y evaluación quirúrgica orientan la conducta; no trasladar automáticamente la reducción mediante enema pediátrica. La obstrucción, isquemia, perforación o sospecha de tumor favorecen tratamiento quirúrgico; los hallazgos transitorios del intestino delgado requieren selección especializada.",
+      "references": [
+        2
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A população muda o raciocínio etiológico. A apresentação pediátrica típica pode responder à redução guiada por imagem, enquanto no adulto a procura de um ponto guia estrutural tem maior peso. A ausência de sinais clássicos não elimina a hipótese na criança.",
+      "es": "La población modifica el razonamiento etiológico. La presentación pediátrica típica puede responder a reducción guiada por imágenes, mientras que en el adulto la búsqueda de un punto guía estructural tiene mayor peso. La ausencia de signos clásicos no elimina la hipótesis en el niño.",
+      "sources": [
+        "rch"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "rch",
+      "title": "Clinical Practice Guideline: Intussusception",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/intussusception/",
+      "organization_or_authors": "Royal Children’s Hospital",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "Royal Children’s Hospital",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "adult_inv",
+      "title": "Intestinal Intussusception in Adults: A Systematic Review",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/40831154/",
+      "organization_or_authors": "Heersche et al.; World Journal of Surgery",
+      "year": 2025,
+      "status": "SUPPORTIVE",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "supportive_evidence",
+      "publication": "Heersche et al.; World Journal of Surgery",
+      "doi": ""
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

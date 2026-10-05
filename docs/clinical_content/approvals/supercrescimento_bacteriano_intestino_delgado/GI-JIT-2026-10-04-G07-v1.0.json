@@ -1,0 +1,216 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 26,
+  "requested_items": [
+    26
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Supercrescimento bacteriano do intestino delgado — SIBO",
+    "es": "Sobrecrecimiento bacteriano del intestino delgado — SIBO"
+  },
+  "facts": [
+    {
+      "id": "g026_f01",
+      "section": "definition",
+      "pt": "Alterações da população bacteriana do delgado podem associar-se a distensão, diarreia e má absorção. Sintomas isolados não confirmam SIBO.",
+      "es": "Alteraciones de la población bacteriana del intestino delgado pueden asociarse con distensión, diarrea y malabsorción. Los síntomas aislados no confirman SIBO.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g026_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar cirurgia, alteração anatômica e dismotilidade. Testes respiratórios exigem preparo e interpretação contextual; trânsito rápido pode produzir resultados enganosos.",
+      "es": "Evaluar cirugía, alteración anatómica y dismotilidad. Las pruebas respiratorias exigen preparación e interpretación contextual; el tránsito rápido puede producir resultados engañosos.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g026_f03",
+      "section": "diagnosis",
+      "pt": "Supercrescimento de metanogênicos é conceito distinto, frequentemente associado à constipação; não equiparar todo teste de metano a SIBO bacteriano.",
+      "es": "El sobrecrecimiento de metanógenos es un concepto distinto, frecuentemente asociado con estreñimiento; no equiparar toda prueba de metano con SIBO bacteriano.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g026_f04",
+      "section": "initial",
+      "pt": "Investigar deficiência nutricional e causas de sintomas, incluindo celíaca e doença inflamatória. Não tratar todo estufamento com antibiótico.",
+      "es": "Investigar carencia nutricional y causas de síntomas, incluidas enfermedad celíaca e inflamatoria. No tratar toda distensión con antibiótico.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g026_f05",
+      "section": "treatment",
+      "pt": "Corrigir causas predisponentes e carências; antibiótico pode ser indicado em pacientes selecionados. Evidência para estratégias de repetição é limitada.",
+      "es": "Corregir causas predisponentes y carencias; puede indicarse antibiótico en pacientes seleccionados. La evidencia para estrategias de repetición es limitada.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g026_f06",
+      "section": "doses",
+      "pt": "Adulto sintomático selecionado com diagnóstico sustentado: rifaximina 550 mg por via oral três vezes ao dia por 10 a 14 dias, conforme posição FBG 2025. Definir a duração na prescrição e reavaliar; não é tratamento empírico de todo estufamento. Uso para SIBO é fora da indicação da bula US consultada.",
+      "es": "Adulto sintomático seleccionado con diagnóstico sustentado: rifaximina 550 mg por vía oral tres veces al día durante 10 a 14 días, según la posición FBG 2025. Definir la duración en la receta y reevaluar; no es tratamiento empírico de toda distensión. El uso para SIBO está fuera de la indicación de la ficha estadounidense consultada.",
+      "references": [
+        4,
+        5
+      ]
+    },
+    {
+      "id": "g026_f07",
+      "section": "monitoring",
+      "pt": "Reavaliar benefício, recidiva e fatores predisponentes; evitar ciclos indefinidos ou combinações empíricas sem confirmação.",
+      "es": "Reevaluar beneficio, recidiva y factores predisponentes; evitar ciclos indefinidos o combinaciones empíricas sin confirmación.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g026_f08",
+      "section": "disposition",
+      "pt": "Perda de peso importante, anemia, sangramento ou desidratação exigem investigação ampliada. Quadro estável é ambulatorial.",
+      "es": "La pérdida importante de peso, anemia, sangrado o deshidratación requieren evaluación ampliada. El cuadro estable es ambulatorio.",
+      "references": [
+        3
+      ]
+    },
+    {
+      "id": "g026_f09",
+      "section": "special",
+      "pt": "Crianças, gestação e imunossupressão exigem seleção específica de exames e medicamentos, sem extrapolar regimes adultos.",
+      "es": "Niños, embarazo e inmunosupresión requieren selección específica de estudios y medicamentos, sin extrapolar regímenes adultos.",
+      "references": [
+        2,
+        3
+      ]
+    },
+    {
+      "id": "g026_f10",
+      "section": "special",
+      "pt": "Rifaximina: conferir alergia a rifamicinas, gravidez, hepatopatia grave e interações, especialmente inibidores de P-glicoproteína e varfarina. Não presumir ausência de risco sistêmico por baixa absorção; não programar ciclos repetidos automaticamente.",
+      "es": "Rifaximina: verificar alergia a rifamicinas, embarazo, hepatopatía grave e interacciones, especialmente inhibidores de glucoproteína P y warfarina. No suponer ausencia de riesgo sistémico por baja absorción; no programar ciclos repetidos automáticamente.",
+      "references": [
+        6
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "Sintomas inespecíficos limitam o valor de diagnosticar SIBO apenas pela clínica. Testes também dependem de preparo e trânsito intestinal. O tratamento tem maior coerência quando conecta evidência diagnóstica, fator predisponente e resposta mensurável, sem transformar distensão isolada em indicação permanente de antibiótico.",
+      "es": "Los síntomas inespecíficos limitan el valor de diagnosticar SIBO solo por la clínica. Las pruebas también dependen de preparación y tránsito intestinal. El tratamiento es más coherente cuando conecta evidencia diagnóstica, factor predisponente y respuesta medible, sin convertir la distensión aislada en indicación permanente de antibiótico.",
+      "sources": [
+        "SIBO",
+        "BT",
+        "fbg",
+        "acg_full"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "SIBO",
+      "title": "Diagnosis and management of small intestinal bacterial overgrowth",
+      "url": "https://gastro.org/clinical-guidance/diagnosis-and-management-of-small-intestinal-bacterial-overgrowth-sibo/",
+      "organization_or_authors": "AGA",
+      "year": 2020,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "AGA",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "BT",
+      "title": "European guideline on hydrogen and methane breath tests",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8830282/",
+      "organization_or_authors": "EAGEN / ESNM / ESPGHAN",
+      "year": 2022,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "EAGEN / ESNM / ESPGHAN",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "AGAINFO",
+      "title": "Small intestinal bacterial overgrowth",
+      "url": "https://patient.gastro.org/small-intestinal-bacterial-overgrowth-sibo/",
+      "organization_or_authors": "AGA",
+      "year": 2026,
+      "status": "SUPPORTIVE",
+      "scope": "",
+      "source_type": "supportive_evidence",
+      "publication": "AGA",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "fbg",
+      "title": "Diagnosis and treatment of SIBO: official position paper",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12043196/",
+      "organization_or_authors": "Federação Brasileira de Gastroenterologia",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_clinical_source",
+      "publication": "Federação Brasileira de Gastroenterologia",
+      "doi": ""
+    },
+    {
+      "key": "acg_full",
+      "title": "ACG Clinical Guideline: Small Intestinal Bacterial Overgrowth",
+      "url": "https://www.spg.pt/wp-content/uploads/2023/03/ACG-Clinical-Guideline-Small-Intestinal-Bacterial-Overgrowth.pdf",
+      "organization_or_authors": "ACG; Pimentel et al.",
+      "year": 2020,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_clinical_source",
+      "publication": "ACG; Pimentel et al.",
+      "doi": ""
+    },
+    {
+      "key": "rif_label",
+      "title": "XIFAXAN rifaximin: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c5e8e2fd-7087-4b78-9181-cc259c0be2f1",
+      "organization_or_authors": "DailyMed, official product labeling",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LIVING",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_product_label",
+      "publication": "DailyMed, official product labeling",
+      "doi": ""
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

@@ -1,0 +1,18 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 50,
+  "owner": "obstrucao_adesiva_delgado_asbo",
+  "approvedClinicalPayloadSHA256": "7017b02035b7c5ba4de36a84e2757495aec94fcf1950404d5f6c139130c9f489",
+  "selectedApprovedFactIds": [
+    "g050_f01",
+    "g050_f02",
+    "g050_f03",
+    "g050_f04",
+    "g050_f05",
+    "g050_f06"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

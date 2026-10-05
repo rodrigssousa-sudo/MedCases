@@ -1,0 +1,113 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 38,
+  "requested_items": [
+    38,
+    39,
+    74
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Lesão intestinal por radiação: enterite, colite e proctopatia",
+    "es": "Lesión intestinal por radiación: enteritis, colitis y proctopatía"
+  },
+  "facts": [
+    {
+      "id": "g038_f01",
+      "section": "definition",
+      "pt": "Lesão aguda da mucosa ou lesão tardia vascular e fibrótica após radioterapia abdominal ou pélvica. O segmento acometido define enterite, colite ou proctopatia; as condutas não são todas intercambiáveis.",
+      "es": "Lesión aguda de la mucosa o lesión tardía vascular y fibrótica tras radioterapia abdominal o pélvica. El segmento afectado define enteritis, colitis o proctopatía; no todas las conductas son intercambiables.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g038_f02",
+      "section": "diagnosis",
+      "pt": "Relacionar sintomas ao campo e à data da radioterapia, mas excluir infecção, recorrência tumoral e outras causas. Sangramento persistente requer avaliação endoscópica especializada; imagem é importante se houver obstrução ou fístula.",
+      "es": "Relacionar los síntomas con el campo y la fecha de radioterapia, pero descartar infección, recurrencia tumoral y otras causas. El sangrado persistente requiere evaluación endoscópica especializada; las imágenes son importantes ante obstrucción o fístula.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g038_f03",
+      "section": "initial",
+      "pt": "Avaliar hidratação, anemia, nutrição e gravidade da dor. Não atribuir abdome agudo à radioterapia sem excluir perfuração ou isquemia.",
+      "es": "Evaluar hidratación, anemia, nutrición y gravedad del dolor. No atribuir un abdomen agudo a la radioterapia sin descartar perforación o isquemia.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g038_f04",
+      "section": "treatment",
+      "pt": "Suporte nutricional e tratamento dirigido aos mecanismos da diarreia. Proctopatia crônica hemorrágica pode responder a enemas de sucralfato ou tratamento endoscópico com plasma de argônio em serviço experiente; casos selecionados podem receber oxigenoterapia hiperbárica.",
+      "es": "Soporte nutricional y tratamiento dirigido a los mecanismos de la diarrea. La proctopatía crónica hemorrágica puede responder a enemas de sucralfato o tratamiento endoscópico con plasma de argón en un servicio experimentado; casos seleccionados pueden recibir oxigenoterapia hiperbárica.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g038_f05",
+      "section": "disposition",
+      "pt": "Internar diante de sangramento com repercussão, obstrução, perfuração, desidratação grave ou impossibilidade de manter nutrição. Casos estáveis exigem seguimento conjunto com oncologia e gastroenterologia.",
+      "es": "Internar ante sangrado con repercusión, obstrucción, perforación, deshidratación grave o imposibilidad de mantener la nutrición. Los casos estables requieren seguimiento conjunto con oncología y gastroenterología.",
+      "references": [
+        1,
+        2
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "O sítio irradiado e o intervalo clínico orientam a interpretação dos sintomas. Enterite, colite e proctite não são termos terapêuticos intercambiáveis: uma intervenção endoscópica para sangramento retal não trata automaticamente a disfunção absortiva do delgado.",
+      "es": "El sitio irradiado y el contexto temporal orientan la interpretación de los síntomas. Enteritis, colitis y proctitis no son términos terapéuticos intercambiables: una intervención endoscópica para sangrado rectal no trata automáticamente la disfunción absortiva del intestino delgado.",
+      "sources": [
+        "rad",
+        "ascrs"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "rad",
+      "title": "Radiation Enteritis",
+      "url": "https://www.cancer.gov/about-cancer/treatment/side-effects/radiation-enteritis",
+      "organization_or_authors": "NCI",
+      "year": 2025,
+      "status": "SUPPORTIVE",
+      "scope": "",
+      "source_type": "supportive_evidence",
+      "publication": "NCI",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "ascrs",
+      "title": "Treatment of Chronic Radiation Proctitis",
+      "url": "https://www.ascrsu.com/ascrs/view/ASCRS-Toolkit/2851049/all/Treatment_of_Chronic_Radiation_Proctitis",
+      "organization_or_authors": "ASCRS",
+      "year": 2018,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "ASCRS",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

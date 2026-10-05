@@ -1,0 +1,15 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 60,
+  "owner": "colite_estercoral_impactacao_fecal",
+  "approvedClinicalPayloadSHA256": "6876ad6d25ea544a2a8d5491047cb6f9db9de8008b888ff57dbd0b6ef7c564c7",
+  "selectedApprovedFactIds": [
+    "g060_f01",
+    "g060_f02",
+    "g060_f04"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

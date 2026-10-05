@@ -1,0 +1,17 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 37,
+  "owner": "colite_isquemica",
+  "approvedClinicalPayloadSHA256": "df633fd7c0b3d17173f094ddafe94bf5ff0b3d86550cb30a32e3d913c4dd4a09",
+  "selectedApprovedFactIds": [
+    "g037_f01",
+    "g037_f02",
+    "g037_f03",
+    "g037_f04",
+    "g037_f05"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

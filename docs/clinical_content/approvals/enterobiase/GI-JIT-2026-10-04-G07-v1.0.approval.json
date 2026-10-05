@@ -1,0 +1,23 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 15,
+  "owner": "enterobiase",
+  "approvedClinicalPayloadSHA256": "2baf91d275897cdded0413a9d7933c79eafcb36b363f64d1ac62b84d55a0444e",
+  "selectedApprovedFactIds": [
+    "g015_f01",
+    "g015_f02",
+    "g015_f03",
+    "g015_f04",
+    "g015_f05",
+    "g015_f06",
+    "g015_f07",
+    "g015_f08",
+    "g015_f09",
+    "g015_f10",
+    "g015_f11"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

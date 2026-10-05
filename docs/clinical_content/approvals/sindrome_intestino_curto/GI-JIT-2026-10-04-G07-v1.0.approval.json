@@ -1,0 +1,20 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 28,
+  "owner": "sindrome_intestino_curto",
+  "approvedClinicalPayloadSHA256": "a63933a1b5eaea10544679b752f35b6288a3314c2c5f184622582af0a4acf5b5",
+  "selectedApprovedFactIds": [
+    "g028_f01",
+    "g028_f02",
+    "g028_f03",
+    "g028_f04",
+    "g028_f05",
+    "g028_f06",
+    "g028_f07",
+    "g028_f08"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

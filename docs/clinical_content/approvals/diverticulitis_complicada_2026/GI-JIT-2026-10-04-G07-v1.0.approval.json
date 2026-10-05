@@ -1,0 +1,18 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 43,
+  "owner": "diverticulitis_complicada_2026",
+  "approvedClinicalPayloadSHA256": "44e46e4bbcd19deca1dc2fbff3effdb03b2d77588177fd2d690252476a24592d",
+  "selectedApprovedFactIds": [
+    "g043_f01",
+    "g043_f02",
+    "g043_f03",
+    "g043_f04",
+    "g043_f05",
+    "g043_f06"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

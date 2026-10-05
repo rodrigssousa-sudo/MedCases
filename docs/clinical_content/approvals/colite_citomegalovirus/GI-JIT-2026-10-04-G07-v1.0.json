@@ -1,0 +1,145 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 36,
+  "requested_items": [
+    36
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Colite por citomegalovírus",
+    "es": "Colitis por citomegalovirus"
+  },
+  "facts": [
+    {
+      "id": "g036_f01",
+      "section": "definition",
+      "pt": "Doença invasiva por CMV, sobretudo em imunossupressão. Reativação detectável em sangue ou tecido sem lesão compatível não equivale automaticamente a colite invasiva.",
+      "es": "Enfermedad invasiva por CMV, principalmente en inmunosupresión. La reactivación detectable en sangre o tejido sin lesión compatible no equivale automáticamente a colitis invasiva.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g036_f02",
+      "section": "diagnosis",
+      "pt": "Correlacionar diarreia, dor, febre ou sangramento com endoscopia e biópsias para histologia e imunohistoquímica. Excluir C. difficile e atividade de doença inflamatória; PCR sanguínea isolada não substitui avaliação tecidual.",
+      "es": "Correlacionar diarrea, dolor, fiebre o sangrado con endoscopia y biopsias para histología e inmunohistoquímica. Descartar C. difficile y actividad inflamatoria; una PCR sanguínea aislada no sustituye la evaluación tisular.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g036_f03",
+      "section": "doses",
+      "pt": "No adulto com HIV e função renal adequada: ganciclovir 5 mg/kg intravenoso a cada 12 horas, cada dose infundida em 1 hora, nunca em bolus; duração usual de 21 a 42 dias, guiada pela resolução clínica. Transição para valganciclovir oral exige absorção adequada e plano da infectologia.",
+      "es": "En el adulto con VIH y función renal adecuada: ganciclovir 5 mg/kg intravenoso cada 12 horas, cada dosis infundida en 1 hora, nunca en bolo; duración habitual de 21 a 42 días, guiada por la resolución clínica. La transición a valganciclovir oral requiere absorción adecuada y un plan de infectología.",
+      "references": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "g036_f04",
+      "section": "special",
+      "pt": "Ajustar ganciclovir à função renal antes de prescrever e monitorar hemograma e creatinina. Transplante e doença inflamatória intestinal exigem plano próprio de antiviral e imunossupressão; não extrapolar automaticamente a duração do HIV.",
+      "es": "Ajustar el ganciclovir a la función renal antes de prescribir y controlar hemograma y creatinina. El trasplante y la enfermedad inflamatoria intestinal requieren un plan específico de antiviral e inmunosupresión; no extrapolar automáticamente la duración del VIH.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g036_f05",
+      "section": "disposition",
+      "pt": "Doença sistêmica, desidratação, sangramento ou dor peritoneal exigem hospitalização e investigação de complicações; suspeita de perfuração exige cirurgia.",
+      "es": "La enfermedad sistémica, deshidratación, sangrado o dolor peritoneal requieren hospitalización y estudio de complicaciones; la sospecha de perforación requiere cirugía.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g036_f06",
+      "section": "doses",
+      "pt": "Conferir ajuste de indução por clearance de creatinina: ≥70 mL por minuto, 5 mg/kg a cada 12 horas; 50–69, 2,5 mg/kg a cada 12 horas; 25–49, 2,5 mg/kg a cada 24 horas; 10–24, 1,25 mg/kg a cada 24 horas. Hemodiálise, função instável ou outra terapia renal exigem prescrição específica. Diluir conforme produto; concentração final acima de 10 mg/mL não é recomendada.",
+      "es": "Verificar ajuste de inducción por aclaramiento de creatinina: ≥70 mL por minuto, 5 mg/kg cada 12 horas; 50–69, 2,5 mg/kg cada 12 horas; 25–49, 2,5 mg/kg cada 24 horas; 10–24, 1,25 mg/kg cada 24 horas. La hemodiálisis, función inestable u otra terapia renal requieren prescripción específica. Diluir según el producto; no se recomienda una concentración final superior a 10 mg/mL.",
+      "references": [
+        3
+      ]
+    },
+    {
+      "id": "g036_f07",
+      "section": "monitoring",
+      "pt": "Durante indução, verificar hemograma e função renal pelo menos duas vezes por semana, com maior frequência se instável. Mielotoxicidade ou gestação exige decisão especializada; não usar automaticamente se houver citopenias importantes.",
+      "es": "Durante la inducción, verificar hemograma y función renal al menos dos veces por semana, con mayor frecuencia si está inestable. La mielotoxicidad o embarazo requieren una decisión especializada; no utilizar automáticamente ante citopenias importantes.",
+      "references": [
+        1,
+        3
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "Detecção viral e lesão invasiva representam níveis diferentes de evidência. O contexto imunológico e a confirmação tecidual orientam a decisão de tratar. A eliminação renal do antiviral e a toxicidade hematológica explicam por que dose, função renal e hemograma precisam ser acompanhados juntos.",
+      "es": "La detección viral y la lesión invasiva representan niveles distintos de evidencia. El contexto inmunológico y la confirmación tisular orientan la decisión de tratar. La eliminación renal del antiviral y toxicidad hematológica explican por qué dosis, función renal y hemograma deben seguirse juntos.",
+      "sources": [
+        "cmv",
+        "bsg",
+        "ganc_label"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "cmv",
+      "title": "Cytomegalovirus Disease: Adult and Adolescent Opportunistic Infections",
+      "url": "https://clinicalinfo.hiv.gov/sites/default/files/guidelines/documents/adult-adolescent-oi/cytomegalovirus-adult-adolescent-oi.pdf",
+      "organization_or_authors": "NIH",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LIVING",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "NIH",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "bsg",
+      "title": "British Society of Gastroenterology guidelines on inflammatory bowel disease in adults",
+      "url": "https://gut.bmj.com/content/74/Suppl_2/s1/",
+      "organization_or_authors": "BSG",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "BSG",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "ganc_label",
+      "title": "Ganciclovir for Injection: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=35addab5-09db-4f8a-9c69-6fbce33ecc37&version=6",
+      "organization_or_authors": "DailyMed, official product labeling",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LIVING",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "source_type": "official_product_label",
+      "publication": "DailyMed, official product labeling",
+      "doi": ""
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

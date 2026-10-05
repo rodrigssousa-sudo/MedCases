@@ -1,0 +1,20 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 61,
+  "owner": "perfuracao_viscera_oca_peritonite_secundaria",
+  "approvedClinicalPayloadSHA256": "a93e53c5591ba184db72e44ea49ae1ca1644018d21f39a196b8a16a85b4e990e",
+  "selectedApprovedFactIds": [
+    "g061_f01",
+    "g061_f02",
+    "g061_f03",
+    "g061_f04",
+    "g061_f05",
+    "g061_f06",
+    "g061_f07",
+    "g061_f08"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

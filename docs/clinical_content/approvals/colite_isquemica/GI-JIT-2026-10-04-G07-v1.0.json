@@ -1,0 +1,125 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 37,
+  "requested_items": [
+    37
+  ],
+  "existing_ids": [
+    "colite_isquemica"
+  ],
+  "title": {
+    "pt": "Colite isquêmica",
+    "es": "Colitis isquémica"
+  },
+  "facts": [
+    {
+      "id": "g037_f01",
+      "section": "definition",
+      "pt": "Redução do fluxo colônico causando lesão mucosa, frequentemente com dor e hematoquezia. Pode ser transitória ou evoluir para necrose; não é sinônimo de oclusão da artéria mesentérica.",
+      "es": "Reducción del flujo colónico que causa lesión mucosa, frecuentemente con dolor y hematoquecia. Puede ser transitoria o evolucionar a necrosis; no es sinónimo de oclusión de la arteria mesentérica.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g037_f02",
+      "section": "diagnosis",
+      "pt": "Tomografia com contraste e avaliação clínica inicial. Colonoscopia precoce, idealmente em até 48 horas, pode confirmar em pacientes adequadamente selecionados; evitar se houver peritonite ou suspeita de gangrena.",
+      "es": "Tomografía con contraste y evaluación clínica inicial. La colonoscopia temprana, idealmente dentro de 48 horas, puede confirmar en pacientes adecuadamente seleccionados; evitarla ante peritonitis o sospecha de gangrena.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g037_f03",
+      "section": "initial",
+      "pt": "Corrigir hipovolemia e precipitantes, manter vigilância hemodinâmica e avaliar gravidade. Dor intensa sem sangramento ou acometimento direito exige considerar isquemia mesentérica aguda e angiotomografia.",
+      "es": "Corregir hipovolemia y desencadenantes, mantener vigilancia hemodinámica y evaluar gravedad. El dolor intenso sin sangrado o compromiso derecho requieren considerar isquemia mesentérica aguda y angiotomografía.",
+      "references": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "g037_f04",
+      "section": "treatment",
+      "pt": "Casos leves costumam responder a suporte. Doença moderada ou grave pode exigir antibióticos e avaliação cirúrgica; necrose, perfuração ou peritonite exigem cirurgia urgente.",
+      "es": "Los casos leves suelen responder al sostén. La enfermedad moderada o grave puede requerir antibióticos y evaluación quirúrgica; la necrosis, perforación o peritonitis requieren cirugía urgente.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g037_f05",
+      "section": "monitoring",
+      "pt": "Acompanhar dor, sangramento, hemograma, função renal e sinais de deterioração. Sintomas persistentes ou recorrentes exigem reavaliação e investigação de estenose ou diagnóstico alternativo.",
+      "es": "Controlar dolor, sangrado, hemograma, función renal y signos de deterioro. Los síntomas persistentes o recurrentes requieren reevaluación e investigación de estenosis o diagnóstico alternativo.",
+      "references": [
+        2
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "Isquemia colônica e isquemia mesentérica aguda podem compartilhar dor e sangramento, mas não têm a mesma investigação ou urgência em todos os casos. A presença de necrose ou peritonite torna inadequado um caminho endoscópico rotineiro.",
+      "es": "La isquemia colónica y mesentérica aguda pueden compartir dolor y sangrado, pero no tienen el mismo estudio o urgencia en todos los casos. La presencia de necrosis o peritonitis vuelve inadecuado un abordaje endoscópico rutinario.",
+      "sources": [
+        "patient",
+        "ci"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "ci",
+      "title": "ACG Clinical Guideline: Colon Ischemia — summary",
+      "url": "https://acgcdn.gi.org/wp-content/uploads/2018/04/ACG-Colon-Ischemia-Guideline-Summary.pdf",
+      "organization_or_authors": "ACG",
+      "year": 2015,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "ACG",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "patient",
+      "title": "Colon Ischemia",
+      "url": "https://gi.org/topics/colon-ischemia/",
+      "organization_or_authors": "ACG",
+      "year": 2019,
+      "status": "SUPPORTIVE",
+      "scope": "",
+      "source_type": "supportive_evidence",
+      "publication": "ACG",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "ami",
+      "title": "Acute mesenteric ischemia: updated guidelines",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9580452/",
+      "organization_or_authors": "WSES",
+      "year": 2022,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "WSES",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

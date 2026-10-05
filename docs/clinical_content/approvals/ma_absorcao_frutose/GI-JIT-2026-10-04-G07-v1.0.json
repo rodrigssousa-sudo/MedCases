@@ -1,0 +1,136 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 24,
+  "requested_items": [
+    24
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Má absorção de frutose — distinguir intolerância hereditária",
+    "es": "Malabsorción de fructosa — distinguir intolerancia hereditaria"
+  },
+  "facts": [
+    {
+      "id": "g024_f01",
+      "section": "definition",
+      "pt": "Má absorção intestinal de frutose pode causar distensão, gases, cólica e diarreia. É diferente da intolerância hereditária por defeito de metabolismo, que pode causar hipoglicemia e lesão hepática.",
+      "es": "La malabsorción intestinal de fructosa puede causar distensión, gases, cólicos y diarrea. Es diferente de la intolerancia hereditaria por defecto metabólico, que puede causar hipoglucemia y lesión hepática.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g024_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar relação alimentar e diagnóstico diferencial. Teste respiratório deve seguir protocolo validado e registrar sintomas; alteração do gás isoladamente não prova intolerância clínica.",
+      "es": "Evaluar relación alimentaria y diagnóstico diferencial. La prueba respiratoria debe seguir protocolo validado y registrar síntomas; una alteración aislada del gas no demuestra intolerancia clínica.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g024_f03",
+      "section": "initial",
+      "pt": "Vômitos e hipoglicemia após açúcar, aversão alimentar marcante ou doença hepática desde a infância exigem suspeitar da forma hereditária e avaliação metabólica.",
+      "es": "Vómitos e hipoglucemia tras azúcar, aversión alimentaria marcada o enfermedad hepática desde la infancia obligan a sospechar la forma hereditaria y evaluar el metabolismo.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g024_f04",
+      "section": "treatment",
+      "pt": "Na má absorção, ajustar frutose e outros carboidratos fermentáveis com nutricionista, buscando tolerância e reintrodução. Não confundir essa redução individual com a exclusão rigorosa exigida na doença hereditária.",
+      "es": "En malabsorción, ajustar fructosa y otros carbohidratos fermentables con nutricionista, buscando tolerancia y reintroducción. No confundir esa reducción individual con la exclusión rigurosa exigida en la enfermedad hereditaria.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g024_f05",
+      "section": "doses",
+      "pt": "Não há dose farmacológica universal para má absorção. Não oferecer teste de sobrecarga de frutose se houver suspeita de intolerância hereditária: pode ser perigoso.",
+      "es": "No existe dosis farmacológica universal para malabsorción. No ofrecer prueba de sobrecarga de fructosa ante sospecha de intolerancia hereditaria: puede ser peligrosa.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g024_f06",
+      "section": "monitoring",
+      "pt": "Reavaliar sintomas, crescimento ou peso e qualidade nutricional. Falha de resposta deve reabrir o diferencial.",
+      "es": "Reevaluar síntomas, crecimiento o peso y calidad nutricional. La falta de respuesta debe reabrir el diagnóstico diferencial.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g024_f07",
+      "section": "disposition",
+      "pt": "Hipoglicemia, alteração de consciência ou disfunção hepática requerem atendimento urgente; não realizar provocação alimentar no plantão.",
+      "es": "Hipoglucemia, alteración de conciencia o disfunción hepática requieren atención urgente; no realizar provocación alimentaria en guardia.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g024_f08",
+      "section": "special",
+      "pt": "Crianças com suspeita metabólica precisam genética e nutrição especializadas. Verificar excipientes e soluções na forma hereditária; não generalizar suas restrições para toda má absorção.",
+      "es": "Los niños con sospecha metabólica necesitan genética y nutrición especializadas. Verificar excipientes y soluciones en la forma hereditaria; no generalizar sus restricciones a toda malabsorción.",
+      "references": [
+        2
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "Má absorção descreve a etapa intestinal; intolerância hereditária descreve metabolismo sistêmico. Essa diferença explica por que um teste de provocação aceitável em uma investigação digestiva pode ser perigoso quando há suspeita metabólica. A história desde a infância modifica a estratégia diagnóstica.",
+      "es": "La malabsorción describe la etapa intestinal; la intolerancia hereditaria describe el metabolismo sistémico. Esa diferencia explica por qué una prueba de provocación aceptable en un estudio digestivo puede ser peligrosa ante sospecha metabólica. La historia desde la infancia modifica la estrategia diagnóstica.",
+      "sources": [
+        "BT",
+        "HFI"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "BT",
+      "title": "European guideline on hydrogen and methane breath tests",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8830282/",
+      "organization_or_authors": "EAGEN / ESNM / ESPGHAN",
+      "year": 2022,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "EAGEN / ESNM / ESPGHAN",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "HFI",
+      "title": "Hereditary Fructose Intolerance",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK333439/",
+      "organization_or_authors": "GeneReviews / University of Washington",
+      "year": 2026,
+      "status": "EXPERT_REVIEW_CURRENT_PORTAL",
+      "scope": "Consulta em 2026",
+      "source_type": "official_clinical_source",
+      "publication": "GeneReviews / University of Washington",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

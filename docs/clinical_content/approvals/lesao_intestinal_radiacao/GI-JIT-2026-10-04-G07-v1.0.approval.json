@@ -1,0 +1,17 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 38,
+  "owner": "lesao_intestinal_radiacao",
+  "approvedClinicalPayloadSHA256": "fa7b7e7ac341308afad70048692f4d2a1c66878769499e0eadb2d0e4ba5e3dc7",
+  "selectedApprovedFactIds": [
+    "g038_f01",
+    "g038_f02",
+    "g038_f03",
+    "g038_f04",
+    "g038_f05"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

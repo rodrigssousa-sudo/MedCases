@@ -1,0 +1,20 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 13,
+  "owner": "balantidiase",
+  "approvedClinicalPayloadSHA256": "005f4fb9aac26a68e9eaa5bbcb5773294650a4bf2fbf7ffdb4b4a55bff674ece",
+  "selectedApprovedFactIds": [
+    "g013_f01",
+    "g013_f02",
+    "g013_f03",
+    "g013_f04",
+    "g013_f05",
+    "g013_f06",
+    "g013_f07",
+    "g013_f08"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

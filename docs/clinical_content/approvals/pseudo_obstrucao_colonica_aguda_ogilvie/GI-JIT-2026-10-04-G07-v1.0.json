@@ -1,0 +1,160 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 54,
+  "requested_items": [
+    54
+  ],
+  "existing_ids": [
+    "pseudo_obstrucao_colonica_aguda_ogilvie"
+  ],
+  "title": {
+    "pt": "Pseudo-obstrução colônica aguda — síndrome de Ogilvie",
+    "es": "Pseudoobstrucción colónica aguda — síndrome de Ogilvie"
+  },
+  "facts": [
+    {
+      "id": "g054_f01",
+      "section": "definition",
+      "pt": "Dilatação aguda do cólon sem obstrução mecânica, frequentemente em pacientes hospitalizados com doença sistêmica, trauma ou cirurgia.",
+      "es": "Dilatación aguda del colon sin obstrucción mecánica, frecuentemente en pacientes hospitalizados con enfermedad sistémica, traumatismo o cirugía.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g054_f02",
+      "section": "diagnosis",
+      "pt": "Excluir bloqueio mecânico, volvo, isquemia e perfuração por avaliação clínica e imagem. Monitorar diâmetro colônico e evolução, não apenas um número isolado.",
+      "es": "Descartar bloqueo mecánico, vólvulo, isquemia y perforación mediante evaluación clínica e imágenes. Controlar el diámetro colónico y su evolución, no solo un número aislado.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g054_f03",
+      "section": "initial",
+      "pt": "Em paciente estável sem sinais de complicação: corrigir eletrólitos e causas precipitantes, suspender fármacos que reduzem motilidade, manter suporte e descompressão conforme necessidade.",
+      "es": "En un paciente estable sin signos de complicaciones: corregir electrolitos y causas desencadenantes, suspender fármacos que reducen la motilidad, mantener soporte y descompresión según necesidad.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g054_f04",
+      "section": "doses",
+      "pt": "Se suporte falhar e não houver contraindicação: neostigmina 2 mg intravenosa em 3 a 5 minutos, em ambiente monitorizado, com atropina e recursos de ressuscitação disponíveis. Excluir obstrução mecânica e perfuração; avaliar bradicardia e broncoespasmo antes da administração.",
+      "es": "Si falla el sostén y no hay contraindicaciones: neostigmina 2 mg intravenosa en 3 a 5 minutos, en un entorno monitorizado, con atropina y recursos de reanimación disponibles. Descartar obstrucción mecánica y perforación; evaluar bradicardia y broncoespasmo antes de administrarla.",
+      "references": [
+        1,
+        3
+      ]
+    },
+    {
+      "id": "g054_f05",
+      "section": "treatment",
+      "pt": "Descompressão colonoscópica é alternativa se neostigmina for contraindicada ou ineficaz. Isquemia, perfuração ou deterioração exigem cirurgia; não aguardar completar período de observação.",
+      "es": "La descompresión colonoscópica es una alternativa si la neostigmina está contraindicada o es ineficaz. La isquemia, perforación o deterioro requieren cirugía; no esperar a completar un período de observación.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g054_f06",
+      "section": "monitoring",
+      "pt": "Reavaliar abdome e imagem, resposta à descompressão, frequência cardíaca, pressão e oxigenação. Manter vigilância para recorrência e tratar fatores precipitantes.",
+      "es": "Reevaluar abdomen e imágenes, respuesta a la descompresión, frecuencia cardíaca, presión y oxigenación. Mantener vigilancia de recurrencia y tratar los factores desencadenantes.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g054_f07",
+      "section": "special",
+      "pt": "Antes de neostigmina, excluir alergia, obstrução mecânica e perfuração. Bradicardia, asma, insuficiência renal, úlcera péptica, infarto recente e acidose são contraindicações relativas que exigem avaliação individual. Monitorar continuamente ritmo cardíaco e respiração, com atropina imediatamente disponível. O uso em Ogilvie é fora da indicação aprovada pela FDA.",
+      "es": "Antes de neostigmina, descartar alergia, obstrucción mecánica y perforación. La bradicardia, asma, insuficiencia renal, úlcera péptica, infarto reciente y acidosis son contraindicaciones relativas que requieren evaluación individual. Monitorizar continuamente ritmo cardíaco y respiración, con atropina inmediatamente disponible. El uso en Ogilvie está fuera de la indicación aprobada por la FDA.",
+      "references": [
+        4,
+        1
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A ausência de obstáculo mecânico não torna a dilatação inofensiva. O risco depende da progressão e da repercussão sobre a parede intestinal. Neostigmina requer ambiente monitorizado porque a resposta colinérgica não se limita ao cólon.",
+      "es": "La ausencia de obstáculo mecánico no vuelve inocua la dilatación. El riesgo depende de la progresión y repercusión sobre la pared intestinal. La neostigmina requiere un entorno monitorizado porque la respuesta colinérgica no se limita al colon.",
+      "sources": [
+        "ps",
+        "vol",
+        "neo"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "vol",
+      "title": "Management of Colonic Volvulus and Acute Colonic Pseudo-Obstruction",
+      "url": "https://www.ascrsu.com/ascrs/view/ASCRS-Evidence-Based-Guidelines-and-Expert-Consensus/3982019/all/Management_of_Colonic_Volvulus_and_Acute_Colonic_Pseudo_Obstruction__2021_",
+      "organization_or_authors": "ASCRS",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "ASCRS",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "ps",
+      "title": "Treatment for Intestinal Pseudo-obstruction",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/intestinal-pseudo-obstruction/treatment",
+      "organization_or_authors": "NIDDK",
+      "year": 2021,
+      "status": "SUPPORTIVE",
+      "scope": "",
+      "source_type": "supportive_evidence",
+      "publication": "NIDDK",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "neo",
+      "title": "Neostigmine for the Treatment of Acute Colonic Pseudo-Obstruction",
+      "url": "https://www.nejm.org/doi/full/10.1056/NEJM199907153410301",
+      "organization_or_authors": "Ponec et al.; NEJM",
+      "year": 1999,
+      "status": "SUPPORTIVE",
+      "scope": "",
+      "source_type": "supportive_evidence",
+      "publication": "Ponec et al.; NEJM",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "asge20",
+      "title": "ASGE guideline on the role of endoscopy in acute colonic pseudo-obstruction and colonic volvulus",
+      "url": "https://www.asge.org/docs/default-source/guidelines/american-society-for-gastrointestinal-endoscopy-guideline-on-the-role-of-endoscopy-in-the-management-of-acute-colonic-pseudo-obstruction-and-colonic-volvulus-2020-february-gie.pdf",
+      "organization_or_authors": "ASGE Standards of Practice Committee",
+      "year": 2020,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "identified_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_CLAIM_AUDIT",
+      "source_type": "official_clinical_source",
+      "publication": "ASGE Standards of Practice Committee",
+      "doi": "10.1016/j.gie.2019.09.007"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

@@ -1,0 +1,123 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 14,
+  "requested_items": [
+    14
+  ],
+  "existing_ids": [
+    "ascaridiase"
+  ],
+  "title": {
+    "pt": "Ascaridíase",
+    "es": "Ascariasis"
+  },
+  "facts": [
+    {
+      "id": "g014_f01",
+      "section": "definition",
+      "pt": "Helmintíase intestinal por Ascaris; carga elevada pode causar obstrução e migração biliar.",
+      "es": "Helmintiasis intestinal por Ascaris; una carga elevada puede causar obstrucción y migración biliar.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g014_f02",
+      "section": "initial",
+      "pt": "Pode ser assintomática ou causar desconforto abdominal; sintomas respiratórios transitórios podem ocorrer durante migração larvária.",
+      "es": "Puede ser asintomática o causar molestias abdominales; pueden aparecer síntomas respiratorios transitorios durante migración larvaria.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g014_f03",
+      "section": "diagnosis",
+      "pt": "Pesquisar ovos nas fezes conforme contexto; dor focal ou sinais obstrutivos exigem investigação por imagem e diagnóstico diferencial.",
+      "es": "Buscar huevos en heces según contexto; dolor focal o signos obstructivos exigen imagen y diagnóstico diferencial.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g014_f04",
+      "section": "treatment",
+      "pt": "Tratar infecção e orientar saneamento/higiene; abdome agudo não deve ser manejado apenas com vermífugo ambulatorial.",
+      "es": "Tratar infección y orientar saneamiento/higiene; un abdomen agudo no debe manejarse solo con antiparasitario ambulatorio.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g014_f05",
+      "section": "doses",
+      "pt": "Adulto com infecção não complicada: albendazol 400 mg por via oral em dose única, com estômago vazio, conforme referência CDC.",
+      "es": "Adulto con infección no complicada: albendazol 400 mg por vía oral en dosis única, con estómago vacío, según referencia CDC.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g014_f06",
+      "section": "monitoring",
+      "pt": "Avaliar resolução e reinfecção em áreas endêmicas; retorno se vômitos persistentes, dor progressiva ou distensão.",
+      "es": "Evaluar resolución y reinfección en áreas endémicas; retorno si vómitos persistentes, dolor progresivo o distensión.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g014_f07",
+      "section": "disposition",
+      "pt": "Obstrução, peritonismo, icterícia febril ou pancreatite suspeita exigem hospital e avaliação cirúrgica/endoscópica.",
+      "es": "Obstrucción, peritonismo, ictericia febril o sospecha de pancreatitis requieren hospital y valoración quirúrgica/endoscópica.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g014_f08",
+      "section": "special",
+      "pt": "Gestação e crianças pequenas exigem avaliação específica de risco/benefício e autorização local; recomendações de campanhas coletivas não equivalem a prescrição individual.",
+      "es": "Embarazo y niños pequeños exigen evaluación específica de riesgo/beneficio y autorización local; recomendaciones de campañas colectivas no equivalen a prescripción individual.",
+      "references": [
+        1
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A infecção não complicada e a complicação mecânica exigem respostas distintas. Eliminar o helminto não resolve necessariamente uma obstrução já estabelecida, e sintomas biliares precisam de investigação dirigida. Essa separação determina a escolha entre tratamento ambulatorial e avaliação hospitalar.",
+      "es": "La infección no complicada y la complicación mecánica requieren respuestas distintas. Eliminar el helminto no resuelve necesariamente una obstrucción establecida y los síntomas biliares necesitan un estudio dirigido. Esta separación determina la elección entre tratamiento ambulatorio y evaluación hospitalaria.",
+      "sources": [
+        "CDC"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "CDC",
+      "title": "Clinical care of soil-transmitted helminths",
+      "url": "https://www.cdc.gov/sth/hcp/clinical-care/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "OPENED_CURRENT_SOURCE_REQUIRES_CLAIM_AUDIT",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "scoped_check_at": "2026-10-04",
+      "scoped_check_locator": "Treatment options table"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

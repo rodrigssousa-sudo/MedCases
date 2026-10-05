@@ -1,9 +1,11 @@
 import '../models/protocol_model.dart';
+import 'gi_batch01_approved_projections.dart';
+import '../services/gi_batch01_publication_state.dart';
 
 /// Base de protocolos clínicos MedCases Pro
 /// Fontes: AHA/ACC, ESC, SCCM, Surviving Sepsis Campaign, SBN, SBH,
 /// Harrison's Principles (21ª ed.), UpToDate, Micromedex.
-const List<ProtocolModel> protocolsDatabase = [
+const List<ProtocolModel> _preGiBatch01ProtocolsDatabase = [
   // ─────────────────────────────────────────────
   //  CARDIOVASCULAR
   // ─────────────────────────────────────────────
@@ -25505,3 +25507,7 @@ drugs: [
     doNotDo: {"pt": [], "es": []},
   ),
 ];
+
+// All Study and Plantao projections switch together in the same app bundle.
+final List<ProtocolModel> _giBatch01ProtocolsDatabase = applyApprovedGiBatch01(_preGiBatch01ProtocolsDatabase);
+List<ProtocolModel> get protocolsDatabase => GiBatch01PublicationState.active.value ? _giBatch01ProtocolsDatabase : _preGiBatch01ProtocolsDatabase;

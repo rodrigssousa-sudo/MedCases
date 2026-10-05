@@ -1,0 +1,16 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 53,
+  "owner": "ileo_paralitico",
+  "approvedClinicalPayloadSHA256": "85ae5ce4b5d5e8a1ca6a4f8dc5872e6948aa7b708a0f4181224074eccddedc90",
+  "selectedApprovedFactIds": [
+    "g053_f01",
+    "g053_f02",
+    "g053_f03",
+    "g053_f04"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

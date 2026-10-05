@@ -1,0 +1,13 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 58,
+  "owner": "intussuscepcao_intestinal_adulto",
+  "approvedClinicalPayloadSHA256": "d8130461793eb23799ba665c6833a06dd81386c9b033da14f7f92a062c8f3bf8",
+  "selectedApprovedFactIds": [
+    "g058_f05"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

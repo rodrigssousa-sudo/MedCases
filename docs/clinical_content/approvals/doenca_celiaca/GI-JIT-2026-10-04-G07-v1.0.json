@@ -1,0 +1,153 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 21,
+  "requested_items": [
+    21
+  ],
+  "existing_ids": [],
+  "title": {
+    "pt": "Doença celíaca",
+    "es": "Enfermedad celíaca"
+  },
+  "facts": [
+    {
+      "id": "g021_f01",
+      "section": "definition",
+      "pt": "Enteropatia imunomediada desencadeada por glúten, com manifestações intestinais e extraintestinais; pode ocorrer sem diarreia. Não equivale a alergia ao trigo nem a sensibilidade não celíaca.",
+      "es": "Enteropatía inmunomediada desencadenada por gluten, con manifestaciones intestinales y extraintestinales; puede existir sin diarrea. No equivale a alergia al trigo ni a sensibilidad no celíaca.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g021_f02",
+      "section": "diagnosis",
+      "pt": "Investigar durante consumo de glúten: sorologia adequada, incluindo IgA total, e avaliação especializada para confirmação. Deficiência de IgA exige estratégia sorológica própria; sorologia negativa não encerra investigação se suspeita forte.",
+      "es": "Investigar durante el consumo de gluten: serología adecuada, incluida IgA total, y evaluación especializada para confirmación. El déficit de IgA exige estrategia serológica propia; una serología negativa no cierra el estudio ante sospecha fuerte.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g021_f03",
+      "section": "diagnosis",
+      "pt": "Endoscopia com biópsias duodenais permanece importante. Existem critérios específicos para diagnóstico sem biópsia em pacientes selecionados; não aplicar esse caminho automaticamente a qualquer teste positivo.",
+      "es": "La endoscopia con biopsias duodenales sigue siendo importante. Existen criterios específicos para diagnóstico sin biopsia en pacientes seleccionados; no aplicar esa vía automáticamente a cualquier prueba positiva.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g021_f04",
+      "section": "initial",
+      "pt": "Avaliar anemia, perda ponderal, desidratação e repercussões nutricionais. Evitar iniciar dieta sem glúten antes dos exames, pois pode dificultar a confirmação; se a dieta já começou, planejar investigação com gastroenterologia.",
+      "es": "Evaluar anemia, pérdida de peso, deshidratación y repercusiones nutricionales. Evitar iniciar dieta sin gluten antes de los estudios, porque puede dificultar la confirmación; si ya se inició, planificar el estudio con gastroenterología.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g021_f05",
+      "section": "treatment",
+      "pt": "Após confirmação, dieta estrita sem glúten, orientação nutricional e prevenção de contaminação cruzada. Corrigir deficiências documentadas; suplementos não substituem a retirada do glúten.",
+      "es": "Tras confirmar, dieta estricta sin gluten, orientación nutricional y prevención de contaminación cruzada. Corregir carencias documentadas; los suplementos no sustituyen la retirada del gluten.",
+      "references": [
+        3
+      ]
+    },
+    {
+      "id": "g021_f06",
+      "section": "monitoring",
+      "pt": "Acompanhar sintomas, peso, deficiências e sorologia. Persistência exige verificar exposição inadvertida e outras causas antes de diagnosticar refratariedade; considerar colite microscópica, intolerâncias e insuficiência pancreática.",
+      "es": "Vigilar síntomas, peso, carencias y serología. La persistencia exige verificar exposición inadvertida y otras causas antes de diagnosticar refractariedad; considerar colitis microscópica, intolerancias e insuficiencia pancreática.",
+      "references": [
+        3
+      ]
+    },
+    {
+      "id": "g021_f07",
+      "section": "disposition",
+      "pt": "Desidratação, desnutrição grave, sangramento ou abdome agudo exigem atendimento urgente. Quadro estável segue ambulatorialmente, com plano nutricional e retorno documentados.",
+      "es": "Deshidratación, desnutrición grave, sangrado o abdomen agudo requieren atención urgente. El cuadro estable continúa ambulatoriamente, con plan nutricional y seguimiento documentados.",
+      "references": [
+        3,
+        2
+      ]
+    },
+    {
+      "id": "g021_f08",
+      "section": "special",
+      "pt": "Crianças precisam acompanhar crescimento e critérios diagnósticos pediátricos. Gestação exige atenção às carências; não prescrever corticoide para toda celíaca sintomática. Doença refratária requer centro especializado.",
+      "es": "Los niños necesitan seguimiento del crecimiento y criterios diagnósticos pediátricos. El embarazo exige atención a las carencias; no prescribir corticoide para toda enfermedad celíaca sintomática. La enfermedad refractaria requiere centro especializado.",
+      "references": [
+        3,
+        1
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A dieta interfere tanto na doença quanto na investigação. Retirar glúten antes de testar pode reduzir a chance de demonstrar alterações diagnósticas. Depois da confirmação, o raciocínio se inverte: o controle depende de evitar exposição e acompanhar recuperação clínica e nutricional.",
+      "es": "La dieta influye tanto en la enfermedad como en su estudio. Retirar el gluten antes de realizar pruebas puede reducir la posibilidad de demostrar alteraciones diagnósticas. Tras la confirmación, el razonamiento se invierte: el control depende de evitar exposición y seguir la recuperación clínica y nutricional.",
+      "sources": [
+        "ES25",
+        "DX",
+        "TX"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "ES25",
+      "title": "ESsCD 2025: Diagnosis and Management of Coeliac Disease in Adults, Part 1",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12704582/",
+      "organization_or_authors": "ESsCD",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "ESsCD",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "DX",
+      "title": "Diagnosis of Celiac Disease",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease/diagnosis",
+      "organization_or_authors": "NIDDK",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "scope": "Consulta em 2026",
+      "source_type": "official_clinical_source",
+      "publication": "NIDDK",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "TX",
+      "title": "Treatment for Celiac Disease",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease/treatment",
+      "organization_or_authors": "NIDDK",
+      "year": 2026,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "scope": "Consulta em 2026",
+      "source_type": "official_clinical_source",
+      "publication": "NIDDK",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

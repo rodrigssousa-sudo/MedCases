@@ -1,0 +1,20 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 22,
+  "owner": "sensibilidade_gluten_nao_celiaca",
+  "approvedClinicalPayloadSHA256": "a77673891e847cc27d100c718a77b19fac1ad3c3260e98a9a5f8d84b1ab5c567",
+  "selectedApprovedFactIds": [
+    "g022_f01",
+    "g022_f02",
+    "g022_f03",
+    "g022_f04",
+    "g022_f05",
+    "g022_f06",
+    "g022_f07",
+    "g022_f08"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

@@ -1,0 +1,16 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 31,
+  "owner": "doenca_inflamatoria_intestinal_nao_classificada",
+  "approvedClinicalPayloadSHA256": "a967a5cb5950742f1d05002dbb3333cb2686a6ee7c6dcedde336a7d9ef66ade1",
+  "selectedApprovedFactIds": [
+    "g031_f01",
+    "g031_f02",
+    "g031_f03",
+    "g031_f04"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

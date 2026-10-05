@@ -1,0 +1,20 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 46,
+  "owner": "apendicite_aguda",
+  "approvedClinicalPayloadSHA256": "82004edbd1141d1f0b87d39b115d6aa4bbd907eeede4ca8149d00af4e882d450",
+  "selectedApprovedFactIds": [
+    "g046_f01",
+    "g046_f02",
+    "g046_f03",
+    "g046_f04",
+    "g046_f05",
+    "g046_f06",
+    "g046_f07",
+    "g046_f08"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

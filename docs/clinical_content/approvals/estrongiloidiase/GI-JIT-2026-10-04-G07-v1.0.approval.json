@@ -1,0 +1,21 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 18,
+  "owner": "estrongiloidiase",
+  "approvedClinicalPayloadSHA256": "e3aae0f8d5e1e1676fd8d245a69940c09d3190cacf7c7b65ff676dd80226a1f5",
+  "selectedApprovedFactIds": [
+    "g018_f01",
+    "g018_f02",
+    "g018_f03",
+    "g018_f04",
+    "g018_f05",
+    "g018_f06",
+    "g018_f07",
+    "g018_f08",
+    "g018_f09"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

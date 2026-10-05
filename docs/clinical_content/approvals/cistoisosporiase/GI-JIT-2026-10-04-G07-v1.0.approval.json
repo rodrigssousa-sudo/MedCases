@@ -1,0 +1,22 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 12,
+  "owner": "cistoisosporiase",
+  "approvedClinicalPayloadSHA256": "4a1261917bfff3bb798ff60b13bb30645857741a7ae57624d80f0085b43263ea",
+  "selectedApprovedFactIds": [
+    "g012_f01",
+    "g012_f02",
+    "g012_f03",
+    "g012_f04",
+    "g012_f05",
+    "g012_f06",
+    "g012_f07",
+    "g012_f08",
+    "g012_f09",
+    "g012_f10"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

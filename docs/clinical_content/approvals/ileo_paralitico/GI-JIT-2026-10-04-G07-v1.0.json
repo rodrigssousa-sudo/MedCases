@@ -1,0 +1,101 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 53,
+  "requested_items": [
+    53
+  ],
+  "existing_ids": [
+    "ileo_paralitico"
+  ],
+  "title": {
+    "pt": "Íleo paralítico",
+    "es": "Íleo paralítico"
+  },
+  "facts": [
+    {
+      "id": "g053_f01",
+      "section": "definition",
+      "pt": "Redução transitória da propulsão intestinal sem ponto de bloqueio mecânico; pode ocorrer após cirurgia, infecção, distúrbios eletrolíticos ou fármacos.",
+      "es": "Reducción transitoria de la propulsión intestinal sin un punto de bloqueo mecánico; puede ocurrir tras cirugía, infección, alteraciones electrolíticas o fármacos.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g053_f02",
+      "section": "diagnosis",
+      "pt": "Examinar, revisar medicações e eletrólitos e obter imagem se houver dúvida de obstrução, complicação pós-operatória ou isquemia. Ausculta isolada não distingue com segurança íleo de obstrução.",
+      "es": "Examinar, revisar medicamentos y electrolitos y obtener imágenes si hay dudas sobre obstrucción, complicación posoperatoria o isquemia. La auscultación aislada no distingue con seguridad íleo de obstrucción.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g053_f03",
+      "section": "treatment",
+      "pt": "Tratar a causa, corrigir eletrólitos, reduzir opioides e anticolinérgicos quando possível e estimular mobilização apropriada. Sonda e restrição oral dependem de vômitos e distensão; não usar neostigmina automaticamente como se todo íleo fosse Ogilvie.",
+      "es": "Tratar la causa, corregir electrolitos, reducir opioides y anticolinérgicos cuando sea posible y favorecer la movilización apropiada. La sonda y restricción oral dependen de vómitos y distensión; no usar neostigmina automáticamente como si todo íleo fuera Ogilvie.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g053_f04",
+      "section": "disposition",
+      "pt": "Dor focal crescente, peritonismo, febre ou deterioração exigem rever imediatamente o diagnóstico e envolver cirurgia. Retomar dieta conforme recuperação e tolerância, sem prolongar jejum desnecessariamente.",
+      "es": "El dolor focal creciente, peritonismo, fiebre o deterioro requieren revisar inmediatamente el diagnóstico e involucrar a cirugía. Reiniciar la alimentación según recuperación y tolerancia, sin prolongar el ayuno innecesariamente.",
+      "references": [
+        1
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A parada funcional do trânsito pode reproduzir sintomas de bloqueio mecânico. A distinção muda a conduta: corrigir precipitantes é central no íleo, enquanto uma obstrução mecânica pode exigir intervenção. A evolução clínica deve ser coerente com o diagnóstico inicialmente proposto.",
+      "es": "La detención funcional del tránsito puede reproducir síntomas de bloqueo mecánico. La distinción modifica la conducta: corregir precipitantes es central en el íleo, mientras que una obstrucción mecánica puede exigir intervención. La evolución clínica debe ser coherente con el diagnóstico inicialmente propuesto.",
+      "sources": [
+        "gi",
+        "ps"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "gi",
+      "title": "Gastrointestinal Complications PDQ",
+      "url": "https://www.cancer.gov/about-cancer/treatment/side-effects/constipation/gi-complications-hp-pdq",
+      "organization_or_authors": "NCI",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LIVING",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "NCI",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "ps",
+      "title": "Treatment for Intestinal Pseudo-obstruction",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/intestinal-pseudo-obstruction/treatment",
+      "organization_or_authors": "NIDDK",
+      "year": 2021,
+      "status": "SUPPORTIVE",
+      "scope": "",
+      "source_type": "supportive_evidence",
+      "publication": "NIDDK",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

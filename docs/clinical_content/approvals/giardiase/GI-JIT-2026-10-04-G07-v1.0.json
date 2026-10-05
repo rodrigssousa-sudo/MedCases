@@ -1,0 +1,246 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 9,
+  "requested_items": [
+    9
+  ],
+  "existing_ids": [
+    "giardiase"
+  ],
+  "title": {
+    "pt": "Giardíase",
+    "es": "Giardiasis"
+  },
+  "facts": [
+    {
+      "id": "g009_f01",
+      "section": "definition",
+      "pt": "Giardíase é infecção por Giardia duodenalis, também chamada G. lamblia / G. intestinalis, transmitida por via fecal-oral. Água/alimentos contaminados, creches e contato sexual com exposição fecal são riscos. Pode ser assintomática ou causar diarreia, gases, fezes gordurosas, cólica e perda de peso.",
+      "es": "La giardiasis es infección por Giardia duodenalis, también llamada G. lamblia / G. intestinalis, transmitida por vía fecal-oral. Agua/alimentos contaminados, guarderías y contacto sexual con exposición fecal son riesgos. Puede ser asintomática o causar diarrea, gases, heces grasas, cólicos y pérdida de peso.",
+      "references": [
+        5,
+        6
+      ]
+    },
+    {
+      "id": "g009_f02",
+      "section": "definition",
+      "pt": "Parasita intestinal pode prejudicar absorção e provocar sintomas prolongados, desnutrição e intolerância transitória à lactose. Persistência de sintomas após tratamento não prova parasita ativo; considerar sequela pós-infecciosa e outros diagnósticos.",
+      "es": "El parásito intestinal puede alterar absorción y causar síntomas prolongados, desnutrición e intolerancia transitoria a lactosa. Síntomas persistentes tras tratamiento no demuestran parásito activo; considerar secuela posinfecciosa y otros diagnósticos.",
+      "references": [
+        1,
+        5
+      ]
+    },
+    {
+      "id": "g009_f03",
+      "section": "diagnosis",
+      "pt": "Confirmar por exame fecal apropriado: antígeno, PCR ou microscopia conforme laboratório. CDC recomenda 3 amostras em dias distintos para aumentar detecção; um negativo isolado não exclui. Imunofluorescência direta é método de referência do CDC, não requisito de disponibilidade universal. Repetir teste após tratar somente se persistem sintomas.",
+      "es": "Confirmar por estudio fecal adecuado: antígeno, PCR o microscopía según laboratorio. CDC recomienda 3 muestras en días diferentes para mejorar detección; un negativo aislado no excluye. Inmunofluorescencia directa es referencia CDC, no requisito de disponibilidad universal. Repetir prueba tras tratar solo ante síntomas persistentes.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g009_f04",
+      "section": "initial",
+      "pt": "Avaliar hidratação, sinais vitais, ingestão e nutrição. Diarreia sanguinolenta, febre importante, dor focal/intensa ou sinais sistêmicos exigem procurar outra etiologia/coinfecção. Desidratação grave, choque ou incapacidade de reidratar por via oral requer atendimento hospitalar.",
+      "es": "Evaluar hidratación, signos vitales, ingesta y nutrición. Diarrea sanguinolenta, fiebre importante, dolor focal/intenso o signos sistémicos requieren buscar otra etiología/coinfección. Deshidratación grave, shock o incapacidad de rehidratar por vía oral requiere atención hospitalaria.",
+      "references": [
+        1,
+        5
+      ]
+    },
+    {
+      "id": "g009_f05",
+      "section": "initial",
+      "pt": "Reidratação é prioridade, sobretudo em lactentes e gestantes. Se tolerado, usar solução de reidratação oral preparada conforme produto e manter nutrição adequada; ajustar o volume ao peso e à gravidade. Confirmar diagnóstico e adequação do fármaco antes de repetir antiparasitário.",
+      "es": "Rehidratación es prioridad, especialmente en lactantes y embarazadas. Si tolera, usar solución de rehidratación oral preparada según producto y mantener nutrición adecuada; ajustar el volumen al peso y a la gravedad. Confirmar diagnóstico y adecuación del fármaco antes de repetir antiparasitario.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g009_f06",
+      "section": "doses",
+      "pt": "Opção para adulto elegível: tinidazol 2 g (2000 mg) por via oral, dose única, com alimento. Não usar duração da amebíase para giardíase. Conferir disponibilidade, indicação e bula local. Metronidazol/nitazoxanida são alternativas reconhecidas; seleção e regime específico exigem confirmação, sem somar tratamentos empiricamente.",
+      "es": "Opción para adulto elegible: tinidazol 2 g (2000 mg) por vía oral, dosis única, con alimento. No usar duración de amebiasis para giardiasis. Confirmar disponibilidad, indicación y prospecto local. Metronidazol/nitazoxanida son alternativas reconocidas; selección y pauta específica requieren confirmación, sin sumar tratamientos empíricamente.",
+      "references": [
+        1,
+        3,
+        4
+      ]
+    },
+    {
+      "id": "g009_f07",
+      "section": "special",
+      "pt": "Conforme a bula dos Estados Unidos: criança maior de 3 anos, tinidazol 50 mg/kg oral em dose única, máximo 2 g, com alimento. Não transpor para lactente/idade menor. Dose em mL exige formulação e concentração validadas; não orientar preparo doméstico com comprimidos. Se não consegue engolir, farmácia/pediatria deve definir apresentação.",
+      "es": "Según el prospecto de Estados Unidos: niño mayor de 3 años, tinidazol 50 mg/kg oral en dosis única, máximo 2 g, con alimento. No trasladar a lactante/menor edad. Dosis en mL exige formulación y concentración validadas; no indicar preparación doméstica con comprimidos. Si no puede tragar, farmacia/pediatría debe definir presentación.",
+      "references": [
+        3
+      ]
+    },
+    {
+      "id": "g009_f08",
+      "section": "special",
+      "pt": "Evitar tinidazol em alergia a nitroimidazóis ou síndrome de Cockayne. Não usar álcool durante e por 3 dias após; rever varfarina, lítio e demais interações. Sintoma neurológico novo ou reação alérgica grave exige parar e avaliar; evitar uso crônico.",
+      "es": "Evitar tinidazol ante alergia a nitroimidazoles o síndrome de Cockayne. No usar alcohol durante y por 3 días después; revisar warfarina, litio y otras interacciones. Síntoma neurológico nuevo o alergia grave exige suspender y evaluar; evitar uso crónico.",
+      "references": [
+        3
+      ]
+    },
+    {
+      "id": "g009_f09",
+      "section": "special",
+      "pt": "Bula não exige redução renal usual fora de hemodiálise; esta altera eliminação e requer plano específico. Na disfunção hepática, usar com cautela, com avaliação individual da função hepática. Gestação exige seleção especializada, evitando tinidazol no primeiro trimestre conforme BASHH. Lactação: se escolhido, não amamentar durante e por 72 horas após última dose segundo bula.",
+      "es": "El prospecto no exige reducción renal habitual fuera de hemodiálisis; esta altera eliminación y requiere plan específico. Ante disfunción hepática, usar con cautela con evaluación individual de la función hepática. Embarazo requiere selección especializada, evitando tinidazol en primer trimestre según BASHH. Lactancia: si se elige, no amamantar durante y por 72 horas tras última dosis según prospecto.",
+      "references": [
+        3,
+        4
+      ]
+    },
+    {
+      "id": "g009_f10",
+      "section": "monitoring",
+      "pt": "Se sintomas continuam, verificar infecção em 3 amostras, reinfecção e adesão/dose antes de declarar resistência. Se exames negativos, sintomas podem persistir semanas/meses sem infecção. Infecção confirmada refratária requer especialista; não repetir ou combinar fármacos automaticamente. Investigar imunodeficiência em falha persistente.",
+      "es": "Si continúan síntomas, verificar infección en 3 muestras, reinfección y adherencia/dosis antes de declarar resistencia. Con estudios negativos pueden persistir síntomas semanas/meses sin infección. Infección confirmada refractaria requiere especialista; no repetir ni combinar automáticamente. Investigar inmunodeficiencia ante fracaso persistente.",
+      "references": [
+        1,
+        4
+      ]
+    },
+    {
+      "id": "g009_f11",
+      "section": "monitoring",
+      "pt": "Lavar mãos com água e sabão, especialmente após banheiro/fraldas e antes de preparar comida; usar água segura e evitar ingerir água recreacional. Limpar superfícies contaminadas e evitar práticas sexuais com exposição fecal durante doença. Não tratar contatos automaticamente sem avaliação clínica/epidemiológica.",
+      "es": "Lavarse manos con agua y jabón, especialmente tras baño/pañales y antes de preparar comida; usar agua segura y evitar tragar agua recreativa. Limpiar superficies contaminadas y evitar prácticas sexuales con exposición fecal durante enfermedad. No tratar contactos automáticamente sin evaluación clínica/epidemiológica.",
+      "references": [
+        6
+      ]
+    },
+    {
+      "id": "g009_f12",
+      "section": "monitoring",
+      "pt": "Alta ambulatorial se estável, hidratado, tolerando ingestão e com seguimento. Monitorar diarreia, peso e tolerância. Retorno imediato se desidratação, sangue, febre importante ou piora. Assintomático com Giardia exige decisão individual de tratar conforme transmissão/risco, não regra universal. Cumprir notificações locais quando aplicável.",
+      "es": "Alta ambulatoria si estable, hidratado, tolera ingesta y tiene seguimiento. Controlar diarrea, peso y tolerancia. Volver inmediatamente ante deshidratación, sangre, fiebre importante o empeoramiento. Asintomático con Giardia exige decisión individual según transmisión/riesgo, no regla universal. Cumplir notificaciones locales cuando corresponda.",
+      "references": [
+        1,
+        2
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A melhora parasitológica e a recuperação funcional intestinal não precisam ocorrer simultaneamente. Persistência de gases ou intolerância alimentar deve ser interpretada com exames e história de exposição, evitando confundir sequela pós-infecciosa com resistência e multiplicar cursos de antibiótico sem confirmação.",
+      "es": "La mejoría parasitológica y la recuperación funcional intestinal no necesariamente ocurren al mismo tiempo. La persistencia de gases o intolerancia alimentaria debe interpretarse con estudios y antecedentes de exposición, evitando confundir secuela posinfecciosa con resistencia y multiplicar cursos de antibiótico sin confirmación.",
+      "sources": [
+        "G5",
+        "G6",
+        "G1",
+        "G2",
+        "G3",
+        "G4"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "G1",
+      "title": "Patient care for Giardia infection",
+      "url": "https://www.cdc.gov/giardia/hcp/clinical-care/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "scope": "20/02/2024; seleção terapêutica e falha.",
+      "verified_at": null,
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "RECHECK_PENDING",
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "G2",
+      "title": "Clinical testing and diagnosis for Giardia",
+      "url": "https://www.cdc.gov/giardia/hcp/diagnosis-testing/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "scope": "08/02/2024; amostras e métodos.",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "OPENED_CURRENT_SOURCE_REQUIRES_CLAIM_AUDIT",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "G3",
+      "title": "Tinidazole tablets label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=45fa3ebd-52da-4987-82a1-4a64f99785a7",
+      "organization_or_authors": "DailyMed / Rising, repackaged RemedyRepack",
+      "year": 2026,
+      "status": "AUTHORITATIVE_PRODUCT_LABEL",
+      "scope": "Atualização18/08/2026; indicação, dose e segurança. Bula US, conferir produto local.",
+      "source_type": "official_product_label",
+      "publication": "DailyMed / Rising, repackaged RemedyRepack",
+      "doi": "",
+      "review_state": "OPENED_CURRENT_SOURCE_REQUIRES_CLAIM_AUDIT",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "G4",
+      "title": "Sexually transmitted enteric infections guideline",
+      "url": "https://journals.sagepub.com/doi/10.1177/09564624231168217",
+      "organization_or_authors": "BASHH",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL_CONTEXT_SPECIFIC",
+      "scope": "Final2023 DOI10.1177/09564624231168217; adultos com transmissão sexual, dose oral corroborada; não copiar alternativas conflitantes.",
+      "verified_at": null,
+      "source_type": "official_clinical_source",
+      "publication": "BASHH",
+      "doi": "",
+      "review_state": "RECHECK_PENDING",
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "G5",
+      "title": "Symptoms of Giardia infection",
+      "url": "https://www.cdc.gov/giardia/signs-symptoms/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2023,
+      "status": "AUTHORITATIVE_PATIENT_GUIDANCE",
+      "scope": "Clínica e complicações; data da página conferir sem inventar revisão2026.",
+      "verified_at": null,
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "RECHECK_PENDING",
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "G6",
+      "title": "Giardia prevention and control",
+      "url": "https://www.cdc.gov/giardia/prevention/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_CURRENT_PORTAL",
+      "scope": "Higiene, água e transmissão.",
+      "verified_at": null,
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "RECHECK_PENDING",
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

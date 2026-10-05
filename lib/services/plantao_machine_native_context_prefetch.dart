@@ -1,3 +1,4 @@
+import 'gi_batch01_publication_state.dart';
 import '../utils/clinical_time_unit_presentation.dart';
 import '../data/new_pathology_approved_hashes.dart';
 import 'dart:async';
@@ -291,7 +292,11 @@ class PlantaoBundledPhase24MachineNativeRegistrySource
     if (key == null) return const <Map<String, dynamic>>[];
     final raw = snapshot[key];
     if (raw is! List) return const <Map<String, dynamic>>[];
-    return raw
+    final baseline = snapshot['giBatch01BaselineRows'];
+    final selected = !GiBatch01PublicationState.active.value && baseline is Map && baseline[key] is List
+        ? <dynamic>[...raw.where((row) => row is! Map || !GiBatch01PublicationState.expectedHashes.containsKey(row['canonicalKey'] ?? row['canonicalPathologyKey'])), ...baseline[key]]
+        : raw;
+    return selected
         .whereType<Map>()
         .map((row) => row.cast<String, dynamic>())
         .where((row) => row['enabled'] != false)
@@ -627,7 +632,7 @@ class PlantaoMachineNativeContextPrefetch {
   PlantaoMachineNativeContextPrefetch({
     PlantaoMachineNativeRegistrySource? source,
     this.cacheTtl = const Duration(minutes: 10),
-  }) : _source = source ?? PlantaoFailoverMachineNativeRegistrySource();
+  }) : _source = source ?? _GiBatch01RegistrySource(PlantaoFailoverMachineNativeRegistrySource());
 
   static final instance = PlantaoMachineNativeContextPrefetch();
 
@@ -695,6 +700,7 @@ class PlantaoMachineNativeContextPrefetch {
     );
   }
 
+  bool _giBatchActive = GiBatch01PublicationState.active.value;
   Future<PlantaoMachineNativePrefetchResult> prefetch({
     required String userText,
     required String language,
@@ -702,6 +708,12 @@ class PlantaoMachineNativeContextPrefetch {
     if (userText.trim().isEmpty)
       return PlantaoMachineNativePrefetchResult.empty;
 
+    if (_giBatchActive != GiBatch01PublicationState.active.value) {
+      _giBatchActive = GiBatch01PublicationState.active.value;
+      _identityCache = null;
+      _identityAt = null;
+      _packs.clear();
+    }
     // M59_PHYSICAL_REGISTRY_READ_PLANE_V1
     final phenotype = PlantaoCanonicalPhenotypeResolver.resolve(userText);
     final identityRows = await _identities();
@@ -888,7 +900,7 @@ class PlantaoMachineNativeContextPrefetch {
     final approvedEap = key == 'edema_agudo_pulmao' &&
         rule?['version'] == 'JIT-2026-10-02-v1.0' &&
         rule?['approvedClinicalPayloadSha256'] == '0b9f8fabc6598b964edc9d7161b71f49f56da555a7cbecc59055f6d3652963f7';
-    final approvedNewPathology = const {'NEW-JIT-2026-10-02-v1.0', 'NEW-JIT-2026-10-02-G02-v1.0', 'NEW-JIT-2026-10-03-G03-v1.0', 'NEW-JIT-2026-10-03-G04-v1.0', 'NEW-JIT-2026-10-03-G05-v1.0', 'TOX-JIT-2026-10-03-G06-v1.0'}.contains(rule?['version']) &&
+    final approvedNewPathology = const {'NEW-JIT-2026-10-02-v1.0', 'NEW-JIT-2026-10-02-G02-v1.0', 'NEW-JIT-2026-10-03-G03-v1.0', 'NEW-JIT-2026-10-03-G04-v1.0', 'NEW-JIT-2026-10-03-G05-v1.0', 'TOX-JIT-2026-10-03-G06-v1.0', 'GI-JIT-2026-10-04-G07-v1.0'}.contains(rule?['version']) &&
         newPathologyApprovedHashes[key] != null &&
         rule?['approvedClinicalPayloadSha256'] == newPathologyApprovedHashes[key];
     final completeApprovedPayload = approvedNewPathology || approvedG02 || approvedAvc || approvedAnaphylaxis || approvedPcr || approvedTep || approvedIam || approvedMeningitis || approvedAdrenal || approvedThyroid || approvedNeutropenia || approvedDpoc || approvedStatus || approvedHypo || approvedEap;
@@ -1264,4 +1276,32 @@ class _CachedPack {
   const _CachedPack(this.at, this.result);
   final DateTime at;
   final PlantaoMachineNativePrefetchResult result;
+}
+
+/// Active G07 owners use the hash-matched projections shipped in this bundle.
+/// Old clients continue seeing unchanged legacy registry rows.
+class _GiBatch01RegistrySource implements PlantaoMachineNativeRegistrySource, PlantaoMachineNativeRegistryDiagnosticSource {
+  _GiBatch01RegistrySource(this.primary);
+  final PlantaoMachineNativeRegistrySource primary;
+  final bundled = PlantaoBundledPhase24MachineNativeRegistrySource();
+  final _reads = <String, PlantaoMachineNativeRegistryReadDiagnostic?>{};
+  @override
+  PlantaoMachineNativeRegistryReadDiagnostic? diagnosticFor(String collection) => _reads[collection];
+  @override
+  Future<List<Map<String,dynamic>>> loadEnabled(String collection) async {
+    final legacy=await primary.loadEnabled(collection);
+    _reads[collection] = primary is PlantaoMachineNativeRegistryDiagnosticSource ? (primary as PlantaoMachineNativeRegistryDiagnosticSource).diagnosticFor(collection) : null;
+    if (!GiBatch01PublicationState.active.value) return legacy;
+    final current=await bundled.loadEnabled(collection);
+    final owners=GiBatch01PublicationState.expectedHashes;
+    return [...legacy.where((r)=>!owners.containsKey(r['canonicalKey'] ?? r['canonicalPathologyKey'])), ...current.where((r)=>owners.containsKey(r['canonicalKey'] ?? r['canonicalPathologyKey']))];
+  }
+  @override
+  Future<List<Map<String,dynamic>>> loadPathology(String collection,String canonicalKey,{String fieldPath='canonicalPathologyKey'}) async {
+    final useBundle=GiBatch01PublicationState.active.value && GiBatch01PublicationState.expectedHashes.containsKey(canonicalKey);
+    final source=useBundle?bundled:primary;
+    final rows=await source.loadPathology(collection,canonicalKey,fieldPath:fieldPath);
+    _reads[collection]=source is PlantaoMachineNativeRegistryDiagnosticSource ? (source as PlantaoMachineNativeRegistryDiagnosticSource).diagnosticFor(collection) : null;
+    return rows;
+  }
 }

@@ -1,0 +1,102 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 42,
+  "requested_items": [
+    42,
+    45
+  ],
+  "existing_ids": [
+    "diverticulose_2026"
+  ],
+  "title": {
+    "pt": "Diverticulose e doença diverticular sintomática não complicada",
+    "es": "Diverticulosis y enfermedad diverticular sintomática no complicada"
+  },
+  "facts": [
+    {
+      "id": "g042_f01",
+      "section": "definition",
+      "pt": "Diverticulose é a presença de divertículos colônicos, muitas vezes incidental. Sintomas crônicos atribuídos a divertículos, sem inflamação aguda ou complicação, constituem um ramo clínico diferente da diverticulite.",
+      "es": "La diverticulosis es la presencia de divertículos colónicos, a menudo incidental. Los síntomas crónicos atribuidos a divertículos, sin inflamación aguda ni complicaciones, constituyen una rama clínica diferente de la diverticulitis.",
+      "references": [
+        2
+      ]
+    },
+    {
+      "id": "g042_f02",
+      "section": "diagnosis",
+      "pt": "Não atribuir toda dor à diverticulose encontrada em colonoscopia. Considerar síndrome do intestino irritável, câncer e colite; febre ou dor focal aguda exige investigar diverticulite.",
+      "es": "No atribuir todo dolor a la diverticulosis hallada en una colonoscopia. Considerar síndrome de intestino irritable, cáncer y colitis; la fiebre o dolor focal agudo requieren investigar diverticulitis.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g042_f03",
+      "section": "treatment",
+      "pt": "Diverticulose assintomática não exige antibiótico. Na doença sintomática sem diverticulite, priorizar alimentação com fibras conforme tolerância, líquidos adequados, atividade física e manejo da constipação; evitar antibióticos rotineiros.",
+      "es": "La diverticulosis asintomática no requiere antibióticos. En la enfermedad sintomática sin diverticulitis, priorizar alimentación con fibra según tolerancia, líquidos adecuados, actividad física y manejo del estreñimiento; evitar antibióticos rutinarios.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g042_f04",
+      "section": "monitoring",
+      "pt": "Reavaliar sintomas persistentes e sinais de alarme. Sangramento, perda ponderal, anemia ou mudança progressiva do hábito intestinal exigem investigação específica.",
+      "es": "Reevaluar síntomas persistentes y signos de alarma. El sangrado, pérdida de peso, anemia o cambio progresivo del hábito intestinal requieren estudio específico.",
+      "references": [
+        2,
+        1
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A presença anatômica de divertículos não demonstra que eles sejam a causa de qualquer dor. Distinguir achado incidental, sintomas persistentes e inflamação aguda evita antibióticos desnecessários e mantém aberta a investigação de outros diagnósticos.",
+      "es": "La presencia anatómica de divertículos no demuestra que causen cualquier dolor. Distinguir hallazgo incidental, síntomas persistentes e inflamación aguda evita antibióticos innecesarios y mantiene abierta la investigación de otros diagnósticos.",
+      "sources": [
+        "nd",
+        "nice"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "nice",
+      "title": "Diverticular disease: diagnosis and management, NG147",
+      "url": "https://www.nice.org.uk/guidance/ng147/chapter/Recommendations",
+      "organization_or_authors": "NICE",
+      "year": 2019,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "NICE",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "nd",
+      "title": "Diverticular Disease",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/diverticulosis-diverticulitis",
+      "organization_or_authors": "NIDDK",
+      "year": 2021,
+      "status": "SUPPORTIVE",
+      "scope": "",
+      "source_type": "supportive_evidence",
+      "publication": "NIDDK",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

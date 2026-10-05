@@ -1,0 +1,123 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 16,
+  "requested_items": [
+    16
+  ],
+  "existing_ids": [
+    "tricuriase"
+  ],
+  "title": {
+    "pt": "Tricuríase",
+    "es": "Tricuriasis"
+  },
+  "facts": [
+    {
+      "id": "g016_f01",
+      "section": "definition",
+      "pt": "Infecção do intestino grosso por Trichuris; carga elevada pode provocar colite, anemia e comprometimento nutricional.",
+      "es": "Infección del intestino grueso por Trichuris; una carga elevada puede causar colitis, anemia y afectación nutricional.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g016_f02",
+      "section": "initial",
+      "pt": "Diarreia persistente, dor e tenesmo em contexto epidemiológico sugerem investigação; prolapso retal pode ocorrer em doença intensa.",
+      "es": "Diarrea persistente, dolor y tenesmo en contexto epidemiológico sugieren investigación; puede aparecer prolapso rectal en enfermedad intensa.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g016_f03",
+      "section": "diagnosis",
+      "pt": "Confirmar por pesquisa de ovos nas fezes; avaliar hemograma, hidratação e estado nutricional conforme gravidade.",
+      "es": "Confirmar con búsqueda de huevos en heces; evaluar hemograma, hidratación y estado nutricional según gravedad.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g016_f04",
+      "section": "treatment",
+      "pt": "Antiparasitário e correção de repercussões nutricionais; diferenciar outras colites antes de atribuir toda diarreia à parasitose.",
+      "es": "Antiparasitario y corrección de repercusiones nutricionales; diferenciar otras colitis antes de atribuir toda diarrea a parasitosis.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g016_f05",
+      "section": "doses",
+      "pt": "Adulto: albendazol 400 mg por via oral uma vez ao dia durante 3 dias. Não confundir com a dose única usada para ascaridíase.",
+      "es": "Adulto: albendazol 400 mg por vía oral una vez al día durante 3 días. No confundir con la dosis única utilizada para ascariasis.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g016_f06",
+      "section": "monitoring",
+      "pt": "Reavaliar sintomas e reinfecção; persistência exige confirmar adesão, agente e necessidade de nova estratégia, sem repetição indefinida.",
+      "es": "Reevaluar síntomas y reinfección; persistencia exige confirmar adherencia, agente y necesidad de nueva estrategia, sin repetición indefinida.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g016_f07",
+      "section": "disposition",
+      "pt": "Anemia importante, desidratação, sangramento relevante ou prolapso complicado exigem avaliação hospitalar.",
+      "es": "Anemia importante, deshidratación, sangrado relevante o prolapso complicado requieren evaluación hospitalaria.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g016_f08",
+      "section": "special",
+      "pt": "Gestantes e crianças pequenas precisam esquema individualizado; orientar higiene e saneamento para reduzir reinfecção.",
+      "es": "Embarazadas y niños pequeños necesitan pauta individualizada; orientar higiene y saneamiento para reducir reinfección.",
+      "references": [
+        1
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A intensidade da parasitose e a repercussão clínica variam. O tratamento precisa considerar a infecção e também as consequências, como anemia e déficit nutricional. Um esquema eficaz para outra helmintíase não é automaticamente equivalente ao curso indicado para Trichuris.",
+      "es": "La intensidad de la parasitosis y la repercusión clínica varían. El tratamiento debe considerar tanto la infección como sus consecuencias, como anemia y déficit nutricional. Un esquema eficaz para otra helmintiasis no equivale automáticamente al curso indicado para Trichuris.",
+      "sources": [
+        "CDC"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "CDC",
+      "title": "Clinical care of soil-transmitted helminths",
+      "url": "https://www.cdc.gov/sth/hcp/clinical-care/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "review_state": "OPENED_CURRENT_SOURCE_REQUIRES_CLAIM_AUDIT",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT",
+      "scoped_check_at": "2026-10-04",
+      "scoped_check_locator": "Treatment options table"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

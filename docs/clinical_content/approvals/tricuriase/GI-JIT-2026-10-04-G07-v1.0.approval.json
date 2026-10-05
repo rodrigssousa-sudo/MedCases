@@ -1,0 +1,20 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 16,
+  "owner": "tricuriase",
+  "approvedClinicalPayloadSHA256": "46b58f016bd83416ae1b33f6cc6869d834a8e68f13a6729fa7c752127512ff4d",
+  "selectedApprovedFactIds": [
+    "g016_f01",
+    "g016_f02",
+    "g016_f03",
+    "g016_f04",
+    "g016_f05",
+    "g016_f06",
+    "g016_f07",
+    "g016_f08"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

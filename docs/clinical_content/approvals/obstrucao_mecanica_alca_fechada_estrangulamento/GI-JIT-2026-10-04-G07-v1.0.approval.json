@@ -1,0 +1,16 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 59,
+  "owner": "obstrucao_mecanica_alca_fechada_estrangulamento",
+  "approvedClinicalPayloadSHA256": "98641f25703791639937bce57e6b292c8ffcda34528e10e0e7a944c7333de95b",
+  "selectedApprovedFactIds": [
+    "g059_f01",
+    "g059_f02",
+    "g059_f03",
+    "g059_f04"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

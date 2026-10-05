@@ -1,0 +1,20 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 17,
+  "owner": "ancilostomiase",
+  "approvedClinicalPayloadSHA256": "3b06d9657ca22e6949c4a25aad517a8967120dd8c2506b691e487d734b1c667d",
+  "selectedApprovedFactIds": [
+    "g017_f01",
+    "g017_f02",
+    "g017_f03",
+    "g017_f04",
+    "g017_f05",
+    "g017_f06",
+    "g017_f07",
+    "g017_f08"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

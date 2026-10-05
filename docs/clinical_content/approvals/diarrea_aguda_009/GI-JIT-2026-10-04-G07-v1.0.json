@@ -1,0 +1,146 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 3,
+  "requested_items": [
+    3,
+    5,
+    6,
+    35
+  ],
+  "existing_ids": [
+    "diarrea_aguda_009"
+  ],
+  "title": {
+    "pt": "Diarreia aguda infecciosa e gastroenterites",
+    "es": "Diarrea aguda infecciosa y gastroenteritis"
+  },
+  "facts": [
+    {
+      "id": "g003_f01",
+      "section": "definition",
+      "pt": "Síndrome de início recente, com aumento de evacuações líquidas, causada por vírus, bactérias ou parasitas. Gastroenterite viral, bacteriana e colite infecciosa são apresentações ou etiologias deste módulo; identificar o agente muda a conduta.",
+      "es": "Síndrome de comienzo reciente, con aumento de deposiciones líquidas, causada por virus, bacterias o parásitos. La gastroenteritis viral, bacteriana y la colitis infecciosa son presentaciones o etiologías de este módulo; identificar el agente modifica la conducta.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g003_f02",
+      "section": "initial",
+      "pt": "Avaliar perfusão, consciência, tolerância oral e diurese. Corrigir desidratação com solução de reidratação oral; choque, alteração de consciência ou incapacidade de beber exigem reposição intravenosa e reavaliação frequente. Manter alimentação e aleitamento conforme tolerância.",
+      "es": "Evaluar perfusión, conciencia, tolerancia oral y diuresis. Corregir la deshidratación con solución de rehidratación oral; el choque, la alteración de conciencia o la incapacidad para beber requieren reposición intravenosa y reevaluación frecuente. Mantener la alimentación y la lactancia según tolerancia.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g003_f03",
+      "section": "diagnosis",
+      "pt": "Investigar exposições alimentares, viagem, contatos, antibióticos e imunossupressão. Febre, sangue ou muco, dor intensa ou sepse indicam pesquisa fecal de agentes invasivos e STEC; colher hemoculturas quando houver suspeita de bacteremia. Diarreia aquosa leve geralmente não necessita painel amplo.",
+      "es": "Investigar exposiciones alimentarias, viajes, contactos, antibióticos e inmunosupresión. La fiebre, sangre o moco, dolor intenso o sepsis indican estudios fecales de agentes invasivos y STEC; obtener hemocultivos si se sospecha bacteriemia. La diarrea acuosa leve generalmente no requiere un panel amplio.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g003_f04",
+      "section": "treatment",
+      "pt": "Gastroenterite viral: suporte, sem antibiótico. Não tratar automaticamente toda diarreia aquosa ou sanguinolenta com antibióticos. A decisão depende de gravidade, contexto epidemiológico e agente; suspeita de STEC exige evitar antimicrobianos pelo risco de síndrome hemolítico-urêmica.",
+      "es": "Gastroenteritis viral: tratamiento de sostén, sin antibióticos. No tratar automáticamente toda diarrea acuosa o sanguinolenta con antibióticos. La decisión depende de la gravedad, el contexto epidemiológico y el agente; ante sospecha de STEC deben evitarse los antimicrobianos por el riesgo de síndrome urémico hemolítico.",
+      "references": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": "g003_f05",
+      "section": "special",
+      "pt": "Evitar antiperistálticos na diarreia com sangue, febre ou suspeita de colite inflamatória; não transferir esquemas adultos para crianças. Idosos frágeis, gestantes e imunossuprimidos precisam de avaliação individual e menor tolerância à desidratação.",
+      "es": "Evitar los antiperistálticos en la diarrea con sangre, fiebre o sospecha de colitis inflamatoria; no trasladar esquemas de adultos a niños. Las personas mayores frágiles, embarazadas e inmunodeprimidas requieren evaluación individual y menor tolerancia a la deshidratación.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g003_f06",
+      "section": "disposition",
+      "pt": "Internar se choque, lesão renal, distúrbio eletrolítico importante, sepse, incapacidade persistente de hidratação ou complicação abdominal. Alta exige estabilidade, hidratação oral eficaz e orientação para retorno se oligúria, sangue nas fezes, febre persistente ou piora da dor.",
+      "es": "Internar ante choque, lesión renal, alteración electrolítica importante, sepsis, incapacidad persistente de hidratarse o complicación abdominal. El alta requiere estabilidad, hidratación oral eficaz e indicaciones de regreso ante oliguria, sangre en las heces, fiebre persistente o empeoramiento del dolor.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g003_f07",
+      "section": "monitoring",
+      "pt": "Reavaliar se não houver melhora ou se a diarreia persistir; ampliar investigação para parasitoses, C. difficile e causas não infecciosas conforme contexto. Orientar higiene das mãos e segurança alimentar; suspeita de surto exige vigilância sanitária.",
+      "es": "Reevaluar si no hay mejoría o si persiste la diarrea; ampliar el estudio a parasitosis, C. difficile y causas no infecciosas según el contexto. Indicar higiene de manos y seguridad alimentaria; la sospecha de brote requiere vigilancia sanitaria.",
+      "references": [
+        1
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "O primeiro raciocínio é sindrômico: identificar perda de volume e sinais de invasão ou complicação. O nome do agente vem depois quando modifica tratamento ou vigilância. A mesma aparência de diarreia não garante benefício de antibiótico, e a suspeita de STEC muda particularmente essa decisão.",
+      "es": "El primer razonamiento es sindrómico: identificar pérdida de volumen y signos de invasión o complicación. El nombre del agente viene después cuando modifica el tratamiento o la vigilancia. El mismo aspecto de diarrea no garantiza beneficio del antibiótico, y la sospecha de STEC modifica particularmente esa decisión.",
+      "sources": [
+        "idsa",
+        "ecoli"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "idsa",
+      "title": "IDSA: Diagnosis and Management of Infectious Diarrhea",
+      "url": "https://www.idsociety.org/practice-guideline/infectious-diarrhea/",
+      "organization_or_authors": "IDSA",
+      "year": 2017,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "IDSA",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "ecoli",
+      "title": "Information for Clinicians: E. coli infection",
+      "url": "https://www.cdc.gov/ecoli/hcp/guidance/index.html",
+      "organization_or_authors": "CDC",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "travel",
+      "title": "Travelers’ Diarrhea, Yellow Book 2026",
+      "url": "https://www.cdc.gov/yellow-book/hcp/preparing-international-travelers/travelers-diarrhea.html",
+      "organization_or_authors": "CDC",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "CDC",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}

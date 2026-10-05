@@ -1,0 +1,20 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "sourceGroup": 20,
+  "owner": "difilobotriase",
+  "approvedClinicalPayloadSHA256": "d8589df1d549a441abe217ba70a01c706a0242d533485c7582b9e6f08865c5ac",
+  "selectedApprovedFactIds": [
+    "g020_f01",
+    "g020_f02",
+    "g020_f03",
+    "g020_f04",
+    "g020_f05",
+    "g020_f06",
+    "g020_f07",
+    "g020_f08"
+  ],
+  "HUMAN_APPROVAL": "PASS",
+  "CLINICAL_GATE": "PASS",
+  "SECOND_CLINICAL_REVIEW": "NOT_REQUIRED",
+  "guidesStatus": "DRAFT"
+}

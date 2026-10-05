@@ -1,0 +1,108 @@
+{
+  "version": "GI-JIT-2026-10-04-G07-v1.0",
+  "review_date": "2026-10-04",
+  "group": 57,
+  "requested_items": [
+    57
+  ],
+  "existing_ids": [
+    "volvulo_cecal"
+  ],
+  "title": {
+    "pt": "Volvo de ceco",
+    "es": "Vólvulo de ciego"
+  },
+  "facts": [
+    {
+      "id": "g057_f01",
+      "section": "definition",
+      "pt": "Torção ou báscula do ceco, causando obstrução com risco de necrose e perfuração.",
+      "es": "Torsión o báscula del ciego, que causa obstrucción con riesgo de necrosis y perforación.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g057_f02",
+      "section": "initial",
+      "pt": "Jejum, acesso venoso, reposição conforme perfusão e avaliação cirúrgica. Dor persistente, defesa, febre ou choque sugerem sofrimento intestinal e não permitem demora para exames eletivos.",
+      "es": "Ayuno, acceso venoso, reposición según perfusión y evaluación quirúrgica. El dolor persistente, defensa, fiebre o choque sugieren sufrimiento intestinal y no permiten demoras para estudios electivos.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g057_f03",
+      "section": "diagnosis",
+      "pt": "Radiografia pode sugerir o diagnóstico; tomografia esclarece dúvidas e complicações em pacientes estáveis. Ausência de pneumoperitônio não exclui isquemia.",
+      "es": "La radiografía puede sugerir el diagnóstico; la tomografía aclara dudas y complicaciones en pacientes estables. La ausencia de neumoperitoneo no descarta isquemia.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g057_f04",
+      "section": "treatment",
+      "pt": "Avaliação cirúrgica urgente, geralmente com ressecção do segmento. A estratégia de destorção endoscópica usada no sigmoide não deve ser aplicada rotineiramente ao ceco.",
+      "es": "Evaluación quirúrgica urgente, generalmente con resección del segmento. La estrategia de destorsión endoscópica usada en el sigmoides no debe aplicarse rutinariamente al ciego.",
+      "references": [
+        1
+      ]
+    },
+    {
+      "id": "g057_f05",
+      "section": "monitoring",
+      "pt": "Cuidado hospitalar, com reavaliação de dor, distensão, perfusão, diurese e sinais peritoneais. A resolução da distensão não substitui o plano definitivo.",
+      "es": "Atención hospitalaria, con reevaluación de dolor, distensión, perfusión, diuresis y signos peritoneales. La resolución de la distensión no sustituye el plan definitivo.",
+      "references": [
+        1
+      ]
+    }
+  ],
+  "study_explanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "O local da torção modifica o papel da endoscopia. O sucesso possível da destorção no sigmoide não deve ser extrapolado ao ceco. A conduta se concentra em reconhecer comprometimento vascular e obter avaliação cirúrgica sem atraso.",
+      "es": "La localización de la torsión modifica el papel de la endoscopia. El posible éxito de la destorsión del sigmoides no debe extrapolarse al ciego. La conducta se centra en reconocer compromiso vascular y obtener evaluación quirúrgica sin demora.",
+      "sources": [
+        "vol"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "vol",
+      "title": "Management of Colonic Volvulus and Acute Colonic Pseudo-Obstruction",
+      "url": "https://www.ascrsu.com/ascrs/view/ASCRS-Evidence-Based-Guidelines-and-Expert-Consensus/3982019/all/Management_of_Colonic_Volvulus_and_Acute_Colonic_Pseudo_Obstruction__2021_",
+      "organization_or_authors": "ASCRS",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "ASCRS",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    },
+    {
+      "key": "wvol",
+      "title": "WSES consensus guidelines on sigmoid volvulus management",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10186802/",
+      "organization_or_authors": "WSES",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "scope": "",
+      "source_type": "official_clinical_source",
+      "publication": "WSES",
+      "doi": "",
+      "authoring_recorded_at": "2026-10-04",
+      "verified_at": null,
+      "verification_status": "PENDING_FINAL_CLAIM_AUDIT"
+    }
+  ],
+  "status": "CLINICAL_DRAFT_PENDING_AUDIT",
+  "human_approved": false,
+  "publication_authorized": false
+}
