@@ -76,6 +76,7 @@ import '../services/ai_pipeline/plantao/adapters/plantao_versioned_remote_drug_e
 import '../services/clinical_content/clinical_content_platform.dart';
 import '../services/clinical_guides_editorial_service.dart';
 import '../services/clinical_content/clinical_content_models.dart';
+import '../services/clinical_content/clinical_content_contract.dart' show ClinicalContentItem;
 import '../services/clinical_content/clinical_content_gateway.dart';
 import '../services/ai_pipeline/plantao/shadow/plantao_remote_drug_evidence_runtime_observer.dart';
 import '../services/ai_pipeline/plantao/shadow/plantao_shadow_execution_isolator.dart';
@@ -4283,6 +4284,7 @@ class AppProvider extends ChangeNotifier {
   List<String> _matchProtocols(
     String normalizedQuery, {
     List<ProtocolModel>? matchedProtocols,
+    List<ProtocolModel>? clinicalProtocols,
   }) {
     // Protocolos de alta emergência exigem ≥2 palavras da query para match,
     // evitando falsos positivos (ex: "cefaleia" na gripe injeta AVC/HSA).
@@ -4319,7 +4321,7 @@ class AppProvider extends ChangeNotifier {
 
     final results = <String>[];
 
-    for (final p in protocolsDatabase) {
+    for (final p in clinicalProtocols ?? protocolsDatabase) {
       final title = _normalize(tDB(p.title));
       final recognize = _normalize(tDB(p.recognize));
 
@@ -8472,7 +8474,8 @@ class AppProvider extends ChangeNotifier {
       requestCatalog ??= canonicalPlantaoAttestation?.catalogSnapshot ??
           await SharedClinicalCatalog.instance.acquire();
     }
-    bool getRemoteClinicalSource() => requestCatalog != null && !requestCatalog!.isBundled;
+    bool getRemoteClinicalSource() => requestCatalog != null && !requestCatalog!.isBundled && requestCatalog!.usesAuthoredProjection(persistedUserInput, longResponse ? 'study' : 'plantao', activeSessionCtx.locale);
+    List<ProtocolModel> currentClinicalProtocols() => requestCatalog?.schemaVersion == 2 ? requestCatalog!.legacyProtocolPayloads.map((payload) => ClinicalContentModels.protocol(ClinicalContentItem({'canonicalId':payload['id'],'payload':payload}))).toList(growable:false) : protocolsDatabase;
     String catalogContext(String query) => requestCatalog!.context(
         query, longResponse ? 'study' : 'plantao', activeSessionCtx.locale);
 
@@ -9170,12 +9173,14 @@ class AppProvider extends ChangeNotifier {
         final qaProtos = getRemoteClinicalSource() ? <String>[] : _matchProtocolsExtended(
           qaNormalized,
           matchedProtocols: qaMatchedProtocols,
+          clinicalProtocols: currentClinicalProtocols(),
         );
         var qaFinalProtos = getRemoteClinicalSource() ? <String>[] : qaProtos.isNotEmpty
             ? qaProtos
             : _matchProtocols(
                 qaNormalized,
                 matchedProtocols: qaMatchedProtocols,
+          clinicalProtocols: currentClinicalProtocols(),
               );
         if (!longResponse) {
           qaFinalProtos = _appendProtocolClassificationContext(
@@ -9184,7 +9189,7 @@ class AppProvider extends ChangeNotifier {
             currentInput: input,
           );
         }
-        final qaLocalCtx = getRemoteClinicalSource() ? '' : _buildLocalAnswer(qaExpandedInput, sourceLanguage: longResponse ? null : 'pt');
+        final qaLocalCtx = getRemoteClinicalSource() ? '' : _buildLocalAnswer(qaExpandedInput, clinicalProtocols: currentClinicalProtocols(), sourceLanguage: longResponse ? null : 'pt');
         final qaCrosscuttingEvidenceContext = getRemoteClinicalSource() ? '' :
             ClinicalCrosscuttingEvidenceResolver.enrich(
           query: qaExpandedInput,
@@ -10016,12 +10021,14 @@ class AppProvider extends ChangeNotifier {
       final _extProtos = getRemoteClinicalSource() ? <String>[] : _matchProtocolsExtended(
         normalized,
         matchedProtocols: matchedProtocolModels,
+          clinicalProtocols: currentClinicalProtocols(),
       );
       var finalProtocols = getRemoteClinicalSource() ? <String>[] : _extProtos.isNotEmpty
           ? _extProtos
           : _matchProtocols(
               normalized,
               matchedProtocols: matchedProtocolModels,
+          clinicalProtocols: currentClinicalProtocols(),
             );
       if (!longResponse) {
         finalProtocols = _appendProtocolClassificationContext(
@@ -10030,7 +10037,7 @@ class AppProvider extends ChangeNotifier {
           currentInput: input,
         );
       }
-      final localContext = getRemoteClinicalSource() ? '' : _buildLocalAnswer(expandedInput);
+      final localContext = getRemoteClinicalSource() ? '' : _buildLocalAnswer(expandedInput, clinicalProtocols: currentClinicalProtocols());
       final crosscuttingEvidenceContext = getRemoteClinicalSource() ? '' :
           ClinicalCrosscuttingEvidenceResolver.enrich(
         query: expandedInput,
@@ -11991,7 +11998,8 @@ class AppProvider extends ChangeNotifier {
   Future<String> _buildAIAnswerImpl(String input,
       {required AiRequestMode mode}) async {
     final catalog = await SharedClinicalCatalog.instance.acquire();
-    final remoteClinical = !catalog.isBundled;
+    final remoteClinical = !catalog.isBundled && catalog.usesAuthoredProjection(input, 'plantao', _lang);
+    final clinicalProtocols = catalog.schemaVersion == 2 ? catalog.legacyProtocolPayloads.map((payload) => ClinicalContentModels.protocol(ClinicalContentItem({'canonicalId':payload['id'],'payload':payload}))).toList(growable:false) : protocolsDatabase;
     String currentCatalogContext(String query) => catalog.context(query, 'plantao', _lang);
     // ── strictContextIsolation — Passo A: detectar mudança de tema ────────
     // Deve ocorrer ANTES de montar o prompt. Ao mudar de tema:
@@ -12040,9 +12048,9 @@ class AppProvider extends ChangeNotifier {
     final normalized = _normalize(expandedInput);
 
     // ── Passo 2: Retrieval de protocolos (BUILD 325: drug RAG removido) ──────
-    final _extP = remoteClinical ? <String>[] : _matchProtocolsExtended(normalized);
+    final _extP = remoteClinical ? <String>[] : _matchProtocolsExtended(normalized, clinicalProtocols: clinicalProtocols);
     final finalProtocols =
-        remoteClinical ? <String>[] : _extP.isNotEmpty ? _extP : _matchProtocols(normalized);
+        remoteClinical ? <String>[] : _extP.isNotEmpty ? _extP : _matchProtocols(normalized, clinicalProtocols: clinicalProtocols);
 
     // RAG telemetry — visível apenas em kDebugMode
     if (kDebugMode) {
@@ -12054,7 +12062,7 @@ class AppProvider extends ChangeNotifier {
     }
 
     // ── Passo 3: Análise local estruturada ────────────────────────────────
-    final localContext = remoteClinical ? '' : _buildLocalAnswer(expandedInput);
+    final localContext = remoteClinical ? '' : _buildLocalAnswer(expandedInput, clinicalProtocols: clinicalProtocols);
     final crosscuttingEvidenceContext = remoteClinical ? '' :
         ClinicalCrosscuttingEvidenceResolver.enrich(
       query: expandedInput,
@@ -12213,7 +12221,7 @@ class AppProvider extends ChangeNotifier {
         return rawContent;
       }
 
-      final localFallback = remoteClinical ? catalog.displayText(input, 'plantao', sessionLang) : _buildLocalAnswer(input);
+      final localFallback = remoteClinical ? catalog.displayText(input, 'plantao', sessionLang) : _buildLocalAnswer(input, clinicalProtocols: clinicalProtocols);
       // Se o contexto local tem conteúdo médico real (FASE 0/1/2a/2b/3) → exibir
       // Se é contexto interno técnico (FASE 2e/2f) → mostrar mensagem amigável
       final isInternalContext = localFallback.startsWith('CONTEXTO_INTERNO') ||
@@ -12261,7 +12269,7 @@ class AppProvider extends ChangeNotifier {
     // Build 156.2: se chegou aqui sem Gemini disponível, tenta OpenAI legada.
     // Fallback silencioso — sem mensagem de erro visível ao médico.
     if (_openAiKey.isEmpty) {
-      final localFallback = remoteClinical ? catalog.displayText(input, 'plantao', sessionLang) : _buildLocalAnswer(input);
+      final localFallback = remoteClinical ? catalog.displayText(input, 'plantao', sessionLang) : _buildLocalAnswer(input, clinicalProtocols: clinicalProtocols);
       final isInternalContext = localFallback.startsWith('CONTEXTO_INTERNO') ||
           localFallback.startsWith('INSTRUCAO_INTERNA') ||
           localFallback.startsWith('INSTRUCCION_INTERNA');
@@ -12302,7 +12310,7 @@ class AppProvider extends ChangeNotifier {
               : 'Limite de API atingido. Tente novamente mais tarde. ⚕ Apoio educacional.';
         default:
           {
-            final localFallback = remoteClinical ? catalog.displayText(input, 'plantao', sessionLang) : _buildLocalAnswer(input);
+            final localFallback = remoteClinical ? catalog.displayText(input, 'plantao', sessionLang) : _buildLocalAnswer(input, clinicalProtocols: clinicalProtocols);
             final isInternalContext =
                 localFallback.startsWith('CONTEXTO_INTERNO') ||
                     localFallback.startsWith('INSTRUCAO_INTERNA') ||
@@ -12334,6 +12342,7 @@ class AppProvider extends ChangeNotifier {
   List<String> _matchProtocolsExtended(
     String normalizedQuery, {
     List<ProtocolModel>? matchedProtocols,
+    List<ProtocolModel>? clinicalProtocols,
   }) {
     const _highRiskIds = {
       'avc_hemorragico',
@@ -12376,7 +12385,7 @@ class AppProvider extends ChangeNotifier {
 
     if (words.isEmpty) return [];
 
-    for (final p in protocolsDatabase) {
+    for (final p in clinicalProtocols ?? protocolsDatabase) {
       final title = _normalize(tDB(p.title));
       final recognize = _normalize(tDB(p.recognize));
       final matchCount =
@@ -12414,7 +12423,7 @@ class AppProvider extends ChangeNotifier {
   ///   (BUILD 325: FASE 0 removida — fármacos via Google Search Grounding + WebView)
   ///
   /// OUTPUT: contexto estruturado markdown que o Gemini usa para gerar resposta final.
-  String _buildLocalAnswer(String input, {String? sourceLanguage}) {
+  String _buildLocalAnswer(String input, {String? sourceLanguage, List<ProtocolModel>? clinicalProtocols}) {
     final evidenceLanguage = sourceLanguage ?? _lang;
     final bool es = evidenceLanguage == 'es';
 
@@ -14902,7 +14911,7 @@ class AppProvider extends ChangeNotifier {
     ProtocolModel? proto;
     if (winner.protocolId != null) {
       try {
-        proto = protocolsDatabase.firstWhere((p) => p.id == winner!.protocolId);
+        proto = (clinicalProtocols ?? protocolsDatabase).firstWhere((p) => p.id == winner!.protocolId);
       } catch (_) {}
     }
 

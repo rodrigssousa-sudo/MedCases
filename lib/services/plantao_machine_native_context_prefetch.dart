@@ -695,7 +695,7 @@ class PlantaoMachineNativeContextPrefetch {
             ? '$userText\n\n${result.providerPromptBlock}'
             : userText;
     String supplement = '';
-    if (supplementalEvidence != null && result.catalogSnapshot == null) {
+    if (supplementalEvidence != null && (result.catalogSnapshot == null || result.catalogSnapshot!.projectionRoute(userText, 'plantao', language) == 'legacy_source_context')) {
       try { supplement = await supplementalEvidence(result); } catch (_) { /* existing pipeline fallback */ }
     }
     final providerInput = supplement.isEmpty ? internalInput : '$internalInput\n\n$supplement';
@@ -1266,7 +1266,8 @@ class PlantaoVersionedRegistrySource implements PlantaoMachineNativeRegistrySour
       Object? value = row;
       for (final key in fieldPath.split('.')) { value = value is Map ? value[key] : null; }
       if (value == null && collection == 'clinical_action_registry' &&
-          fieldPath == 'match.canonicalPathologyKey') {
+          fieldPath == 'match.canonicalPathologyKey' &&
+          (snapshot.schemaVersion != 2 || !snapshot.isInheritedOwner(canonicalKey))) {
         value = row['canonicalPathologyKey'];
       }
       return value == canonicalKey;

@@ -10,7 +10,7 @@ Future<void> showClinicalCatalogStatus(BuildContext context, Future<Map<String,d
    }
   }
   if(!context.mounted)return;
-  const labels={'activeVersion':'Versão ativa','contentVersion':'Versão consultada','ownerCount':'Patologias','manifestSha256':'Hash do manifest','status':'Estado','coverage':'Cobertura','hashGate':'Integridade dos hashes','parity':'Paridade PT/ES e Estudo/Plantão'};
+  const labels={'activeVersion':'Versão ativa','contentVersion':'Versão consultada','schemaVersion':'Schema','ownerCount':'Patologias','studyPtCount':'Estudo PT','studyEsCount':'Estudo ES','plantaoPtCount':'Plantão PT','plantaoEsCount':'Plantão ES','manifestSha256':'Hash do manifest','status':'Estado','coverage':'Cobertura','hashGate':'Integridade dos hashes','parity':'Paridade PT/ES e Estudo/Plantão'};
   await showDialog<void>(context:context,builder:(context)=>AlertDialog(title:const Text('Catálogo clínico remoto'),content:SizedBox(width:620,child:SingleChildScrollView(child:Column(mainAxisSize:MainAxisSize.min,crossAxisAlignment:CrossAxisAlignment.start,children:[for(final entry in labels.entries)Padding(padding:const EdgeInsets.symmetric(vertical:4),child:SelectableText('${entry.value}: ${result[entry.key] ?? "Não disponível"}')),if(result['validationError']!=null)Text('Validação bloqueada: ${result['validationError']}'),const Text('A contagem de owners não comprova a cobertura por modo e idioma.'),
 for (final owner in (result['owners'] as List? ?? const [])) Padding(padding: const EdgeInsets.symmetric(vertical: 6), child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
  SelectableText('${owner['ownerId']}'),

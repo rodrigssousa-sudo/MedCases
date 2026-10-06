@@ -1,3 +1,4 @@
+import 'clinical_catalog_functional_baseline.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -37,7 +38,7 @@ class FileClinicalCatalogCache implements ClinicalCatalogCache {
   final Directory? directory;
   Future<File> _file() async {
     final root = directory ?? await getApplicationSupportDirectory();
-    final folder = Directory('${root.path}/clinical_catalog_r1');
+    final folder = Directory('${root.path}/clinical_catalog_r2');
     await folder.create(recursive: true);
     return File('${folder.path}/last_valid.json');
   }
@@ -64,7 +65,8 @@ class SharedClinicalCatalog {
   SharedClinicalCatalog._();
   static final ClinicalCatalogRepository instance = ClinicalCatalogRepository(
       // Production coverage floor; partial migration drafts are emulator-only.
-      minimumRemoteOwnerCount: 577,
+      requiredSurfaceOwners: clinicalRequiredSurfaceOwners,
+      minimumRemoteOwnerCount: 577, // Schema-1 compatibility only; schema-2 uses exact surface sets.
       remote: FirestoreClinicalCatalogRemote(),
       cache: FileClinicalCatalogCache(),
       onRead: (metadata) {

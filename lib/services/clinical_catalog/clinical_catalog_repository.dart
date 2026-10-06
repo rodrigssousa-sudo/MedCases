@@ -1,3 +1,4 @@
+import 'clinical_catalog_functional_baseline.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
@@ -43,6 +44,8 @@ abstract interface class ClinicalCatalogCache {
   Future<void> write(Map<String, dynamic> envelope);
 }
 
+const clinicalFunctionalCollections = [...clinicalRegistryCollections, 'clinical_projection_registry', 'clinical_legacy_protocols'];
+
 enum ClinicalCatalogOrigin { remote, cache, bundled }
 
 /// Immutable lease: a request keeps this exact version across all async reads.
@@ -66,6 +69,21 @@ class ClinicalCatalogSnapshot {
   List<Map<String, dynamic>> rows(String collection) =>
       ((_data[collection] as List?) ?? const []).cast<Map<String, dynamic>>();
 
+  bool isInheritedOwner(String owner) {
+    final matches=rows('clinical_projection_registry').where((r)=>r['canonicalPathologyKey']==owner);
+    return matches.isNotEmpty && matches.every((r)=>r['migrationStatus']=='MIGRATION_BASELINE_INHERITED');
+  }
+  String projectionRoute(String query, String mode, String language) {
+    final owner = matchOwner(query);
+    if (owner == null) return 'absent';
+    final p = projections(mode, language, owner: owner);
+    if (p.isEmpty) return 'absent';
+    return p.every((x) => x['format'] == 'legacy_source') ? 'legacy_source_context' : 'authored_projection';
+  }
+  bool usesAuthoredProjection(String query, String mode, String language) => projectionRoute(query, mode, language) == 'authored_projection';
+  List<Map<String,dynamic>> get legacyProtocolPayloads => rows('clinical_legacy_protocols').map((r)=>(r['payload'] as Map).cast<String,dynamic>()).toList(growable:false);
+  Set<String> surfaceOwners(String mode,String locale) => {for(final row in rows(schemaVersion==2?'clinical_projection_registry':'clinical_content_registry')) if((row['payload'] as Map?)?[locale]?[mode+'Projection'] is Map) row['canonicalPathologyKey'] as String};
+
   List<Map<String, dynamic>> projections(String mode, String language,
       {String? owner}) {
     if (!const ['study', 'plantao'].contains(mode)) {
@@ -73,8 +91,8 @@ class ClinicalCatalogSnapshot {
     }
     final locale = language.toLowerCase().startsWith('pt') ? 'pt' : 'es';
     return [
-      for (final row in rows('clinical_content_registry'))
-        if (owner == null || row['canonicalPathologyKey'] == owner)
+      for (final row in rows(schemaVersion == 2 ? 'clinical_projection_registry' : 'clinical_content_registry'))
+        if ((owner == null || row['canonicalPathologyKey'] == owner) && row['payload'][locale]['${mode}Projection'] is Map)
           (row['payload'][locale]['${mode}Projection'] as Map)
               .cast<String, dynamic>()
     ];
@@ -134,7 +152,7 @@ class ClinicalCatalogSnapshot {
     final owner = matchOwner(query);
     if (owner == null) return '';
     return projections(mode, language, owner: owner)
-        .map(clinicalCanonicalJson)
+        .where((p) => p['format'] != 'legacy_source').map(clinicalCanonicalJson)
         .join('\n');
   }
 
@@ -145,6 +163,7 @@ class ClinicalCatalogSnapshot {
     return projections(mode, language, owner: owner)
         .map((p) {
           if (p['format'] == 'markdown') return p['markdown'] as String;
+          if (p['format'] == 'legacy_source') return '';
           final sections = p['sections'] as List;
           if (sections.any((s) => s['text'] is! String)) return '';
           return [
@@ -163,7 +182,7 @@ class ClinicalCatalogSnapshot {
     return [
       for (final p in projections(mode, language, owner: owner))
         for (final r in (p['references'] as List))
-          if (r is Map)
+          if (r is String) r else if (r is Map)
             [
               r['title'],
               r['organization_or_authors'],
@@ -194,7 +213,7 @@ class ClinicalCatalogValidator {
     final manifest = envelope['manifest'] as Map;
     final chunks = envelope['chunks'] as Map;
     require(pointer['status'] == 'ACTIVE', 'pointer_not_active');
-    require(pointer['schemaVersion'] == 1 && manifest['schemaVersion'] == 1,
+    require(const [1,2].contains(pointer['schemaVersion']) && pointer['schemaVersion'] == manifest['schemaVersion'],
         'schema_unsupported');
     final version = pointer['activeVersion'];
     require(
@@ -206,11 +225,14 @@ class ClinicalCatalogValidator {
         'version_not_active');
     require(
         clinicalHash(manifest) == pointer['manifestSha256'], 'manifest_hash');
+    final schema = manifest['schemaVersion'] as int;
+    final collections = schema == 2 ? clinicalFunctionalCollections : clinicalRegistryCollections;
+    if (schema == 2) require(manifest['minimumClientBuild'] == 1717, 'client_build');
     final descriptors = manifest['chunks'] as List;
     require(
         descriptors.isNotEmpty && descriptors.length <= 5000, 'chunk_count');
     final data = <String, dynamic>{
-      for (final c in clinicalRegistryCollections) c: <Map<String, dynamic>>[]
+      for (final c in collections) c: <Map<String, dynamic>>[]
     };
     final ids = <String>{};
     for (final raw in descriptors) {
@@ -221,7 +243,7 @@ class ClinicalCatalogValidator {
               RegExp(r'^[A-Za-z0-9._-]{1,120}$').hasMatch(id) &&
               ids.add(id),
           'chunk_id');
-      require(clinicalRegistryCollections.contains(d['collection']),
+      require(collections.contains(d['collection']),
           'unknown_collection');
       final text = chunks[id];
       require(
@@ -245,7 +267,7 @@ class ClinicalCatalogValidator {
     }
     require(owners.isNotEmpty && owners.length == manifest['ownerCount'],
         'owner_count');
-    for (final collection in clinicalRegistryCollections) {
+    for (final collection in collections) {
       final rows = data[collection] as List;
       require((manifest['counts'] as Map)[collection] == rows.length,
           'collection_count');
@@ -262,9 +284,36 @@ class ClinicalCatalogValidator {
       }
     }
     final contentOwners = <String>{};
-    for (final row in data['clinical_content_registry'] as List) {
+    for (final row in data[schema == 2 ? 'clinical_projection_registry' : 'clinical_content_registry'] as List) {
       contentOwners.add(row['canonicalPathologyKey'] as String);
       final payload = row['payload'] as Map;
+      if (schema == 2 && row['migrationStatus'] == 'MIGRATION_BASELINE_INHERITED') {
+        require(row['historicalApprovalHash'] == null && clinicalHash(payload) == row['migrationBaselineHash'] && row['sourceRuntimeHash'] == row['migrationBaselineHash'], 'migration_hash');
+        final owner = row['canonicalPathologyKey'] as String;
+        require(payload['ownerId'] == owner, 'projection_owner');
+        var count = 0;
+        for (final mode in ['study','plantao']) for (final locale in ['pt','es']) {
+          final x = (payload[locale] as Map?)?['${mode}Projection'];
+          if (x == null) continue;
+          count++;
+          require(x is Map && x['format'] == 'legacy_source' && x['ownerId'] == owner && x['mode'] == mode && x['locale'] == locale, 'mode_locale_owner');
+          final source = x['sourcePayload'];
+          require(source is Map && clinicalHash(source) == x['sourcePayloadHash'] && clinicalInheritedSourceHashes['$owner.$mode.$locale'] == x['sourcePayloadHash'] && clinicalInheritedSourceHashes['$owner.$mode.$locale.projection'] == clinicalHash(x), 'unproven_legacy_baseline');
+          final references = x['references'];
+          final state = row['referenceState']?[mode]?[locale];
+          require(references is List && ['present','legacy_missing','legacy_locale_divergence'].contains(state), 'legacy_reference_state');
+          require(references.isNotEmpty || state == 'legacy_missing', 'legacy_reference_missing');
+          require(state != 'legacy_missing' || references.isEmpty, 'legacy_reference_state_mismatch');
+          if (mode == 'study') {
+            final models = (data['clinical_legacy_protocols'] as List).where((r)=>r['canonicalPathologyKey'] == owner).toList();
+            require(models.length == 1 && clinicalCanonicalJson(models.single['payload']) == clinicalCanonicalJson(source) && source['id'] == owner && source['title']?[locale] is String && source['actions']?[locale] != null, 'legacy_protocol_source_binding');
+          } else {
+            require(source['providerPrompt'] is String && (source['providerPrompt'] as String).isNotEmpty, 'legacy_context_missing');
+          }
+        }
+        require(count > 0, 'owner_has_no_projection');
+        continue;
+      }
       final approved = payload['approvedClinicalPayloadJson'];
       final approvedHash = payload['approvedClinicalPayloadSha256'];
       require(
@@ -348,10 +397,39 @@ class ClinicalCatalogValidator {
         owners.length == contentOwners.length &&
             owners.containsAll(contentOwners),
         'mode_owner_parity');
-    final snapshot = ClinicalCatalogSnapshot._(version as String, 1,
+    if (schema == 2) _validateFunctionalManifest(manifest, data, owners);
+    final snapshot = ClinicalCatalogSnapshot._(version as String, schema,
         pointer['manifestSha256'] as String, origin, data);
     return snapshot;
   }
+  static void _validateFunctionalManifest(Map manifest, Map data, Set<String> owners) {
+    final sorted = owners.toList()..sort();
+    require(clinicalHash(sorted) == manifest['ownerSetHash'], 'owner_set_hash');
+    final projectedRows = data['clinical_projection_registry'] as List;
+    final metadata = manifest['owners'] as List;
+    require(metadata.length == owners.length && metadata.map((x)=>x['ownerId']).toSet().length == owners.length, 'manifest_owners');
+    final actualSets = <String,List<String>>{};
+    for(final mode in ['study','plantao']) for(final locale in ['pt','es']) {
+      final current = <String>{for(final r in projectedRows) if(r['payload']?[locale]?['${mode}Projection'] is Map) r['canonicalPathologyKey'] as String}.toList()..sort();
+      actualSets['${mode}_$locale'] = current;
+      require(clinicalCanonicalJson(current) == clinicalCanonicalJson(manifest['surfaceOwnerIds']?['${mode}_$locale']) && clinicalHash(current) == manifest['surfaceSetHashes']?['${mode}_$locale'], 'manifest_surface_sets');
+      require(current.length == manifest['${mode}${locale == 'pt' ? 'Pt' : 'Es'}Count'], 'manifest_surface_counts');
+    }
+    for(final entry in metadata) {
+      final owner = entry['ownerId']; require(owners.contains(owner), 'manifest_owner_unknown');
+      final rows = projectedRows.where((r)=>r['canonicalPathologyKey']==owner).toList();
+      require(rows.isNotEmpty, 'owner_projection_record_missing');
+      final inherited = rows.every((r)=>r['migrationStatus']=='MIGRATION_BASELINE_INHERITED');
+      require(entry['routeKind'] == (inherited?'legacy_source_context':'authored_projection'), 'manifest_route_kind');
+      for(final mode in ['study','plantao']) for(final locale in ['pt','es']) {
+        final available = actualSets['${mode}_$locale']!.contains(owner);
+        require(entry['availableModes']?[mode]?[locale] == available, 'manifest_availability');
+        final state = !available ? 'not_available' : inherited ? (rows.first['referenceState']?[mode]?[locale]) : 'present';
+        require(entry['referenceState']?[mode]?[locale] == state, 'manifest_reference_state');
+      }
+    }
+  }
+
 }
 
 class ClinicalCatalogRepository {
@@ -360,6 +438,7 @@ class ClinicalCatalogRepository {
       required this.cache,
       this.pointerTtl = const Duration(seconds: 30),
       this.minimumRemoteOwnerCount = 0,
+      this.requiredSurfaceOwners = const {},
       this.onRead,
       DateTime Function()? clock})
       : clock = clock ?? DateTime.now;
@@ -367,8 +446,16 @@ class ClinicalCatalogRepository {
   final ClinicalCatalogCache cache;
   final Duration pointerTtl;
   final int minimumRemoteOwnerCount;
+  final Map<String,List<String>> requiredSurfaceOwners;
 
   void _requireCoverage(ClinicalCatalogSnapshot snapshot) {
+    {
+      for(final e in requiredSurfaceOwners.entries) {
+        final parts=e.key.split('_');
+        ClinicalCatalogValidator.require(snapshot.surfaceOwners(parts[0],parts[1]).containsAll(e.value), 'remote_surface_coverage_regression');
+      }
+      if (snapshot.schemaVersion == 2) return;
+    }
     ClinicalCatalogValidator.require(
         snapshot.rows('clinical_identity_registry').length >=
             minimumRemoteOwnerCount,
@@ -423,7 +510,7 @@ class ClinicalCatalogRepository {
       ClinicalCatalogValidator.require(
           clinicalHash(manifest) == pointer['manifestSha256'] &&
               manifest['status'] == 'ACTIVE' &&
-              manifest['schemaVersion'] == 1,
+              const [1,2].contains(manifest['schemaVersion']),
           'manifest_gate');
       final descriptors = manifest['chunks'] as List;
       ClinicalCatalogValidator.require(

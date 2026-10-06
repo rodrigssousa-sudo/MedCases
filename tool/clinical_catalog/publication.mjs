@@ -1,3 +1,4 @@
+import {extraCollections,projectionMetadata,validateFunctional} from './functional_schema.mjs';
 // No CLI and no implicit production connection. Callers supply an emulator or
 // privileged Firestore client only after separately authorizing production.
 import {createHash} from 'node:crypto';
@@ -7,20 +8,23 @@ function sort(v){if(Array.isArray(v))return v.map(sort);if(v&&typeof v==='object
 export const hash=v=>createHash('sha256').update(canonical(v),'utf8').digest('hex');
 const textHash=s=>createHash('sha256').update(s,'utf8').digest('hex');
 const assert=(ok,code)=>{if(!ok)throw new Error(code);};
-export function prepare(version,registries){
+export function prepare(version,registries,{schemaVersion=1}={}){
  assert(/^[A-Za-z0-9._-]{1,120}$/.test(version),'version');
+ const encode=schemaVersion===2?JSON.stringify:canonical;
  const chunks={};const descriptors=[];const counts={};
- for(const collection of collections){
+ for(const collection of (schemaVersion===2?[...collections,...extraCollections]:collections)){
   const rows=registries[collection];assert(Array.isArray(rows),'missing_collection');counts[collection]=rows.length;
   let batch=[];let n=0;
-  function flush(){const id=`${collection}.${n++}`;const json=canonical(batch);chunks[id]={json};descriptors.push({id,collection,count:batch.length,sha256:textHash(json)});batch=[];}
-  for(const row of rows){assert(Buffer.byteLength(canonical([row]))<=700000,'row_too_large');if(Buffer.byteLength(canonical([...batch,row]))>700000)flush();batch.push(row);}
+  function flush(){const id=`${collection}.${n++}`;const json=encode(batch);chunks[id]={json};descriptors.push({id,collection,count:batch.length,sha256:textHash(json)});batch=[];}
+  for(const row of rows){assert(Buffer.byteLength(encode([row]))<=700000,'row_too_large');if(Buffer.byteLength(encode([...batch,row]))>700000)flush();batch.push(row);}
   flush();
  }
- const manifest={contentVersion:version,schemaVersion:1,status:'DRAFT',ownerCount:counts.clinical_identity_registry,counts,chunks:descriptors};
+ const manifest={contentVersion:version,schemaVersion,status:'DRAFT',ownerCount:counts.clinical_identity_registry,counts,chunks:descriptors};
+ if(schemaVersion===2)Object.assign(manifest,{minimumClientBuild:1717,ownerSetHash:hash(registries.clinical_identity_registry.map(r=>r.canonicalKey).sort()),...projectionMetadata(registries)});
  const release={manifest,chunks};validate(release);return release;
 }
 export function validate({manifest:m,chunks}){
+ if(m.schemaVersion===2)return validateFunctional({manifest:m,chunks},collections,rows=>validate(prepare('STRICT-AUTHORED-SUBSET',rows)));
  assert(m.schemaVersion===1 && ['DRAFT','ACTIVE'].includes(m.status),'schema_status');
  assert(/^[A-Za-z0-9._-]{1,120}$/.test(m.contentVersion),'version');
  const rows=Object.fromEntries(collections.map(c=>[c,[]]));const ids=new Set();
@@ -62,6 +66,7 @@ export async function writeDraft(db,release){
 export async function readback(db,version){
  const root=db.doc(`clinical_content_versions/${version}`);const doc=await root.get();assert(doc.exists,'version_missing');
  const manifest=doc.data(),chunks={};for(const d of manifest.chunks){const c=await root.collection('chunks').doc(d.id).get();assert(c.exists,'chunk_missing');chunks[d.id]=c.data();}
+
  const release={manifest,chunks};validate(release);return release;
 }
 export async function activate(db,version,expectedPrevious){
@@ -74,7 +79,7 @@ export async function activate(db,version,expectedPrevious){
   // Re-read every chunk in the transaction: readback cannot race mutation.
   for(const d of published.chunks){const c=await tx.get(root.collection('chunks').doc(d.id));assert(c.data()?.json===release.chunks[d.id].json,'chunk_changed');}
   tx.update(root,{status:'ACTIVE'});
-  tx.set(pointer,{activeVersion:version,previousVersion:expectedPrevious,schemaVersion:1,manifestSha256:hash(published),status:'ACTIVE',activatedAt:new Date().toISOString()});
+  tx.set(pointer,{activeVersion:version,previousVersion:expectedPrevious,schemaVersion:published.schemaVersion,manifestSha256:hash(published),status:'ACTIVE',activatedAt:new Date().toISOString()});
  });
 }
 export async function rollback(db,expectedCurrent){
