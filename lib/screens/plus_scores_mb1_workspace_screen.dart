@@ -1169,6 +1169,7 @@ class _DetailState extends State<PlusScoresMb1DetailScreen> {
                         fontWeight: FontWeight.w700))));
       case _K.number:
         return TextField(
+            onTapOutside: (_) => FocusScope.of(context).unfocus(),
             controller: ctrls[f.k],
             keyboardType: const TextInputType.numberWithOptions(decimal: true),
             inputFormatters: [

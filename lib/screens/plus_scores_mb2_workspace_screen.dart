@@ -1227,6 +1227,7 @@ class _PlusScoresMb2DetailScreenState extends State<PlusScoresMb2DetailScreen> {
         );
       case _FieldKind.number:
         return TextField(
+          onTapOutside: (_) => FocusScope.of(context).unfocus(),
           controller: _controllers[field.key],
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           inputFormatters: [

@@ -64,6 +64,13 @@ void main() {
         maximumMs: 2000,
         allowPartial: true);
     expect(reservation.maximumMs, 1000);
+    final resumed = await ledger().resume('record');
+    expect(resumed!.attempt, reservation.attempt);
+    expect(resumed.serverHeaders, reservation.serverHeaders);
+    expect(reserved, 1); // Reattach never reserves a second operation.
+    uid = 'B';
+    expect(await ledger().resume('record'), isNull);
+    uid = 'A';
     expect(reservation.authorizes(UsageKind.recording), true);
     offline = true;
     await reservation.finish(actualMs: 500, success: true);

@@ -115,22 +115,23 @@ class MobileAiActionBar extends StatelessWidget {
                 child: RichText(
                   textAlign: TextAlign.center,
                   text: TextSpan(
+                    style: DefaultTextStyle.of(context).style,
                     children: [
                       TextSpan(
-                        text: 'MEDCASES ',
+                        text: 'MedCases ',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w900,
-                          letterSpacing: 1.2,
+                          letterSpacing: 0.1,
                           color: titlePrimaryColor,
                         ),
                       ),
                       TextSpan(
-                        text: 'IA',
+                        text: 'Clinical',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w900,
-                          letterSpacing: 1.2,
+                          letterSpacing: 0.1,
                           color: dark
                               ? const Color(0xFF009C3B)
                               : const Color(0xFF009C3B),

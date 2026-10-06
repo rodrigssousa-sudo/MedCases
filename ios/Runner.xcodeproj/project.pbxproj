@@ -7,21 +7,34 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EE1313000000000000000001 /* Organization Assets in Resources */ = {isa = PBXBuildFile; fileRef = EE1313000000000000000002 /* Assets.xcassets */; };
+		021871D67D72751A47DF8715 /* MedCasesTimerAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5195CBEF3F92289DBC9DFA /* MedCasesTimerAttributes.swift */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
+		21F8D90690A6EDA57224639A /* OrganizationTimerWidget.appex in Embed Organization Extensions */ = {isa = PBXBuildFile; fileRef = 5562595E3334343456C88FCC /* OrganizationTimerWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		331C808B294A63AB00263BE5 /* RunnerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 331C807B294A618700263BE5 /* RunnerTests.swift */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
+		5FD27F81CE4AD500773E55F6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8AFC27904936D64919A4D067 /* Foundation.framework */; };
 		74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74858FAE1ED2DC5600515810 /* AppDelegate.swift */; };
+		8CD378E87D0FA417F4290BCC /* MedCasesTimerAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A5195CBEF3F92289DBC9DFA /* MedCasesTimerAttributes.swift */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		AA4FC2B02C0000001A000001 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = AA4FC2AF2C0000001A000001 /* GoogleService-Info.plist */; };
 		B01E3AEA379A35740BE88EDB /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 45BB484B4D854DCDE58E0177 /* Pods_Runner.framework */; };
 		E324649BD8B42F2C0D0DC1D4 /* Pods_RunnerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 30A51B4375CD86B2389B32E1 /* Pods_RunnerTests.framework */; };
+		EB4A3E7791CC09168FF35671 /* OrganizationTimerWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = E080C05C3602E0CBC796A4B2 /* OrganizationTimerWidget.swift */; };
 		MEDCASES001 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = MEDCASES002 /* InfoPlist.strings */; };
 		MEDCASES020 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = MEDCASES021 /* PrivacyInfo.xcprivacy */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		00CD7D73011DBA419617D631 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3A6E94C8B415BEC6C095B497;
+			remoteInfo = OrganizationTimerWidget;
+		};
 		331C8085294A63A400263BE5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 97C146E61CF9000F007C117D /* Project object */;
@@ -32,6 +45,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		4E1C2722D4BC68C76D57EA08 /* Embed Organization Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				21F8D90690A6EDA57224639A /* OrganizationTimerWidget.appex in Embed Organization Extensions */,
+			);
+			name = "Embed Organization Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		9705A1C41CF9048500538489 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -45,6 +69,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		EE1313000000000000000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		2899E4E2B58EDDD522B073E6 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
@@ -53,13 +78,16 @@
 		331C8081294A63A400263BE5 /* RunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
 		45BB484B4D854DCDE58E0177 /* Pods_Runner.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Runner.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5562595E3334343456C88FCC /* OrganizationTimerWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OrganizationTimerWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		74858FAE1ED2DC5600515810 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		7A5195CBEF3F92289DBC9DFA /* MedCasesTimerAttributes.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MedCasesTimerAttributes.swift; sourceTree = "<group>"; };
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		7BF00E8433A416C6ABDCA79F /* Pods-RunnerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.debug.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		7C410FD4469A42AD6223CC35 /* Pods-RunnerTests.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.profile.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.profile.xcconfig"; sourceTree = "<group>"; };
 		7EC4E93DFF49CDEDA73213D4 /* Pods-Runner.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.release.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"; sourceTree = "<group>"; };
 		81E169A3DBCDE9C6AA4618CE /* Pods-RunnerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RunnerTests.release.xcconfig"; path = "Target Support Files/Pods-RunnerTests/Pods-RunnerTests.release.xcconfig"; sourceTree = "<group>"; };
+		8AFC27904936D64919A4D067 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		97C146EE1CF9000F007C117D /* Runner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Runner.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -68,6 +96,7 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA4FC2AF2C0000001A000001 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		E080C05C3602E0CBC796A4B2 /* OrganizationTimerWidget.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OrganizationTimerWidget.swift; sourceTree = "<group>"; };
 		FA059E6A0D7F916031B8F3DA /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
 		MEDCASES010 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		MEDCASES011 /* pt-BR */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "pt-BR"; path = "pt-BR.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
@@ -76,6 +105,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		12C34E3FD68EC1FAE09AFDF6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5FD27F81CE4AD500773E55F6 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		97C146EB1CF9000F007C117D /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -95,6 +132,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		22FD13D4222271EC5C6821B0 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				8AFC27904936D64919A4D067 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
+		2DE4C590C3EB7018382E8769 /* OrganizationTimerWidget */ = {
+			isa = PBXGroup;
+			children = (
+				EE1313000000000000000002 /* Assets.xcassets */,
+				7A5195CBEF3F92289DBC9DFA /* MedCasesTimerAttributes.swift */,
+				E080C05C3602E0CBC796A4B2 /* OrganizationTimerWidget.swift */,
+			);
+			name = OrganizationTimerWidget;
+			path = OrganizationTimerWidget;
+			sourceTree = "<group>";
+		};
 		331C8082294A63A400263BE5 /* RunnerTests */ = {
 			isa = PBXGroup;
 			children = (
@@ -108,6 +164,7 @@
 			children = (
 				45BB484B4D854DCDE58E0177 /* Pods_Runner.framework */,
 				30A51B4375CD86B2389B32E1 /* Pods_RunnerTests.framework */,
+				22FD13D4222271EC5C6821B0 /* iOS */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -132,6 +189,7 @@
 				331C8082294A63A400263BE5 /* RunnerTests */,
 				FD10F4496B9EF81B069B2920 /* Pods */,
 				632F3E13E78E2BDC6AE7730F /* Frameworks */,
+				2DE4C590C3EB7018382E8769 /* OrganizationTimerWidget */,
 			);
 			sourceTree = "<group>";
 		};
@@ -140,6 +198,7 @@
 			children = (
 				97C146EE1CF9000F007C117D /* Runner.app */,
 				331C8081294A63A400263BE5 /* RunnerTests.xctest */,
+				5562595E3334343456C88FCC /* OrganizationTimerWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -197,6 +256,23 @@
 			productReference = 331C8081294A63A400263BE5 /* RunnerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		3A6E94C8B415BEC6C095B497 /* OrganizationTimerWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B61EE3E28BF3DB825AE5998F /* Build configuration list for PBXNativeTarget "OrganizationTimerWidget" */;
+			buildPhases = (
+				FC8034FFE1504B913AB977DC /* Sources */,
+				12C34E3FD68EC1FAE09AFDF6 /* Frameworks */,
+				A478DCFD950489C7AC5992FF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OrganizationTimerWidget;
+			productName = OrganizationTimerWidget;
+			productReference = 5562595E3334343456C88FCC /* OrganizationTimerWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		97C146ED1CF9000F007C117D /* Runner */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 97C147051CF9000F007C117D /* Build configuration list for PBXNativeTarget "Runner" */;
@@ -207,6 +283,7 @@
 				97C146EB1CF9000F007C117D /* Frameworks */,
 				97C146EC1CF9000F007C117D /* Resources */,
 				9705A1C41CF9048500538489 /* Embed Frameworks */,
+				4E1C2722D4BC68C76D57EA08 /* Embed Organization Extensions */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				7C4EB63658F7A630E7082E24 /* [CP] Embed Pods Frameworks */,
 				CCB0562B80106CCE36D73083 /* [CP] Copy Pods Resources */,
@@ -214,6 +291,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				11B6F0B3167D9E22D9490C3B /* PBXTargetDependency */,
 			);
 			name = Runner;
 			productName = Runner;
@@ -257,6 +335,7 @@
 			targets = (
 				97C146ED1CF9000F007C117D /* Runner */,
 				331C8080294A63A400263BE5 /* RunnerTests */,
+				3A6E94C8B415BEC6C095B497 /* OrganizationTimerWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -280,6 +359,14 @@
 				AA4FC2B02C0000001A000001 /* GoogleService-Info.plist in Resources */,
 				MEDCASES001 /* InfoPlist.strings in Resources */,
 				MEDCASES020 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A478DCFD950489C7AC5992FF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EE1313000000000000000001 /* Organization Assets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -412,12 +499,28 @@
 			files = (
 				74858FAF1ED2DC5600515810 /* AppDelegate.swift in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,
+				021871D67D72751A47DF8715 /* MedCasesTimerAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FC8034FFE1504B913AB977DC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CD378E87D0FA417F4290BCC /* MedCasesTimerAttributes.swift in Sources */,
+				EB4A3E7791CC09168FF35671 /* OrganizationTimerWidget.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		11B6F0B3167D9E22D9490C3B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = OrganizationTimerWidget;
+			target = 3A6E94C8B415BEC6C095B497 /* OrganizationTimerWidget */;
+			targetProxy = 00CD7D73011DBA419617D631 /* PBXContainerItemProxy */;
+		};
 		331C8086294A63A400263BE5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 97C146ED1CF9000F007C117D /* Runner */;
@@ -455,6 +558,27 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		1369C8134494E22E86A14BAF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1716;
+				DEVELOPMENT_TEAM = V2P28J8X8U;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = OrganizationTimerWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 7.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.medcasespro.app.OrganizationTimerWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		249021D3217E4FDB00AE95B9 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -514,7 +638,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CURRENT_PROJECT_VERSION = 1702;
+				CURRENT_PROJECT_VERSION = 1716;
 				DEVELOPMENT_TEAM = V2P28J8X8U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -700,7 +824,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CURRENT_PROJECT_VERSION = 1702;
+				CURRENT_PROJECT_VERSION = 1716;
 				DEVELOPMENT_TEAM = V2P28J8X8U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -726,7 +850,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = Runner/Runner.entitlements;
-				CURRENT_PROJECT_VERSION = 1702;
+				CURRENT_PROJECT_VERSION = 1716;
 				DEVELOPMENT_TEAM = V2P28J8X8U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Runner/Info.plist;
@@ -741,6 +865,50 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		A6026B84289A1D4B186F2F69 /* Profile */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1716;
+				DEVELOPMENT_TEAM = V2P28J8X8U;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = OrganizationTimerWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 7.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.medcasespro.app.OrganizationTimerWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Profile;
+		};
+		E009896C11A2FD8E9DDA6A51 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1716;
+				DEVELOPMENT_TEAM = V2P28J8X8U;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = OrganizationTimerWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.2;
+				MARKETING_VERSION = 7.0.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.medcasespro.app.OrganizationTimerWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
@@ -773,6 +941,16 @@
 				97C147061CF9000F007C117D /* Debug */,
 				97C147071CF9000F007C117D /* Release */,
 				249021D4217E4FDB00AE95B9 /* Profile */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B61EE3E28BF3DB825AE5998F /* Build configuration list for PBXNativeTarget "OrganizationTimerWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E009896C11A2FD8E9DDA6A51 /* Release */,
+				1369C8134494E22E86A14BAF /* Debug */,
+				A6026B84289A1D4B186F2F69 /* Profile */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -1,5 +1,7 @@
 package com.medcasespro.med
 
+import android.content.Context
+import io.flutter.embedding.engine.FlutterEngineCache
 import android.os.Build
 import android.security.keystore.KeyGenParameterSpec
 import android.security.keystore.KeyProperties
@@ -16,8 +18,17 @@ import javax.crypto.SecretKey
 import javax.crypto.spec.GCMParameterSpec
 
 class MainActivity : FlutterActivity() {
+    companion object { private const val SESSION_ENGINE = "medcases_session_engine" }
+    // The application engine owns record's native instance, never an Activity.
+    // Process death remains a cold recovery; no claim of capture after a kill.
+    override fun provideFlutterEngine(context: Context): FlutterEngine? =
+        FlutterEngineCache.getInstance().get(SESSION_ENGINE)
+    override fun shouldDestroyEngineWithHost(): Boolean = false
+
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
+        MedCasesOrganizationChannel.register(this, flutterEngine)
+        FlutterEngineCache.getInstance().put(SESSION_ENGINE, flutterEngine)
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "medcases/audio_duration_v1")
             .setMethodCallHandler { call, result ->
                 val path = call.argument<String>("path")
@@ -652,11 +663,13 @@ private object MedCasesRecordingBackgroundChannel {
         ).setMethodCallHandler { call, result ->
             try {
                 when (call.method) {
-                    "begin" -> {
+                    "begin", "status" -> {
                         val intent = android.content.Intent(
                             activity,
                             MedCasesRecordingForegroundService::class.java,
                         )
+                        intent.putExtra("language", call.argument<String>("language") ?: "pt")
+                        intent.putExtra("paused", call.argument<Boolean>("paused") ?: false)
                         if (Build.VERSION.SDK_INT >=
                             Build.VERSION_CODES.O
                         ) {
@@ -711,6 +724,21 @@ private object MedCasesStudyBackgroundTranscriptionChannel {
             flutterEngine.dartExecutor.binaryMessenger,
             CHANNEL,
         ).setMethodCallHandler { call, result ->
+            if (call.method == "appMetadata") {
+                val info = activity.packageManager.getPackageInfo(activity.packageName, 0)
+                val code = if (android.os.Build.VERSION.SDK_INT >= 28) info.longVersionCode else info.versionCode.toLong()
+                result.success(mapOf("appVersion" to (info.versionName ?: "0.0.0"), "buildNumber" to code.toString()))
+                return@setMethodCallHandler
+            }
+            if (call.method == "cancel") {
+                val jobId = call.argument<String>("jobId").orEmpty()
+                if (!Regex("^[A-Za-z0-9_-]+$").matches(jobId)) {
+                    result.error("invalid_job", null, null)
+                } else {
+                    result.success(MedCasesStudyBackgroundTranscriptionService.cancelJob(activity, jobId))
+                }
+                return@setMethodCallHandler
+            }
             if (call.method != "enqueue") {
                 result.notImplemented()
                 return@setMethodCallHandler

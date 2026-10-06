@@ -21,13 +21,13 @@ void main() {
     expect(
       source,
       contains(
-        'Sintoma/cuadro inespecifico: "🟥 DOLOR TORACICO — DIFERENCIALES PRIORITARIOS"',
+        'Usa la RUTA DIFERENCIAL del contrato compacto y conserva la incertidumbre.',
       ),
     );
     expect(
       source,
       contains(
-        'Sintoma/quadro inespecifico: "🟥 DOR TORACICA — DIFERENCIAIS PRIORITARIOS"',
+        'Use a ROTA DIFERENCIAL do contrato compacto e preserve a incerteza.',
       ),
     );
   });

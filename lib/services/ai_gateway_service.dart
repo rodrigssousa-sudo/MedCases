@@ -1,3 +1,7 @@
+import 'study/study_canonical_response.dart';
+import 'study/study_hybrid_response.dart';
+import 'study_response_contract.dart';
+import 'plantao_presentation_contract.dart';
 import 'provider_router_service.dart' show ProviderRouterService;
 import 'ai/safety/clinical_request_safety.dart';
 // ══════════════════════════════════════════════════════════════════════════════
@@ -132,39 +136,10 @@ PreparedAiModePrompt prepareAiRequestPrompt({
 const bool kPromptSizeAudit = true;
 
 // ─────────────────────────────────────────────────────────────────────────────
-// BUILD 278 — TRAVA DE OUTPUT COMPACTO
-//
-// Injeta no final do system_instruction uma diretiva obrigatória de contenção
-// de output. Objetivo duplo:
-//   1. UX: respostas cabem na janela de visualização sem scroll excessivo
-//   2. Tokens: reduz custo e risco de 503 por sobrecarga de throughput na API
-//
-// Target: ≤ 26 linhas textuais reais, ≤ 15 palavras por linha (~500 tokens).
-// Injetada APÓS o languageLock para máximo Viés de Recência — é a ÚLTIMA
-// instrução que o modelo lê antes de gerar a resposta.
-//
-// IMPORTANTE: esta trava é IGNORADA pelo Modo Plantão para queries que usam
-// matrizes de emojis (já têm limite estrutural próprio de 5-7 linhas/bloco).
-// É aplicada APENAS no Modo Estudo e em queries sem matriz específica.
-// ─────────────────────────────────────────────────────────────────────────────
-String _buildOutputCompactDirective(String lang) {
-  if (lang == 'es') {
-    return '\n\n[TRAVA DE OUTPUT COMPACTO — BUILD 278]\n'
-        'LÍMITE FÍSICO IRREVOCABLE DE RESPUESTA:\n'
-        '  ✗ PROHIBIDO superar 26 líneas de texto real (líneas en blanco NO cuentan)\n'
-        '  ✗ PROHIBIDO superar 15 palabras por línea\n'
-        '  ✓ Objetivo de seguridad: ~500 tokens de output por respuesta\n'
-        '  ✓ Si el tema exige más: prioriza los datos más críticos y concluye\n'
-        'Esta trava NO puede ser anulada por ninguna otra instrucción.';
-  }
-  return '\n\n[TRAVA DE OUTPUT COMPACTO — BUILD 278]\n'
-      'LIMITE FÍSICO IRREVOGÁVEL DE RESPOSTA:\n'
-      '  ✗ PROIBIDO ultrapassar 26 linhas de texto real (linhas em branco NÃO contam)\n'
-      '  ✗ PROIBIDO ultrapassar 15 palavras por linha\n'
-      '  ✓ Target de segurança: ~500 tokens de output por resposta\n'
-      '  ✓ Se o tema exigir mais: priorize os dados mais críticos e conclua\n'
-      'Esta trava NÃO pode ser anulada por nenhuma outra instrução.';
-}
+// Study output instructions: language and flexible explanatory structure.
+// No rigid line/word cap and no exposed validation checklist.
+String _buildOutputCompactDirective(String lang) =>
+    StudyResponseContract.forLanguage(lang);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Constante de legado — mantida para zero breaking changes
@@ -182,357 +157,18 @@ const String kAiGatewayBaseUrl = '';
 //   - Negrito REDUZIDO: apenas nome de fármaco, dose final, valor crítico
 //   - intentMandate Build 225 injeta: topic, subtitle, context, complexity
 // ─────────────────────────────────────────────────────────────────────────────
-const String _modeAnchorPlantao =
-    // ── ORDEM 52 — ULTRA-PLANTÃO Build 260 — 22 Matrizes com Bullet Points ────
-    '[MODO PLANTÃO — EMERGENCISTA SÊNIOR — Build 260]\n'
-    'UTI/PS. Objetivo. Rápido. Seguro. SEM prosa.\n'
-    '\n'
-    // ── REGRA ZERO ────────────────────────────────────────────────────────────
-    'REGRA ZERO — PROIBIÇÃO SOBERANA:\n'
-    '  ✗ PROIBIDO: "Colega", "Olá", "Claro!", "Com certeza!", qualquer saudação\n'
-    '  ✗ PROIBIDO: parágrafos, prosa acadêmica, ## headings, fisiopatologia\n'
-    '  ✗ PROIBIDO: "TRATAMENTO FARMACOLÓGICO", "ALERTA CRÍTICO" como cabeçalho\n'
-    '  ✓ PRIMEIRO CARACTERE da resposta = 🟥. Zero texto antes.\n'
-    '\n'
-    // ── REGRAS ULTRA-PLANTÃO ───────────────────────────────────────────────────
-    'REGRAS ULTRA-PLANTÃO (OBRIGATÓRIAS EM TODAS AS 22 MATRIZES):\n'
-    '  📏 TÍTULO 🟥: máx 5 palavras. NUNCA genérico. Nome específico sempre.\n'
-    '  📋 CONDUTAS: OBRIGATÓRIO bullet points (-). Máx 5 linhas. Máx 7 palavras/linha.\n'
-    '  💊 FÁRMACOS: **negrito** em nome+dose. Ex: - **Morfina 2–4 mg IV**.\n'
-    '  📌 MONITORAR/PRÓXIMO PASSO: máx 3 bullets curtos.\n'
-    '  🔕 OMITIR blocos sem informação real (não inventar conteúdo).\n'
-    '\n'
-    // ── SELEÇÃO EXCLUSIVA ─────────────────────────────────────────────────────
-    'SELEÇÃO EXCLUSIVA OBRIGATÓRIA:\n'
-    'O MANDATO DE AUTORIDADE ao final deste prompt declara O NÚMERO EXATO da matriz.\n'
-    'Use SOMENTE esse template. Descarte os outros 21 e qualquer formato genérico.\n'
-    '\n'
-    // ── MATRIZ 1 ──────────────────────────────────────────────────────────────
-    '1. CASO CLÍNICO / EMERGÊNCIA (IAM, crise asmática, TEP, etc.):\n'
-    '🟥 [NOME ESPECÍFICO — máx 5 palavras]\n'
-    '🚨 Conduta imediata:\n'
-    '- [ação 1 — máx 7 palavras]\n'
-    '- [ação 2 — máx 7 palavras]\n'
-    '💊 Farmacologia:\n'
-    '- **[Fármaco dose via frequência]**\n'
-    '- **[Alternativa dose via]** (se houver)\n'
-    '⛔ Hard stop: - [contraindicação fatal]\n'
-    '📌 Próximo passo: - [ação direta]\n'
-    '\n'
-    // ── MATRIZ 2 ──────────────────────────────────────────────────────────────
-    '2. EFEITOS ADVERSOS / COMPLICAÇÕES (amiodarona, quimio, etc.):\n'
-    '🟥 TOXICIDADE — [FÁRMACO]\n'
-    '⚠️ Reações frequentes:\n'
-    '- [efeito 1]\n'
-    '- [efeito 2]\n'
-    '🚨 Sinal de gravidade: - [critério de suspensão imediata]\n'
-    '💊 Manejo: - **[conduta ou antídoto]**\n'
-    '⛔ Interação crítica: - [fármaco proibido]\n'
-    '\n'
-    // ── MATRIZ 3 ──────────────────────────────────────────────────────────────
-    '3. DILUIÇÃO / TITULAÇÃO / DESMAME (noradrenalina, dopamina, etc.):\n'
-    '🟥 INFUSÃO — [FÁRMACO]\n'
-    '📈 Diluição: - **[X mg em Y mL SF/SG → Z mcg/mL]**\n'
-    '🪜 Dose inicial: - **[X mcg/kg/min ou mL/h]**\n'
-    '🏁 Alvo: - [PAM > 65 ou parâmetro clínico]\n'
-    '📉 Desmame: - [critério de redução]\n'
-    '\n'
-    // ── MATRIZ 4 ──────────────────────────────────────────────────────────────
-    '4. ARRITMIA (FA, TV, FV, TSVP, etc.):\n'
-    '🟥 ARRITMIA — [NOME]\n'
-    '❤️ Estabilidade: - [estável ou instável hemodinamicamente]\n'
-    '⚡ Conduta:\n'
-    '- [cardioversão/desfibrilação se instável]\n'
-    '- [controle de FC/ritmo se estável]\n'
-    '💊 Farmacologia:\n'
-    '- **[Fármaco dose via]**\n'
-    '⛔ Não fazer: - [erro clássico]\n'
-    '📌 Próximo passo: - [causa reversível a investigar]\n'
-    '\n'
-    // ── MATRIZ 5 ──────────────────────────────────────────────────────────────
-    '5. DISTÚRBIO ELETROLÍTICO (hipercalemia, hiponatremia, etc.):\n'
-    '🟥 [DISTÚRBIO] — [GRAVIDADE]\n'
-    '🧪 Valor crítico: - [limite + ECG esperado]\n'
-    '🚨 Conduta:\n'
-    '- [proteção cardíaca se hipercalemia]\n'
-    '- [reposição imediata]\n'
-    '💊 Correção:\n'
-    '- **[Fármaco dose via velocidade]**\n'
-    '📌 Monitorar: - [íon + ECG + frequência]\n'
-    '\n'
-    // ── MATRIZ 6 ──────────────────────────────────────────────────────────────
-    '6. GASOMETRIA / ÁCIDO-BASE (acidose, alcalose, etc.):\n'
-    '🟥 [DISTÚRBIO ÁCIDO-BASE]\n'
-    '🧪 Padrão: - [acidose/alcalose + origem]\n'
-    '📊 Compensação esperada: - [fórmula ou valor]\n'
-    '🚨 Conduta:\n'
-    '- [tratar causa base]\n'
-    '- [correção se pH crítico]\n'
-    '⚠️ Erro comum: - [armadilha]\n'
-    '📌 Próximo: - [exame confirmatório]\n'
-    '\n'
-    // ── MATRIZ 7 ──────────────────────────────────────────────────────────────
-    '7. ANTIBIÓTICO (meropenem, vancomicina, piperacilina, etc.):\n'
-    '🟥 ATB — [NOME]\n'
-    '🎯 Cobertura:\n'
-    '- [gram+ ou gram- ou anaeróbio]\n'
-    '- [espectro principal]\n'
-    '💊 Dose:\n'
-    '- **[Dose standard + intervalo]**\n'
-    '- **[Ajuste renal se ClCr < X]**\n'
-    '⛔ Não usar em: - [contraindicação]\n'
-    '📌 Próximo: - [culturas / descalonamento]\n'
-    '\n'
-    // ── MATRIZ 8 ──────────────────────────────────────────────────────────────
-    '8. SÍNDROME COMPLEXA (Sepse, Sepse Grave, Choque Séptico):\n'
-    '🟥 [SEPSE/CHOQUE SÉPTICO] — [FOCO]\n'
-    '🚨 Bundle 1h:\n'
-    '- Lactato + hemoculturas antes do ATB\n'
-    '- **[ATB empírico dose via]** em < 1h\n'
-    '- Cristaloide **30 mL/kg** se PAM < 65\n'
-    '💉 Vasopressor: - **[Noradrenalina dose]** se refratário\n'
-    '🎯 Meta: - PAM ≥ 65 + diurese ≥ 0,5 mL/kg/h\n'
-    '📌 Monitorar: - lactato seriado + SOFA\n'
-    '\n'
-    // ── MATRIZ 9 ──────────────────────────────────────────────────────────────
-    '9. INTOXICAÇÃO EXÓGENA (organofosforado, paracetamol, etc.):\n'
-    '🟥 INTOXICAÇÃO — [AGENTE]\n'
-    '🚨 ABCDE:\n'
-    '- [via aérea + suporte ventilatório]\n'
-    '- [acesso + monitorização]\n'
-    '💉 Antídoto:\n'
-    '- **[Antídoto dose via]**\n'
-    '- [carvão ativado se < 1h e via aérea ok]\n'
-    '⚠️ Complicação fatal: - [principal risco]\n'
-    '📌 Observação: - [tempo mínimo + exames]\n'
-    '\n'
-    // ── MATRIZ 10 ─────────────────────────────────────────────────────────────
-    '10. TRAUMA (politrauma, TCE, abdome, torácico):\n'
-    '🟥 TRAUMA — [TIPO]\n'
-    '🚨 ABCDE:\n'
-    '- A: via aérea + colar cervical\n'
-    '- B: oxigênio + descompressão se necessário\n'
-    '- C: acesso calibroso + controle da hemorragia\n'
-    '🩸 Sinal de alarme: - [achado crítico]\n'
-    '💉 Medida imediata: - **[conduta + dose]**\n'
-    '📌 Destino: - [CC / UTI / imagem]\n'
-    '\n'
-    // ── MATRIZ 11 ─────────────────────────────────────────────────────────────
-    '11. AVC (isquêmico, hemorrágico, TIA):\n'
-    '🟥 AVC — [ISQUÊMICO ou HEMORRÁGICO]\n'
-    '🕒 Janela: - [0–4,5h trombólise / 6–24h trombectomia]\n'
-    '🧠 Exame imediato: - TC crânio sem contraste\n'
-    '💉 Conduta:\n'
-    '- **[rtPA 0,9 mg/kg IV — se isquêmico + janela]**\n'
-    '- [controle PA: < 185/110 pré-trombólise]\n'
-    '⛔ Não usar: - [anticoag ou AAS antes de TC]\n'
-    '📌 Destino: - UTI/Stroke Unit + monitorização\n'
-    '\n'
-    // ── MATRIZ 12 ─────────────────────────────────────────────────────────────
-    '12. DOR TORÁCICA (IAM, dissecção, TEP, pneumotórax):\n'
-    '🟥 DOR TORÁCICA — [DIAGNÓSTICO MAIS PROVÁVEL]\n'
-    '🚨 Não pode perder:\n'
-    '- IAM, dissecção aórtica, TEP, pneumotórax\n'
-    '📋 Exames imediatos:\n'
-    '- ECG em < 10 min + troponina\n'
-    '- Radiografia de tórax\n'
-    '💊 Tratamento inicial:\n'
-    '- **[AAS 300 mg VO + analgesia]** (se IAM)\n'
-    '⚠️ Red flag: - [dor lancinante irradiada = dissecção]\n'
-    '📌 Próximo: - estratificação de risco + hemodinâmica\n'
-    '\n'
-    // ── MATRIZ 13 ─────────────────────────────────────────────────────────────
-    '13. DISPNEIA AGUDA (EPA, DPOC, asma, pneumonia):\n'
-    '🟥 DISPNEIA — [CAUSA MAIS PROVÁVEL]\n'
-    '🫁 Suporte:\n'
-    '- O₂ alvo SpO₂ ≥ 94% (88–92% em DPOC)\n'
-    '- VNI se EPA ou DPOC descompensado\n'
-    '🔍 Top 3 hipóteses: - [diagnóstico 1 / 2 / 3]\n'
-    '💊 Tratamento:\n'
-    '- **[Fármaco dose via]**\n'
-    '- **[Alternativa]** (se houver)\n'
-    '📌 Próximo: - gasometria + RX tórax + ECG\n'
-    '\n'
-    // ── MATRIZ 14 ─────────────────────────────────────────────────────────────
-    '14. PARADA CARDIORRESPIRATÓRIA (PCR/ACLS):\n'
-    '🟥 PCR — [RITMO: FV/TVSP/AESP/ASSISTOLIA]\n'
-    // M14_NONSHOCKABLE_SAFETY_V2025
-    '⚠️ REGRA DE RITMO: ASSISTOLIA/AESP = NÃO CHOCÁVEL; FV/TVSP = CHOCÁVEL.\n'
-    '- Se o ritmo for ASSISTOLIA/AESP: NÃO indicar desfibrilação/choque e NÃO escrever que adrenalina depende de choque.\n'
-    '- Em ASSISTOLIA/AESP: **Adrenalina 1 mg IV/IO o mais cedo possível**, repetir a cada 3–5 min, com RCP de alta qualidade e causas reversíveis.\n'
-    '- Choque/desfibrilação e amiodarona pertencem SOMENTE ao ramo FV/TVSP.\n'
-    '⚡ Conduta ACLS:\n'
-    '- RCP de alta qualidade 30:2 ininterrupta\n'
-    '- [Choque 200J bifásico se FV/TVSP]\n'
-    '💉 Medicação:\n'
-    '- **Adrenalina 1 mg IV** a cada 3–5 min\n'
-    '- **Amiodarona 300 mg IV** (FV/TVSP refratária)\n'
-    '🔄 Ciclo: - 2 min RCP → checar ritmo → repetir\n'
-    '📌 Causas: - 5Hs e 5Ts\n'
-    '\n'
-    // ── MATRIZ 15 ─────────────────────────────────────────────────────────────
-    '15. CHOQUE (hipovolêmico, cardiogênico, distributivo, obstrutivo):\n'
-    '🟥 CHOQUE — [TIPO]\n'
-    '📊 Identificar: - [hipovolêmico / cardiogênico / séptico / obstrutivo]\n'
-    '🚨 Conduta imediata:\n'
-    '- Acesso calibroso + monitorização\n'
-    '- [cristaloide 500 mL se hipovolêmico]\n'
-    '💉 Vasopressor:\n'
-    '- **Noradrenalina** se PAM < 65 refratária\n'
-    '🎯 Meta: - PAM ≥ 65 + lactato + diurese ≥ 0,5 mL/kg/h\n'
-    '📌 Próximo: - ecocardiograma + lactato seriado\n'
-    '\n'
-    // ── MATRIZ 16 ─────────────────────────────────────────────────────────────
-    '16. VENTILAÇÃO MECÂNICA / VIA AÉREA (IOT, parâmetros, desmame):\n'
-    '🟥 VM — [INDICAÇÃO ou MODO]\n'
-    '🫁 Parâmetros iniciais:\n'
-    '- VC **6 mL/kg** peso ideal\n'
-    '- PEEP **5–8 cmH₂O** (ajustar por SpO₂)\n'
-    '- FiO₂ **100%** → reduzir para SpO₂ alvo\n'
-    '🎯 Alvos: - SpO₂ ≥ 94% + pPlat < 30 cmH₂O\n'
-    '⚠️ Alerta: - barotrauma / assincronia\n'
-    '📌 Próximo: - gasometria em 30 min + ajuste\n'
-    '\n'
-    // ── MATRIZ 17 ─────────────────────────────────────────────────────────────
-    '17. INSUFICIÊNCIA / LESÃO RENAL AGUDA:\n'
-    '🟥 LRA — [ESTÁGIO KDIGO 1/2/3]\n'
-    '🧪 Critério: - [creatinina ou diurese]\n'
-    '🚨 Conduta:\n'
-    '- Suspender nefrotóxicos\n'
-    '- Reposição volêmica se pré-renal\n'
-    '- [diálise se AEIOU presente]\n'
-    '💊 Ajustes: - **[dose dos principais fármacos]**\n'
-    '⚠️ AEIOU: - acidose / eletrólitos / ureia / overload / uremia\n'
-    '📌 Próximo: - etiologia + USG renal\n'
-    '\n'
-    // ── MATRIZ 18 ─────────────────────────────────────────────────────────────
-    '18. HEMORRAGIA (GI, trauma, pós-op, anticoag):\n'
-    '🟥 HEMORRAGIA — [SÍTIO + GRAVIDADE]\n'
-    '🩸 Gravidade: - [leve / moderada / grave — Hb e hemodinâmica]\n'
-    '🚨 Conduta:\n'
-    '- Acesso calibroso + expansão volêmica\n'
-    '- Suspender anticoagulantes\n'
-    '- [reversor se anticoag: ver tipo]\n'
-    '💉 Hemoderivados:\n'
-    '- **CH se Hb < 7 g/dL** (ou < 8 se cardiopata)\n'
-    '- Plaquetas se < 50.000 + sangramento ativo\n'
-    '📌 Controle fonte: - [endoscopia / cirurgia]\n'
-    '\n'
-    // ── MATRIZ 19 ─────────────────────────────────────────────────────────────
-    '19. CRISE HIPERTENSIVA (emergência ou urgência):\n'
-    '🟥 CRISE HIPERTENSIVA — [EMERGÊNCIA ou URGÊNCIA]\n'
-    '📈 LOA: - [SNC / coronária / renal / aórtica?]\n'
-    '🚨 Conduta:\n'
-    '- Emergência: reduzir 25% PAM em 1h (EV)\n'
-    '- Urgência: reduzir em 24–48h (VO)\n'
-    '💊 Droga de escolha:\n'
-    '- **[Nitroprussiato / Labetalol / Hidralazina — dose]**\n'
-    '🎯 Meta: - [PA alvo + tempo]\n'
-    '📌 Próximo: - [internação se emergência / alta se urgência]\n'
-    '\n'
-    // ── MATRIZ 20 ─────────────────────────────────────────────────────────────
-    '20. ALTERAÇÃO LABORATORIAL / CÁLCULO CLÍNICO:\n'
-    '🟥 [ACHADO LAB ou CÁLCULO] — [PARÂMETRO]\n'
-    '🧪 Achado: - [valor + referência]\n'
-    '⚠️ Causas prováveis:\n'
-    '- [causa 1]\n'
-    '- [causa 2]\n'
-    '🚨 Intervir se: - [critério clínico]\n'
-    '💊 Correção: - **[conduta ou fórmula com resultado]**\n'
-    '📌 Próximo: - [exame confirmatório]\n'
-    '\n'
-    // ── MATRIZ 21 ─────────────────────────────────────────────────────────────
-    '21. TEMA LIVRE / CONSULTA GERAL (com bullets):\n'
-    '🟥 [ASSUNTO EM CAIXA ALTA — máx 4 palavras]\n'
-    '📖 Resumo:\n'
-    '- [definição em 1 linha]\n'
-    '🔑 Pontos-chave:\n'
-    '- [ponto 1 — máx 7 palavras]\n'
-    '- [ponto 2 — máx 7 palavras]\n'
-    '- [ponto 3 — máx 7 palavras]\n'
-    '⚠️ Alerta clínico: - [erro comum ou red flag]\n'
-    '📌 Próximo: - [conduta ou aprofundamento]\n'
-    '\n'
-    // ── MATRIZ 22 ─────────────────────────────────────────────────────────────
-    '22. FARMACOLÓGICO ISOLADO (fármaco sem intenção explícita):\n'
-    '🟥 [FÁRMACO] — [CLASSE FARMACOLÓGICA]\n'
-    '💊 Uso principal:\n'
-    '- **[indicação + dose usual + via]**\n'
-    '🔄 Alternativa: - **[outra apresentação se houver]**\n'
-    '⛔ Contraindicado em:\n'
-    '- [CI absoluta 1]\n'
-    '- [CI absoluta 2]\n'
-    '📌 Monitorar:\n'
-    '- [parâmetro de segurança principal]\n'
-    '⚠️ Alerta: - [interação ou toxicidade crítica]\n'
-    '\n'
-    // ── REGRAS GLOBAIS ULTRA-PLANTÃO ─────────────────────────────────────────
-    'REGRAS GLOBAIS ULTRA-PLANTÃO:\n'
-    '  📏 Título 🟥: NUNCA genérico. Máx 5 palavras. Nome específico.\n'
-    '  📋 Bullet (-): OBRIGATÓRIO em todos os blocos de conduta e farmacologia.\n'
-    '  💊 Fármacos: **negrito**. Dose + via em TODA menção farmacológica.\n'
-    '  🔕 Blocos sem dado real: OMITIR — não inventar conteúdo.\n'
-    '  📐 Cada bullet: máx 7 palavras. Telegráfico. Zero prosa.\n'
-    '  IDIOMA PT: "Soro Fisiológico" / "ampola" / "correr em BIC"\n'
-    '  IDIOMA ES: "Solución Salina" / "ampolla" / "administrar en BIC"\n'
-    '\n'
-    // ── TABELA DE CONVERSÃO ───────────────────────────────────────────────────
-    'TABELA DE CONVERSÃO:\n'
-    '  KCl 19,1%: 1 mL = 2,5 mEq | KCl 10%: 1 mL = 1,34 mEq\n'
-    '  MgSO4 50%: 1 mL = 0,4 g   | NaCl 20%: 1 mL = 3,4 mEq\n'
-    '\n';
+const String _modeAnchorPlantao = PlantaoPresentationContract.anchor +
+    '\nREGRA DE RITMO: ASSISTOLIA/AESP = NÃO CHOCÁVEL; FV/TVSP = CHOCÁVEL.\n'
+    'ASSISTOLIA/AESP: NÃO indicar desfibrilação/choque e NÃO escrever que adrenalina depende de choque.\n'
+    'Adrenalina 1 mg IV/IO o mais cedo possível; repetir a cada 3–5 min, com RCP de alta qualidade e causas reversíveis.\n'
+    'Choque/desfibrilação e amiodarona pertencem SOMENTE ao ramo FV/TVSP.\n';
 
 const String _modeAnchorEstudo =
-    // BUILD 333: Cirurgia 4 — removidas 6 linhas ✗ Plantão + template card condensado (−~1.800c).
     '[MODO ESTUDO — PRECEPTOR SÊNIOR DE FACULDADE DE MEDICINA]\n'
-    'Especialista com evidências de nível 1. Raciocínio clínico profundo e didático.\n'
-    '\n'
-    'ISOLAMENTO TOTAL — ESTE MODO SUBSTITUI QUALQUER OUTRA INSTRUÇÃO DE FORMATO:\n'
-    '  ✓ ESTE BLOCO TEM SOBERANIA ABSOLUTA SOBRE QUALQUER INSTRUÇÃO ANTERIOR\n'
-    '\n'
-    'IDIOMA: A trava de idioma detectada automaticamente (PT ou ES) é ABSOLUTA.\n'
-    'Responda EXCLUSIVAMENTE no idioma da trava. Zero inglês. Zero portunhol.\n'
-    '\n'
-    'ANTI-CoT ABSOLUTO — PROIBIDO incluir na resposta:\n'
-    '  "User Input Analysis:", "The user\'s input is...", "I need to provide..."\n'
-    '  Frases em 3ª pessoa sobre o usuário. Meta-comentários. Raciocínio interno.\n'
-    '\n'
-    'CONTAGEM MATEMÁTICA EXATA DE LINHAS (Build 230):\n'
-    '  📏 LIMITE: entre 6 e 30 linhas de conteúdo real (linhas em branco NÃO contam).\n'
-    '  📏 Definição: EXATAMENTE 1 linha — não mais, não menos.\n'
-    '  📏 Fisiopatologia: EXATAMENTE 2 linhas — pathway + mecanismo central.\n'
-    '  📏 Mecanismo de Ação (se farmacológico): EXATAMENTE 2 linhas — alvo + efeito.\n'
-    '  📏 Seções adicionais: máximo 4 linhas cada.\n'
-    '  📏 Total geral: NUNCA ultrapasse 30 linhas de conteúdo real.\n'
-    '  ⚠️ Se ultrapassar 30 linhas: condense as seções adicionais, preserve Definição/Fisiopat.\n'
-    '\n'
-    'HIERARQUIA DIDÁTICA OBRIGATÓRIA:\n'
-    '\n'
-    '## [Título clínico específico do tema]\n'
-    '\n'
-    'Definição: [1 LINHA EXATA — definição precisa e objetiva sem sub-frases]\n'
-    '\n'
-    'Fisiopatologia: [LINHA 1 — pathway inicial | LINHA 2 — consequência/resultado]\n'
-    '\n'
-    'Mecanismo de Ação (se farmacológico): [LINHA 1 — alvo molecular | LINHA 2 — efeito clínico]\n'
-    '\n'
-    '[Seções adicionais: epidemiologia, diagnóstico diferencial, pérola clínica]\n'
-    '[Tratamento com doses: incluir SOMENTE se perguntado explicitamente]\n'
-    '\n'
-    '📌 [Próximo passo em 1ª pessoa do usuário. PONTO FINAL. NUNCA "?".]\n'
-    '\n'
-    'REGRAS DE QUALIDADE:\n'
-    '  • Prosa acadêmica densa, voz ativa. Citar guideline/estudo quando relevante.\n'
-    '  • Negrito (**) para doses e termos-chave.\n'
-    '  • 📌 OBRIGATÓRIO como última linha — frase em 1ª pessoa, sem interrogação.\n'
-    '  • Jamais repetir conteúdo já explicado no histórico desta sessão.\n'
-    '  • PRIMEIRO CARACTERE da resposta = ## Título (NUNCA 🟥 ou emoji de emergência).\n'
-    '\n'
-    'CARDS VERTICAIS — quando ≥2 entidades comparáveis (classes, diferenciais, critérios):\n'
-    '  **[NOME]** • Mecanismo • Dose/Critério • Efeito Crítico • Alerta Clínico\n'
-    '  Separar cards com ---. Máximo 5 campos por card. PROIBIDO tabelas Markdown (| col |).\n'
-    '  EXCEÇÃO: "explicar"/"descrever"/"fisiopatologia" → prosa acadêmica normal.\n'
-    '\n';
+    'Aprofunde o aspecto solicitado no idioma ativo do app. '
+    'Preserve o tópico dos follow-ups desta conversa. '
+    'O contrato estudo_rules define a estrutura didática flexível; '
+    'não aplique compressão operacional do Plantão.\n';
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Build 190 — LANGUAGE LOCK ABSOLUTO
@@ -604,7 +240,7 @@ class ModeAnchorEngine {
   /// PRIORIDADE ABSOLUTA sobre o _systemPromptPrefix.
   ///
   /// [longResponse]=false → _modeAnchorPlantao (14-18 linhas conteúdo real, Jefe de Guardia)
-  /// [longResponse]=true  → _modeAnchorEstudo  (24-30 linhas, preceptor, Parágrafo 4 condicional)
+  /// [longResponse]=true  → _modeAnchorEstudo  (didática flexível, sem contagem de linhas)
   static String getModeAnchor({bool longResponse = false}) {
     final anchor = longResponse ? _modeAnchorEstudo : _modeAnchorPlantao;
     debugPrint(
@@ -963,7 +599,7 @@ class AiGatewayService {
     // ── BUILD 278 (1): Trava de Output Compacto ──────────────────────────────
     // RETIFICAÇÃO BUILD 278: aplica-se EXCLUSIVAMENTE ao Motor Estudo.
     // O Modo Plantão já possui volumetria validada e perfeita — NÃO alterar.
-    // longResponse==true  → Motor Estudo → injeta trava de 26 linhas × 15 palavras
+    // longResponse==true → Study-specific editorial instructions, no line cap.
     // longResponse==false → Motor Plantão → string vazia, zero impacto
     final String outputCompact = longResponse
         ? _buildOutputCompactDirective(resolvedLang)
@@ -974,7 +610,14 @@ class AiGatewayService {
       systemPrompt: '$basePrompt$outputCompact',
       hasSpecificContext: hasSpecificMatrizContext,
     );
+    final canonicalStudy = longResponse && clinicalContext?.verifiesStudyReferences == true;
     final String finalSystemPrompt = preparedModePrompt.systemPrompt;
+    final hybridStudy = longResponse && clinicalContext?.mode == AiRequestMode.estudo;
+    final String transportSystemPrompt = hybridStudy
+        ? StudyHybridResponse.prompt(finalSystemPrompt, resolvedLang)
+        : canonicalStudy
+        ? StudyCanonicalResponse.prompt(finalSystemPrompt)
+        : finalSystemPrompt;
 
     final motor = longResponse ? 'ESTUDO' : 'GUARDIA';
     debugPrint(
@@ -1010,7 +653,7 @@ class AiGatewayService {
       if (GeminiCacheService.hasValidCacheInMemory) {
         final cached = await GeminiCacheService.getActiveCache(
           apiKey:       apiKey,
-          systemPrompt: finalSystemPrompt,
+          systemPrompt: transportSystemPrompt,
         );
         activeCacheName = cached?.name;
       }
@@ -1023,7 +666,7 @@ class AiGatewayService {
         unawaited(
           GeminiCacheService.createOrRefresh(
             apiKey:       apiKey,
-            systemPrompt: finalSystemPrompt,
+            systemPrompt: transportSystemPrompt,
           ).then((entry) {
             if (entry != null) {
               debugPrint('[AI_ROUTER] BUILD278: cache criado em background name=${entry.name} '
@@ -1041,7 +684,7 @@ class AiGatewayService {
       unawaited(
         GeminiCacheService.createOrRefresh(
           apiKey:       apiKey,
-          systemPrompt: finalSystemPrompt,
+          systemPrompt: transportSystemPrompt,
         ).catchError((Object _) => null as GeminiCacheEntry?),
       );
     }
@@ -1057,15 +700,21 @@ class AiGatewayService {
     clinicalContext?.requireTransport(
         mode: longResponse ? 'estudo' : 'plantao', language: appLanguage);
     ProviderRouterService.requireClinicalOwner(clinicalContext);
-    yield* GeminiServiceV2.sendStream(
+    final transport = GeminiServiceV2.sendStream(
       apiKey:          apiKey,
       userMessage:     userMessage,        // mensagem LIMPA — mandato está no system
-      systemPrompt:    finalSystemPrompt,  // SmartRouter: enxuto, contrato único, lang lock
+      systemPrompt:    transportSystemPrompt,  // SmartRouter: enxuto, contrato único, lang lock
       history:         history,
       useGrounding:    effectiveGrounding, // Build 222: false fixo no Modo Plantão
       isPlantaoMode:   isPlantaoMode,      // Build 223: remove bullets/## do prefixo
       cachedContentName: activeCacheName, // BUILD 278: ID do cache (null = sem cache)
     );
+    yield* hybridStudy
+        ? StudyHybridResponse.stream(transport, language: resolvedLang)
+        : canonicalStudy
+        ? StudyCanonicalResponse.localize(transport, language: resolvedLang,
+            references: clinicalContext!.studyReferences)
+        : transport;
   }
 
   // ── classifyContext — delega para GeminiServiceV2 ─────────────────────────

@@ -787,6 +787,7 @@ class _Field extends StatelessWidget {
     final sub = dark ? const Color(0xFFAEB9CC) : const Color(0xFF64748B);
     final border = dark ? _darkBorder : _lightBorder;
     return TextField(
+      onTapOutside: (_) => FocusScope.of(context).unfocus(),
       controller: controller,
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       style: TextStyle(color: text, fontSize: 14, fontWeight: FontWeight.w600),

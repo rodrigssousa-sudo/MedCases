@@ -42,7 +42,9 @@ class PlantaoDrugEvidenceRequestObserver {
     this.intentResolver = const PlantaoDrugOriginalInputIntentResolver(),
   });
 
-  static const bool productivePromptConnected = false;
+  // AppProvider freezes validated evidence into the canonical Plantão request.
+  // This observer itself never invokes the provider, renderer or persistence.
+  static const bool productivePromptConnected = true;
   static const bool productiveProviderConnected = false;
   static const bool productiveRenderingConnected = false;
   static const bool productivePersistenceConnected = false;

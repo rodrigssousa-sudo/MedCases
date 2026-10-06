@@ -1,3 +1,18 @@
+import '../services/clinical_catalog/clinical_catalog_repository.dart';
+import '../services/clinical_catalog/clinical_catalog_platform.dart';
+import '../services/study/study_reference_lookup.dart';
+import '../services/fcm_service.dart';
+import '../services/study/study_hybrid_response.dart' show StudyDelivery;
+import '../services/study/study_delivery_policy.dart';
+import '../services/study/study_quantity_retention.dart';
+import '../services/study_response_contract.dart';
+import '../screens/ai/widgets/clinical_reference_resolver.dart';
+import '../services/ai/plantao_tool_context.dart';
+import '../services/ai/plantao_knowledge_context.dart';
+import '../models/canonical_clinical_snapshot.dart';
+import '../services/ai/plantao_canonical_request.dart';
+import '../services/ai/safety/clinical_dose_scope.dart';
+import '../services/ai/safety/ai_stream_trace.dart';
 import '../services/plantao_knowledge/remote_knowledge_resolver.dart';
 import '../services/plantao_knowledge/private_knowledge_snapshot_store.dart';
 import '../services/provider_gateway_http.dart' show gatewayBase;
@@ -46,7 +61,6 @@ import '../services/app_resume_coordinator.dart'; // BUILD 241: background/resum
 import '../models/clinical_structured_output.dart';
 import '../services/ai_pipeline/plantao_clinical_response_consistency_guard.dart';
 import '../services/ai_pipeline/plantao/plantao_clinical_regimen_output_guard.dart';
-import '../services/ai_pipeline/plantao/plantao_generic_acs_whole_response_semantic_core.dart';
 import '../services/ai_pipeline/plantao/plantao_explicit_named_topic_semantic_guard.dart';
 import '../services/ai_pipeline/plantao_local_clinical_output_adapter.dart';
 import '../services/ai_pipeline/plantao/contracts/plantao_continuation_type.dart';
@@ -313,6 +327,8 @@ final class ToolPayloadReady extends ToolResolution {
 enum AiProviderEffectPolicy { legacy, bufferedPipeline }
 
 class AppProvider extends ChangeNotifier {
+  Set<String> _studyContinuationSectionIds = const {};
+  Set<String> get studyContinuationSectionIds => Set.unmodifiable(_studyContinuationSectionIds);
   // PHASE3K-A: typed buffered cutover seam. The production default is
   // intentionally closed until provider-side effects are isolated.
   PlantaoBufferedCutoverController _plantaoBufferedCutoverController =
@@ -337,6 +353,8 @@ class AppProvider extends ChangeNotifier {
     required bool forcePaidCanary,
   }) {
     if (forcePaidCanary) return 'critical';
+    // Study's primary is the gateway, independent of a legacy BYOA flag.
+    if (!isPlantaoMode) return 'academic';
 
     if (isPlantaoMode && aiPriority == 'critical') {
       return 'critical';
@@ -415,6 +433,7 @@ class AppProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+    _canonicalConversationCache.clear();
     _privateStateDisposed = true;
     _invalidatePrivateSession();
     cancelAiStream();
@@ -720,13 +739,22 @@ class AppProvider extends ChangeNotifier {
   /// Last presentation gate, after UI-specific clinical transformations.
   String guardAiClinicalPresentation(
       String requestId, String text, AiRequestMode mode) {
+    AiStreamTrace.mark('QUALITY_LINT_ENTER', text.length);
+    AiStreamTrace.stage('L_LINT_INPUT', text, text);
     final snapshot = _clinicalSafetyByRequest[requestId];
     if (snapshot == null || snapshot.uid != (_currentUser?.uid ?? '')) {
+      AiStreamTrace.mark('QUALITY_LINT_RESULT_CONTEXT_REJECTED', 0);
       return 'Resposta indisponível: contexto clínico inválido.';
     }
-    final result = ClinicalSafetyFlow(snapshot).terminal(text, mode: mode);
-    debugPrint(result.telemetry(snapshot));
-    return result.allowed ? text : snapshot.safeMessage;
+    if (snapshot.mode != mode || snapshot.ownsRequest?.call() == false) {
+      AiStreamTrace.mark('QUALITY_LINT_RESULT_CONTEXT_REJECTED', 0);
+      return 'Resposta indisponível: contexto clínico inválido.';
+    }
+    // Specialized guards have already processed the answer. This last UI
+    // boundary is textual quality only and cannot veto generated content.
+    final result = ClinicalSafetyFlow.qualityLint(text);
+    AiStreamTrace.mark('QUALITY_LINT_RESULT', result.length);
+    return result;
   }
 
   // ── BUILD 249: ClinicalThreadManager — anti-cross-case contamination ──────
@@ -805,7 +833,7 @@ class AppProvider extends ChangeNotifier {
   bool _apiKeyWipedThisSession = false;
 
   // ── Estado — Modo Offline ──────────────────────────────────────────────────
-  bool _offlineMode = false; // true = sem rede, usa só cache local
+  bool _offlineMode = true; // Offline resources enabled for new installations
   bool _offlineCaching = false; // true durante o processo de cache
   double _offlineProgress = 0.0; // 0.0 → 1.0 durante caching
   DateTime? _offlineCachedAt; // quando foi feito o último cache
@@ -1201,6 +1229,7 @@ class AppProvider extends ChangeNotifier {
     // 1️⃣ Carrega cache local IMEDIATAMENTE — app responde sem esperar rede
     await _loadFromLocal(uid: user.uid);
         if (epoch != _sessionEpoch) return;
+    unawaited(FcmService.init(uid: user.uid, locale: _lang).catchError((Object _) {}));
 
     // 2️⃣ Carrega chaves do Firestore com AWAIT — timeout reduzido para 2s.
     //    GeminiService.initFromStorage() já foi chamado em _bootInBackground()
@@ -1337,6 +1366,8 @@ class AppProvider extends ChangeNotifier {
   }
 
   void clearUser() {
+    final notificationUid = _currentUser?.uid;
+    if (notificationUid != null) unawaited(FcmService.deleteToken(notificationUid));
     _invalidatePrivateSession();
     EntitlementService.instance.resetToFree();
     _clearRemoteClinicalContent();
@@ -1367,6 +1398,7 @@ class AppProvider extends ChangeNotifier {
     _resetDkahhsSafetyContext();
     // Limpa chave, histórico de IA e estado Gemini ao fazer logout
     _openAiKey = '';
+    _canonicalConversationCache.clear();
     _aiHistory.clear();
     _sessionMemory
         .reset(); // BUILD 326.1: limpa memória clínica (diag, meds, labs) — evita leak entre contas
@@ -1897,7 +1929,12 @@ class AppProvider extends ChangeNotifier {
   Future<void> _loadOfflineState() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      _offlineMode = prefs.getBool(_kOfflineMode) ?? false;
+      final saved = prefs.getBool(_kOfflineMode);
+      _offlineMode = saved ?? true;
+      if (saved == null) {
+        await prefs.setBool(_kOfflineMode, true);
+        await cacheAllDataForOffline();
+      }
       final cachedAt = prefs.getString(_kOfflineCachedAt);
       if (cachedAt != null) _offlineCachedAt = DateTime.tryParse(cachedAt);
     } catch (_) {}
@@ -2119,6 +2156,7 @@ class AppProvider extends ChangeNotifier {
 
   void setLang(String l) {
     _lang = l;
+    unawaited(FcmService.updateLocale(l));
     // Build 100: resetar o language lock da sessão ao trocar o idioma do app.
     _saveLocal();
     if (_currentUser != null) {
@@ -3283,7 +3321,9 @@ class AppProvider extends ChangeNotifier {
   /// Limpa o histórico de conversa da IA (nova conversa)
   void clearAiHistory() {
     cancelAiStream(); // cancela streaming em curso se houver
+    _canonicalConversationCache.clear();
     _aiHistory.clear();
+    _sessionMemory.reset(); // Nuevo clears patient assertions with canonical turns.
     _threadManager.reset(); // BUILD 249: reset thread ao iniciar nova conversa
     ClinicalThreadManager
         .resetStaticState(); // BUILD 304 PURIF-1: limpa _lastTaskLabel/_lastStudyActivityMs
@@ -3332,6 +3372,7 @@ class AppProvider extends ChangeNotifier {
   /// recém-restaurado (amnésia ao voltar do background).
   void rebuildAiHistoryFromMessages(List<Map<String, String>> messages) {
     cancelAiStream();
+    _canonicalConversationCache.clear();
     _aiHistory.clear();
     // Filtra apenas pares válidos user/assistant com conteúdo
     // HOTFIX 247D: exclui mensagens de fallback/safe-card ao restaurar sessão
@@ -3374,6 +3415,7 @@ class AppProvider extends ChangeNotifier {
   void resetAiSessionFull() {
     _clinicalSafetyByRequest.clear();
     cancelAiStream(); // cancela qualquer stream em andamento
+    _canonicalConversationCache.clear();
     _aiHistory.clear(); // limpa histórico de mensagens enviadas à API
     _sessionMemory
         .reset(); // zera memória clínica estruturada (diag, meds, labs)
@@ -3383,7 +3425,6 @@ class AppProvider extends ChangeNotifier {
     // MICRO-BUILD 462E-A.5.3.7.3.2.5 [PILLAR 2]: Reset conversation lifetime
     // identifiers so the next sendAiMessage() starts a fresh sessionId.
     _currentConversationSessionId = '';
-    _currentConversationMode = null;
     _currentConversationTitle = '';
     _isFirstMessageOfSession = true;
     debugPrint('[AppProvider] resetAiSessionFull — sessão clínica zerada');
@@ -6264,6 +6305,7 @@ class AppProvider extends ChangeNotifier {
   StreamSubscription<AiEvent>? _gptStreamSub;
 
   /// Cliente SSE ativo — permite cancelamento com AbortController upstream.
+  final _canonicalConversationCache = CanonicalConversationCache();
   GptSseClient? _activeGptClient;
 
   /// Cancela o streaming em curso (usuário trocou de tela, limpou chat, etc.)
@@ -6429,15 +6471,6 @@ class AppProvider extends ChangeNotifier {
   // the first sendAiMessage() call after resetAiSessionFull() / screen mount.
   // NEVER overwritten with thisRequestId inside the pipeline.
   String _currentConversationSessionId = '';
-  AiRequestMode? _currentConversationMode;
-
-  void _prepareAiConversationMode(AiRequestMode mode) {
-    // Cross-surface sends cannot inherit the opposite mode's history/session.
-    if (_currentConversationMode != null && _currentConversationMode != mode) {
-      resetAiSessionFull();
-    }
-    _currentConversationMode = mode;
-  }
 
   /// MICRO-BUILD 462E-A.5.3.7.3.2.5.2 [PILLAR 5]: Public read-only accessor.
   /// Non-empty when the current conversation is owned by the canonical v2 pipeline.
@@ -6465,7 +6498,6 @@ class AppProvider extends ChangeNotifier {
     }
 
     _currentConversationSessionId = normalizedSessionId;
-    _currentConversationMode = mode;
 
     final normalizedTitle = title.trim();
 
@@ -6658,13 +6690,15 @@ class AppProvider extends ChangeNotifier {
         safetyContext.ownsRequest?.call() == false) {
       return const SessionPersistSkipped('clinical_safety_context');
     }
+    assistantOutput = ClinicalSafetyFlow(safetyContext).present(assistantOutput);
     final safetyResult = ClinicalSafetyPass.evaluate(
       context: safetyContext,
       output: assistantOutput,
       outputMode: safetyContext.mode,
     );
     debugPrint(safetyResult.telemetry(safetyContext));
-    if (!safetyResult.allowed) {
+    if (safetyContext.mode == AiRequestMode.estudo &&
+        !ClinicalSafetyFlow(safetyContext).acceptsStudyPresentation(assistantOutput)) {
       _removeRejectedAiHistoryTail(
           userInput: userInput, assistantOutput: assistantOutput);
       return const SessionPersistSkipped('clinical_safety_rejected');
@@ -6717,9 +6751,8 @@ class AppProvider extends ChangeNotifier {
       return const SessionPersistSkipped('critical_machine_gate');
     }
 
-    final finalSafety =
-        ClinicalSafetyFlow(safetyContext).terminal(safeAssistantOutput);
-    if (!finalSafety.allowed) {
+    if (safetyContext.mode == AiRequestMode.estudo &&
+        !ClinicalSafetyFlow(safetyContext).acceptsStudyPresentation(safeAssistantOutput)) {
       _removeRejectedAiHistoryTail(
           userInput: userInput, assistantOutput: assistantOutput);
       return const SessionPersistSkipped('clinical_safety_post_transform');
@@ -6884,7 +6917,8 @@ class AppProvider extends ChangeNotifier {
     final clinicalContext = _clinicalSafetyByRequest[normalizedRequestId];
     if (clinicalContext == null ||
         clinicalContext.ownsRequest?.call() == false ||
-        !ClinicalSafetyFlow(clinicalContext).terminal(normalizedText).allowed) {
+        (clinicalContext.mode == AiRequestMode.estudo &&
+            !ClinicalSafetyFlow(clinicalContext).acceptsStudyPresentation(normalizedText))) {
       return false;
     }
 
@@ -7337,46 +7371,30 @@ class AppProvider extends ChangeNotifier {
     String? canonicalPlantaoPathologyKey,
   }) {
     final clinicalContext = _clinicalSafetyByRequest[requestId];
+    AiStreamTrace.content('REGIMEN_INPUT', assistantOutput);
+    if (longResponse) {
+      assistantOutput = StudyResponseContract.project(assistantOutput).clinicalAnswer;
+    }
     if (clinicalContext != null && assistantOutput.isNotEmpty) {
-      final rawSafety =
-          ClinicalSafetyFlow(clinicalContext).terminal(assistantOutput);
-      if (!rawSafety.allowed) {
-        debugPrint(rawSafety.telemetry(clinicalContext));
-        return clinicalContext.safeMessage;
-      }
+      assistantOutput = ClinicalSafetyFlow(clinicalContext).present(assistantOutput);
     }
     if (longResponse || assistantOutput.isEmpty) return assistantOutput;
 
-    final semanticCoreText =
-        PlantaoGenericAcsWholeResponseSemanticCore.materialize(
+    // Keep the generated answer; a bare ACS topic is not permission to
+    // replace the whole canonical snapshot with a historical template.
+    final explicitNamedTopicText =
+        PlantaoExplicitNamedTopicSemanticGuard.materialize(
       userInput: userInput,
       assistantOutput: assistantOutput,
       languageCode: _lang,
     );
 
-    if (semanticCoreText != assistantOutput) {
-      // ignore: avoid_print
-      print(
-        '[PLANTAO_ACS_WHOLE_RESPONSE_CORE][MATERIALIZED] '
-        'requestId=$requestId '
-        'beforeLen=${assistantOutput.length} '
-        'afterLen=${semanticCoreText.length}',
-      );
-    }
-
-    final explicitNamedTopicText =
-        PlantaoExplicitNamedTopicSemanticGuard.materialize(
-      userInput: userInput,
-      assistantOutput: semanticCoreText,
-      languageCode: _lang,
-    );
-
-    if (explicitNamedTopicText != semanticCoreText) {
+    if (explicitNamedTopicText != assistantOutput) {
       // ignore: avoid_print
       print(
         '[PLANTAO_EXPLICIT_NAMED_TOPIC_GUARD][MATERIALIZED] '
         'requestId=$requestId '
-        'beforeLen=${semanticCoreText.length} '
+        'beforeLen=${assistantOutput.length} '
         'afterLen=${explicitNamedTopicText.length}',
       );
     }
@@ -7386,6 +7404,7 @@ class AppProvider extends ChangeNotifier {
       assistantOutput: explicitNamedTopicText,
       languageCode: _lang,
       patientAge: _patient.age,
+      preserveGeneratedSections: true,
     );
 
     if (result.modified) {
@@ -7606,15 +7625,14 @@ class AppProvider extends ChangeNotifier {
         clinicalContext.ownsRequest?.call() == false) {
       return;
     }
-    final rawSafety =
-        ClinicalSafetyFlow(clinicalContext).terminal(validatedOutput);
-    if (!rawSafety.allowed) {
-      debugPrint(rawSafety.telemetry(clinicalContext));
+    AiStreamTrace.content('GPT_FINALIZER_INPUT', validatedOutput);
+    final presentedOutput = ClinicalSafetyFlow(clinicalContext).present(validatedOutput);
+    if (longResponse && presentedOutput != validatedOutput) {
       _removeRejectedAiHistoryTail(
           userInput: visibleUserInput, assistantOutput: validatedOutput);
-      validatedOutput = clinicalContext.safeMessage;
       clinicalOutput = null;
     }
+    validatedOutput = presentedOutput;
 
     // ── Step A: Clinical Numeric Determinism Gate (Validation) ───────────
     // Unit-coupled extraction: only values paired with a clinical dose unit
@@ -7922,12 +7940,8 @@ class AppProvider extends ChangeNotifier {
           'owner=ai_screen_m56c');
     }
 
-    // Resolve a mode boundary before capturing the persistence session ID.
-    if (!_aiCallInFlight && !_aiAnswerInProgress && !_aiStreamActive) {
-      _prepareAiConversationMode(
-        longResponse ? AiRequestMode.estudo : AiRequestMode.plantao,
-      );
-    }
+    // A mode switch changes the next turn contract, not its conversation ID.
+    // Explicit new-chat and identity boundaries still own session resets.
 
     // Phase3K-C5A-R3C: method-scope correlation owner.
     String? phase3kNormalizeCorrelationId(Object? value) {
@@ -8150,6 +8164,7 @@ class AppProvider extends ChangeNotifier {
               sessionId: phase3kResolvedSessionId,
             );
           }
+          AiStreamTrace.mark('REFUSAL_PIPELINE_REJECTED', 0);
           onError('PIPELINE_RESULT_REJECTED_AFTER_START');
           return false;
 
@@ -8348,7 +8363,6 @@ class AppProvider extends ChangeNotifier {
       );
       return false;
     }
-    _prepareAiConversationMode(requestMode);
     _aiCallInFlight = true;
 
     // PHASE3I CONTEXT-LEAK FINAL CONTRACT:
@@ -8395,8 +8409,20 @@ class AppProvider extends ChangeNotifier {
       }());
       final snapshot = safetyContext;
       if (snapshot == null || snapshot.ownsRequest?.call() == false) return;
-      final preview = ClinicalSafetyFlow(snapshot).preview(accumulated);
-      if (preview != null) onChunk(preview);
+      AiStreamTrace.content('POST_TRANSPORT', accumulated);
+      final studyProjection = longResponse
+          ? StudyResponseContract.project(accumulated, complete: false)
+          : null;
+      if (studyProjection != null) {
+        AiStreamTrace.mark('STUDY_RAW_INTERNAL', studyProjection.hadInternalText ? 1 : 0);
+      }
+      final preview = studyProjection == null
+          ? ClinicalSafetyFlow(snapshot).preview(accumulated)
+          : ClinicalSafetyFlow(snapshot).preview(studyProjection.clinicalAnswer);
+      if (preview != null) {
+        AiStreamTrace.mark('CHUNK_VALIDATED', preview.length);
+        onChunk(preview);
+      }
     }
 
     _activeRequestId = thisRequestId;
@@ -8441,6 +8467,15 @@ class AppProvider extends ChangeNotifier {
       createdAt: DateTime.now(),
     );
 
+    ClinicalCatalogSnapshot? requestCatalog;
+    Future<void> acquireClinicalCatalog() async {
+      requestCatalog ??= canonicalPlantaoAttestation?.catalogSnapshot ??
+          await SharedClinicalCatalog.instance.acquire();
+    }
+    bool getRemoteClinicalSource() => requestCatalog != null && !requestCatalog!.isBundled;
+    String catalogContext(String query) => requestCatalog!.context(
+        query, longResponse ? 'study' : 'plantao', activeSessionCtx.locale);
+
     ClinicalRequestContext freezeClinicalContext() {
       final existing = safetyContext;
       if (existing != null) return existing;
@@ -8450,6 +8485,7 @@ class AppProvider extends ChangeNotifier {
               caseSensitive: false)
           .hasMatch(query);
       if (newPatient) {
+        _canonicalConversationCache.clear();
         _aiHistory.clear();
         _sessionMemory.reset();
         _threadManager.reset();
@@ -8473,6 +8509,7 @@ class AppProvider extends ChangeNotifier {
         sessionId: activeSessionCtx.sessionId,
         userQuery: query,
         newPatient: newPatient,
+        priorUserTurns: _sanitizedHistory.where((entry) => entry['role'] == 'user').map((entry) => entry['content'] ?? ''),
       );
       final snapshot = ClinicalRequestContext(
         requestId: thisRequestId,
@@ -8482,6 +8519,11 @@ class AppProvider extends ChangeNotifier {
         language: activeSessionCtx.locale,
         userQuery: query,
         memory: memory,
+        studyReferenceRecords: longResponse
+            ? (getRemoteClinicalSource()
+                ? requestCatalog!.references(query, 'study', activeSessionCtx.locale)
+                : (ClinicalReferenceResolver.resolveStudy(userText: query)?.lines ?? const []))
+            : null,
         evidence: ClinicalEvidenceBundle.forRequest(
           query: query,
           facts: memory.confirmedFacts,
@@ -8494,6 +8536,11 @@ class AppProvider extends ChangeNotifier {
             _currentConversationSessionId == activeSessionCtx.sessionId,
         createdAt: activeSessionCtx.createdAt,
       );
+      if (longResponse && snapshot.studyReferences.records.isEmpty) {
+        unawaited(StudyReferenceLookup.resolve(query).then((sources) {
+          if (snapshot.ownsRequest?.call() != false) snapshot.studyReferences.addGrounding(sources);
+        }));
+      }
       safetyContext = snapshot;
       _clinicalSafetyByRequest.clear();
       _clinicalSafetyByRequest[thisRequestId] = snapshot;
@@ -8518,7 +8565,6 @@ class AppProvider extends ChangeNotifier {
       String stage,
     ) {
       final shouldRotate = !m77ConversationIdentityRotated &&
-          !longResponse &&
           phase3kHadActiveSession &&
           status.action == ThreadAction.newThread &&
           status.reason != 'first_message';
@@ -8720,6 +8766,7 @@ class AppProvider extends ChangeNotifier {
       //     • Bolha AI duplicada (segunda chamada ao setState com o mesmo texto)
       //     • Texto truncado se o segundo call vinha com texto vazio/parcial
       //   Solução: flag `_wrapperFired` local, atômico, fecha a porta após o 1º disparo.
+      final groundedSources = <String, String>{};
       bool _wrapperFired = false;
       void Function(String, [ClinicalStructuredOutput?]) wrappedOnDone =
           (String text, [ClinicalStructuredOutput? clinicalOutput]) {
@@ -8757,16 +8804,17 @@ class AppProvider extends ChangeNotifier {
             initialContext.ownsRequest?.call() == false) {
           return;
         }
-        final rawSafety = ClinicalSafetyFlow(initialContext).terminal(text);
-        if (!rawSafety.allowed) {
-          debugPrint(rawSafety.telemetry(initialContext));
-          _removeRejectedAiHistoryTail(
-              userInput: persistedUserInput, assistantOutput: text);
-          onDone(initialContext.safeMessage);
-          onStructuredDone?.call(initialContext.safeMessage, null);
-          notifyListeners();
-          return;
+        AiStreamTrace.mark('PROVIDER_TEXT_PRESENT', text.isNotEmpty ? 1 : 0);
+        AiStreamTrace.content('WRAPPER_INPUT', text);
+        if (longResponse) {
+          text = StudyResponseContract.project(text).clinicalAnswer;
+          AiStreamTrace.mark('STUDY_POST_FINALIZER_INTERNAL',
+              StudyResponseContract.project(text).hadInternalText ? 1 : 0);
         }
+        AiStreamTrace.mark('POST_PROVIDER_FILTER_ENTER', text.length);
+        text = ClinicalSafetyFlow(initialContext).present(text);
+        AiStreamTrace.mark('POST_PROVIDER_FILTER_RESULT', text.length);
+        AiStreamTrace.mark('POST_PROVIDER_FILTER_SAFETY_MESSAGE', text == initialContext.safeMessage ? 1 : 0);
 
         final utf16SafeProviderText =
             !longResponse ? WellFormedUtf16.normalize(text) : text;
@@ -8817,13 +8865,16 @@ class AppProvider extends ChangeNotifier {
             mode: requestMode, structuredClaims: medicationClaims);
         debugPrint(safetyResult.telemetry(snapshot));
         if (!safetyResult.allowed) {
-          _removeRejectedAiHistoryTail(
-              userInput: persistedUserInput, assistantOutput: text);
-          guardedText = snapshot.safeMessage;
+          final presented = ClinicalSafetyFlow(snapshot).present(guardedText);
+          if (!longResponse || presented != guardedText) {
+            _removeRejectedAiHistoryTail(
+                userInput: persistedUserInput, assistantOutput: text);
+          }
+          guardedText = presented;
           clinicalOutput = null;
         }
 
-        final guardedClinicalOutput = !safetyResult.allowed
+        final guardedClinicalOutput = longResponse || !safetyResult.allowed
             ? null
             : guardedText == utf16SafeProviderText
                 ? clinicalOutput
@@ -8832,8 +8883,29 @@ class AppProvider extends ChangeNotifier {
 
         // O contrato legado continua sendo a porta soberana de fechamento da UI.
         // O callback estruturado é apenas um hook aditivo executado depois.
+        if (!longResponse && groundedSources.isNotEmpty) {
+          final links = groundedSources.entries.where((e) => !guardedText.contains(e.key))
+              .map((e) => '[${e.value}](${Uri.encodeFull(e.key)})').join('\n');
+          if (links.isNotEmpty) guardedText += '\n\n${snapshot.language.startsWith('es') ? '### Fuentes' : '### Fontes'}\n$links';
+        }
+        // History must contain the exact safe answer that reached the UI.
+        // Granular safety may remove the raw pair; do not lose its valid
+        // explanation/clarification when continuing the same conversation.
+        if (guardedText.trim().isNotEmpty && !_isFallbackText(guardedText)) {
+          final tailMatches = _aiHistory.length >= 2 &&
+              _aiHistory[_aiHistory.length - 2]['role'] == 'user' &&
+              _aiHistory[_aiHistory.length - 2]['content'] == persistedUserInput;
+          if (tailMatches) {
+            _aiHistory.last = {'role': 'assistant', 'content': guardedText};
+          } else {
+            _aiHistory
+              ..add({'role': 'user', 'content': persistedUserInput})
+              ..add({'role': 'assistant', 'content': guardedText});
+          }
+          while (_aiHistory.length > 60) _aiHistory.removeAt(0);
+        }
         onDone(guardedText);
-        onStructuredDone?.call(guardedText, guardedClinicalOutput);
+        onStructuredDone?.call(guardedText, groundedSources.isEmpty ? guardedClinicalOutput : null);
         notifyListeners();
 
         // PHASE 3D — run canonical finalization only after the productive UI
@@ -8886,8 +8958,8 @@ class AppProvider extends ChangeNotifier {
           'fallback=${aiPriority == "critical" ? "gemini_paid" : "paid"}',
         );
       }
-      final bool shouldUseGptSse = shouldForceGptFallbackForQa ||
-          (!longResponse && aiPriority == 'critical');
+      // Study chat never enters the legacy GPT SSE route, including QA.
+      final bool shouldUseGptSse = !longResponse;
 
       // ══════════════════════════════════════════════════════════════════════════
       // BUILD 462E-A / 462E-A.3 — QA BYPASS: shouldForceGptFallbackForQa
@@ -8945,6 +9017,7 @@ class AppProvider extends ChangeNotifier {
         // Obter ID Token para autenticação no gptProxyStream
         // Web: AuthService.getAdminToken() (REST) | Nativo: FirebaseAuth.getIdToken()
         // Tratamento de auth_expired: AiFailed(code:'auth_expired') controlado
+        AiStreamTrace.mark('PLANTAO_AUTH_START', 0);
         String gptQaToken = '';
         if (kIsWeb) {
           try {
@@ -9026,7 +9099,7 @@ class AppProvider extends ChangeNotifier {
         // PHASE3I-J2B2: rehydrate button continuation context before
         // ClinicalThreadManager can classify an in-memory topic gap as first_message.
         // _aiHistory remains the canonical productive conversation history.
-        if (fromButton &&
+        if (
             !_threadManager.hasActiveThread &&
             _sanitizedHistory.isNotEmpty) {
           _threadManager.primeFromHistory(
@@ -9040,17 +9113,19 @@ class AppProvider extends ChangeNotifier {
           }
         }
 
+        AiStreamTrace.mark('PLANTAO_AUTH_READY', 0);
         final qaThreadStatus = _threadManager.evaluate(
           currentUserText: input,
           isPlantaoMode: !longResponse,
-          cameFromButton: fromButton,
+          cameFromButton: fromButton || _sessionMemory.safety.acceptsIndicationReply(persistedUserInput),
         );
         m77RotateConversationIdentityOnClinicalBoundary(
           qaThreadStatus,
           'qa',
         );
-        if (qaThreadStatus.action == ThreadAction.newThread && !longResponse) {
+        if (qaThreadStatus.action == ThreadAction.newThread) {
           final removed = _aiHistory.length;
+          _canonicalConversationCache.clear();
           _aiHistory.clear();
           _sessionMemory.reset();
           debugPrint(
@@ -9062,12 +9137,29 @@ class AppProvider extends ChangeNotifier {
             activeSessionCtx.uid != (_currentUser?.uid ?? '')) {
           return false;
         }
+        await acquireClinicalCatalog();
+        if (!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId) return false;
         final clinicalSnapshot = freezeClinicalContext();
+        final unsupportedCalculation = clinicalSnapshot.unsupportedWeightCalculationMessage;
+        if (unsupportedCalculation != null) {
+          _aiHistory
+            ..add({'role': 'user', 'content': persistedUserInput})
+            ..add({'role': 'assistant', 'content': unsupportedCalculation});
+          onDone(unsupportedCalculation);
+          _completeAiRequestOnce(thisRequestId);
+          return true;
+        }
         if (!clinicalSnapshot.mayGenerate) {
           final result = ClinicalSafetyPass.evaluate(
               context: clinicalSnapshot, output: '', outputMode: requestMode);
           debugPrint(result.telemetry(clinicalSnapshot));
+          // Clarification is a real conversation turn, not a transport error.
+          // Preserve the supplied fields for the user's next answer.
+          _aiHistory
+            ..add({'role': 'user', 'content': persistedUserInput})
+            ..add({'role': 'assistant', 'content': clinicalSnapshot.safeMessage});
           onDone(clinicalSnapshot.safeMessage);
+          _completeAiRequestOnce(thisRequestId);
           return true;
         }
         final qaExpandedInput = qaThreadStatus.isContinuation
@@ -9075,11 +9167,11 @@ class AppProvider extends ChangeNotifier {
             : input;
         final qaNormalized = _normalize(qaExpandedInput);
         final qaMatchedProtocols = <ProtocolModel>[];
-        final qaProtos = _matchProtocolsExtended(
+        final qaProtos = getRemoteClinicalSource() ? <String>[] : _matchProtocolsExtended(
           qaNormalized,
           matchedProtocols: qaMatchedProtocols,
         );
-        var qaFinalProtos = qaProtos.isNotEmpty
+        var qaFinalProtos = getRemoteClinicalSource() ? <String>[] : qaProtos.isNotEmpty
             ? qaProtos
             : _matchProtocols(
                 qaNormalized,
@@ -9092,12 +9184,12 @@ class AppProvider extends ChangeNotifier {
             currentInput: input,
           );
         }
-        final qaLocalCtx = _buildLocalAnswer(qaExpandedInput);
-        final qaCrosscuttingEvidenceContext =
+        final qaLocalCtx = getRemoteClinicalSource() ? '' : _buildLocalAnswer(qaExpandedInput, sourceLanguage: longResponse ? null : 'pt');
+        final qaCrosscuttingEvidenceContext = getRemoteClinicalSource() ? '' :
             ClinicalCrosscuttingEvidenceResolver.enrich(
           query: qaExpandedInput,
           baseContext: '',
-          lang: activeSessionCtx.locale,
+          lang: longResponse ? activeSessionCtx.locale : 'pt',
         );
         final qaShadowRequest = _lastPlantaoShadowRequest;
         if (!longResponse && qaShadowRequest != null) {
@@ -9107,7 +9199,22 @@ class AppProvider extends ChangeNotifier {
           );
         }
 
-        final qaBaseSystemPrompt = AiService.buildClinicalSystemPrompt(
+        Map<String, Object?> qaDrugEvidence = const {};
+        final drugEvidenceFuture = _plantaoDrugEvidenceRequestFuture;
+        if (!longResponse && drugEvidenceFuture != null) {
+          try {
+            final evidence = await drugEvidenceFuture.timeout(const Duration(milliseconds:1500));
+            if (evidence.requestId == thisRequestId && evidence.hasCanonicalEvidence) {
+              qaDrugEvidence = {
+                'manifest':evidence.evidence.manifest?.toJson(),
+                'documents':evidence.evidence.documents.map((d)=>d.toJson()).toList(),
+              };
+            }
+          } catch (_) { /* Optional evidence never prevents generation. */ }
+        }
+        if (!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId) return false;
+
+        final qaBaseSystemPrompt = longResponse ? AiService.buildClinicalSystemPrompt(
           lang: qaSessionLang,
           matchedProtocolSummaries: qaFinalProtos,
           matchedDrugSummaries: const [],
@@ -9125,14 +9232,32 @@ class AppProvider extends ChangeNotifier {
           isFirstMessage: _aiHistory.isEmpty,
           isPlantaoMode: !longResponse,
           proprietaryDrugContext: null,
-        );
+        ) : PlantaoCanonicalRequest.compile(query: qaExpandedInput, context: {
+          'patient': {'age':_patient.age, 'sex':_patient.sex,
+            'weight':_patient.weight, 'creatinineClearance':clcr,
+            'medications':_patient.medications},
+          'memory':_sessionMemory.buildMemoryBlock(false),
+          'drugEvidence':qaDrugEvidence,
+          'deterministicTools':PlantaoToolContext.resolve(qaExpandedInput),
+          'laboratoryEvidence':PlantaoKnowledgeContext.labs(qaExpandedInput),
+          'localEvidence':qaLocalCtx,
+          'crosscuttingEvidence':qaCrosscuttingEvidenceContext,
+          'protocols':qaMatchedProtocols.map((p) => {
+            'id':p.canonicalProtocolId ?? p.id, 'family':p.canonicalFamilyId,
+            'title':p.title, 'actions':p.actions, 'avoid':p.avoid,
+            'treatment':p.drugsFirstLine, 'monitoring':p.monitoring,
+            'alerts':p.redFlags, 'contraindications':p.drugsContraindicated,
+            'references':p.references,
+          }).toList(),
+        });
 
         final qaModePrompt = prepareAiRequestPrompt(
           mode: requestMode,
           systemPrompt: qaBaseSystemPrompt,
           hasSpecificContext: !longResponse,
         );
-        final qaSystemPrompt = qaModePrompt.systemPrompt;
+        final qaSystemPrompt = (longResponse ? qaModePrompt.systemPrompt : qaBaseSystemPrompt) +
+            (getRemoteClinicalSource() ? '\n[CLINICAL_CATALOG_VERSION:${requestCatalog!.version}]\n${catalogContext(qaExpandedInput)}\n[/CLINICAL_CATALOG_VERSION]' : '');
 
         final qaHistory = List<Map<String, String>>.from(
           ClinicalThreadManager.buildThreadHistory(
@@ -9174,6 +9299,23 @@ class AppProvider extends ChangeNotifier {
           _activeGptClient = null;
 
           if ((!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId)) {
+            return;
+          }
+
+          // Plantão fallback is server-owned. Never re-enter a legacy client route.
+          if (!longResponse) {
+            _aiStreamActive = false;
+            aiChatProvider.setStreaming(false);
+            if (qaAccumulator.isNotEmpty) {
+              wrappedOnDone(qaAccumulator.toString());
+            } else {
+              wrappedOnError(activeSessionCtx.locale.startsWith('es')
+                  ? 'No se pudo completar la respuesta. Intenta nuevamente.'
+                  : 'Não foi possível concluir a resposta. Tente novamente.');
+            }
+            ExternalToolLinkEngine.releaseCanonicalDecision(
+              requestId: thisRequestId, decision: canonicalDecision);
+            _completeAiRequestOnce(thisRequestId);
             return;
           }
 
@@ -9330,8 +9472,9 @@ class AppProvider extends ChangeNotifier {
         // [RENDER_AUDIT]: apenas AiChatProvider rebuild — HomeScreen não é notificado
         // aqui. O notifyListeners() amplo ocorrerá SOMENTE em wrappedOnDone/wrappedOnError.
 
-        // Timer de segurança QA (90s — mesmo orçamento do Modo Estudo)
-        final qaTimeoutMs = longResponse ? 90000 : 45000;
+        // Plantão: 120s de orçamento da Function + 30s de margem de transporte.
+        // Estudo mantém o prazo existente.
+        final qaTimeoutMs = longResponse ? 90000 : 150000;
         qaTimer = Timer(Duration(milliseconds: qaTimeoutMs), () {
           if (qaCompFired) return;
           qaCompFired = true;
@@ -9354,7 +9497,8 @@ class AppProvider extends ChangeNotifier {
           lang: activeSessionCtx.locale,
           requestId:
               thisRequestId, // ID UNIFICADO propagado para o GptSseClient
-          maxOutputTokens: longResponse ? 2500 : 3200,
+          maxOutputTokens: longResponse ? 2500 : 6000,
+          canonicalCache: longResponse ? null : _canonicalConversationCache,
           onClientCreated: (client) {
             _activeGptClient = client;
           },
@@ -9409,7 +9553,7 @@ class AppProvider extends ChangeNotifier {
                   // ignore: avoid_print
                   print(
                     '[AI_E2E][T1_FIRST_DELTA] requestId=$thisRequestId '
-                    'sequence=${e.sequence} delta="${e.delta.length > 20 ? e.delta.substring(0, 20) : e.delta}..." '
+                    'sequence=${e.sequence} deltaChars=${e.delta.length} '
                     'T1_ms=${DateTime.now().millisecondsSinceEpoch} '
                     'elapsed=${DateTime.now().millisecondsSinceEpoch - globalStartMs}ms',
                   );
@@ -9478,6 +9622,7 @@ class AppProvider extends ChangeNotifier {
                     provider: e.usedProvider,
                     attempt: e.attempt,
                     structuredOutput: e.clinicalOutput,
+                    canonicalSnapshotValidated: e.canonicalSnapshotValidated,
                   );
 
                   final truncationInspection =
@@ -9682,9 +9827,15 @@ class AppProvider extends ChangeNotifier {
                 qaFirstDelta = false;
                 qaDeltaCount = 0;
 
-              // ── AiToolResult / AiSources: ignorados no QA path ───────────────
+              case AiSources e:
+                for (final source in e.sources) {
+                  final url = source['url'] ?? '';
+                  final uri = Uri.tryParse(url);
+                  if (uri == null || uri.scheme != 'https' || uri.host.isEmpty || uri.userInfo.isNotEmpty) continue;
+                  final title = (source['title'] ?? uri.host).replaceAll(RegExp(r'[\[\]\n\r]'), ' ');
+                  groundedSources[url] = title;
+                }
               case AiToolResult _:
-              case AiSources _:
                 break;
             }
           },
@@ -9778,7 +9929,7 @@ class AppProvider extends ChangeNotifier {
       // PHASE3I-J2B2: rehydrate button continuation context before
       // ClinicalThreadManager can classify an in-memory topic gap as first_message.
       // _aiHistory remains the canonical productive conversation history.
-      if (fromButton &&
+      if (
           !_threadManager.hasActiveThread &&
           _sanitizedHistory.isNotEmpty) {
         _threadManager.primeFromHistory(
@@ -9796,7 +9947,7 @@ class AppProvider extends ChangeNotifier {
         currentUserText: input,
         isPlantaoMode: !longResponse,
         cameFromButton:
-            fromButton, // BUILD 262: bypasses HARD RESET on follow-up button taps
+            fromButton || _sessionMemory.safety.acceptsIndicationReply(persistedUserInput), // BUILD 262: bypasses HARD RESET on follow-up button taps
       );
       m77RotateConversationIdentityOnClinicalBoundary(
         threadStatus,
@@ -9806,17 +9957,13 @@ class AppProvider extends ChangeNotifier {
       // ClinicalThreadManager.evaluate() já retorna continueThread no Modo Estudo,
       // mas esta segunda camada garante que NUNCA ocorra _aiHistory.clear() enquanto
       // longResponse=true, mesmo que um caminho de código futuro altere o ThreadManager.
-      if (threadStatus.action == ThreadAction.newThread && longResponse) {
-        debugPrint(
-          '[BUILD300][HISTORY_SANITIZER] bypass reason=study_mode_hard_reset_forbidden '
-          'threadReason=${threadStatus.reason} historyLen=${_aiHistory.length}',
-        );
-      } else if (threadStatus.action == ThreadAction.newThread) {
+      if (threadStatus.action == ThreadAction.newThread) {
         // BUILD 250: HARD RESET síncrono — ocorre ANTES de qualquer montagem de payload.
         // Limpa _aiHistory (contexto Gemini) + reseta memória clínica estruturada.
         // Isso elimina os 8.9k tokens de contexto acumulado que causaram truncamento.
         // APLICA-SE APENAS AO MODO PLANTÃO (!longResponse).
         final removed = _aiHistory.length;
+        _canonicalConversationCache.clear();
         _aiHistory.clear(); // contexto Gemini → zero
         _sessionMemory.reset(); // memória clínica (diag, meds, labs) → zero
         debugPrint(
@@ -9830,12 +9977,29 @@ class AppProvider extends ChangeNotifier {
           activeSessionCtx.uid != (_currentUser?.uid ?? '')) {
         return false;
       }
+      await acquireClinicalCatalog();
+      if (!isCurrentSession(requestSessionUid, requestSessionEpoch) || _activeRequestId != thisRequestId) return false;
       final clinicalSnapshot = freezeClinicalContext();
+      final unsupportedCalculation = clinicalSnapshot.unsupportedWeightCalculationMessage;
+      if (unsupportedCalculation != null) {
+        _aiHistory
+          ..add({'role': 'user', 'content': persistedUserInput})
+          ..add({'role': 'assistant', 'content': unsupportedCalculation});
+        onDone(unsupportedCalculation);
+        _completeAiRequestOnce(thisRequestId);
+        return true;
+      }
       if (!clinicalSnapshot.mayGenerate) {
         final result = ClinicalSafetyPass.evaluate(
             context: clinicalSnapshot, output: '', outputMode: requestMode);
         debugPrint(result.telemetry(clinicalSnapshot));
-        onDone(clinicalSnapshot.safeMessage);
+        // Clarification is a real conversation turn, not a transport error.
+          // Preserve the supplied fields for the user's next answer.
+          _aiHistory
+            ..add({'role': 'user', 'content': persistedUserInput})
+            ..add({'role': 'assistant', 'content': clinicalSnapshot.safeMessage});
+          onDone(clinicalSnapshot.safeMessage);
+        _completeAiRequestOnce(thisRequestId);
         return true;
       }
       final sessionLang = activeSessionCtx.locale;
@@ -9849,11 +10013,11 @@ class AppProvider extends ChangeNotifier {
 
       // BUILD 325: drug RAG removed — Google Search Grounding + system prompt directives.
       final matchedProtocolModels = <ProtocolModel>[];
-      final _extProtos = _matchProtocolsExtended(
+      final _extProtos = getRemoteClinicalSource() ? <String>[] : _matchProtocolsExtended(
         normalized,
         matchedProtocols: matchedProtocolModels,
       );
-      var finalProtocols = _extProtos.isNotEmpty
+      var finalProtocols = getRemoteClinicalSource() ? <String>[] : _extProtos.isNotEmpty
           ? _extProtos
           : _matchProtocols(
               normalized,
@@ -9866,8 +10030,8 @@ class AppProvider extends ChangeNotifier {
           currentInput: input,
         );
       }
-      final localContext = _buildLocalAnswer(expandedInput);
-      final crosscuttingEvidenceContext =
+      final localContext = getRemoteClinicalSource() ? '' : _buildLocalAnswer(expandedInput);
+      final crosscuttingEvidenceContext = getRemoteClinicalSource() ? '' :
           ClinicalCrosscuttingEvidenceResolver.enrich(
         query: expandedInput,
         baseContext: '',
@@ -9914,7 +10078,9 @@ class AppProvider extends ChangeNotifier {
         systemPrompt: baseSystemPrompt,
         hasSpecificContext: !longResponse,
       );
-      final systemPrompt = preparedModePrompt.systemPrompt;
+      final systemPrompt = preparedModePrompt.systemPrompt +
+          (getRemoteClinicalSource() ? '\n[CLINICAL_CATALOG_VERSION:${requestCatalog!.version}]\n${catalogContext(expandedInput)}\n[/CLINICAL_CATALOG_VERSION]' : '') +
+          (longResponse ? '' : ClinicalDoseScope.prompt(_lang));
 
       // BUILD 253: log do tamanho real do systemPrompt (não gateado por kDebugMode).
       // Permite confirmar redução de tokens atingida no modo Plantão.
@@ -10007,6 +10173,23 @@ class AppProvider extends ChangeNotifier {
         );
 
       final accumulator = StringBuffer();
+      StudyDelivery? studyCommittedDelivery;
+      bool preserveCommittedStudyOnFailure() {
+        final delivery = studyCommittedDelivery;
+        final context = safetyContext;
+        if (context?.mode != AiRequestMode.estudo || delivery == null ||
+            delivery.blocks.isEmpty || context!.ownsRequest?.call() == false) return false;
+        final safe = ClinicalSafetyFlow(context).preview(delivery.text);
+        if (safe == null || safe.trim().isEmpty) return false;
+        onChunk(safe);
+        _studyContinuationSectionIds = delivery.sectionIds;
+        wrappedOnError('stream_error');
+        _studyContinuationSectionIds = const {};
+        ExternalToolLinkEngine.releaseCanonicalDecision(
+            requestId: thisRequestId, decision: canonicalDecision);
+        _completeAiRequestOnce(thisRequestId);
+        return true;
+      }
 
       // ── MICRO-BUILD 462E-A.5.3.7: AiFinalizationTransaction — per-request state machine ──
       // Replaces the closure-local bool+function pattern with a formal transaction object
@@ -10121,6 +10304,7 @@ class AppProvider extends ChangeNotifier {
       //   para evitar setState/notifyListeners em contexto já descartado (race condition
       //   que produzia DiagnosticsProperty<void> no Flutter).
       // Nunca expõe a chave paga — usa proxy seguro (Cloud Function).
+      bool studyFallbackStarted = false;
       Future<bool> tryPaidFallback(String reason) async {
         // MICRO-BUILD 462E-A.5.3: returns true when fallback assumed ownership
         // of terminal events (wrappedOnDone/wrappedOnError + release + complete).
@@ -10140,12 +10324,22 @@ class AppProvider extends ChangeNotifier {
             '[AI_ROUTER] paid_fallback reason=$reason requestId=$requestId',
           );
 
+        if (longResponse) {
+          // A primary terminal/error/timeout race may request fallback twice.
+          // The first call retains terminal ownership and the HTTP deadline.
+          if (studyFallbackStarted) return true;
+          studyFallbackStarted = true;
+          AiStreamTrace.mark('STUDY_FALLBACK_SELECTED',
+              StudyDeliveryPolicy.fallbackReasonCode(reason));
+          AppResumeCoordinator.instance.completeAiRequest(thisRequestId);
+        }
+
         // ── BUILD 321: Layer 2 — GPT-4o Mini (antes do Gemini Paid) ──────────
         // Tenta GPT-4o Mini primeiro quando _openAiKey estiver configurada no
         // Firestore (app_config/global.openAiKey preenchido pelo admin).
         // A chave NÃO vai no payload — apenas sinaliza que o admin configurou o
         // provedor OpenAI. O segredo real (OPENAI_API_KEY) é lido server-side na CF.
-        if (_openAiKey.isNotEmpty) {
+        if (longResponse || _openAiKey.isNotEmpty) {
           if (kDebugMode) {
             debugPrint(
               '[BUILD321][LAYER2] Tentando GPT-4o Mini reason=$reason requestId=$requestId',
@@ -10233,6 +10427,22 @@ class AppProvider extends ChangeNotifier {
               canonicalPlantaoPathologyKey:
                   canonicalPlantaoAttestation?.canonicalPathologyKey,
             );
+            if (longResponse) {
+              final snapshot = gptResult.studySnapshot;
+              final retained = snapshot != null &&
+                  StudyQuantityRetention.audit(snapshot, gptText)
+                          ['missingQuantityCount'] == 0;
+              if (!retained) {
+                debugPrint('[STUDY_LUNA] reason=UNEXPLAINED_CANONICAL_QUANTITY_LOSS');
+                wrappedOnError(activeSessionCtx.locale.startsWith('es')
+                    ? 'No se pudo completar la respuesta. Intenta nuevamente.'
+                    : 'Não foi possível concluir a resposta. Tente novamente.');
+                ExternalToolLinkEngine.releaseCanonicalDecision(
+                    requestId: thisRequestId, decision: canonicalDecision);
+                _completeAiRequestOnce(thisRequestId);
+                return true;
+              }
+            }
             if (!_isFallbackText(gptText)) {
               _aiHistory
                 ..add({'role': 'user', 'content': persistedUserInput})
@@ -10292,6 +10502,19 @@ class AppProvider extends ChangeNotifier {
             );
             _completeAiRequestOnce(thisRequestId);
             return true; // Layer 2 resolved — handled terminal events
+          }
+
+          if (longResponse) {
+            // A failed canonical fallback is a technical error, never a second
+            // Gemini paid attempt, a partial answer, or a paywall.
+            debugPrint('[STUDY_LUNA] success=false reason=${gptResult.errorCode}');
+            wrappedOnError(activeSessionCtx.locale.startsWith('es')
+                ? 'No se pudo completar la respuesta. Intenta nuevamente.'
+                : 'Não foi possível concluir a resposta. Tente novamente.');
+            ExternalToolLinkEngine.releaseCanonicalDecision(
+                requestId: thisRequestId, decision: canonicalDecision);
+            _completeAiRequestOnce(thisRequestId);
+            return true;
           }
 
           // GPT falhou — cai para Layer 3 (Gemini Paid)
@@ -10648,27 +10871,13 @@ class AppProvider extends ChangeNotifier {
         return true;
       }
 
-      // ── BUILD 323 [OPT-3]: Gateway de Bypass por Volume — Teto 14k chars ─────
-      // Após compactação semântica (OPT-1 + OPT-2), payloads Modo Estudo com RAG
-      // ativo ainda podem superar 14.000 chars (módulos clínicos + ragAnchor +
-      // ragCrossCheck = carga legítima). O gemini_free usa SSE direto para
-      // generativelanguage.googleapis.com — buffers de rede web sem backpressure
-      // adequado sofrem throttling em payloads massivos → truncamento de stream.
-      // Servidores dedicados (GPT-4o Mini / Gemini Paid via CF proxy) possuem
-      // buffers HTTP robustos e processam contextos longos sem asfixiar o browser.
-      //
-      // REGRA: systemPrompt.length > 14.000 → bypassa gemini_free completamente
-      //        → aciona tryPaidFallback diretamente (Layer 2 → Layer 3).
-      //
-      // PRESERVAÇÃO DE GUARDS:
-      //   • PRE-CALL Id Guard verificado ANTES do await tryPaidFallback.
-      //   • tryPaidFallback() possui seus próprios PRE/POST-AWAIT Id Guards
-      //     internos (BUILD 320) — preservados integralmente.
-      //   • _geminiConnected=true → effectivePriority='academic' → chegamos aqui
-      //     normalmente; bypass também se aplica (Free com sessão ativa também
-      //     sofre throttling em payloads massivos).
-      const int _kFreeLayerCharCeiling = 20000;
-      if (systemPrompt.length > _kFreeLayerCharCeiling) {
+      // The legacy browser-size workaround must never bypass Study's native
+      // canonical streaming gateway. Local evidence is enrichment, not a route.
+      if (longResponse) {
+        AiStreamTrace.mark('STUDY_PREPARED_PROMPT_CHARS', systemPrompt.length);
+      }
+      if (StudyDeliveryPolicy.bypassPrimaryForVolume(
+          isStudy: longResponse, promptChars: systemPrompt.length)) {
         // ignore: avoid_print
         print(
           '[AI_ROUTER] Payload massivo detectado (Chars: ${systemPrompt.length}) '
@@ -10704,6 +10913,7 @@ class AppProvider extends ChangeNotifier {
         );
       }
 
+      if (longResponse) AiStreamTrace.mark('STUDY_PRIMARY_SELECTED', 1);
       final stream = AiGatewayService.sendStream(
         clinicalContext: safetyContext,
         userMessage: input,
@@ -10763,6 +10973,7 @@ class AppProvider extends ChangeNotifier {
         aiChatProvider.setStreaming(false);
         _aiStreamSub?.cancel();
         _aiStreamSub = null;
+        if (preserveCommittedStudyOnFailure()) return;
         accumulator.clear();
 
         unawaited(() async {
@@ -10783,6 +10994,8 @@ class AppProvider extends ChangeNotifier {
 
       _aiStreamSub = stream.listen(
         (chunk) async {
+          // The failed primary cannot append late deltas over the Luna attempt.
+          if (longResponse && studyFallbackStarted) return;
           // MICRO-BUILD 462E-A.5.3.7: Late-event guard — drop any chunk that arrives
           // after the transaction has been fully finalized (coordinator completed).
           if (_freeStreamTxn.dropIfTerminal(
@@ -10794,6 +11007,13 @@ class AppProvider extends ChangeNotifier {
             providerReqId: requestId,
           )) return;
 
+          if (safetyContext?.mode == AiRequestMode.estudo && chunk.studyDelivery != null) {
+            studyCommittedDelivery = chunk.studyDelivery;
+          }
+          if (longResponse && safetyContext?.ownsRequest?.call() != false) {
+            safetyContext?.studyReferences.addGrounding(chunk.groundedSources);
+          }
+
           if (chunk.isError) {
             // Build 126 — TOLERÂNCIA A FALHAS: conteúdo parcial válido → exibir.
             // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate with source label.
@@ -10803,6 +11023,7 @@ class AppProvider extends ChangeNotifier {
             _aiStreamSub = null;
             final rawPartial = accumulator.toString().trim();
             final errCode = chunk.errorCode ?? 'network';
+            if (preserveCommittedStudyOnFailure()) return;
 
             // ── BUILD 278 / BUILD 334 FORENSE: fallback pago para erros recuperáveis
             // REGRA A (BUILD 278 + BUILD 334): erros que SEMPRE escalona para paid,
@@ -10823,11 +11044,12 @@ class AppProvider extends ChangeNotifier {
               'http_400',
               'unexpected',
             };
-            final bool isAlwaysFallback = _alwaysFallbackCodes.contains(
+            final bool isAlwaysFallback = longResponse || _alwaysFallbackCodes.contains(
               errCode,
             );
             if (isAlwaysFallback &&
-                ProviderRouterService.shouldTriggerPaidFallback(errCode)) {
+                (ProviderRouterService.shouldTriggerPaidFallback(errCode) ||
+                    (longResponse && StudyDeliveryPolicy.isAdditionalTechnicalFailure(errCode)))) {
               if (kDebugMode)
                 debugPrint(
                   '[AI_ROUTER] BUILD334 $errCode → fallback=paid silencioso (${rawPartial.length}c descartados)',
@@ -10926,6 +11148,16 @@ class AppProvider extends ChangeNotifier {
           }
 
           if (chunk.isDone && !chunk.isError) {
+            if (longResponse &&
+                ((chunk.studySnapshot == null &&
+                     !(safetyContext?.mode == AiRequestMode.estudo && chunk.studyDelivery?.complete == true)) ||
+                    chunk.finishReason != 'STOP')) {
+              if (!tryAcquireTerminalOwnership('study_invalid_terminal')) return;
+              _globalTimeoutTimer?.cancel();
+              accumulator.clear();
+              await tryPaidFallback('study_invalid_terminal');
+              return;
+            }
             // Resposta completa — dispara somente uma vez (guard anti-duplicata)
             // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate with source label.
             // STREAM-ZERO-I.1: um evento terminal sem conteúdo não representa
@@ -10963,17 +11195,16 @@ class AppProvider extends ChangeNotifier {
             // Barrier runs BEFORE sanitizeAndCheck() and ANY persistence.
             // Modo Estudo: streaming provisional — no persistence before barrier.
             // ─────────────────────────────────────────────────────────────────
-            String barrierText = rawText;
+            String barrierText = longResponse
+                ? StudyResponseContract.project(rawText).clinicalAnswer
+                : rawText;
             try {
               // O finishReason do provedor é evidência objetiva e tem
               // precedência sobre qualquer heurística baseada somente no texto.
-              final truncCheck = chunk.finishReason == 'MAX_TOKENS'
-                  ? const TruncationCheckResult(
-                      isTruncated: true,
-                      confidenceLevel: TruncationConfidence.high,
-                      violationReason: 'provider_finish_reason_max_tokens',
-                    )
-                  : TruncationInspector.inspect(rawText);
+              final truncCheck = TruncationInspector.inspectProviderOutput(
+                barrierText,
+                finishReason: chunk.finishReason,
+              );
               TruncationInspector.emitTelemetry(
                 requestId: thisRequestId,
                 result: truncCheck,
@@ -10994,7 +11225,7 @@ class AppProvider extends ChangeNotifier {
 
                 final repairResult = await AiService.repairTruncated(
                   clinicalContext: safetyContext,
-                  originalText: rawText,
+                  originalText: barrierText,
                   requestId: thisRequestId,
                   isPlantaoMode: !longResponse,
                   appLanguage: activeSessionCtx.locale,
@@ -11238,7 +11469,8 @@ class AppProvider extends ChangeNotifier {
           _aiStreamActive = false;
           aiChatProvider.setStreaming(false); // BUILD 326
           _aiStreamSub = null;
-          accumulator.clear(); // descarta texto parcial — nunca exibir
+          if (preserveCommittedStudyOnFailure()) return;
+          accumulator.clear(); // legacy-only tail
           // MICRO-BUILD 462E-A.5.3: Fallback Isolation Contract.
           // await tryPaidFallback — if it returns true it has taken ownership of
           // wrappedOnDone/wrappedOnError + releaseDecision + completeAiRequest.
@@ -11261,6 +11493,7 @@ class AppProvider extends ChangeNotifier {
           // fallbackHandled == true → tryPaidFallback already called release + complete.
         },
         onDone: () {
+          if (longResponse && studyFallbackStarted) return;
           // onDone do StreamController — garante limpeza mesmo sem chunk isDone
           // MICRO-BUILD 462E-A.5.3.7: transaction ownership gate with source label.
           if (!tryAcquireTerminalOwnership('stream_onDone')) {
@@ -11278,6 +11511,13 @@ class AppProvider extends ChangeNotifier {
             return;
           }
           _globalTimeoutTimer?.cancel(); // BUILD 241
+          if (longResponse) {
+            if (preserveCommittedStudyOnFailure()) return;
+            // No valid terminal snapshot reached us. Never persist a partial.
+            accumulator.clear();
+            unawaited(tryPaidFallback('study_incomplete_stream'));
+            return;
+          }
           final finalText = _applyPlantaoClinicalRegimenOutputGuard(
             userInput: input,
             assistantOutput: accumulator.toString().trim(),
@@ -11422,18 +11662,17 @@ class AppProvider extends ChangeNotifier {
                         'finishReason=${chunk.finishReason ?? "none"}',
                       );
 
-                      String retryFinalText = retryText;
+                      String retryFinalText = longResponse
+                          ? StudyResponseContract.project(retryText).clinicalAnswer
+                          : retryText;
 
                       // O auto-retry também precisa respeitar o finishReason
                       // objetivo do Gemini antes de persistir ou liberar a UI.
-                      final retryTruncCheck = chunk.finishReason == 'MAX_TOKENS'
-                          ? const TruncationCheckResult(
-                              isTruncated: true,
-                              confidenceLevel: TruncationConfidence.high,
-                              violationReason:
-                                  'provider_finish_reason_max_tokens',
-                            )
-                          : TruncationInspector.inspect(retryText);
+                      final retryTruncCheck =
+                          TruncationInspector.inspectProviderOutput(
+                        retryFinalText,
+                        finishReason: chunk.finishReason,
+                      );
 
                       TruncationInspector.emitTelemetry(
                         requestId: thisRequestId,
@@ -11457,7 +11696,7 @@ class AppProvider extends ChangeNotifier {
                         final retryRepairResult =
                             await AiService.repairTruncated(
                           clinicalContext: safetyContext,
-                          originalText: retryText,
+                          originalText: retryFinalText,
                           requestId: thisRequestId,
                           isPlantaoMode: !longResponse,
                           appLanguage: activeSessionCtx.locale,
@@ -11751,6 +11990,9 @@ class AppProvider extends ChangeNotifier {
 
   Future<String> _buildAIAnswerImpl(String input,
       {required AiRequestMode mode}) async {
+    final catalog = await SharedClinicalCatalog.instance.acquire();
+    final remoteClinical = !catalog.isBundled;
+    String currentCatalogContext(String query) => catalog.context(query, 'plantao', _lang);
     // ── strictContextIsolation — Passo A: detectar mudança de tema ────────
     // Deve ocorrer ANTES de montar o prompt. Ao mudar de tema:
     //   1. Memória clínica é resetada (sem dados do tema anterior)
@@ -11769,6 +12011,7 @@ class AppProvider extends ChangeNotifier {
     if (threadStatusAnswer.action == ThreadAction.newThread) {
       // BUILD 250: HARD RESET síncrono — ocorre ANTES da montagem do systemPrompt.
       final removed = _aiHistory.length;
+      _canonicalConversationCache.clear();
       _aiHistory.clear(); // contexto Gemini → zero
       _sessionMemory.reset(); // memória clínica → zero (reset duplo seguro)
       debugPrint(
@@ -11797,9 +12040,9 @@ class AppProvider extends ChangeNotifier {
     final normalized = _normalize(expandedInput);
 
     // ── Passo 2: Retrieval de protocolos (BUILD 325: drug RAG removido) ──────
-    final _extP = _matchProtocolsExtended(normalized);
+    final _extP = remoteClinical ? <String>[] : _matchProtocolsExtended(normalized);
     final finalProtocols =
-        _extP.isNotEmpty ? _extP : _matchProtocols(normalized);
+        remoteClinical ? <String>[] : _extP.isNotEmpty ? _extP : _matchProtocols(normalized);
 
     // RAG telemetry — visível apenas em kDebugMode
     if (kDebugMode) {
@@ -11811,8 +12054,8 @@ class AppProvider extends ChangeNotifier {
     }
 
     // ── Passo 3: Análise local estruturada ────────────────────────────────
-    final localContext = _buildLocalAnswer(expandedInput);
-    final crosscuttingEvidenceContext =
+    final localContext = remoteClinical ? '' : _buildLocalAnswer(expandedInput);
+    final crosscuttingEvidenceContext = remoteClinical ? '' :
         ClinicalCrosscuttingEvidenceResolver.enrich(
       query: expandedInput,
       baseContext: '',
@@ -11828,7 +12071,7 @@ class AppProvider extends ChangeNotifier {
     // Build 104 — isFirstMessage: mesma lógica do sendAiMessage().
     // _aiHistory já foi limpo por resetIfTopicChanged() acima quando o tema
     // muda. isEmpty=true na 1ª mensagem da sessão OU no 1º turno de novo tópico.
-    final systemPrompt = AiService.buildClinicalSystemPrompt(
+    final bundledSystemPrompt = AiService.buildClinicalSystemPrompt(
       lang: sessionLang, // ← globalLanguageLock: idioma bloqueado da sessão
       matchedProtocolSummaries: finalProtocols,
       matchedDrugSummaries: const [],
@@ -11847,6 +12090,8 @@ class AppProvider extends ChangeNotifier {
       isPlantaoMode: mode == AiRequestMode.plantao,
       proprietaryDrugContext: proprietaryContextAnswer,
     );
+    final systemPrompt = bundledSystemPrompt +
+        (remoteClinical ? '\n[CLINICAL_CATALOG_VERSION:${catalog.version}]\n${currentCatalogContext(expandedInput)}\n[/CLINICAL_CATALOG_VERSION]' : '');
 
     // BUILD 253: log do tamanho real do systemPrompt no caminho buildAIAnswer.
     final _spCharsAns = systemPrompt.length;
@@ -11968,7 +12213,7 @@ class AppProvider extends ChangeNotifier {
         return rawContent;
       }
 
-      final localFallback = _buildLocalAnswer(input);
+      final localFallback = remoteClinical ? catalog.displayText(input, 'plantao', sessionLang) : _buildLocalAnswer(input);
       // Se o contexto local tem conteúdo médico real (FASE 0/1/2a/2b/3) → exibir
       // Se é contexto interno técnico (FASE 2e/2f) → mostrar mensagem amigável
       final isInternalContext = localFallback.startsWith('CONTEXTO_INTERNO') ||
@@ -12016,7 +12261,7 @@ class AppProvider extends ChangeNotifier {
     // Build 156.2: se chegou aqui sem Gemini disponível, tenta OpenAI legada.
     // Fallback silencioso — sem mensagem de erro visível ao médico.
     if (_openAiKey.isEmpty) {
-      final localFallback = _buildLocalAnswer(input);
+      final localFallback = remoteClinical ? catalog.displayText(input, 'plantao', sessionLang) : _buildLocalAnswer(input);
       final isInternalContext = localFallback.startsWith('CONTEXTO_INTERNO') ||
           localFallback.startsWith('INSTRUCAO_INTERNA') ||
           localFallback.startsWith('INSTRUCCION_INTERNA');
@@ -12057,7 +12302,7 @@ class AppProvider extends ChangeNotifier {
               : 'Limite de API atingido. Tente novamente mais tarde. ⚕ Apoio educacional.';
         default:
           {
-            final localFallback = _buildLocalAnswer(input);
+            final localFallback = remoteClinical ? catalog.displayText(input, 'plantao', sessionLang) : _buildLocalAnswer(input);
             final isInternalContext =
                 localFallback.startsWith('CONTEXTO_INTERNO') ||
                     localFallback.startsWith('INSTRUCAO_INTERNA') ||
@@ -12169,8 +12414,9 @@ class AppProvider extends ChangeNotifier {
   ///   (BUILD 325: FASE 0 removida — fármacos via Google Search Grounding + WebView)
   ///
   /// OUTPUT: contexto estruturado markdown que o Gemini usa para gerar resposta final.
-  String _buildLocalAnswer(String input) {
-    final bool es = _lang == 'es';
+  String _buildLocalAnswer(String input, {String? sourceLanguage}) {
+    final evidenceLanguage = sourceLanguage ?? _lang;
+    final bool es = evidenceLanguage == 'es';
 
     // ── Contexto do histórico (follow-up) ────────────────────────────────────
     final recentUserMsgs = _aiHistory
@@ -14662,15 +14908,15 @@ class AppProvider extends ChangeNotifier {
 
     if (proto != null) {
       buf.writeln(
-        '### ${es ? "Protocolo interno" : "Protocolo interno"} — ${tDB(proto.title)}:',
+        '### ${es ? "Protocolo interno" : "Protocolo interno"} — ${proto.getField(proto.title, evidenceLanguage)}:',
       );
-      final actions = proto.getActions(_lang);
+      final actions = proto.getActions(evidenceLanguage);
       for (int i = 0; i < actions.length && i < 6; i++) {
         buf.writeln('  ${actions[i]}');
       }
       if (actions.length > 6) {
         buf.writeln(
-          _lang == 'es'
+          evidenceLanguage == 'es'
               ? '  → Ver protocolo completo en la pestaña Protocolos'
               : '  → Ver protocolo completo na aba Protocolos',
         );
@@ -14697,14 +14943,14 @@ class AppProvider extends ChangeNotifier {
               ? '🟠 Alerta renal'
               : '🟡 Atenção renal';
       buf.writeln(
-        '$lvl — ${_lang == 'es' ? 'ClCr $clcr mL/min: ajustar todas las dosis renales' : 'ClCr $clcr mL/min: ajustar TODAS as doses renais'}',
+        '$lvl — ${evidenceLanguage == 'es' ? 'ClCr $clcr mL/min: ajustar todas las dosis renales' : 'ClCr $clcr mL/min: ajustar TODAS as doses renais'}',
       );
       buf.writeln('');
     }
     final ageVal = int.tryParse(_patient.age);
     if (ageVal != null && ageVal >= 75) {
       buf.writeln(
-        _lang == 'es'
+        evidenceLanguage == 'es'
             ? '👴 Adulto mayor ≥75 años: reducir dosis opioides/BZD, vigilar delirium, ajustar AINE/IECA.'
             : '👴 Idoso ≥75 anos: reduzir dose opioides/BZD, vigiar delirium, ajustar AINE/IECA.',
       );

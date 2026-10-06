@@ -1133,6 +1133,7 @@ class _NumberField extends StatelessWidget {
     final text = dark ? const Color(0xFFF8FAFC) : const Color(0xFF0F172A);
     final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
     return TextField(
+      onTapOutside: (_) => FocusScope.of(context).unfocus(),
       controller: controller,
       keyboardType: TextInputType.numberWithOptions(decimal: decimal),
       style: TextStyle(color: text, fontSize: 11, fontWeight: FontWeight.w700),

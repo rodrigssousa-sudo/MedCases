@@ -2,7 +2,7 @@
 const {MonthlyUsageOwner}=require('./monthly_usage_owner');
 function registerMonthlyUsageRoutes({app,authenticate,limiter,db}) {
  const owner=new MonthlyUsageOwner({db});
- for(const action of ['reserve','finish']) app.post(`/api/usage/${action}`,authenticate,limiter,async(req,res)=>{
+ for(const action of ['reserve','finish','balance']) app.post(`/api/usage/${action}`,authenticate,limiter,async(req,res)=>{
   res.setHeader('Cache-Control','no-store');
   const uid=req.auth?.uid;
   if(!uid)return res.status(401).json({error:'AUTH_REQUIRED'});

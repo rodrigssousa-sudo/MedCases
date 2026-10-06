@@ -162,8 +162,9 @@ void main() {
         lessThan(restore.indexOf('_longResponse = restoredMode')));
     final manual =
         section(ui, 'void _commitResponseMode(', 'void _injectGreeting(');
-    expect(manual.indexOf('_invalidateAiUiRequest(p)'),
-        lessThan(manual.indexOf('_longResponse = newValue')));
+    expect(manual, isNot(contains('_invalidateAiUiRequest(p)')));
+    expect(manual, isNot(contains('_startNewChat()')));
+    expect(manual, contains('_longResponse = newValue'));
     final history =
         section(ui, 'void _onPendingHistory()', '// ── ORDEM 53 M2');
     expect(history.indexOf('_invalidateAiUiRequest(owner)'),
@@ -172,14 +173,16 @@ void main() {
   });
 
   test(
-      'Home pending actions declare Study and delayed actions retain ownership',
+      'Home continues the canonical conversation in its selected mode',
       () {
     final home = File('lib/screens/home_screen.dart').readAsStringSync();
-    expect(RegExp(r'AiPendingQuery\(').allMatches(home).length, 3);
-    expect(RegExp(r'mode: AiRequestMode.estudo').allMatches(home).length, 3);
+    expect(RegExp(r'AiPendingQuery\(').allMatches(home).length, 2);
+    expect(RegExp(r'mode: AiScreen.currentMode').allMatches(home).length, 2);
+    expect(RegExp(r'startNewConversation: false').allMatches(home).length, 2);
     final pending = section(
         ui, 'void _consumePendingQuery()', 'bool _isOpeningHomeGreeting');
     expect(pending, contains('_startNewChat();'));
+    expect(pending, contains('pending.startNewConversation'));
     expect(pending, contains('pending.mode'));
     expect(pending, contains('_ownsUiRequest(request, p)'));
     expect(pending, contains('queuedRequest: request'));
@@ -248,29 +251,22 @@ void main() {
   test('UI renderer and continuation use message provenance', () {
     expect(
         ui, matches(RegExp(r'final messageLongResponse =\s*msg.mode == null')));
-    expect(ui, contains('studyMode: messageLongResponse'));
-    expect('sourceMode: msg.mode'.allMatches(ui).length, 3);
+    expect(ui, contains('StableClinicalResponseView('));
+    expect(ui, isNot(contains('AiBubble(')));
+    expect('sourceMode: msg.mode'.allMatches(ui).length, 2);
     expect(ui, contains('mode: requestMode'));
   });
 
   test(
-      'provider session mode boundary precedes correlation and preserves restores',
+      'captured mode changes the turn contract without resetting conversation',
       () {
     final send = section(provider, 'Future<bool> sendAiMessage(',
         'Future<bool> _sendAiMessageLegacyCore(');
-    expect(send.indexOf('_prepareAiConversationMode('),
-        lessThan(send.indexOf('// Phase3K-C5A-R3C: method-scope')));
-    final boundary = section(provider, 'void _prepareAiConversationMode(',
-        '/// MICRO-BUILD 462E-A.5.3.7.3.2.5.2');
-    expect(
-        boundary,
-        contains(
-            '_currentConversationMode != null && _currentConversationMode != mode'));
-    expect(boundary, contains('resetAiSessionFull();'));
-    expect(boundary, contains('_currentConversationMode = mode;'));
+    expect(send, isNot(contains('_prepareAiConversationMode(')));
+    expect(provider, isNot(contains('_currentConversationMode')));
     final restore =
         section(provider, 'void adoptRestoredAiConversation(', 'debugPrint(');
-    expect(restore, contains('_currentConversationMode = mode;'));
+    expect(restore, contains('_currentConversationSessionId = normalizedSessionId;'));
     final pending =
         section(ui, 'void _onPendingHistory()', '// ── ORDEM 53 M2');
     expect(pending.indexOf('p.resetAiSessionFull();'),

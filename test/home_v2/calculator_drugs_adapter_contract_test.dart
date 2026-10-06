@@ -79,8 +79,8 @@ void main() {
 
       expect(adapter, contains('AppHaptics.light(context);'));
       expect(adapter, contains('Navigator.of('));
-      expect(adapter, contains('rootNavigator: true'));
-      expect(adapter, contains('_HomeScreenState._slide('));
+      expect(adapter, contains('rootNavigator: !kIsWeb'));
+      expect(adapter, contains('HomeCardTransition.route<void>('));
       expect(adapter, contains('const CalculadoraScreen()'));
 
       expect(

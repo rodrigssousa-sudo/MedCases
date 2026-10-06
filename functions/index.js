@@ -1,3 +1,7 @@
+const {authorizeStudyArtifact} = require('./study_artifact_access');
+const {utilityOutputBudget} = require('./study_full_summary_transport');
+const {runPlantaoCanonicalStream} = require('./plantao_canonical_stream');
+const {prepareGroundedRequest, generationPrompt} = require('./gpt_optional_grounding');
 const console = require('./private_logger');
 // MEDCASES_SHADOW_OBSERVATION_S1_IMPORT_BEGIN
 const {
@@ -53,6 +57,7 @@ const crypto     = require('crypto');
 
 // ── FASE 3B: projetor incremental de Structured Outputs ────────────────
 const { IncrementalDisplayTextProjector } = require('./lib/structured_output_stream');
+const { studyCanonicalTransport } = require('./lib/study_canonical_transport');
 
 // ── BUILD 459: Secret dedicado ao motor de IA server-side ────────────────────
 // Configurar: firebase functions:secrets:set GEMINI_AI_KEY
@@ -1160,6 +1165,13 @@ exports.geminiPaidProxy = onRequest(
       return;
     }
 
+    const studyAccessError = authorizeStudyArtifact(req.body || {}, userDoc.data());
+    if (studyAccessError) {
+      res.status(studyAccessError === 'study_premium_required' ? 403 : 400)
+        .json({error: studyAccessError});
+      return;
+    }
+
       // AI_CONTROL_PLANE_V2_SHADOW_EXEC — legacy request -> capability metadata only.
   // This block MUST NOT alter req/res/provider/model and MUST NOT await remote config.
   try {
@@ -1247,7 +1259,9 @@ exports.geminiPaidProxy = onRequest(
       // BUILD 267: tools passthrough — suporte a Function Calling
       tools: rawTools,
     } = req.body || {};
-    const maxOutClamped = Math.min(Math.max(Number(rawMaxOut) || 800, 200), 2048);
+    const canonicalStudyTransport = studyCanonicalTransport(req.body);
+    const maxOutClamped = utilityOutputBudget(
+      req.body, canonicalStudyTransport?.maxOutputTokens);
     if (!userMessage || typeof userMessage !== 'string' || userMessage.trim().length === 0) {
       res.status(400).json({ error: 'invalid_payload' });
       return;
@@ -2055,6 +2069,7 @@ void runGpt5NanoPlantaoRouterRealShadow({
       },
       contents,
       generationConfig: {
+        ...(canonicalStudyTransport?.generationConfig || {}),
         // BUILD 271: temperature agora condicional por modo.
         // Plantão (guardia): 0.2 — mais determinístico, fiel às 21 matrizes sem inventar layouts.
         // Estudo: 0.4 — liberdade clínica guiada para resposta acadêmica completa.
@@ -2081,7 +2096,7 @@ void runGpt5NanoPlantaoRouterRealShadow({
 
     // BUILD 267: tools passthrough — injeta Function Calling schema se enviado pelo cliente.
     // Permite RAG estrutural (function_declarations) quando o Flutter incluir tools no payload.
-    if (rawTools && Array.isArray(rawTools) && rawTools.length > 0) {
+    if (!canonicalStudyTransport && rawTools && Array.isArray(rawTools) && rawTools.length > 0) {
       geminiPayload.tools = rawTools;
     }
 
@@ -3619,15 +3634,17 @@ const GPT_STREAM_ALLOWED_ORIGINS = new Set([
   'https://medcases-pro.firebaseapp.com',
 ]);
 
+// Separate authenticated endpoints share only transport/auth infrastructure.
+// Study keeps its existing model path; Plantão cannot execute it.
 exports.gptProxyStream = onRequest(
-  {
-    region:         'us-central1',
-    secrets:        [OPENAI_KEY],
-    timeoutSeconds: 120,
-    memory:         '512MiB',
-    cors:           false, // BUILD 462E-A.1: CORS gerenciado manualmente abaixo
-  },
-  async (req, res) => {
+  {region: 'us-central1', secrets: [OPENAI_KEY], timeoutSeconds: 120, memory: '512MiB', cors: false},
+  async (req, res) => handleGptStream(req, res, false),
+);
+exports.plantaoProxyStream = onRequest(
+  {region: 'us-central1', secrets: [OPENAI_KEY, GEMINI_PAID_KEY], timeoutSeconds: 120, memory: '512MiB', cors: false},
+  async (req, res) => handleGptStream(req, res, true),
+);
+async function handleGptStream(req, res, canonicalPlantao) {
     const startMs = Date.now();
 
     // ── BUILD 462E-A.1 — CORS: aplicar ANTES de autenticação e de toda resposta ──
@@ -3701,6 +3718,8 @@ exports.gptProxyStream = onRequest(
     const requestId       = String(data.requestId    || `req_cf_${startMs}`);
     const mode            = String(data.mode         || 'plantao');
     const maxOutputTokens = parseInt(data.maxOutputTokens, 10) || 800;
+    if (canonicalPlantao && mode !== 'plantao') return res.status(400).json({error:'mode_mismatch'});
+    if (!canonicalPlantao && mode === 'plantao') return res.status(409).json({error:'plantao_route_retired'});
 
     if (payloadUid && payloadUid !== callerUid) {
       return res.status(403).json({ error: 'permission_denied' });
@@ -3778,6 +3797,35 @@ exports.gptProxyStream = onRequest(
     }, 15000);
 
     try {
+      if (canonicalPlantao) {
+        let escalationPolicy = null;
+        try {
+          const state = await getV2ConfigStateForExecution({firestore: admin.firestore(), env: process.env});
+          escalationPolicy = state?.config?.plantao?.clinicalEscalation || null;
+        } catch (_) { /* Missing policy leaves Terra ineligible, not the answer. */ }
+        const result = await runPlantaoCanonicalStream({
+          query: safeUserMessage,
+          language: String(data.lang || 'es').startsWith('pt') ? 'pt' : 'es',
+          internalContext: safeSystemPrompt,
+          history: rawHistory,
+          openAiKey,
+          geminiKey: GEMINI_PAID_KEY.value(),
+          signal: abortController.signal,
+          escalationPolicy,
+          requestId,
+          maxOutputTokens: Math.min(6000, Math.max(1600, maxOutputTokens)),
+          onEvent: (event, payload) => {
+            if (event === 'text_delta') deltaCount++;
+            if (!res.writableEnded) sendSseEvent(res, event, payload);
+          },
+        });
+        completedNormally = true;
+        if (!res.writableEnded) sendSseEvent(res, 'transport_done', {
+          requestId, attempt: 2, ...result, structuredOutputs: false,
+          durationMs: Date.now() - startMs, deltaCount,
+        });
+        return;
+      }
       // ── EVENTO started ────────────────────────────────────────────────────
       sendSseEvent(res, 'started', {
         requestId,
@@ -3814,11 +3862,24 @@ exports.gptProxyStream = onRequest(
         });
       });
       // MEDCASES_SHADOW_OBSERVATION_S1_CALL_END:gptProxyStream
+      const contextSnapshot = await prepareGroundedRequest({
+        query: safeUserMessage,
+        language: String(data.lang || 'es'),
+        mode,
+        internalContext: safeSystemPrompt,
+        history: rawHistory,
+        model: USE_GPT_56_STRUCTURED_OUTPUTS ? GPT_STRUCTURED_MODEL : GPT_LEGACY_MODEL,
+        apiKey: openAiKey,
+        signal: abortController.signal,
+      });
+      if (contextSnapshot.sources.length && !res.writableEnded) {
+        sendSseEvent(res, 'sources', {requestId, sources: contextSnapshot.sources});
+      }
       const result = await callOpenAiResponsesStream({
         openAiKey,
-        systemPrompt:    safeSystemPrompt,
-        userMessage:     safeUserMessage,
-        history:         rawHistory,
+        systemPrompt:    generationPrompt(contextSnapshot),
+        userMessage:     contextSnapshot.query,
+        history:         contextSnapshot.history,
         maxOutputTokens,
         requestId,
         abortSignal:     abortController.signal,
@@ -3890,8 +3951,7 @@ exports.gptProxyStream = onRequest(
       clearInterval(heartbeat);
       if (!res.writableEnded) res.end();
     }
-  }
-);
+}
 
 
 // ============================================================================
@@ -4915,3 +4975,9 @@ void __medcasesCreatePhase7ProtocolLoader;
 void __medcasesCreateClinicalRuntimeIdentityProtocolComposition;
 // MEDCASES_GLOBAL_CLINICAL_CONTEXT_MACROBUILD30A_IMPORTS_END
 /* MEDCASES_CLINICAL_CONTEXT_SOURCE_WIRING_V1_END */
+
+// Native notification boundary: server-owned devices, durable outbox, no PHI.
+Object.assign(exports, require('./native_notification_exports')(admin));
+
+// Admin-only metadata and audited manual transcription time operations.
+Object.assign(exports, require('./admin_control_exports')(admin));

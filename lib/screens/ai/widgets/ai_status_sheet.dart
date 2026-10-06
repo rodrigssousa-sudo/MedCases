@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../../providers/ai_chat_provider.dart';
@@ -81,564 +80,183 @@ class AiStatusSheetState extends State<AiStatusSheet> {
   }
 
   @override
+  Widget build(BuildContext context) => Consumer<AiChatProvider>(
+      builder: (context, ai, _) => ClinicalConnectionPanel(
+            dark: widget.dark,
+            lang: widget.lang,
+            userName: widget.userName,
+            userEmail: widget.userEmail,
+            googleConnected: ai.geminiConnected,
+            googleEmail: ai.geminiEmail,
+            loading: ai.geminiLoading || ai.aiKeyLoading,
+            serverAvailable: ai.hasAnyAi,
+            baseAvailable: context.select<AppProvider, bool>((p) =>
+                p.protocolsDB.isNotEmpty || p.drugsDB.isNotEmpty),
+            onConnect: _handleGoogleConnect,
+            onDisconnect: _handleGoogleDisconnect,
+            onClose: () => Navigator.pop(context),
+          ));
+}
+
+/// Shared product identity; state and OAuth remain owned by existing providers.
+class ClinicalConnectionPanel extends StatelessWidget {
+  const ClinicalConnectionPanel(
+      {super.key,
+      required this.dark,
+      required this.lang,
+      required this.userName,
+      required this.userEmail,
+      required this.googleConnected,
+      required this.googleEmail,
+      required this.loading,
+      required this.serverAvailable,
+      required this.baseAvailable,
+      required this.onConnect,
+      required this.onDisconnect,
+      required this.onClose});
+  final bool dark, googleConnected, loading, serverAvailable, baseAvailable;
+  final String lang, userName, userEmail, googleEmail;
+  final VoidCallback onConnect, onDisconnect, onClose;
+
+  @override
   Widget build(BuildContext context) {
-    // MEDCASES_AI_STATUS_SHEET_RESTYLE_V1_B_R0
-    // Visual-only cutover. Connection/auth state and callbacks remain canonical.
-    return Consumer<AiChatProvider>(
-      builder: (context, aiChat, _) {
-        final dark = widget.dark;
-        final isEs = _isEs;
-        final geminiConn = aiChat.geminiConnected;
-        final geminiEmail = aiChat.geminiEmail;
-        final geminiLoading = aiChat.geminiLoading;
-        final hasAnyAi = aiChat.hasAnyAi;
-
-        final sheetBg =
-            dark ? const Color(0xFF1A1D23) : const Color(0xFFECF1F3);
-        final surface =
-            dark ? const Color(0xFF252930) : const Color(0xFFFFFFFF);
-        final border =
-            dark ? const Color(0xFF374151) : const Color(0xFFE7EBEF);
-        final divider =
-            dark ? const Color(0xFF374151) : const Color(0xFFE1E7ED);
-        final text =
-            dark ? const Color(0xFFFFFFFF) : const Color(0xFF05070A);
-        final sub =
-            dark ? const Color(0xFFA7B0BA) : const Color(0xFF59636E);
-        final muted =
-            dark ? const Color(0xFF7D8793) : const Color(0xFF8A939D);
-        final accent =
-            dark ? const Color(0xFF00C781) : const Color(0xFF008F66);
-        final accentSoft =
-            dark ? accent.withValues(alpha: 0.12) : const Color(0xFFE5F4EE);
-        const danger = Color(0xFFEF4444);
-        const googleBlue = Color(0xFF1A73E8);
-
-        final bool serverActive =
-            !geminiLoading && !widget.keyLoading && hasAnyAi;
-
-        final String badgeLabel;
-        if (geminiLoading || widget.keyLoading) {
-          badgeLabel = 'Conectando...';
-        } else if (serverActive) {
-          badgeLabel = isEs ? 'Servidor activo' : 'Servidor ativo';
-        } else {
-          badgeLabel = 'Servidor offline';
-        }
-
-        final String modeLabel = isEs
-            ? 'SERVIDOR MEDCASES IA — INTEGRADO A GOOGLE GEMINI'
-            : 'SERVIDOR MEDCASES IA — INTEGRADO AO GOOGLE GEMINI';
-
-        final String modesLabel = isEs
-            ? '+1000 FÁRMACOS — MODO ESTUDIO — MODO GUARDIA'
-            : '+1000 FÁRMACOS — MODO ESTUDO — MODO PLANTÃO';
-
-        Widget flatSurface({
-          required Widget child,
-          EdgeInsetsGeometry padding =
-              const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-        }) {
-          return Container(
-            width: double.infinity,
-            padding: padding,
-            decoration: BoxDecoration(
-              color: surface,
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: border, width: 0.6),
-            ),
-            child: child,
-          );
-        }
-
-        Widget clinicalInfoRow({
-          required IconData icon,
-          required String title,
-          required String body,
-          bool dimmed = false,
-        }) {
-          final rowColor = dimmed ? muted : accent;
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  color: rowColor.withValues(alpha: dark ? 0.12 : 0.10),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                alignment: Alignment.center,
-                child: Icon(icon, size: 18, color: rowColor),
-              ),
-              const SizedBox(width: 11),
-              Expanded(
-                child: Column(
+    final es = lang.startsWith('es');
+    final text = dark ? const Color(0xffeceff2) : const Color(0xff202830);
+    final secondary = dark ? const Color(0xffadb9c7) : const Color(0xff526172);
+    final accent = dark ? const Color(0xff7cccb8) : const Color(0xff126c59);
+    Widget row(String label, bool available, {String? detail}) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Icon(available ? Icons.check_circle_outline : Icons.info_outline,
+              size: 20, color: available ? accent : secondary),
+          const SizedBox(width: 10),
+          Expanded(
+              child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      title,
+                Text(label,
+                    style: TextStyle(fontSize: 15, height: 1.4, color: text)),
+                if (detail != null && detail.isNotEmpty)
+                  Text(detail,
                       style: TextStyle(
-                        fontSize: 13.5,
-                        fontWeight: FontWeight.w800,
-                        height: 1.2,
-                        color: dimmed ? muted : text,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      body,
-                      style: TextStyle(
-                        fontSize: 12.2,
-                        fontWeight: FontWeight.w500,
-                        height: 1.32,
-                        color: dimmed ? muted : sub,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        }
-
-        return Container(
-          decoration: BoxDecoration(
-            color: sheetBg,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.92,
-          ),
-          child: SafeArea(
+                          fontSize: 13, height: 1.4, color: secondary))
+              ])),
+        ]));
+    return Container(
+        constraints:
+            BoxConstraints(maxHeight: MediaQuery.sizeOf(context).height * .9),
+        decoration: BoxDecoration(
+            color: dark ? const Color(0xff1a1d23) : Colors.white,
+            borderRadius:
+                const BorderRadius.vertical(top: Radius.circular(20))),
+        child: SafeArea(
             top: false,
             child: SingleChildScrollView(
-              padding: EdgeInsets.fromLTRB(
-                18,
-                12,
-                18,
-                MediaQuery.of(context).viewInsets.bottom + 24,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    width: 38,
-                    height: 4,
-                    margin: const EdgeInsets.only(bottom: 18),
-                    decoration: BoxDecoration(
-                      color: dark
-                          ? const Color(0xFF59636E)
-                          : const Color(0xFFC9D0D7),
-                      borderRadius: BorderRadius.circular(2),
-                    ),
-                  ),
-                  flatSurface(
-                    padding: const EdgeInsets.all(14),
-                    child: Column(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              width: 50,
-                              height: 50,
-                              padding: const EdgeInsets.all(5),
-                              decoration: BoxDecoration(
-                                color: dark
-                                    ? const Color(0xFF1A1D23)
-                                    : const Color(0xFFF5F7F8),
-                                borderRadius: BorderRadius.circular(6),
-                                border:
-                                    Border.all(color: border, width: 0.6),
-                              ),
-                              child: SvgPicture.asset(
-                                'assets/icons/home_v2/ic_ia.svg',
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  if (widget.userName.isNotEmpty)
-                                    Text(
-                                      widget.userName,
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 15.5,
-                                        fontWeight: FontWeight.w800,
-                                        height: 1.15,
-                                        color: text,
-                                      ),
-                                    ),
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    widget.userEmail.isNotEmpty
-                                        ? widget.userEmail
-                                        : (isEs ? 'Sin cuenta' : 'Sem conta'),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 12.2,
-                                      fontWeight: FontWeight.w500,
-                                      color: sub,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8,
-                                vertical: 6,
-                              ),
-                              decoration: BoxDecoration(
-                                color: (geminiLoading || widget.keyLoading)
-                                    ? muted.withValues(alpha: 0.10)
-                                    : serverActive
-                                        ? accentSoft
-                                        : danger.withValues(alpha: 0.09),
-                                borderRadius: BorderRadius.circular(6),
-                                border: Border.all(
-                                  color: (geminiLoading || widget.keyLoading)
-                                      ? muted.withValues(alpha: 0.35)
-                                      : serverActive
-                                          ? accent.withValues(alpha: 0.35)
-                                          : danger.withValues(alpha: 0.32),
-                                  width: 0.6,
-                                ),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  if (geminiLoading || widget.keyLoading)
-                                    SizedBox(
-                                      width: 8,
-                                      height: 8,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 1.2,
-                                        color: muted,
-                                      ),
-                                    )
-                                  else
-                                    Container(
-                                      width: 6,
-                                      height: 6,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color:
-                                            serverActive ? accent : danger,
-                                      ),
-                                    ),
-                                  const SizedBox(width: 6),
-                                  Text(
-                                    badgeLabel,
-                                    style: TextStyle(
-                                      fontSize: 10.5,
-                                      fontWeight: FontWeight.w800,
-                                      color: (geminiLoading ||
-                                              widget.keyLoading)
-                                          ? muted
-                                          : serverActive
-                                              ? accent
-                                              : danger,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 14),
-                        Container(height: 0.6, color: divider),
-                        const SizedBox(height: 13),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.psychology_alt_rounded,
-                              size: 17,
-                              color: accent,
-                            ),
-                            const SizedBox(width: 9),
-                            Expanded(
-                              child: Text(
-                                modeLabel,
-                                style: TextStyle(
-                                  fontSize: 12.2,
-                                  fontWeight: FontWeight.w800,
-                                  height: 1.28,
-                                  color: text,
-                                  letterSpacing: 0.15,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              Icons.medication_outlined,
-                              size: 16,
-                              color: sub,
-                            ),
-                            const SizedBox(width: 9),
-                            Expanded(
-                              child: Text(
-                                modesLabel,
-                                style: TextStyle(
-                                  fontSize: 11.5,
-                                  fontWeight: FontWeight.w600,
-                                  height: 1.3,
-                                  color: sub,
-                                  letterSpacing: 0.15,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 9),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Icon(
-                              geminiConn
-                                  ? Icons.account_circle_outlined
-                                  : Icons.cloud_done_outlined,
-                              size: 16,
-                              color: geminiConn ? accent : sub,
-                            ),
-                            const SizedBox(width: 9),
-                            Expanded(
-                              child: Text(
-                                geminiConn && geminiEmail.isNotEmpty
-                                    ? geminiEmail
-                                    : modeLabel,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  fontSize: 11.5,
-                                  fontWeight: FontWeight.w500,
-                                  color: sub,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  if (geminiConn)
-                    flatSurface(
-                      padding: const EdgeInsets.all(12),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 38,
-                            height: 38,
-                            decoration: BoxDecoration(
-                              color: googleBlue.withValues(alpha: 0.10),
-                              borderRadius: BorderRadius.circular(6),
-                            ),
-                            alignment: Alignment.center,
-                            child: const Icon(
-                              Icons.account_circle_rounded,
-                              color: googleBlue,
-                              size: 22,
-                            ),
-                          ),
-                          const SizedBox(width: 11),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Google conectado',
-                                  style: TextStyle(
-                                    fontSize: 13.5,
-                                    fontWeight: FontWeight.w800,
-                                    color: text,
-                                  ),
-                                ),
-                                if (geminiEmail.isNotEmpty) ...[
-                                  const SizedBox(height: 3),
-                                  Text(
-                                    geminiEmail,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 11.8,
-                                      fontWeight: FontWeight.w500,
-                                      color: sub,
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          GestureDetector(
-                            onTap: geminiLoading
-                                ? null
-                                : _handleGoogleDisconnect,
-                            behavior: HitTestBehavior.opaque,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10,
-                                vertical: 8,
-                              ),
-                              decoration: BoxDecoration(
-                                color: danger.withValues(alpha: 0.07),
-                                borderRadius: BorderRadius.circular(6),
-                                border: Border.all(
-                                  color: danger.withValues(alpha: 0.30),
-                                  width: 0.6,
-                                ),
-                              ),
-                              child: geminiLoading
-                                  ? const SizedBox(
-                                      width: 13,
-                                      height: 13,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 1.5,
-                                        color: danger,
-                                      ),
-                                    )
-                                  : const Text(
-                                      'Desconectar',
-                                      style: TextStyle(
-                                        fontSize: 11.5,
-                                        fontWeight: FontWeight.w800,
-                                        color: danger,
-                                      ),
-                                    ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    )
-                  else
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed:
-                            geminiLoading ? null : _handleGoogleConnect,
-                        icon: geminiLoading
-                            ? const SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 1.8,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : const Icon(
-                                Icons.account_circle_rounded,
-                                size: 20,
-                              ),
-                        label: Text(
-                          isEs
-                              ? 'Conectar con Google'
-                              : 'Conectar com Google',
-                          style: const TextStyle(
-                            fontSize: 13.5,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: accent,
-                          foregroundColor: Colors.white,
-                          disabledBackgroundColor:
-                              accent.withValues(alpha: 0.45),
-                          elevation: 0,
-                          padding:
-                              const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(6),
-                          ),
-                        ),
-                      ),
-                    ),
-                  if (!geminiConn) ...[
-                    const SizedBox(height: 7),
-                    Text(
-                      isEs
-                          ? '3 pasos · usa tu propia cuenta de Google'
-                          : '3 passos · use sua própria conta Google',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 11.2,
-                        fontWeight: FontWeight.w500,
-                        color: muted,
-                      ),
-                    ),
-                  ],
-                  const SizedBox(height: 12),
-                  flatSurface(
-                    padding: const EdgeInsets.all(13),
-                    child: Column(
-                      children: [
-                        clinicalInfoRow(
-                          icon: Icons.auto_awesome_rounded,
-                          title: isEs
-                              ? 'Base clínica activa'
-                              : 'Base clínica ativa',
-                          body: isEs
-                              ? 'Protocolos y fármacos responden de forma inmediata.'
-                              : 'Protocolos e fármacos respondem instantaneamente.',
-                        ),
-                        const SizedBox(height: 12),
-                        Container(height: 0.6, color: divider),
-                        const SizedBox(height: 12),
-                        clinicalInfoRow(
-                          icon: Icons.hub_outlined,
-                          title: isEs
-                              ? 'Gemini · GPT enriquece lo que la base no cubre'
-                              : 'Gemini · GPT enriquece o que a base não cobre',
-                          body: isEs
-                              ? 'Las preguntas fuera de la base se responden con conocimiento médico global.'
-                              : 'Perguntas fora da base são respondidas com conhecimento médico global.',
-                          dimmed: !hasAnyAi,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 14),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pop(context),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: accent,
-                        foregroundColor: Colors.white,
-                        elevation: 0,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                      ),
-                      child: const Text(
-                        'Entendido',
-                        style: TextStyle(
-                          fontSize: 13.5,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
+                padding: EdgeInsets.fromLTRB(
+                    24, 20, 24, 20 + MediaQuery.viewInsetsOf(context).bottom),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text('MedCases Clinical',
+                          style: TextStyle(
+                              fontSize: 23,
+                              height: 1.22,
+                              fontWeight: FontWeight.w700,
+                              color: text)),
+                      const SizedBox(height: 20),
+                      Text(
+                          userEmail.isEmpty
+                              ? (es
+                                  ? 'Cuenta no conectada'
+                                  : 'Conta não conectada')
+                              : (es ? 'Cuenta conectada' : 'Conta conectada'),
+                          style: TextStyle(fontSize: 13, color: secondary)),
+                      if (userName.isNotEmpty)
+                        Text(userName,
+                            style: TextStyle(
+                                fontSize: 16,
+                                height: 1.5,
+                                fontWeight: FontWeight.w600,
+                                color: text)),
+                      if (userEmail.isNotEmpty)
+                        Text(userEmail,
+                            style: TextStyle(
+                                fontSize: 14, height: 1.5, color: secondary)),
+                      const SizedBox(height: 16),
+                      Divider(color: secondary.withValues(alpha: .22)),
+                      row(
+                          loading
+                              ? (es ? 'Conectando…' : 'Conectando…')
+                              : serverAvailable
+                                  ? (es ? 'Servidor activo' : 'Servidor ativo')
+                                  : (es
+                                      ? 'Servidor no disponible'
+                                      : 'Servidor indisponível'),
+                          serverAvailable && !loading),
+                      row(
+                          googleConnected
+                              ? 'Google conectado'
+                              : (es
+                                  ? 'Google no conectado'
+                                  : 'Google não conectado'),
+                          googleConnected,
+                          detail: googleConnected ? googleEmail : null),
+                      Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton(
+                              onPressed: loading
+                                  ? null
+                                  : googleConnected
+                                      ? onDisconnect
+                                      : onConnect,
+                              style: TextButton.styleFrom(
+                                  foregroundColor: accent,
+                                  minimumSize: const Size(48, 48)),
+                              child: Text(googleConnected
+                                  ? 'Desconectar'
+                                  : es
+                                      ? 'Conectar con Google'
+                                      : 'Conectar com Google'))),
+                      row(
+                          baseAvailable
+                              ? (es
+                                  ? 'Base clínica disponible'
+                                  : 'Base clínica disponível')
+                              : (es
+                                  ? 'Base clínica no disponible'
+                                  : 'Base clínica indisponível'),
+                          baseAvailable),
+                      Divider(color: secondary.withValues(alpha: .22)),
+                      const SizedBox(height: 12),
+                      Text(es ? 'Cobertura' : 'Cobertura',
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: text)),
+                      const SizedBox(height: 6),
+                      Text(
+                          es
+                              ? 'Base de fármacos · Modo Guardia · Modo Estudio'
+                              : 'Base de fármacos · Modo Plantão · Modo Estudo',
+                          style: TextStyle(
+                              fontSize: 14, height: 1.5, color: secondary)),
+                      const SizedBox(height: 14),
+                      Text(
+                          es
+                              ? 'MedCases Clinical combina la base MedCases con modelos de IA para ampliar las respuestas cuando es necesario.'
+                              : 'O MedCases Clinical combina a base MedCases com modelos de IA para ampliar respostas quando necessário.',
+                          style: TextStyle(
+                              fontSize: 14, height: 1.5, color: secondary)),
+                      const SizedBox(height: 20),
+                      FilledButton(
+                          onPressed: onClose,
+                          style: FilledButton.styleFrom(
+                              backgroundColor: accent,
+                              foregroundColor:
+                                  dark ? const Color(0xff14201e) : Colors.white,
+                              minimumSize: const Size(48, 48)),
+                          child: const Text('Entendido')),
+                    ]))));
   }
 }

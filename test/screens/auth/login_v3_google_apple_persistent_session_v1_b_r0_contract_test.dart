@@ -36,7 +36,10 @@ void main() {
 
     test('cancel and loading behavior remain wired', () {
       expect(login, contains('SocialAuthService.cancelledResultCode'));
-      expect(login, contains('_socialLoadingProvider'));
+      expect(login, contains('if (_loading) return;'));
+      expect(login, contains('_loading = true;'));
+      expect(login, contains('_loading = false;'));
+      expect(login, contains('onPressed: _loading ? null : () => _submitSocial(provider)'));
       expect(login, contains('result.success'));
     });
   });

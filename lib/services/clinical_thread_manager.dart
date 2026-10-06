@@ -65,6 +65,7 @@ class ClinicalThreadManager {
   // ── Estado do thread ativo ─────────────────────────────────────────────────
   String _activeTopic = '';
   String _activeThreadId = '';
+  bool _previousRequestWasStudy = false;
   int _turnCount = 0;
   int _lastActivityMs = 0;
 
@@ -164,6 +165,22 @@ class ClinicalThreadManager {
       'cambiar de caso',
     ].any(qFolded.contains);
     if (explicitNewCase) return false;
+
+    // A referential follow-up can omit the drug/topic entirely. Do not turn
+    // absence of lexical overlap into a new conversation in that case.
+    final explicitTopicSwitch = RegExp(
+      r'\b(?:mude|mudar|troque|trocar|cambia|cambiar)\s+(?:de\s+)?(?:tema|assunto)\b',
+    ).hasMatch(qFolded);
+    if (explicitTopicSwitch) return false;
+    if (RegExp(r'\b(?:dose|dosis)\b').hasMatch(qFolded) &&
+        RegExp(r'\bpara\s+\d+(?:[.,]\d+)?\s*kg\b').hasMatch(qFolded)) return true;
+
+    if (RegExp(r'\b(?:dele|dela|deles|delas|desse|dessa|disso|nisso|ella|ello|su|sus|seu|seus|sua|suas|este medicamento|esse medicamento)\b')
+        .hasMatch(qFolded) &&
+        RegExp(r'\b(?:contraindic|efeitos|efectos|interac|indicac|riscos|riesgos|alternativ)\w*')
+        .hasMatch(qFolded)) {
+      return true;
+    }
 
     // PLANTAO_DEPENDENT_MANAGEMENT_FOLLOWUP_V1
     //
@@ -735,28 +752,73 @@ static const _kNewCaseSignals = <String>[
   }) {
     final now = DateTime.now().millisecondsSinceEpoch;
     final q = currentUserText.trim().toLowerCase();
+    final fromStudy = _previousRequestWasStudy && isPlantaoMode;
+    _previousRequestWasStudy = !isPlantaoMode;
     final wordCount = q.split(RegExp(r'\s+')).where((w) => w.isNotEmpty).length;
 
-    // ── Timeout de inatividade → novo thread ───────────────────────────────
-    if (isPlantaoMode &&
-        _activeTopic.isNotEmpty &&
-        _lastActivityMs > 0 &&
-        (now - _lastActivityMs) > kThreadTimeoutMs) {
+    final explicitCaseBoundaryEarly = <String>[
+      'novo caso',
+      'nova paciente',
+      'novo paciente',
+      'outro paciente',
+      'outra paciente',
+      'mudar de caso',
+      'trocar de caso',
+      'nuevo caso',
+      'nuevo paciente',
+      'nueva paciente',
+      'otro paciente',
+      'otra paciente',
+      'cambiar de caso',
+      'new case',
+      'new patient',
+      'another patient',
+    ].any(q.contains);
 
-      _startNewThread(q, now);
-      return ClinicalThreadStatus(
-        action: ThreadAction.newThread,
-        reason: 'inactivity_timeout',
-        topic: _activeTopic,
-      );
-    }
-
+    // Elapsed time alone is not evidence of a different patient/topic.
     // ── Thread vazio → inicia ──────────────────────────────────────────────
     if (_activeTopic.isEmpty) {
       _startNewThread(q, now);
       return ClinicalThreadStatus(
         action: ThreadAction.newThread,
         reason: 'first_message',
+        topic: _activeTopic,
+      );
+    }
+
+    final referential = RegExp(
+      r'^(?:[¿¡]\s*)?(?:contin[uú]a|contin[uú]e|continuar|continue|segu[ií]|seguir|eso|isso|de ella|dela|dele)[.!?]*$|'
+      r'^(?:[¿¡]\s*)?(?:y|e)\s+(?:la\s+|a\s+)?(?:dosis|dose|para\s+\d+(?:[.,]\d+)?\s*kg|en este caso|neste caso)[?!.]*$',
+    ).hasMatch(q);
+    if (referential && !explicitCaseBoundaryEarly) {
+      _turnCount++;
+      _lastActivityMs = now;
+      return ClinicalThreadStatus(action: ThreadAction.continueThread,
+          reason: 'referential_followup', topic: _activeTopic);
+    }
+
+    final explicitTopicBoundary = RegExp(
+      r'\b(?:novo tema|nuevo tema|nova conversa|nueva conversaci[oó]n|mudar de tema|mude o tema|cambiar de tema|cambia de tema|trocar de assunto)\b',
+    ).hasMatch(q);
+    if (explicitCaseBoundaryEarly || explicitTopicBoundary) {
+      _startNewThread(q, now);
+      return ClinicalThreadStatus(action: ThreadAction.newThread,
+          reason: explicitCaseBoundaryEarly ? 'explicit_new_patient' : 'explicit_new_topic',
+          topic: _activeTopic);
+    }
+
+    // A request to change only the answer format after Study keeps its topic.
+    // Whole-query matching cannot swallow a new disease, drug or patient.
+    final requestsPracticalFormatOnly = RegExp(
+      r'^(?:agora\s+(?:me\s+)?(?:d[eê]|mostre)\s+(?:s[oó]\s+|apenas\s+)?a\s+conduta\s+pr[aá]tica|'
+      r'ahora\s+(?:dame|mu[eé]strame)\s+(?:solo\s+)?la\s+conducta\s+pr[aá]ctica)[.!?]*$',
+    ).hasMatch(q);
+    if (fromStudy && requestsPracticalFormatOnly) {
+      _turnCount++;
+      _lastActivityMs = now;
+      return ClinicalThreadStatus(
+        action: ThreadAction.continueThread,
+        reason: 'study_to_practical_format',
         topic: _activeTopic,
       );
     }
@@ -942,7 +1004,8 @@ static const _kNewCaseSignals = <String>[
       );
     }
 
-    if (isTooShort || isFollowUpPhrase) {
+    if ((isTooShort || isFollowUpPhrase) &&
+        !(isPlantaoMode && explicitCaseBoundaryEarly)) {
       _turnCount++;
       _lastActivityMs = now;
       if (kDebugMode) {
@@ -1058,24 +1121,7 @@ static const _kNewCaseSignals = <String>[
     // Fronteiras explícitas de caso/paciente são absolutas e precisam ser
     // avaliadas antes de qualquer continuação por progressão diagnóstica
     // compatível (ex.: IAMCEST -> IAMCEST em outro paciente).
-    final explicitCaseBoundaryEarly = <String>[
-      'novo caso',
-      'nova paciente',
-      'novo paciente',
-      'outro paciente',
-      'outra paciente',
-      'mudar de caso',
-      'trocar de caso',
-      'nuevo caso',
-      'nuevo paciente',
-      'nueva paciente',
-      'otro paciente',
-      'otra paciente',
-      'cambiar de caso',
-      'new case',
-      'new patient',
-      'another patient',
-    ].any(q.contains);
+
 
     if (explicitCaseBoundaryEarly) {
       final oldTopic = _activeTopic;
@@ -1320,6 +1366,7 @@ static const _kNewCaseSignals = <String>[
   void reset() {
     _activeTopic = '';
     _activeThreadId = '';
+    _previousRequestWasStudy = false;
     _turnCount = 0;
     _lastActivityMs = 0;
     _threadStartQuery = '';
@@ -1387,7 +1434,7 @@ static const _kNewCaseSignals = <String>[
         .toList();
     if (userMsgs.isEmpty) return; // sem contexto — mantém estado atual
 
-    final lastUserText = userMsgs.last['content'] ?? '';
+    final lastUserText = userMsgs.first['content'] ?? ''; // Canonical case anchor, not a deictic last reply.
     if (lastUserText.isEmpty) return;
 
     final nowMs = DateTime.now().millisecondsSinceEpoch;
@@ -1417,6 +1464,7 @@ static const _kNewCaseSignals = <String>[
   String get activeTopic => _activeTopic;
   String get activeThreadId => _activeThreadId;
   int get turnCount => _turnCount;
+  int get lastActivityMs => _lastActivityMs;
   bool get hasActiveThread => _activeTopic.isNotEmpty;
 
   // ── Helpers privados ──────────────────────────────────────────────────────

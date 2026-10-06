@@ -1,6 +1,17 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    // Server-owned Control Center: callable RBAC and metadata projection only.
+    match /adminManualCredits/{recordId} { allow read, write: if false; }
+    match /adminCreditLedger/{recordId} { allow read, write: if false; }
+    match /adminControlRequests/{recordId} { allow read, write: if false; }
+    match /adminControlAudit/{recordId} { allow read, write: if false; }
+    match /adminContentInventoryPathologies/{recordId} { allow read, write: if false; }
+    match /adminContentInventoryDrugs/{recordId} { allow read, write: if false; }
+    match /adminContentSync/{recordId} { allow read, write: if false; }
+    match /adminServiceHealth/{recordId} { allow read, write: if false; }
+    match /adminReleaseInventory/{recordId} { allow read, write: if false; }
+
     // MEDCASES_SUPPORT_TICKET_RULES_V2_B_R1
     match /support_tickets/{ticketId} {
       allow create: if isAuthed()
@@ -261,6 +272,22 @@ service cloud.firestore {
     // CONFIGURAÇÃO GLOBAL DO APP
     // ══════════════════════════════════════════════════════════════════════════
 
+    // STUDY_REMOTE_SOURCE_R1: clients cannot publish, including admin clients.
+    // Publication and rollback use privileged server transactions after gates.
+    match /app_config/clinical_content {
+      allow get: if isAuthed() && resource.data.status == 'ACTIVE';
+      allow list, write: if false;
+    }
+    match /clinical_content_versions/{versionId} {
+      allow get: if isAuthed() && resource.data.status == 'ACTIVE';
+      allow list, write: if false;
+      match /chunks/{chunkId} {
+        allow get: if isAuthed()
+          && get(/databases/$(database)/documents/clinical_content_versions/$(versionId)).data.status == 'ACTIVE';
+        allow list, write: if false;
+      }
+    }
+
     match /app_config/global {
       allow read: if isAuthed();
       allow write: if isAdmin();
@@ -500,6 +527,41 @@ service cloud.firestore {
     }
 
     match /users/{userId} {
+      // Personal organization only; no cross-user admin access.
+      match /agenda/{eventId} {
+        function ownedAgenda() { return request.auth != null && request.auth.uid == userId; }
+        function premiumAgenda() {
+          let u = get(/databases/$(database)/documents/users/$(userId)).data;
+          let billing = u.keys().hasAny(['billingEntitlementActive', 'billingEntitlementId', 'billingEntitlementExpiresAtMs']);
+          return billing
+            ? (u.get('billingEntitlementActive', false) == true
+              && u.get('billingEntitlementId', '') == 'medcases_pro_premium'
+              && u.get('billingEntitlementExpiresAtMs', 0) > request.time.toMillis())
+            : (u.get('plan', '').lower() in ['premium','pro','paid']
+              || u.get('subscriptionStatus', '').lower() in ['active','premium','paid']);
+        }
+        function validAgenda() {
+          let d = request.resource.data;
+          return d.keys().hasOnly(['id','userId','title','category','startAt','endAt','notes',
+            'reminderMinutes','recurrence','createdAt','updatedAt','status',
+            'deviceCalendarLinked','deviceCalendarEventId'])
+            && d.id == eventId && d.userId == userId
+            && d.title is string && d.title.size() > 0 && d.title.size() <= 160
+            && d.notes is string && d.notes.size() <= 5000
+            && d.category in ['guardia','estudio','clase','consulta','personal','otro']
+            && d.recurrence in ['none','daily','weekly','monthly']
+            && d.status in ['active','archived']
+            && d.startAt is timestamp && (d.endAt == null || (d.endAt is timestamp && d.endAt >= d.startAt))
+            && (d.reminderMinutes == null || d.reminderMinutes in [0,5,10,15,30,60,1440])
+            && d.createdAt is timestamp && d.updatedAt == request.time
+            && d.deviceCalendarLinked is bool
+            && (d.deviceCalendarEventId == null || d.deviceCalendarEventId is string);
+        }
+        allow read, delete: if ownedAgenda() && premiumAgenda();
+        allow create: if ownedAgenda() && premiumAgenda() && validAgenda() && request.resource.data.createdAt == request.time;
+        allow update: if ownedAgenda() && premiumAgenda() && validAgenda() && request.resource.data.createdAt == resource.data.createdAt;
+      }
+
       allow get: if isAuthed()
         && (request.auth.uid == userId || isAdmin());
 
@@ -681,7 +743,13 @@ service cloud.firestore {
       // Cloud Functions/Admin SDK bypass rules. Client-side arbitrary
       // notifications from ordinary authenticated users are forbidden.
       allow create: if isAdmin();
-      allow update: if isAdmin();
+      allow update: if isAdmin()
+        && request.resource.data.readBy is list
+        && request.resource.data.readBy.hasAll(resource.data.get('readBy', []))
+        && request.resource.data.readBy.toSet()
+          .difference(resource.data.get('readBy', []).toSet()).hasOnly([request.auth.uid])
+        && request.resource.data.diff(resource.data).affectedKeys()
+          .hasOnly(['readBy', '_adminAuditBy', '_adminAuditEmail', '_adminAuditAt']);
       allow delete: if isAdmin();
     }
 

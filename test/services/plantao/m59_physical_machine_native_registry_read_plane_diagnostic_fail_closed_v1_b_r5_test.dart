@@ -119,7 +119,8 @@ class _DiagnosticFake
   @override
   PlantaoMachineNativeRegistryReadDiagnostic? diagnosticFor(
     String collection,
-  ) => _diag[collection];
+  ) =>
+      _diag[collection];
 
   @override
   Future<List<Map<String, dynamic>>> loadEnabled(String collection) async {
@@ -148,9 +149,9 @@ class _DiagnosticFake
     if (collection == PlantaoMachineNativeContextPrefetch.identities) {
       final rows =
           directIdentityStatus == PlantaoMachineNativeRegistryReadStatus.ok &&
-              canonicalKey == 'anafilaxia'
-          ? <Map<String, dynamic>>[identity]
-          : const <Map<String, dynamic>>[];
+                  canonicalKey == 'anafilaxia'
+              ? <Map<String, dynamic>>[identity]
+              : const <Map<String, dynamic>>[];
       _record(
         collection,
         'loadPathology:$fieldPath',
@@ -361,14 +362,14 @@ void main() {
     );
 
     test(
-      'recognized registry failure blocks before the one productive provider call',
+      'recognized registry failure degrades but still reaches provider',
       () {
         final screen = File('lib/screens/ai_screen.dart').readAsStringSync();
         final prefetch = screen.indexOf(
           'M56C_MACHINE_NATIVE_REGISTRY_PREFETCH',
         );
         final guard = screen.indexOf(
-          'M59_MACHINE_NATIVE_REGISTRY_FAIL_CLOSED_BEFORE_PROVIDER',
+          'M59_MACHINE_NATIVE_REGISTRY_DEGRADED_PROVIDER_V2',
           prefetch,
         );
         final send = screen.indexOf('await p.sendAiMessage(', prefetch);
@@ -383,20 +384,22 @@ void main() {
           block,
           contains('m56cMachineContext.canonicalPathologyKey != null'),
         );
-        expect(block, contains('[M59_REGISTRY_FAIL_CLOSED]'));
-        expect(block, contains("_messages.add(_ChatMsg(role: 'ai'"));
-        expect(block, contains('return;'));
+        expect(block, contains('[M59_REGISTRY_DEGRADED]'));
+        expect(block, contains('m59RegistryDegradedMode'));
+        expect(block, contains('m59ProviderInput'));
+        expect(block, isNot(contains('m59RegistryFailureText')));
+        expect(block, isNot(contains("_messages.add(_ChatMsg(role: 'ai'")));
       },
     );
 
-    test('Study remains outside machine-native fail-closed branch', () {
+    test('Study remains outside machine-native degraded branch', () {
       final screen = File('lib/screens/ai_screen.dart').readAsStringSync();
       final guard = screen.indexOf(
-        'M59_MACHINE_NATIVE_REGISTRY_FAIL_CLOSED_BEFORE_PROVIDER',
+        'M59_MACHINE_NATIVE_REGISTRY_DEGRADED_PROVIDER_V2',
       );
       final send = screen.indexOf('await p.sendAiMessage(', guard);
       final block = screen.substring(guard, send);
-      expect(block, contains('if (!_longResponse &&'));
+      expect(block, contains('!requestLongResponse'));
     });
   });
 }

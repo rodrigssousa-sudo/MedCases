@@ -16,6 +16,7 @@ import 'package:provider/provider.dart';
 
 import '../providers/app_provider.dart';
 import '../screens/home_screen.dart';
+import '../screens/organization/organization_screen.dart';
 import 'components/chat/inline_chat.dart';
 import 'components/home_web_latest_guides_grid.dart';
 import 'components/common/home_v2_press_surface.dart';
@@ -103,6 +104,13 @@ class HomeScreenV2 extends StatelessWidget {
                 isEs,
                 onOpenClinicalGuide,
                 onOpenSimulation,
+                HomeV2ProductivityRow(
+                    dark: dark,
+                    isEs: isEs,
+                    onNotes: onOpenNotes,
+                    onTimer: () => Navigator.of(context).push(
+                        MaterialPageRoute<void>(
+                            builder: (_) => OrganizationScreen(isEs: isEs)))),
                 useWebWideGuidesShowcase
                     ? HomeWebLatestGuidesGrid(
                         dark: dark,
@@ -117,6 +125,8 @@ class HomeScreenV2 extends StatelessWidget {
                   dark: dark,
                   isEs: isEs,
                   onOpenVaccine: onOpenVaccine,
+                  onGuide: onOpenClinicalGuide,
+                  onSimulation: onOpenSimulation,
                   embedded: true,
                 ),
                 HomePatientPediatricsRow(
@@ -169,6 +179,7 @@ class _HomeV2VisualShell extends StatelessWidget {
     this.isEs,
     this.onOpenClinicalGuide,
     this.onOpenSimulation,
+    this.productivity,
     this.chat,
     this.primaryClinicalModule,
     this.patientPediatricsModule,
@@ -181,6 +192,7 @@ class _HomeV2VisualShell extends StatelessWidget {
   final bool isEs;
   final VoidCallback onOpenClinicalGuide;
   final VoidCallback onOpenSimulation;
+  final Widget productivity;
   final Widget chat;
   final Widget primaryClinicalModule;
   final Widget patientPediatricsModule;
@@ -195,12 +207,7 @@ class _HomeV2VisualShell extends StatelessWidget {
       children: [
         chat,
         const SizedBox(height: 5),
-        HomeV2GuideSimulationRow(
-          dark: dark,
-          isEs: isEs,
-          onGuide: onOpenClinicalGuide,
-          onSimulation: onOpenSimulation,
-        ),
+        productivity,
         SizedBox(
           height: 0.55,
           child: ColoredBox(

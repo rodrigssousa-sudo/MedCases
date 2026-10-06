@@ -56,6 +56,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -76,5 +77,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Adicione compromissos ao calendário do dispositivo somente quando você escolher essa opção.</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>Adicione e atualize seus compromissos MedCases no calendário quando autorizado.</string>
 </dict>
 </plist>

@@ -1,3 +1,9 @@
+import 'clinical_patient_quantity.dart';
+import 'clinical_query_scope.dart';
+import 'study_query_scope.dart';
+import '../../study/study_reference_boundary.dart';
+import 'clinical_dose_scope.dart';
+import 'ai_stream_trace.dart';
 import '../../ai_pipeline/plantao/contracts/plantao_clinical_regimen_contract.dart';
 import '../../ai_pipeline/ai_request_contract.dart';
 import '../../plantao_global_clinical_response_gate.dart';
@@ -176,6 +182,7 @@ class ClinicalFacts {
   String? get currentMedications => values['currentMedications'];
 
   static ClinicalFacts fromUserText(String text) {
+    text = ClinicalPatientQuantity.normalize(text);
     final facts = <String, String>{};
     final conflicts = <String>[];
     void capture(String key, String pattern, {bool numeric = false}) {
@@ -215,20 +222,27 @@ class ClinicalFacts {
       }
     }
 
+    capture('medicationContext',
+        r'\b(?:dose|doses|dosis|uso)\s+(?:de|da|do|del)\s+([a-záéíóúãõêç-]+)(?=\s|[.,;?!]|$)');
+    capture('indication',
+        r'\b(?:indica[çc][aã]o|indicaci[oó]n)\s*[:=]\s*([^\n;?!]+)');
+    capture('indication',
+        r'\b(?:uso|dose|doses|dosis)\s+(?:de|da|do|del)\s+[a-záéíóúãõêç-]+\s+(?:en|em|para)\s+(?!(?:un|um|este|esse|esta|mi|meu)\s+(?:peso|paciente|caso)|\d)([^\n;?!]+)');
     capture('ageYears',
         r'\b(?:idade|edad|age)\s*[:=]?\s*(\d+(?:[.,]\d+)?)\s*(?:anos|años|years)?',
         numeric: true);
     capture('ageYears', r'\b(\d+(?:[.,]\d+)?)\s*(?:anos|años|years)\b',
         numeric: true);
-    capture('weightKg',
-        r'\b(?:peso|pesa|pesando|weight|weighs)\s*[:=]?\s*(\d+(?:[.,]\d+)?)\s*kg\b',
-        numeric: true);
+    capture('weightKg', ClinicalPatientQuantity.weightPattern, numeric: true);
     capture('renalFunction',
         r'\b(?:clcr|egfr|tfg)\s*[:=]?\s*(\d+(?:[.,]\d+)?)\s*ml\s*/\s*min',
         numeric: true);
     capture('findings', r'\b(?:achados|hallazgos|findings)\s*[:=]\s*([^\n;]+)');
+    capture('bodySurfaceArea',
+        r'\b(?:superfície corporal|superficie corporal|bsa)\s*[:=]\s*(\d+(?:[.,]\d+)?)\s*m[²2]',
+        numeric: true);
     capture('hepaticFunction',
-        r'\b(?:função hepática|funcion hepatica|hepatic function)\s*[:=]\s*([^\n;]+)');
+        r'\b(?:função hepática|funci[oó]n hep[aá]tica|hepatic function)\s*[:=]\s*([^\n;]+)');
     capture('sex',
         r'\b(?:sexo|sex)\s*[:=]\s*(masculino|feminino|femenino|male|female)\b');
     capture('allergies', r'\b(?:alergias|allergies)\s*[:=]\s*([^\n;]+)');
@@ -311,10 +325,20 @@ class ClinicalMemorySnapshot {
 /// RAM only, owned by the existing ClinicalSessionMemory lifecycle.
 class ClinicalSafetyMemory {
   String? _uid, _sessionId;
+  bool _awaitingIndication = false;
+  bool acceptsIndicationReply(String text) =>
+      _awaitingIndication &&
+      text.trim().isNotEmpty &&
+      text.length <= 160 &&
+      !RegExp(r'\?|\b(?:dose|doses|dosis|peso|paciente|novo|nuevo|nova|nueva|outro|otro|mude|cambia|expl[ií]c\w*|expliqu\w*|resuma|resume|calcular|contin\w*|segu\w*|eso|isso|n[aã]o|no)\b',
+              caseSensitive: false)
+          .hasMatch(text);
+
   ClinicalFacts _facts = ClinicalFacts();
   void reset() {
     _uid = null;
     _sessionId = null;
+    _awaitingIndication = false;
     _facts = ClinicalFacts();
   }
 
@@ -322,16 +346,40 @@ class ClinicalSafetyMemory {
       {required String uid,
       required String sessionId,
       required String userQuery,
-      bool newPatient = false}) {
-    if (_uid != uid || _sessionId != sessionId || newPatient) reset();
+      bool newPatient = false,
+      Iterable<String> priorUserTurns = const []}) {
+    final differentOwner = _uid != uid || _sessionId != sessionId;
+    if (differentOwner || newPatient) reset();
+    if (differentOwner && !newPatient) {
+      for (final prior in priorUserTurns) {
+        capture(uid: uid, sessionId: sessionId, userQuery: prior);
+      }
+    }
     _uid = uid;
     _sessionId = sessionId;
     final supplied = ClinicalFacts.fromUserText(userQuery);
     final values = {..._facts.values};
+    // Only a reply to our pending indication question supplies an unlabeled
+    // indication; arbitrary assistant prose is never captured as patient data.
+    if (acceptsIndicationReply(userQuery) &&
+        supplied.values['indication'] == null &&
+        supplied.values['weightKg'] == null &&
+        userQuery.trim().isNotEmpty &&
+        userQuery.length <= 160 &&
+        !RegExp(r'^(?:[¿¡]\s*)?(?:contin|segu|eso|isso|n[aã]o|no\b)',
+                caseSensitive: false)
+            .hasMatch(userQuery.trim())) {
+      values['indication'] = userQuery.trim();
+    }
+
     // Corrections must be explicit; conflicting immutable attributes are unknown.
     final conflicts = {..._facts.rejected, ...supplied.rejected};
     for (final entry in supplied.values.entries) {
-      if (['ageYears', 'sex', 'weightKg', 'pregnancy'].contains(entry.key) &&
+      final explicitWeightScenario = entry.key == 'weightKg' &&
+          RegExp(r'^\s*[¿¡]?\s*(?:y|e)\s+para\s+', caseSensitive: false)
+              .hasMatch(userQuery);
+      if (!explicitWeightScenario &&
+          ['ageYears', 'sex', 'weightKg', 'pregnancy'].contains(entry.key) &&
           values[entry.key] != null &&
           values[entry.key] != entry.value) {
         conflicts.add(entry.key);
@@ -344,6 +392,13 @@ class ClinicalSafetyMemory {
       values.remove(key);
     }
     _facts = ClinicalFacts(values: values, rejected: conflicts);
+    _awaitingIndication = (ClinicalQueryScopePolicy.classify(userQuery) ==
+                ClinicalQueryScope.calculationOrIndividualization ||
+            _awaitingIndication) &&
+        _facts.weightKg != null &&
+        values['medicationContext'] != null &&
+        values['indication'] == null;
+
     return ClinicalMemorySnapshot(
         confirmedFacts: _facts,
         rejectedAssumptions: conflicts,
@@ -440,16 +495,24 @@ class ClinicalRequestContext {
       required this.memory,
       required this.evidence,
       required this.createdAt,
+      Iterable<String>? studyReferenceRecords,
       this.ownsRequest})
-      : knownFacts = memory.confirmedFacts,
-        unknownCriticalFacts =
-            List.unmodifiable(_missing(userQuery, memory.confirmedFacts));
+      : verifiesStudyReferences = studyReferenceRecords != null,
+        studyReferences =
+            StudyReferenceBoundary(studyReferenceRecords ?? const []),
+        knownFacts = memory.confirmedFacts,
+        unknownCriticalFacts = List.unmodifiable(mode == AiRequestMode.estudo
+            ? _studyMissing(userQuery, memory.confirmedFacts)
+            : _missing(userQuery, memory.confirmedFacts,
+                generalEducation: true));
   final String requestId, sessionId, uid, language, userQuery;
   final bool Function()? ownsRequest;
   final AiRequestMode mode;
   final ClinicalMemorySnapshot memory;
   final ClinicalFacts knownFacts;
   final ClinicalEvidenceBundle evidence;
+  final StudyReferenceBoundary studyReferences;
+  final bool verifiesStudyReferences;
   final DateTime createdAt;
   final List<String> unknownCriticalFacts;
   double? get patientAge => knownFacts.ageYears;
@@ -460,44 +523,131 @@ class ClinicalRequestContext {
   String? get allergies => knownFacts.allergies;
   String? get currentMedications => knownFacts.currentMedications;
 
-  bool get isOperationalRequest =>
-      ClinicalSafetyPass.operational(userQuery) ||
-      (!RegExp(r'(?:curva|rela[çc][aã]o|relaci[oó]n) dose.resposta|dose.response',
-                  caseSensitive: false)
-              .hasMatch(userQuery) &&
-          RegExp(r'\b(?:dose|dosis|posologia|prescri|preparo|dilui|diluci|infus|mg/kg|mcg/kg|ml/h|ajuste renal|ajuste hep)',
-                  caseSensitive: false)
-              .hasMatch(userQuery));
+  ClinicalQueryScope get queryScope => mode == AiRequestMode.estudo
+      ? StudyQueryScope.classify(userQuery)
+      : ClinicalQueryScopePolicy.classify(userQuery);
+  bool get isGeneralEducationalQuery =>
+      queryScope == ClinicalQueryScope.generalEducational;
+  bool get isStudyMixedRequest =>
+      mode == AiRequestMode.estudo &&
+      queryScope == ClinicalQueryScope.calculationOrIndividualization &&
+      StudyQueryScope.hasEducationalRequest(userQuery);
 
-  Answerability get answerability => knownFacts.rejected.isNotEmpty
+  bool get isOperationalRequest =>
+      !isGeneralEducationalQuery &&
+      !ClinicalDoseScope.referenceRequest(userQuery) &&
+      (ClinicalSafetyPass.operational(userQuery) ||
+          (!RegExp(r'(?:curva|rela[çc][aã]o|relaci[oó]n) dose.resposta|dose.response',
+                      caseSensitive: false)
+                  .hasMatch(userQuery) &&
+              RegExp(r'\b(?:dose|dosis|posologia|prescri|preparo|dilui|diluci|infus|mg/kg|mcg/kg|ml/h|ajuste renal|ajuste hep)',
+                      caseSensitive: false)
+                  .hasMatch(userQuery)));
+
+  Answerability get answerability => knownFacts.rejected.isNotEmpty &&
+          !(mode == AiRequestMode.estudo && isGeneralEducationalQuery)
       ? Answerability.abstain
       : unknownCriticalFacts.isNotEmpty
-          ? Answerability.askForMissingData
+          ? (isStudyMixedRequest ||
+                  (mode != AiRequestMode.estudo &&
+                      ClinicalDoseScope.referenceLabel(userQuery))
+              ? Answerability.answerWithLimitations
+              : Answerability.askForMissingData)
           : evidence.items.isEmpty
               ? Answerability.answerWithLimitations
               : Answerability.answer;
   bool get mayGenerate =>
       answerability != Answerability.abstain &&
       answerability != Answerability.askForMissingData;
+
+  /// A weight assertion is not an authorized pharmacological rule. No rule is
+  /// inferred from model prose or shadow data; existing typed evidence alone
+  /// can authorize a personalized medication output.
+  String? get unsupportedWeightCalculationMessage {
+    if (queryScope != ClinicalQueryScope.calculationOrIndividualization ||
+        weightKg == null ||
+        unknownCriticalFacts.isNotEmpty ||
+        knownFacts.rejected.isNotEmpty ||
+        knownFacts.values['medicationContext'] == null ||
+        knownFacts.values['indication'] == null ||
+        !RegExp(r'\b(?:dose|dosis|doses)\b', caseSensitive: false)
+            .hasMatch(userQuery) ||
+        evidence.items.any((item) => item.medicationAuthorized)) return null;
+    final drug = knownFacts.values['medicationContext']!;
+    final indication = knownFacts.values['indication']!;
+    final weight =
+        weightKg! % 1 == 0 ? weightKg!.toInt().toString() : weightKg.toString();
+    return language.startsWith('es')
+        ? 'Tengo $drug, la indicación $indication y el peso $weight kg. No dispongo de una regla posológica autorizada para calcular esta dosis individualizada. Confirma el esquema de esa indicación en el protocolo vigente; conservaré estos datos en la conversación.'
+        : 'Tenho $drug, a indicação $indication e o peso $weight kg. Não disponho de uma regra posológica autorizada para calcular esta dose individualizada. Confirme o esquema dessa indicação no protocolo vigente; manterei estes dados na conversa.';
+  }
+
   void requireTransport({required String mode, required String language}) {
     if (mode != this.mode.name ||
         language != this.language ||
         !mayGenerate ||
         ownsRequest?.call() == false) {
+      AiStreamTrace.mark(
+          'TRANSPORT_MODE_MATCH', mode == this.mode.name ? 1 : 0);
+      AiStreamTrace.mark(
+          'TRANSPORT_LANGUAGE_MATCH', language == this.language ? 1 : 0);
+      AiStreamTrace.mark('TRANSPORT_MAY_GENERATE', mayGenerate ? 1 : 0);
+      AiStreamTrace.mark('REFUSAL_TRANSPORT_REJECTED', 0);
       throw StateError('CLINICAL_SAFETY_TRANSPORT_REJECTED');
     }
   }
 
-  static List<String> _missing(String query, ClinicalFacts facts) {
+  static List<String> _missing(String query, ClinicalFacts facts,
+      {bool generalEducation = false}) {
+    if (generalEducation &&
+        ClinicalQueryScopePolicy.classify(query) ==
+            ClinicalQueryScope.generalEducational) {
+      return const [];
+    }
+    if (!generalEducation && ClinicalDoseScope.referenceRequest(query))
+      return const [];
     final q = query.toLowerCase();
-    final dose =
-        RegExp(r'dos[ei]|mg\s*/\s*kg|mcg\s*/\s*kg|ajust|calcula').hasMatch(q);
+    final dose = RegExp(
+            r'\b(?:dose|doses|dosis|posologia|posología|ajuste|ajustar|calcular|calcule|calcula)\b|\b(?:mg|mcg)\s*/\s*kg',
+            caseSensitive: false)
+        .hasMatch(q);
     final pediatric =
         RegExp(r'pedi[aá]tr|crian[çc]a|niñ[oa]|neonat|lactente').hasMatch(q) ||
             (facts.ageYears != null && facts.ageYears! < 18);
     final missing = <String>[];
+    // A bare hepatic-class adjustment supplies no target medication/regimen.
+    // Ask for that context, not the Child-Pugh class already stated by the user.
+    if (generalEducation &&
+        ClinicalQueryScopePolicy.classify(query) ==
+            ClinicalQueryScope.calculationOrIndividualization &&
+        RegExp(r'^\s*[¿¡]?\s*(?:ajuste|ajusta|ajustar)\s+(?:(?:para|por|com|con)\s+)?child[ -]?pugh\s*[abc]\s*[?.]?\s*$')
+            .hasMatch(q)) {
+      missing.add('medicationContext');
+    }
+    if (generalEducation && dose && pediatric && facts.ageYears == null) {
+      missing.add('ageYears');
+    }
     if (dose &&
-        (pediatric || RegExp(r'(?:m[gc]g|µg)\s*/\s*kg|por peso').hasMatch(q)) &&
+        ClinicalDoseScope.individualized(query) &&
+        RegExp(r'(?:deste|desse|este|esse|este) medicamento|this medication')
+            .hasMatch(q)) {
+      missing.add('medicationContext');
+    }
+    if (dose && ClinicalDoseScope.individualized(query)) {
+      if (RegExp(r'idade|edad|pedi[aá]tr|crian[çc]a|niñ[oa]').hasMatch(q) &&
+          facts.ageYears == null) missing.add('ageYears');
+      if (RegExp(r'gesta|gr[aá]vid|embaraz').hasMatch(q) &&
+          facts.pregnancy == null) missing.add('pregnancy');
+      if (RegExp(r'superf[ií]cie|superficie|m2|m²|\bbsa\b').hasMatch(q) &&
+          facts.number('bodySurfaceArea') == null)
+        missing.add('bodySurfaceArea');
+      if (RegExp(r'intera[çc]|interacci').hasMatch(q) &&
+          facts.currentMedications == null) missing.add('currentMedications');
+    }
+    if (dose &&
+        (pediatric ||
+            RegExp(r'(?:m[gc]g|µg)\s*/\s*kg|por peso|obesidade|obesidad')
+                .hasMatch(q)) &&
         facts.weightKg == null) {
       missing.add('weightKg');
     }
@@ -523,22 +673,79 @@ class ClinicalRequestContext {
         missing.add('weightKg');
       }
     }
+    if (generalEducation &&
+        dose &&
+        missing.isEmpty &&
+        facts.values.keys
+            .every((k) => k == 'medicationContext' || k == 'indication') &&
+        RegExp(r'(?:este|esse|meu|mi)\s+paciente', caseSensitive: false)
+            .hasMatch(query)) {
+      missing.add('medicationContext');
+    }
+    if (dose &&
+        ClinicalQueryScopePolicy.classify(query) ==
+            ClinicalQueryScope.calculationOrIndividualization &&
+        facts.weightKg != null &&
+        facts.values['medicationContext'] != null &&
+        facts.values['indication'] == null) {
+      missing.add('indication');
+    }
     return missing;
+  }
+
+  static List<String> _studyMissing(String query, ClinicalFacts facts) {
+    final scope = StudyQueryScope.classify(query);
+    if (scope == ClinicalQueryScope.generalEducational) return const [];
+    final missing = _missing(query, facts, generalEducation: true).toSet();
+    // A number such as eGFR 22 does not identify the medicine, indication or
+    // regimen to adjust. Neither does “exact dose for this case”.
+    if (scope == ClinicalQueryScope.calculationOrIndividualization &&
+        (RegExp(r'^\s*(?:calcule|calcula|ajuste|ajusta)\s+(?:para\s+)?(?:este paciente|eGFR\s*\d+|Child[ -]?Pugh\s*[ABC])\s*[?.]?\s*$',
+                    caseSensitive: false)
+                .hasMatch(query) ||
+            RegExp(r'\b(?:dose|dosis)\s+(?:exat[ao]|exact[ao])\s+para\s+(?:este|esse)\s+caso',
+                    caseSensitive: false)
+                .hasMatch(query) ||
+            RegExp(r'\b(?:calcule|calcula)\b.{0,40}\b(?:este|esse|meu|mi)\s+paciente',
+                    caseSensitive: false)
+                .hasMatch(query))) {
+      missing.add('medicationContext');
+    }
+    return missing.toList();
   }
 
   String get safeMessage {
     final es = language.startsWith('es');
-    if (answerability == Answerability.askForMissingData) {
+    if (unknownCriticalFacts.length == 1 &&
+        unknownCriticalFacts.single == 'indication') {
+      final weight = weightKg! % 1 == 0
+          ? weightKg!.toInt().toString()
+          : weightKg.toString();
+      final drug = knownFacts.values['medicationContext']!;
+      return es
+          ? 'Ya tengo el peso: $weight kg. ¿Cuál es la indicación clínica para $drug?'
+          : 'Já tenho o peso: $weight kg. Qual é a indicação clínica de $drug?';
+    }
+    if (unknownCriticalFacts.isNotEmpty) {
       final labels = {
+        'medicationContext': es
+            ? 'medicamento, indicación y datos del paciente relevantes al ajuste'
+            : 'medicamento, indicação e dados do paciente relevantes ao ajuste',
         'weightKg': es ? 'peso en kg' : 'peso em kg',
         'renalFunction': es
             ? 'función renal (ClCr/eGFR con unidad)'
             : 'função renal (ClCr/eGFR com unidade)',
+        'hepaticFunction': es ? 'función hepática' : 'função hepática',
+        'ageYears': es ? 'edad' : 'idade',
+        'pregnancy': es ? 'estado de gestación' : 'estado de gestação',
+        'bodySurfaceArea': es ? 'superficie corporal' : 'superfície corporal',
+        'currentMedications':
+            es ? 'medicaciones actuales' : 'medicamentos atuais',
         'concentration': es
             ? 'formulación y concentración (masa/volumen)'
             : 'formulação e concentração (massa/volume)'
       };
-      return '${es ? 'Datos necesarios' : 'Dados necessários'}: ${unknownCriticalFacts.map((k) => labels[k] ?? k).join('; ')}. ${es ? 'No se calculó ni recomendó una dosis.' : 'Nenhuma dose foi calculada ou recomendada.'}';
+      return '${es ? 'Datos necesarios' : 'Dados necessários'}: ${unknownCriticalFacts.map((k) => labels[k] ?? k).join('; ')}. ${es ? 'No se calculó una dosis individualizada.' : 'Nenhuma dose individualizada foi calculada.'}';
     }
     return es
         ? 'No hay soporte verificable suficiente para presentar esta respuesta clínica con seguridad. Confirma los datos del caso y consulta una fuente clínica autorizada.'
@@ -584,22 +791,45 @@ class ClinicalSafetyPass {
       .replaceFirst(RegExp(r'^\s*(?:[•●▪-]|\d+[.)])\s*'), '')
       .replaceAll(RegExp(r'\s+'), ' ')
       .trim();
-  static bool medicationOperation(String text) => RegExp(
-          r'\b\d+(?:[.,]\d+)?\s*(?:mg|mcg|ug|µg|g|ml|u|ui|iu|meq|mmol|gotas?|comprimidos?|ampolas?)\b|'
-          r'\b(?:dose|dosis|posologia|via|intervalo|preparo|dilui[çc][aã]o|diluci[oó]n|formula[çc][aã]o|concentra[çc][aã]o)\s*[:=]\s*\S|'
-          r'\b(?:administrar|administre|administr[eé]|prescrever|prescreva|prescribir|tomar|tome|injete|injetar|diluir|dilua|infundir|receber|receba|usar|use|utilize|titular|recomenda-se|recomienda)\b|'
-          r'\bvia\s+(?:oral|intravenosa|intramuscular|subcutanea|subcutânea)|\b(?:mg|mcg|µg)\s*/\s*kg|\bml\s*/\s*h',
-          caseSensitive: false)
-      .hasMatch(text);
-  static bool operational(String text) =>
-      medicationOperation(text) ||
+  static bool medicationOperation(String text,
+      {bool laboratoryMeasurements = false}) {
+    // Serum/plasma laboratory concentrations are measurements, not doses.
+    // Do not exempt formulations, routes or administration instructions.
+    final laboratoryContext = RegExp(
+            r'\b(?:s[eé]ric[oa]s?|plasm[aá]tic[oa]s?)\b',
+            caseSensitive: false)
+        .hasMatch(text);
+    final administrationContext = RegExp(
+            r'\b(?:iv|vo|sc|im|intraven\w*|infus\w*|infund\w*|dilu\w*|prepar\w*|administr\w*|prescri\w*)\b',
+            caseSensitive: false)
+        .hasMatch(text);
+    final candidate =
+        laboratoryMeasurements && laboratoryContext && !administrationContext
+            ? text.replaceAll(
+                RegExp(r'\b\d+(?:[.,]\d+)?\s*(?:meq|mmol)\s*/\s*l\b',
+                    caseSensitive: false),
+                '')
+            : text;
+    return RegExp(
+            r'\b\d+(?:[.,]\d+)?\s*(?:mg|mcg|ug|µg|g|ml|u|ui|iu|meq|mmol|gotas?|comprimidos?|ampolas?)\b|'
+            r'\b(?:dose|dosis|posologia|via|intervalo|preparo|dilui[çc][aã]o|diluci[oó]n|formula[çc][aã]o|concentra[çc][aã]o)\s*[:=]\s*\S|'
+            r'\b(?:administrar|administre|administr[eé]|prescrever|prescreva|prescribir|tomar|tome|injete|injetar|diluir|dilua|infundir|receber|receba|usar|use|utilize|titular|recomenda-se|recomienda)\b|'
+            r'\bvia\s+(?:oral|intravenosa|intramuscular|subcutanea|subcutânea)|\b(?:mg|mcg|µg)\s*/\s*kg|\bml\s*/\s*h',
+            caseSensitive: false)
+        .hasMatch(candidate);
+  }
+
+  static bool operational(String text, {bool laboratoryMeasurements = false}) =>
+      medicationOperation(text,
+          laboratoryMeasurements: laboratoryMeasurements) ||
       RegExp(r'\b(?:iniciar|inicie|suspender|suspenda|indicar|indique|intubar|intube|realizar|realize|internar|alta hospital|diagn[oó]stico confirmado)\b',
               caseSensitive: false)
           .hasMatch(text);
 
   /// Terminal headings establish scope; an invented drug without a number in
   /// a prescription section cannot evade the operational gate.
-  static Iterable<String> _criticalLines(String output) sync* {
+  static Iterable<String> _criticalLines(String output,
+      {bool laboratoryMeasurements = false}) sync* {
     var prescriptionSection = false;
     for (final line in output.split('\n')) {
       final n = _normalize(line);
@@ -610,10 +840,13 @@ class ClinicalSafetyPass {
         prescriptionSection = true;
         continue;
       }
-      if (RegExp(r'^\s*#{1,4}\s').hasMatch(line) && !operational(line)) {
+      if (RegExp(r'^\s*#{1,4}\s').hasMatch(line) &&
+          !operational(line, laboratoryMeasurements: laboratoryMeasurements)) {
         prescriptionSection = false;
       }
-      if (prescriptionSection || operational(line)) yield line;
+      if (prescriptionSection ||
+          operational(line, laboratoryMeasurements: laboratoryMeasurements))
+        yield line;
     }
   }
 
@@ -629,14 +862,26 @@ class ClinicalSafetyPass {
         ? SafetyVerdict.pass
         : SafetyVerdict.failClosed;
     gates[SafetyGate.criticalDataComplete] = context.mayGenerate &&
-            ClinicalRequestContext._missing(output, context.knownFacts).isEmpty
+            ClinicalRequestContext._missing(output, context.knownFacts,
+                    generalEducation: context.isGeneralEducationalQuery)
+                .isEmpty
         ? SafetyVerdict.pass
         : SafetyVerdict.failClosed;
     final outputFacts = ClinicalFacts.fromUserText(output);
     var contradictions =
         context.knownFacts.rejected.length + outputFacts.rejected.length;
+    final generalConditionalReference = context.isGeneralEducationalQuery &&
+        context.knownFacts.values.isEmpty &&
+        !ClinicalDoseScope.patientSpecificFragment(output) &&
+        RegExp(r'\b(?:si|se|cuando|quando|en caso|em caso)\b|[<>≤≥]|\b(?:mayores|menores|maiores)\s+de\s+\d',
+                caseSensitive: false)
+            .hasMatch(output);
     for (final entry in outputFacts.values.entries) {
-      if (context.knownFacts.values[entry.key] != entry.value) contradictions++;
+      // Conditional population thresholds are not asserted patient facts.
+      if (!generalConditionalReference &&
+          context.knownFacts.values[entry.key] != entry.value) {
+        contradictions++;
+      }
     }
     final negative = RegExp(
         r'\b(?:sem|sin|nao|não|no|ausente|nega|niega|denies|without)\b',
@@ -668,7 +913,8 @@ class ClinicalSafetyPass {
     final claims = <ClinicalClaimBinding>[];
     var numericChecks = equations == null ? 0 : 1;
     final lines = {
-      ..._criticalLines(output),
+      ..._criticalLines(output,
+          laboratoryMeasurements: context.mode == AiRequestMode.plantao),
       ...structuredClaims.where((s) => s.trim().isNotEmpty)
     };
     for (final line in lines) {
@@ -683,7 +929,8 @@ class ClinicalSafetyPass {
             certainty: ClinicalCertainty.confirmed));
         continue;
       }
-      final medication = medicationOperation(line);
+      final medication = medicationOperation(line,
+          laboratoryMeasurements: context.mode == AiRequestMode.plantao);
       final normalized = _normalize(line);
       ClinicalEvidenceItem? evidence;
       for (final item in context.evidence.items) {

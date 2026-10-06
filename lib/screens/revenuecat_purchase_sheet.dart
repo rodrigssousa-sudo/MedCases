@@ -1,3 +1,4 @@
+import '../widgets/legal_links.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -138,95 +139,103 @@ class _RevenueCatPurchaseSheetState extends State<RevenueCatPurchaseSheet> {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 18, 20, 18),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              es ? 'Elige tu plan Premium' : 'Escolha seu plano Premium',
-              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
-            ),
-            const SizedBox(height: 16),
-            Row(children: [
-              Expanded(
-                  child: _PlanButton(
-                label: es ? 'Mensual' : 'Mensal',
-                selected: _plan == RevenueCatPlan.monthly,
-                onTap: _busy
-                    ? null
-                    : () => setState(() => _plan = RevenueCatPlan.monthly),
-              )),
-              const SizedBox(width: 8),
-              Expanded(
-                  child: _PlanButton(
-                label: 'Anual',
-                selected: _plan == RevenueCatPlan.annual,
-                onTap: _busy
-                    ? null
-                    : () => setState(() => _plan = RevenueCatPlan.annual),
-              )),
-            ]),
-            const SizedBox(height: 18),
-            Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
-              Flexible(
-                  child: Text(
-                selectedPrice,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                es ? 'Elige tu plan Premium' : 'Escolha seu plano Premium',
                 style:
-                    const TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
-              )),
-              const SizedBox(width: 4),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 5),
-                child: Text(selectedPeriod),
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.w900),
               ),
-            ]),
-            const SizedBox(height: 8),
-            Text(
-              _plan == RevenueCatPlan.monthly
-                  ? (es
-                      ? 'Las ofertas de prueba, cuando estén disponibles, dependen de la elegibilidad y las condiciones de la tienda.'
-                      : 'As ofertas de teste, quando disponíveis, dependem da elegibilidade e das condições da loja.')
-                  : (es
-                      ? 'Suscripción anual con renovación automática.'
-                      : 'Assinatura anual com renovação automática.'),
-              style: TextStyle(
-                  color: Theme.of(context).textTheme.bodySmall?.color),
-            ),
-            const SizedBox(height: 18),
-            SizedBox(
-              height: 52,
-              child: FilledButton(
-                onPressed: _busy ? null : _purchase,
-                child: _busy
-                    ? const SizedBox(
-                        width: 22,
-                        height: 22,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : Text(
-                        _plan == RevenueCatPlan.monthly
-                            ? (es
-                                ? 'Continuar con mensual'
-                                : 'Continuar com mensal')
-                            : (es
-                                ? 'Continuar con anual'
-                                : 'Continuar com anual'),
-                      ),
+              const SizedBox(height: 16),
+              Row(children: [
+                Expanded(
+                    child: _PlanButton(
+                  label: es ? 'Mensual' : 'Mensal',
+                  selected: _plan == RevenueCatPlan.monthly,
+                  onTap: _busy
+                      ? null
+                      : () => setState(() => _plan = RevenueCatPlan.monthly),
+                )),
+                const SizedBox(width: 8),
+                Expanded(
+                    child: _PlanButton(
+                  label: 'Anual',
+                  selected: _plan == RevenueCatPlan.annual,
+                  onTap: _busy
+                      ? null
+                      : () => setState(() => _plan = RevenueCatPlan.annual),
+                )),
+              ]),
+              const SizedBox(height: 18),
+              Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                Flexible(
+                    child: Text(
+                  selectedPrice,
+                  style: const TextStyle(
+                      fontSize: 30, fontWeight: FontWeight.w900),
+                )),
+                const SizedBox(width: 4),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: Text(selectedPeriod),
+                ),
+              ]),
+              const SizedBox(height: 8),
+              Text(
+                _plan == RevenueCatPlan.monthly
+                    ? (es
+                        ? 'Las ofertas de prueba, cuando estén disponibles, dependen de la elegibilidad y las condiciones de la tienda.'
+                        : 'As ofertas de teste, quando disponíveis, dependem da elegibilidade e das condições da loja.')
+                    : (es
+                        ? 'Suscripción anual con renovación automática.'
+                        : 'Assinatura anual com renovação automática.'),
+                style: TextStyle(
+                    color: Theme.of(context).textTheme.bodySmall?.color),
               ),
-            ),
-            const SizedBox(height: 4),
-            TextButton(
-              onPressed: _busy ? null : _restore,
-              child: Text(es ? 'Restaurar compras' : 'Restaurar compras'),
-            ),
-            Text(
-              es
-                  ? 'El precio final y la elegibilidad del período gratuito son confirmados por la tienda antes de la compra.'
-                  : 'O preço final e a elegibilidade do período grátis são confirmados pela loja antes da compra.',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
-          ],
+              const SizedBox(height: 12),
+              Text(es
+                  ? 'MedCases Pro Premium: recursos de estudio y consulta presentados en esta oferta. Renovación automática; cancele en la tienda antes de renovar.'
+                  : 'MedCases Pro Premium: recursos de estudo e consulta apresentados nesta oferta. Renovação automática; cancele na loja antes da renovação.'),
+              MedCasesLegalLinks(isEs: es, compact: true),
+              const SizedBox(height: 18),
+              SizedBox(
+                height: 52,
+                child: FilledButton(
+                  onPressed: _busy ? null : _purchase,
+                  child: _busy
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : Text(
+                          _plan == RevenueCatPlan.monthly
+                              ? (es
+                                  ? 'Continuar con mensual'
+                                  : 'Continuar com mensal')
+                              : (es
+                                  ? 'Continuar con anual'
+                                  : 'Continuar com anual'),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 4),
+              TextButton(
+                onPressed: _busy ? null : _restore,
+                child: Text(es ? 'Restaurar compras' : 'Restaurar compras'),
+              ),
+              Text(
+                es
+                    ? 'El precio final y la elegibilidad del período gratuito son confirmados por la tienda antes de la compra.'
+                    : 'O preço final e a elegibilidade do período grátis são confirmados pela loja antes da compra.',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          ),
         ),
       ),
     );

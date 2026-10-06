@@ -40,8 +40,8 @@ void main() {
       expect(
           p.text,
           contains(language == 'pt'
-              ? 'Veja no MedCases Pro:'
-              : 'Ver en MedCases Pro:'));
+              ? 'Ver guia no MedCases:'
+              : 'Ver guía en MedCases:'));
       expect(p.text, endsWith('https://medcasespro.com'));
     });
   }
@@ -177,14 +177,14 @@ void main() {
     ),
     ('fallback', 'pt', 'Guia sem capa', '')
   ]) {
-    test('PNG 1080x1350 offline ${item.$1}', () async {
+    test('PNG 1080x1920 offline ${item.$1}', () async {
       final bytes = await ClinicalGuideShare.render(
           payload(language: item.$2, title: item.$3, subtitle: item.$4));
       expect(bytes.take(8), [137, 80, 78, 71, 13, 10, 26, 10]);
       final codec = await ui.instantiateImageCodec(bytes);
       final image = (await codec.getNextFrame()).image;
       expect(image.width, 1080);
-      expect(image.height, 1350);
+      expect(image.height, 1920);
       image.dispose();
       codec.dispose();
     });

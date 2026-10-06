@@ -1,7 +1,7 @@
 name: medcases
 description: "MedCases Pro"
 publish_to: 'none'
-version: 7.0.2+1706
+version: 7.0.2+1716
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -14,6 +14,7 @@ dependencies:
 
   # Unicode grapheme-safe rendering para streaming da IA
   characters: 1.4.1
+  intl: 0.20.2
 
   # State management
   provider: 6.1.5+1
@@ -88,6 +89,7 @@ dependencies:
   # Markdown renderer — renderiza respostas da IA com hierarquia visual nativa
   # Usado por _AiBubble (Build 116) para bloco único contínuo sem fragmentação
   flutter_markdown: ^0.7.7
+  markdown: 7.3.0
 
   # Imagens de capa das guias PDF — cache eficiente em web + mobile
   # Build 169: GuideModel.coverUrl → thumbnail dinâmico no _GuideCard
@@ -104,6 +106,7 @@ dependencies:
   flutter_native_splash: ^2.4.0
   flutter_svg: ^2.3.0
   cryptography: ^2.9.0
+  crypto: ^3.0.7
 
   # RevenueCat subscriptions
   purchases_flutter: 10.12.0

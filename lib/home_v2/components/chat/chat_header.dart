@@ -61,7 +61,7 @@ class ChatHeader extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "MEDCASES IA",
+                      "MedCases Clinical",
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,

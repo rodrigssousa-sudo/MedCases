@@ -1,4 +1,19 @@
+import 'services/entitlement_service.dart';
+import 'widgets/authorized_feature_navigation.dart';
+import 'services/medcases_feature_authorization.dart';
+import 'services/organization/organization_timer_runtime.dart';
+import 'services/organization/organization_notifications.dart';
+import 'screens/organization/organization_timer_screen.dart';
+import 'screens/organization/agenda_screen.dart';
+import 'widgets/guide_intent_entry.dart';
+import 'config/legal_urls.dart';
+import 'services/fcm_service.dart';
+import 'services/notifications/notification_contract.dart';
+import 'screens/notification_resource_screen.dart';
+import 'screens/notification_preferences_screen.dart';
+import 'services/ai/safety/ai_stream_trace.dart';
 import 'services/private_log_boundary.dart';
+import 'widgets/recording_session_overlay.dart';
 import 'testimonials/testimonial_entry.dart';
 import 'testimonials/testimonial_screen.dart';
 import 'dart:async';
@@ -16,7 +31,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 // BUILD 280: sincronização nativa splash iOS — elimina blink/flash (Guideline 2.1)
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,7 +44,7 @@ import 'firebase_options.dart';
 
 import 'providers/app_provider.dart';
 import 'providers/ui_provider.dart'; // BUILD 326: sub-provider de UI
- // BUILD 326: sub-provider de IA/chat
+// BUILD 326: sub-provider de IA/chat
 import 'providers/tools_state_provider.dart'; // BUILD 445: estado clínico compartilhado
 import 'services/auth_service.dart';
 import 'services/firebase_runtime_guard.dart'; // BUILD 299: safe Firebase.apps access
@@ -105,6 +119,8 @@ Future<void> _main() async {
   // a guard kIsWeb garante zero overhead no bundle JS.
   final WidgetsBinding widgetsBinding =
       WidgetsFlutterBinding.ensureInitialized();
+  AiStreamTrace.mark('TELEMETRY_READY', 0);
+  AiStreamTrace.stage('DIAGNOSTIC_PROBES_READY', '', '');
   if (!kIsWeb) {
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   }
@@ -617,10 +633,13 @@ class _MedCasesAppState extends State<MedCasesApp> {
       //   >= 1024 px → desktop shell (sidebar lateral + conteúdo expandido)
       // Não há mais centralização forçada ou clamp de 560 px no iPad.
       builder: (context, child) => NotificationOverlay(
-        child: ColoredBox(
-          color: darkMode ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF),
-          child: child ?? const SizedBox.shrink(),
-        ),
+        child: RecordingSessionOverlay(
+            navigatorKey: _rootNavigatorKey,
+            child: ColoredBox(
+              color:
+                  darkMode ? const Color(0xFF0F1116) : const Color(0xFFFFFFFF),
+              child: child ?? const SizedBox.shrink(),
+            )),
       ),
     );
   }
@@ -1659,8 +1678,6 @@ class _PendingScreenState extends State<_PendingScreen> {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1977,7 +1994,8 @@ class _WebMainShellGateState extends State<_WebMainShellGate> {
       return const _SplashScreen();
     }
     return ProfessionalDeclarationGateWidget(
-      child: TestimonialEntry(user: widget.user, child: const MainShell()),
+      child: GuideIntentEntry(
+          child: TestimonialEntry(user: widget.user, child: const MainShell())),
     );
   }
 }
@@ -2044,6 +2062,28 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
   // AVALIACAO_MAIN_SHELL_FOOTER_V1_B_R0_BACK
   void _closeAvaliacaoMainShell() => _onTabChange(0);
+
+  void _openNotificationDestination() {
+    final target = FcmService.pendingDestination.value;
+    if (!mounted ||
+        target == null ||
+        context.read<AppProvider>().currentUser == null) return;
+    FcmService.pendingDestination.value = null;
+    if (target.event == NotificationEvent.newFeatureAvailable) {
+      final tab = NotificationContract.featureTab(target.resourceId);
+      if (tab != null) {
+        _onTabChange(tab);
+        return;
+      }
+    }
+    if (target.event == NotificationEvent.globalEngagementReminder ||
+        target.event == NotificationEvent.timerCompleted) {
+      _onTabChange(0);
+      return;
+    }
+    Navigator.of(context).push(MaterialPageRoute<void>(
+        builder: (_) => NotificationResourceScreen(destination: target)));
+  }
 
   void _onTabChange(int t) {
     // LABORATORIO_SUPER_PREMIUM_MAIN_SHELL_V1_B_R0_RESET
@@ -2120,6 +2160,18 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    FcmService.pendingDestination.addListener(_openNotificationDestination);
+    MedCasesOrganizationNotifications.watchAgendaOwner();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) unawaited(OrganizationTimerRuntime.restore(isEs: context.read<AppProvider>().lang == 'es').catchError((Object _) {}));
+    });
+    NotificationService.setOnTap((payload) {
+      if (payload.type == 'shift_timer' && mounted) _onTabChange(0);
+      if (payload.type == 'organization:timer' && mounted) Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => OrganizationTimerScreen(isEs: Localizations.localeOf(context).languageCode == 'es')));
+      if (payload.type == 'organization:agenda' && mounted) unawaited(navigateAuthorizedFeature(context, target: const FeatureTarget.capability(MedCasesCapability.agenda), entrypoint: FeatureEntryPoint.deeplink, lang: context.read<AppProvider>().lang, builder: (_) => AgendaScreen(isEs: context.read<AppProvider>().lang == 'es')));
+    });
+    WidgetsBinding.instance
+        .addPostFrameCallback((_) => _openNotificationDestination());
     WidgetsBinding.instance.addObserver(this);
 
     // Ouve pendingTab para navegação iniciada pelo Drawer (sem onTabChange no _AppDrawer)
@@ -2406,6 +2458,7 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
   @override
   void dispose() {
+    FcmService.pendingDestination.removeListener(_openNotificationDestination);
     MainShell.pendingTab.removeListener(_onPendingTab);
     AppProvider.postOAuthTabNotifier
         .removeListener(_onPostOAuthTab); // BUILD 315
@@ -2436,6 +2489,8 @@ class _MainShellState extends State<MainShell> with WidgetsBindingObserver {
 
     switch (state) {
       case AppLifecycleState.resumed:
+        unawaited(OrganizationTimerRuntime.reconcile().catchError((Object _) {}));
+        unawaited(FcmService.updateLocale(provider.lang));
         OfflineCalculatorCacheService.instance.onAppResumed();
         // App voltou ao foreground — retoma contagem de tempo de tela
         // BUILD 241: resumeUsageTimer() agora também chama
@@ -3758,7 +3813,9 @@ class _MobileAppBar extends StatelessWidget {
                               text: TextSpan(
                                 children: [
                                   TextSpan(
-                                    text: 'MEDCASES ',
+                                    text: currentTab == _kAiTab
+                                        ? 'MedCases '
+                                        : 'MEDCASES ',
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w900,
@@ -3769,7 +3826,9 @@ class _MobileAppBar extends StatelessWidget {
                                     ),
                                   ),
                                   TextSpan(
-                                    text: currentTab == _kAiTab ? 'IA' : 'PRO',
+                                    text: currentTab == _kAiTab
+                                        ? 'Clinical'
+                                        : 'PRO',
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w900,
@@ -4950,10 +5009,9 @@ class _LegalBar extends StatelessWidget {
 }
 
 // ── Task 9: URLs de Privacy Policy e Terms of Use (Guideline 5.1) ────────────
-const String _kPrivacyUrl =
-    'https://www.promedcases.com/politica-de-privacidade';
-const String _kTermsUrl = 'https://www.promedcases.com/termos-de-uso';
-const String _kSiteUrl = 'https://promedcases.com/';
+const String _kPrivacyUrl = MedCasesLegalUrls.privacy;
+const String _kTermsUrl = MedCasesLegalUrls.terms;
+const String _kSiteUrl = MedCasesLegalUrls.home;
 
 // ── Drawer lateral — redesenhado (v2) ─────────────────────────────────────────
 class _AppDrawer extends StatefulWidget {
@@ -5610,62 +5668,6 @@ class _AppDrawerState extends State<_AppDrawer> {
                 //   _DrawerQuickAccess(p: p, dark: dark, onClose: () => _close(context)),
                 // ],
 
-                // ─── 5. Suporte ──────────────────────────────────────────
-                _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'SOPORTE' : 'SUPORTE',
-                  dark: dark,
-                ),
-                _DrawerBlock(
-                  dividerColor: divider,
-                  children: [
-                    if (kIsWeb && p.currentUser != null)
-                      _DrawerRow(
-                        icon: Icons.rate_review_outlined,
-                        iconColor: const Color(0xFFC5A365),
-                        title: p.lang == 'es' ? 'Testimonios' : 'Depoimentos',
-                        dark: dark, textCol: textCol, subCol: subCol,
-                        onTap: () {
-                          final navigator = Navigator.of(context);
-                          final user = p.currentUser!;
-                          _close(context);
-                          navigator.push(MaterialPageRoute<void>(builder: (_) =>
-                            TestimonialScreen(user: user, onClose: () => navigator.pop())));
-                        },
-                      ),
-                    // ── Fontes e Diretrizes (Task 6 — App Store Guideline 1.4.1) ──
-                    _DrawerRow(
-                      icon: Icons.menu_book_rounded,
-                      iconColor: const Color(0xFF009C3B),
-                      title: p.lang == 'es' ? 'Fuentes' : 'Fontes',
-                      dark: dark,
-                      textCol: textCol,
-                      subCol: subCol,
-                      onTap: () {
-                        _close(context);
-                        showFontesScreen(context, isEs: p.lang == 'es');
-                      },
-                    ),
-                    _DrawerRow(
-                      icon: Icons.support_agent_rounded,
-                      iconColor: const Color(0xFF009C3B),
-                      title: p.lang == 'es' ? 'Soporte' : 'Suporte',
-                      dark: dark,
-                      textCol: textCol,
-                      subCol: subCol,
-                      showDivider: false,
-                      onTap: () {
-                        _close(context);
-                        showModalBottomSheet(
-                          context: context,
-                          isScrollControlled: true,
-                          backgroundColor: Colors.transparent,
-                          builder: (_) => _FeedbackSheet(p: p, dark: dark),
-                        );
-                      },
-                    ),
-                  ],
-                ),
-
                 // ─── 7. Preferências ────────────────────────────────────
                 _DrawerSectionLabel(
                   label: p.lang == 'es' ? 'PREFERENCIAS' : 'PREFERÊNCIAS',
@@ -5674,6 +5676,20 @@ class _AppDrawerState extends State<_AppDrawer> {
                 _DrawerBlock(
                   dividerColor: divider,
                   children: [
+                    _DrawerRow(
+                        icon: Icons.notifications_outlined,
+                        iconColor: const Color(0xFF009C3B),
+                        title:
+                            p.lang == 'es' ? 'Notificaciones' : 'Notificações',
+                        dark: dark,
+                        textCol: textCol,
+                        subCol: subCol,
+                        onTap: () {
+                          _close(context);
+                          Navigator.of(context).push(MaterialPageRoute<void>(
+                              builder: (_) =>
+                                  const NotificationPreferencesScreen()));
+                        }),
                     // Idioma — toca para alternar PT ↔ ES
                     _DrawerRow(
                       icon: Icons.language_rounded,
@@ -5710,21 +5726,75 @@ class _AppDrawerState extends State<_AppDrawer> {
                   ],
                 ),
 
-                // ─── 8. Modo Offline ─────────────────────────────────────
-                _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'MODO SIN CONEXIÓN' : 'MODO OFFLINE',
-                  dark: dark,
+                _DrawerDisclosure(
+                  title: p.lang == 'es' ? 'Sin conexión' : 'Modo offline',
+                  icon: Icons.offline_pin_outlined,
+                  children: [_OfflineDrawerCard(p: p, dark: dark)],
                 ),
-                // BUILD 327: _OfflineDrawerCard unificado — inclui controles da
-                // calculadora offline (Versão, Actualizar, Limpiar) dentro do
-                // mesmo bloco, sem rótulos separados que exponham "Calculadora".
-                _OfflineDrawerCard(p: p, dark: dark),
 
-                // ─── 9. Sobre + Legal (unificados) ───────────────────────
+                // ─── 5. Suporte ──────────────────────────────────────────
                 _DrawerSectionLabel(
-                  label: p.lang == 'es' ? 'SOBRE Y LEGAL' : 'SOBRE E LEGAL',
+                  label: p.lang == 'es' ? 'AYUDA Y REFERENCIAS' : 'AJUDA E REFERÊNCIAS',
                   dark: dark,
                 ),
+                _DrawerBlock(
+                  dividerColor: divider,
+                  children: [
+                    if (kIsWeb && p.currentUser != null)
+                      _DrawerRow(
+                        icon: Icons.rate_review_outlined,
+                        iconColor: const Color(0xFFC5A365),
+                        title: p.lang == 'es' ? 'Testimonios' : 'Depoimentos',
+                        dark: dark,
+                        textCol: textCol,
+                        subCol: subCol,
+                        onTap: () {
+                          final navigator = Navigator.of(context);
+                          final user = p.currentUser!;
+                          _close(context);
+                          navigator.push(MaterialPageRoute<void>(
+                              builder: (_) => TestimonialScreen(
+                                  user: user, onClose: () => navigator.pop())));
+                        },
+                      ),
+                    // ── Fontes e Diretrizes (Task 6 — App Store Guideline 1.4.1) ──
+                    _DrawerRow(
+                      icon: Icons.menu_book_rounded,
+                      iconColor: const Color(0xFF009C3B),
+                      title: p.lang == 'es' ? 'Fuentes' : 'Fontes',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      onTap: () {
+                        _close(context);
+                        showFontesScreen(context, isEs: p.lang == 'es');
+                      },
+                    ),
+                    _DrawerRow(
+                      icon: Icons.support_agent_rounded,
+                      iconColor: const Color(0xFF009C3B),
+                      title: p.lang == 'es' ? 'Soporte' : 'Suporte',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      showDivider: false,
+                      onTap: () {
+                        _close(context);
+                        showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          backgroundColor: Colors.transparent,
+                          builder: (_) => _FeedbackSheet(p: p, dark: dark),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+
+                _DrawerDisclosure(
+                  title: p.lang == 'es' ? 'Acerca de y documentos legales' : 'Sobre e documentos legais',
+                  icon: Icons.policy_outlined,
+                  children: [
                 _DrawerBlock(
                   dividerColor: divider,
                   children: [
@@ -5753,7 +5823,7 @@ class _AppDrawerState extends State<_AppDrawer> {
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
-                      externalUrl: _kTermsUrl,
+                      externalUrl: MedCasesLegalUrls.localized(_kTermsUrl, p.lang),
                       externalTooltip: p.lang == 'es'
                           ? 'Abrir en navegador'
                           : 'Abrir no navegador',
@@ -5770,7 +5840,7 @@ class _AppDrawerState extends State<_AppDrawer> {
                       dark: dark,
                       textCol: textCol,
                       subCol: subCol,
-                      externalUrl: _kPrivacyUrl,
+                      externalUrl: MedCasesLegalUrls.localized(_kPrivacyUrl, p.lang),
                       externalTooltip: p.lang == 'es'
                           ? 'Abrir en navegador'
                           : 'Abrir no navegador',
@@ -5780,6 +5850,125 @@ class _AppDrawerState extends State<_AppDrawer> {
                         showLegalSheet(context, LegalType.privacy, p.lang);
                       },
                     ),
+                  ],
+                ),
+
+                _DrawerBlock(
+                  dividerColor: divider,
+                  children: [
+                    _DrawerLegalRow(
+                      icon: Icons.autorenew_rounded,
+                      iconColor: const Color(0xFF546E7A),
+                      title: p.lang == 'es' ? 'Suscripciones' : 'Assinaturas',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      externalUrl: MedCasesLegalUrls.localized(
+                          MedCasesLegalUrls.subscriptions, p.lang),
+                      externalTooltip: p.lang == 'es'
+                          ? 'Abrir en navegador'
+                          : 'Abrir no navegador',
+                      showDivider: true,
+                      onTap: () {
+                        _close(context);
+                        openAcademicSourceSecurely(
+                            context,
+                            p.lang == 'es' ? 'Suscripciones' : 'Assinaturas',
+                            MedCasesLegalUrls.localized(
+                                MedCasesLegalUrls.subscriptions, p.lang));
+                      },
+                    ),
+                    _DrawerLegalRow(
+                      icon: Icons.health_and_safety_outlined,
+                      iconColor: const Color(0xFF546E7A),
+                      title: p.lang == 'es' ? 'Aviso médico' : 'Aviso médico',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      externalUrl: MedCasesLegalUrls.localized(
+                          MedCasesLegalUrls.medicalDisclaimer, p.lang),
+                      externalTooltip: p.lang == 'es'
+                          ? 'Abrir en navegador'
+                          : 'Abrir no navegador',
+                      showDivider: true,
+                      onTap: () {
+                        _close(context);
+                        openAcademicSourceSecurely(
+                            context,
+                            p.lang == 'es' ? 'Aviso médico' : 'Aviso médico',
+                            MedCasesLegalUrls.localized(
+                                MedCasesLegalUrls.medicalDisclaimer, p.lang));
+                      },
+                    ),
+                    _DrawerLegalRow(
+                      icon: Icons.manage_accounts_outlined,
+                      iconColor: const Color(0xFF546E7A),
+                      title: p.lang == 'es' ? 'Eliminar cuenta y datos' : 'Excluir conta e dados',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      externalUrl: MedCasesLegalUrls.localized(
+                          MedCasesLegalUrls.dataDeletion, p.lang),
+                      externalTooltip: p.lang == 'es'
+                          ? 'Abrir en navegador'
+                          : 'Abrir no navegador',
+                      showDivider: true,
+                      onTap: () {
+                        _close(context);
+                        openAcademicSourceSecurely(
+                            context,
+                            p.lang == 'es' ? 'Eliminar cuenta y datos' : 'Excluir conta e dados',
+                            MedCasesLegalUrls.localized(
+                                MedCasesLegalUrls.dataDeletion, p.lang));
+                      },
+                    ),
+                    _DrawerLegalRow(
+                      icon: Icons.support_agent_rounded,
+                      iconColor: const Color(0xFF546E7A),
+                      title: p.lang == 'es' ? 'Centro de ayuda' : 'Central de ajuda',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      externalUrl: MedCasesLegalUrls.localized(
+                          MedCasesLegalUrls.support, p.lang),
+                      externalTooltip: p.lang == 'es'
+                          ? 'Abrir en navegador'
+                          : 'Abrir no navegador',
+                      showDivider: true,
+                      onTap: () {
+                        _close(context);
+                        openAcademicSourceSecurely(
+                            context,
+                            p.lang == 'es' ? 'Soporte' : 'Suporte',
+                            MedCasesLegalUrls.localized(
+                                MedCasesLegalUrls.support, p.lang));
+                      },
+                    ),
+                    _DrawerLegalRow(
+                      icon: Icons.mail_outline_rounded,
+                      iconColor: const Color(0xFF546E7A),
+                      title: p.lang == 'es' ? 'Contacto' : 'Contato',
+                      dark: dark,
+                      textCol: textCol,
+                      subCol: subCol,
+                      externalUrl: MedCasesLegalUrls.localized(
+                          MedCasesLegalUrls.contact, p.lang),
+                      externalTooltip: p.lang == 'es'
+                          ? 'Abrir en navegador'
+                          : 'Abrir no navegador',
+                      showDivider: false,
+                      onTap: () {
+                        _close(context);
+                        openAcademicSourceSecurely(
+                            context,
+                            p.lang == 'es' ? 'Contacto' : 'Contato',
+                            MedCasesLegalUrls.localized(
+                                MedCasesLegalUrls.contact, p.lang));
+                      },
+                    ),
+                  ],
+                ),
+
                   ],
                 ),
 
@@ -6579,9 +6768,7 @@ class _OnOffToggle extends StatelessWidget {
 // 4 atalhos para as principais telas: usa MainShell.pendingTab para navegar
 // sem precisar de onTabChange. Zero lógica de permissão.
 
-
 // ── Header do app ─────────────────────────────────────────────────────────────
-
 
 // ── Sobre o App — sheet institucional (Apple 1.5.0) ──────────────────────────
 // Usa DraggableScrollableSheet para garantir que header+X fiquem sempre fixos
@@ -6942,7 +7129,7 @@ class _AboutAppSheet extends StatelessWidget {
                             infoLine(
                               icon: Icons.language_outlined,
                               label: isEs ? 'SITIO WEB' : 'SITE',
-                              value: 'promedcases.com',
+                              value: 'medcasespro.com',
                               onTap: () => openAcademicSourceSecurely(
                                 context,
                                 isEs
@@ -7400,7 +7587,6 @@ class _ProfileAccountScreenState extends State<ProfileAccountScreen> {
   }
 
   Widget _avatarCard() {
-
     final border = dark ? _borderDark : _borderLight;
     final primary = dark ? const Color(0xFFF1F5F9) : const Color(0xFF0F172A);
     final secondary = dark ? const Color(0xFF94A3B8) : const Color(0xFF64748B);
@@ -8221,7 +8407,6 @@ class _FeedbackSheet extends StatelessWidget {
 
 // ── Confirmação de envio ──────────────────────────────────────────────────────
 
-
 // ─────────────────────────────────────────────────────────────────────────────
 // PAINEL LATERAL RETRÁTIL — ANOTAÇÕES
 // ─────────────────────────────────────────────────────────────────────────────
@@ -8484,14 +8669,6 @@ class _NotesAudioWorkspaceTab extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
 
 void showNotesSheet(BuildContext context) {
   showModalBottomSheet(
@@ -9442,6 +9619,31 @@ class _DeletingAccountOverlay extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Compact navigation group; retains every original action and its access checks.
+class _DrawerDisclosure extends StatelessWidget {
+  const _DrawerDisclosure({required this.title, required this.icon, required this.children});
+  final String title;
+  final IconData icon;
+  final List<Widget> children;
+  @override
+  Widget build(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          leading: Icon(icon, size: 21, color: colors.primary),
+          title: Text(title, style: Theme.of(context).textTheme.titleSmall),
+          tilePadding: const EdgeInsets.symmetric(horizontal: 10),
+          childrenPadding: const EdgeInsets.only(bottom: 8),
+          children: children,
         ),
       ),
     );

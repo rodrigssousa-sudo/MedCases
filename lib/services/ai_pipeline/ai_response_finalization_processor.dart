@@ -1,3 +1,4 @@
+import '../study_response_contract.dart';
 import '../ai/ai_finalization_transaction.dart';
 import '../ai_service.dart';
 import 'ai_request_contract.dart';
@@ -93,6 +94,7 @@ class AiResponseFinalizationProcessor {
     required String provider,
     required int attempt,
     String? providerFinishReason,
+    bool canonicalSnapshotValidated = false,
     Object? structuredOutput,
     AiTerminalCause terminalCause = AiTerminalCause.completed,
     bool isPartial = false,
@@ -107,11 +109,14 @@ class AiResponseFinalizationProcessor {
     }
 
     final truncation = await truncationCoordinator.process(
-      originalText: snapshot.rawOutput,
+      originalText: mode == AiRequestMode.estudo
+          ? StudyResponseContract.project(snapshot.rawOutput).clinicalAnswer
+          : snapshot.rawOutput,
       requestId: snapshot.parentRequestId,
       mode: mode,
       locale: locale,
       providerFinishReason: providerFinishReason,
+      canonicalSnapshotValidated: canonicalSnapshotValidated,
     );
 
     if (!truncation.isValid) {

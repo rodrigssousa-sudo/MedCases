@@ -50,18 +50,19 @@ void main() {
     expect(src.contains('_busy ? null : _addText'), isTrue);
   });
 
-  test('canonical Home visual contract remains intact', () {
+  test('study source strip retains SVGs with rounded cards', () {
     final src =
         File('lib/screens/study_workspace_screen.dart').readAsStringSync();
 
-    expect(src.contains('HomeV2PressSurface('), isTrue);
+    expect(src.contains('BorderRadius.circular(18)'), isTrue);
+    expect(src.contains('scrollDirection: Axis.horizontal'), isTrue);
     expect(src.contains('HomeV2Palette.resolve(dark)'), isTrue);
-    expect(src.contains('height: 104'), isTrue);
+    expect(src.contains('height: 110'), isTrue);
     expect(src.contains('width: 54'), isTrue);
     expect(src.contains('height: 54'), isTrue);
     expect(src.contains('fontSize: 11'), isTrue);
     expect(src.contains('FontWeight.w800'), isTrue);
-    expect(src.contains('const gap = 3.0'), isTrue);
+    expect(src.contains('const gap = 10.0'), isTrue);
   });
 
   for (final asset in assets) {

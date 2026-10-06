@@ -23,6 +23,7 @@ class HomeV2GuideSimulationRow extends StatelessWidget {
     required this.isEs,
     required this.onGuide,
     required this.onSimulation,
+    this.onDrug,
     super.key,
   });
 
@@ -30,6 +31,7 @@ class HomeV2GuideSimulationRow extends StatelessWidget {
   final bool isEs;
   final VoidCallback onGuide;
   final VoidCallback onSimulation;
+  final VoidCallback? onDrug;
 
   @override
   Widget build(BuildContext context) {
@@ -45,10 +47,13 @@ class HomeV2GuideSimulationRow extends StatelessWidget {
       ),
       right: _HomeV2MobilePairButton(
         palette: palette,
-        label: isEs ? 'SIMULACIÓN' : 'SIMULAÇÃO',
-        svgAsset: 'assets/icons/home_v2/ic_simulacao.svg',
+        label:
+            onDrug != null ? 'FÁRMACOS' : (isEs ? 'SIMULACIÓN' : 'SIMULAÇÃO'),
+        svgAsset: onDrug != null
+            ? 'assets/icons/home_v2/ic_farmacos.svg'
+            : 'assets/icons/home_v2/ic_simulacao.svg',
         iconColor: _kHomeProductiveIconGreen,
-        onTap: onSimulation,
+        onTap: onDrug ?? onSimulation,
       ),
     );
   }
@@ -103,7 +108,6 @@ class _HomeV2MobilePairButton extends StatelessWidget {
     required this.iconColor,
     required this.onTap,
     this.svgAsset,
-
   });
 
   final HomeV2Palette palette;
@@ -166,6 +170,8 @@ class HomeV2PrimaryClinicalCard extends StatelessWidget {
     required this.onTap,
     required this.onVaccine,
     this.embedded = false,
+    this.onGuide,
+    this.onSimulation,
     super.key,
   });
 
@@ -174,18 +180,24 @@ class HomeV2PrimaryClinicalCard extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onVaccine;
   final bool embedded;
+  final VoidCallback? onGuide;
+  final VoidCallback? onSimulation;
 
   @override
   Widget build(BuildContext context) {
     final palette = HomeV2Palette.resolve(dark);
-    return _HomeV2MobilePairSurface(
+    final drugsAndVaccine = _HomeV2MobilePairSurface(
       palette: palette,
       left: _HomeV2MobilePairButton(
         palette: palette,
-        label: 'FÁRMACOS',
-        svgAsset: 'assets/icons/home_v2/ic_farmacos.svg',
+        label: onSimulation != null
+            ? (isEs ? 'SIMULACIÓN' : 'SIMULAÇÃO')
+            : 'FÁRMACOS',
+        svgAsset: onSimulation != null
+            ? 'assets/icons/home_v2/ic_simulacao.svg'
+            : 'assets/icons/home_v2/ic_farmacos.svg',
         iconColor: _kHomeProductiveIconGreen,
-        onTap: onTap,
+        onTap: onSimulation ?? onTap,
       ),
       right: _HomeV2MobilePairButton(
         palette: palette,
@@ -195,6 +207,16 @@ class HomeV2PrimaryClinicalCard extends StatelessWidget {
         onTap: onVaccine,
       ),
     );
+    if (onGuide == null) return drugsAndVaccine;
+    return Column(children: [
+      HomeV2GuideSimulationRow(
+          dark: dark,
+          isEs: isEs,
+          onGuide: onGuide!,
+          onSimulation: onSimulation ?? () {},
+          onDrug: onTap),
+      drugsAndVaccine,
+    ]);
   }
 }
 
@@ -363,31 +385,10 @@ class HomeV2UtilityRow extends StatelessWidget {
           ),
         ),
         if (betweenRows != null) betweenRows!,
-        _HomeV2MobilePairSurface(
-          palette: palette,
-          left: _HomeV2MobilePairButton(
-            palette: palette,
-            label: isEs ? 'CREAR RESUMEN' : 'CRIAR RESUMO',
-            svgAsset: 'assets/icons/home_v2/resumo.svg',
-            iconColor: _kHomeProductiveIconGreen,
-            onTap: onNotes,
-          ),
-          right: _HomeV2MobilePairButton(
-            palette: palette,
-            label: isEs ? 'TEMPORIZADOR' : 'TIMER',
-            svgAsset: 'assets/icons/home_v2/ic_timer.svg',
-            iconColor: _kHomeProductiveIconGreen,
-            onTap: onTimer,
-          ),
-        ),
       ],
     );
   }
 }
-
-
-
-
 
 class HomeV2GuardiaSurface extends StatelessWidget {
   const HomeV2GuardiaSurface({
@@ -444,6 +445,40 @@ class HomeV2GuardiaSurface extends StatelessWidget {
           ),
           child,
         ],
+      ),
+    );
+  }
+}
+
+class HomeV2ProductivityRow extends StatelessWidget {
+  const HomeV2ProductivityRow(
+      {super.key,
+      required this.dark,
+      required this.isEs,
+      required this.onNotes,
+      required this.onTimer});
+  final bool dark;
+  final bool isEs;
+  final VoidCallback onNotes;
+  final VoidCallback onTimer;
+  @override
+  Widget build(BuildContext context) {
+    final palette = HomeV2Palette.resolve(dark);
+    return _HomeV2MobilePairSurface(
+      palette: palette,
+      left: _HomeV2MobilePairButton(
+        palette: palette,
+        label: isEs ? 'CREAR RESUMEN' : 'CRIAR RESUMO',
+        svgAsset: 'assets/icons/home_v2/resumo.svg',
+        iconColor: _kHomeProductiveIconGreen,
+        onTap: onNotes,
+      ),
+      right: _HomeV2MobilePairButton(
+        palette: palette,
+        label: 'AGENDA',
+        svgAsset: 'assets/icons/home_v2/agenda.svg',
+        iconColor: _kHomeProductiveIconGreen,
+        onTap: onTimer,
       ),
     );
   }

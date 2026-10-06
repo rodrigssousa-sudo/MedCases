@@ -166,11 +166,11 @@ void main() {
         provisionalIndex,
       );
       final finalReconciliationIndex = source.indexOf(
-        'onChunk(phase3kResult.displayText);',
+        'onChunk(phase3kSafeText);',
         switchIndex,
       );
       final doneIndex = source.indexOf(
-        'onDone(phase3kResult.finalText);',
+        'onDone(phase3kSafeFinalText);',
         finalReconciliationIndex,
       );
 
@@ -204,7 +204,7 @@ void main() {
       expect(
         block,
         contains(
-          "_messages.add(_ChatMsg(role: 'ai', text: cleanedChunk));",
+          "_ChatMsg(mode: requestMode, role: 'ai', text: cleanedChunk)",
         ),
       );
       expect(

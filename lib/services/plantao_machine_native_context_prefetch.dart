@@ -1,3 +1,5 @@
+import 'clinical_catalog/clinical_catalog_repository.dart';
+import 'clinical_catalog/clinical_catalog_platform.dart';
 import 'ai/safety/clinical_request_safety.dart';
 import 'dart:async';
 
@@ -534,6 +536,7 @@ class PlantaoMachineNativePrefetchResult {
     required this.providerPromptBlock,
     required this.reason,
     this.canonicalPathologyKey,
+    this.catalogSnapshot,
     this.protocolKey,
     // M73B_TYPED_RICH_PHASES_PREFETCH_RESULT_V1
     this.monitoring = const <String>[],
@@ -541,6 +544,7 @@ class PlantaoMachineNativePrefetchResult {
     this.escalationCriteria = const <String>[],
   });
 
+  final ClinicalCatalogSnapshot? catalogSnapshot;
   final PlantaoGlobalClinicalContextPack? contextPack;
   final String providerPromptBlock;
   final String reason;
@@ -572,6 +576,7 @@ class PlantaoMachineNativePrefetchResult {
 class PlantaoCanonicalRuntimeAttestation {
   PlantaoCanonicalRuntimeAttestation._({
     required this.safetyEvidence,
+    this.catalogSnapshot,
     required String providerInput,
     required String language,
     required int issuedAtEpochMs,
@@ -582,6 +587,7 @@ class PlantaoCanonicalRuntimeAttestation {
         _language = language.trim().toLowerCase(),
         _issuedAtEpochMs = issuedAtEpochMs;
 
+  final ClinicalCatalogSnapshot? catalogSnapshot;
   final ClinicalEvidenceBundle safetyEvidence;
   final String _providerInput;
   final String _language;
@@ -627,8 +633,12 @@ class PlantaoMachineNativeAttestedPrefetch {
 class PlantaoMachineNativeContextPrefetch {
   PlantaoMachineNativeContextPrefetch({
     PlantaoMachineNativeRegistrySource? source,
+    ClinicalCatalogRepository? repository,
+    PlantaoMachineNativeRegistrySource? legacyFallbackSource,
     this.cacheTtl = const Duration(minutes: 10),
-  }) : _source = source ?? PlantaoFailoverMachineNativeRegistrySource();
+  }) : _repository = repository,
+       _shared = source == null,
+       _source = source ?? legacyFallbackSource ?? PlantaoFailoverMachineNativeRegistrySource();
 
   static final instance = PlantaoMachineNativeContextPrefetch();
 
@@ -639,6 +649,8 @@ class PlantaoMachineNativeContextPrefetch {
   static const actions = 'clinical_action_registry';
   static const content = 'clinical_content_registry';
 
+  final ClinicalCatalogRepository? _repository;
+  final bool _shared;
   final PlantaoMachineNativeRegistrySource _source;
   final Duration cacheTtl;
   List<Map<String, dynamic>>? _identityCache;
@@ -683,11 +695,12 @@ class PlantaoMachineNativeContextPrefetch {
             ? '$userText\n\n${result.providerPromptBlock}'
             : userText;
     String supplement = '';
-    if (supplementalEvidence != null) {
+    if (supplementalEvidence != null && result.catalogSnapshot == null) {
       try { supplement = await supplementalEvidence(result); } catch (_) { /* existing pipeline fallback */ }
     }
     final providerInput = supplement.isEmpty ? internalInput : '$internalInput\n\n$supplement';
     final attestation = PlantaoCanonicalRuntimeAttestation._(
+      catalogSnapshot: result.catalogSnapshot,
       safetyEvidence:
           ClinicalEvidenceBundle.fromMachinePack(result.contextPack),
       providerInput: providerInput,
@@ -710,6 +723,29 @@ class PlantaoMachineNativeContextPrefetch {
   }) async {
     if (userText.trim().isEmpty)
       return PlantaoMachineNativePrefetchResult.empty;
+
+    // One frozen snapshot feeds all six reads. Never mix versions or fall back
+    // one collection at a time. Explicit test/legacy sources remain injectable.
+    if (_shared) {
+      final snapshot = await (_repository ?? SharedClinicalCatalog.instance).acquire();
+      final source = snapshot.isBundled
+          ? _source
+          : PlantaoVersionedRegistrySource(snapshot);
+      final result = await PlantaoMachineNativeContextPrefetch(source: source)
+          .prefetch(userText: userText, language: language);
+      final projection = snapshot.isBundled ? '' : snapshot.context(userText, 'plantao', language);
+      return PlantaoMachineNativePrefetchResult(
+        contextPack: result.contextPack,
+        providerPromptBlock: [result.providerPromptBlock, projection].where((s) => s.isNotEmpty).join('\n'),
+        reason: result.reason,
+        canonicalPathologyKey: result.canonicalPathologyKey,
+        protocolKey: result.protocolKey,
+        monitoring: result.monitoring,
+        reassessment: result.reassessment,
+        escalationCriteria: result.escalationCriteria,
+        catalogSnapshot: snapshot,
+      );
+    }
 
     // M59_PHYSICAL_REGISTRY_READ_PLANE_V1
     final phenotype = PlantaoCanonicalPhenotypeResolver.resolve(userText);
@@ -1215,4 +1251,25 @@ class _CachedPack {
   const _CachedPack(this.at, this.result);
   final DateTime at;
   final PlantaoMachineNativePrefetchResult result;
+}
+
+/// Adapter over an immutable validated lease; no network reads or cache mixing.
+class PlantaoVersionedRegistrySource implements PlantaoMachineNativeRegistrySource {
+  PlantaoVersionedRegistrySource(this.snapshot);
+  final ClinicalCatalogSnapshot snapshot;
+  @override
+  Future<List<Map<String,dynamic>>> loadEnabled(String collection) async => snapshot.rows(collection);
+  @override
+  Future<List<Map<String,dynamic>>> loadPathology(String collection, String canonicalKey,
+      {String fieldPath = 'canonicalPathologyKey'}) async {
+    return snapshot.rows(collection).where((row) {
+      Object? value = row;
+      for (final key in fieldPath.split('.')) { value = value is Map ? value[key] : null; }
+      if (value == null && collection == 'clinical_action_registry' &&
+          fieldPath == 'match.canonicalPathologyKey') {
+        value = row['canonicalPathologyKey'];
+      }
+      return value == canonicalKey;
+    }).toList(growable:false);
+  }
 }

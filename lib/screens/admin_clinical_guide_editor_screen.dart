@@ -1,3 +1,4 @@
+import '../services/admin/admin_file_reader.dart';
 import 'dart:typed_data';
 import 'dart:ui' show ImageFilter;
 
@@ -228,24 +229,41 @@ class _AdminClinicalGuideEditorScreenState
     }
   }
 
+  Future<Uint8List?> _readPickedFile(PlatformFile file, int maxBytes) async {
+    try {
+      return await AdminFileReader.read(file, maxBytes: maxBytes);
+    } on AdminFileReadException catch (e) {
+      if (mounted) setState(() => _error = 'Falha de leitura: ${e.reasonCode}. Selecione o arquivo novamente.');
+      return null;
+    }
+  }
+
+  Future<FilePickerResult?> _pickAdminFile(List<String> extensions) async {
+    try {
+      return await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: extensions,
+        allowMultiple: false,
+        withData: false,
+        withReadStream: true,
+      );
+    } catch (_) {
+      if (mounted) {
+        setState(() => _error = 'FILE_PICKER_FAILED. Selecione o arquivo novamente.');
+      }
+      return null;
+    }
+  }
+
   Future<void> _pickCmsJson() async {
     FocusScope.of(context).unfocus();
 
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: const ['json'],
-      allowMultiple: false,
-      withData: true,
-    );
+    final result = await _pickAdminFile(const ['json']);
     if (result == null || result.files.isEmpty) return;
 
     final file = result.files.single;
-    final bytes = file.bytes;
-
-    if (bytes == null) {
-      setState(() => _error = 'Não foi possível ler o arquivo CMS JSON.');
-      return;
-    }
+    final bytes = await _readPickedFile(file, 10 * 1024 * 1024);
+    if (!mounted || bytes == null) return;
 
     ClinicalGuideCmsImportPackage imported;
     try {
@@ -253,8 +271,8 @@ class _AdminClinicalGuideEditorScreenState
     } on ClinicalGuideCmsImportException catch (e) {
       setState(() => _error = 'Importação bloqueada: ${e.message}');
       return;
-    } catch (e) {
-      setState(() => _error = 'Importação bloqueada: $e');
+    } catch (_) {
+      setState(() => _error = 'Importação bloqueada: CMS_PARSE_FAILED.');
       return;
     }
 
@@ -360,20 +378,12 @@ class _AdminClinicalGuideEditorScreenState
   }
 
   Future<void> _pickCover() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: const ['jpg', 'jpeg', 'png', 'webp'],
-      allowMultiple: false,
-      withData: true,
-    );
+    final result = await _pickAdminFile(const ['jpg', 'jpeg', 'png', 'webp']);
     if (result == null || result.files.isEmpty) return;
 
     final file = result.files.single;
-    final bytes = file.bytes;
-    if (bytes == null) {
-      setState(() => _error = 'Não foi possível ler a imagem selecionada.');
-      return;
-    }
+    final bytes = await _readPickedFile(file, _maxCoverBytes);
+    if (!mounted || bytes == null) return;
     if (bytes.lengthInBytes > _maxCoverBytes) {
       setState(() => _error = 'A imagem de capa deve ter no máximo 5 MB.');
       return;
@@ -387,20 +397,12 @@ class _AdminClinicalGuideEditorScreenState
   }
 
   Future<void> _pickPdf(_LocaleDraft draft) async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: const ['pdf'],
-      allowMultiple: false,
-      withData: true,
-    );
+    final result = await _pickAdminFile(const ['pdf']);
     if (result == null || result.files.isEmpty) return;
 
     final file = result.files.single;
-    final bytes = file.bytes;
-    if (bytes == null) {
-      setState(() => _error = 'Não foi possível ler o PDF selecionado.');
-      return;
-    }
+    final bytes = await _readPickedFile(file, _maxPdfBytes);
+    if (!mounted || bytes == null) return;
     if (bytes.lengthInBytes > _maxPdfBytes) {
       setState(() => _error = 'Cada PDF deve ter no máximo 25 MB.');
       return;

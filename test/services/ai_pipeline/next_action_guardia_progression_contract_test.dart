@@ -35,8 +35,7 @@ Próximo paso:
     });
 
     test('histórico impede retorno para condutas e não fabrica perguntas', () {
-      const studiesQuestion =
-          '¿Qué exámenes complementarios solicitar y '
+      const studiesQuestion = '¿Qué exámenes complementarios solicitar y '
           'cómo monitorear la evolución en HIPERGLUCEMIA AGUDA?';
 
       const studiesResponse = """
@@ -67,8 +66,7 @@ Monitoreo:
     });
 
     test('todos os candidatos usados ocultam o botão do Guardia', () {
-      const studiesQuestion =
-          '¿Qué exámenes complementarios solicitar y '
+      const studiesQuestion = '¿Qué exámenes complementarios solicitar y '
           'cómo monitorear la evolución en HIPERGLUCEMIA AGUDA?';
 
       const studiesResponse = '''
@@ -148,7 +146,8 @@ Preguntas importantes:
       expect(source, contains('hasStudyNext || action.label.isNotEmpty'));
       expect(
         source,
-        contains('hasStudyNext ? effectiveStudyPrompt : action.promptToSend'),
+        matches(RegExp(
+            r'hasStudyNext\s*\? effectiveStudyPrompt\s*:\s*action\.promptToSend')),
       );
       expect(source, contains('return const SizedBox.shrink();'));
     });

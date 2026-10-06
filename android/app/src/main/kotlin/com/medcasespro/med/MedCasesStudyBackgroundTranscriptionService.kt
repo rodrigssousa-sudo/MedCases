@@ -17,6 +17,13 @@ import kotlin.math.min
 
 class MedCasesStudyBackgroundTranscriptionService : Service() {
     companion object {
+        private val connections = java.util.concurrent.ConcurrentHashMap<String, HttpURLConnection>()
+        private val workers = java.util.concurrent.ConcurrentHashMap<String, Thread>()
+        fun cancelJob(context: android.content.Context, jobId: String): Boolean {
+            val saved = context.getSharedPreferences("transcription_cancelled", 0).edit().putBoolean(jobId, true).commit()
+            if (saved) { connections[jobId]?.disconnect(); workers[jobId]?.interrupt() }
+            return saved
+        }
         const val CHANNEL_ID = "medcases_study_background_transcription"
         const val NOTIFICATION_ID = 43402
 
@@ -61,6 +68,10 @@ class MedCasesStudyBackgroundTranscriptionService : Service() {
             return START_NOT_STICKY
         }
 
+        if (getSharedPreferences("transcription_cancelled", 0).getBoolean(jobId, false)) {
+            stopSelf(startId)
+            return START_NOT_STICKY
+        }
         startAsForeground()
 
         if (running) {
@@ -69,6 +80,7 @@ class MedCasesStudyBackgroundTranscriptionService : Service() {
         running = true
 
         Thread {
+            workers[jobId] = Thread.currentThread()
             try {
                 val segments = JSONArray(segmentsJson)
                 for (position in 0 until segments.length()) {
@@ -79,6 +91,7 @@ class MedCasesStudyBackgroundTranscriptionService : Service() {
                         segment.optString("mimeType", "audio/mp4")
 
                     uploadWithRetry(
+                        jobId = jobId,
                         uploadBaseUrl = uploadBaseUrl,
                         grant = grant,
                         index = index,
@@ -94,6 +107,8 @@ class MedCasesStudyBackgroundTranscriptionService : Service() {
             } catch (_: Throwable) {
                 // Server/local checkpoints remain authoritative.
             } finally {
+                workers.remove(jobId)
+                connections.remove(jobId)?.disconnect()
                 running = false
                 stopForeground(STOP_FOREGROUND_REMOVE)
                 stopSelf(startId)
@@ -106,6 +121,7 @@ class MedCasesStudyBackgroundTranscriptionService : Service() {
     override fun onBind(intent: Intent?): IBinder? = null
 
     private fun uploadWithRetry(
+        jobId: String,
         uploadBaseUrl: String,
         grant: String,
         index: Int,
@@ -116,9 +132,11 @@ class MedCasesStudyBackgroundTranscriptionService : Service() {
         var delayMs = 1000L
 
         while (attempt < 20) {
+            if (Thread.currentThread().isInterrupted || getSharedPreferences("transcription_cancelled", 0).getBoolean(jobId, false)) throw InterruptedException()
             attempt += 1
             val code = try {
                 uploadOnce(
+                    jobId,
                     uploadBaseUrl,
                     grant,
                     index,
@@ -148,6 +166,7 @@ class MedCasesStudyBackgroundTranscriptionService : Service() {
     }
 
     private fun uploadOnce(
+        jobId: String,
         uploadBaseUrl: String,
         grant: String,
         index: Int,
@@ -161,6 +180,7 @@ class MedCasesStudyBackgroundTranscriptionService : Service() {
             uploadBaseUrl.trimEnd('/') + "/" + index,
         )
         val connection = url.openConnection() as HttpURLConnection
+        connections[jobId] = connection
         connection.requestMethod = "PUT"
         connection.connectTimeout = 20000
         connection.readTimeout = 180000

@@ -29,6 +29,14 @@ void main() {
       );
     });
 
+    test('Study always uses primary gateway regardless of legacy connection flag', () {
+      for (final priority in ['critical', 'academic']) {
+        expect(AppProvider.resolveEffectiveAiPriorityForRouting(
+            isPlantaoMode: false, geminiConnected: false,
+            aiPriority: priority, forcePaidCanary: false), 'academic');
+      }
+    });
+
     test('canário debug continua forçando critical', () {
       expect(
         AppProvider.resolveEffectiveAiPriorityForRouting(

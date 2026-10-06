@@ -15,10 +15,12 @@ class PublicLanding extends StatefulWidget {
       {super.key,
       required this.onLogin,
       required this.onTestimonial,
+      this.onGuide,
       required this.language});
   final ValueChanged<String> onLogin;
   final ValueChanged<String> onTestimonial;
   final String language;
+  final void Function(String slug, String language)? onGuide;
   @override
   State<PublicLanding> createState() => _PublicLandingState();
 }
@@ -78,6 +80,8 @@ class _PublicLandingState extends State<PublicLanding> {
           !source.strictEquals(frameWindow).toDart) {
         return;
       }
+      final guide = landingGuideRequest(event.data);
+      if (guide != null) widget.onGuide?.call(guide.$1, guide.$2);
       final language = landingLoginLanguage(event.data);
       if (language != null) widget.onLogin(language);
       final testimonialLanguage =

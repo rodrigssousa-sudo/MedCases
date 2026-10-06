@@ -3,25 +3,25 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('IAM generic whole-response semantic-core wiring', () {
+  group('canonical ACS preserves generated answer wiring', () {
     late String source;
 
     setUpAll(() {
       source = File('lib/providers/app_provider.dart').readAsStringSync();
     });
 
-    test('dedicated owner is imported exactly once', () {
+    test('historical whole-answer owner is not imported', () {
       expect(
         RegExp(
           r"import '../services/ai_pipeline/plantao/"
           r"plantao_generic_acs_whole_response_semantic_core\.dart';",
         ).allMatches(source),
-        hasLength(1),
+        isEmpty,
       );
     });
 
     test(
-      'shared final output helper materializes semantic core before regimen guard',
+      'shared final output helper preserves sections and keeps granular guards',
       () {
         final helper = source.indexOf(
           'String _applyPlantaoClinicalRegimenOutputGuard({',
@@ -37,8 +37,10 @@ void main() {
         final helperEnd = source.indexOf('\n  }', regimen);
 
         expect(helper, greaterThanOrEqualTo(0));
-        expect(semantic, greaterThan(helper));
-        expect(regimen, greaterThan(semantic));
+        expect(semantic, -1);
+        expect(regimen, greaterThan(helper));
+        expect(source.substring(regimen, helperEnd),
+            contains('preserveGeneratedSections: true'));
         expect(helperEnd, greaterThan(regimen));
       },
     );
@@ -81,7 +83,7 @@ void main() {
     });
 
     test(
-      'semantic-core change remains before canonical GPT persistence and DTO rebind',
+      'granular safety remains before canonical GPT persistence and DTO rebind',
       () {
         final start = source.indexOf(
           'Future<void> _finalizeGptSuccessfulRequest({',

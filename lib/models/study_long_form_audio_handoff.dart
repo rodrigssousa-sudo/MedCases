@@ -16,8 +16,10 @@ final class StudyLongFormAudioHandoff {
     required this.locale,
     required this.totalActiveDurationMs,
     required this.segments,
+    this.deferTranscription = false,
   });
 
+  final bool deferTranscription;
   final String sessionId;
   final String locale;
   final int totalActiveDurationMs;

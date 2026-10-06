@@ -65,7 +65,9 @@ void main() {
             flow.preview('Administrar medicamento desconhecido 5 mg VO.\n\n'),
             isNull);
         expect(flow.present('Administrar medicamento desconhecido 5 mg VO'),
-            flow.context.safeMessage);
+            mode == AiRequestMode.estudo
+                ? flow.studyNoSafeContentMessage
+                : flow.context.safeMessage);
       }
     });
     test(
@@ -238,14 +240,14 @@ void main() {
       expect(adapter, contains('productiveConnectionEnabled = false'));
       expect(adapter, contains('medicationMaterializationEnabled = false'));
     });
-    test('operational chunk is withheld even after a safe academic paragraph',
+    test('unsafe operational chunk is withheld without erasing safe academic preview',
         () {
       final flow = ClinicalSafetyFlow(capture('Explique o mecanismo'));
       expect(flow.preview('O receptor participa da resposta.\n\n'), isNotNull);
       expect(
           flow.preview(
               'O receptor participa da resposta.\n\nAdministrar 5 mg.\n\n'),
-          isNull);
+          'O receptor participa da resposta.');
       expect(
           flow
               .terminal(

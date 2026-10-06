@@ -55,13 +55,19 @@ void main() {
       expect(screen, contains('_study = _study.copyWith(title: name);'));
     });
 
-    test('automatic naming hooks follow reviewed text', () {
+    test('imported source naming follows extraction; recorded work stays durable', () {
       final screen = read('lib/screens/study_workspace_screen.dart');
-
-      expect(
-        'await _maybeAutoNameFromSource(source);'.allMatches(screen).length,
-        greaterThanOrEqualTo(3),
-      );
+      // The former third call belonged to the route-owned recorder. Recording
+      // completion now belongs to RecordedStudyTranscription, independently of
+      // this screen; do not require the removed synchronous recording path.
+      for (final entry in ['Future<void> _addText()', 'Future<void> _pick(']) {
+        final body = screen.substring(screen.indexOf(entry));
+        final naming = body.indexOf('await _maybeAutoNameFromSource(source);');
+        expect(naming, greaterThan(0));
+        expect(body.indexOf('_replace(source);'), lessThan(naming));
+        expect(body.indexOf('extractedText: extraction.text'), lessThan(naming));
+      }
+      expect(screen, contains('RecordedStudyTranscription.start(_study, sourceId, handoff)'));
       expect(screen, contains('final material = reviewed.text.trim();'));
       expect(screen, contains('if (material.isEmpty) return;'));
     });

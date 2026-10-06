@@ -109,7 +109,7 @@ Conducta inmediata:
     );
 
     test(
-      'source contract buffers Plantão chunks but preserves Study stream',
+      'source contract forwards validated Plantão partials and preserves final buffer',
       () {
         final source = File('lib/screens/ai_screen.dart').readAsStringSync();
         final start = source.indexOf('onChunk: (accumulated) {');
@@ -118,10 +118,10 @@ Conducta inmediata:
         expect(end, greaterThan(start));
 
         final chunk = source.substring(start, end);
-        expect(chunk, contains('M56B_BUFFERED_FINAL_COMMIT'));
-        expect(chunk, contains('if (!_longResponse) {'));
+        expect(chunk, contains('CHUNK_EMITTED_TO_NOTIFIER'));
+        expect(chunk, contains('if (!requestLongResponse) {'));
         expect(chunk, contains('m56bBufferedPlantaoText = accumulated;'));
-        expect(chunk, contains('stage=chunk_buffered visible=false'));
+        expect(chunk, isNot(contains('stage=chunk_buffered visible=false')));
         expect(chunk, contains('return;'));
         expect(chunk, contains('_streamingTextNotifier'));
       },

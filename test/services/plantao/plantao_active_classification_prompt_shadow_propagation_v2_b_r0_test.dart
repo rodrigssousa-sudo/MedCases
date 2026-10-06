@@ -22,7 +22,7 @@ void main() {
         );
 
         expect(prompt, contains('[PLANTAO_CLASSIFICATION_ACTIVE_CONTRACT_V2]'));
-        expect(prompt, contains('CLASIFICACIÓN DEL PACIENTE'));
+        expect(prompt, contains('## Clasificación del paciente'));
         expect(prompt, contains('Clasificación final:'));
         expect(prompt, contains('CLASIFICACION_VERIFICADA'));
         expect(prompt, contains('NO inferir IAM tipo 1'));
@@ -46,7 +46,7 @@ void main() {
         );
 
         expect(prompt, contains('[PLANTAO_CLASSIFICATION_ACTIVE_CONTRACT_V2]'));
-        expect(prompt, contains('CLASSIFICAÇÃO DO PACIENTE'));
+        expect(prompt, contains('## Classificação do paciente'));
         expect(prompt, contains('Classificação final:'));
         expect(prompt, contains('NÃO inferir IAM tipo 1'));
       },

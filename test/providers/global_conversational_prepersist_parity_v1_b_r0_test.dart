@@ -58,7 +58,7 @@ void main() {
 
     test('gate is registered for both buffered and legacy routes', () {
       final publicRegistration = source.indexOf(
-        '_plantaoPersistenceEligibilityByRequest[phase3kResolvedRequestId!]',
+        '_plantaoPersistenceEligibilityByRequest[phase3kResolvedRequestId]',
       );
       final legacyRegistration = source.indexOf(
         '_plantaoPersistenceEligibilityByRequest[thisRequestId]',

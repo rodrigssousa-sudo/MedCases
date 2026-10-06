@@ -18,8 +18,20 @@
           "client_type": 1,
           "android_info": {
             "package_name": "com.medcasespro.med",
-            "certificate_hash": "c653ef4212f8476db17520db75b1e2382c4008c8"
+            "certificate_hash": "2af74e8ef2d1cb2ee49792b993d29d8207297c4b"
           }
+        },
+        {
+          "client_id": "1076800980330-6l391ldeua0jrgs5jhbc5152ek49324j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.medcasespro.med",
+            "certificate_hash": "41de3c7e03cd7ba0e70a3662f97436fc29fcbb8c"
+          }
+        },
+        {
+          "client_id": "1076800980330-r1uv602ugu5k3fvttsrvqn9qtvmt13jp.apps.googleusercontent.com",
+          "client_type": 3
         }
       ],
       "api_key": [
@@ -31,8 +43,15 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1076800980330-0dhh85qno3uelf1tq55oan6kcgpk319p.apps.googleusercontent.com",
-              "client_type": 1
+              "client_id": "1076800980330-b76rnfcat7gtjbe09rmicc5534egfe7e.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1076800980330-h06p1o1t4ll48qsqk5ovkfse8e0t98g0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.medcasespro.app"
+              }
             }
           ]
         }

@@ -24,11 +24,11 @@ void main() {
       expect(renderer, contains("bool _isActionLikeClinicalLine(String value)"));
     });
 
-    test('fallback remains final-only hidden when structured content exists', () {
-      expect(renderer, contains('content.fallbackLines.isNotEmpty &&'));
+    test('educational fallback remains visible alongside structured content', () {
+      expect(renderer, contains('if (content.fallbackLines.isNotEmpty)'));
       expect(
         renderer,
-        contains('(widget.isStreaming || !content.hasStructuredContent)'),
+        isNot(contains('(widget.isStreaming || !content.hasStructuredContent)')),
       );
       expect(renderer, contains('_addText(fallbackLines, cleaned);'));
     });

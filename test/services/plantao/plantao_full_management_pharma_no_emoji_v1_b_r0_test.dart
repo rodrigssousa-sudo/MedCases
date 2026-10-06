@@ -122,12 +122,12 @@ void main() {
       expect(
         screen,
         contains(
-          'final bool useGuardiaPresentation = !_longResponse && !isSafeCard;',
+          'final bool useGuardiaPresentation = !messageLongResponse && !isSafeCard;',
         ),
       );
       expect(screen, contains('if (useGuardiaPresentation)'));
-      expect(screen, contains('GuardiaClinicalResponseView('));
-      expect(screen, contains('output: msg.clinicalOutput,'));
+      expect(screen, contains('StableClinicalResponseView('));
+      expect(screen, contains('text: cleanDisplayText,'));
     });
 
     testWidgets(

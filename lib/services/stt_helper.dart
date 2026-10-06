@@ -19,6 +19,7 @@
 import 'dart:async';
 import 'entitlement_service.dart';
 import 'monthly_usage_ledger.dart';
+import 'transcription_quota.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
 // ── Conditional import ─────────────────────────────────────────────────────
@@ -117,7 +118,14 @@ class SttHelper {
       if (_usage != null) {
         _clock?.start();
         _quotaTimer = Timer(Duration(milliseconds: _usage!.maximumMs), () {
-          unawaited(stop());
+          unawaited(() async {
+            await stop();
+            try {
+              final balance =
+                  await TranscriptionQuotaService.instance.refresh();
+              if (balance.remainingMs == 0) onError('monthly_usage_limit');
+            } catch (_) {}
+          }());
         });
       }
     } catch (error) {

@@ -1,3 +1,4 @@
+import 'study/study_canonical_continuation.dart';
 import '../screens/ai/widgets/message_render_policy.dart';
 import 'ai_next_action_engine.dart';
 
@@ -69,6 +70,20 @@ class StudyContinuationResolver {
         label: '',
         question: '',
         source: StudyContinuationSource.none,
+      );
+    }
+
+    // Only canonical transport metadata uses this ID-based path. Legacy Study
+    // continuation and conversational topic/history ownership stay unchanged.
+    final canonical = StudyCanonicalContinuation.resolve(
+      metadata.prompt, languageCode, chatHistory.where((text) => text != rawText));
+    if (canonical != null) {
+      return StudyContinuationResolution(
+        displayText: displayText,
+        label: canonical.label,
+        question: canonical.question,
+        source: canonical.label.isEmpty ? StudyContinuationSource.none
+            : StudyContinuationSource.remoteTag,
       );
     }
 

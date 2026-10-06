@@ -60,7 +60,6 @@ void main() {
         'Doble antiagregación: dosis',
         'Fibrinólisis: dosis por peso',
         'Titulación de vasopresores',
-        'Paquete de la primera hora: estudios',
         'Algoritmo ACLS desfibrilable',
         'Manejo de causas: 5H y 5T',
         'Dosis de secuencia rápida',
@@ -69,6 +68,10 @@ void main() {
       for (final label in expectedSpanishLabels) {
         expect(source, contains(label), reason: 'rótulo ES ausente: $label');
       }
+    });
+
+    test('CTA de bundle removido não retorna ao mapa', () {
+      expect(source, isNot(contains('Paquete de la primera hora: estudios')));
     });
 
     test('mapa Estudo localiza terminologia espanhola', () {

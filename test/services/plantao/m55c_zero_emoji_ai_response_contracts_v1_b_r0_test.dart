@@ -25,13 +25,13 @@ void main() {
 
       expect(hasPictographicEmoji(es), isFalse);
       expect(hasPictographicEmoji(pt), isFalse);
-      expect(es, contains('1) PATOLOGÍA/TEMA CLÍNICO'));
-      expect(es, contains('2) Conducta inmediata'));
-      expect(es, contains('4) Clasificación'));
+      expect(es, contains('Conducta inmediata'));
+      expect(es, contains('Signos de alarma'));
+      expect(es, contains('contrato editorial canónico adaptativo'));
       expect(es, contains('PROHIBIDO usar emojis'));
-      expect(pt, contains('1) PATOLOGIA/TEMA CLÍNICO'));
-      expect(pt, contains('2) Conduta imediata'));
-      expect(pt, contains('4) Classificação'));
+      expect(pt, contains('Conduta imediata'));
+      expect(pt, contains('Sinais de alarme'));
+      expect(pt, contains('contrato editorial canônico adaptativo'));
       expect(pt, contains('PROIBIDO usar emojis'));
     });
 
@@ -50,7 +50,8 @@ void main() {
       expect(ana, contains('M55B_ANAFILAXIS_FIRST_ACTION_PRIORITY'));
     });
 
-    test('TEP deterministic C3R output contains zero emoji and preserves table', () {
+    test('TEP deterministic C3R output contains zero emoji and preserves table',
+        () {
       const input =
           'Paciente de 68 años con embolia pulmonar aguda confirmada por angio-TC. '
           'PA 118/72 mmHg, FC 118 lpm, FR 32 rpm, SpO2 88% al aire ambiente. '

@@ -14,6 +14,8 @@
 //   medcases_notes   — Alertas de anotações       (IDs 3000+)
 
 import 'dart:async';
+import 'dart:convert';
+import 'notifications/notification_contract.dart';
 import 'dart:typed_data';
 import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:flutter/material.dart';
@@ -37,7 +39,7 @@ class NotifPayload {
   const NotifPayload(this.raw);
 
   String get type {
-    if (raw.startsWith('note:'))    return 'note';
+    if (raw.startsWith('note:')) return 'note';
     if (raw.startsWith('cockpit:')) return 'cockpit';
     return raw;
   }
@@ -64,25 +66,96 @@ class NotificationService {
 
   static final _plugin = FlutterLocalNotificationsPlugin();
   static bool _ready = false;
+  static Future<void>? _initializing;
 
   static void Function(NotifPayload)? _onTap;
+  static String? _pendingPayload;
   static InAppAlertCb? _inAppAlert;
-  static final Map<int, Timer>        _inAppTimers = {};
+  static final Map<int, Timer> _inAppTimers = {};
   // Callbacks de "parar" por ID — registados pelos widgets proprietários do timer
   static final Map<int, VoidCallback> _stopCallbacks = {};
-  static final Map<int, Future<void> Function(int minutes)>
-      _snoozeCallbacks =
+  static final Map<int, Future<void> Function(int minutes)> _snoozeCallbacks =
       <int, Future<void> Function(int minutes)>{};
   static int _idCounter = 1000;
 
-  static const _chShift   = 'medcases_shift';
+  static const _chShift = 'medcases_shift';
   static const _chCockpit = 'medcases_cockpit';
-  static const _chNotes   = 'medcases_notes';
+  static const _chNotes = 'medcases_notes';
+
+  static final remoteTap = ValueNotifier<NotificationDestination?>(null);
+  static final Set<String> _foregroundIds = {};
+  static Future<void> showForegroundPush(
+      Map<String, dynamic> data, String locale, {String? title, String? body}) async {
+    final target = NotificationDestination.parse(data);
+    if (target == null || _foregroundIds.contains(target.notificationId))
+      return;
+    _foregroundIds.add(target.notificationId);
+    try {
+    if (!_ready) await init();
+    final channels = [
+      'results',
+      'results',
+      'results',
+      'results',
+      'transactional',
+      'updates',
+      'reminders',
+      'timers'
+    ];
+    final channel = 'medcases_${channels[target.event.index]}';
+    await _plugin.show(
+        target.notificationId.hashCode & 0x7fffffff,
+        title?.trim().isNotEmpty == true ? title! : NotificationContract.title(target.event, locale),
+        body?.trim().isNotEmpty == true ? body! : 'MedCases Clinical',
+        NotificationDetails(
+            android: AndroidNotificationDetails(channel, 'MedCases',
+                importance: Importance.high,
+                priority: Priority.high,
+                tag: target.notificationId),
+            iOS: const DarwinNotificationDetails(
+                presentAlert: true, presentSound: true)),
+        payload: 'remote:${jsonEncode(data)}');
+    } catch (_) { _foregroundIds.remove(target.notificationId); rethrow; }
+    if (_foregroundIds.length > 256)
+      _foregroundIds.remove(_foregroundIds.first);
+  }
+
+  static final recordingTap = ValueNotifier<String?>(null);
+  static Future<void> showRecordingCompletion(
+      {required int id,
+      required String title,
+      required String body,
+      required String payload}) async {
+    if (kIsWeb ||
+        WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed)
+      return;
+    if (!_ready) await init();
+    await _plugin.show(
+        id,
+        title,
+        body,
+        const NotificationDetails(
+            android: AndroidNotificationDetails(
+                'medcases_transcriptions', 'MedCases — Transcrições',
+                channelDescription:
+                    'Transcrições concluídas e prontas para revisão.',
+                importance: Importance.defaultImportance,
+                priority: Priority.defaultPriority),
+            iOS: DarwinNotificationDetails(
+                presentAlert: true, presentBadge: false, presentSound: true)),
+        payload: payload);
+  }
 
   // ── Registro de callbacks ─────────────────────────────────────────────────
 
-  static void setOnTap(void Function(NotifPayload) cb) => _onTap     = cb;
-  static void setInAppAlert(InAppAlertCb cb)            => _inAppAlert = cb;
+  static void setOnTap(void Function(NotifPayload) cb) {
+    _onTap = cb;
+    final pending = _pendingPayload;
+    _pendingPayload = null;
+    if (pending != null) Future.microtask(() => cb(NotifPayload(pending)));
+  }
+
+  static void setInAppAlert(InAppAlertCb cb) => _inAppAlert = cb;
 
   /// Registra um callback chamado quando o usuário toca "Parar" no pop-up.
   /// O widget que agendou o timer (ex.: _ShiftTimerBarState) deve registrar
@@ -94,9 +167,7 @@ class NotificationService {
   ///
   /// Isso impede que [cancel] remova o callback antes do fluxo "Parar"
   /// conseguir notificar o proprietário visual do timer.
-  static VoidCallback? _takeStopCallback(int id) =>
-      _stopCallbacks.remove(id);
-
+  static VoidCallback? _takeStopCallback(int id) => _stopCallbacks.remove(id);
 
   static void registerSnoozeCallback(
     int id,
@@ -109,11 +180,13 @@ class NotificationService {
       _snoozeCallbacks.remove(id);
   // ── Inicialização ─────────────────────────────────────────────────────────
 
-  static Future<void> init() async {
-    if (_ready) return;
-    _ready = true;
+  static Future<void> init() {
+    if (_ready) return Future.value();
+    return _initializing ??= _initialize().whenComplete(() => _initializing = null);
+  }
 
-    if (kIsWeb) return; // Web só usa in-app overlay
+  static Future<void> _initialize() async {
+    if (kIsWeb) { _ready = true; return; } // Web só usa in-app overlay
 
     // Timezone
     try {
@@ -129,19 +202,39 @@ class NotificationService {
     }
 
     const androidInit = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const darwinInit  = DarwinInitializationSettings(
+    const darwinInit = DarwinInitializationSettings(
       requestAlertPermission: false,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
     );
 
     await _plugin.initialize(
       const InitializationSettings(android: androidInit, iOS: darwinInit),
-      onDidReceiveNotificationResponse:           _onResponse,
+      onDidReceiveNotificationResponse: _onResponse,
       onDidReceiveBackgroundNotificationResponse: _onResponse,
     );
 
     await _createChannels();
+    final launch = await _plugin.getNotificationAppLaunchDetails();
+    final payload = launch?.notificationResponse?.payload;
+    if (launch?.didNotificationLaunchApp == true &&
+        payload != null &&
+        payload.startsWith('recording:')) recordingTap.value = payload;
+    if (launch?.didNotificationLaunchApp == true &&
+        payload != null &&
+        payload.startsWith('remote:')) {
+      try {
+        remoteTap.value = NotificationDestination.parse(
+            Map<String, dynamic>.from(jsonDecode(payload.substring(7))));
+      } catch (_) {
+        debugPrint('[NOTIFICATIONS] DEEPLINK_FAILED');
+      }
+    } else if (launch?.didNotificationLaunchApp == true &&
+        payload != null &&
+        !payload.startsWith('recording:')) {
+      _pendingPayload = payload;
+    }
+    _ready = true;
     debugPrint('[Notif] Pronto');
   }
 
@@ -156,8 +249,11 @@ class NotificationService {
         // O projeto não possui entitlement de Critical Alerts.
         // Solicita somente permissões comuns de alerta, badge e som.
         final granted = await ios.requestPermissions(
-              alert: true, badge: true, sound: true,
-            ) ?? false;
+              alert: true,
+              badge: true,
+              sound: true,
+            ) ??
+            false;
         debugPrint('[Notif] iOS permissions granted=$granted');
         return granted;
       }
@@ -172,22 +268,47 @@ class NotificationService {
     return false;
   }
 
+  static Future<void> cancelOrganization(int id) async {
+    if (!_ready) await init();
+    if (!kIsWeb) await _plugin.cancel(id);
+  }
+
+  /// Stable IDs allow replacement/cancellation after process restart.
+  static Future<void> scheduleOrganization({required int id,
+    required DateTime at, required String title, required String body,
+    required String payload}) async {
+    if (!_ready) await init();
+    if (kIsWeb) return;
+    await _plugin.zonedSchedule(id, title, body,
+      tz.TZDateTime.from(at.toUtc(), tz.UTC),
+      const NotificationDetails(
+        android: AndroidNotificationDetails('medcases_timers', 'MedCases',
+          importance: Importance.high, priority: Priority.high,
+          visibility: NotificationVisibility.private),
+        iOS: DarwinNotificationDetails(presentAlert: true, presentSound: true)),
+      androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      payload: payload);
+  }
+
   // ── Agendar ───────────────────────────────────────────────────────────────
 
   /// Agenda notificação local daqui a [seconds] segundos.
   /// Retorna o ID (use para cancelar).
   static Future<int> scheduleTimer({
-    required int    seconds,
+    required int seconds,
     required String title,
     required String body,
-    String  payload = 'shift_timer',
-    String  channel = _chShift,
+    String payload = 'shift_timer',
+    String channel = _chShift,
   }) async {
     if (!_ready) await init();
     final id = _idCounter++;
 
     // In-app overlay: funciona mesmo com app em foreground ou no Web
-    _armInApp(id: id, seconds: seconds, title: title, body: body, payload: payload);
+    if (kIsWeb)
+      _armInApp(
+          id: id, seconds: seconds, title: title, body: body, payload: payload);
 
     if (kIsWeb) return id; // Web só usa in-app
 
@@ -201,22 +322,22 @@ class NotificationService {
     final android = AndroidNotificationDetails(
       channel, _chLabel(channel),
       channelDescription: _chDesc(channel),
-      importance:         Importance.max,
-      priority:           Priority.high,
+      importance: Importance.max,
+      priority: Priority.high,
       playSound:          true,
-      enableVibration:    true,
-      vibrationPattern:   vib,
-      category:           AndroidNotificationCategory.alarm,
-      visibility:         isShiftTimer
+      enableVibration: true,
+      vibrationPattern: vib,
+      category: AndroidNotificationCategory.alarm,
+      visibility: isShiftTimer
           ? NotificationVisibility.public
           : NotificationVisibility.private,
       // Notificação estilo banco: heads-up e lock screen, sem abrir uma tela
       // invasiva. Full-screen intents são reservados a apps de chamadas/alarmes.
       fullScreenIntent:   isShiftTimer ? false : true,
-      autoCancel:         false,  // persiste até o médico tocar (não some sozinho)
-      ongoing:            false,
-      styleInformation:   BigTextStyleInformation(body),
-      ticker:             title,
+      autoCancel: false, // persiste até o médico tocar (não some sozinho)
+      ongoing: false,
+      styleInformation: BigTextStyleInformation(body),
+      ticker: title,
     );
 
     // iOS utiliza somente níveis suportados sem entitlement adicional:
@@ -245,16 +366,19 @@ class NotificationService {
         try {
           final darwin = DarwinNotificationDetails(
             sound:             'default',
-            presentAlert:      true,
-            presentBadge:      true,
+            presentAlert: true,
+            presentBadge: true,
             presentSound:      true,
             interruptionLevel: level,
           );
           await _plugin.zonedSchedule(
-            id, title, body, when,
+            id,
+            title,
+            body,
+            when,
             NotificationDetails(android: android, iOS: darwin),
-            payload:                                    payload,
-            androidScheduleMode:                        scheduleMode,
+            payload: payload,
+            androidScheduleMode: scheduleMode,
             uiLocalNotificationDateInterpretation:
                 UILocalNotificationDateInterpretation.absoluteTime,
           );
@@ -283,7 +407,7 @@ class NotificationService {
 
   /// Lembrete do cockpit (reavaliação).
   static Future<int> scheduleCockpit({
-    required int    minutes,
+    required int minutes,
     required String lang,
   }) {
     final body = lang == 'es'
@@ -291,8 +415,8 @@ class NotificationService {
         : '⏰ Tempo de reavaliação esgotado ($minutes min)';
     return scheduleTimer(
       seconds: minutes * 60,
-      title:   'MedCases Pro',
-      body:    body,
+      title: 'MedCases Pro',
+      body: body,
       payload: 'cockpit:reminder',
       channel: _chCockpit,
     );
@@ -302,16 +426,18 @@ class NotificationService {
   static Future<int> scheduleNote({
     required String noteId,
     required String noteTitle,
-    required int    seconds,
+    required int seconds,
     required String lang,
   }) {
-    final title = lang == 'es' ? 'Recordatorio de anotación' : 'Lembrete de anotação';
-    final body  = noteTitle.isNotEmpty ? noteTitle
-        : (lang == 'es' ? 'Toca para ver tu anotación' : 'Toque para ver sua anotação');
+    final title =
+        lang == 'es' ? 'Recordatorio de anotación' : 'Lembrete de anotação';
+    final body = lang == 'es'
+        ? 'Toca para ver tu anotación'
+        : 'Toque para ver sua anotação';
     return scheduleTimer(
       seconds: seconds,
-      title:   title,
-      body:    body,
+      title: title,
+      body: body,
       payload: 'note:$noteId',
       channel: _chNotes,
     );
@@ -321,15 +447,18 @@ class NotificationService {
   static Future<int> scheduleNoteAlert({
     required String noteId,
     required String noteTitle,
-    required int    seconds,
+    required int seconds,
     required String lang,
-  }) => scheduleNote(noteId: noteId, noteTitle: noteTitle, seconds: seconds, lang: lang);
+  }) =>
+      scheduleNote(
+          noteId: noteId, noteTitle: noteTitle, seconds: seconds, lang: lang);
 
   /// Alias: scheduleCockpit → scheduleCockpitReminder
   static Future<int> scheduleCockpitReminder({
-    required int    minutes,
+    required int minutes,
     required String lang,
-  }) => scheduleCockpit(minutes: minutes, lang: lang);
+  }) =>
+      scheduleCockpit(minutes: minutes, lang: lang);
 
   // ── Cancelar ──────────────────────────────────────────────────────────────
 
@@ -339,24 +468,30 @@ class NotificationService {
     _takeStopCallback(id);
     _takeSnoozeCallback(id);
     if (kIsWeb || id < 0) return;
-    try { await _plugin.cancel(id); } catch (_) {}
+    try {
+      await _plugin.cancel(id);
+    } catch (_) {}
     debugPrint('[Notif] Cancelado id=$id');
   }
 
   static Future<void> cancelAll() async {
-    for (final t in _inAppTimers.values) { t.cancel(); }
+    for (final t in _inAppTimers.values) {
+      t.cancel();
+    }
     _inAppTimers.clear();
     _stopCallbacks.clear();
     _snoozeCallbacks.clear();
     if (kIsWeb) return;
-    try { await _plugin.cancelAll(); } catch (_) {}
+    try {
+      await _plugin.cancelAll();
+    } catch (_) {}
   }
 
   // ── Internos ──────────────────────────────────────────────────────────────
 
   static void _armInApp({
-    required int    id,
-    required int    seconds,
+    required int id,
+    required int seconds,
     required String title,
     required String body,
     required String payload,
@@ -368,7 +503,7 @@ class NotificationService {
       final snoozeCallback = _snoozeCallbacks[id];
       _inAppAlert?.call(
         title: title,
-        body:    body,
+        body: body,
         payload: payload,
         onSnooze: snoozeCallback == null
             ? null
@@ -400,44 +535,74 @@ class NotificationService {
   @pragma('vm:entry-point')
   static void _onResponse(NotificationResponse r) {
     final p = r.payload ?? '';
-    debugPrint('[Notif] Tap payload=$p');
-    if (p.isNotEmpty) _onTap?.call(NotifPayload(p));
+    if (p.startsWith('remote:')) {
+      try {
+        remoteTap.value = NotificationDestination.parse(
+            Map<String, dynamic>.from(jsonDecode(p.substring(7))));
+      } catch (_) {
+        debugPrint('[NOTIFICATIONS] DEEPLINK_FAILED');
+      }
+      return;
+    }
+    if (p.startsWith('recording:')) {
+      recordingTap.value = p;
+      return;
+    }
+    if (p.isNotEmpty) {
+      if (_onTap == null) {
+        _pendingPayload = p;
+      } else {
+        _onTap!(NotifPayload(p));
+      }
+    }
   }
 
   static Future<void> _createChannels() async {
     final impl = _plugin.resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin>();
     if (impl == null) return;
+    for (final name in [
+      'transactional',
+      'results',
+      'timers',
+      'updates',
+      'reminders'
+    ]) {
+      await impl.createNotificationChannel(AndroidNotificationChannel(
+          'medcases_$name', 'MedCases — $name',
+          importance: Importance.high, playSound: true));
+    }
     // BUILD 331: vibrationPattern agressivo no canal Android — reproduz o
     // mesmo padrão de 3 pulsos longos mesmo que a notificação individual
     // não especifique o padrão (canal sobrescreve).
     final vib = Int64List.fromList([0, 600, 200, 600, 200, 800]);
     for (final ch in [_chShift, _chCockpit, _chNotes]) {
       await impl.createNotificationChannel(AndroidNotificationChannel(
-        ch, _chLabel(ch),
-        description:      _chDesc(ch),
-        importance:       Importance.max,
-        playSound:        true,
-        enableVibration:  true,
+        ch,
+        _chLabel(ch),
+        description: _chDesc(ch),
+        importance: Importance.max,
+        playSound:          true,
+        enableVibration: true,
         vibrationPattern: vib,
-        showBadge:        true,
+        showBadge: true,
       ));
     }
   }
 
   static String _chLabel(String ch) => switch (ch) {
-    _chShift   => 'Timer de Plantão',
-    _chCockpit => 'Lembrete de Reavaliação',
-    _chNotes   => 'Alertas de Anotações',
-    _          => 'MedCases Pro',
-  };
+        _chShift => 'Timer de Plantão',
+        _chCockpit => 'Lembrete de Reavaliação',
+        _chNotes => 'Alertas de Anotações',
+        _ => 'MedCases Pro',
+      };
 
   static String _chDesc(String ch) => switch (ch) {
-    _chShift   => 'Notificações de timer rápido de plantão',
-    _chCockpit => 'Lembretes de reavaliação do cockpit clínico',
-    _chNotes   => 'Alertas agendados para anotações',
-    _          => 'Notificações do MedCases Pro',
-  };
+        _chShift => 'Notificações de timer rápido de plantão',
+        _chCockpit => 'Lembretes de reavaliação do cockpit clínico',
+        _chNotes => 'Alertas agendados para anotações',
+        _ => 'Notificações do MedCases Pro',
+      };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -474,11 +639,9 @@ class _PendingInAppAlert {
 
 class _NotificationOverlayState extends State<NotificationOverlay>
     with WidgetsBindingObserver {
-  static const Duration _navigatorRetryDelay =
-      Duration(milliseconds: 250);
+  static const Duration _navigatorRetryDelay = Duration(milliseconds: 250);
 
-  final List<_PendingInAppAlert> _pendingAlerts =
-      <_PendingInAppAlert>[];
+  final List<_PendingInAppAlert> _pendingAlerts = <_PendingInAppAlert>[];
 
   bool _dialogOpen = false;
   bool _drainScheduled = false;
@@ -530,8 +693,7 @@ class _NotificationOverlayState extends State<NotificationOverlay>
     void visit(Element element) {
       if (result != null) return;
 
-      if (element is StatefulElement &&
-          element.state is NavigatorState) {
+      if (element is StatefulElement && element.state is NavigatorState) {
         final candidate = element.state as NavigatorState;
 
         if (candidate.mounted && candidate.overlay != null) {
@@ -585,8 +747,7 @@ class _NotificationOverlayState extends State<NotificationOverlay>
 
     final lifecycle = WidgetsBinding.instance.lifecycleState;
 
-    if (lifecycle != null &&
-        lifecycle != AppLifecycleState.resumed) {
+    if (lifecycle != null && lifecycle != AppLifecycleState.resumed) {
       debugPrint(
         '[Notif] Overlay in-app aguardando foreground '
         'pending=${_pendingAlerts.length}; alerta nativo preservado.',
@@ -747,22 +908,16 @@ class _NotifDialogState extends State<_NotifDialog> {
       if (mounted) setState(() => _busy = false);
     }
   }
+
   @override
   Widget build(BuildContext context) {
-    final dark =
-        Theme.of(context).brightness == Brightness.dark;
-    final background =
-        dark ? const Color(0xFF1A1D23) : Colors.white;
-    final border =
-        dark ? const Color(0xFF374151) : const Color(0xFFD7DEE7);
-    final accent =
-        dark ? const Color(0xFF61D2CB) : const Color(0xFF087F7B);
-    final titleColor =
-        dark ? const Color(0xFFF8FAFC) : const Color(0xFF17202A);
-    final muted =
-        dark ? const Color(0xFFB2C0D0) : const Color(0xFF5F6B78);
-    final danger =
-        dark ? const Color(0xFFF28B82) : const Color(0xFFB42318);
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    final background = dark ? const Color(0xFF1A1D23) : Colors.white;
+    final border = dark ? const Color(0xFF374151) : const Color(0xFFD7DEE7);
+    final accent = dark ? const Color(0xFF61D2CB) : const Color(0xFF087F7B);
+    final titleColor = dark ? const Color(0xFFF8FAFC) : const Color(0xFF17202A);
+    final muted = dark ? const Color(0xFFB2C0D0) : const Color(0xFF5F6B78);
+    final danger = dark ? const Color(0xFFF28B82) : const Color(0xFFB42318);
     final patient = _patientLabel;
 
     final eyebrow = _isShiftTimer
@@ -902,9 +1057,7 @@ class _NotifDialogState extends State<_NotifDialog> {
                               fontWeight: FontWeight.w700,
                             ),
                             items: [
-                              for (var minute = 1;
-                                  minute <= 10;
-                                  minute++)
+                              for (var minute = 1; minute <= 10; minute++)
                                 DropdownMenuItem<int>(
                                   value: minute,
                                   child: Text('$minute min'),
@@ -947,18 +1100,12 @@ class _NotifDialogState extends State<_NotifDialog> {
                                   : 'Adiar $_snoozeMinutes min',
                             ),
                             style: ButtonStyle(
-                              elevation:
-                                  const WidgetStatePropertyAll(0),
-                              backgroundColor:
-                                  WidgetStatePropertyAll(accent),
-                              foregroundColor:
-                                  WidgetStatePropertyAll(
-                                dark
-                                    ? const Color(0xFF102320)
-                                    : Colors.white,
+                              elevation: const WidgetStatePropertyAll(0),
+                              backgroundColor: WidgetStatePropertyAll(accent),
+                              foregroundColor: WidgetStatePropertyAll(
+                                dark ? const Color(0xFF102320) : Colors.white,
                               ),
-                              textStyle:
-                                  const WidgetStatePropertyAll(
+                              textStyle: const WidgetStatePropertyAll(
                                 TextStyle(
                                   fontSize: 12.5,
                                   fontWeight: FontWeight.w800,
@@ -966,8 +1113,7 @@ class _NotifDialogState extends State<_NotifDialog> {
                               ),
                               shape: WidgetStatePropertyAll(
                                 RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.circular(13),
+                                  borderRadius: BorderRadius.circular(13),
                                 ),
                               ),
                             ),
@@ -1014,9 +1160,7 @@ class _NotifDialogState extends State<_NotifDialog> {
                           foregroundColor: danger,
                         ),
                         child: Text(
-                          _isEs
-                              ? 'Finalizar timer'
-                              : 'Encerrar timer',
+                          _isEs ? 'Finalizar timer' : 'Encerrar timer',
                           style: const TextStyle(
                             fontSize: 12.5,
                             fontWeight: FontWeight.w800,

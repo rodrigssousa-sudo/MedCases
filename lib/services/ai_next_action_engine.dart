@@ -1276,6 +1276,10 @@ class NextActionEngine {
   static String _withoutHypotheticalSepsisAnchors(String text) {
     var sanitized = text;
     final hypotheticalSepsisClauses = <RegExp>[
+      // Medication hold precautions do not establish active sepsis.
+      RegExp(
+          r'\bsuspender\s+(?:temporariamente|temporalmente)\s+(?:ante|en caso de|em caso de|diante de)[^.;\n]{0,200}\b(?:sepse|sepsis)\b',
+          caseSensitive: false),
       RegExp(
         r'\b(?:'
         r'considerar|'

@@ -45,7 +45,7 @@ void main() {
 
     test('Free audio, transcription and history limits are canonical', () {
       expect(free.limits.audioRecordingMinutesPerMonth, 15);
-      expect(free.limits.transcriptionMinutesPerMonth, 30);
+      expect(free.limits.transcriptionMinutesPerMonth, 15);
       expect(free.limits.clinicalHistoriesPerMonth, 3);
     });
 

@@ -110,7 +110,7 @@ void main() {
         expect(gate, greaterThan(done));
 
         final callWindow = screen.substring(send, done);
-        expect(callWindow, contains('m56cProviderInput'));
+        expect(callWindow, contains('m59ProviderInput'));
         expect(callWindow, contains('canonicalPlantaoWiring: true'));
         expect(
           callWindow,

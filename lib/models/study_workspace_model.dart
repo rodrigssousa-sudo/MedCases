@@ -1,6 +1,15 @@
 enum StudySourceType { recordedAudio, uploadedAudio, pdf, image, text }
 
-enum StudySourceState { added, processing, review, accepted, failed }
+enum StudySourceState {
+  added,
+  processing,
+  review,
+  accepted,
+  failed,
+  transcriptionPending,
+  retryableError,
+  terminalError
+}
 
 enum StudyArtifactType {
   visualSummary,
@@ -80,6 +89,9 @@ final class StudySource {
     this.text = '',
     this.refs = const <SourceRef>[],
     this.errorCode,
+    this.recordingSessionId,
+    this.audioPaths = const [],
+    this.audioDurationMs = 0,
   });
 
   final String id;
@@ -90,6 +102,41 @@ final class StudySource {
   final String text;
   final List<SourceRef> refs;
   final String? errorCode;
+  final String? recordingSessionId;
+  final List<String> audioPaths;
+  final int audioDurationMs;
+
+  static String recordingIdentity(String sessionId) => 'recording_$sessionId';
+  bool get isTranscriptionPending =>
+      state == StudySourceState.transcriptionPending ||
+      state == StudySourceState.retryableError ||
+      (state == StudySourceState.failed &&
+          errorCode == 'transcription_pending');
+  bool get canRetryTranscription =>
+      type == StudySourceType.recordedAudio &&
+      recordingSessionId != null &&
+      (isTranscriptionPending || state == StudySourceState.failed);
+  bool get canReview =>
+      state == StudySourceState.review && text.trim().isNotEmpty;
+
+  StudySource bindRecording(
+          String sessionId, List<String> paths, int durationMs) =>
+      StudySource(
+          id: id,
+          type: type,
+          title: title,
+          state: state,
+          createdAtUtc: createdAtUtc,
+          text: text,
+          refs: refs,
+          errorCode: errorCode,
+          recordingSessionId: sessionId,
+          audioPaths: List.unmodifiable(paths),
+          audioDurationMs: durationMs);
+
+  bool get isAudio =>
+      type == StudySourceType.recordedAudio ||
+      type == StudySourceType.uploadedAudio;
 
   bool get isAccepted =>
       state == StudySourceState.accepted && text.trim().isNotEmpty;
@@ -117,7 +164,43 @@ final class StudySource {
       StudySourceState.failed: <StudySourceState>{StudySourceState.processing},
     };
 
-    if (!(allowed[state]?.contains(next) ?? false)) {
+    final recordingTransitions = type == StudySourceType.recordedAudio &&
+        {
+              StudySourceState.added: {
+                StudySourceState.processing,
+                StudySourceState.transcriptionPending,
+                StudySourceState.review
+              },
+              StudySourceState.processing: {
+                StudySourceState.review,
+                StudySourceState.transcriptionPending,
+                StudySourceState.retryableError,
+                StudySourceState.terminalError
+              },
+              StudySourceState.transcriptionPending: {
+                StudySourceState.processing,
+                StudySourceState.review,
+                StudySourceState.retryableError,
+                StudySourceState.terminalError
+              },
+              StudySourceState.retryableError: {
+                StudySourceState.processing,
+                StudySourceState.review,
+                StudySourceState.transcriptionPending,
+                StudySourceState.terminalError
+              },
+              StudySourceState.terminalError: {StudySourceState.review},
+              StudySourceState.failed: {
+                StudySourceState.processing,
+                StudySourceState.review,
+                StudySourceState.transcriptionPending
+              },
+            }[state]
+                ?.contains(next) ==
+            true;
+    if (state != next &&
+        !recordingTransitions &&
+        !(allowed[state]?.contains(next) ?? false)) {
       throw StateError('Invalid StudySource transition: $state -> $next');
     }
 
@@ -135,6 +218,9 @@ final class StudySource {
       text: nextText,
       refs: sourceRefs ?? refs,
       errorCode: error,
+      recordingSessionId: recordingSessionId,
+      audioPaths: audioPaths,
+      audioDurationMs: audioDurationMs,
     );
   }
 }
@@ -165,6 +251,8 @@ final class Study {
     required this.createdAtUtc,
     this.sources = const <StudySource>[],
     this.artifacts = const <StudyArtifact>[],
+    this.activeSourceId,
+    this.ownerUid,
   });
 
   final String id;
@@ -173,14 +261,72 @@ final class Study {
   final DateTime createdAtUtc;
   final List<StudySource> sources;
   final List<StudyArtifact> artifacts;
+  final String? activeSourceId;
+  final String? ownerUid;
 
-  List<StudySource> get acceptedSources =>
-      sources.where((source) => source.isAccepted).toList(growable: false);
+  List<StudySource> get operationalSources => sources
+      .where((s) => !s.isAudio || s.id == activeSourceId)
+      .toList(growable: false);
+  List<StudySource> get historicalAudioSources => sources
+      .where((s) => s.isAudio && s.id != activeSourceId)
+      .toList(growable: false);
+
+  Study activateAudio(String sourceId) {
+    if (!sources.any((s) => s.id == sourceId && s.isAudio)) {
+      throw StateError('unknown_audio_source');
+    }
+    return copyWith(activeSourceId: sourceId);
+  }
+
+  bool artifactMatchesSelection(StudyArtifact artifact) {
+    final ids = acceptedSources.map((s) => s.id).toSet();
+    return ids.isNotEmpty &&
+        ids.length == artifact.sourceIds.toSet().length &&
+        ids.containsAll(artifact.sourceIds);
+  }
+
+  List<StudyArtifact> get activeArtifacts =>
+      artifacts.where(artifactMatchesSelection).toList(growable: false);
+
+  List<StudySource> get acceptedSources => operationalSources
+      .where((source) => source.isAccepted)
+      .toList(growable: false);
+
+  bool get canGenerate => acceptedSources.isNotEmpty;
+
+  Study upsertRecording(
+      {required String sessionId,
+      required String title,
+      required List<String> audioPaths,
+      required int durationMs}) {
+    final matches = sources.where((s) =>
+        s.recordingSessionId == sessionId ||
+        s.id == StudySource.recordingIdentity(sessionId));
+    // Existing records are never destructively merged by this insertion path.
+    if (matches.isNotEmpty) return activateAudio(matches.single.id);
+    return copyWith(
+        activeSourceId: StudySource.recordingIdentity(sessionId),
+        sources: [
+          ...sources,
+          StudySource(
+              id: StudySource.recordingIdentity(sessionId),
+              type: StudySourceType.recordedAudio,
+              title: title,
+              state: StudySourceState.transcriptionPending,
+              createdAtUtc: DateTime.now().toUtc(),
+              recordingSessionId: sessionId,
+              audioPaths: List.unmodifiable(audioPaths),
+              audioDurationMs: durationMs)
+        ]);
+  }
 
   Study copyWith({
     String? title,
     List<StudySource>? sources,
     List<StudyArtifact>? artifacts,
+    String? activeSourceId,
+    String? ownerUid,
+    bool clearActiveSource = false,
   }) {
     return Study(
       id: id,
@@ -189,6 +335,9 @@ final class Study {
       createdAtUtc: createdAtUtc,
       sources: sources ?? this.sources,
       artifacts: artifacts ?? this.artifacts,
+      activeSourceId:
+          clearActiveSource ? null : activeSourceId ?? this.activeSourceId,
+      ownerUid: ownerUid ?? this.ownerUid,
     );
   }
 

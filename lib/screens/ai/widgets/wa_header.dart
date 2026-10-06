@@ -67,7 +67,7 @@ class WaHeader extends StatelessWidget {
                     text: const TextSpan(
                       children: [
                         TextSpan(
-                          text: 'MEDCASES ',
+                          text: 'MedCases ',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w900,
@@ -76,7 +76,7 @@ class WaHeader extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: 'IA',
+                          text: 'Clinical',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w900,

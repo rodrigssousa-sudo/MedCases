@@ -38,12 +38,13 @@ void main() {
 
     test('keeps the M sheet and server/account content intact', () {
       expect(aiScreen, contains('AiStatusSheet('));
-      expect(statusSheet, contains('SERVIDOR MEDCASES IA'));
+      expect(statusSheet, contains('MedCases Clinical'));
+      expect(statusSheet, contains('Servidor activo'));
       expect(statusSheet, contains('Conectar con Google'));
       expect(statusSheet, contains('SingleChildScrollView('));
       expect(
         statusSheet,
-        contains('maxHeight: MediaQuery.of(context).size.height * 0.92'),
+        contains('maxHeight: MediaQuery.sizeOf(context).height * .9'),
       );
     });
   });

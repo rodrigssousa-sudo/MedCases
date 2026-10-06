@@ -114,5 +114,10 @@ flutter {
 }
 
 dependencies {
+    // Native calendar owner checks reuse the SDK version already selected by FlutterFire.
+    val firebaseSdk = rootProject.findProperty("FirebaseSDKVersion")
+        ?: rootProject.project(":firebase_core").properties.getValue("FirebaseSDKVersion")
+    implementation(platform("com.google.firebase:firebase-bom:$firebaseSdk"))
+    implementation("com.google.firebase:firebase-auth")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 }

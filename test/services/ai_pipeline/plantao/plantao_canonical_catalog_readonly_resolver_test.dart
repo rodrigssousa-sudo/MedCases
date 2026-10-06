@@ -32,7 +32,7 @@ void main() {
         final file = fixture.existsSync()
             ? fixture
             : File(
-                '/private/tmp/medcases-calculadora-r1-canonical-20260921/data/drugs/$id.json');
+                '${Platform.environment['MEDCASES_CALCULATOR_ROOT'] ?? '${Directory.current.parent.path}/medcases-calculadora'}/data/drugs/$id.json');
         return http.Response(
             jsonEncode(
                 {'ok': true, 'drug': jsonDecode(file.readAsStringSync())}),

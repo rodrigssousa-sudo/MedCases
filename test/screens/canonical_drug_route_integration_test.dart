@@ -47,7 +47,7 @@ void main() {
   });
   final docs = <String, Map<String, Object?>>{};
   for (final f in Directory(
-          '/private/tmp/medcases-calculadora-r1-canonical-20260921/data/drugs')
+          '${Platform.environment['MEDCASES_CALCULATOR_ROOT'] ?? '${Directory.current.parent.path}/medcases-calculadora'}/data/drugs')
       .listSync()
       .whereType<File>()
       .where((f) => f.path.endsWith('.json'))) {

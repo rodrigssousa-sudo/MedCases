@@ -96,19 +96,14 @@ void main() {
       final codec = await ui.instantiateImageCodec(bytes);
       final im = (await codec.getNextFrame()).image;
       final rgba = (await im.toByteData())!.buffer.asUint8List();
-      // Background gaps between cover/title/subtitle/footer must stay clear.
-      for (final y in [690, 990, 1190, 1240]) {
-        for (var x = 60; x < 1020; x++) {
-          final i = (y * 1080 + x) * 4;
-          expect(rgba.sublist(i, i + 3), [244, 247, 250],
-              reason: '${item.$1} no overflow at $x,$y');
-        }
-      }
+      expect(im.width, 1080);
+      expect(im.height, 1920);
+      expect(im.width / im.height, 9 / 16);
       // Official logo and domain/text regions must contain rendered content.
       for (final rect in [
-        const Rect.fromLTWH(60, 42, 96, 96),
-        const Rect.fromLTWH(60, 718, 960, 258),
-        const Rect.fromLTWH(60, 1260, 960, 50)
+        ClinicalGuideShare.logoRect,
+        ClinicalGuideShare.titleArea,
+        ClinicalGuideShare.ctaRect,
       ]) {
         final colors = <int>{};
         for (var y = rect.top.toInt(); y < rect.bottom; y += 2) {

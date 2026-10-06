@@ -77,9 +77,9 @@ void main() {
   );
 
   test('Plantao renderer separation remains canonical', () {
-    expect(screen, contains('GuardiaClinicalResponseView('));
+    expect(screen, contains('StableClinicalResponseView('));
     expect(screen, contains('final bool useGuardiaPresentation ='));
-    expect(screen, contains('!_longResponse'));
+    expect(screen, contains('!requestLongResponse'));
     expect(screen, contains('AiBubble('));
   });
 

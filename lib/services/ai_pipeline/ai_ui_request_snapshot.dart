@@ -33,6 +33,10 @@ class AiPendingQuery {
   final String query;
   final AiRequestMode mode;
   final Object identity = Object();
+  final bool startNewConversation;
 
-  AiPendingQuery({required this.query, required this.mode});
+  AiPendingQuery(
+      {required this.query,
+      required this.mode,
+      this.startNewConversation = true});
 }

@@ -46,6 +46,18 @@ String _sseEvent(
 }
 
 void main() {
+  for (final started in [false, true]) {
+    test('Plantao rejects ${started ? "legacy model" : "delta without handshake"}', () async {
+      const id = 'route-rejection';
+      final fake = _FakeStreamingClient(
+        (started ? _sseEvent('started', {'requestId':id,'attempt':2,'model':'gpt-4o-mini'}) : '') +
+        _sseEvent('text_delta', {'requestId':id,'attempt':2,'sequence':1,'delta':'legacy'}));
+      final client = GptSseClient(endpointUrl:'https://example.test',idToken:'fixture',clientFactory:()=>fake);
+      final events = await client.stream(const GptSsePayload(userMessage:'fixture',systemPrompt:'',requestId:id)).toList();
+      expect(events.whereType<AiTextDelta>(),isEmpty);
+      expect(events.whereType<AiFailed>().single.code,'plantao_contract_mismatch');
+    });
+  }
   group('GptSseClient structured transport_done', () {
     test(
       'converte structuredOutput em ClinicalStructuredOutput tipado',
@@ -125,6 +137,7 @@ void main() {
         final events = await client
             .stream(
               const GptSsePayload(
+                mode: 'study',
                 userMessage: 'Caso clínico',
                 systemPrompt: 'Prompt clínico',
                 requestId: requestId,
@@ -238,6 +251,7 @@ void main() {
         final events = await client
             .stream(
               const GptSsePayload(
+                mode: 'study',
                 userMessage: 'Caso clínico',
                 systemPrompt: 'Prompt clínico',
                 requestId: requestId,
@@ -313,6 +327,7 @@ void main() {
         final events = await client
             .stream(
               const GptSsePayload(
+                mode: 'study',
                 userMessage: 'Pergunta',
                 systemPrompt: 'Prompt',
                 requestId: requestId,

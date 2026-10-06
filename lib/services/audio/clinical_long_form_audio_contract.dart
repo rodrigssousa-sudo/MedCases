@@ -7,6 +7,9 @@ enum ClinicalLongFormRecordingState {
 
 final class ClinicalLongFormRecordingConfig {
   const ClinicalLongFormRecordingConfig({
+    this.continuous = false,
+    this.unlimitedLocalCapture = false,
+    this.append = false,
     this.segmentDuration = const Duration(minutes: 5),
     this.maxDuration = const Duration(hours: 6),
     this.requestedSampleRateHz = 24000,
@@ -15,6 +18,9 @@ final class ClinicalLongFormRecordingConfig {
     this.fileExtension = 'm4a',
   });
 
+  final bool continuous;
+  final bool unlimitedLocalCapture;
+  final bool append;
   final Duration segmentDuration;
   final Duration maxDuration;
 
@@ -38,7 +44,8 @@ final class ClinicalLongFormRecordingConfig {
       throw ArgumentError.value(segmentDuration, 'segmentDuration');
     }
 
-    if (maxDuration < segmentDuration ||
+    if (maxDuration <= Duration.zero ||
+        (!continuous && maxDuration < segmentDuration) ||
         maxDuration > const Duration(hours: 12)) {
       throw ArgumentError.value(maxDuration, 'maxDuration');
     }
@@ -61,7 +68,9 @@ final class ClinicalLongFormRecordingConfig {
       throw ArgumentError.value(channels, 'channels');
     }
 
-    if (fileExtension.toLowerCase() != 'm4a') {
+    if (append && !continuous)
+      throw ArgumentError('append_requires_continuous');
+    if (fileExtension.toLowerCase() != (continuous ? 'aac' : 'm4a')) {
       throw ArgumentError.value(fileExtension, 'fileExtension');
     }
   }

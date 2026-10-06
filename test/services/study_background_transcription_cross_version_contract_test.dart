@@ -60,7 +60,7 @@ void main() {
       'lib/services/study/study_imported_audio_pipeline_io.dart',
     ).readAsStringSync();
     final recorded =
-        File('lib/screens/study_workspace_screen.dart').readAsStringSync();
+        File('lib/services/audio/recording_transcription_driver.dart').readAsStringSync();
 
     expect(
       imported,
@@ -71,6 +71,6 @@ void main() {
       recorded,
       contains('StudyBackgroundTranscriptionCoordinator.tryStart'),
     );
-    expect(recorded, contains('backgroundSession.awaitTranscript'));
+    expect(recorded, contains('background.awaitTranscript'));
   });
 }

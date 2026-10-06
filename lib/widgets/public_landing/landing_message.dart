@@ -18,3 +18,18 @@ String? landingActionLanguage(Object? payload, String action) {
     return null;
   }
 }
+
+(String, String)? landingGuideRequest(Object? payload) {
+  final language = landingActionLanguage(payload, 'medcases:guide:v1');
+  if (language == null) return null;
+  try {
+    final data = jsonDecode(payload as String) as Map;
+    final slug = data['slug'];
+    if (slug is! String ||
+        slug.length > 100 ||
+        !RegExp(r'^[a-z0-9]+(?:-[a-z0-9]+)*$').hasMatch(slug)) return null;
+    return (slug, language);
+  } catch (_) {
+    return null;
+  }
+}

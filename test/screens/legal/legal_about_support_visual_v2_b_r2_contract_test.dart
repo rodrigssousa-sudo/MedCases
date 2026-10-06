@@ -49,7 +49,7 @@ void main() {
       'medcasespro@gmail.com',
       'Comitê de Revisão Clínica MedCases Pro',
       'openAcademicSourceSecurely(',
-      'promedcases.com',
+      'medcasespro.com',
     ]) {
       expect(owner, contains(token), reason: token);
     }

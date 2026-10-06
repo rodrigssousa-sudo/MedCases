@@ -1,3 +1,4 @@
+import 'organization/organization_screen.dart';
 import '../widgets/clinical_entrypoints.dart';
 // MEDCASES_PRODUCTIVE_SECOND_BRAND_BATCH_3A_V2_B_R1_GENERIC_CONTEXTS
 import 'dart:ui';
@@ -30,9 +31,8 @@ import 'avaliacao_screen.dart';
 import '../widgets/meu_plantao_dashboard.dart';
 import '../home_v2/components/home_v2_modules_view.dart';
 import '../home_v2/theme/home_v2_palette.dart';
-import 'ai_screen.dart' show AiScreen, AiPendingQuery, AiRequestMode;
+import 'ai_screen.dart' show AiScreen, AiPendingQuery;
 import '../home_v2/components/chat/inline_chat_view.dart';
-import 'ai/widgets/streaming_text_drain.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../services/stt_helper.dart';
@@ -1329,10 +1329,7 @@ class _SearchResultTile extends StatelessWidget {
 // incremental da Home V2.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/// Ponte pública para o chat inline real da Home.
-///
-/// Autenticação, streaming, histórico e persistência continuam pertencendo à
-/// implementação canônica privada [_HomeInlineChatGate]/[_HomeInlineChat].
+/// Home quick input. The canonical AiScreen owns answers, streaming and history.
 class HomeInlineChat extends StatelessWidget {
   const HomeInlineChat({
     required this.dark,
@@ -1362,6 +1359,8 @@ class HomeCalculatorDrugsCard extends StatelessWidget {
     required this.isEs,
     required this.onOpenVaccine,
     this.embedded = false,
+    this.onGuide,
+    this.onSimulation,
     super.key,
   });
 
@@ -1369,6 +1368,8 @@ class HomeCalculatorDrugsCard extends StatelessWidget {
   final bool isEs;
   final VoidCallback onOpenVaccine;
   final bool embedded;
+  final VoidCallback? onGuide;
+  final VoidCallback? onSimulation;
 
   @override
   Widget build(BuildContext context) {
@@ -1377,6 +1378,8 @@ class HomeCalculatorDrugsCard extends StatelessWidget {
       isEs: isEs,
       onVaccine: onOpenVaccine,
       embedded: embedded,
+      onGuide: onGuide,
+      onSimulation: onSimulation,
       onTap: () {
         AppHaptics.light(context);
         Navigator.of(context, rootNavigator: !kIsWeb).push(
@@ -1672,7 +1675,7 @@ class _HomeAssessmentNotesTimerCardState
           },
           onTimer: () {
             AppHaptics.light(context);
-            _ownerKey.currentState?._openTimerSheet();
+            Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => OrganizationScreen(isEs: widget.isEs)));
           },
           betweenRows: widget.betweenRows,
         ),
@@ -1747,9 +1750,8 @@ class _HomeInlineChatGate extends StatelessWidget {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// HOME INLINE CHAT — chat real embutido na Home sem trocar de aba.
-// Streaming via AppProvider.sendAiMessage (RAG + GeminiServiceV2 completo).
-// Mostra última Q&A inline; botão "Ver completo" abre aba IA.
+// HOME CLINICAL ENTRY — input and dictation only; sends navigate to AiScreen.
+// There is no Home response stream, renderer or conversation store.
 // ═══════════════════════════════════════════════════════════════════════════════
 class _HomeInlineChat extends StatefulWidget {
   final bool dark;
@@ -1769,182 +1771,39 @@ class _HomeInlineChat extends StatefulWidget {
   State<_HomeInlineChat> createState() => _HomeInlineChatState();
 }
 
-class _HomeInlineChatState extends State<_HomeInlineChat>
-    with WidgetsBindingObserver {
+class _HomeInlineChatState extends State<_HomeInlineChat> {
   final _ctrl = TextEditingController();
-  // autofocus: false é obrigatório — o FocusNode NUNCA deve adquirir foco
-  // automaticamente. Sem isso, o teclado abre sozinho ao retornar para a Home
-  // (o IndexedStack preserva o widget mas o FocusNode pode ser re-attached).
   final _focus = FocusNode();
-  final _scrollCtrl = ScrollController();
-
-  // MB-I.5.15-C-R2 — estado visual da sessão STT.
-  // Reconhecimento e permissões permanecem em SttHelper.
   bool _sttListening = false;
   int _sttSessionEpoch = 0;
+  bool get _thinking => false;
 
-  // MedCases IA Official Blue palette — Build 138
-
-  // ── Histórico de mensagens (multi-turn inline) ────────────────────────────
-  // Cada item: {'role': 'user'|'ai', 'text': '...', 'isError': bool}
-  final List<Map<String, dynamic>> _messages = [];
-  bool _isInlineExpanded = false;
-  String _streaming = '';
-
-  // Buffer visual do streaming da Home.
-  //
-  // `_streaming` contém apenas os grafemas já revelados ao usuário.
-  // `_streamingPending` contém os grafemas recebidos da rede que ainda serão
-  // revelados pelo dreno visual. O provider e o transporte SSE permanecem
-  // inalterados.
-  /// Texto bruto já revelado a partir da resposta final definitiva.
-  ///
-  /// É separado de [_streaming] porque este último recebe apenas a projeção
-  /// Markdown estabilizada para exibição.
-  String _streamingRaw = '';
-  String _streamingPending = '';
-  String? _streamingFinalText;
-  bool _streamingDrainRunning = false;
-  int _streamingDrainEpoch = 0;
-
-  bool _thinking = false;
-
-  // ── Auto-persist session tracking ────────────────────────────────────────
-  // ID estável da sessão inline — gerado na primeira mensagem enviada e
-  // reutilizado em todas as atualizações da mesma conversa (evita duplicatas
-  // no Firestore / SharedPreferences ao salvar turno a turno).
-  String? _sessionId;
-  // Chave SharedPreferences espelhando a convenção de ai_screen.dart
-  static const _kHistKey = 'medcases_ia_chat_history_v1';
-
-  // BUILD 434 [PASSO 2]: trava idempotente de carregamento de histórico.
-  // Impede race conditions quando didUpdateWidget dispara _loadChatHistory()
-  // em paralelo com uma chamada anterior ainda pendente.
-
-  // UID do último carregamento bem-sucedido — evita re-fetch desnecessário
-  // quando o widget rebuilda sem mudança de usuário.
-
-  // BUILD 435 [PASSO 1]: flag de cache vazio no boot.
-  // true  → última tentativa retornou vazio (permission-denied ou cache ocluído).
-  // Permite re-fetch quando geminiConnected transita false→true, mesmo que
-  // _lastLoadedUid já esteja setado para o mesmo UID.
-
-  @override
-  void initState() {
-    super.initState();
-    // BUILD 454-2: registra observer de ciclo de vida para checar TTL do histórico
-    // ao retornar do background — o AiScreen já faz isso via _checkScreenTtl(),
-    // mas o inline chat da Home precisava do mesmo mecanismo.
-    WidgetsBinding.instance.addObserver(this);
-    // BUILD 295: log diagnóstico com tag estruturada — visível no Safari Web Console.
-    try {
-      debugPrint('[BUILD295][HomeInlineChat] init_ok — widget montado');
-      // Garante que o FocusNode nunca está focado ao montar/remontar o widget.
-      // Previne teclado automático ao retornar para a Home via IndexedStack.
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (mounted) {
-          _focus.unfocus();
-          // A sessão visual da Home é estritamente efêmera.
-          // O histórico continua persistido e acessível pelo botão Histórico,
-          // mas nunca é restaurado automaticamente neste card.
-        }
-      });
-    } catch (e, st) {
-      debugPrint('[BUILD295][HomeInlineChat] init_error: $e\n$st');
+  void _openConversation() {
+    final query = _ctrl.text.trim();
+    _focus.unfocus();
+    if (_sttListening) _stopInlineStt();
+    if (query.isNotEmpty) {
+      AiScreen.pendingQuery.value = AiPendingQuery(
+          query: query,
+          mode: AiScreen.currentMode,
+          startNewConversation: false);
+      _ctrl.clear();
     }
+    widget.onNavigateToAi(2);
   }
 
-  // BUILD 454-2: TTL check para o inline chat da Home.
-  // Mesma lógica do AiScreenState._checkScreenTtl() — usa a mesma chave
-  // SharedPreferences para manter consistência entre as duas superfícies de chat.
-  // Se passados > 30 min desde a última interação ativa, limpa o histórico local.
-  static const _kScreenTtlMs = 30 * 60 * 1000; // 30 min em milissegundos
-  static const _kLastActiveKey = 'ai_screen_last_active_ms';
-
-  Future<void> _checkHomeTtl() async {
-    if (!mounted) return;
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      final lastMs = prefs.getInt(_kLastActiveKey) ?? 0;
-      final nowMs = DateTime.now().millisecondsSinceEpoch;
-      if (nowMs - lastMs > _kScreenTtlMs) {
-        debugPrint(
-            '[BUILD454][HomeInlineChat] TTL expirado — limpando histórico '
-            'elapsed=${(nowMs - lastMs) ~/ 1000}s');
-        if (mounted) {
-          setState(() {
-            _messages.clear();
-            _streaming = '';
-            _thinking = false;
-            _sessionId = null;
-          });
-        }
-      }
-    } catch (e) {
-      debugPrint('[BUILD454][HomeInlineChat] _checkHomeTtl error: $e');
-    }
+  void _history() {
+    widget.onNavigateToAi(2);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      AiScreen.openHistoryCallback.value?.call();
+    });
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // BUILD 454-2: ao voltar do background/foreground, verifica se o TTL expirou.
-    // Isso garante que histórico stale não poluí a Home após o usuário ficar
-    // > 30 min fora do app.
-    if (state == AppLifecycleState.resumed) {
-      _checkHomeTtl();
-    }
+  void _newConversation() {
+    AiScreen.clearChatCallback.value?.call();
+    _ctrl.clear();
+    _focus.unfocus();
   }
-
-  // BUILD 434 [PASSO 2]: carregamento idempotente do histórico da sessão.
-  //
-  // TRAVA DE CONCORRÊNCIA (_isLoadingHistory):
-  //   Impede execuções paralelas quando didUpdateWidget dispara _loadChatHistory()
-  //   antes que uma chamada anterior tenha terminado (race condition no Safari
-  //   onde microtasks se intercalam com a fila de animações mais agressivamente).
-  //
-  // TRAVA DE UID (_lastLoadedUid):
-  //   Impede re-fetch desnecessário quando o widget rebuilda por mudança de dark/isEs
-  //   sem mudança de usuário — o histórico já está em _messages, nada a fazer.
-
-  // ── BUILD 441: helper de parsing e restauração reutilizável ─────────────────
-  // Extrai a sessão mais recente de um JSON bruto e restaura _messages.
-  // Idempotente: só aplica setState se _messages ainda estiver vazio.
-
-  @override
-  void didUpdateWidget(_HomeInlineChat old) {
-    super.didUpdateWidget(old);
-    // Se qualquer prop mudou e o widget foi reconstruído, certificar que
-    // o foco não é reclamado automaticamente.
-    // Não chama _focus.unfocus() para não interferir com digitação ativa.
-
-    // BUILD 437 [PASSO 3]: detecta transição geminiConnected false→true.
-    // Indica que o OAuth concluiu e o SDK do Firestore absorveu as credenciais.
-    //
-    // PROBLEMA CORRIGIDO: _loadChatHistory() apenas lê o SharedPreferences local,
-    // que pode estar vazio se o cache ainda não foi preenchido (boot com
-    // permission-denied temporário). Após o OAuth resolver, precisamos também
-    // acionar p.loadHistories() que faz fetch direto no Firestore + rebind do stream.
-    //
-    // SEQUÊNCIA:
-    //   1. _lastLoadedUid = null  → invalida trava de UID completa
-    //   2. _lastLoadWasEmpty = false → reseta flag de cache vazio
-    //   3. Delay 400ms → SDK Firestore absorve credenciais
-    //   4. p.loadHistories() → fetch direto no servidor + rebind stream reativo
-    //   5. _loadChatHistory() → relê SharedPreferences (agora preenchido pelo loadHistories)
-    if (!old.geminiConnected && widget.geminiConnected) {
-      debugPrint(
-        '[HomeInlineChat] conexão IA restabelecida — '
-        'sessão efêmera da Home preservada sem restauração histórica',
-      );
-      return;
-    }
-
-    // Mudanças de tema, idioma ou UID não restauram mensagens históricas
-    // dentro da Home. A sessão permanece somente em memória até o widget sair
-    // da árvore ou o processo do aplicativo ser encerrado.
-  }
-
-  // ── Ditado por voz da Home ───────────────────────────────────────────────
 
   void _toggleInlineStt() {
     if (_thinking) {
@@ -2126,676 +1985,28 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
 
   @override
   void dispose() {
-    // BUILD 454-2: remove o observer de ciclo de vida ao destruir o widget.
-    WidgetsBinding.instance.removeObserver(this);
-
-    if (_sttListening) {
-      ++_sttSessionEpoch;
-      SttHelper.stop();
-    }
-
+    ++_sttSessionEpoch;
+    if (_sttListening) SttHelper.stop();
     _ctrl.dispose();
     _focus.dispose();
-    _scrollCtrl.dispose();
     super.dispose();
-  }
-
-  /// Rola o ListView até o final após setState.
-  void _resetInlineStreamingDrain() {
-    _streamingDrainEpoch++;
-    _streamingRaw = '';
-    _streaming = '';
-    _streamingPending = '';
-    _streamingFinalText = null;
-    _streamingDrainRunning = false;
-  }
-
-  void _queueInlineStreamingFinal(String finalText) {
-    if (!mounted || finalText.trim().isEmpty) return;
-
-    // Única source-of-truth visual: a resposta final já higienizada.
-    //
-    // Nenhum snapshot parcial é concatenado ou reescrito antes deste ponto.
-    _streamingFinalText = finalText;
-    _streamingRaw = '';
-    _streaming = '';
-    _streamingPending = finalText;
-
-    _ensureInlineStreamingDrain();
-  }
-
-  void _ensureInlineStreamingDrain() {
-    if (_streamingDrainRunning || !mounted) return;
-
-    _streamingDrainRunning = true;
-    final epoch = _streamingDrainEpoch;
-
-    Future<void>(() async {
-      while (mounted && epoch == _streamingDrainEpoch) {
-        if (_streamingPending.isEmpty) {
-          final finalText = _streamingFinalText;
-
-          if (finalText != null) {
-            setState(() {
-              _messages.add({
-                'role': 'ai',
-                'text': finalText,
-                'isError': false,
-              });
-              _streamingRaw = '';
-              _streaming = '';
-              _streamingPending = '';
-              _streamingFinalText = null;
-              _streamingDrainRunning = false;
-              _thinking = false;
-            });
-
-            _scrollToBottom();
-            _homePersistTurn();
-            return;
-          }
-
-          _streamingDrainRunning = false;
-          return;
-        }
-
-        final drained = StreamingTextDrain.take(_streamingPending);
-
-        // 24 ms mantém o efeito fluido sem atrasar excessivamente respostas
-        // clínicas extensas. O próprio StreamingTextDrain acelera o lote quando
-        // existe backlog, sempre preservando grafemas Unicode completos.
-        await Future<void>.delayed(
-          const Duration(milliseconds: 24),
-        );
-
-        if (!mounted || epoch != _streamingDrainEpoch) {
-          return;
-        }
-
-        final completesDrain = drained.remainder.isEmpty;
-
-        setState(() {
-          _streamingRaw += drained.visible;
-
-          // O último lote usa exatamente o Markdown final definitivo.
-          // Os lotes anteriores estabilizam marcadores incompletos.
-          _streaming = completesDrain && _streamingFinalText != null
-              ? _streamingFinalText!
-              : _homeCleanPartialMd(_streamingRaw);
-          _streamingPending = drained.remainder;
-        });
-
-        _scrollToBottom();
-
-        if (completesDrain) {
-          // Permite que o último Markdown definitivo seja pintado antes
-          // do handoff atômico para a lista de mensagens.
-          //
-          // Não adiciona atraso artificial.
-          await WidgetsBinding.instance.endOfFrame;
-        }
-      }
-    });
-  }
-
-  void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (_scrollCtrl.hasClients) {
-        _scrollCtrl.animateTo(
-          _scrollCtrl.position.maxScrollExtent,
-          duration: const Duration(milliseconds: 280),
-          curve: Curves.easeOut,
-        );
-      }
-    });
-  }
-
-  // ─────────────────────────────────────────────────────────────────────────
-  // AUTO-PERSIST: dual-write após cada turno completo (user + AI)
-  //
-  // Espelha a lógica de _saveCurrentSessionToHistory() do AiScreenState
-  // mas funciona de forma autônoma no mini-chat da Home:
-  //   1. Gera um _sessionId estável na primeira chamada (ISO8601 timestamp)
-  //      → evita duplicatas no Firestore ao salvar turno a turno
-  //   2. Constrói o payload do mesmo formato de _ChatSession.toJson()
-  //      → compatível com o histórico de ai_screen.dart / _ChatHistorySheet
-  //   3. Cache local em SharedPreferences; o Firebase remoto pertence ao pipeline central
-  //      → chave uid_medcases_ia_chat_history_v1 — mesma convenção da IA Tab
-  //
-  // Chamado em onDone (sucesso) e onError (erro da IA) após setState,
-  // garantindo que o espelho local seja atualizado assim que a resposta chega.
-  // ─────────────────────────────────────────────────────────────────────────
-  Future<void> _homePersistTurn() async {
-    // BUILD 295: guard primário — widget pode ter sido desmontado entre o
-    // dispatch async e este ponto de execução (Safari microtask scheduler).
-    if (!mounted) return;
-
-    AppProvider p;
-    try {
-      p = context.read<AppProvider>();
-    } catch (_) {
-      // context.read() pode lançar se o Provider foi removido da árvore
-      debugPrint(
-          '[BUILD295][HomeInlineChat] skipped reason=provider_not_ready (persist)');
-      return;
-    }
-
-    // BUILD 295: snapshot local imutável — protege contra race condition onde
-    // setState(() => _messages.clear()) é chamado pelo botão "novo chat"
-    // entre este ponto e o uso de validMsgs.last abaixo.
-    // Em Safari, microtasks podem intercalar com a fila de animações mais
-    // agressivamente que no Chrome — capturar aqui elimina a janela de risco.
-    final msgSnapshot = List<Map<String, dynamic>>.from(_messages);
-
-    // Filtra apenas mensagens reais (sem erros de API) para não poluir o histórico
-    final validMsgs = msgSnapshot.where((m) => m['isError'] != true).toList();
-    if (validMsgs.isEmpty) return;
-
-    // BUILD 295: guard extra — verifica tanto lista quanto último item antes
-    // de chamar .last (que lança RangeError se vazio em dart2js release mode).
-    if (validMsgs.length < 2) return; // requer ao menos 1 user + 1 ai
-    final lastRole = validMsgs.last['role'];
-    if (lastRole == null || lastRole != 'ai') return;
-
-    // BUILD 295: _sessionId!  →  operador ?? garante string válida sem crash.
-    // Mesmo que _sessionId seja null por reentrada, nunca lança NullError.
-    _sessionId ??= DateTime.now().toIso8601String();
-    final stableSessionId = _sessionId ?? DateTime.now().toIso8601String();
-
-    final firstUserMsg = validMsgs.firstWhere((m) => m['role'] == 'user',
-        orElse: () => validMsgs.first);
-    // BUILD 295: cast seguro — usa safeString em vez de 'as String'
-    final summary = (firstUserMsg['text']?.toString()) ?? '';
-
-    // BUILD 295: serialização null-safe — nenhum campo usa cast duro 'as String'.
-    // Em Safari, valores de Map podem chegar como JavaScriptObject cujo .toString()
-    // é seguro, mas 'as String' lança TypeError se o tipo JS não for exatamente String.
-    final msgsPayload = validMsgs
-        .map((m) => {
-              'id':
-                  '${m['role']?.toString() ?? 'msg'}_${DateTime.now().microsecondsSinceEpoch}',
-              'role': m['role']?.toString() ?? 'unknown',
-              'text': m['text']?.toString() ?? '',
-            })
-        .toList();
-
-    final session = {
-      'id': stableSessionId,
-      'savedAt': DateTime.now().toIso8601String(),
-      'summary': summary.length > 100 ? summary.substring(0, 100) : summary,
-      'messages': msgsPayload,
-    };
-
-    final uid = p.currentUser?.uid;
-
-    // ── SharedPreferences — espelho local/offline aguardado ──────────────────
-    // O cache local é um espelho temporário e nunca o proprietário canônico.
-    // Ele permanece disponível quando conectividade ou autenticação
-    // remota ainda não estão prontas, permitindo restauração
-    // local imediata sem substituir a fonte canônica.
-    // Esta gravação é AGUARDADA (await) — não é fire-and-forget.
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      if (!mounted) return;
-      final histKey = '${uid ?? 'anon'}_$_kHistKey';
-      final existing = prefs.getString(histKey);
-      List<dynamic> histList = [];
-      if (existing != null && existing.isNotEmpty) {
-        // BUILD 296: cast seguro — jsonDecode retorna dynamic; em Safari o tipo
-        // JS pode não satisfazer 'as List' mas satisfaz 'as List<dynamic>'.
-        try {
-          final decoded = jsonDecode(existing);
-          if (decoded is List) histList = decoded;
-        } catch (_) {}
-      }
-      // Remove entrada antiga com o mesmo ID (atualização incremental)
-      histList.removeWhere((e) => e is Map && e['id'] == stableSessionId);
-      // Insere no topo (mais recente primeiro)
-      histList.insert(0, session);
-      // Mantém apenas as 10 sessões mais recentes (mesmo limite da IA Tab)
-      if (histList.length > 10) histList = histList.sublist(0, 10);
-      await prefs.setString(histKey, jsonEncode(histList));
-      debugPrint('[BUILD441][HomeInlineChat] local_persist OK key=$histKey '
-          'sessions=${histList.length}');
-    } catch (e) {
-      debugPrint('[BUILD441][HomeInlineChat] local_persist ERROR $e');
-    }
-
-    // ── AI-RECONSTRUCTION-R18.6U: cache local somente ────────────────
-    // O Firebase remoto pertence exclusivamente ao pipeline central.
-    // A Home mantém somente o espelho local/offline.
-    // canonical_remote_owned_by_app_provider
-  }
-
-  /// Botão enviar — comportamento inteligente:
-  ///   campo VAZIO + sem histórico  → navegação direta para tela cheia de IA
-  ///   campo VAZIO + com histórico  → navega para IA tab carregando APENAS a
-  ///                                   primeira query do fluxo Home (limpa histórico anterior da IA tab)
-  ///   campo CHEIO  → dispara stream do mini-chat inline
-  void _onSendPressed() {
-    // BUILD 295: widget guard antes de qualquer acesso a context ou _messages
-    if (!mounted) {
-      debugPrint(
-          '[BUILD295][HomeInlineChat] send_blocked reason=not_mounted (onSendPressed)');
-      return;
-    }
-    final text = _ctrl.text.trim();
-    if (text.isEmpty) {
-      if (_messages.isNotEmpty) {
-        // B144: hasHistory + campo vazio → IA tab com apenas a query original
-        // Extrai a primeira mensagem do usuário que iniciou o fluxo na Home.
-        // pendingQuery substitui qualquer histórico anterior aberto na IA tab.
-        // BUILD 295: ['text'] pode ser null em Safari — usar ?. e toString()
-        final firstUserMsg = (_messages.firstWhere(
-              (m) => m['role'] == 'user',
-              orElse: () => <String, dynamic>{},
-            )['text'])
-                ?.toString() ??
-            '';
-        if (firstUserMsg.isNotEmpty) {
-          // Limpa histórico pendente e define apenas a primeira query
-          AiScreen.pendingHistory.value =
-              []; // limpa histórico anterior da IA tab
-          AiScreen.pendingQuery.value =
-              AiPendingQuery(query: firstUserMsg, mode: AiRequestMode.estudo);
-        }
-      }
-      widget.onNavigateToAi(2);
-      return;
-    }
-    _send(text);
-  }
-
-  /// Abre a aba IA e dispara o modal de conexão Google após 350ms.
-  void _openConnectModal() {
-    widget.onNavigateToAi(2);
-    Future.delayed(const Duration(milliseconds: 350), () {
-      if (mounted) AiScreen.openSettingsCallback.value?.call();
-    });
-  }
-
-  Future<void> _send([String? preset]) async {
-    final text = (preset ?? _ctrl.text).trim();
-    if (text.isEmpty || _thinking) return;
-
-    // BUILD 295: widget guard — verifica montagem antes de qualquer acesso a context
-    if (!mounted) {
-      debugPrint('[BUILD295][HomeInlineChat] send_blocked reason=not_mounted');
-      return;
-    }
-
-    // ── BUILD 294 + 295: FIREBASE GUARD — nunca envia se Firebase não inicializou ──
-    // No Safari (modo privado, ITP, IndexedDB bloqueado), Firebase.initializeApp()
-    // pode falhar. Tentar sendAiMessage() nesse estado causa NullError no SDK.
-    // Solução: redirecionar para aba IA completa que tem seu próprio fallback.
-    if (FirebaseRuntimeGuard.isUnavailable) {
-      debugPrint(
-          '[BUILD299][HomeInlineChat] send_blocked reason=firebase_runtime_unavailable');
-      widget.onNavigateToAi(2);
-      return;
-    }
-
-    // BUILD 295: guard de Provider — context.read pode lançar se o widget
-    // foi recriado pelo Safari durante um microtask de layout/scroll.
-    AppProvider pCheck;
-    try {
-      pCheck = context.read<AppProvider>();
-    } catch (_) {
-      debugPrint(
-          '[BUILD295][HomeInlineChat] send_blocked reason=provider_not_ready');
-      widget.onNavigateToAi(2);
-      return;
-    }
-
-    // ── BUILD 312 M1: PRE-GUARD — bloqueia envio sem autenticação real ────────
-    // Idêntico ao Layer 0 do ai_screen.dart: sem geminiConnected nem openAiKey
-    // o mini-chat não envia nada — abre o modal de conexão diretamente.
-    final hasAuth = pCheck.geminiConnected || pCheck.openAiKey.isNotEmpty;
-    if (!hasAuth) {
-      _focus.unfocus();
-      _openConnectModal();
-      return;
-    }
-
-    _ctrl.clear();
-    _focus.unfocus();
-    _resetInlineStreamingDrain();
-    setState(() {
-      _messages.add({'role': 'user', 'text': text, 'isError': false});
-      _streaming = '';
-      _thinking = true;
-    });
-    _scrollToBottom();
-    // BUILD 295: segundo guard de Provider — between setState() and sendAiMessage(),
-    // o Safari pode reconstruir o widget tree num microtask de layout.
-    // context.read() seguro somente se o widget ainda está montado.
-    AppProvider p;
-    try {
-      p = context.read<AppProvider>();
-    } catch (_) {
-      debugPrint(
-          '[BUILD295][HomeInlineChat] send_blocked reason=provider_lost_after_setState');
-      if (mounted) {
-        setState(() {
-          _streaming = '';
-          _thinking = false;
-        });
-      }
-      return;
-    }
-    try {
-      await p.sendAiMessage(
-        text,
-        // BUILD 440-MASTER-SHIELD [P3]: Boot default Modo Estudo na HomeScreen.
-        // longResponse=true força CONTRACT_ESTUDO (resposta completa e acadêmica)
-        // como padrão para o mini-chat inline da Home. O Modo Plantão
-        // (longResponse=false / CONTRACT_PLANTAO) só é ativo na tela dedicada IA
-        // quando o médico altera o toggle manualmente.
-        longResponse: true,
-        onChunk: (_) {
-          // O transporte SSE continua recebendo normalmente.
-          //
-          // A Home não projeta snapshots parciais porque os sanitizadores podem
-          // corrigir prefixos durante a transmissão. A interface aguarda o onDone
-          // e revela uma única vez a resposta final já limpa.
-        },
-        onDone: (fin) {
-          if (mounted) {
-            // CAMADA 1 + 2 — Strip cabeçalhos E limpeza profunda de CoT/tags
-            // na resposta final. Idêntico ao tratamento de ai_screen.dart.
-            final cleanFin = _cleanHomeAiText(
-              _homeStripMetadataHeaders(fin),
-            );
-
-            // O texto final permanece como source-of-truth, mas só é commitado
-            // ao histórico depois que todos os seus grafemas forem revelados.
-            _queueInlineStreamingFinal(cleanFin);
-          }
-        },
-        onError: (err) {
-          if (!mounted) return;
-          // ── BUILD 312 M1: AUTH_REQUIRED — JAMAIS renderizar como bolha ──────
-          // Factor3 do provider emite AUTH_REQUIRED quando a barreira de backend
-          // bloqueia. Suprimimos, limpamos a pergunta do usuário e abrimos modal.
-          if (err == 'AUTH_REQUIRED') {
-            _resetInlineStreamingDrain();
-            setState(() {
-              _streaming = '';
-              _thinking = false;
-              // Remove a pergunta do usuário que ficou sem resposta
-              if (_messages.isNotEmpty &&
-                  _messages.last['role'] == 'user' &&
-                  _messages.last['text'] == text) {
-                _messages.removeLast();
-              }
-            });
-            _openConnectModal();
-            return;
-          }
-          _resetInlineStreamingDrain();
-          setState(() {
-            _messages.add({'role': 'ai', 'text': err, 'isError': true});
-            _streaming = '';
-            _thinking = false;
-          });
-          _scrollToBottom();
-          // AUTO-PERSIST: mesmo em erro — salva o turno do usuário para
-          // que o histórico mostre a tentativa no _ChatHistorySheet.
-          _homePersistTurn();
-        },
-      );
-    } catch (e) {
-      // Captura exceções não tratadas (ex: TimeoutException, SocketException)
-      // que possam escapar do onError — garante limpeza total do estado.
-      if (mounted) {
-        _resetInlineStreamingDrain();
-        setState(() {
-          _streaming = '';
-          _thinking = false;
-          // Adiciona bolha de erro genérico se não houver resposta AI ainda
-          if (_messages.isEmpty || _messages.last['role'] != 'ai') {
-            _messages.add({
-              'role': 'ai',
-              'text': '⚠️ Erro de conexão. Tente novamente.',
-              'isError': true
-            });
-          }
-        });
-      }
-    }
-  }
-
-  /// Navega para a aba de IA (tab 2).
-  ///
-  /// [q] → query opcional para disparar como nova mensagem (chips de atalho).
-  /// [withHistory] → true quando chamado por "Ver más"/"Ver resposta completa"
-  ///   — injeta o histórico completo do mini-chat no AiScreen para continuar
-  ///   a conversa de onde parou.
-  void _goToAiTab([String? q, bool withHistory = false]) {
-    if (q != null && q.isNotEmpty) {
-      // Chip de atalho ou campo preenchido: dispara nova query na tela de IA
-      AiScreen.pendingQuery.value =
-          AiPendingQuery(query: q, mode: AiRequestMode.estudo);
-    } else if (withHistory) {
-      // Build 1556 Fix: escopo local do _HomeInlineChatState corrigido.
-      //
-      // PROBLEMA ANTERIOR: a guard `_messages.isNotEmpty` bloqueava a injeção
-      // quando o usuário clicava "Ver resposta completa" durante streaming ativo
-      // (_thinking=true) — nesse estado _messages ainda pode estar vazio porque a
-      // resposta AI ainda não foi commitada pelo onDone. O resultado era AiScreen
-      // abrir completamente em branco.
-      //
-      // CORREÇÃO: avaliar _messages E _streaming de forma independente.
-      // Se _messages vazio mas _streaming não vazio → ainda há conteúdo local.
-      // Só pula a injeção se AMBOS estiverem vazios.
-      //
-      // ESCOPO: _messages e _streaming pertencem exclusivamente a
-      // _HomeInlineChatState (definidos nas linhas 1078-1079 desta classe).
-      // Não há acesso a nenhuma lista global da HomeScreen pai.
-
-      // Snapshot das mensagens commitadas (sem erros)
-      // BUILD 295: cast null-safe — 'as String' lança TypeError no Safari se
-      // o valor for JavaScriptObject. toString() é sempre seguro em dart2js.
-      final clean = _messages.where((m) => m['isError'] != true).toList();
-      final pairs = clean
-          .map((m) => {
-                'role': m['role']?.toString() ?? 'user',
-                'text': m['text']?.toString() ?? '',
-              })
-          .toList();
-
-      // Snapshot do streaming em vôo (race condition: onDone ainda não disparou)
-      final streamingSnapshot = _streaming.trim();
-      if (streamingSnapshot.isNotEmpty) {
-        pairs.add({'role': 'ai', 'text': streamingSnapshot});
-      }
-
-      // Injeta somente se há conteúdo real — evita AiScreen em branco
-      if (pairs.isNotEmpty) {
-        AiScreen.pendingHistory.value = pairs;
-      }
-      // Se pairs ainda vazio (edge case: clique antes da primeira palavra AI),
-      // navega mesmo assim — AiScreen exibirá saudação padrão normalmente.
-    }
-    widget.onNavigateToAi(2);
-
-    // BUILD 456-3: ISOLAMENTO PÓS-NAVEGAÇÃO.
-    // Ao navegar para a AiScreen completa, reseta o estado visual da Home
-    // (post-frame para não interferir na injeção do pendingHistory acima).
-    // Na volta à Home o widget exibirá o card limpo padrão, sem espelhar
-    // o histórico longo que ficou no AiScreen.
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) {
-        setState(() {
-          _messages.clear();
-          _streaming = '';
-          _thinking = false;
-          _sessionId = null;
-        });
-      }
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    debugPrint('[BUILD298][HomeInlineChat] build_start');
-
-    // ── GUARD 1 (ABSOLUTO): Firebase não inicializado ────────────────────────
-    // No Safari (modo privado, ITP, IndexedDB bloqueado) Firebase.initializeApp()
-    // pode falhar silenciosamente. Acessar FirebaseAuth.instance ou qualquer SDK
-    // Firebase nesse estado SEMPRE lança NullError em dart2js release mode.
-    // NUNCA usar FirebaseAuth.instance.currentUser aqui — é justamente a fonte do crash.
-    // O widget se oculta e será reconstruído quando o Provider notificar init completo.
-    if (kIsWeb && FirebaseRuntimeGuard.isUnavailable) {
-      debugPrint(
-          '[BUILD299][HomeInlineChat] build_abort reason=firebase_runtime_unavailable');
-      return const SizedBox.shrink();
-    }
-
-    // ── GUARD 2: sessão válida — lógica multi-fonte (BUILD 298) ─────────────
-    // BUILD 298: não depender APENAS de AuthService.currentUser (FirebaseAuth SDK).
-    // No Safari, o IndexedDB acorda mais devagar: _auth.currentUser pode ser null
-    // mesmo quando AppProvider já tem o usuário completo (via setUser() do boot)
-    // e AuthService.hasCachedToken confirma token REST válido em memória.
-    // Hierarquia: AppProvider (primária) > token REST em cache > FirebaseAuth SDK.
-    if (kIsWeb) {
-      AppProvider? safeProvider;
-      try {
-        safeProvider = context.read<AppProvider>();
-      } catch (_) {}
-      final providerUser = safeProvider?.currentUser;
-      final hasCachedTk = AuthService.hasCachedToken;
-      final firebaseUser = AuthService.currentUser;
-      final bool hasSession =
-          providerUser != null || hasCachedTk || firebaseUser != null;
-      if (!hasSession) {
-        debugPrint('[BUILD298][HomeInlineChat] build_abort reason=no_session '
-            'provider=${providerUser?.uid ?? "null"} '
-            'cachedToken=$hasCachedTk '
-            'firebaseUser=${firebaseUser?.uid ?? "null"}');
-        return const SizedBox.shrink();
-      }
-    }
-
-    // ── GUARD 3: Provider não disponível na árvore ───────────────────────────
-    // context.read() pode lançar ProviderNotFoundException se o widget foi
-    // recriado num microtask antes do Provider ser montado.
-    try {
-      context.read<AppProvider>();
-    } catch (_) {
-      debugPrint(
-          '[BUILD298][HomeInlineChat] build_abort reason=provider_not_ready');
-      return const SizedBox.shrink();
-    }
-
-    // ── BUILD PRINCIPAL: wrap total com catch para erros residuais ───────────
-    // SizedBox.shrink() é mais seguro que Container() como fallback — não tem
-    // subwidgets que possam lançar durante o seu próprio build.
-    try {
-      final result = _buildChatContent(context);
-      debugPrint('[BUILD298][HomeInlineChat] build_ok');
-      return result;
-    } catch (e, st) {
-      debugPrint('[BUILD298][HomeInlineChat][ERROR] error=$e stack=$st');
-      return const SizedBox.shrink();
-    }
-  }
-
-  void _toggleInlineExpansion() {
-    if (!mounted) return;
-
-    setState(() {
-      _isInlineExpanded = !_isInlineExpanded;
-    });
-
-    _scrollToBottom();
-  }
-
-  void _openInlineHistory() {
-    AppHaptics.light(context);
-    widget.onNavigateToAi(2);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      AiScreen.openHistoryCallback.value?.call();
-    });
-  }
-
-  void _startInlineNewChat() {
-    if (_thinking) return;
-
-    AppHaptics.light(context);
-
-    _resetInlineStreamingDrain();
-
-    setState(() {
-      _messages.clear();
-      _streaming = '';
-      _thinking = false;
-      _sessionId = null;
-      _isInlineExpanded = false;
-      _ctrl.clear();
-    });
-
-    _focus.unfocus();
-    AiScreen.clearChatCallback.value?.call();
-  }
-
-  void _copyInlineAnswer(String text) {
-    final normalized = text.trim();
-    if (normalized.isEmpty) return;
-
-    Clipboard.setData(
-      ClipboardData(text: normalized),
-    );
-
-    if (!mounted) return;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          widget.isEs ? 'Respuesta copiada.' : 'Resposta copiada.',
-        ),
-        duration: const Duration(milliseconds: 1200),
-      ),
-    );
-  }
-
-  void _continueInlineInAi() {
-    _goToAiTab(null, true);
-  }
-
-  Widget _buildChatContent(BuildContext context) {
-    final hasHistory = _messages.isNotEmpty;
-    final hasStream = _thinking && _streaming.isNotEmpty;
-    final hasThinking = _thinking && _streaming.isEmpty;
-    final hasExpandableContent = hasHistory || hasStream || hasThinking;
-
-    final displayName =
+    final name =
         context.read<AppProvider>().currentUser?.displayName.trim() ?? '';
-
-    final firstName =
-        displayName.isEmpty ? '' : displayName.split(RegExp(r'\s+')).first;
-
-    return HomeInlineChatV2View(
+    return HomeClinicalEntryView(
       dark: widget.dark,
       isEs: widget.isEs,
-      userName: firstName,
-      messages: _messages,
-      streaming: _streaming,
-      thinking: _thinking,
-      expanded: _isInlineExpanded,
-      hasExpandableContent: hasExpandableContent,
+      userName: name.isEmpty ? '' : name.split(RegExp(r'\s+')).first,
       controller: _ctrl,
       focusNode: _focus,
-      scrollController: _scrollCtrl,
-      onSend: _onSendPressed,
+      onSend: _openConversation,
       onVoice: _toggleInlineStt,
       sttListening: _sttListening,
-      onHistory: _openInlineHistory,
-      onNewChat: _startInlineNewChat,
-      onToggleExpanded: _toggleInlineExpansion,
-      onCopyAnswer: _copyInlineAnswer,
-      onContinueInAi: _continueInlineInAi,
+      onHistory: _history,
+      onNewChat: _newConversation,
     );
   }
 }
@@ -2817,6 +2028,8 @@ class _HomeInlineChatState extends State<_HomeInlineChat>
 
 /// CAMADA 1 — Leve, aplicada a cada chunk acumulado durante o streaming.
 /// Elimina metadados de cabeçalho antes de exibir texto parcial.
+// Retired mini-chat sanitizer. Home delegates to AiScreen before generation.
+// ignore: unused_element
 String _homeStripMetadataHeaders(String accumulated) {
   if (accumulated.isEmpty) return accumulated;
 
@@ -3097,6 +2310,8 @@ String _cleanHomeAiText(String raw) {
 // garantir que tokens incompletos (**sem fechar) não apareçam como asteriscos
 // crús na UI enquanto o stream ainda está chegando.
 // ─────────────────────────────────────────────────────────────────────────────
+// Retired mini-chat sanitizer, with no runtime callers.
+// ignore: unused_element
 String _homeCleanPartialMd(String text) {
   if (text.isEmpty) return text;
   final lines = text.split('\n');
@@ -3621,8 +2836,8 @@ class _HomeIaCardState extends State<_HomeIaCard> {
   void _navigate([String? query]) {
     final q = (query ?? _ctrl.text).trim();
     if (q.isNotEmpty) {
-      AiScreen.pendingQuery.value =
-          AiPendingQuery(query: q, mode: AiRequestMode.estudo);
+      AiScreen.pendingQuery.value = AiPendingQuery(
+          query: q, mode: AiScreen.currentMode, startNewConversation: false);
     }
     _ctrl.clear();
     _focus.unfocus();
@@ -3750,7 +2965,7 @@ class _HomeIaCardState extends State<_HomeIaCard> {
                       Row(
                         children: [
                           Text(
-                            'MedCases IA',
+                            'MedCases Clinical',
                             style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w900,
@@ -5731,7 +4946,7 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
             ? 'Tiempo de revisión agotado'
             : 'Tempo de revisão esgotado');
 
-    final notificationTitle = widget.isEs ? 'Hola Doc.' : 'Olá Doc.';
+    final notificationTitle = widget.isEs ? 'Temporizador finalizado' : 'Timer concluído';
     final notificationBody = widget.isEs
         ? 'Es hora de revisar el paciente.'
         : 'É hora de revisar o paciente.';
@@ -5812,7 +5027,10 @@ class _HistorialCompactCardState extends State<_HistorialCompactCard>
   void dispose() {
     ClinicalTimerExternalBridge._unbind(this);
     WidgetsBinding.instance.removeObserver(this);
-    _cancelTimer(updateUi: false);
+    // Route disposal only stops the visual ticker. Persisted timers and their
+    // OS notifications remain active until explicit cancellation or expiry.
+    _countdownTimer?.cancel();
+    _countdownTimer = null;
     _timerListDisposed = true;
     _timerListNotifier.dispose();
     super.dispose();

@@ -4,7 +4,7 @@ const {MonthlyUsageOwner}=require('../monthly_usage_owner');
 // A shared serial transaction adapter models two independent server workers.
 // Firestore production uses runTransaction; no emulator/deployment is claimed.
 function database(){const records=new Map([['users/A',{plan:'free'}],['users/B',{plan:'premium'}]]);let queue=Promise.resolve();
- return {records,collection:name=>({doc:id=>`${name}/${id}`}),runTransaction(action){const run=queue.then(async()=>{const staged=new Map();const result=await action({get:async ref=>({exists:records.has(ref),data:()=>structuredClone(records.get(ref))}),set:(ref,data)=>staged.set(ref,structuredClone(data))});for(const [k,v]of staged)records.set(k,v);return result;});queue=run.catch(()=>{});return run;}};}
+ return {records,collection:name=>({doc:id=>`${name}/${id}`,where(field,op,value){const query={name,filters:[[field,value]],where(f,o,v){this.filters.push([f,v]);return this;}};return query;}}),runTransaction(action){const run=queue.then(async()=>{const staged=new Map();const result=await action({get:async ref=>typeof ref==='string'?({exists:records.has(ref),data:()=>structuredClone(records.get(ref))}):({docs:[...records].filter(([k,v])=>k.startsWith(ref.name+'/')&&ref.filters.every(([f,x])=>v[f]===x)).map(([k,v])=>({data:()=>structuredClone(v)}))}),set:(ref,data)=>staged.set(ref,structuredClone(data))});for(const [k,v]of staged)records.set(k,v);return result;});queue=run.catch(()=>{});return run;}};}
 const req=(operationId,maximumMs=60000)=>({operationId,maximumMs,kinds:['recording']});
 test('two server workers cannot exceed account quota; preferences/reinstall are irrelevant',async()=>{
  const db=database();const a=new MonthlyUsageOwner({db}),b=new MonthlyUsageOwner({db});
@@ -36,8 +36,8 @@ for(const state of ['TRIAL','PAID','CANCELLED_STILL_ACTIVE','EXPIRED'])test(`sov
  const owner=new MonthlyUsageOwner({db,now:()=>now});const minutes=state==='EXPIRED'?15:240;
  await owner.reserve('A',req('limit',minutes*60000));await assert.rejects(owner.reserve('A',req('overflow',1)),/LIMIT/);
 });
-test('Free transcription limit is 30 minutes, independent of device',async()=>{
- const owner=new MonthlyUsageOwner({db:database()});await owner.reserve('A',{...req('trans',30*60000),kinds:['transcription']});
+test('Free transcription limit is 15 minutes, independent of device',async()=>{
+ const owner=new MonthlyUsageOwner({db:database()});await owner.reserve('A',{...req('trans',15*60000),kinds:['transcription']});
  await assert.rejects(owner.reserve('A',{...req('overflow',1),kinds:['transcription']}),/LIMIT/);
 });
 
@@ -63,3 +63,23 @@ test('server verified failure before work can release, but never reopen attempt'
  await assert.rejects(owner.claimExecution('A',r),/NOT_AUTHORIZED/);
  await owner.reserve('A',req('new',900000));
 });
+
+for(const [uid,allowance,consumed,remaining] of [['A',15,6,9],['B',90,20,70]]){
+ test(`cumulative balance ${uid}: reservations, completion, new worker and retry`,async()=>{
+  const db=database(),now=()=>Date.UTC(2026,8,26);
+  const owner=new MonthlyUsageOwner({db,now});
+  let b=await owner.balance(uid);assert.equal(b.allowanceMs,allowance*60000);assert.equal(b.remainingMs,allowance*60000);
+  const request={...req('lecture',consumed*60000),kinds:['transcription']};
+  const r=await owner.reserve(uid,request);
+  b=await owner.balance(uid);assert.equal(b.reservedMs,consumed*60000);assert.equal(b.usedMs,0);assert.equal(b.remainingMs,remaining*60000);
+  await owner.claimExecution(uid,r);await owner.completeExecution(uid,r);
+  await owner.reserve(uid,request);
+  b=await new MonthlyUsageOwner({db,now}).balance(uid);
+  assert.equal(b.usedMs,consumed*60000);assert.equal(b.reservedMs,0);assert.equal(b.remainingMs,remaining*60000);
+  const failed=await owner.reserve(uid,{...req('consultation',60000),kinds:['transcription']});
+  await owner.failBeforeExecution(uid,failed);
+  assert.equal((await owner.balance(uid)).remainingMs,remaining*60000);
+  const nextMonth=new MonthlyUsageOwner({db,now:()=>Date.UTC(2026,9,1)});
+  assert.equal((await nextMonth.balance(uid)).remainingMs,allowance*60000);
+ });
+}

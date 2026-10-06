@@ -1,3 +1,4 @@
+import '../../../services/ai/safety/ai_stream_trace.dart';
 import 'package:flutter/material.dart';
 import 'package:medcases/home_v2/theme/home_v2_palette.dart';
 import 'package:medcases/models/clinical_structured_output.dart';
@@ -190,6 +191,12 @@ class _GuardiaClinicalResponseViewState
 
   @override
   Widget build(BuildContext context) {
+    if (widget.isStreaming && _displayText.isNotEmpty) {
+      final chars = _displayText.length;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && widget.isStreaming) AiStreamTrace.mark('UI_PARTIAL_RENDERED', chars);
+      });
+    }
     final palette = HomeV2Palette.resolve(widget.dark);
     final effectiveText =
         !widget.isStreaming && widget.rawText.trim().isNotEmpty
@@ -656,11 +663,13 @@ class _GuardiaClinicalResponseViewState
                   ),
                 ),
           ],
-          if (content.fallbackLines.isNotEmpty &&
-              (widget.isStreaming || !content.hasStructuredContent)) ...[
+          // Educational prose is independent of structured actions. Completion
+          // must not hide text merely because another section parsed successfully.
+          if (content.fallbackLines.isNotEmpty) ...[
             if (content.hasStructuredContent) const SizedBox(height: 5),
             if (widget.userInitiatedByAction) const SizedBox(height: 14),
-            for (final item in content.fallbackLines)
+            for (final item in content.fallbackLines.where((line) =>
+                _normalizeClinicalText(line) != _normalizeClinicalText(displayDiagnosis)))
               widget.userInitiatedByAction
                   ? _ContinuationRefinedLine(text: item, palette: palette)
                   : _PartialLine(
@@ -3466,6 +3475,9 @@ class _GuardiaDisplayContent {
             !_isInlineAlertClinicalLine(line) &&
             !_isContinuationClinicalLine(line) &&
             !_isContractHeadingLine(line) &&
+            !_duplicatesClinicalLine(line, <String>[
+              ...excludedFromKeyPoints, ...keyPoints,
+            ]) &&
             _normalizeClinicalText(line) != _normalizeClinicalText(diagnosis),
       ),
     );

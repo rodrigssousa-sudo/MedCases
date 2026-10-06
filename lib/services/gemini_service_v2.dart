@@ -1,3 +1,8 @@
+import 'study/study_hybrid_response.dart' show StudyDelivery, StudyHybridResponse;
+import 'study/study_canonical_schema.dart';
+import '../models/study_clinical_snapshot.dart';
+import 'study_response_contract.dart';
+import 'ai/safety/ai_stream_trace.dart';
 // ══════════════════════════════════════════════════════════════════════════════
 // GeminiServiceV2 — Build 105 — Motor de IA BYOA blindado para produção
 //
@@ -105,19 +110,28 @@ class GeminiChunk {
 
   /// Motivo objetivo informado pelo provedor ao encerrar a geração.
   /// Exemplos: STOP, MAX_TOKENS, SAFETY e RECITATION.
-  /// null quando o stream terminou sem finishReason explícito.
+  /// INCOMPLETE_STREAM quando houve texto, mas nenhum término explícito.
+  /// null quando o stream terminou vazio, para o retry vazio existente.
   final String? finishReason;
 
   /// Código de erro se a requisição falhou (null = sucesso normal).
   /// Códigos possíveis: 'quota', 'api_key_invalid', 'timeout', 'network',
   /// 'stream_error', 'http_XXX', 'unexpected'.
   final String? errorCode;
+  final List<({String title, String url})> groundedSources;
+  final StudyClinicalSnapshot? studySnapshot;
+  final StudyDelivery? studyDelivery;
+  final List<String> studyCanonicalIssues;
 
   const GeminiChunk({
     required this.text,
     this.isDone = false,
     this.finishReason,
     this.errorCode,
+    this.groundedSources = const [],
+    this.studySnapshot,
+    this.studyDelivery,
+    this.studyCanonicalIssues = const [],
   });
 
   /// true → o stream terminou com falha.
@@ -601,7 +615,7 @@ class GeminiServiceV2 {
         chunks.fold<int>(0, (sum, c) => sum + c.text.length);
     final hasPartialContent = hadContent && partialCharsTotal > 40;
 
-    if (isTransientError &&
+    if (!systemPrompt.startsWith('STUDY HYBRID v1') && isTransientError &&
         !hasPartialContent &&
         transientAttempt < _maxTransientRetries) {
       if (controller.isClosed) return;
@@ -710,6 +724,8 @@ class GeminiServiceV2 {
     String? cachedContentName, // BUILD 278: ID do Context Cache ativo
   }) async {
     final url = Uri.parse('$_endpointStream&key=$apiKey');
+    final canonicalStudy = !isPlantaoMode && StudyCanonicalSchema.applies(systemPrompt);
+    final hybridStudy = !isPlantaoMode && systemPrompt.startsWith('STUDY HYBRID v1');
 
     // ── CAMADA 3: Build 190 — AiSmartRouter bypass ────────────────────────────
     // Build 190: systemPrompt já foi processado por AiSmartRouter.build() em
@@ -799,18 +815,14 @@ class GeminiServiceV2 {
               },
       'contents': contents,
       'generationConfig': {
-        // maxOutputTokens: 3200
-        //   Previne corte abrupto de texto no meio do streaming.
-        //   3200 tokens ≈ 12.800 chars → suporta MODO FARMACO completo
-        //   (prompt de 19 seções + RAG injetado + resposta clínica longa).
-        //   Build 93: aumentado de 2048→3200 após análise de truncamentos.
-        //
-        //   ORDEM 57 M1 AUDIT (Build 286): valor já estava em 3200 —
-        //   excede o teto-alvo de 600 do mandato. Nenhuma alteração
-        //   necessária aqui. O truncamento relatado era causado por prompts
-        //   longos nos botões automáticos (NextActionEngine), corrigidos em
-        //   O57 M2 (ai_next_action_engine.dart).
-        'maxOutputTokens': 3200,
+        if (canonicalStudy) ...StudyCanonicalSchema.generationConfig,
+        if (hybridStudy)
+          ...StudyHybridResponse.generationConfig,
+        // Study needs room for an educational explanation and model reasoning.
+        // MAX_TOKENS is still propagated and never accepted as completion.
+        'maxOutputTokens': isPlantaoMode ? 3200 :
+            canonicalStudy ? StudyCanonicalSchema.maxOutputTokens :
+            hybridStudy ? StudyHybridResponse.maxOutputTokens : StudyResponseContract.maxOutputTokens,
 
         // temperature: 0.4 — equilíbrio entre precisão clínica e fluência.
         // Valores > 0.6 aumentam risco de alucinação em contexto médico.
@@ -818,7 +830,8 @@ class GeminiServiceV2 {
         'topP': 0.95,
         'topK': 40,
 
-        // thinkingConfig REMOVIDO intencionalmente do payload do stream.
+        // Non-hybrid consumers retain their existing thinking configuration.
+        // Hybrid Study alone reserves an answer budget on gemini-2.5-flash.
         //
         // gemini-2.5-flash-lite rejeita esta chave no endpoint streamGenerateContent
         // com erro 400 "Unknown field" — o modelo lite não suporta controle de
@@ -858,7 +871,7 @@ class GeminiServiceV2 {
 
     // Google Search Grounding — ativa busca na web para informações atuais.
     // Desativado automaticamente em retry de SAFETY/RECITATION.
-    if (useGrounding) {
+    if (useGrounding && !canonicalStudy && !hybridStudy) {
       body['tools'] = [
         {'google_search': {}}
       ];
@@ -871,8 +884,11 @@ class GeminiServiceV2 {
         ..headers['Content-Type'] = 'application/json'
         ..body = jsonEncode(body);
 
+      AiStreamTrace.mark('PROVIDER_REQUEST', 0);
+      if (canonicalStudy) AiStreamTrace.mark('STUDY_PRIMARY_HTTP_SENT', 0);
       response = await request.send().timeout(const Duration(seconds: 60));
     } on TimeoutException {
+      if (canonicalStudy) AiStreamTrace.mark('STUDY_PRIMARY_HEADERS_TIMEOUT', 60000);
       _log('[GeminiV2] timeout na conexão HTTP (60s)');
       if (!controller.isClosed) {
         controller
@@ -983,8 +999,10 @@ class GeminiServiceV2 {
 
     // ── Tratamento de erros HTTP (antes de ler o stream) ─────────────────────
 
+    AiStreamTrace.mark('PROVIDER_STATUS', response.statusCode);
+    if (canonicalStudy) AiStreamTrace.mark('STUDY_PRIMARY_HEADERS', response.statusCode);
     if (response.statusCode == 429) {
-      if (attempt < _maxRetries) {
+      if (!systemPrompt.startsWith('STUDY HYBRID v1') && attempt < _maxRetries) {
         // Calcula tempo de espera — respeita header Retry-After se disponível
         Duration waitTime = _retryBackoff[attempt];
         final retryAfter = response.headers['retry-after'] ??
@@ -1068,6 +1086,46 @@ class GeminiServiceV2 {
       return;
     }
 
+    await _consumeResponse(
+      controller: controller,
+      response: response,
+      useGrounding: useGrounding,
+      allowGroundingRecovery: !systemPrompt.startsWith('STUDY HYBRID v1'),
+      retryWithoutGrounding: () => _streamRequest(
+        controller: controller,
+        apiKey: apiKey,
+        userMessage: userMessage,
+        systemPrompt: systemPrompt,
+        history: history,
+        useGrounding: false,
+        attempt: attempt,
+        modeAnchor: modeAnchor,
+        isPlantaoMode: isPlantaoMode,
+        cachedContentName: cachedContentName,
+      ),
+    );
+  }
+
+  /// Exercises the production stream reader without credentials or network.
+  @visibleForTesting
+  static Stream<GeminiChunk> decodeResponseForTesting(Stream<List<int>> bytes) {
+    final controller = StreamController<GeminiChunk>();
+    unawaited(_consumeResponse(
+      controller: controller,
+      response: http.StreamedResponse(bytes, 200),
+      useGrounding: false,
+      retryWithoutGrounding: () async {},
+    ));
+    return controller.stream;
+  }
+
+  static Future<void> _consumeResponse({
+    required StreamController<GeminiChunk> controller,
+    required http.StreamedResponse response,
+    required bool useGrounding,
+    required Future<void> Function() retryWithoutGrounding,
+    bool allowGroundingRecovery = true,
+  }) async {
     // ══════════════════════════════════════════════════════════════════════════
     // LEITURA DO STREAM SSE (CAMADA 1 — filtragem de CoT em tempo real)
     //
@@ -1087,7 +1145,6 @@ class GeminiServiceV2 {
     //   RECITATION  → repetição detectada — retry sem grounding
     //   outros      → trata como STOP
     // ══════════════════════════════════════════════════════════════════════════
-    final lineBuffer = StringBuffer();
     bool hadContent = false;
     bool finishEmitted = false; // guarda anti-done-duplo
 
@@ -1106,6 +1163,7 @@ class GeminiServiceV2 {
     //   • Guard !controller.isClosed antes de emitir evento.
     Timer? watchdogTimer;
     bool watchdogFired = false;
+    bool firstByte = true;
 
     void resetWatchdog() {
       watchdogTimer?.cancel();
@@ -1113,6 +1171,7 @@ class GeminiServiceV2 {
       watchdogTimer = Timer(_watchdogTimeout, () {
         if (controller.isClosed || finishEmitted) return;
         watchdogFired = true;
+        AiStreamTrace.mark('GEMINI_IDLE_TIMEOUT', _watchdogTimeout.inMilliseconds);
         _log(
           '[GeminiV2] Build 135: WATCHDOG disparado — stream congelado por '
           '${_watchdogTimeout.inSeconds}s sem chunks (Build 135)',
@@ -1129,131 +1188,135 @@ class GeminiServiceV2 {
     resetWatchdog();
 
     try {
-      await for (final bytes in response.stream) {
-        if (controller.isClosed) break;
-        if (watchdogFired) break; // watchdog já encerrou — para o loop
-
-        // Reset watchdog a cada chunk recebido (qualquer bytes > 0)
-        if (bytes.isNotEmpty) resetWatchdog();
-
-        final rawChunk = utf8.decode(bytes, allowMalformed: true);
-
-        // Processa char a char — monta linhas completas terminadas em \n
-        for (final char in rawChunk.split('')) {
-          if (char == '\n') {
-            final line = lineBuffer.toString().trim();
-            lineBuffer.clear();
-
-            // Ignora linhas que não sejam eventos SSE
-            if (!line.startsWith('data: ')) continue;
-            final jsonStr = line.substring(6).trim();
-            if (jsonStr.isEmpty || jsonStr == '[DONE]') continue;
-
-            try {
-              final eventData = jsonDecode(jsonStr) as Map<String, dynamic>;
-
-              // ── CAMADA 1: Filtro rigoroso de CoT ──────────────────────────
-              // _extractText() descarta qualquer part com thought/CoT/metadata.
-              // Zero caracteres de raciocínio interno chegam ao controller.
-              final textFragment = _extractText(eventData);
-              final finishReason = _extractFinishReason(eventData);
-
-              // ── SAFETY/RECITATION guard: não emite isDone=true se vai fazer retry
-              final shouldRetryWithoutGrounding =
-                  (finishReason == 'SAFETY' || finishReason == 'RECITATION') &&
-                      useGrounding;
-
-              if (textFragment.isNotEmpty) {
-                hadContent = true;
-                if (!controller.isClosed) {
-                  controller.add(GeminiChunk(
-                    text: textFragment,
-                    // isDone só é true se há finishReason E não haverá retry.
-                    // Sem esse guard, a UI recebe isDone antes do retry ser
-                    // executado, quebrando a sincronia do streaming.
-                    isDone:
-                        finishReason != null && !shouldRetryWithoutGrounding,
-                    finishReason:
-                        shouldRetryWithoutGrounding ? null : finishReason,
-                  ));
-                }
-              } else if (finishReason != null &&
-                  !hadContent &&
-                  !shouldRetryWithoutGrounding) {
-                // Chunk vazio com finishReason sem retry pendente
-                // (ex: SAFETY sem texto gerado, já na segunda tentativa)
-                if (!controller.isClosed) {
-                  controller.add(GeminiChunk(
-                    text: '',
-                    isDone: true,
-                    finishReason: finishReason,
-                  ));
-                }
+      // Decode UTF-8 across packet boundaries and retain the final line at EOF.
+      final lines = response.stream
+          .map((bytes) {
+            if (bytes.isNotEmpty) {
+              if (firstByte) {
+                firstByte = false;
+                AiStreamTrace.mark('GEMINI_FIRST_BYTE', bytes.length);
               }
-
-              // ── Tratamento de finishReason ────────────────────────────────
-              if (finishReason != null) {
-                _log(
-                  '[GeminiV2] finishReason=$finishReason '
-                  '(conteúdo: ${hadContent ? 'sim' : 'nenhum'})',
-                );
-
-                switch (finishReason) {
-                  case 'STOP':
-                    // Conclusão normal — done já foi emitido acima se havia texto
-                    finishEmitted = true;
-
-                  case 'MAX_TOKENS':
-                    // Limite de tokens atingido — resposta parcial entregue.
-                    // maxOutputTokens=3200 previne isso na maioria dos casos.
-                    // Quando ocorre, a resposta parcial é válida e útil.
-                    _log(
-                      '[GeminiV2] MAX_TOKENS: resposta parcial entregue '
-                      '(aumentar maxOutputTokens se recorrente)',
-                    );
-                    finishEmitted = true;
-
-                  case 'SAFETY':
-                  case 'RECITATION':
-                    // Filtro de segurança ou detecção de recitação.
-                    // Primeira tentativa: retry sem grounding (que pode
-                    // trazer conteúdo que aciona o filtro).
-                    if (useGrounding && !controller.isClosed) {
-                      _log(
-                        '[GeminiV2] $finishReason: retry sem grounding',
-                      );
-                      return _streamRequest(
-                        controller: controller,
-                        apiKey: apiKey,
-                        userMessage: userMessage,
-                        systemPrompt: systemPrompt,
-                        history: history,
-                        useGrounding: false, // desativa grounding no retry
-                        attempt: attempt,
-                        modeAnchor: modeAnchor, // Build 157.1
-                        isPlantaoMode: isPlantaoMode, // Build 223
-                        cachedContentName: cachedContentName, // BUILD 278
-                      );
-                    }
-                    // Já estava sem grounding — encerra sem retry adicional
-                    finishEmitted = true;
-
-                  default:
-                    // finishReasons desconhecidos tratados como STOP
-                    finishEmitted = true;
-                }
-              }
-            } catch (parseError) {
-              // JSON mal-formado em chunk — ignora e continua processando
-              _log('[GeminiV2] parse error em evento SSE: $parseError');
+              resetWatchdog();
             }
-          } else {
-            lineBuffer.write(char);
+            return bytes;
+          })
+          .transform(utf8.decoder)
+          .transform(const LineSplitter());
+      await for (final rawLine in lines) {
+        if (controller.isClosed || watchdogFired || finishEmitted) break;
+        final line = rawLine.trim();
+        if (!line.startsWith('data:')) continue;
+        final jsonStr = line.substring(5).trim();
+        if (jsonStr.isEmpty || jsonStr == '[DONE]') continue;
+
+        try {
+          final eventData = jsonDecode(jsonStr) as Map<String, dynamic>;
+          final groundedSources = <({String title, String url})>[];
+          for (final candidate in (eventData['candidates'] as List? ?? const [])) {
+            if (candidate is! Map) continue;
+            final metadata = candidate['groundingMetadata'];
+            if (metadata is! Map || metadata['groundingChunks'] is! List) continue;
+            for (final source in metadata['groundingChunks'] as List) {
+              if (source is! Map) continue;
+              final web = source['web'];
+              if (web is Map && web['title'] is String && web['uri'] is String) {
+                groundedSources.add((title: web['title'] as String, url: web['uri'] as String));
+              }
+            }
           }
+
+          // ── CAMADA 1: Filtro rigoroso de CoT ──────────────────────────
+          // _extractText() descarta qualquer part com thought/CoT/metadata.
+          // Zero caracteres de raciocínio interno chegam ao controller.
+          final textFragment = _extractText(eventData);
+          final finishReason = _extractFinishReason(eventData);
+
+          // ── SAFETY/RECITATION guard: não emite isDone=true se vai fazer retry
+          final shouldRetryWithoutGrounding =
+              (finishReason == 'SAFETY' || finishReason == 'RECITATION') &&
+                  useGrounding && allowGroundingRecovery;
+
+          if (textFragment.isNotEmpty) {
+            hadContent = true;
+            if (!controller.isClosed) {
+              AiStreamTrace.mark('PROVIDER_TEXT_PRESENT', 1);
+              controller.add(GeminiChunk(
+                text: textFragment,
+                groundedSources: groundedSources,
+                // isDone só é true se há finishReason E não haverá retry.
+                // Sem esse guard, a UI recebe isDone antes do retry ser
+                // executado, quebrando a sincronia do streaming.
+                isDone: finishReason != null && !shouldRetryWithoutGrounding,
+                finishReason: shouldRetryWithoutGrounding ? null : finishReason,
+              ));
+            }
+          } else if (finishReason != null && !shouldRetryWithoutGrounding) {
+            // Terminal metadata can arrive after the last text delta.
+            // Always deliver it so finalization sees MAX_TOKENS/STOP.
+            if (!controller.isClosed) {
+              AiStreamTrace.mark('PROVIDER_TEXT_PRESENT', 1);
+              controller.add(GeminiChunk(
+                text: '',
+                groundedSources: groundedSources,
+                isDone: true,
+                finishReason: finishReason,
+              ));
+            }
+          } else if (groundedSources.isNotEmpty && !controller.isClosed) {
+            controller.add(GeminiChunk(text: '', groundedSources: groundedSources));
+          }
+
+          // ── Tratamento de finishReason ────────────────────────────────
+          if (finishReason != null) {
+            _log(
+              '[GeminiV2] finishReason=$finishReason '
+              '(conteúdo: ${hadContent ? 'sim' : 'nenhum'})',
+            );
+
+            switch (finishReason) {
+              case 'STOP':
+                // Conclusão normal — done já foi emitido acima se havia texto
+                finishEmitted = true;
+
+              case 'MAX_TOKENS':
+                // Limite de tokens atingido — resposta parcial entregue.
+                // maxOutputTokens=3200 previne isso na maioria dos casos.
+                // Quando ocorre, a resposta parcial é válida e útil.
+                _log(
+                  '[GeminiV2] MAX_TOKENS: resposta parcial entregue '
+                  '(aumentar maxOutputTokens se recorrente)',
+                );
+                finishEmitted = true;
+
+              case 'SAFETY':
+              case 'RECITATION':
+                // Filtro de segurança ou detecção de recitação.
+                // Primeira tentativa: retry sem grounding (que pode
+                // trazer conteúdo que aciona o filtro).
+                if (useGrounding && allowGroundingRecovery && !controller.isClosed) {
+                  _log(
+                    '[GeminiV2] $finishReason: retry sem grounding',
+                  );
+                  if (allowGroundingRecovery) return retryWithoutGrounding();
+                }
+                // Já estava sem grounding — encerra sem retry adicional
+                finishEmitted = true;
+
+              default:
+                // finishReasons desconhecidos tratados como STOP
+                finishEmitted = true;
+            }
+          }
+          if (finishEmitted) break;
+        } catch (parseError) {
+          // JSON mal-formado em chunk — ignora e continua processando
+          _log(
+              '[GeminiV2] parse error em evento SSE: ${parseError.runtimeType}');
         }
       }
     } catch (streamError) {
-      _log('[GeminiV2] erro durante leitura do stream: $streamError');
+      _log(
+          '[GeminiV2] erro durante leitura do stream: ${streamError.runtimeType}');
       watchdogTimer?.cancel(); // cancela watchdog em erro de stream
       if (!hadContent && !controller.isClosed) {
         controller.add(GeminiChunk.error('stream_error'));
@@ -1272,8 +1335,13 @@ class GeminiServiceV2 {
     // Build 135: se watchdog disparou, controller já foi fechado — não re-fechar.
     if (!controller.isClosed && !watchdogFired) {
       if (!finishEmitted) {
-        // Stream encerrado sem finishReason explícito — trata como done normal
-        controller.add(GeminiChunk.done);
+        // EOF is not proof of generation completion. Preserve partial content
+        // and pass objective interruption evidence to the existing repair gate.
+        controller.add(GeminiChunk(
+          text: '',
+          isDone: true,
+          finishReason: hadContent ? 'INCOMPLETE_STREAM' : null,
+        ));
       }
       controller.close();
     }

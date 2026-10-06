@@ -123,9 +123,9 @@ void main() {
       expect(r.unknownCriticalFacts, contains('concentration'));
       expect(r.mayGenerate, isFalse);
     });
-    test('supplied weight removes missing-data gate but is not dose authority',
+    test('supplied pediatric age and weight remove missing-data gate but are not dose authority',
         () {
-      final r = request(query: 'Dose pediátrica; peso: 20 kg');
+      final r = request(query: 'Dose pediátrica; idade: 6 anos; peso: 20 kg');
       expect(r.unknownCriticalFacts, isEmpty);
       expect(r.answerability, Answerability.answerWithLimitations);
       final result = ClinicalSafetyPass.evaluate(

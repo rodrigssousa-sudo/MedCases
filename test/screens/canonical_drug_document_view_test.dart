@@ -76,6 +76,7 @@ void main() {
                 as RenderRepaintBoundary)
             .toImage();
         final data = await image.toByteData(format: ui.ImageByteFormat.png);
+        await Directory('.dart_tool/global_local_blocker_closure').create(recursive: true);
         await File(
                 '.dart_tool/global_local_blocker_closure/drug-ui-${dark ? 'dark' : 'light'}.png')
             .writeAsBytes(data!.buffer.asUint8List());

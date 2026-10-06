@@ -194,11 +194,11 @@ void main() {
       expect(send, greaterThan(pre));
       expect(done, greaterThan(send));
       expect(gate, greaterThan(done));
-      expect(s.substring(send, done), contains('m56cProviderInput'));
+      expect(s.substring(send, done), contains('m59ProviderInput'));
       expect(s.substring(send, done), contains('visibleUserInput: trimmed'));
       expect(
         s.substring(gate, gate + 1200),
-        contains('contextPack: m56cMachineContext.contextPack'),
+        matches(RegExp(r'contextPack:\s*m59RegistryDegradedMode\s*\? null\s*: m56cMachineContext.contextPack')),
       );
     },
   );

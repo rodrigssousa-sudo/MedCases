@@ -1,3 +1,4 @@
+import 'control_center_section.dart';
 import 'dart:convert';
 import 'dart:ui' show ImageFilter;
 
@@ -289,6 +290,16 @@ class _CenteredProgress extends StatelessWidget {
 // ADMIN_V2_FINAL_AUDIT_ALERTS_V1
 // ADMIN_V2_AI_COSTS_V2: GPT + Gemini observability, secure GPT unlock and expanded metrics.
 enum _AdminSection {
+  credits,
+  transcriptions,
+  jobs,
+  incidents,
+  pathologies,
+  drugs,
+  services,
+  releases,
+  controlAudit,
+
   dashboard,
   users,
   subscriptions,
@@ -357,6 +368,25 @@ class _AdminV2ScreenState extends State<AdminV2Screen> {
     );
 
     switch (_section) {
+      case _AdminSection.credits:
+        return ControlCenterSection(key: const ValueKey('credits'), table: 'credits', title: 'Tempo adicional', readOnly: widget.currentAdmin.isSupervisor);
+      case _AdminSection.transcriptions:
+        return ControlCenterSection(key: const ValueKey('transcriptions'), table: 'transcriptions', title: 'Transcrições', readOnly: true);
+      case _AdminSection.jobs:
+        return ControlCenterSection(key: const ValueKey('jobs'), table: 'jobs', title: 'Jobs', readOnly: true);
+      case _AdminSection.incidents:
+        return ControlCenterSection(key: const ValueKey('incidents'), table: 'incidents', title: 'Incidentes', readOnly: true);
+      case _AdminSection.pathologies:
+        return ControlCenterSection(key: const ValueKey('pathologies'), table: 'pathologies', title: 'Patologias', readOnly: true);
+      case _AdminSection.drugs:
+        return ControlCenterSection(key: const ValueKey('drugs'), table: 'drugs', title: 'Fármacos', readOnly: true);
+      case _AdminSection.services:
+        return ControlCenterSection(key: const ValueKey('services'), table: 'services', title: 'Serviços', readOnly: true);
+      case _AdminSection.releases:
+        return ControlCenterSection(key: const ValueKey('releases'), table: 'releases', title: 'Releases', readOnly: true);
+      case _AdminSection.controlAudit:
+        return ControlCenterSection(key: const ValueKey('controlAudit'), table: 'audit', title: 'Auditoria operacional', readOnly: true);
+
       case _AdminSection.dashboard:
         return const _Dashboard();
       case _AdminSection.errors:
@@ -399,6 +429,16 @@ case _AdminSection.aiCosts:
 
   String _sectionTitle(_AdminSection section) {
     switch (section) {
+      case _AdminSection.credits: return 'Tempo adicional';
+      case _AdminSection.transcriptions: return 'Transcrições';
+      case _AdminSection.jobs: return 'Jobs';
+      case _AdminSection.incidents: return 'Incidentes';
+      case _AdminSection.pathologies: return 'Patologias';
+      case _AdminSection.drugs: return 'Fármacos';
+      case _AdminSection.services: return 'Serviços';
+      case _AdminSection.releases: return 'Releases';
+      case _AdminSection.controlAudit: return 'Auditoria operacional';
+
       case _AdminSection.dashboard:
         return 'Dashboard';
       case _AdminSection.users:
@@ -447,6 +487,15 @@ class _AdminSidebar extends StatelessWidget {
       (_AdminSection.content, Icons.menu_book_outlined, 'Conteúdo'),
       (_AdminSection.communication, Icons.campaign_outlined, 'Comunicação'),
       (_AdminSection.audit, Icons.fact_check_outlined, 'Auditoria'),
+      (_AdminSection.credits, Icons.more_time, 'Tempo adicional'),
+      (_AdminSection.transcriptions, Icons.mic_none, 'Transcrições'),
+      (_AdminSection.jobs, Icons.work_outline, 'Jobs'),
+      (_AdminSection.incidents, Icons.report_outlined, 'Incidentes'),
+      (_AdminSection.pathologies, Icons.inventory_2_outlined, 'Patologias'),
+      (_AdminSection.drugs, Icons.medication_outlined, 'Fármacos'),
+      (_AdminSection.services, Icons.dns_outlined, 'Serviços'),
+      (_AdminSection.releases, Icons.rocket_launch_outlined, 'Releases'),
+      (_AdminSection.controlAudit, Icons.history, 'Auditoria operacional'),
       (_AdminSection.settings, Icons.settings_outlined, 'Configurações'),
     ];
 
@@ -476,6 +525,15 @@ class _AdminSidebar extends StatelessWidget {
                 children: [
                   for (final item in currentAdmin.isSupervisor
                       ? items.where((item) =>
+                          item.$1 == _AdminSection.credits ||
+                          item.$1 == _AdminSection.transcriptions ||
+                          item.$1 == _AdminSection.jobs ||
+                          item.$1 == _AdminSection.incidents ||
+                          item.$1 == _AdminSection.pathologies ||
+                          item.$1 == _AdminSection.drugs ||
+                          item.$1 == _AdminSection.services ||
+                          item.$1 == _AdminSection.releases ||
+                          item.$1 == _AdminSection.controlAudit ||
                           item.$1 == _AdminSection.errors ||
                           item.$1 == _AdminSection.support ||
                           item.$1 == _AdminSection.communication ||

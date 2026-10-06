@@ -35,7 +35,12 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
     });
   }
 
-  Future<void> _openStudy(Study study) async {
+  Future<void> _openStudy(Study study, {String? sourceId}) async {
+    if (sourceId != null) {
+      study = study.activateAudio(sourceId);
+      await StudyLibraryService.save(study);
+      if (!mounted) return;
+    }
     await Navigator.of(context).push<void>(
       MaterialPageRoute<void>(
         builder: (_) => _SavedStudyWorkspaceRoute(
@@ -278,6 +283,22 @@ class _StudyHistoryScreenState extends State<StudyHistoryScreen> {
                           ),
                         ),
                       ),
+                      for (final source
+                          in _studies[i].sources.where((s) => s.isAudio))
+                        ListTile(
+                          title: Text(source.title),
+                          subtitle: Text(
+                              '${_date(source.createdAtUtc)} · ${source.audioDurationMs ~/ 60000}:${((source.audioDurationMs ~/ 1000) % 60).toString().padLeft(2, '0')} · ${source.state == StudySourceState.accepted ? (widget.isEs ? "Aceptado" : "Aceito") : source.canReview ? (widget.isEs ? "Listo para revisar" : "Pronto para revisar") : (widget.isEs ? "Pendiente" : "Pendente")}'),
+                          trailing: TextButton(
+                            onPressed: _deleting
+                                ? null
+                                : () => _openStudy(_studies[i],
+                                    sourceId: source.id),
+                            child: Text(widget.isEs
+                                ? 'Usar de nuevo'
+                                : 'Usar novamente'),
+                          ),
+                        ),
                       if (i < _studies.length - 1)
                         Divider(
                           height: 1,

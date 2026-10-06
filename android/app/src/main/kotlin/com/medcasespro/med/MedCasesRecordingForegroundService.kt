@@ -1,5 +1,6 @@
 package com.medcasespro.med
 
+import android.app.PendingIntent
 import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -15,6 +16,9 @@ class MedCasesRecordingForegroundService : Service() {
         const val NOTIFICATION_ID = 43401
     }
 
+    private var isEs = false
+    private var paused = false
+
     override fun onCreate() {
         super.onCreate()
         ensureChannel()
@@ -25,6 +29,8 @@ class MedCasesRecordingForegroundService : Service() {
         flags: Int,
         startId: Int,
     ): Int {
+        isEs = intent?.getStringExtra("language")?.startsWith("es") ?: isEs
+        paused = intent?.getBooleanExtra("paused", false) ?: paused
         val notification = buildNotification()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -72,9 +78,12 @@ class MedCasesRecordingForegroundService : Service() {
             }
 
         return builder
+            .setContentIntent(PendingIntent.getActivity(this, NOTIFICATION_ID,
+                Intent(this, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE))
             .setSmallIcon(applicationInfo.icon)
             .setContentTitle("MedCases Pro")
-            .setContentText("Gravação de áudio em andamento")
+            .setContentText(if (paused) { if (isEs) "Grabación pausada" else "Gravação pausada" } else { if (isEs) "Grabación de audio en curso" else "Gravação de áudio em andamento" })
             .setOngoing(true)
             .setOnlyAlertOnce(true)
             .setCategory(Notification.CATEGORY_SERVICE)

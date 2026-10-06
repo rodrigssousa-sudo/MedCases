@@ -14,7 +14,7 @@
 // - Study AI: 5/day
 // - Plantao: 1/day
 // - audio: 15 min/month
-// - transcription: 30 min/month
+// - transcription: 15 min/month
 // - clinical histories: 3/month
 //
 // PREMIUM
@@ -68,6 +68,7 @@ enum MedCasesCapability {
   transcriptionBasic,
   transcriptionExpanded,
   clinicalHistory,
+  agenda,
 }
 
 class EntitlementLimits {
@@ -92,7 +93,7 @@ class EntitlementLimits {
     aiStudyQueriesPerDay: 5,
     plantaoQueriesPerDay: 1,
     audioRecordingMinutesPerMonth: 15,
-    transcriptionMinutesPerMonth: 30,
+    transcriptionMinutesPerMonth: 15,
     clinicalHistoriesPerMonth: 3,
   );
 
@@ -216,6 +217,7 @@ class EntitlementService extends ChangeNotifier {
 
   static const Set<MedCasesCapability> _premiumCapabilities = {
     ..._freeCapabilities,
+    MedCasesCapability.agenda,
     MedCasesCapability.drugsFullLibrary,
     MedCasesCapability.drugsWeightDose,
     MedCasesCapability.drugsRenalAdjustment,

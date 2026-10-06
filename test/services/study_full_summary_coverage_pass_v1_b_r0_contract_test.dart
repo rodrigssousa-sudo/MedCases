@@ -24,7 +24,7 @@ void main() {
     expect(
       source,
       contains(
-        'type == StudyArtifactType.fullSummary && sourceCharacters >= 18000',
+        'StudyFullSummaryCoverage.needsReview(',
       ),
     );
     expect(source, contains('_fullSummaryMinimumWords(sourceCharacters)'));

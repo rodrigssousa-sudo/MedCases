@@ -9,11 +9,17 @@ import '../models/clinical_guide_article.dart';
 
 /// Public editorial metadata only. Never serialize the full guide or user state.
 class ClinicalGuideSharePayload {
-  ClinicalGuideSharePayload.fromGuide(
+  factory ClinicalGuideSharePayload.fromGuide(
     ClinicalGuideArticle guide, {
     required String language,
     Set<String> publishedSlugs = const <String>{},
-  })  : guideId = guide.id,
+  }) =>
+      ClinicalGuideSharePayload._(
+          guide.forLanguage(language), language, publishedSlugs);
+
+  ClinicalGuideSharePayload._(
+      ClinicalGuideArticle guide, String language, Set<String> publishedSlugs)
+      : guideId = guide.id,
         slug = guide.slug,
         language = language.toLowerCase().startsWith('es') ? 'es' : 'pt',
         title = guide.title,
@@ -26,10 +32,13 @@ class ClinicalGuideSharePayload {
   final String guideId, slug, language, title, subtitle, specialty, cover;
   final String publicUrl;
 
+  String get cta =>
+      language == 'es' ? 'Ver guía en MedCases' : 'Ver guia no MedCases';
+
   String get text => <String>[
         title,
         if (subtitle.trim().isNotEmpty) subtitle,
-        language == 'es' ? 'Ver en MedCases Pro:' : 'Veja no MedCases Pro:',
+        '$cta:',
         publicUrl,
       ].join('\n\n');
 
@@ -59,8 +68,14 @@ class ClinicalGuideSharePayload {
 }
 
 class ClinicalGuideShare {
-  static const logoAsset = 'assets/icon/app_icon.png';
-  static const size = Size(1080, 1350);
+  // Official transparent wordmark already used by the public MedCases site.
+  // The app icon is a different asset with an embedded square background.
+  static const logoAsset = 'assets/public_landing/assets/medcases-logo.png';
+  static const size = Size(1080, 1920);
+  static const safeContent = Rect.fromLTRB(72, 190, 1008, 1660);
+  static const logoRect = Rect.fromLTWH(52, 140, 324, 314);
+  static const titleArea = Rect.fromLTWH(72, 930, 936, 540);
+  static const ctaRect = Rect.fromLTWH(72, 1536, 936, 96);
 
   /// Reads only an already decoded Flutter image. The loader cannot fetch.
   static Future<ui.Image?> cachedCover(String url) async {
@@ -100,7 +115,8 @@ class ClinicalGuideShare {
     final data = await rootBundle.load(path);
     final codec = await ui.instantiateImageCodec(
         data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes),
-        targetWidth: 1080);
+        targetWidth: 1920,
+        allowUpscaling: false);
     try {
       return (await codec.getNextFrame()).image;
     } finally {
@@ -108,53 +124,129 @@ class ClinicalGuideShare {
     }
   }
 
+  /// Reuse the guide's original URL, even if its decoded preview was evicted.
+  /// No private state, headers or replacement image are supplied to the loader.
+  static Future<ui.Image?> loadCover(String url) async {
+    final cached = await cachedCover(url);
+    if (cached != null || url.isEmpty || url.startsWith('assets/'))
+      return cached;
+    final uri = Uri.tryParse(url);
+    if (uri == null ||
+        uri.scheme != 'https' ||
+        uri.host.isEmpty ||
+        uri.userInfo.isNotEmpty) return null;
+    final done = Completer<ui.Image?>();
+    final stream = NetworkImage(url).resolve(ImageConfiguration.empty);
+    late ImageStreamListener listener;
+    listener = ImageStreamListener((info, _) {
+      if (!done.isCompleted) done.complete(info.image.clone());
+      info.dispose();
+    }, onError: (Object _, StackTrace? stack) {
+      if (!done.isCompleted) done.complete(null);
+    });
+    stream.addListener(listener);
+    try {
+      return await done.future.timeout(const Duration(seconds: 8),
+          onTimeout: () {
+        done.complete(null);
+        return null;
+      });
+    } finally {
+      stream.removeListener(listener);
+    }
+  }
+
   /// Fixed canvas bounds are independent of device size and accessibility scale.
   static Future<Uint8List> render(ClinicalGuideSharePayload payload) async {
     final logo = await _asset(logoAsset);
-    final cover = await cachedCover(payload.cover);
+    final cover = await loadCover(payload.cover);
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
     try {
-      canvas.drawRect(
-          Offset.zero & size, Paint()..color = const Color(0xFFF4F7FA));
-      canvas.drawRect(const Rect.fromLTWH(0, 0, 1080, 180),
-          Paint()..color = const Color(0xFF18202A));
-      paintImage(
-          canvas: canvas,
-          rect: const Rect.fromLTWH(60, 42, 96, 96),
-          image: logo,
-          fit: BoxFit.contain);
-      _text(canvas, 'MedCases Pro', const Offset(182, 64), 820, 40, 1,
-          Colors.white);
-      final coverRect = const Rect.fromLTWH(60, 220, 960, 450);
-      canvas.save();
-      canvas.clipRRect(
-          RRect.fromRectAndRadius(coverRect, const Radius.circular(24)));
+      final bounds = Offset.zero & size;
+      canvas.drawRect(bounds, Paint()..color = const Color(0xFF10251E));
       if (cover != null) {
         paintImage(
-            canvas: canvas, rect: coverRect, image: cover, fit: BoxFit.cover);
-      } else {
-        canvas.drawRect(coverRect, Paint()..color = const Color(0xFFE5EBF1));
-        paintImage(
             canvas: canvas,
-            rect: const Rect.fromLTWH(430, 270, 220, 220),
-            image: logo,
-            fit: BoxFit.contain);
-        _text(canvas, payload.specialty, const Offset(100, 555), 880, 34, 2,
-            const Color(0xFF334155));
+            rect: bounds,
+            image: cover,
+            fit: BoxFit.cover,
+            filterQuality: FilterQuality.high);
+      } else {
+        // Branded editorial fallback, never unrelated stock imagery.
+        canvas.drawRect(
+            bounds,
+            Paint()
+              ..shader = const LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF203D32), Color(0xFF0B1714)])
+                  .createShader(bounds));
+        canvas.drawCircle(const Offset(940, 640), 580,
+            Paint()..color = const Color(0xFF285743).withValues(alpha: .3));
+        canvas.drawCircle(
+            const Offset(940, 640),
+            480,
+            Paint()
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 2
+              ..color = const Color(0xFFC5A567).withValues(alpha: .25));
       }
+      // Leave the center of the cover prominent; protect only the text zones.
+      canvas.drawRect(
+          bounds,
+          Paint()
+            ..shader = const LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Color(0xB30A1512),
+                  Color(0x050A1512),
+                  Color(0xD90A1512),
+                  Color(0xFF0A1512)
+                ],
+                stops: [
+                  0,
+                  .35,
+                  .64,
+                  1
+                ]).createShader(bounds));
+      paintImage(
+          canvas: canvas,
+          rect: logoRect,
+          image: logo,
+          fit: BoxFit.contain,
+          filterQuality: FilterQuality.high);
+      final title = _titlePainter(payload.title);
+      final titleTop = titleArea.bottom - title.height;
+      canvas.save();
+      canvas.clipRect(Rect.fromLTRB(
+          safeContent.left, titleTop - 62, safeContent.right, titleArea.bottom));
+      _text(
+          canvas,
+          payload.language == 'es' ? 'GUÍA CLÍNICA' : 'GUIA CLÍNICO',
+          Offset(safeContent.left, titleTop - 62),
+          safeContent.width,
+          28,
+          1,
+          const Color(0xFFB8D1C4));
+      title.paint(canvas, Offset(titleArea.left, titleTop));
+      title.dispose();
       canvas.restore();
-      _text(canvas, payload.title, const Offset(60, 718), 960, 56, 4,
-          const Color(0xFF18202A));
-      _text(canvas, payload.subtitle, const Offset(60, 1008), 960, 32, 4,
-          const Color(0xFF64748B));
-      canvas.drawLine(const Offset(60, 1220), const Offset(1020, 1220),
-          Paint()..color = const Color(0xFFCCD5DF));
-      _text(canvas, 'medcasespro.com', const Offset(60, 1260), 960, 30, 1,
-          const Color(0xFF334155));
+      canvas.drawLine(
+          const Offset(72, 1500),
+          const Offset(156, 1500),
+          Paint()
+            ..strokeWidth = 4
+            ..color = const Color(0xFFC5A567));
+      _text(canvas, payload.cta, ctaRect.topLeft, ctaRect.width, 36, 1,
+          Colors.white);
+      _text(canvas, 'medcasespro.com', const Offset(72, 1600), 936, 28, 1,
+          const Color(0xFFB8D1C4));
       final picture = recorder.endRecording();
       try {
-        final image = await picture.toImage(1080, 1350);
+        final image =
+            await picture.toImage(size.width.toInt(), size.height.toInt());
         try {
           final bytes = await image.toByteData(format: ui.ImageByteFormat.png);
           if (bytes == null) throw StateError('PNG unavailable');
@@ -170,6 +262,30 @@ class ClinicalGuideShare {
       logo.dispose();
       cover?.dispose();
     }
+  }
+
+  static TextPainter _titlePainter(String value) {
+    final title = value.trim().replaceAll(RegExp(r'\s+'), ' ');
+    for (var fontSize = 88.0; fontSize >= 56; fontSize -= 4) {
+      final painter = TextPainter(
+          text: TextSpan(
+              text: title,
+              style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontSize: fontSize,
+                  height: 1.08,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -1.2,
+                  color: Colors.white)),
+          textDirection: TextDirection.ltr,
+          maxLines: 6,
+          ellipsis: '…')
+        ..layout(maxWidth: titleArea.width);
+      if ((!painter.didExceedMaxLines && painter.height <= titleArea.height) ||
+          fontSize == 56) return painter;
+      painter.dispose();
+    }
+    throw StateError('Title layout unavailable');
   }
 
   static void _text(Canvas canvas, String value, Offset offset, double width,

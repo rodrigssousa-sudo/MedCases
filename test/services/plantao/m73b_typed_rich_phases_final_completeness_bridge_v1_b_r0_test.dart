@@ -180,12 +180,12 @@ void main() {
 
       final guard = source.substring(m58, visible);
       expect(guard, contains('m58BlockUnsafeClinicalCommit'));
-      expect(guard, contains('blocked=true reason=critical_machine_gate'));
-      expect(guard, contains('blocked=false reason=machine_gate_pass'));
-      expect(guard, contains('safeFinalText = m62MachineProjectionApplied'));
-      expect(guard, contains('? m62EffectiveGate.finalText'));
-      expect(guard, contains(': m56bGlobalGate.finalText;'));
-      expect(guard, contains('M73B_M62_SAFE_FINAL_CONTRACT_PRESERVATION_V1'));
+      expect(guard, contains('degradeCriticalResultForPresentation'));
+      expect(guard, contains('reason=machine_gate_pass_or_registry_degraded'));
+      expect(guard, contains('final m58EffectiveGate = m62MachineProjectionApplied'));
+      expect(guard, contains('? m62EffectiveGate'));
+      expect(guard, contains(': m56bGlobalGate;'));
+      expect(guard, contains('safeFinalText = m58EffectiveGate.finalText;'));
       expect(guard, contains('safeFinalText = m73bRichPhaseCompletion.text;'));
     },
   );

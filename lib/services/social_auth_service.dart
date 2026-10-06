@@ -5,6 +5,7 @@
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'auth_service.dart';
@@ -17,6 +18,8 @@ class SocialAuthService {
   static Future<AuthResult> signInWithGoogle({
     required bool isEs,
   }) async {
+    String stage = 'GOOGLE_SIGNIN_STARTED';
+    debugPrint('[GoogleAuth] stage=$stage');
     try {
       UserCredential credential;
 
@@ -29,39 +32,63 @@ class SocialAuthService {
         final googleSignIn = GoogleSignIn(
           scopes: const <String>['email', 'profile'],
         );
+        stage = 'ACCOUNT_SELECTION';
         final GoogleSignInAccount? account = await googleSignIn.signIn();
         if (account == null) {
           return AuthResult.error(cancelledResultCode);
         }
 
+        stage = 'TOKEN_EXCHANGE';
+        debugPrint('[GoogleAuth] stage=ACCOUNT_SELECTED');
         final GoogleSignInAuthentication googleAuth =
             await account.authentication;
 
+        if (googleAuth.idToken == null || googleAuth.idToken!.isEmpty) {
+          debugPrint('[GoogleAuth] stage=$stage reason=ID_TOKEN_MISSING');
+          return AuthResult.error(_googleFailure(isEs));
+        }
+        debugPrint('[GoogleAuth] stage=GOOGLE_ID_TOKEN_RECEIVED');
         final oauthCredential = GoogleAuthProvider.credential(
           accessToken: googleAuth.accessToken,
           idToken: googleAuth.idToken,
         );
 
+        stage = 'FIREBASE_SIGNIN';
+        debugPrint('[GoogleAuth] stage=FIREBASE_CREDENTIAL_CREATED');
         credential =
             await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+        debugPrint('[GoogleAuth] stage=FIREBASE_SIGNIN_SUCCESS');
       }
 
       return AuthService.completeSocialSignIn(
         credential: credential,
         provider: 'google',
       );
+    } on PlatformException catch (e) {
+      final reason = e.code == 'network_error'
+          ? 'NETWORK'
+          : e.code == 'sign_in_failed'
+              ? 'GOOGLE_SIGNIN_FAILED'
+              : e.code == 'sign_in_canceled'
+                  ? 'CANCELLED'
+                  : 'GOOGLE_PLATFORM_ERROR';
+      debugPrint('[GoogleAuth] stage=$stage reason=$reason');
+      return AuthResult.error(
+          reason == 'CANCELLED' ? cancelledResultCode : _googleFailure(isEs));
     } on FirebaseAuthException catch (e) {
+      debugPrint('[GoogleAuth] stage=$stage reason=FIREBASE_AUTH_REJECTED');
       return AuthResult.error(
         _firebaseMessage(e, isEs: isEs, provider: 'Google'),
       );
     } catch (_) {
-      return AuthResult.error(
-        isEs
-            ? 'No fue posible iniciar sesión con Google. Inténtalo nuevamente.'
-            : 'Não foi possível entrar com Google. Tente novamente.',
-      );
+      debugPrint('[GoogleAuth] stage=$stage reason=GOOGLE_AUTH_ERROR');
+      return AuthResult.error(_googleFailure(isEs));
     }
   }
+
+  static String _googleFailure(bool isEs) => isEs
+      ? 'No se pudo iniciar sesión con Google. Inténtalo nuevamente.'
+      : 'Não foi possível entrar com o Google. Tente novamente.';
 
   static Future<AuthResult> signInWithApple({
     required bool isEs,

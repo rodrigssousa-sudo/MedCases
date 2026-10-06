@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:provider/provider.dart';
 import 'package:medcases/main.dart';
@@ -29,6 +31,15 @@ void setMode(HistoryLightProvider p, bool dark) {
 }
 
 Future<void> verifyRootTheme(WidgetTester tester) async {
+  // Plugin registration normally runs in the native engine, absent in widget tests.
+  AndroidFlutterLocalNotificationsPlugin.registerWith();
+  const notificationChannel = MethodChannel('dexterous.com/flutter/local_notifications');
+  tester.binding.defaultBinaryMessenger.setMockMethodCallHandler(
+      notificationChannel, (call) async => call.method == 'getNotificationAppLaunchDetails'
+          ? <String, Object?>{'notificationLaunchedApp': false}
+          : true);
+  addTearDown(() => tester.binding.defaultBinaryMessenger
+      .setMockMethodCallHandler(notificationChannel, null));
   final io = await GuideHarness.open(tester);
   final p = _ThemeProvider();
   final tools = ToolsStateProvider();

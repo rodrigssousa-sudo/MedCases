@@ -60,14 +60,14 @@ void main() {
     final fail = await ledger().begin(
         operationId: 'failedtranscript',
         kinds: {UsageKind.transcription},
-        maximumMs: 30 * 60000);
+        maximumMs: 15 * 60000);
     await fail.finish(actualMs: 0, success: false);
     final retry = await ledger().begin(
         operationId: 'failedtranscript',
         kinds: {UsageKind.transcription},
-        maximumMs: 30 * 60000);
+        maximumMs: 15 * 60000);
     await fail.finish(actualMs: 0, success: false);
-    await retry.finish(actualMs: 30 * 60000, success: true);
+    await retry.finish(actualMs: 15 * 60000, success: true);
     await expectLater(
         ledger().begin(
             operationId: 'trans-over',

@@ -26,6 +26,45 @@ class ClinicalReferenceData {
 class ClinicalReferenceResolver {
   ClinicalReferenceResolver._();
 
+  /// Study attaches existing records selected from the question, never a
+  /// bibliography guessed from generated prose. Original bibliographic labels
+  /// remain the same in PT/ES; this does not claim that a provider read a book.
+  static ClinicalReferenceData? resolveStudy({required String userText}) {
+    final protocol = _m54ExplicitDiseaseProtocol(userText, '') ??
+        _matchProtocol(userText, '');
+    final domain = _referenceDomain(userText, '');
+    if (protocol != null && _protocolCompatibleWithDomain(protocol, domain)) {
+      final lines = protocol.getList(protocol.references, 'es');
+      if (lines.isNotEmpty) {
+        return ClinicalReferenceData(lines: List.unmodifiable(lines),
+            sourceType: 'study_internal_protocol', protocolId: protocol.id);
+      }
+    }
+    final normalizedQuery = _normalize(userText);
+    final drugs = _drugKeywords
+        .where((name) => RegExp('\\b${RegExp.escape(_normalize(name))}\\b').hasMatch(normalizedQuery))
+        .map(getGlobalEvidence).whereType<DrugEvidenceModel>().toList();
+    if (drugs.length == 1 && drugs.single.references.isNotEmpty) {
+      final drug = drugs.single;
+      return ClinicalReferenceData(
+        lines: List.unmodifiable(drug.references.map((r) {
+          final label = _formatDrugEvidenceReference(r);
+          final uri = Uri.tryParse(r.url ?? '');
+          return uri != null && uri.scheme == 'https' && uri.host.isNotEmpty && uri.userInfo.isEmpty
+              ? '$label — ${r.url}' : label;
+        })),
+        sourceType: 'study_internal_drug', drugKeys: [drug.drugKey]);
+    }
+    // The domain catalog is already curated and selected from the query only.
+    // Study must consult it before falling back to an external lookup.
+    final domainRecords = _curatedReferencesForDomain(domain);
+    if (domainRecords.isNotEmpty) {
+      return ClinicalReferenceData(lines: List.unmodifiable(domainRecords),
+          sourceType: 'study_internal_domain');
+    }
+    return null;
+  }
+
   static final RegExp _pharmacologicalContextPattern = RegExp(
     r'\b(dosis|dose|administr|mg\/kg|mcg\/kg|infus[ií]on|bolo|iv|im|sc|'
     r'ampollas?|comprimido|antibi[oó]tico|analg[eé]sico|sedaci[oó]n|'

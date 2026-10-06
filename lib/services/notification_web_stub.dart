@@ -10,6 +10,8 @@ class FlutterLocalNotificationsPlugin {
     dynamic onDidReceiveNotificationResponse,
     dynamic onDidReceiveBackgroundNotificationResponse,
   }) async => false;
+  Future<dynamic> getNotificationAppLaunchDetails() async => null;
+  Future<void> show(int id, String? title, String? body, dynamic details, {String? payload}) async {}
   Future<void> cancel(int id) async {}
   Future<void> cancelAll() async {}
   Future<void> zonedSchedule(int id, String? title, String? body,
@@ -45,6 +47,7 @@ class NotificationVisibility {
 class AndroidNotificationDetails {
   const AndroidNotificationDetails(String channelId, String channelName, {
     NotificationVisibility? visibility,
+    String? tag,
     String? channelDescription,
     dynamic importance,
     dynamic priority,
@@ -92,10 +95,13 @@ class BigTextStyleInformation {
   const BigTextStyleInformation(String text);
 }
 class Importance {
+  static const high = Importance._();
+  static const defaultImportance = Importance._();
   static const max = Importance._();
   const Importance._();
 }
 class Priority {
+  static const defaultPriority = Priority._();
   static const high = Priority._();
   const Priority._();
 }

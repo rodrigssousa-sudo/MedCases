@@ -1,3 +1,4 @@
+import '../../../services/study_response_contract.dart';
 import '../../../providers/app_provider.dart';
 
 /// Metadados de progressão pedagógica extraídos da resposta da IA.
@@ -60,6 +61,7 @@ class MessageRenderPolicy {
   }
 
   static String sanitizeStudyVisibleText(String text) {
+    text = StudyResponseContract.project(text).clinicalAnswer;
     final withoutEmoji = String.fromCharCodes(
       text.runes.where((rune) => !_isStudyEmojiRune(rune)),
     );

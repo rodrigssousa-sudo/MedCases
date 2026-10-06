@@ -10,10 +10,12 @@ void main() {
         'lib/providers/app_provider.dart',
       ).readAsStringSync();
 
+      // Count the two Free-stream handoffs; shared post-safety adapters
+      // elsewhere in AppProvider are outside this contract.
       expect(
         RegExp(
           r'PlantaoLocalClinicalOutputAdapter\s*'
-          r'\.\s*fromValidatedText\s*\(',
+          r'\.\s*fromValidatedText\s*\(\s*(?:finalText|retryFinalText)\s*,?\s*\)',
         ).allMatches(source),
         hasLength(2),
       );

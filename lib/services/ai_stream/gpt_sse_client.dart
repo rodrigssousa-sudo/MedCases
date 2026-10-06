@@ -1,3 +1,4 @@
+import '../ai/safety/ai_stream_trace.dart';
 import '../ai/safety/clinical_request_safety.dart';
 // ══════════════════════════════════════════════════════════════════════════════
 // lib/services/ai_stream/gpt_sse_client.dart
@@ -36,6 +37,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart' show debugPrint, kDebugMode;
 import 'package:http/http.dart' as http;
 import '../../models/clinical_structured_output.dart';
+import '../../models/canonical_clinical_snapshot.dart';
 import 'ai_event.dart';
 import 'sse_parser.dart';
 
@@ -55,6 +57,8 @@ class GptSsePayload {
   final String lang;
   final String requestId;
   final int maxOutputTokens;
+  final String? answerContract;
+  final String? canonicalReuseKey;
 
   const GptSsePayload({
     this.clinicalContext,
@@ -65,6 +69,8 @@ class GptSsePayload {
     this.lang = 'pt',
     this.requestId = '',
     this.maxOutputTokens = 800,
+    this.answerContract,
+    this.canonicalReuseKey,
   });
 
   Map<String, dynamic> toJson() => {
@@ -76,6 +82,8 @@ class GptSsePayload {
         'lang': lang,
         'requestId': requestId,
         'maxOutputTokens': maxOutputTokens,
+        if (answerContract != null) 'answerContract': answerContract,
+        if (canonicalReuseKey != null) 'canonicalReuseKey': canonicalReuseKey,
       };
 }
 
@@ -136,6 +144,8 @@ class GptSseClient {
   final String endpointUrl;
   final String idToken;
   final GptHttpClientFactory _clientFactory;
+  final CanonicalConversationCache? canonicalCache;
+  final String? canonicalCacheKey;
 
   // Estado interno — um cliente HTTP por request
   http.Client? _httpClient;
@@ -154,6 +164,8 @@ class GptSseClient {
     required this.endpointUrl,
     required this.idToken,
     GptHttpClientFactory? clientFactory,
+    this.canonicalCache,
+    this.canonicalCacheKey,
   }) : _clientFactory = clientFactory ?? (() => http.Client());
 
   /// Cria cliente com endpoint padrão de produção.
@@ -172,6 +184,7 @@ class GptSseClient {
   ///   • Bytes reais da rede → SseParser → AiEvent
   // ──────────────────────────────────────────────────────────────────────────
   Stream<AiEvent> stream(GptSsePayload payload) async* {
+    AiStreamTrace.mark('PROVIDER_REQUEST', 0);
     payload.clinicalContext
         ?.requireTransport(mode: payload.mode, language: payload.lang);
     _startMs = DateTime.now().millisecondsSinceEpoch;
@@ -243,6 +256,7 @@ class GptSseClient {
       return;
     }
 
+    AiStreamTrace.mark('PROVIDER_STATUS', streamedResponse.statusCode);
     // Verificar status HTTP ANTES de abrir SSE
     if (streamedResponse.statusCode == 401) {
       _httpClient?.close();
@@ -308,6 +322,11 @@ class GptSseClient {
           'durationToConnect=${DateTime.now().millisecondsSinceEpoch - _startMs}ms');
     }
 
+    bool canonicalStarted = false;
+    CanonicalClinicalSnapshot? completedSnapshot;
+    String? completedReuseKey;
+    final typedAnswer = payload.answerContract == CanonicalClinicalSnapshot.version;
+    final cached = canonicalCacheKey == null ? null : canonicalCache?.get(canonicalCacheKey!);
     // ── CONSUMO REAL DO STREAM DE BYTES ──────────────────────────────────────
     try {
       await for (final sseEvent
@@ -345,6 +364,29 @@ class GptSseClient {
           case 'started':
             final data = sseEvent.data ?? {};
 
+            if (payload.mode == 'plantao' &&
+                (data['pipeline'] != 'plantao_canonical_v1' ||
+                 (typedAnswer && data['answerContract'] != CanonicalClinicalSnapshot.version) ||
+                 !const {'gpt-5.6-luna', 'gemini-3.1-flash-lite', 'gpt-5.6-terra'}.contains(data['model']))) {
+              cancel(reason: 'plantao_contract_mismatch');
+              yield AiFailed.now(requestId: reqId, attempt: kGptAttempt,
+                  code: 'plantao_contract_mismatch', message: 'Plantão route mismatch', retryable: false);
+              return;
+            }
+            if (payload.mode == 'plantao') {
+              canonicalStarted = true;
+              AiStreamTrace.content('REQUEST_ID', reqId);
+              final modelStage = const {
+                'gpt-5.6-luna': 'ANSWER_MODEL_LUNA',
+                'gemini-3.1-flash-lite': 'ANSWER_MODEL_GEMINI_PAID',
+                'gpt-5.6-terra': 'ANSWER_MODEL_TERRA',
+              }[data['model']];
+              AiStreamTrace.mark(modelStage ?? 'ANSWER_MODEL_UNKNOWN', 1);
+              AiStreamTrace.mark('ROUTER_MODEL_NANO', 1);
+              AiStreamTrace.mark('FALLBACK_USED', data['fallbackUsed'] == true ? 1 : 0);
+              AiStreamTrace.mark('ESCALATION_USED', data['escalationUsed'] == true ? 1 : 0);
+              AiStreamTrace.mark(payload.lang.startsWith('es') ? 'LANGUAGE_ES' : 'LANGUAGE_PT', 1);
+            }
             _activeModel = data['model'] as String? ?? _activeModel;
             _activeProvider = data['provider'] as String? ?? _activeProvider;
 
@@ -356,6 +398,13 @@ class GptSseClient {
             );
 
           case 'text_delta':
+            if (payload.mode == 'plantao' && !canonicalStarted) {
+              cancel(reason: 'plantao_contract_mismatch');
+              yield AiFailed.now(requestId: reqId, attempt: kGptAttempt,
+                  code: 'plantao_contract_mismatch', message: 'Missing canonical handshake', retryable: false);
+              return;
+            }
+            AiStreamTrace.mark('CHUNK_RECEIVED', accumulator.length);
             final data = sseEvent.data ?? {};
             final delta = data['delta'] as String? ?? '';
             if (delta.isNotEmpty) {
@@ -363,12 +412,43 @@ class GptSseClient {
               sequence = seq + 1;
               _deltaCount++;
               accumulator.write(delta);
+              AiStreamTrace.mark('PROVIDER_TEXT_PRESENT', 1);
+              AiStreamTrace.mark('CHUNK_PARSED', accumulator.length);
+              AiStreamTrace.content('RAW_PROVIDER', accumulator.toString());
               yield AiTextDelta.now(
                 requestId: reqId,
                 attempt: kGptAttempt,
                 delta: delta,
                 sequence: seq,
               );
+            }
+
+          case 'canonical_snapshot':
+            if (!typedAnswer || !canonicalStarted) throw const FormatException('canonical_handshake_required');
+            final data = sseEvent.data ?? {};
+            completedSnapshot = CanonicalClinicalSnapshot.fromJson(
+              Map<String, dynamic>.from(data['snapshot'] as Map));
+            completedReuseKey = data['reuseKey'] as String?;
+            if (completedSnapshot.blocks(payload.lang).join() != accumulator.toString()) {
+              throw const FormatException('canonical_stream_snapshot_mismatch');
+            }
+
+          case 'canonical_reuse':
+            final data = sseEvent.data ?? {};
+            if (!typedAnswer || cached == null || accumulator.isNotEmpty ||
+                data['reuseKey'] != cached.serverKey || data['answerContract'] != CanonicalClinicalSnapshot.version) {
+              throw const FormatException('canonical_reuse_mismatch');
+            }
+            canonicalStarted = true;
+            _activeModel = cached.model;
+            _activeProvider = cached.provider;
+            completedSnapshot = cached.snapshot;
+            AiStreamTrace.mark('CANONICAL_SESSION_REUSE_AUTHORIZED', 1);
+            yield AiStarted.now(requestId:reqId,attempt:kGptAttempt,model:_activeModel,provider:_activeProvider);
+            for (final block in cached.snapshot.blocks(payload.lang)) {
+              if (_cancelled) break;
+              accumulator.write(block);
+              yield AiTextDelta.now(requestId:reqId,attempt:kGptAttempt,delta:block,sequence:++sequence);
             }
 
           case 'sources':
@@ -388,6 +468,8 @@ class GptSseClient {
             }
 
           case 'transport_done':
+            if (typedAnswer && completedSnapshot == null) throw const FormatException('canonical_snapshot_missing');
+            AiStreamTrace.mark('COMPLETION_RECEIVED', accumulator.length);
             // Backend sinaliza conclusão do transporte
             // AppProvider emitirá AiCompleted APÓS sanitizeAndCheck()
             transportDoneReceived = true;
@@ -455,6 +537,9 @@ class GptSseClient {
                   'attempt=$kGptAttempt deltaCount=$_deltaCount '
                   'textLen=${accumulator.length} durationMs=$durationMs');
             }
+            if (canonicalCacheKey != null && completedSnapshot != null && completedReuseKey != null) {
+              canonicalCache?.put(canonicalCacheKey!, completedReuseKey, completedSnapshot, _activeModel, _activeProvider);
+            }
             // Emitir AiCompleted com texto acumulado (sanitizeAndCheck() é responsabilidade do AppProvider)
             yield AiCompleted.now(
               requestId: reqId,
@@ -465,6 +550,7 @@ class GptSseClient {
               outputTokensApprox: outputTok,
               durationMs: durationMs,
               clinicalOutput: clinicalOutput,
+              canonicalSnapshotValidated: typedAnswer && completedSnapshot != null,
             );
             break;
 

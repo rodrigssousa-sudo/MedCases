@@ -133,6 +133,7 @@ void main() {
     expect(presenter, contains('streamingMsgIdx = _messages.length'));
     expect(presenter, contains('_aiError = false'));
     expect(presenter, contains('_networkError = false'));
-    expect(presenter, contains("debugPrint('[AI_PRESENTATION_ERROR] \$raw')"));
+    expect(presenter, isNot(contains("debugPrint('[AI_PRESENTATION_ERROR] \$raw')")));
+    expect(presenter, contains("AiStreamTrace.mark('UI_STATE_SELECTED', failure.kind.index)"));
   });
 }

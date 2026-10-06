@@ -1,3 +1,9 @@
+import 'study/study_delivery_policy.dart';
+import '../models/study_clinical_snapshot.dart';
+import 'study/study_luna_fallback_contract.dart';
+import 'study/study_paid_canonical_response.dart';
+import '../models/canonical_clinical_snapshot.dart';
+import 'ai/safety/ai_stream_trace.dart';
 import 'ai/safety/clinical_request_safety.dart';
 // ══════════════════════════════════════════════════════════════════════════════
 // provider_router_service.dart — Build 226 (Gemini Paid Failover Router)
@@ -60,6 +66,7 @@ class PaidProxyResult {
   final int inputTokensApprox;
   final int outputTokensApprox;
   final int durationMs;
+  final StudyClinicalSnapshot? studySnapshot;
 
   const PaidProxyResult({
     required this.text,
@@ -69,6 +76,7 @@ class PaidProxyResult {
     this.inputTokensApprox = 0,
     this.outputTokensApprox = 0,
     this.durationMs = 0,
+    this.studySnapshot,
   });
 
   factory PaidProxyResult.failure(String code) => PaidProxyResult(
@@ -173,6 +181,9 @@ class ProviderRouterService {
   /// Retorna [PaidProxyResult] com o texto da resposta.
   static Future<PaidProxyResult> callPaidProxy({
     ClinicalRequestContext? clinicalContext,
+    String? studyArtifactType,
+    bool structuredStudyVisual = false,
+    bool fullStudySummary = false,
     required String userMessage,
     required String systemPrompt,
     List<Map<String, String>> history = const [],
@@ -184,8 +195,24 @@ class ProviderRouterService {
     // Estudo: 2048 tok (resposta acadêmica completa).
     int maxOutputTokens = 800,
   }) async {
+    AiStreamTrace.mark('PROVIDER_REQUEST', 0);
     clinicalContext?.requireTransport(mode: mode, language: lang);
     requireClinicalOwner(clinicalContext);
+    // Study chat has one canonical fallback. Other Gemini paid consumers
+    // (utilities, transcription and Plantão) retain their existing transport.
+    if (StudyLunaFallbackContract.applies(
+        mode: mode,
+        studyChat: clinicalContext?.verifiesStudyReferences == true)) {
+      return callGptProxy(
+        clinicalContext: clinicalContext,
+        userMessage: userMessage,
+        systemPrompt: systemPrompt,
+        history: history,
+        mode: mode,
+        lang: lang,
+        requestId: requestId,
+      );
+    }
     final startMs = DateTime.now().millisecondsSinceEpoch;
     final effectiveRequestId =
         requestId.isEmpty ? generateRequestId() : requestId;
@@ -239,6 +266,7 @@ class ProviderRouterService {
     // Estudo mantém 8 entries (resposta acadêmica precisa de mais contexto).
     // Cada entry de histórico = ~500-1500 chars → 4 entries ≈ 2000-6000 chars.
     final isPlantao = mode == 'plantao';
+    final canonicalStudy = !isPlantao && clinicalContext?.verifiesStudyReferences == true;
     final histCap =
         isPlantao ? 4 : 8; // BUILD 261: 4 para Plantão, 8 para Estudo
     final recentHistory = history.length > histCap
@@ -267,15 +295,20 @@ class ProviderRouterService {
     final activeTemp = isPlantao ? 0.2 : 0.4;
 
     final payload = {
+      if (studyArtifactType != null) 'studyArtifactType': studyArtifactType,
       'userMessage': userMessage,
-      'systemPrompt': systemPrompt,
+      'systemPrompt': canonicalStudy ? StudyPaidCanonicalResponse.prompt(systemPrompt, lang) : systemPrompt,
       ...ClinicalIdentityTransportEnvelope.fromStructuredSystemPrompt(systemPrompt),
       'history': recentHistory,
       'mode': mode,
       'lang': lang,
       'requestId': effectiveRequestId,
-      'maxOutputTokens':
-          maxOutputTokens, // BUILD 261: forwarded to Cloud Function
+      if (canonicalStudy) 'studyCanonicalVersion': StudyPaidCanonicalResponse.version,
+      if (structuredStudyVisual && !isPlantao && !canonicalStudy)
+        'studyArtifactFormat': 'study-visual-v1',
+      if (fullStudySummary && !isPlantao && !canonicalStudy)
+        'studyFullSummaryVersion': 'study-full-summary-v1',
+      'maxOutputTokens': canonicalStudy ? StudyPaidCanonicalResponse.maxOutputTokens : maxOutputTokens,
       // ORDEM 42: engine override keys — forçam o modelo correto server-side
       'model': activeModel, // override direto de modelo
       'model_tier': activeModelTier, // tag de tier ('speed'|'pro')
@@ -327,7 +360,8 @@ class ProviderRouterService {
       required String url,
       required Duration timeout,
     }) {
-      clinicalContext?.requireTransport(mode: mode, language: lang);
+      AiStreamTrace.mark('PROVIDER_REQUEST', 0);
+    clinicalContext?.requireTransport(mode: mode, language: lang);
       requireClinicalOwner(clinicalContext);
       return http
           .post(
@@ -523,7 +557,23 @@ class ProviderRouterService {
       return PaidProxyResult.failure('parse_error');
     }
 
-    final text = body['text']?.toString() ?? '';
+    AiStreamTrace.mark('PROVIDER_STATUS', response.statusCode);
+    final wireText = body['text']?.toString() ?? '';
+    String text;
+    try {
+      if (canonicalStudy && body['canonical']?['version'] != StudyPaidCanonicalResponse.version) {
+        return PaidProxyResult.failure('study_paid_contract_missing');
+      }
+      text = canonicalStudy
+          ? StudyPaidCanonicalResponse.decode(wireText, language: lang,
+              finishReason: body['canonical']?['finishReason']?.toString() ?? '',
+              references: clinicalContext!.studyReferences).text
+          : wireText;
+    } on Object {
+      // Never present incomplete canonical JSON as a successful clinical answer.
+      return PaidProxyResult.failure('study_paid_incomplete_or_invalid');
+    }
+    AiStreamTrace.mark('PROVIDER_TEXT_PRESENT', text.isNotEmpty ? 1 : 0);
     final model = body['model']?.toString() ?? '';
     final outputTokensApprox = (body['outputTokensApprox'] as num?)?.toInt() ??
         (text.length / 4).ceil();
@@ -579,6 +629,7 @@ class ProviderRouterService {
     String requestId = '',
     int maxOutputTokens = 800,
   }) async {
+    AiStreamTrace.mark('PROVIDER_REQUEST', 0);
     clinicalContext?.requireTransport(mode: mode, language: lang);
     requireClinicalOwner(clinicalContext);
     final startMs = DateTime.now().millisecondsSinceEpoch;
@@ -622,6 +673,9 @@ class ProviderRouterService {
 
     // ── Payload: igual ao callPaidProxy + provider='openai' ───────────────
     final isPlantao = mode == 'plantao';
+    final canonicalStudy = StudyLunaFallbackContract.applies(
+        mode: mode,
+        studyChat: clinicalContext?.verifiesStudyReferences == true);
     final histCap = isPlantao ? 4 : 8;
     final recentHistory = history.length > histCap
         ? history.sublist(history.length - histCap)
@@ -638,6 +692,7 @@ class ProviderRouterService {
       'maxOutputTokens': maxOutputTokens,
       // BUILD 321: diretiva de roteamento — CF lê este campo e usa OpenAI
       'provider': 'openai',
+      if (canonicalStudy) ...StudyLunaFallbackContract.fields(systemPrompt),
     };
 
     final inputTokensApprox = (jsonEncode(payload).length / 4).ceil();
@@ -652,7 +707,7 @@ class ProviderRouterService {
           'requestId=$requestId '
           'mode=$mode '
           'primary=gemini_free '
-          'layer2=gpt_4o_mini '
+          'layer2=${canonicalStudy ? StudyLunaFallbackContract.model : 'gpt_4o_mini'} '
           'attempt=gpt '
           'inputTokensApprox=$inputTokensApprox');
     }
@@ -660,7 +715,9 @@ class ProviderRouterService {
     // ── HTTP POST para a mesma Cloud Function ─────────────────────────────
     http.Response response;
     try {
-      clinicalContext?.requireTransport(mode: mode, language: lang);
+      AiStreamTrace.mark('PROVIDER_REQUEST', 0);
+      if (canonicalStudy) AiStreamTrace.mark('STUDY_LUNA_HTTP_SENT', 0);
+    clinicalContext?.requireTransport(mode: mode, language: lang);
       requireClinicalOwner(clinicalContext);
       response = await http
           .post(
@@ -673,6 +730,7 @@ class ProviderRouterService {
           )
           .timeout(const Duration(seconds: 60));
     } on TimeoutException {
+      if (canonicalStudy) AiStreamTrace.mark('STUDY_LUNA_APP_HTTP_TIMEOUT', 60000);
       final durationMs = DateTime.now().millisecondsSinceEpoch - startMs;
       debugPrint(
           '[GPT_PROXY] requestId=$requestId success=false status=timeout durationMs=$durationMs');
@@ -685,6 +743,9 @@ class ProviderRouterService {
     }
 
     final durationMs = DateTime.now().millisecondsSinceEpoch - startMs;
+
+    AiStreamTrace.mark('PROVIDER_STATUS', response.statusCode);
+    if (canonicalStudy) AiStreamTrace.mark('STUDY_LUNA_HTTP_COMPLETE_MS', durationMs);
 
     // ── Parse da resposta (mesma estrutura do callPaidProxy) ──────────────
     if (response.statusCode == 429) {
@@ -703,6 +764,7 @@ class ProviderRouterService {
         final decodedErr =
             utf8.decode(response.bodyBytes, allowMalformed: true);
         final body = jsonDecode(decodedErr) as Map<String, dynamic>;
+        if (canonicalStudy) StudyDeliveryPolicy.traceFallbackMetadata(body);
         errorCode = body['error']?.toString() ?? errorCode;
       } catch (_) {}
       debugPrint(
@@ -721,7 +783,10 @@ class ProviderRouterService {
       return PaidProxyResult.failure('parse_error');
     }
 
-    final text = body['text']?.toString() ?? '';
+    if (canonicalStudy) StudyDeliveryPolicy.traceFallbackMetadata(body);
+    var text = body['text']?.toString() ?? '';
+    StudyClinicalSnapshot? studySnapshot;
+    AiStreamTrace.mark('PROVIDER_TEXT_PRESENT', text.isNotEmpty ? 1 : 0);
     final model = body['model']?.toString() ?? 'gpt-4o-mini';
     final outputTokensApprox = (body['outputTokensApprox'] as num?)?.toInt() ??
         (text.length / 4).ceil();
@@ -730,6 +795,19 @@ class ProviderRouterService {
       debugPrint(
           '[GPT_PROXY] requestId=$requestId success=false status=empty_response');
       return PaidProxyResult.failure('empty_response');
+    }
+
+    if (canonicalStudy) {
+      try {
+        final answer = StudyLunaFallbackContract.decode(body,
+            language: lang, references: clinicalContext!.studyReferences);
+        text = answer.text;
+        studySnapshot = answer.snapshot;
+      } on FormatException {
+        return PaidProxyResult.failure('study_luna_invalid_snapshot');
+      } on StateError {
+        return PaidProxyResult.failure('study_luna_quantity_retention');
+      }
     }
 
     debugPrint('[BUILD321][GPT_PROXY] '
@@ -745,8 +823,8 @@ class ProviderRouterService {
         'requestId=$requestId '
         'mode=$mode '
         'primary=gemini_free '
-        'layer2=gpt_4o_mini '
-        'usedProvider=gpt_4o_mini '
+        'layer2=${canonicalStudy ? StudyLunaFallbackContract.model : 'gpt_4o_mini'} '
+        'usedProvider=$model '
         'status=success '
         'inputTokensApprox=$inputTokensApprox '
         'outputTokensApprox=$outputTokensApprox '
@@ -759,6 +837,7 @@ class ProviderRouterService {
       inputTokensApprox: inputTokensApprox,
       outputTokensApprox: outputTokensApprox,
       durationMs: durationMs,
+      studySnapshot: studySnapshot,
     );
   }
 
@@ -879,11 +958,13 @@ class ProviderRouterService {
     String requestId = '',
     int maxOutputTokens = 800,
     void Function(GptSseClient client)? onClientCreated,
+    CanonicalConversationCache? canonicalCache,
   }) async* {
+    AiStreamTrace.mark('PROVIDER_REQUEST', 0);
     clinicalContext?.requireTransport(mode: mode, language: lang);
     requireClinicalOwner(clinicalContext);
     // ── KILL SWITCH: kUseGptProxySse = false → legado ──────────────────────
-    if (!kUseGptProxySse) {
+    if (!kUseGptProxySse && mode != 'plantao') {
       if (kDebugMode) {
         debugPrint('[GPT_PROXY_STREAM] kUseGptProxySse=false → legado simulado '
             'requestId=$requestId');
@@ -960,8 +1041,12 @@ class ProviderRouterService {
       }
     }
 
+    AiStreamTrace.mark('PROVIDER_REQUEST', 0);
     clinicalContext?.requireTransport(mode: mode, language: lang);
     requireClinicalOwner(clinicalContext);
+    final cacheKey = mode == 'plantao' ? canonicalCache?.key(
+        uid: clinicalUserId, prompt: systemPrompt, query: userMessage, history: history) : null;
+    final cached = cacheKey == null ? null : canonicalCache?.get(cacheKey);
     final payload = GptSsePayload(
       clinicalContext: clinicalContext,
       userMessage: userMessage,
@@ -971,11 +1056,17 @@ class ProviderRouterService {
       lang: lang,
       requestId: requestId,
       maxOutputTokens: maxOutputTokens,
+      answerContract: mode == 'plantao' ? CanonicalClinicalSnapshot.version : null,
+      canonicalReuseKey: cached?.serverKey,
     );
 
     final client = GptSseClient(
-      endpointUrl: _gptSseUrl,
+      endpointUrl: mode == 'plantao'
+          ? 'https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream'
+          : _gptSseUrl,
       idToken: resolvedToken,
+      canonicalCache: canonicalCache,
+      canonicalCacheKey: cacheKey,
     );
 
     onClientCreated?.call(client);
@@ -997,6 +1088,7 @@ class ProviderRouterService {
     String requestId = '',
     int maxOutputTokens = 800,
   }) async* {
+    AiStreamTrace.mark('PROVIDER_REQUEST', 0);
     clinicalContext?.requireTransport(mode: mode, language: lang);
     requireClinicalOwner(clinicalContext);
     final startMs = DateTime.now().millisecondsSinceEpoch;

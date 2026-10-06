@@ -1,3 +1,4 @@
+const { studyCanonicalTransport } = require('./study_canonical_transport');
 const console = require('./private_logger');
 /**
  * ═══════════════════════════════════════════════════════════════════════════
@@ -1100,10 +1101,11 @@ async function syncRequest(
     model = GEMINI_MODEL,
     maxTokens = 20,
     temperature = 0.1,
+    canonicalTransport = null,
   } = {},
 ) {
   const safeMaxTokens = Math.trunc(
-    clampNumber(maxTokens, 20, 1, 8192),
+    clampNumber(canonicalTransport?.maxOutputTokens ?? maxTokens, 20, 1, canonicalTransport ? 32768 : 8192),
   );
 
   const safeTemperature = clampNumber(
@@ -1126,6 +1128,7 @@ async function syncRequest(
       },
     ],
     generationConfig: {
+      ...(canonicalTransport?.generationConfig || {}),
       maxOutputTokens: safeMaxTokens,
       temperature: safeTemperature,
     },
@@ -1667,6 +1670,7 @@ app.post('/api/ai/sync', streamLimiter, async (req, res) => {
       model: resolvedModel,
       maxTokens: resolvedMaxTokens,
       temperature: resolvedTemperature,
+      canonicalTransport: studyCanonicalTransport(req.body),
     },
   );
 

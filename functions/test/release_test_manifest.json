@@ -357,6 +357,26 @@
       "file": "functions/test/cors_release_policy.test.js",
       "category": "security",
       "suite": "RELEASE_RUNTIME_TESTS"
+    },
+    {
+      "file": "functions/test/gpt_optional_grounding_test.js",
+      "category": "provider",
+      "suite": "CURRENT_PROVIDER_TESTS"
+    },
+    {
+      "file": "functions/test/plantao_canonical_stream_test.js",
+      "category": "provider",
+      "suite": "CURRENT_PROVIDER_TESTS"
+    },
+    {
+      "file": "functions/test/study_canonical_transport.test.js",
+      "category": "provider",
+      "suite": "CURRENT_PROVIDER_TESTS"
+    },
+    {
+      "file": "functions/test/native_notifications.test.js",
+      "category": "security",
+      "suite": "CURRENT_SECURITY_TESTS"
     }
   ],
   "historicalPipelineArchaeology": [
@@ -754,7 +774,11 @@
         "functions/test/shadow_decommission.test.js",
         "functions/test/shadow_handler_parity.test.js",
         "functions/test/release_manifest.test.js",
-        "functions/test/cors_release_policy.test.js"
+        "functions/test/cors_release_policy.test.js",
+        "functions/test/gpt_optional_grounding_test.js",
+        "functions/test/plantao_canonical_stream_test.js",
+        "functions/test/study_canonical_transport.test.js",
+        "functions/test/native_notifications.test.js"
       ]
     },
     {

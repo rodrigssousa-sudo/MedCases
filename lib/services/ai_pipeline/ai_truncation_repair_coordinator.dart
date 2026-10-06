@@ -121,6 +121,7 @@ class AiTruncationRepairCoordinator {
     required AiRequestMode mode,
     required AiRequestLocale locale,
     String? providerFinishReason,
+    bool canonicalSnapshotValidated = false,
   }) {
     final normalizedRequestId = requestId.trim();
 
@@ -140,6 +141,7 @@ class AiTruncationRepairCoordinator {
         mode: mode,
         locale: locale,
         providerFinishReason: providerFinishReason,
+        canonicalSnapshotValidated: canonicalSnapshotValidated,
       ),
     );
   }
@@ -158,21 +160,23 @@ class AiTruncationRepairCoordinator {
     required AiRequestMode mode,
     required AiRequestLocale locale,
     required String? providerFinishReason,
+    required bool canonicalSnapshotValidated,
   }) async {
-    final inspection = providerFinishReason == 'MAX_TOKENS'
-        ? const TruncationCheckResult(
-            isTruncated: true,
-            confidenceLevel: TruncationConfidence.high,
-            violationReason: 'provider_finish_reason_max_tokens',
-          )
+    final hasIncompleteTransport = providerFinishReason == 'MAX_TOKENS' ||
+        providerFinishReason == 'INCOMPLETE_STREAM';
+    final inspection = hasIncompleteTransport
+        ? TruncationInspector.inspectProviderOutput(
+            originalText, finishReason: providerFinishReason)
         : inspector.inspect(originalText);
 
     final isPlantaoMode = mode == AiRequestMode.plantao;
 
     final closedPlantaoStructureGuard = isPlantaoMode &&
-        providerFinishReason != 'MAX_TOKENS' &&
+        !hasIncompleteTransport &&
         inspection.violationReason == 'abrupt_non_punctuation_termination' &&
-        _hasClosedPlantaoStructure(originalText);
+        ((canonicalSnapshotValidated &&
+                inspection.confidenceLevel == TruncationConfidence.medium) ||
+            _hasClosedPlantaoStructure(originalText));
 
     final shouldRepair = inspection.isTruncated &&
         !closedPlantaoStructureGuard &&
@@ -207,6 +211,16 @@ class AiTruncationRepairCoordinator {
       isPlantaoMode: isPlantaoMode,
       appLanguage: _languageCode(locale),
     );
+
+    if (inspection.violationReason == 'empty_final_section' &&
+        repairResult.isValid &&
+        (!repairResult.text.startsWith(originalText.trimRight()) ||
+         inspector.inspect(repairResult.text).isTruncated)) {
+      return AiTruncationRepairOutcome(requestId: requestId, text: '',
+        inspection: inspection.withRepair(retried: true, fixed: false),
+        repairStatus: AiRepairStatus.failed, repairAttempted: true,
+        isValid: false, failureReason: 'continuation_not_append_only');
+    }
 
     if (!repairResult.isValid) {
       return AiTruncationRepairOutcome(

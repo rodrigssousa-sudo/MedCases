@@ -1,3 +1,6 @@
+import 'ai/safety/ai_stream_trace.dart';
+import 'ai/safety/clinical_dose_scope.dart';
+
 class PlantaoGlobalClinicalContextPack {
   const PlantaoGlobalClinicalContextPack({
     this.pathologyKey,
@@ -68,12 +71,15 @@ class PlantaoGlobalClinicalResponseGate {
     required String language,
     PlantaoGlobalClinicalContextPack? contextPack,
     bool enforceRequiredActions = true,
+    bool preserveEditorialStructure = false,
   }) {
     final normalized = _stripDecorativePictographs(
       rawText,
     ).replaceAll('\r\n', '\n').replaceAll('\r', '\n').trim();
 
+    AiStreamTrace.stage('F_GATE_NORMALIZE', rawText, normalized);
     if (normalized.isEmpty) {
+      AiStreamTrace.mark('F_GATE_BRANCH_EMPTY', 1);
       return const PlantaoGlobalClinicalGateResult(
         finalText: '',
         issues: <PlantaoGlobalClinicalGateIssue>[
@@ -92,9 +98,15 @@ class PlantaoGlobalClinicalResponseGate {
       normalized,
       language: language,
     );
-    final projected = _m70bDeduplicateDetailedRegimenAcrossSections(
-      canonicalProjected,
-    );
+    AiStreamTrace.stage('F_GATE_PROJECT', normalized, canonicalProjected);
+    // Streaming editorial blocks already have their final hierarchy/order.
+    // Keep that presentation intact; canonical evidence below still drives
+    // every existing clinical validation and fragment safety decision.
+    final projected = preserveEditorialStructure
+        ? normalized
+        : _m70bDeduplicateDetailedRegimenAcrossSections(canonicalProjected);
+    AiStreamTrace.stage('F_GATE_DEDUP', canonicalProjected, projected);
+    AiStreamTrace.mark('F_GATE_MACHINE_PACK_PRESENT', contextPack != null ? 1 : 0);
     // M70C_PRE_DEDUP_MACHINE_VALIDATION_POST_DEDUP_PRESENTATION_V1
     // Two representations, two responsibilities:
     // - canonicalProjected: complete clinical evidence used by machine-native
@@ -121,11 +133,92 @@ class PlantaoGlobalClinicalResponseGate {
     );
   }
 
-  // M70B_CROSS_SECTION_DETAILED_REGIMEN_DEDUP_V1
-  // Conservative post-provider normalization: remove from Conducta/Conduta
-  // inmediata only regimen fragments already present in Tratamiento/Tratamento
-  // farmacológico for the same medication identity. Never invent/move content.
-  // Never call a provider/network from this gate.
+  /// Registry outages must not rely on prompt compliance alone for exact doses.
+  static String limitUnvalidatedSpecificity(String text, {String language = 'pt'}) {
+    final dose = RegExp(r'\b\d+(?:[.,]\d+)?\s*(?:mg|mcg|µg|μg|ug|g|ml|mL|UI|IU|unidades)(?:\b|/)', caseSensitive: false);
+    final internal = RegExp(r'MEDCASES DEGRADED CLINICAL MODE|M(?:58|59|62|71|78)_[A-Z_]+|machine.native|registryReadFailed', caseSensitive: false);
+    final filtered = ClinicalDoseScope.labelReferenceSections(text, language).split('\n').where((line) => (!dose.hasMatch(line) || ClinicalDoseScope.referenceFragment(line)) && !internal.hasMatch(line)).join('\n').trim();
+    if (filtered.isNotEmpty) return filtered;
+    return language.startsWith('es')
+        ? 'No fue posible validar los detalles de esta respuesta. Puedes reformular la consulta para explorar conceptos generales.'
+        : 'Não foi possível validar os detalhes desta resposta. Você pode reformular a consulta para explorar conceitos gerais.';
+  }
+
+  // M78_SAFE_DEGRADED_CLINICAL_PRESENTATION_V1
+  //
+  // Critical validation findings limit specificity instead of deleting the
+  // entire answer. Structural issues preserve the provider text. Missing
+  // required treatment remains a completeness finding only. Explicitly
+  // prohibited positive recommendations are removed line-by-line using the
+  // same semantic matcher that detected them.
+  static PlantaoGlobalClinicalGateResult degradeCriticalResultForPresentation({
+    required PlantaoGlobalClinicalGateResult result,
+    required String language,
+  }) {
+    if (!result.hasCriticalIssue) return result;
+
+    final criticalIssues = result.issues
+        .where((issue) => issue.critical)
+        .toList(growable: false);
+
+    var text = result.finalText.trim();
+
+    final prohibitedIssues = criticalIssues
+        .where((issue) => issue.code == 'prohibited_action_present')
+        .toList(growable: false);
+
+    if (text.isNotEmpty && prohibitedIssues.isNotEmpty) {
+      final kept = <String>[];
+
+      for (final line in text.split('\n')) {
+        final foldedLine = _fold(line).trim();
+
+        final prohibited = prohibitedIssues.any((issue) {
+          final needle = _fold(issue.detail).trim();
+          if (needle.isEmpty || foldedLine.isEmpty) return false;
+
+          return _containsClinicalAction(
+            foldedLine,
+            needle,
+            requirePositiveRecommendation: true,
+          );
+        });
+
+        if (!prohibited) kept.add(line);
+      }
+
+      text = kept.join('\n').trim();
+    }
+
+    // Catalog completeness is enrichment, not permission to explain treatment.
+    // Specific dose validation already runs in specialized safety upstream.
+    final isEs = language.toLowerCase().startsWith('es');
+
+    if (text.isEmpty) {
+      text = isEs
+          ? 'Respuesta clínica general\n\n'
+                'No fue posible validar una conducta terapéutica específica en '
+                'este turno. Puedes utilizar la evaluación clínica general, los '
+                'diagnósticos diferenciales, los estudios, las señales de alarma '
+                'y la monitorización disponibles; vuelve a solicitar el punto '
+                'terapéutico específico para una nueva validación.'
+          : 'Resposta clínica geral\n\n'
+                'Não foi possível validar uma conduta terapêutica específica '
+                'neste turno. Você pode utilizar a avaliação clínica geral, os '
+                'diagnósticos diferenciais, os exames, os sinais de alarme e a '
+                'monitorização disponíveis; solicite novamente o ponto '
+                'terapêutico específico para uma nova validação.';
+    }
+
+    return PlantaoGlobalClinicalGateResult(
+      finalText: text,
+      issues: result.issues,
+      projected: true,
+      machineAuthorityEvaluated: result.machineAuthorityEvaluated,
+    );
+  }
+
+
   static final RegExp _m70bDoseFragment = RegExp(
     r'\b\d+(?:[.,]\d+)?\s*'
     r'(?:mcg|ug|µg|mg|g|ml|l|u|ui|iu|meq|mmol)'

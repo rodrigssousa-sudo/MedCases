@@ -189,7 +189,7 @@ void main() {
           .toList();
 
       expect(canonical, hasLength(1));
-      expect(canonical.single.$2, contains('m56cProviderInput'));
+      expect(canonical.single.$2, contains('m59ProviderInput'));
 
       final auth = screen.indexOf('canonicalPlantaoWiring: true');
       final prefetch = screen.indexOf('M56C_MACHINE_NATIVE_REGISTRY_PREFETCH');
@@ -230,7 +230,7 @@ void main() {
           if (call.contains('canonicalPlantaoWiring: true')) {
             canonicalCount++;
             if (!rel.endsWith('lib/screens/ai_screen.dart') ||
-                !call.contains('m56cProviderInput')) {
+                !call.contains('m59ProviderInput')) {
               violations.add('$rel:$line unauthorized canonical authorization');
             }
             continue;

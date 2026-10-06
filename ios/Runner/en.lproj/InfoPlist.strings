@@ -19,3 +19,6 @@
 
 /* ── Photo Library (write/save) ─────────────────────────────────────────── */
 "NSPhotoLibraryAddUsageDescription" = "MedCases Pro may save app-generated images — such as clinical tracking charts or protocol screenshots — directly to your photo library, only when you explicitly request it.";
+
+"NSCalendarsUsageDescription" = "MedCases can add events to your device calendar only when you choose this option.";
+"NSCalendarsFullAccessUsageDescription" = "MedCases can add events to your device calendar only when you choose this option.";

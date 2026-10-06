@@ -53,7 +53,21 @@ Future<void> verifyHomeComposition(WidgetTester tester,
     expect(tester.getTopLeft(patient).dy,
         greaterThan(tester.getTopLeft(utility).dy));
     expect(tester.getBottomLeft(patient).dy,
-        lessThan(tester.getBottomLeft(utility).dy));
+        closeTo(tester.getBottomLeft(utility).dy, 0.001));
+    expect(tester.getTopLeft(find.text('CRIAR RESUMO')).dy,
+        lessThan(tester.getTopLeft(find.text('GUIA CLÍNICO')).dy));
+    expect(tester.getTopLeft(find.text('AGENDA')).dy,
+        closeTo(tester.getTopLeft(find.text('CRIAR RESUMO')).dy, 0.001));
+    expect(tester.getTopLeft(find.text('FÁRMACOS')).dy,
+        closeTo(tester.getTopLeft(find.text('GUIA CLÍNICO')).dy, 0.001));
+    expect(tester.getTopLeft(find.text('SIMULAÇÃO')).dy,
+        closeTo(tester.getTopLeft(find.text('VACINA')).dy, 0.001));
+    for (final entry in {'GUIA CLÍNICO': 'guide', 'SIMULAÇÃO': 'simulation', 'VACINA': 'vaccine'}.entries) {
+      await tester.ensureVisible(find.text(entry.key));
+      await tester.tap(find.text(entry.key));
+      await tester.pumpAndSettle();
+      expect(calls, contains(entry.value));
+    }
     final root = tester.widget<HomeScreenV2>(find.byType(HomeScreenV2));
     for (final element in [primary, clinical, utility, patient]) {
       expect(

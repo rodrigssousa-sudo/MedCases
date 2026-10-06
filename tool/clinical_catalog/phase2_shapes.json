@@ -1,0 +1,426 @@
+[
+  {
+    "name": "SHAPE_01",
+    "fingerprint": "50061a9a7fd6",
+    "count": 172,
+    "policy": "HOLD_UNSCOPED_LOCALES",
+    "paths": [],
+    "holdReason": "NO_EXPLICIT_MODE_PROJECTION"
+  },
+  {
+    "name": "SHAPE_02",
+    "fingerprint": "53b19dc6186d",
+    "count": 70,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_03",
+    "fingerprint": "13e0e78ba553",
+    "count": 49,
+    "policy": "HOLD_UNSCOPED_LOCALES",
+    "paths": [],
+    "holdReason": "NO_EXPLICIT_MODE_PROJECTION"
+  },
+  {
+    "name": "SHAPE_04",
+    "fingerprint": "9899c5010a51",
+    "count": 43,
+    "policy": "HOLD_UNSCOPED_LOCALES",
+    "paths": [],
+    "holdReason": "NO_EXPLICIT_MODE_PROJECTION"
+  },
+  {
+    "name": "SHAPE_05",
+    "fingerprint": "21b14d108a6f",
+    "count": 40,
+    "policy": "HOLD_UNSCOPED_LOCALES",
+    "paths": [],
+    "holdReason": "NO_EXPLICIT_MODE_PROJECTION"
+  },
+  {
+    "name": "SHAPE_06",
+    "fingerprint": "e83e84dd320e",
+    "count": 40,
+    "policy": "HOLD_UNSCOPED_LOCALES",
+    "paths": [],
+    "holdReason": "NO_EXPLICIT_MODE_PROJECTION"
+  },
+  {
+    "name": "SHAPE_07",
+    "fingerprint": "46b641ac94ca",
+    "count": 40,
+    "policy": "HOLD_UNSCOPED_LOCALES",
+    "paths": [],
+    "holdReason": "NO_EXPLICIT_MODE_PROJECTION"
+  },
+  {
+    "name": "SHAPE_08",
+    "fingerprint": "bbaf7a4111c8",
+    "count": 40,
+    "policy": "HOLD_UNSCOPED_LOCALES",
+    "paths": [],
+    "holdReason": "NO_EXPLICIT_MODE_PROJECTION"
+  },
+  {
+    "name": "SHAPE_09",
+    "fingerprint": "48d2a09ea973",
+    "count": 37,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_10",
+    "fingerprint": "baf918abc946",
+    "count": 22,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_11",
+    "fingerprint": "cad9242207e7",
+    "count": 17,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_12",
+    "fingerprint": "387638e6f2ac",
+    "count": 17,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_13",
+    "fingerprint": "45d8940f1e69",
+    "count": 11,
+    "policy": "HOLD_UNSCOPED_LOCALES",
+    "paths": [],
+    "holdReason": "NO_EXPLICIT_MODE_PROJECTION"
+  },
+  {
+    "name": "SHAPE_14",
+    "fingerprint": "afbc0d80de3d",
+    "count": 11,
+    "policy": "ENCODED_APPROVED_JSON",
+    "paths": [
+      "payload.approvedClinicalPayload -> JSON.{pt,es}.{study,plantao}"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_15",
+    "fingerprint": "d611ee5ffa24",
+    "count": 10,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_16",
+    "fingerprint": "c7d9bc1a15c0",
+    "count": 9,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_17",
+    "fingerprint": "9047cbf0cf91",
+    "count": 8,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_18",
+    "fingerprint": "5b851c8a669f",
+    "count": 5,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_19",
+    "fingerprint": "069504a68da3",
+    "count": 4,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_20",
+    "fingerprint": "d1135fdc31d8",
+    "count": 3,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_21",
+    "fingerprint": "ab335374bf96",
+    "count": 3,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_22",
+    "fingerprint": "7699fcb0ad6e",
+    "count": 3,
+    "policy": "ENCODED_APPROVED_JSON",
+    "paths": [
+      "payload.approvedClinicalPayload -> JSON.{pt,es}.{study,plantao}"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_23",
+    "fingerprint": "f1f111936efe",
+    "count": 3,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_24",
+    "fingerprint": "61c1adea9ffa",
+    "count": 1,
+    "policy": "HOLD_UNSCOPED_LOCALES",
+    "paths": [],
+    "holdReason": "NO_EXPLICIT_MODE_PROJECTION"
+  },
+  {
+    "name": "SHAPE_25",
+    "fingerprint": "f21ef68955c7",
+    "count": 1,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_26",
+    "fingerprint": "f29f10104329",
+    "count": 1,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_27",
+    "fingerprint": "d5a28a34d256",
+    "count": 1,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_28",
+    "fingerprint": "94a803376dcc",
+    "count": 1,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_29",
+    "fingerprint": "c5b654edf7df",
+    "count": 1,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_30",
+    "fingerprint": "9e7449986d1e",
+    "count": 1,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_31",
+    "fingerprint": "5d879a30d273",
+    "count": 1,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_32",
+    "fingerprint": "870fdd576f54",
+    "count": 1,
+    "policy": "ENCODED_APPROVED_JSON",
+    "paths": [
+      "payload.approvedClinicalPayload -> JSON.{pt,es}.{study,plantao}"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_33",
+    "fingerprint": "c7614b55c3f8",
+    "count": 1,
+    "policy": "ENCODED_APPROVED_JSON",
+    "paths": [
+      "payload.approvedClinicalPayload -> JSON.{pt,es}.{study,plantao}"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_34",
+    "fingerprint": "824311719b7c",
+    "count": 1,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_35",
+    "fingerprint": "e191eaacd838",
+    "count": 1,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_36",
+    "fingerprint": "cea62328b0aa",
+    "count": 1,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  },
+  {
+    "name": "SHAPE_37",
+    "fingerprint": "a0962757d10c",
+    "count": 1,
+    "policy": "EXPLICIT_MARKDOWN",
+    "paths": [
+      "$.payload.es.studyMarkdown",
+      "$.payload.pt.studyMarkdown",
+      "$.payload.es.plantaoMarkdown",
+      "$.payload.pt.plantaoMarkdown"
+    ],
+    "holdReason": null
+  }
+]

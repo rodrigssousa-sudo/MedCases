@@ -1,62 +1,59 @@
 import 'dart:io';
-
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-String classBlock(String source, String className) {
-  final start = RegExp(
-    '^class\\s+${RegExp.escape(className)}\\b',
-    multiLine: true,
-  ).firstMatch(source);
-
-  expect(start, isNotNull, reason: 'class missing: $className');
-
-  final rest = source.substring(start!.end);
-  final next = RegExp(
-    r'^class\s+[A-Za-z_]\w*\b',
-    multiLine: true,
-  ).firstMatch(rest);
-
-  final end = next == null ? source.length : start.end + next.start;
-  return source.substring(start.start, end);
-}
+import 'package:medcases/screens/ai/widgets/mobile_ai_action_bar.dart';
 
 void main() {
-  test('Mobile AI visible MEDCASES IA header uses #009C3B for IA only', () {
-    final source = File(
-      'lib/screens/ai/widgets/mobile_ai_action_bar.dart',
-    ).readAsStringSync();
-
-    final owner = classBlock(source, 'MobileAiActionBar');
-
-    expect(owner, contains("text: 'MEDCASES '"));
-    expect(owner, contains("text: 'IA'"));
-    expect(owner, contains('AiConnectionIdentity('));
-
-    final iaBlock = RegExp(
-      r"TextSpan\(\s*"
-      r"text:\s*'IA'\s*,\s*"
-      r"style:\s*TextStyle\(\s*"
-      r"fontSize:\s*16\s*,\s*"
-      r"fontWeight:\s*FontWeight\.w900\s*,\s*"
-      r"letterSpacing:\s*1\.2\s*,\s*"
-      r"color:\s*dark\s*"
-      r"\?\s*const\s+Color\(\s*0xFF009C3B\s*\)\s*"
-      r":\s*const\s+Color\(\s*0xFF009C3B\s*\)\s*,\s*"
-      r"\)\s*,\s*"
-      r"\)",
-      multiLine: true,
-    );
-
-    expect(
-      iaBlock.allMatches(owner).length,
-      1,
-      reason: 'visible IA token must use #009C3B in dark and light',
-    );
-
-    expect(
-      owner,
-      isNot(contains('0xFF0D6B57')),
-      reason: 'old green must be absent from this visible header owner',
-    );
+  setUpAll(() async {
+    var dir = File(Platform.resolvedExecutable).parent;
+    while (!Directory('${dir.path}/material_fonts').existsSync() &&
+        dir.parent.path != dir.path) {
+      dir = dir.parent;
+    }
+    final loader = FontLoader('Roboto');
+    loader.addFont(Future.value(ByteData.sublistView(
+        File('${dir.path}/material_fonts/Roboto-Regular.ttf')
+            .readAsBytesSync())));
+    await loader.load();
   });
+  for (final dark in [true, false]) {
+    for (final lang in ['pt', 'es']) {
+      testWidgets(
+          'actual mobile AI header keeps canonical brand $lang dark=$dark',
+          (t) async {
+        await t.binding.setSurfaceSize(const Size(320, 640));
+        addTearDown(() => t.binding.setSurfaceSize(null));
+        var settings = 0;
+        await t.pumpWidget(MaterialApp(
+            home: MediaQuery(
+          data: const MediaQueryData(textScaler: TextScaler.linear(2)),
+          child: Scaffold(
+              body: MobileAiActionBar(
+            dark: dark,
+            lang: lang,
+            historyCount: 1,
+            hasMessages: true,
+            hasRealAi: true,
+            isConnected: true,
+            keyLoading: false,
+            onHistory: () {},
+            onClear: () {},
+            onSettings: () => settings++,
+          )),
+        )));
+        final title = find.text('MedCases Clinical', findRichText: true);
+        expect(title, findsOneWidget);
+        expect(find.text('MEDCASES IA', findRichText: true), findsNothing);
+        final titleRect = t.getRect(title);
+        final identity = find.byType(AiConnectionIdentity);
+        expect(titleRect.left, greaterThanOrEqualTo(t.getRect(identity).right));
+        expect(titleRect.right, lessThanOrEqualTo(320));
+        await t.tap(identity);
+        expect(settings, 1);
+        expect(t.takeException(), isNull);
+        await t.pumpWidget(const SizedBox());
+      });
+    }
+  }
 }

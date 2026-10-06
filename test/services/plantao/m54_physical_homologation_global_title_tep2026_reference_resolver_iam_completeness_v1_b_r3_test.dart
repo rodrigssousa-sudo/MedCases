@@ -168,7 +168,11 @@ void main() {
     test('global title contract exists with PT/ES parity', () {
       final es = AiService.buildM54PhysicalHomologationContractForTesting('Paciente con bronquiolitis aguda. Analiza e indica conducta.', isEs: true);
       final pt = AiService.buildM54PhysicalHomologationContractForTesting('Paciente com bronquiolite aguda. Analise e indique conduta.', isEs: false);
-      for (final contract in [es, pt]) { expect(contract, contains('[M54_CONTRATO_TITULO_CLINICO]')); expect(contract, contains('RED FLAGS')); }
+      for (final contract in [es, pt]) { expect(contract, contains('[M54_CONTRATO_TITULO_CLINICO]')); }
+      expect(es, contains('Signos de alarma'));
+      expect(pt, contains('Sinais de alarme'));
+      expect(es, isNot(contains('RED FLAGS')));
+      expect(pt, isNot(contains('RED FLAGS')));
       expect(es, contains('PROHIBIDO usar como título principal inicial'));
       expect(es, contains('Conducta clínica'));
       expect(pt, contains('PROIBIDO usar como título principal inicial'));

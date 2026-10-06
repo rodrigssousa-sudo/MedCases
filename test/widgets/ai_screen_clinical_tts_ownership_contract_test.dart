@@ -43,7 +43,6 @@ void main() {
       expect(source, contains('bool _ttsReady = false;'));
       expect(source, contains('int _ttsPlayingIndex ='));
       expect(source, contains('ttsPlaying: _ttsPlayingIndex == i'));
-      expect(source, contains('ttsReady: _ttsReady'));
       expect(source, contains('onTts: _ttsReady'));
       expect(
         source,

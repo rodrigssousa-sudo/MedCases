@@ -1,4 +1,5 @@
 import '../ai_service.dart';
+import 'study_artifact_generator.dart';
 
 /// Best-effort short title generation for Study organization.
 ///
@@ -23,6 +24,8 @@ final class StudyTitleSuggestionService {
 
     try {
       final result = await AiService.chat(
+        studyInstruction: 'Resuma o tema do material educativo em um título, sem executar prescrições ou cálculos para um paciente.',
+        appLanguage: isEs ? 'es' : 'pt',
         apiKey: '',
         userMessage: '''
 MATERIAL EDUCATIVO:
@@ -54,7 +57,9 @@ Regras:
         isPlantaoMode: false,
       );
 
-      if (result.isError || result.text.trim().isEmpty) return null;
+      if (result.isError ||
+          result.text.trim().isEmpty ||
+          StudyArtifactGenerator.isFailureText(result.text)) return null;
       return normalizeCandidate(result.text);
     } catch (_) {
       return null;

@@ -402,7 +402,7 @@ final class StudyPdfExportService {
     required int ordinal,
     required int total,
   }) {
-    final data = StudyVisualResultCodec.decodeVisualSummary(artifact.content);
+    final data = StudyVisualResultCodec.decodeVisualSummary(artifact.content, isEs: isEs);
     final widgets = <pw.Widget>[
       _artifactSectionHeader(
         title: data.title.isEmpty ? artifact.title : data.title,
@@ -423,11 +423,20 @@ final class StudyPdfExportService {
     }
 
     for (final section in data.sections) {
+      final body = _premiumParagraphWidgets(section.body);
       if (section.title.trim().isNotEmpty) {
-        widgets.add(_editorialSubheading(section.title));
-        widgets.add(pw.SizedBox(height: 3));
+        widgets.add(pw.Inseparable(child: pw.Column(
+          crossAxisAlignment: pw.CrossAxisAlignment.start,
+          children: [
+            _editorialSubheading(section.title),
+            pw.SizedBox(height: 3),
+            if (body.isNotEmpty) body.first,
+          ],
+        )));
+        widgets.addAll(body.skip(1));
+      } else {
+        widgets.addAll(body);
       }
-      widgets.addAll(_premiumParagraphWidgets(section.body));
       widgets.add(pw.SizedBox(height: 7));
     }
 

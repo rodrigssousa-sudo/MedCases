@@ -43,7 +43,7 @@ void main() {
       expect(ai, contains('PlantaoGlobalClinicalResponseGate.finalizeForPresentation('));
       expect(ai, contains('repairEvidenceBackedRequiredActionsForPresentation('));
       expect(ai, contains('contextPack: m56cMachineContext.contextPack'));
-      expect(ai, contains('plantaoPersistenceEligibilityGate: !_longResponse'));
+      expect(ai, matches(RegExp(r'plantaoPersistenceEligibilityGate:\s*!requestLongResponse')));
     });
 
     test('no second provider call is introduced by the pre-persist gate', () {

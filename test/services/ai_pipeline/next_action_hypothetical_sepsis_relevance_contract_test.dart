@@ -22,8 +22,7 @@ void main() {
         'Paciente com pneumonia, sem sinais de sepse, choque ou '
         'instabilidade hemodinâmica. Organize a conduta.';
 
-    const exactDeviceResponse =
-        '🟥 PNEUMONIA SEM SEPSE — CONDUTA IMEDIATA\n'
+    const exactDeviceResponse = '🟥 PNEUMONIA SEM SEPSE — CONDUTA IMEDIATA\n'
         '🚨 Conduta imediata:\n'
         '* Monitorar sinais vitais e estado geral\n'
         '* Avaliar necessidade de internação ou tratamento ambulatorial\n'
@@ -37,6 +36,15 @@ void main() {
         '* Febre persistente ou piora clínica → considerar sepse '
         'ou necessidade de UTI\n'
         '📌 Iniciar antibióticos rapidamente.';
+
+    test('metformin hold precaution does not select vasopressors', () {
+      final action = build(
+          user: 'Metformina',
+          response:
+              'Metformina. Suspender temporalmente ante hipoxia, sepsis, deshidratación o deterioro renal agudo.',
+          language: 'es');
+      expect(action.label.toLowerCase(), isNot(contains('vasopres')));
+    });
 
     test('exact iPhone payload no longer selects vasopressors', () {
       final action = build(
@@ -67,8 +75,7 @@ void main() {
     test('single considerar sepse phrase does not select vasopressors', () {
       final action = build(
         user: 'Paciente com pneumonia estável.',
-        response:
-            'Em caso de piora clínica, considerar sepse ou necessidade '
+        response: 'Em caso de piora clínica, considerar sepse ou necessidade '
             'de UTI.',
       );
 
@@ -78,8 +85,7 @@ void main() {
     test('Spanish considerar sepsis phrase is hypothetical', () {
       final action = build(
         user: 'Paciente con neumonía estable.',
-        response:
-            'Si presenta deterioro clínico, considerar sepsis o '
+        response: 'Si presenta deterioro clínico, considerar sepsis o '
             'necesidad de UCI.',
         language: 'es',
       );
@@ -90,8 +96,7 @@ void main() {
     test('considerar choque séptico phrase is hypothetical', () {
       final action = build(
         user: 'Paciente com pneumonia em acompanhamento.',
-        response:
-            'Se houver piora, considerar choque séptico e transferência '
+        response: 'Se houver piora, considerar choque séptico e transferência '
             'para UTI.',
       );
 
@@ -100,11 +105,9 @@ void main() {
 
     test('true active sepsis remains vasopressor action', () {
       final action = build(
-        user:
-            'Paciente com sepse, hipotensão persistente, lactato elevado '
+        user: 'Paciente com sepse, hipotensão persistente, lactato elevado '
             'e necessidade de noradrenalina.',
-        response:
-            '🟥 CHOQUE SÉPTICO\n'
+        response: '🟥 CHOQUE SÉPTICO\n'
             'Hipoperfusão persistente apesar de cristaloides.',
       );
 
@@ -113,11 +116,9 @@ void main() {
 
     test('hypothetical phrase does not erase separate active evidence', () {
       final action = build(
-        user:
-            'Paciente com sepse ativa, lactato elevado e noradrenalina '
+        user: 'Paciente com sepse ativa, lactato elevado e noradrenalina '
             'em curso.',
-        response:
-            'Após estabilização inicial, considerar sepse refratária '
+        response: 'Após estabilização inicial, considerar sepse refratária '
             'se mantiver hipoperfusão.',
       );
 
@@ -126,11 +127,9 @@ void main() {
 
     test('Spanish active sepsis remains vasopressor action', () {
       final action = build(
-        user:
-            'Paciente con sepsis activa, hipotensión persistente, '
+        user: 'Paciente con sepsis activa, hipotensión persistente, '
             'lactato elevado y noradrenalina.',
-        response:
-            '🟥 SHOCK SÉPTICO\n'
+        response: '🟥 SHOCK SÉPTICO\n'
             'Hipoperfusión pese a cristaloides.',
         language: 'es',
       );

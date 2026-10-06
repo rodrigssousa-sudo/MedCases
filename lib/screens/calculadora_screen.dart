@@ -694,7 +694,10 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       // Causal proof only: on native iOS, bypass the app-managed file://
       // calculator cache without deleting or mutating that offline cache.
       final bypassLocalCalculatorCacheForIOS = !kIsWeb && _detectIOS();
-      final String? localUrl = bypassLocalCalculatorCacheForIOS
+      final requiresMcc1Origin =
+          CalculatorOriginPolicy.requiresOnlineDrugDocument(_webUrl);
+      final String? localUrl =
+          (bypassLocalCalculatorCacheForIOS || requiresMcc1Origin)
           ? null
           : await OfflineCalculatorCacheService.instance.buildLocalUrl(_webUrl);
 
@@ -755,7 +758,10 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
       // Keep the counterfactual valid even if an external calculator refresh
       // occurs during the same physical iOS test session.
       final bypassLocalCalculatorCacheForIOS = !kIsWeb && _detectIOS();
-      final String? localUrl = bypassLocalCalculatorCacheForIOS
+      final requiresMcc1Origin =
+          CalculatorOriginPolicy.requiresOnlineDrugDocument(_webUrl);
+      final String? localUrl =
+          (bypassLocalCalculatorCacheForIOS || requiresMcc1Origin)
           ? null
           : await OfflineCalculatorCacheService.instance.buildLocalUrl(_webUrl);
 
@@ -1063,7 +1069,8 @@ class _CalculadoraScreenState extends State<CalculadoraScreen> {
         )
         ..setNavigationDelegate(NavigationDelegate(
           onNavigationRequest: (request) async {
-            if (_originPolicy.allows(request.url)) {
+            if (_originPolicy.allowsNavigation(request.url,
+                isMainFrame: request.isMainFrame)) {
               return NavigationDecision.navigate;
             }
             final external = Uri.tryParse(request.url);

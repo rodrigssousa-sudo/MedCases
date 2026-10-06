@@ -118,9 +118,7 @@ Administrar adrenalina IV en bolo.
       );
       expect(
         source,
-        contains(
-          'enforceRequiredActions:\n                        m64EnforceHistoricalRequiredActions',
-        ),
+        matches(RegExp(r'enforceRequiredActions:\s*m64EnforceHistoricalRequiredActions')),
       );
 
       expect(source, isNot(contains("pathologyKey == 'anafilaxia'")));

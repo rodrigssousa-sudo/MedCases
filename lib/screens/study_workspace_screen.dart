@@ -1,5 +1,10 @@
-import '../services/monthly_usage_ledger.dart';
-import '../services/entitlement_service.dart';
+import '../services/study/study_artifact_access.dart';
+import '../services/medcases_feature_authorization.dart';
+import '../services/audio/recording_deletion_store.dart';
+import '../services/transcription_quota.dart';
+import 'upgrade_screen.dart';
+import '../services/audio/recording_session_controller.dart';
+import '../services/study/recorded_study_transcription.dart';
 import '../services/study/study_file_selection.dart';
 // MEDCASES_PRODUCTIVE_SECOND_BRAND_B1_V2_R1_STUDY_WORKSPACE
 import 'dart:ui' as ui;
@@ -11,7 +16,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../home_v2/theme/home_v2_palette.dart';
-import '../home_v2/components/common/home_v2_press_surface.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import '../models/study_long_form_audio_handoff.dart';
@@ -22,8 +26,6 @@ import '../services/study/study_first_use_notice_service.dart';
 import '../services/study/study_library_service.dart';
 import '../services/study/study_large_file_extraction_service.dart';
 import '../services/study/study_imported_audio_pipeline.dart';
-import '../services/study/study_long_form_segment_loader.dart';
-import '../services/study/study_background_transcription_coordinator.dart';
 import '../services/study/study_multimodal_extraction_service.dart';
 import '../services/study/study_pdf_export_service.dart';
 import '../services/study/study_visual_result_codec.dart';
@@ -34,8 +36,10 @@ class StudyWorkspaceScreen extends StatefulWidget {
     super.key,
     required this.isEs,
     this.initialStudy,
+    this.authorization,
   });
 
+  final MedCasesFeatureAuthorization? authorization;
   final bool isEs;
   final Study? initialStudy;
 
@@ -45,11 +49,231 @@ class StudyWorkspaceScreen extends StatefulWidget {
 
 class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   late Study _study;
+  late final _access = widget.authorization ?? MedCasesFeatureAuthorization.instance;
+  void _accessChanged() { if (mounted) setState(() {}); }
+  bool _locked(StudyArtifactType type) => !StudyArtifactAccess.allows(type, _access);
+  Future<bool> _authorizeArtifact(StudyArtifactType type) async {
+    if (!StudyArtifactAccess.requiresPremium(type)) return true;
+    return _access.authorize(StudyArtifactAccess.target,
+      entrypoint: FeatureEntryPoint.studyAction,
+      presentPaywall: () async {
+        if (mounted) await showUpgradeScreen(context, lang: widget.isEs ? 'es' : 'pt');
+      });
+  }
   final _title = TextEditingController();
 
   final Map<String, List<String>> _recordedRawPaths = <String, List<String>>{};
   final Map<String, String> _importedAudioJobIds = <String, String>{};
 
+  final Map<String, RecordedStudyTranscription> _recordedJobs = {};
+  Future<void> _deleteRecorded(StudySource source) async {
+    final yes = await showDialog<bool>(
+        context: context,
+        builder: (c) => AlertDialog(
+                title: Text(widget.isEs
+                    ? '¿Eliminar esta grabación?'
+                    : 'Apagar esta gravação?'),
+                content: Text(widget.isEs
+                    ? 'El audio y la transcripción pendiente de esta grabación se eliminarán de este dispositivo. Esta acción no se puede deshacer.'
+                    : 'O áudio e a transcrição pendente desta gravação serão removidos deste dispositivo. Esta ação não pode ser desfeita.'),
+                actions: [
+                  TextButton(
+                      onPressed: () => Navigator.pop(c, false),
+                      child: Text(
+                          widget.isEs ? 'Conservar audio' : 'Manter áudio')),
+                  TextButton(
+                      onPressed: () => Navigator.pop(c, true),
+                      child: Text(widget.isEs ? 'Eliminar' : 'Apagar'))
+                ]));
+    if (yes != true) return;
+    var deleteStage = 'DELETE_REQUEST';
+    void stage(String value) {
+      deleteStage = value;
+      debugPrint('[RecordingDelete] $value');
+    }
+
+    stage('DELETE_REQUEST');
+    try {
+      stage('SOURCE_RESOLVE_START');
+      final binding = await RecordingDeletionStore.sourceBinding(source.id);
+      final id = source.recordingSessionId ??
+          _recordedJobs[source.id]?.handoff.sessionId ??
+          binding?['sessionId'] as String?;
+      if (id == null) throw StateError('session_id_missing');
+      stage('SOURCE_RESOLVE_OK');
+      await RecordingSessionController.instance.deleteRecording(id,
+          confirmed: true, sourceBinding: binding, onDeleteStage: stage);
+      stage('SOURCE_REMOVE');
+      _recordedJobs.remove(source.id)?.removeListener(_recordedJobChanged);
+      final next = _study.copyWith(
+          sources: _study.sources
+              .where((s) => s.id != source.id && s.recordingSessionId != id)
+              .toList());
+      stage('LIBRARY_PERSIST');
+      await StudyLibraryService.save(next);
+      stage('UI_REFRESH');
+      if (mounted) setState(() => _study = next);
+      stage('DELETE_SUCCESS');
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+                widget.isEs ? 'Grabación eliminada.' : 'Gravação apagada.')));
+    } catch (error) {
+      // Only fixed categories and stages; never raw exception/path/UID/audio.
+      final reason = error is StateError ? error.message.toString() : '';
+      final code = reason == 'session_id_missing'
+          ? 'SESSION_ID_MISSING'
+          : reason == 'recording_identity_unproven'
+              ? 'MANIFEST_MISSING'
+              : reason == 'recording_owner_changed'
+                  ? 'OWNER_MISMATCH'
+                  : reason.contains('path')
+                      ? 'CANONICAL_PATH_INVALID'
+                      : deleteStage == 'LIBRARY_PERSIST'
+                          ? 'LIBRARY_PERSIST_FAILED'
+                          : 'LOCAL_DELETE_FAILED';
+      debugPrint('[RecordingDelete] failed stage=$deleteStage code=$code');
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(widget.isEs
+                ? 'No fue posible eliminar la grabación. Inténtalo nuevamente.'
+                : 'Não foi possível apagar a gravação. Tente novamente.')));
+    }
+  }
+
+  Future<void> _retryRecorded(StudySource source) async {
+    final job = _recordedJobs[source.id];
+    if (job == null) return;
+    try {
+      var balance = await TranscriptionQuotaService.instance.refresh();
+      if (balance.remainingMs == 0) {
+        balance = await TranscriptionQuotaService.instance.exhausted(
+            sessionId: job.handoff.sessionId,
+            audioPersisted: await job.audioRetained(),
+            explicitAttempt: true,
+            present: () async {
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(widget.isEs
+                      ? 'Tu tiempo gratuito de transcripción terminó. El audio fue guardado. Pásate a Premium para seguir transcribiendo.'
+                      : 'Seu tempo gratuito de transcrição terminou. O áudio foi salvo. Assine o Premium para continuar transcrevendo.')));
+              await showUpgradeScreen(context, lang: widget.isEs ? 'es' : 'pt');
+            });
+        if (balance.remainingMs == 0) {
+          if (mounted)
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(balance.premium
+                    ? (widget.isEs
+                        ? 'Has utilizado todo el tiempo de transcripción disponible en este período.'
+                        : 'Você utilizou todo o tempo de transcrição disponível neste período.')
+                    : (widget.isEs
+                        ? 'Audio guardado — transcripción no disponible en el plan gratuito.'
+                        : 'Áudio salvo — transcrição indisponível no plano gratuito.'))));
+          return;
+        }
+      }
+      await job.retry();
+    } catch (_) {
+      if (mounted)
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(widget.isEs
+                ? 'No se pudo verificar el saldo. El audio se conserva.'
+                : 'Não foi possível verificar o saldo. O áudio foi preservado.')));
+    }
+  }
+
+  bool get _canGenerate =>
+      StudyGenerateMaterialButton.enabledFor(_study, _busy);
+  void _attachRecordedJob(RecordedStudyTranscription job) {
+    _recordedJobs[job.sourceId]?.removeListener(_recordedJobChanged);
+    _recordedJobs[job.sourceId] = job;
+    job.addListener(_recordedJobChanged);
+    _recordedJobChanged();
+  }
+
+  final Set<String> _quotaChecks = {};
+  Future<void> _checkRecordedQuota(RecordedStudyTranscription job) async {
+    if (!_quotaChecks.add(job.handoff.sessionId)) return;
+    try {
+      await TranscriptionQuotaService.instance.exhausted(
+          sessionId: job.handoff.sessionId,
+          audioPersisted: await job.audioRetained(),
+          explicitAttempt: false,
+          present: () async {
+            if (!mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(widget.isEs
+                    ? 'Tu tiempo gratuito de transcripción terminó. El audio fue guardado. Pásate a Premium para seguir transcribiendo.'
+                    : 'Seu tempo gratuito de transcrição terminou. O áudio foi salvo. Assine o Premium para continuar transcrevendo.')));
+            await showUpgradeScreen(context, lang: widget.isEs ? 'es' : 'pt');
+          });
+    } catch (_) {
+      /* Unavailable authority never triggers an upsell. */
+    } finally {
+      _quotaChecks.remove(job.handoff.sessionId);
+    }
+  }
+
+  void _recordedJobChanged() {
+    if (!mounted) return;
+    final settled = <RecordedStudyTranscription>[];
+    for (final source in _study.sources) {
+      final job = _recordedJobs[source.id];
+      if (source.state == StudySourceState.processing &&
+          job != null &&
+          !job.busy) settled.add(job);
+    }
+    setState(() {
+      _study = _study.copyWith(
+          sources: _study.sources.map((source) {
+        final job = _recordedJobs[source.id];
+        if (job == null || job.study.id != _study.id || source.isAccepted)
+          return source;
+        _recordedRawPaths[source.id] = job.pathsRetained;
+        return job.source;
+      }).toList());
+    });
+    for (final job in settled) {
+      _checkRecordedQuota(job);
+    }
+  }
+
+  Future<void> _restoreRecordedJob() async {
+    final studyId = _study.id;
+    final jobs = await RecordedStudyTranscription.restoreAll(_study);
+    if (!mounted || _study.id != studyId) return;
+    for (final job in jobs) {
+      _attachRecordedJob(job);
+    }
+  }
+
+  Future<void> _restoreLatestPendingRecording() async {
+    final initialId = _study.id;
+    final studies = (await StudyLibraryService.loadAll()).toList();
+    final activeStudyId = await StudyLibraryService.activeStudyId();
+    studies.sort((a, b) => a.id == activeStudyId
+        ? -1
+        : b.id == activeStudyId
+            ? 1
+            : 0);
+    for (final study in studies) {
+      final jobs = await RecordedStudyTranscription.restoreAll(study);
+      if (study.activeSourceId == null &&
+          !jobs.any((j) => j.busy || j.canRetry)) continue;
+      if (!mounted ||
+          _study.id != initialId ||
+          _study.sources.isNotEmpty ||
+          _recordingRouteOpen) return;
+      _study = study;
+      _title.text = _study.title;
+      for (final job in jobs) {
+        _attachRecordedJob(job);
+      }
+      return;
+    }
+  }
+
+  bool _recordingRouteOpen = false;
   bool _busy = false;
   bool _noticeAccepted = false;
   StudyArtifactType _artifactType = StudyArtifactType.visualSummary;
@@ -58,19 +282,25 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   @override
   void initState() {
     super.initState();
+    _access.entitlement.addListener(_accessChanged);
+    _access.entitlement.refreshAuthoritativeTier();
     final now = DateTime.now().toUtc();
     final initialStudy = widget.initialStudy;
     if (initialStudy != null) {
-      _study = initialStudy;
+      _study = initialStudy.copyWith(
+          ownerUid: initialStudy.ownerUid ?? StudyLibraryService.currentOwner);
     } else {
       _study = Study(
         id: 'study_${now.microsecondsSinceEpoch}',
+        ownerUid: StudyLibraryService.currentOwner,
         title: widget.isEs ? 'Nuevo estudio' : 'Novo estudo',
         locale: widget.isEs ? 'es-ES' : 'pt-BR',
         createdAtUtc: now,
       );
     }
     _title.text = _study.title;
+    _restoreRecordedJob();
+    if (initialStudy == null) _restoreLatestPendingRecording();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadFirstUseNotice();
@@ -79,6 +309,10 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
 
   @override
   void dispose() {
+    _access.entitlement.removeListener(_accessChanged);
+    for (final job in _recordedJobs.values) {
+      job.removeListener(_recordedJobChanged);
+    }
     _title.dispose();
     super.dispose();
   }
@@ -201,6 +435,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     setState(() {
       _study = _study.copyWith(
         sources: <StudySource>[..._study.sources, source],
+        activeSourceId: source.isAudio ? source.id : _study.activeSourceId,
       );
     });
 
@@ -223,7 +458,8 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     final next = _study.sources
         .where((source) => source.id != sourceId)
         .toList(growable: false);
-    setState(() => _study = _study.copyWith(sources: next));
+    setState(() => _study = _study.copyWith(
+        sources: next, clearActiveSource: _study.activeSourceId == sourceId));
     await _persistStudy();
   }
 
@@ -232,11 +468,15 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     setState(() {
       _study = Study(
         id: 'study_${now.microsecondsSinceEpoch}',
+        ownerUid: StudyLibraryService.currentOwner,
         title: widget.isEs ? 'Nuevo estudio' : 'Novo estudo',
         locale: widget.isEs ? 'es-ES' : 'pt-BR',
         createdAtUtc: now,
       );
       _title.text = _study.title;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) _restoreRecordedJob();
+      });
       _recordedRawPaths.clear();
     });
   }
@@ -370,7 +610,8 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
                               widget.isEs
                                   ? 'Biblioteca vacía'
                                   : 'Biblioteca vazia',
-                              style: TextStyle(color: sub, fontSize: 11.5),
+                              style: TextStyle(
+                                  color: sub, fontSize: 12.5, height: 1.4),
                             ),
                           )
                         : ListView.separated(
@@ -458,6 +699,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
         _title.text = selected.title;
         _recordedRawPaths.clear();
       });
+      await _restoreRecordedJob();
     } else if (deletedCurrent) {
       await _newStudy();
     }
@@ -484,6 +726,9 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
       text: source.text,
       refs: source.refs,
       errorCode: source.errorCode,
+      recordingSessionId: source.recordingSessionId,
+      audioPaths: source.audioPaths,
+      audioDurationMs: source.audioDurationMs,
     );
   }
 
@@ -495,6 +740,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     final shouldNameAudio = _isAudioSource(reviewed.type);
     if (!shouldNameStudy && !shouldNameAudio) return;
 
+    final namingStudyId = _study.id;
     final originalStudyTitle = _study.title;
     final originalSourceTitle = reviewed.title;
 
@@ -503,7 +749,10 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
       isEs: widget.isEs,
     );
 
-    if (suggestion == null || suggestion.trim().isEmpty || !mounted) return;
+    if (suggestion == null ||
+        suggestion.trim().isEmpty ||
+        !mounted ||
+        _study.id != namingStudyId) return;
 
     var nextStudy = _study;
     final nextSources = List<StudySource>.from(nextStudy.sources);
@@ -511,6 +760,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
 
     // Human edit wins if title changed while suggestion was in flight.
     if (shouldNameStudy &&
+        (!reviewed.isAudio || nextStudy.activeSourceId == reviewed.id) &&
         nextStudy.title == originalStudyTitle &&
         _isDefaultStudyTitle(nextStudy.title)) {
       nextStudy = nextStudy.copyWith(title: suggestion);
@@ -717,140 +967,58 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   }
 
   Future<void> _recordLecture() async {
-    if (!await _ensureFirstUseNotice()) return;
-    if (!mounted) return;
-
-    final sourceId = _addSource(
-      StudySourceType.recordedAudio,
-      widget.isEs ? 'Clase grabada' : 'Aula gravada',
-    );
-
-    final handoff = await Navigator.of(context).push<StudyLongFormAudioHandoff>(
-      MaterialPageRoute<StudyLongFormAudioHandoff>(
-        builder: (routeContext) => NotesAudioLongFormLocalRuntimeScreen(
-          isEs: widget.isEs,
-          onCompleted: (value) {
-            if (Navigator.of(routeContext).canPop()) {
-              Navigator.of(routeContext).pop(value);
-            }
-          },
-        ),
-      ),
-    );
-
-    if (handoff == null || !handoff.isUsable) {
-      await _removeSource(sourceId);
-      return;
-    }
-
-    var source = _source(sourceId).transition(StudySourceState.processing);
-    _replace(source);
-    setState(() => _busy = true);
-
-    UsageReservation? transcriptionUsage;
-    var transcriptionComplete = false;
+    if (_recordingRouteOpen) return;
+    _recordingRouteOpen = true;
     try {
-      await EntitlementService.instance.refreshAuthoritativeTier();
-      transcriptionUsage = await MonthlyUsageLedger.instance.begin(
-          operationId: 'recorded-$sourceId',
-          executionCount: handoff.segments.length,
-          kinds: {UsageKind.transcription},
-          maximumMs: handoff.segments
-              .fold<int>(0, (sum, segment) => sum + segment.activeDurationMs));
-      final texts = <String>[];
-      final refs = <SourceRef>[];
-      final paths = handoff.segments.map((segment) => segment.path).toList();
-      var offsetMs = 0;
+      if (!await _ensureFirstUseNotice()) return;
+      if (!mounted) return;
 
-      final backgroundSession =
-          await StudyBackgroundTranscriptionCoordinator.tryStart(
-        sourceId: sourceId,
-        isEs: widget.isEs,
-        usageReservation: transcriptionUsage,
-        segments: <StudyBackgroundSegmentSpec>[
-          for (final segment in handoff.segments)
-            StudyBackgroundSegmentSpec(
-              index: segment.index,
-              path: segment.path,
-              mimeType: 'audio/mp4',
-            ),
-        ],
-      );
-
-      for (final segment in handoff.segments) {
-        late final StudyExtraction extraction;
-        if (backgroundSession != null) {
-          extraction = StudyExtraction(
-            text: await backgroundSession.awaitTranscript(segment.index),
-            refs: const [],
-          );
-        } else {
-          final bytes = await StudyLongFormSegmentLoader.read(segment.path);
-
-          extraction = await StudyMultimodalExtractionService.binary(
-            sourceId: sourceId,
-            type: StudySourceType.recordedAudio,
-            usageReservation: transcriptionUsage,
-            executionIndex: segment.index,
-            fileName: 'segment_${segment.index}.m4a',
-            mimeType: 'audio/mp4',
-            bytes: Uint8List.fromList(bytes),
+      final returned =
+          await Navigator.of(context).push<StudyLongFormAudioHandoff>(
+        MaterialPageRoute<StudyLongFormAudioHandoff>(
+          builder: (routeContext) => NotesAudioLongFormLocalRuntimeScreen(
             isEs: widget.isEs,
-          );
-        }
-
-        texts.add(extraction.text);
-
-        for (final ref in extraction.refs) {
-          refs.add(
-            SourceRef(
-              sourceId: sourceId,
-              sourceType: StudySourceType.recordedAudio,
-              timestampStartMs: (ref.timestampStartMs ?? 0) + offsetMs,
-              timestampEndMs: ref.timestampEndMs == null
-                  ? null
-                  : ref.timestampEndMs! + offsetMs,
-            ),
-          );
-        }
-
-        offsetMs += segment.activeDurationMs;
-      }
-
-      if (backgroundSession != null) {
-        await backgroundSession.cleanup();
-      }
-
-      await transcriptionUsage.finish(
-          actualMs: transcriptionUsage.maximumMs, success: true);
-      transcriptionComplete = true;
-      _recordedRawPaths[sourceId] = List<String>.unmodifiable(paths);
-
-      source = source.transition(
-        StudySourceState.review,
-        extractedText: texts.join('\n\n'),
-        sourceRefs: List<SourceRef>.unmodifiable(refs),
+            onCompleted: (value) {
+              if (Navigator.of(routeContext).canPop()) {
+                Navigator.of(routeContext).pop(value);
+              }
+            },
+          ),
+        ),
       );
-      _replace(source);
-      await _maybeAutoNameFromSource(source);
+
+      if (!mounted) return;
+      final recorder = RecordingSessionController.instance;
+      final recovered =
+          recorder.session?.mode == 'study' ? recorder.handoff : null;
+      final handoff = returned ??
+          (recovered == null
+              ? null
+              : StudyLongFormAudioHandoff(
+                  sessionId: recovered.sessionId,
+                  locale: recovered.locale,
+                  totalActiveDurationMs: recovered.totalActiveDurationMs,
+                  segments: recovered.segments,
+                  deferTranscription: !recorder.processing &&
+                      recorder.session?.transcript == null));
+      if (handoff == null || !handoff.isUsable) {
+        return;
+      }
+
+      setState(() => _study = _study.upsertRecording(
+          sessionId: handoff.sessionId,
+          title: widget.isEs ? 'Clase grabada' : 'Aula gravada',
+          audioPaths: handoff.segments.map((s) => s.path).toList(),
+          durationMs: handoff.totalActiveDurationMs));
+      final sourceId = _study.sources
+          .firstWhere((s) => s.recordingSessionId == handoff.sessionId)
+          .id;
       await _persistStudy();
-
-      _message(
-        widget.isEs
-            ? 'Transcripción lista para revisar.'
-            : 'Transcrição pronta para revisão.',
-      );
-    } catch (_) {
-      await _removeSource(sourceId);
-      _message(
-        widget.isEs
-            ? 'No fue posible transcribir. Verifica tu conexión y el saldo mensual de audio.'
-            : 'Não foi possível transcrever. Verifique a conexão e o saldo mensal de áudio.',
-      );
+      if (!mounted) return;
+      _attachRecordedJob(
+          RecordedStudyTranscription.start(_study, sourceId, handoff));
     } finally {
-      if (!transcriptionComplete && transcriptionUsage != null)
-        await transcriptionUsage.finish(actualMs: 0, success: false);
-      if (mounted) setState(() => _busy = false);
+      _recordingRouteOpen = false;
     }
   }
 
@@ -965,21 +1133,8 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   }
 
   Future<void> _accept(StudySource source) async {
-    final rawPaths = _recordedRawPaths[source.id] ?? const <String>[];
     final importedJobId = _importedAudioJobIds[source.id];
-
-    if (source.type == StudySourceType.recordedAudio && rawPaths.isNotEmpty) {
-      try {
-        await StudyLongFormSegmentLoader.deleteAll(rawPaths);
-      } catch (_) {
-        _message(
-          widget.isEs
-              ? 'No se pudo eliminar el audio local. Intenta nuevamente.'
-              : 'Não foi possível excluir o áudio local. Tente novamente.',
-        );
-        return;
-      }
-    }
+    // Acceptance never deletes the recording master retained in history.
 
     if (source.type == StudySourceType.uploadedAudio && importedJobId != null) {
       try {
@@ -1001,8 +1156,9 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   }
 
   Future<void> _generate() async {
+    if (_busy) return;
     if (!await _ensureFirstUseNotice()) return;
-    if (_study.acceptedSources.isEmpty) {
+    if (!_canGenerate) {
       _message(
         widget.isEs
             ? 'Acepta al menos una fuente revisada.'
@@ -1011,26 +1167,38 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
       return;
     }
 
+    final generationType = _artifactType;
+    if (!await _authorizeArtifact(generationType) || !mounted || _busy) return;
+    final generationStudy = _study;
     setState(() => _busy = true);
     try {
       final artifact = await StudyArtifactGenerator.generate(
-        study: _study,
-        type: _artifactType,
+        study: generationStudy,
+        type: generationType,
         isEs: widget.isEs,
       );
 
-      final artifacts = _study.artifacts
-          .where((item) => item.type != artifact.type)
-          .toList(growable: true)
-        ..add(artifact);
-
-      setState(() => _study = _study.copyWith(artifacts: artifacts));
-      await _persistStudy();
-    } catch (_) {
+      final saved =
+          await StudyLibraryService.saveArtifact(generationStudy, artifact);
+      if (mounted && _study.id == generationStudy.id) {
+        setState(() => _study = _study.copyWith(artifacts: saved.artifacts));
+      }
+    } catch (error) {
+      final reason = error is StateError &&
+              RegExp(r'^study_[a-z_]+(?::[a-z_]+)?$')
+                  .hasMatch(error.message.toString())
+          ? error.message.toString()
+          : 'study_generation_failed';
+      debugPrint('[StudyGeneration] type=${_artifactType.name} reason=$reason');
+      if (!mounted) return;
       _message(
-        widget.isEs
-            ? 'No fue posible generar este material.'
-            : 'Não foi possível gerar este material.',
+        generationType == StudyArtifactType.visualSummary
+            ? (widget.isEs
+                ? 'No se pudo generar el resumen visual. Inténtalo nuevamente.'
+                : 'Não foi possível gerar o resumo visual. Tente novamente.')
+            : (widget.isEs
+                ? 'No fue posible generar este material.'
+                : 'Não foi possível gerar este material.'),
       );
     } finally {
       if (mounted) setState(() => _busy = false);
@@ -1038,8 +1206,14 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   }
 
   StudyArtifact? _artifactOf(StudyArtifactType type) {
-    for (final artifact in _study.artifacts.reversed) {
-      if (artifact.type == type) return artifact;
+    for (final artifact in _study.activeArtifacts.reversed) {
+      if (artifact.type == type) {
+        return (StudyArtifactGenerator.isFailureText(artifact.content) ||
+                !StudyArtifactGenerator.hasFullSummaryCoverage(
+                    _study, artifact))
+            ? null
+            : artifact;
+      }
     }
     return null;
   }
@@ -1059,8 +1233,10 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
   }
 
   Future<void> _exportPdf() async {
-    final available = _study.artifacts
-        .where((item) => item.type != StudyArtifactType.finalPdf)
+    final available = _study.activeArtifacts
+        .where((item) =>
+            item.type != StudyArtifactType.finalPdf &&
+            _artifactOf(item.type) != null)
         .map((item) => item.type)
         .toSet();
 
@@ -1087,7 +1263,10 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
     try {
       await _persistStudy();
       await StudyPdfExportService.shareSelected(
-        _study,
+        _study.copyWith(artifacts: [
+          for (final type in selected)
+            if (_artifactOf(type) case final artifact?) artifact,
+        ]),
         isEs: widget.isEs,
         artifactTypes: selected,
       );
@@ -1114,6 +1293,10 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (_study.ownerUid != null &&
+        _study.ownerUid != StudyLibraryService.currentOwner) {
+      return const SizedBox.shrink();
+    }
     final dark = Theme.of(context).brightness == Brightness.dark;
 
     final page = dark ? const Color(0xFF1A1D23) : Colors.white;
@@ -1128,11 +1311,12 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
       color: page,
       child: ListView(
         padding: EdgeInsets.fromLTRB(
-          12,
-          12,
-          12,
-          112 + MediaQuery.paddingOf(context).bottom,
+          20,
+          20,
+          20,
+          160 + MediaQuery.paddingOf(context).bottom,
         ),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         children: [
           _WorkspaceHeader(
             isEs: widget.isEs,
@@ -1143,8 +1327,10 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
             onLibrary: _busy ? null : _openLibrary,
             onNew: _busy ? null : _newStudy,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 24),
           TextField(
+            enabled: !_busy,
+            onTapOutside: (_) => FocusManager.instance.primaryFocus?.unfocus(),
             controller: _title,
             onChanged: (value) {
               final name = value.trim();
@@ -1155,7 +1341,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
             onSubmitted: (_) => _persistStudy(),
             style: TextStyle(
               color: text,
-              fontSize: 12.5,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
             decoration: InputDecoration(
@@ -1167,7 +1353,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
               prefixIconConstraints: const BoxConstraints(minWidth: 42),
               contentPadding: const EdgeInsets.symmetric(
                 horizontal: 11,
-                vertical: 10,
+                vertical: 14,
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -1193,108 +1379,114 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
           const SizedBox(height: 8),
           LayoutBuilder(
             builder: (context, constraints) {
-              const gap = 3.0;
-              final columns = constraints.maxWidth >= 720 ? 5 : 3;
-              final width =
-                  (constraints.maxWidth - (gap * (columns - 1))) / columns;
-              return Wrap(
-                spacing: gap,
-                runSpacing: gap,
-                children: [
-                  _SourceAction(
-                    width: width,
-                    svgAsset:
-                        'assets/icons/study_workspace/study_record_lecture.svg',
-                    label: widget.isEs ? 'Grabar clase' : 'Gravar aula',
-                    surface: surface,
-                    soft: soft,
-                    border: border,
-                    text: text,
-                    sub: sub,
-                    accent: accent,
-                    onTap: _busy ? null : _recordLecture,
-                  ),
-                  _SourceAction(
-                    width: width,
-                    svgAsset:
-                        'assets/icons/study_workspace/study_import_audio.svg',
-                    label: widget.isEs ? 'Audio' : 'Áudio',
-                    surface: surface,
-                    soft: soft,
-                    border: border,
-                    text: text,
-                    sub: sub,
-                    accent: accent,
-                    onTap: _busy
-                        ? null
-                        : () => _pick(
-                              StudySourceType.uploadedAudio,
-                              const <String>[
-                                'm4a',
-                                'mp3',
-                                'wav',
-                                'aac',
-                                'mp4',
-                                'ogg',
-                                'flac',
-                                'aiff'
-                              ],
-                            ),
-                  ),
-                  _SourceAction(
-                    width: width,
-                    svgAsset:
-                        'assets/icons/study_workspace/study_import_pdf.svg',
-                    label: 'PDF',
-                    surface: surface,
-                    soft: soft,
-                    border: border,
-                    text: text,
-                    sub: sub,
-                    accent: accent,
-                    onTap: _busy
-                        ? null
-                        : () =>
-                            _pick(StudySourceType.pdf, const <String>['pdf']),
-                  ),
-                  _SourceAction(
-                    width: width,
-                    svgAsset:
-                        'assets/icons/study_workspace/study_import_image.svg',
-                    label: widget.isEs ? 'Imagen' : 'Imagem',
-                    surface: surface,
-                    soft: soft,
-                    border: border,
-                    text: text,
-                    sub: sub,
-                    accent: accent,
-                    onTap: _busy
-                        ? null
-                        : () => _pick(StudySourceType.image, const <String>[
-                              'jpg',
-                              'jpeg',
-                              'png',
-                              'webp',
-                              'gif',
-                            ]),
-                  ),
-                  _SourceAction(
-                    width: width,
-                    svgAsset: 'assets/icons/study_workspace/study_add_text.svg',
-                    label: 'Texto',
-                    surface: surface,
-                    soft: soft,
-                    border: border,
-                    text: text,
-                    sub: sub,
-                    accent: accent,
-                    onTap: _busy ? null : _addText,
-                  ),
-                ],
-              );
+              const gap = 10.0;
+              final width = constraints.maxWidth >= 590
+                  ? (constraints.maxWidth - 4 * gap) / 5
+                  : 104.0;
+              return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Wrap(
+                    spacing: gap,
+                    children: [
+                      _SourceAction(
+                        width: width,
+                        svgAsset:
+                            'assets/icons/study_workspace/study_record_lecture.svg',
+                        label: widget.isEs ? 'Grabar clase' : 'Gravar aula',
+                        surface: surface,
+                        soft: soft,
+                        border: border,
+                        text: text,
+                        sub: sub,
+                        accent: accent,
+                        onTap: _busy ? null : _recordLecture,
+                      ),
+                      _SourceAction(
+                        width: width,
+                        svgAsset:
+                            'assets/icons/study_workspace/study_import_audio.svg',
+                        label: widget.isEs ? 'Audio' : 'Áudio',
+                        surface: surface,
+                        soft: soft,
+                        border: border,
+                        text: text,
+                        sub: sub,
+                        accent: accent,
+                        onTap: _busy
+                            ? null
+                            : () => _pick(
+                                  StudySourceType.uploadedAudio,
+                                  const <String>[
+                                    'm4a',
+                                    'mp3',
+                                    'wav',
+                                    'aac',
+                                    'mp4',
+                                    'ogg',
+                                    'flac',
+                                    'aiff'
+                                  ],
+                                ),
+                      ),
+                      _SourceAction(
+                        width: width,
+                        svgAsset:
+                            'assets/icons/study_workspace/study_import_pdf.svg',
+                        label: 'PDF',
+                        surface: surface,
+                        soft: soft,
+                        border: border,
+                        text: text,
+                        sub: sub,
+                        accent: accent,
+                        onTap: _busy
+                            ? null
+                            : () => _pick(
+                                StudySourceType.pdf, const <String>['pdf']),
+                      ),
+                      _SourceAction(
+                        width: width,
+                        svgAsset:
+                            'assets/icons/study_workspace/study_import_image.svg',
+                        label: widget.isEs ? 'Imagen' : 'Imagem',
+                        surface: surface,
+                        soft: soft,
+                        border: border,
+                        text: text,
+                        sub: sub,
+                        accent: accent,
+                        onTap: _busy
+                            ? null
+                            : () => _pick(StudySourceType.image, const <String>[
+                                  'jpg',
+                                  'jpeg',
+                                  'png',
+                                  'webp',
+                                  'gif',
+                                ]),
+                      ),
+                      _SourceAction(
+                        width: width,
+                        svgAsset:
+                            'assets/icons/study_workspace/study_add_text.svg',
+                        label: 'Texto',
+                        surface: surface,
+                        soft: soft,
+                        border: border,
+                        text: text,
+                        sub: sub,
+                        accent: accent,
+                        onTap: _busy ? null : _addText,
+                      ),
+                    ],
+                  ));
             },
           ),
           if (_busy) ...[
+            if (_artifactType == StudyArtifactType.visualSummary)
+              Text(widget.isEs
+                  ? 'Generando resumen visual…'
+                  : 'Gerando resumo visual…'),
             const SizedBox(height: 8),
             const LinearProgressIndicator(
               minHeight: 2,
@@ -1302,8 +1494,8 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
               backgroundColor: Colors.transparent,
             ),
           ],
-          if (_study.sources.isNotEmpty) ...[
-            const SizedBox(height: 18),
+          if (_study.operationalSources.isNotEmpty) ...[
+            const SizedBox(height: 24),
             _SectionLabel(
               title: widget.isEs ? 'Fuentes del estudio' : 'Fontes do estudo',
               subtitle: widget.isEs ? 'Revisa y acepta.' : 'Revise e aceite.',
@@ -1313,21 +1505,34 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
             const SizedBox(height: 4),
             Column(
               children: [
-                for (var i = 0; i < _study.sources.length; i++) ...[
-                  _SourceRow(
-                    source: _study.sources[i],
+                for (var i = 0; i < _study.operationalSources.length; i++) ...[
+                  StudySourceRow(
+                    activeAudio: true,
+                    source: _study.operationalSources[i],
                     isEs: widget.isEs,
                     text: text,
                     sub: sub,
                     accent: accent,
-                    onRename: _isAudioSource(_study.sources[i].type)
-                        ? () => _renameSource(_study.sources[i])
+                    onRename: _isAudioSource(_study.operationalSources[i].type)
+                        ? () => _renameSource(_study.operationalSources[i])
                         : null,
-                    onAccept: _study.sources[i].state == StudySourceState.review
-                        ? () => _accept(_study.sources[i])
+                    onRetry: _study
+                                .operationalSources[i].canRetryTranscription &&
+                            _recordedJobs
+                                .containsKey(_study.operationalSources[i].id)
+                        ? () => _retryRecorded(_study.operationalSources[i])
+                        : null,
+                    onDelete: _study.operationalSources[i].type ==
+                                StudySourceType.recordedAudio &&
+                            !_study.operationalSources[i].isAccepted &&
+                            !_study.operationalSources[i].canReview
+                        ? () => _deleteRecorded(_study.operationalSources[i])
+                        : null,
+                    onAccept: _study.operationalSources[i].canReview
+                        ? () => _accept(_study.operationalSources[i])
                         : null,
                   ),
-                  if (i < _study.sources.length - 1)
+                  if (i < _study.operationalSources.length - 1)
                     Divider(
                       height: 1,
                       thickness: 0.7,
@@ -1339,7 +1544,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
               ],
             ),
           ],
-          const SizedBox(height: 18),
+          const SizedBox(height: 24),
           _SectionLabel(
             title: widget.isEs ? 'Generar con IA' : 'Gerar com IA',
             subtitle: widget.isEs ? 'Fuentes aceptadas.' : 'Fontes aceitas.',
@@ -1357,14 +1562,17 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
                     .map(
                       (value) => DropdownMenuItem<StudyArtifactType>(
                         value: value,
-                        child: Text(_artifactLabel(value)),
+                        child: Row(children: [
+                          Expanded(child: Text(_artifactLabel(value))),
+                          if (_locked(value)) const Icon(Icons.lock_outline, size: 18),
+                        ]),
                       ),
                     )
                     .toList(growable: false),
                 onChanged: _busy
                     ? null
-                    : (value) {
-                        if (value != null) {
+                    : (value) async {
+                        if (value != null && await _authorizeArtifact(value) && mounted) {
                           setState(() => _artifactType = value);
                         }
                       },
@@ -1395,31 +1603,16 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
               const SizedBox(height: 9),
               SizedBox(
                 height: 46,
-                child: FilledButton.icon(
-                  onPressed: _busy ? null : _generate,
-                  icon: const Icon(Icons.auto_awesome_rounded, size: 17),
-                  label: Text(
-                    widget.isEs ? 'Generar material' : 'Gerar material',
-                    style: const TextStyle(
-                      fontSize: 11.8,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                  style: FilledButton.styleFrom(
-                    elevation: 0,
-                    backgroundColor: accent,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                ),
+                child: StudyGenerateMaterialButton(
+                    study: _study,
+                    busy: _busy,
+                    isEs: widget.isEs,
+                    onGenerate: _generate),
               ),
             ],
           ),
-          if (_study.artifacts.isNotEmpty) ...[
-            const SizedBox(height: 18),
+          if (_study.activeArtifacts.isNotEmpty) ...[
+            const SizedBox(height: 24),
             Row(
               children: [
                 Expanded(
@@ -1464,6 +1657,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
                   case final visual?)
                 _VisualSummaryPanel(
                   artifact: visual,
+                  isEs: widget.isEs,
                   dark: dark,
                   surface: surface,
                   soft: soft,
@@ -1485,7 +1679,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
                   text: text,
                   sub: sub,
                   accent: accent,
-                  onTap: _busy
+                  onTap: !_canGenerate
                       ? null
                       : () => _generateType(StudyArtifactType.visualSummary),
                 ),
@@ -1494,6 +1688,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
               if (_artifactOf(StudyArtifactType.fullSummary) case final full?)
                 _MarkdownStudyArtifactCard(
                   artifact: full,
+                  title: _artifactLabel(full.type),
                   surface: surface,
                   border: border,
                   text: text,
@@ -1512,7 +1707,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
                   text: text,
                   sub: sub,
                   accent: accent,
-                  onTap: _busy
+                  onTap: !_canGenerate
                       ? null
                       : () => _generateType(StudyArtifactType.fullSummary),
                 ),
@@ -1521,6 +1716,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
                 const SizedBox(height: 5),
                 _MarkdownStudyArtifactCard(
                   artifact: exam,
+                  title: _artifactLabel(exam.type),
                   surface: surface,
                   border: border,
                   text: text,
@@ -1539,6 +1735,7 @@ class _StudyWorkspaceScreenState extends State<StudyWorkspaceScreen> {
                 if (_artifactOf(type) case final training?) ...[
                   _MarkdownStudyArtifactCard(
                     artifact: training,
+                    title: _artifactLabel(training.type),
                     surface: surface,
                     border: border,
                     text: text,
@@ -1666,8 +1863,8 @@ class _WorkspaceHeader extends StatelessWidget {
                     isEs ? 'Estudio' : 'Estudos',
                     style: TextStyle(
                       color: text,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
+                      fontSize: 23,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
                   if (noticeAccepted) ...[
@@ -1714,8 +1911,8 @@ class _HeaderAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 38,
-      height: 38,
+      width: 44,
+      height: 44,
       child: IconButton(
         padding: EdgeInsets.zero,
         tooltip: tooltip,
@@ -1748,14 +1945,14 @@ class _SectionLabel extends StatelessWidget {
           title,
           style: TextStyle(
             color: text,
-            fontSize: 14.2,
-            fontWeight: FontWeight.w800,
+            fontSize: 16,
+            fontWeight: FontWeight.w700,
           ),
         ),
         const SizedBox(height: 2),
         Text(
           subtitle,
-          style: TextStyle(color: sub, fontSize: 10.5, height: 1.25),
+          style: TextStyle(color: sub, fontSize: 12, height: 1.4),
         ),
       ],
     );
@@ -1763,7 +1960,7 @@ class _SectionLabel extends StatelessWidget {
 }
 
 // MEDCASES_STUDY_SOURCE_ACTION_HOME_V2_SHARED_SURFACE_V1_B_R1
-// Visual owner intentionally reuses HomeV2PressSurface + HomeV2Palette.
+// Study-specific rounded source cards retain the canonical HomeV2Palette.
 // MEDCASES_STUDY_SOURCE_ACTION_CUSTOM_SVG_CUTOVER_V1_B_R1
 class _SourceAction extends StatelessWidget {
   const _SourceAction({
@@ -1798,11 +1995,15 @@ class _SourceAction extends StatelessWidget {
 
     return SizedBox(
       width: width,
-      child: HomeV2PressSurface(
-        palette: palette,
-        backgroundColor: surface,
+      child: Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: surface,
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: border.withValues(alpha: 0.45), width: 0.7),
+        ),
         child: SizedBox(
-          height: 104,
+          height: 110,
           child: Material(
             color: Colors.transparent,
             child: InkWell(
@@ -1835,8 +2036,8 @@ class _SourceAction extends StatelessWidget {
                             ? palette.textPrimary
                             : sub.withValues(alpha: 0.72),
                         fontSize: 11,
-                        fontWeight: FontWeight.w800,
-                        letterSpacing: 0.15,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 0.1,
                       ),
                     ),
                   ],
@@ -1852,6 +2053,7 @@ class _SourceAction extends StatelessWidget {
 
 class _StudyAudioProcessingSequence extends StatelessWidget {
   const _StudyAudioProcessingSequence({
+    this.pending = false,
     required this.state,
     required this.isEs,
     required this.accent,
@@ -1859,6 +2061,7 @@ class _StudyAudioProcessingSequence extends StatelessWidget {
     required this.sub,
   });
 
+  final bool pending;
   final StudySourceState state;
   final bool isEs;
   final Color accent;
@@ -1871,13 +2074,17 @@ class _StudyAudioProcessingSequence extends StatelessWidget {
     final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
     final danger = dark ? const Color(0xFFFCA5A5) : const Color(0xFFB42318);
 
-    if (state == StudySourceState.failed) {
+    if (pending ||
+        state == StudySourceState.failed ||
+        state == StudySourceState.terminalError) {
       return Padding(
         padding: const EdgeInsets.only(top: 5),
         child: Text(
-          isEs ? 'Error al procesar.' : 'Erro ao processar.',
+          pending
+              ? (isEs ? 'Audio guardado' : 'Áudio salvo')
+              : (isEs ? 'Error al procesar.' : 'Erro ao processar.'),
           style: TextStyle(
-            color: danger,
+            color: pending ? sub : danger,
             fontSize: 8.8,
             fontWeight: FontWeight.w700,
           ),
@@ -1890,7 +2097,11 @@ class _StudyAudioProcessingSequence extends StatelessWidget {
       StudySourceState.processing => 1,
       StudySourceState.review => 2,
       StudySourceState.accepted => 3,
-      StudySourceState.failed => 0,
+      StudySourceState.failed ||
+      StudySourceState.transcriptionPending ||
+      StudySourceState.retryableError ||
+      StudySourceState.terminalError =>
+        0,
     };
 
     final labels = isEs
@@ -1958,8 +2169,8 @@ class _StudyAudioProcessingSequence extends StatelessWidget {
   }
 }
 
-class _SourceRow extends StatelessWidget {
-  const _SourceRow({
+class StudySourceRow extends StatelessWidget {
+  const StudySourceRow({
     required this.source,
     required this.isEs,
     required this.text,
@@ -1967,8 +2178,12 @@ class _SourceRow extends StatelessWidget {
     required this.accent,
     required this.onRename,
     required this.onAccept,
+    this.onRetry,
+    this.onDelete,
+    this.activeAudio = false,
   });
 
+  final bool activeAudio;
   final StudySource source;
   final bool isEs;
   final Color text;
@@ -1976,11 +2191,22 @@ class _SourceRow extends StatelessWidget {
   final Color accent;
   final VoidCallback? onRename;
   final VoidCallback? onAccept;
+  final VoidCallback? onRetry;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
-    final refs =
-        source.refs.take(3).map((ref) => ref.label(isEs: isEs)).join(' · ');
+    final audio = source.type == StudySourceType.recordedAudio ||
+        source.type == StudySourceType.uploadedAudio;
+    final seconds = source.audioDurationMs ~/ 1000;
+    final duration = [
+      if (seconds >= 3600) seconds ~/ 3600,
+      (seconds ~/ 60) % 60,
+      seconds % 60,
+    ].map((part) => part.toString().padLeft(2, '0')).join(':');
+    final refs = audio
+        ? '${isEs ? "Audio" : "Áudio"}${source.audioDurationMs > 0 ? " · $duration" : ""}'
+        : source.refs.take(3).map((ref) => ref.label(isEs: isEs)).join(' · ');
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(11, 9, 9, 9),
@@ -1998,7 +2224,9 @@ class _SourceRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  source.title,
+                  audio && activeAudio
+                      ? '${isEs ? "Audio actual" : "Áudio atual"} · ${source.title}'
+                      : source.title,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
@@ -2018,9 +2246,21 @@ class _SourceRow extends StatelessWidget {
                     height: 1.25,
                   ),
                 ),
+                if (audio &&
+                    source.state != StudySourceState.accepted &&
+                    source.state != StudySourceState.review)
+                  Text(
+                      activeAudio && source.state == StudySourceState.processing
+                          ? (isEs
+                              ? 'Transcribiendo este audio…'
+                              : 'Transcrevendo este áudio…')
+                          : _stateLabel(source.state),
+                      style:
+                          TextStyle(color: sub, fontSize: 9.5, height: 1.25)),
                 if (source.type == StudySourceType.recordedAudio ||
                     source.type == StudySourceType.uploadedAudio)
                   _StudyAudioProcessingSequence(
+                    pending: source.isTranscriptionPending,
                     state: source.state,
                     isEs: isEs,
                     accent: accent,
@@ -2030,7 +2270,31 @@ class _SourceRow extends StatelessWidget {
               ],
             ),
           ),
-          if (onRename != null)
+          if (onRetry != null || onDelete != null)
+            PopupMenuButton<String>(
+                tooltip: isEs ? 'Opciones de audio' : 'Opções do áudio',
+                icon: const Icon(Icons.more_vert, size: 20),
+                onSelected: (value) {
+                  if (value == 'delete')
+                    onDelete?.call();
+                  else
+                    onRetry?.call();
+                },
+                itemBuilder: (_) => [
+                      if (onRetry != null)
+                        PopupMenuItem(
+                            value: 'retry',
+                            child:
+                                Text(isEs ? 'Reintentar' : 'Tentar novamente')),
+                      if (onDelete != null)
+                        PopupMenuItem(
+                            value: 'delete',
+                            child:
+                                Text(isEs ? 'Eliminar audio' : 'Apagar áudio')),
+                    ]),
+          if (onRename != null &&
+              !source.isTranscriptionPending &&
+              source.state != StudySourceState.processing)
             SizedBox(
               width: 30,
               height: 30,
@@ -2079,7 +2343,16 @@ class _SourceRow extends StatelessWidget {
         return isEs ? 'Lista para revisar' : 'Pronta para revisão';
       case StudySourceState.accepted:
         return isEs ? 'Aceptada' : 'Aceita';
+      case StudySourceState.transcriptionPending:
+      case StudySourceState.retryableError:
+        return isEs ? 'Transcripción pendiente' : 'Transcrição pendente';
+      case StudySourceState.terminalError:
+        return isEs
+            ? 'Transcripción no disponible · Audio guardado'
+            : 'Transcrição indisponível · Áudio salvo';
       case StudySourceState.failed:
+        if (source.errorCode == 'transcription_pending')
+          return isEs ? 'Transcripción pendiente' : 'Transcrição pendente';
         return isEs ? 'No disponible' : 'Indisponível';
     }
   }
@@ -2199,6 +2472,7 @@ class _StudyResultModeBar extends StatelessWidget {
 class _VisualSummaryPanel extends StatelessWidget {
   const _VisualSummaryPanel({
     required this.artifact,
+    required this.isEs,
     required this.dark,
     required this.surface,
     required this.soft,
@@ -2209,6 +2483,7 @@ class _VisualSummaryPanel extends StatelessWidget {
   });
 
   final StudyArtifact artifact;
+  final bool isEs;
   final bool dark;
   final Color surface;
   final Color soft;
@@ -2219,7 +2494,8 @@ class _VisualSummaryPanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final data = StudyVisualResultCodec.decodeVisualSummary(artifact.content);
+    final data = StudyVisualResultCodec.decodeVisualSummary(artifact.content,
+        isEs: isEs);
 
     return Container(
       width: double.infinity,
@@ -2256,7 +2532,9 @@ class _VisualSummaryPanel extends StatelessWidget {
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
-                  data.title.isEmpty ? artifact.title : data.title,
+                  data.title.isEmpty
+                      ? StudyArtifactGenerator.titleFor(artifact.type, isEs)
+                      : data.title,
                   style: TextStyle(
                     color: text,
                     fontSize: 12,
@@ -2314,7 +2592,7 @@ class _VisualSummaryPanel extends StatelessWidget {
           if (data.keyPoints.isNotEmpty) ...[
             const SizedBox(height: 9),
             Text(
-              'PONTOS-CHAVE',
+              isEs ? 'PUNTOS CLAVE' : 'PONTOS-CHAVE',
               style: TextStyle(
                 color: accent,
                 fontSize: 8.7,
@@ -2420,6 +2698,7 @@ class _MindMapPanelState extends State<_MindMapPanel> {
       final tree = _MindMapTreeBuilder.fromFlat(
         rawNodes,
         fallbackTitle: widget.artifact.title,
+        isEs: widget.isEs,
       );
       final layout = _MindMapLayoutEngine.layout(tree);
       final svg = _MindMapSvgExporter.render(
@@ -2591,6 +2870,7 @@ class _MindMapPanelState extends State<_MindMapPanel> {
             height: viewportHeight,
             child: _MindMapCanvas(
               artifact: widget.artifact,
+              isEs: widget.isEs,
               surface: widget.surface,
               soft: widget.soft,
               border: widget.border,
@@ -2735,6 +3015,7 @@ class _MindMapExpandedScreen extends StatelessWidget {
             Expanded(
               child: _MindMapCanvas(
                 artifact: artifact,
+                isEs: isEs,
                 surface: surface,
                 soft: soft,
                 border: border,
@@ -2755,6 +3036,7 @@ class _MindMapExpandedScreen extends StatelessWidget {
 class _MindMapCanvas extends StatefulWidget {
   const _MindMapCanvas({
     required this.artifact,
+    required this.isEs,
     required this.surface,
     required this.soft,
     required this.border,
@@ -2766,6 +3048,7 @@ class _MindMapCanvas extends StatefulWidget {
   });
 
   final StudyArtifact artifact;
+  final bool isEs;
   final Color surface;
   final Color soft;
   final Color border;
@@ -2837,6 +3120,7 @@ class _MindMapCanvasState extends State<_MindMapCanvas> {
     final tree = _MindMapTreeBuilder.fromFlat(
       rawNodes,
       fallbackTitle: widget.artifact.title,
+      isEs: widget.isEs,
     );
     final layout = _MindMapLayoutEngine.layout(tree);
 
@@ -3034,7 +3318,8 @@ class _MindMapEditorialText {
     return _short(candidate, 56, fallback: 'Mapa mental');
   }
 
-  static ({String title, String summary}) category(String raw) {
+  static ({String title, String summary}) category(String raw,
+      {required bool isEs}) {
     final cleanValue = clean(raw)
         .replaceFirst(
           RegExp(r'^(?:resumo|resumen)\s*:\s*', caseSensitive: false),
@@ -3053,14 +3338,14 @@ class _MindMapEditorialText {
       final right = cleanValue.substring(match.end).trim();
       if (left.length >= 3 && left.length <= 46 && right.isNotEmpty) {
         return (
-          title: _short(left, 46, fallback: 'Categoria'),
+          title: _short(left, 46, fallback: isEs ? 'Categoría' : 'Categoria'),
           summary: _short(right, 150),
         );
       }
     }
 
     return (
-      title: _short(cleanValue, 46, fallback: 'Categoria'),
+      title: _short(cleanValue, 46, fallback: isEs ? 'Categoría' : 'Categoria'),
       summary: '',
     );
   }
@@ -3097,6 +3382,7 @@ class _MindMapTreeBuilder {
   static _MindMapTreeNode fromFlat(
     List<StudyMindMapNode> flat, {
     required String fallbackTitle,
+    required bool isEs,
   }) {
     if (flat.isEmpty) {
       return _MindMapTreeNode(
@@ -3132,7 +3418,7 @@ class _MindMapTreeBuilder {
       final normalizedDepth = (raw.depth - minDepth + 1).clamp(1, 3).toInt();
 
       if (normalizedDepth == 1) {
-        final parts = _MindMapEditorialText.category(raw.text);
+        final parts = _MindMapEditorialText.category(raw.text, isEs: isEs);
         final category = _MindMapTreeNode(
           title: parts.title,
           summary: parts.summary,
@@ -3175,7 +3461,9 @@ class _MindMapTreeBuilder {
       }
 
       final detail = _MindMapTreeNode(
-        title: normalizedDepth == 2 ? 'Ponto-chave' : 'Detalhe',
+        title: normalizedDepth == 2
+            ? (isEs ? 'Punto clave' : 'Ponto-chave')
+            : (isEs ? 'Detalle' : 'Detalhe'),
         summary: clean,
         fullText: _MindMapEditorialText.clean(raw.text),
       );
@@ -3880,6 +4168,7 @@ Color _mindMapBranchColor(int index) {
 class _MarkdownStudyArtifactCard extends StatelessWidget {
   const _MarkdownStudyArtifactCard({
     required this.artifact,
+    required this.title,
     required this.surface,
     required this.border,
     required this.text,
@@ -3887,6 +4176,7 @@ class _MarkdownStudyArtifactCard extends StatelessWidget {
   });
 
   final StudyArtifact artifact;
+  final String title;
   final Color surface;
   final Color border;
   final Color text;
@@ -3912,7 +4202,7 @@ class _MarkdownStudyArtifactCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            artifact.title,
+            title,
             style: TextStyle(
               color: text,
               fontSize: 12.2,
@@ -4272,4 +4562,30 @@ class _StudyPdfSelectionSheetState extends State<_StudyPdfSelectionSheet> {
       ),
     );
   }
+}
+
+class StudyGenerateMaterialButton extends StatelessWidget {
+  const StudyGenerateMaterialButton(
+      {super.key,
+      required this.study,
+      required this.busy,
+      required this.isEs,
+      required this.onGenerate});
+  final Study study;
+  final bool busy, isEs;
+  final VoidCallback onGenerate;
+  static bool enabledFor(Study study, bool busy) => study.canGenerate && !busy;
+  @override
+  Widget build(BuildContext context) => FilledButton.icon(
+      onPressed: enabledFor(study, busy) ? onGenerate : null,
+      icon: const Icon(Icons.auto_awesome_rounded, size: 17),
+      label: Text(isEs ? 'Generar material' : 'Gerar material',
+          style: const TextStyle(fontSize: 11.8, fontWeight: FontWeight.w800)),
+      style: FilledButton.styleFrom(
+          elevation: 0,
+          backgroundColor: const Color(0xFF0D6B57),
+          foregroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))));
 }

@@ -22,6 +22,7 @@ abstract final class PlantaoClinicalRegimenOutputGuard {
     required String assistantOutput,
     required String languageCode,
     String? patientAge,
+    bool preserveGeneratedSections = false,
   }) {
     if (assistantOutput.isEmpty) {
       return const PlantaoClinicalRegimenOutputGuardResult(
@@ -47,7 +48,10 @@ abstract final class PlantaoClinicalRegimenOutputGuard {
     }
     var guarded = assistantOutput;
     var replacements = 0;
-    if (contract.scenario == PlantaoClinicalRegimenScenario.acsUnspecified &&
+    // Canonical callers retain generated sections; granular dose/timing
+    // checks below still run with the existing clinical contract.
+    if (!preserveGeneratedSections &&
+        contract.scenario == PlantaoClinicalRegimenScenario.acsUnspecified &&
         contract.exposeClopidogrelDecisionSupport &&
         _isBareGenericAcs(userInput)) {
       final next = _materializeGenericSection(guarded, contract, languageCode);

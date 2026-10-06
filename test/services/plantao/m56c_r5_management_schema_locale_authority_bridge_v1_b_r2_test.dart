@@ -74,8 +74,7 @@ void main() {
       final snapshot =
           jsonDecode(
                 File(
-                  'functions/clinical_context/generated/'
-                  'clinical_registry_remote_snapshot.phase24_authoritative270.local.json',
+                  'assets/clinical/clinical_registry_phase24_authoritative270.json',
                 ).readAsStringSync(),
               )
               as Map<String, dynamic>;
@@ -206,8 +205,7 @@ void main() {
     final snapshot =
         jsonDecode(
               File(
-                'functions/clinical_context/generated/'
-                'clinical_registry_remote_snapshot.phase24_authoritative270.local.json',
+                'assets/clinical/clinical_registry_phase24_authoritative270.json',
               ).readAsStringSync(),
             )
             as Map<String, dynamic>;

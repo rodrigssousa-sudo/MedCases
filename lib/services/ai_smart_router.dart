@@ -1,3 +1,7 @@
+import 'dart:convert';
+import 'ai_pipeline/ai_meta_leak_rules.dart';
+import 'study_response_contract.dart';
+import 'plantao_presentation_contract.dart';
 // ══════════════════════════════════════════════════════════════════════════════
 // ai_smart_router.dart — Smart Context Router v3.0
 // BUILD 306 — Regex Hardening + Unified Sanitize Engine
@@ -87,75 +91,6 @@ class AiSmartRouter {
   // Usados por sanitizeResponse() e sanitizeAndCheck() para filtrar vazamentos.
   // Cobre: marcadores técnicos de prompt, language-lock, XML tags, CoT phrases
   // em PT / ES / EN, e campos de metadados do RAG.
-  static final _metaLeakPatterns = RegExp(
-    // ── Marcadores técnicos de prompt ─────────────────────────────────────
-    r'(\[MANDATO|\[MODO PLANT|\[MODO ESTU|\[CONTRACT|\[TRAVA DE IDIOMA'
-    r'|\[AI_ROUTER|\[REFOR[ÇC]O|\[SOBERANIA|\[IN[ÍI]CIO'
-    r'|\[SYSTEM|\[PROMPT|\[CAMADA|\[SISTEMA|\[CONTEXTO RAG\]'
-    r'|RESPONDA\s+ESTRITAMENTE|RESPONDA\s+[ÚU]NICA\s+E\s+EXCLUSIVAMENTE'
-    r'|TEMPLATE\s+DE\s+\d+\s+LINHAS|NESTA\s+ORDEM\s+EXATA'
-    r'|PROIBIDO\s+CRIAR\s+INTRODU'
-    r'|INSTRUÇÃO\s+DE\s+SISTEMA|PROMPT\s+INTERNO'
-    r'|SYSTEM\s+INSTRUCTION|SMART\s+ROUTER|LAZY\s+M[ÓO]DULO'
-    // ── Language-lock leak tokens ─────────────────────────────────────────
-    r'|IDIOMA\s+SOBERANO|TRAVA\s+DE\s+IDIOMA|IRREVOG[ÁA]VEL'
-    r'|IGNORAR\s+COMPLETAMENTE\s+o\s+idioma'
-    r'|✗\s+PROIBIDO:|✓\s+OBRIGAT[ÓO]RIO:'
-    r'|100%\s+ESPA[ÑN]OL\s+PURO|100%\s+PORTUGU[ÊE]S'
-    // ── XML tag leaks ─────────────────────────────────────────────────────
-    r'|<instructions[^>]*>|</instructions\s*>|<system_rules[^>]*>|</system_rules\s*>'
-    r'|<response_template>|</response_template>|<context_rag>|</context_rag>'
-    r'|OUTPUT_STARTS_HERE|END_OF_INSTRUCTIONS'
-    // ── Metadata field leaks (RAG + Camada C) ─────────────────────────────
-    r'|TEMA\s+DESTE\s+TURNO|CONTEXTO\s+CL[ÍI]NICO|COMPLEJIDAD'
-    r'|COMPLEXIDADE\s+DETECTADA|AUTORIDADE\s+DE\s+MATRIZ'
-    r'|HISTORY\s+POISON\s+GUARD|ANTI.LEAK\s+ABSOLUTO'
-    r'|CAMADA\s+[A-Z]\s+—|HARD\s+CAPS|BUILD\s+\d+\s+(—|:)'
-    // ── CoT phrases — Português ───────────────────────────────────────────
-    r'|^Vou\s+responder'
-    r'|^Vamos\s+analisar'
-    r'|^Segue\s+abaixo'
-    r'|^Aqui\s+est[áa]'
-    r'|^Com\s+base\s+na\s+solicita[çc][ãa]o'
-    r'|^Resposta:'
-    r'|^An[áa]lise:'
-    r'|^Explica[çc][ãa]o:'
-    r'|^Racioc[íi]nio'
-    r'|^Pensamento'
-    r'|^Processando'
-    r'|^Modo\s+Plant[ãa]o'
-    r'|^Formato\s+Plant[ãa]o'
-    r'|^Primeiro,'
-    r'|^Primeiro\s+vou'
-    r'|^Primeiramente'
-    // ── CoT phrases — Espanhol ────────────────────────────────────────────
-    r'|^Voy\s+a\s+responder'
-    r'|^Vamos\s+a\s+analizar'
-    r'|^Aqu[íi]\s+est[áa]'
-    r'|^Con\s+base\s+en\s+la\s+solicitud'
-    r'|^Respuesta:'
-    r'|^An[áa]lisis:'
-    r'|^Explicaci[oó]n:'
-    r'|^Razonamiento'
-    r'|^Pensamiento'
-    r'|^Procesando'
-    r'|^Modo\s+Guard[íi]a'
-    r'|^Formato\s+Guard[íi]a'
-    r'|^Primero,'
-    // ── CoT phrases — Inglês (leak) ───────────────────────────────────────
-    r'|^Let\s+me\s+'
-    r'|^I\s+will\s+'
-    r'|^I\s+need\s+to\s+'
-    r'|^Here\s+is\s+'
-    r'|^Here\s+are\s+'
-    r'|^Based\s+on\s+the\s+'
-    r'|^Analysis:'
-    r'|^Reasoning:'
-    r'|^Processing'
-    r')',
-    caseSensitive: false,
-    multiLine: true,
-  );
 
   // ══ ETAPA 1 — Intent Router ════════════════════════════════════════════════
   // 7 dimensões em cascata: isDrops > isDilution > isDose > isInteraction >
@@ -433,118 +368,13 @@ class AiSmartRouter {
   // formato em <response_template> — separação idêntica à do Modo Estudo.
   // BUILD 303 [M3]: '- [Segundo fármaco se houver]' restaurado após regressão
   // introduzida na BUILD 302 durante a migração para response_template.
-  static const String _contractPlantao = '<instructions id="plantao_rules">\n'
-      'Modo Plantão — fallback geral. Siga o template abaixo sem exceções.\n'
-      'Regras: título 🟥 máx 5 palavras. Bullets (-) obrigatórios. Máx 7 palavras/bullet.\n'
-      'Fármacos em negrito: **Nome dose via**. Sem prosa. Sem ## headings. Sem fisiopatologia.\n'
-      'Gotas: APENAS 2 linhas (Fórmula + **Resultado**).\n'
-      'Diluição: Volume → Diluição → Infusão (máx 6 linhas).\n'
-      '</instructions>\n'
-      '<response_template>\n'
-      'OUTPUT_STARTS_HERE\n'
-      '🟥 [DIAGNÓSTICO EM CAIXA ALTA — máx 5 palavras]\n'
-      '💊 1ª linha:\n'
-      '- **[Fármaco dose via]**\n'
-      '- [Segundo fármaco se houver]\n'
-      '🔄 Alternativa: - [opção alternativa]\n'
-      '⛔ Evitar: - [contraindicação crítica]\n'
-      '📌 Monitorar: - [parâmetro]\n'
-      '⚠️ Alerta: - [risco crítico]\n'
-      '</response_template>\n';
-
-  // ══ CONTRATO PLANTÃO REFERÊNCIA ═══════════════════════════════════════════
-  // Injetado quando isPlantaoMode=true E a Camada C já forneceu template
-  // específico de matriz. Mínimo — apenas reforça regras visuais sem redefinir
-  // estrutura (evita conflito com cláusula de supremacia do IntentMandate).
-  // BUILD 304 [G2]: adicionado <response_template> com OUTPUT_STARTS_HERE.
-  // Anteriormente apenas <instructions> — risco de eco idêntico ao pré-BUILD 302.
-  // O template mínimo abaixo indica ao modelo onde começar a resposta no caminho
-  // "Camada C com contexto específico", sem sobrepor o mandato da matriz injetada.
-  static const String _contractPlantaoRef =
-      '<instructions id="plantao_ref_rules">\n'
-      'Reforço visual Ultra-Plantão (o template da Camada C é soberano sobre estas regras):\n'
-      '• Título 🟥: máx 5 palavras. Nunca genérico.\n'
-      '• Condutas: bullets (-). Máx 5 linhas. Máx 7 palavras/bullet.\n'
-      '• Fármacos: **negrito** nome + dose. Ex: **Enoxaparina 1 mg/kg SC 12/12h**.\n'
-      '• Sem prosa. Sem parágrafos. Sem ##. Sem introduções.\n'
-      '</instructions>\n'
-      '<response_template>\n'
-      'OUTPUT_STARTS_HERE\n'
-      '🟥 [use exatamente o template da Camada C injetado acima]\n'
-      '</response_template>\n';
+  static const String _contractPlantao = PlantaoPresentationContract.contract;
+  static const String _contractPlantaoRef = PlantaoPresentationContract.contract;
 
   // ══ CONTRATO ESTUDO ════════════════════════════════════════════════════════
   // STUDY-PREMIUM-V1-B-R6:
-  // Mantém as matrizes acadêmicas A-D e altera somente o contrato de apresentação.
-  static const String _contractEstudo = '<instructions id="estudo_rules">\n'
-      'MODO ESTUDO — encyclopedia_v1 — BUILD 323\n'
-      'Identifique A/B/C/D e aplique a matriz. Prosa acadêmica densa. Sem 🟥/🔄/⛔/💊.\n'
-      'REGRAS: Negrito em fármacos, doses e critérios guideline. 18–35 linhas. Sem emoji 📌 de fechamento no texto visível.\n'
-      'STUDY-PREMIUM-V1-B-R6 — apresentação editorial canônica.\n'
-      'APRESENTAÇÃO VISÍVEL — REGRAS ABSOLUTAS:\n'
-      '1. Comece DIRETAMENTE com ## [título específico do tema]. O título deve identificar a entidade estudada.\n'
-      '2. NÃO repita, cite nem parafraseie a pergunta do usuário antes da resposta.\n'
-      '3. ZERO emojis, pictogramas ou ícones decorativos no texto visível.\n'
-      '4. ZERO preâmbulo/meta-fala: proibido "Claro", "Com prazer", "Por supuesto", "A seguir", "A continuación", "Vou explicar" ou equivalentes.\n'
-      '5. Negrito inline SOMENTE para informação clinicamente importante: conceito-chave, fármaco, dose, limiar, critério, diagnóstico ou conduta crítica. NUNCA parágrafo/frase inteira em negrito e NUNCA negrito decorativo.\n'
-      '6. Use Markdown limpo: um título ##; seções compactas e legíveis; sem separadores decorativos.\n'
-      '7. 18–35 linhas quando a complexidade justificar. Não encurte o Estudo ao padrão executivo do Plantão.\n'
-      '8. NÃO finalize com convite textual, pergunta ao usuário ou "quer que eu continue?". A continuidade pertence SOMENTE ao botão.\n'
-      'Tratamento/Conduta/Doses: ausentes em A e B (exceto D-seção4), preservando o contrato clínico atual.\n'
-      'Sintoma geral (tipo A) → expandir 3 causas de alta mortalidade comparadas — NUNCA focar em 1.\n'
-      'TAGS FINAIS OBRIGATÓRIAS — METADADOS OCULTOS, nunca repetir no texto visível:\n'
-      '[NEXT_ACTION_LABEL: rótulo contextual curto, máximo 5 palavras, sem emoji e sem ponto de interrogação]\n'
-      '[NEXT_ACTION_PROMPT: pergunta direta de continuação produtiva, 6–14 palavras, no idioma ativo e terminada em ?]\n'
-      '</instructions>\n'
-      '<response_template>\n'
-      'OUTPUT_STARTS_HERE\n'
-      '\n'
-      'A) SINTOMA (Dispneia, Dor Torácica, Cefaleia…):\n'
-      '## [Nome do Sintoma]\n'
-      '1. Conceito — definição e importância clínica.\n'
-      '2. Causas — etiologias urgentes vs. não urgentes.\n'
-      '3. Caracterização — semiologia: início, tipo, irradiação, fatores.\n'
-      '4. Clínica — manifestações relevantes ao diferencial.\n'
-      '5. Alarmes — sinais de gravidade iminente.\n'
-      '6. Investigação — anamnese dirigida + exames iniciais.\n'
-      '7. Diferenciais — pérolas e erros diagnósticos.\n'
-      '[NEXT_ACTION_LABEL: ...]\n'
-      '[NEXT_ACTION_PROMPT: ...]\n'
-      '\n'
-      'B) DOENÇA / SÍNDROME (Asma, IC, Pneumonia…):\n'
-      '## [Nome da Doença]\n'
-      '1. Conceito + epidemiologia.\n'
-      '2. Classificação — estadiamento, gravidade ou subtipos.\n'
-      '3. Fisiopatologia — pathway e consequência clínica.\n'
-      '4. Clínica — típica e atípica; sinais cardinais.\n'
-      '5. Alarmes — critérios de internação/UTI.\n'
-      '6. Investigação — laboratório e imagem.\n'
-      '7. Diferenciais — armadilhas diagnósticas.\n'
-      '[NEXT_ACTION_LABEL: ...]\n'
-      '[NEXT_ACTION_PROMPT: ...]\n'
-      '\n'
-      'C) EXAME (ECG, Gasometria, Eco…):\n'
-      '## [Nome do Exame]\n'
-      '1. Conceito — o que avalia.\n'
-      '2. Indicações — quando solicitar.\n'
-      '3. Interpretação — normais vs. patológicos.\n'
-      '4. Limitações — situações de falha.\n'
-      '5. Pérolas — achados que mimetizam outros.\n'
-      '[NEXT_ACTION_LABEL: ...]\n'
-      '[NEXT_ACTION_PROMPT: ...]\n'
-      '\n'
-      'D) FÁRMACO (Amiodarona, Enoxaparina…):\n'
-      '## [Nome do Fármaco]\n'
-      '1. Conceito — classe e indicação principal.\n'
-      '2. Mecanismo — ação molecular e efeito clínico.\n'
-      '3. Indicações — aprovadas e off-label relevantes.\n'
-      '4. Doses — dose padrão, via, ajuste renal/hepático.\n'
-      '5. Efeitos Adversos — relevantes à conduta.\n'
-      '6. Contraindicações — absolutas, relativas, interações críticas.\n'
-      '7. Pérolas — armadilhas, monitorização, situações especiais.\n'
-      '[NEXT_ACTION_LABEL: ...]\n'
-      '[NEXT_ACTION_PROMPT: ...]\n'
-      '</response_template>\n';
+  // Contrato didático independente dos módulos operacionais do Plantão.
+  static const String _contractEstudo = StudyResponseContract.contract;
 
   // ══ ETAPA 4 — Prompt Builder ═══════════════════════════════════════════════
   // BUILD 303 8K [A1]: separação bodyBuf / suffix.
@@ -587,15 +417,15 @@ class AiSmartRouter {
     // Prioridade: dilution/drops > siglas > interacao > dose.
     // Evita injeção simultânea de múltiplos módulos pesados (era causa de 23k+ chars).
     // Estrutura if-else garante no máximo 1 módulo carregado por turno.
-    if (intent.isDilution || intent.isDrops) {
+    if (isPlantaoMode && (intent.isDilution || intent.isDrops)) {
       bodyBuf.write(
           '<instructions id="diluicao">\n$_modDiluicao</instructions>\n');
-    } else if (intent.isAcronym) {
+    } else if (isPlantaoMode && intent.isAcronym) {
       bodyBuf.write('<instructions id="siglas">\n$_modSiglas</instructions>\n');
-    } else if (intent.isInteraction) {
+    } else if (isPlantaoMode && intent.isInteraction) {
       bodyBuf.write(
           '<instructions id="interacao">\n$_modInteracao</instructions>\n');
-    } else if (intent.isDose) {
+    } else if (isPlantaoMode && intent.isDose) {
       bodyBuf.write('<instructions id="dose">\n$_modDose</instructions>\n');
     }
 
@@ -682,19 +512,17 @@ class AiSmartRouter {
   // Retorna: record ({cleaned: List<String>, removed: int})
   //   cleaned — linhas aprovadas (sem meta-leak detectado)
   //   removed — linhas descartadas (para telemetria)
-  static ({List<String> cleaned, int removed}) _scanLines(String text) {
+  static ({List<String> cleaned, int removed}) _scanLines(String text, String locale, bool isPlantaoMode) {
     final lines = text.split('\n');
     final cleaned = <String>[];
     int removed = 0;
-    for (final line in lines) {
-      if (_metaLeakPatterns.hasMatch(line)) {
+    for (var index = 0; index < lines.length; index++) {
+      final line = lines[index];
+      final rule = AiMetaLeakRules.match(line, study: !isPlantaoMode);
+      if (rule != null) {
         removed++;
-        if (kDebugMode) {
-          final preview = line.trim().length > 60
-              ? line.trim().substring(0, 60)
-              : line.trim();
-          debugPrint('[RESPONSE_VALIDATOR] meta_leak removida: "$preview…"');
-        }
+        debugPrint('[SANITIZER_REMOVAL] ${jsonEncode(AiMetaLeakRules.metadata(
+            rule, line, lineIndex: index, locale: locale))}');
       } else {
         cleaned.add(line);
       }
@@ -710,6 +538,9 @@ class AiSmartRouter {
     bool isPlantaoMode = false,
     String appLanguage = 'pt',
   }) {
+    if (!isPlantaoMode) {
+      response = StudyResponseContract.project(response).clinicalAnswer;
+    }
     if (response.isEmpty) {
       return SanitizeResult(
         text: response,
@@ -720,7 +551,7 @@ class AiSmartRouter {
     }
 
     final hadSevereLeak = _severeLeakPatterns.hasMatch(response);
-    final hadMetaLeak = hadSevereLeak || _metaLeakPatterns.hasMatch(response);
+    final hadMetaLeak = hadSevereLeak || AiMetaLeakRules.pattern(study: !isPlantaoMode).hasMatch(response);
 
     if (hadMetaLeak) {
       debugPrint(
@@ -728,7 +559,7 @@ class AiSmartRouter {
     }
 
     // Motor atômico compartilhado — BUILD 306 [R2]
-    final (:cleaned, :removed) = _scanLines(response);
+    final (:cleaned, :removed) = _scanLines(response, appLanguage, isPlantaoMode);
     String result = cleaned.join('\n').trim();
 
     // Fallback final: replaceAll se tokens severos sobreviveram à varredura por linha
@@ -761,10 +592,13 @@ class AiSmartRouter {
     bool isPlantaoMode = false,
     String appLanguage = 'pt',
   }) {
+    if (!isPlantaoMode) {
+      response = StudyResponseContract.project(response).clinicalAnswer;
+    }
     if (response.isEmpty) return response;
 
     // Motor atômico compartilhado — BUILD 306 [R2]
-    final (:cleaned, :removed) = _scanLines(response);
+    final (:cleaned, :removed) = _scanLines(response, appLanguage, isPlantaoMode);
     String result = cleaned.join('\n').trim();
 
     // Contagem de linhas Plantão (aviso de overflow — não bloqueia)

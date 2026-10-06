@@ -391,8 +391,34 @@ class TruncationInspector {
   //     // halt → retry → drop pipeline
   //   }
   // ─────────────────────────────────────────────────────────────────────────
+  /// Transport completion evidence takes precedence over text heuristics.
+  static TruncationCheckResult inspectProviderOutput(
+    String text, {
+    String? finishReason,
+  }) {
+    if (finishReason == 'MAX_TOKENS' || finishReason == 'INCOMPLETE_STREAM') {
+      return TruncationCheckResult(
+        isTruncated: true,
+        confidenceLevel: TruncationConfidence.high,
+        violationReason: finishReason == 'MAX_TOKENS'
+            ? 'provider_finish_reason_max_tokens'
+            : 'provider_stream_incomplete',
+      );
+    }
+    return inspect(text);
+  }
+
   static TruncationCheckResult inspect(String text) {
     if (text.isEmpty) return TruncationCheckResult.clean;
+
+    // A completed canonical envelope does not make an empty section complete.
+    // Inspect before the punctuation exception and preserve the evidence.
+    if (RegExp(r'(?:^|\n)\s*#{1,6}\s+[^\n]+\s*$').hasMatch(text.trimRight())) {
+      return const TruncationCheckResult(isTruncated: true,
+        confidenceLevel: TruncationConfidence.high,
+        violationReason: 'empty_final_section');
+    }
+
 
     // ── H1: Unclosed Markdown Bold ────────────────────────────────────────
     if (_hasUnclosedMarkdownBold(text)) {

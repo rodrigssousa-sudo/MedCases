@@ -1,3 +1,5 @@
+import ActivityKit
+import EventKit
 import AVFoundation
 import CryptoKit
 import Firebase
@@ -5,6 +7,7 @@ import FirebaseAuth
 import Flutter
 import Security
 import UIKit
+import UserNotifications
 
 // BUILD 279 — Anti-Flash iOS: sincronismo nativo entre LaunchScreen.storyboard e Flutter.
 //
@@ -22,10 +25,14 @@ import UIKit
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
+  private var recordingEventObservers: [NSObjectProtocol] = []
+
   override func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
+    // Forward local notification presentation/taps through Flutter plugins.
+    UNUserNotificationCenter.current().delegate = self
     FirebaseApp.configure()
     GeneratedPluginRegistrant.register(with: self)
 
@@ -46,6 +53,24 @@ import UIKit
     if
       let controller = window?.rootViewController as? FlutterViewController
     {
+      let recordingEvents = FlutterMethodChannel(name: "medcases/recording_events_v1", binaryMessenger: controller.binaryMessenger)
+      recordingEvents.setMethodCallHandler { call, reply in
+        guard call.method == "prepareSession" else { reply(FlutterMethodNotImplemented); return }
+        do { try AVAudioSession.sharedInstance().setMode(.default); reply(true) }
+        catch { reply(FlutterError(code: "AUDIO_SESSION_MODE", message: nil, details: nil)) }
+      }
+      recordingEventObservers.append(NotificationCenter.default.addObserver(forName: AVAudioSession.interruptionNotification, object: nil, queue: .main) { notification in
+        guard let raw = notification.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
+              raw == AVAudioSession.InterruptionType.began.rawValue else { return }
+        recordingEvents.invokeMethod("interrupted", arguments: nil)
+      })
+      recordingEventObservers.append(NotificationCenter.default.addObserver(forName: AVAudioSession.routeChangeNotification, object: nil, queue: .main) { notification in
+        guard let raw = notification.userInfo?[AVAudioSessionRouteChangeReasonKey] as? UInt,
+              raw == AVAudioSession.RouteChangeReason.oldDeviceUnavailable.rawValue || raw == AVAudioSession.RouteChangeReason.newDeviceAvailable.rawValue else { return }
+        recordingEvents.invokeMethod("routeChanged", arguments: nil)
+      })
+      MedCasesOrganizationNative.register(messenger: controller.binaryMessenger)
+      MedCasesRecordingDerivedAudio.register(messenger: controller.binaryMessenger)
       let durationChannel = FlutterMethodChannel(name: "medcases/audio_duration_v1", binaryMessenger: controller.binaryMessenger)
       durationChannel.setMethodCallHandler { call, reply in
         guard call.method == "duration", let args = call.arguments as? [String: Any],
@@ -1083,19 +1108,30 @@ private final class MedCasesStudyBackgroundUploadDelegate:
     task: URLSessionTask,
     didCompleteWithError error: Error?
   ) {
-    if let error = error {
-      NSLog(
-        "[StudyBackgroundTranscriptionNative] task=%ld error=%@",
-        task.taskIdentifier,
-        String(describing: error)
-      )
-    } else if let response = task.response as? HTTPURLResponse {
-      NSLog(
-        "[StudyBackgroundTranscriptionNative] task=%ld status=%ld",
-        task.taskIdentifier,
-        response.statusCode
-      )
+    guard let identity = task.taskDescription else { return }
+    let code = (error as NSError?)?.code ?? 0
+    let status = (task.response as? HTTPURLResponse)?.statusCode ?? 0
+    MedCasesStudyBackgroundTranscriptionChannel.updateDiagnostic(identity, values: [
+      "finishedAt": Date().timeIntervalSince1970 * 1000,
+      "nativeCode": code, "httpStatus": status,
+      "state": error == nil && (200..<300).contains(status) ? "completed" : "failed"
+    ])
+    // No URL, error description, credentials, audio or response body in logs.
+    NSLog("[StudyUpload] status=%ld nativeCode=%ld", status, code)
+  }
+
+  func urlSession(_ session: URLSession, task: URLSessionTask,
+                  didSendBodyData bytesSent: Int64, totalBytesSent: Int64,
+                  totalBytesExpectedToSend: Int64) {
+    guard let identity = task.taskDescription else { return }
+    var values: [String: Any] = ["bytesSent": totalBytesSent,
+      "state": "uploading"]
+    if totalBytesSent == bytesSent { values["uploadStartedAt"] = Date().timeIntervalSince1970 * 1000 }
+    if totalBytesExpectedToSend > 0 && totalBytesSent >= totalBytesExpectedToSend {
+      values["uploadedAt"] = Date().timeIntervalSince1970 * 1000
+      values["state"] = "processing"
     }
+    MedCasesStudyBackgroundTranscriptionChannel.updateDiagnostic(identity, values: values)
   }
 
   func urlSessionDidFinishEvents(
@@ -1119,6 +1155,15 @@ private final class MedCasesStudyBackgroundTranscriptionChannel {
     [String: MedCasesStudyBackgroundUploadDelegate]()
   private static var sessions = [String: URLSession]()
 
+  private static let diagnosticLock = NSLock()
+  static func updateDiagnostic(_ identity: String, values: [String: Any]) {
+    diagnosticLock.lock(); defer { diagnosticLock.unlock() }
+    let key = "medcases.transcription.transport." + identity
+    var data = UserDefaults.standard.dictionary(forKey: key) ?? [:]
+    data.merge(values) { _, new in new }
+    UserDefaults.standard.set(data, forKey: key)
+  }
+
   static func register(messenger: FlutterBinaryMessenger) {
     let channel = FlutterMethodChannel(
       name: channelName,
@@ -1126,6 +1171,31 @@ private final class MedCasesStudyBackgroundTranscriptionChannel {
     )
 
     channel.setMethodCallHandler { call, result in
+      if call.method == "appMetadata" {
+        result(["appVersion": Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.0.0",
+                "buildNumber": Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "0"])
+        return
+      }
+      if call.method == "cancel", let args = call.arguments as? [String: Any],
+         let jobId = args["jobId"] as? String,
+         jobId.range(of: #"^[A-Za-z0-9_-]+$"#, options: .regularExpression) != nil,
+         let bundleId = Bundle.main.bundleIdentifier {
+        UserDefaults.standard.set(true, forKey: "medcases.transcription.cancelled." + jobId)
+        let identifier = "\(bundleId).\(sessionPrefix).\(jobId)"
+        handleBackgroundEvents(identifier: identifier, completionHandler: {})
+        sessions[identifier]?.getAllTasks { tasks in tasks.forEach { $0.cancel() } }
+        result(true)
+        return
+      }
+      if call.method == "diagnostics", let args = call.arguments as? [String: Any],
+         let jobId = args["jobId"] as? String, let index = args["index"] as? Int {
+        diagnosticLock.lock()
+        let data = UserDefaults.standard.dictionary(forKey:
+          "medcases.transcription.transport.study:" + jobId + ":" + String(index)) ?? [:]
+        diagnosticLock.unlock()
+        result(data)
+        return
+      }
       guard call.method == "enqueue" else {
         result(FlutterMethodNotImplemented)
         return
@@ -1225,7 +1295,7 @@ private final class MedCasesStudyBackgroundTranscriptionChannel {
     configuration.waitsForConnectivity = true
     configuration.httpMaximumConnectionsPerHost = 2
 
-    let session = URLSession(
+    let session = sessions[identifier] ?? URLSession(
       configuration: configuration,
       delegate: delegate,
       delegateQueue: nil
@@ -1239,6 +1309,7 @@ private final class MedCasesStudyBackgroundTranscriptionChannel {
       )
     }
 
+    var pending: [(URLRequest, URL, String)] = []
     for segment in segments {
       guard let index = segment["index"] as? Int,
             let path = segment["path"] as? String,
@@ -1274,12 +1345,23 @@ private final class MedCasesStudyBackgroundTranscriptionChannel {
         forHTTPHeaderField: "x-medcases-audio-mime"
       )
 
-      let task = session.uploadTask(
-        with: request,
-        fromFile: fileUrl
-      )
-      task.taskDescription = "study:\(jobId):\(index)"
-      task.resume()
+      pending.append((request, fileUrl, "study:\(jobId):\(index)"))
+    }
+
+    session.getAllTasks { tasks in
+      if UserDefaults.standard.bool(forKey: "medcases.transcription.cancelled." + jobId) {
+        tasks.forEach { $0.cancel() }
+        return
+      }
+      let active = Set(tasks.compactMap { $0.taskDescription })
+      for (request, fileUrl, identity) in pending where !active.contains(identity) {
+        let task = session.uploadTask(with: request, fromFile: fileUrl)
+        task.taskDescription = identity
+        updateDiagnostic(identity, values: ["state": "queued",
+          "queuedAt": Date().timeIntervalSince1970 * 1000,
+          "bytesSent": 0, "httpStatus": 0, "nativeCode": 0])
+        task.resume()
+      }
     }
 
     NSLog(
@@ -1287,5 +1369,224 @@ private final class MedCasesStudyBackgroundTranscriptionChannel {
       jobId,
       segments.count
     )
+  }
+}
+
+// Optional transcription derivative. Never opens the master for writing.
+private enum MedCasesRecordingDerivedAudio {
+  static func register(messenger: FlutterBinaryMessenger) {
+    let channel = FlutterMethodChannel(name: "medcases/recording_derived_audio_v1", binaryMessenger: messenger)
+    channel.setMethodCallHandler { call, reply in
+      guard call.method == "prepare", let args = call.arguments as? [String: String],
+            let source = args["source"], let destination = args["destination"],
+            let uid = Auth.auth().currentUser?.uid else {
+        reply(FlutterError(code: "DERIVATIVE_UNAVAILABLE", message: nil, details: nil)); return
+      }
+      DispatchQueue.global(qos: .utility).async {
+        do {
+          let path = try prepare(source: source, destination: destination, uid: uid)
+          DispatchQueue.main.async {
+            guard Auth.auth().currentUser?.uid == uid else {
+              reply(FlutterError(code: "OWNER_CHANGED", message: nil, details: nil)); return
+            }
+            reply(["path": path])
+          }
+        } catch {
+          DispatchQueue.main.async { reply(FlutterError(code: "DERIVATIVE_UNAVAILABLE", message: nil, details: nil)) }
+        }
+      }
+    }
+  }
+  private static func prepare(source: String, destination: String, uid: String) throws -> String {
+    let fm = FileManager.default
+    let support = try fm.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: false)
+    let owner = Data(uid.utf8).base64EncodedString().replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_")
+    let root = support.appendingPathComponent("medcases_recordings").appendingPathComponent(owner).resolvingSymlinksInPath().path + "/"
+    let input = URL(fileURLWithPath: source).resolvingSymlinksInPath()
+    let requestedOutput = URL(fileURLWithPath: destination)
+    let output = requestedOutput.deletingLastPathComponent().resolvingSymlinksInPath().appendingPathComponent(requestedOutput.lastPathComponent)
+    guard input.path.hasPrefix(root), output.deletingLastPathComponent().path == input.deletingLastPathComponent().path,
+          input.lastPathComponent.hasPrefix("segment_"), input.pathExtension == "m4a",
+          output.lastPathComponent == "derived_" + input.deletingPathExtension().lastPathComponent + ".wav" else { throw NSError(domain: "AudioScope", code: 1) }
+    // Closed segment names are immutable. A committed derivative is reusable.
+    if fm.fileExists(atPath: output.path) { return destination }
+    let reader = try AVAudioFile(forReading: input, commonFormat: .pcmFormatFloat32, interleaved: false)
+    let format = reader.processingFormat
+    guard format.channelCount == 1, reader.length > 0,
+          Double(reader.length) / format.sampleRate <= 360 else { throw NSError(domain: "AudioFormat", code: 1) }
+    guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 8192) else { throw NSError(domain: "AudioBuffer", code: 1) }
+    var peak: Float = 0
+    var energy: Double = 0
+    var samples: Int64 = 0
+    while reader.framePosition < reader.length {
+      try reader.read(into: buffer)
+      guard buffer.frameLength > 0, let data = buffer.floatChannelData?[0] else { break }
+      for i in 0..<Int(buffer.frameLength) {
+        let value = data[i]
+        peak = max(peak, abs(value)); energy += Double(value * value); samples += 1
+      }
+    }
+    guard samples > 0 else { throw NSError(domain: "EmptyAudio", code: 1) }
+    let rms = Float(sqrt(energy / Double(samples)))
+    // At most +6 dB; do not amplify near-silence. Peak ceiling is -1 dBFS.
+    let gain: Float = rms > 0.001 ? min(2, min(0.126 / max(rms, 0.001), 0.89 / max(peak, 0.001))) : 1
+    reader.framePosition = 0
+    let staging = output.deletingLastPathComponent().appendingPathComponent(".derived-" + UUID().uuidString + ".wav")
+    defer { try? fm.removeItem(at: staging) }
+    do {
+      // Canonical PCM WAV avoids unsupported AAC decoder priming in the
+      // gateway's strict media validator. The immutable AAC master is untouched.
+      func le16(_ value: UInt16) -> Data { var v = value.littleEndian; return withUnsafeBytes(of: &v) { Data($0) } }
+      func le32(_ value: UInt32) -> Data { var v = value.littleEndian; return withUnsafeBytes(of: &v) { Data($0) } }
+      let byteCount = UInt32(samples * 2)
+      var header = Data("RIFF".utf8); header.append(le32(36 + byteCount)); header.append(Data("WAVEfmt ".utf8))
+      header.append(le32(16)); header.append(le16(1)); header.append(le16(1))
+      header.append(le32(UInt32(format.sampleRate))); header.append(le32(UInt32(format.sampleRate) * 2))
+      header.append(le16(2)); header.append(le16(16)); header.append(Data("data".utf8)); header.append(le32(byteCount))
+      guard fm.createFile(atPath: staging.path, contents: header) else { throw NSError(domain: "AudioWrite", code: 1) }
+      let writer = try FileHandle(forWritingTo: staging)
+      defer { try? writer.close() }
+      try writer.seekToEnd()
+      // DC/rumble cleanup at 45 Hz. No silence trimming, no aggressive gating.
+      let alpha = Float(exp(-2 * Double.pi * 45 / format.sampleRate))
+      var previousInput: Float = 0
+      var previousOutput: Float = 0
+      while reader.framePosition < reader.length {
+        try reader.read(into: buffer)
+        guard buffer.frameLength > 0, let data = buffer.floatChannelData?[0] else { break }
+        for i in 0..<Int(buffer.frameLength) {
+          let x = data[i]
+          let filtered = alpha * (previousOutput + x - previousInput)
+          previousInput = x; previousOutput = filtered
+          data[i] = max(-0.89, min(0.89, filtered * gain))
+        }
+        var pcm = Data(capacity: Int(buffer.frameLength) * 2)
+        for i in 0..<Int(buffer.frameLength) {
+          let sample = Int16((data[i] * 32767).rounded())
+          pcm.append(le16(UInt16(bitPattern: sample)))
+        }
+        try writer.write(contentsOf: pcm)
+      }
+    } // closes PCM file before committing the derivative
+    try fm.moveItem(at: staging, to: output)
+    return destination
+  }
+}
+
+// Personal organization channels are independent of recording/auth/billing.
+private enum MedCasesOrganizationNative {
+  private static let calendar = EKEventStore()
+  static func register(messenger: FlutterBinaryMessenger) {
+    let channel = FlutterMethodChannel(name: "medcases/organization_v1", binaryMessenger: messenger)
+    channel.setMethodCallHandler { call, reply in
+      if call.method == "notificationPermission" {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+          let status: String
+          switch settings.authorizationStatus {
+          case .authorized: status = "authorized"
+          case .provisional: status = "provisional"
+          case .ephemeral: status = "ephemeral"
+          case .denied: status = "denied"
+          case .notDetermined: status = "notDetermined"
+          @unknown default: status = "unavailable"
+          }
+          DispatchQueue.main.async { reply(status) }
+        }
+        return
+      }
+      if call.method == "recordingActivity" {
+        guard #available(iOS 16.2, *) else { reply(nil); return }
+        Task { @MainActor in
+          let args = call.arguments as? [String: Any] ?? [:]
+          let id = args["id"] as? String ?? ""
+          let owner = args["owner"] as? String ?? ""
+          let status = args["status"] as? String ?? "ended"
+          let seconds = max(0, (args["elapsedMs"] as? Int ?? 0) / 1000)
+          let sample = Date(timeIntervalSince1970: (args["sampleTimeMs"] as? Double ?? Date().timeIntervalSince1970 * 1000) / 1000)
+          let active = !id.isEmpty && !owner.isEmpty && Auth.auth().currentUser?.uid == owner && (status == "recording" || status == "paused")
+          let state = MedCasesRecordingAttributes.ContentState(startedAt: sample.addingTimeInterval(-Double(seconds)), elapsedSeconds: seconds, status: status, isEs: args["isEs"] as? Bool ?? false)
+          // A missed heartbeat must not show an indefinitely running microphone.
+          let stale = status == "recording" ? Date().addingTimeInterval(90) : nil
+          for activity in Activity<MedCasesRecordingAttributes>.activities {
+            if !active || activity.attributes.recordingId != id {
+              await activity.end(nil, dismissalPolicy: .immediate)
+            } else { await activity.update(ActivityContent(state: state, staleDate: stale)) }
+          }
+          if active && !Activity<MedCasesRecordingAttributes>.activities.contains(where: { $0.attributes.recordingId == id }) && ActivityAuthorizationInfo().areActivitiesEnabled {
+            do { _ = try Activity.request(attributes: MedCasesRecordingAttributes(recordingId: id), content: ActivityContent(state: state, staleDate: stale), pushType: nil) }
+            catch { reply(FlutterError(code: "RECORDING_ACTIVITY_UNAVAILABLE", message: nil, details: nil)); return }
+          }
+          reply(nil)
+        }
+        return
+      }
+      if call.method == "timer" || call.method == "endTimer" {
+        guard #available(iOS 16.2, *) else { reply(FlutterError(code: "LIVE_ACTIVITY_UNSUPPORTED", message: nil, details: nil)); return }
+        Task { @MainActor in
+          let args = call.arguments as? [String: Any] ?? [:]
+          let id = args["timerId"] as? String ?? ""
+          let status = args["status"] as? String ?? "finished"
+          let iso = ISO8601DateFormatter(); iso.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+          let end = (args["targetEndTime"] as? String).flatMap { iso.date(from: $0) } ?? Date()
+          let state = MedCasesTimerAttributes.ContentState(end: end, status: status,
+            remaining: args["remainingWhenPaused"] as? Int ?? 0, isEs: args["isEs"] as? Bool ?? false)
+          for activity in Activity<MedCasesTimerAttributes>.activities {
+            if call.method == "endTimer" || status == "finished" || status == "idle" || activity.attributes.timerId != id {
+              await activity.end(ActivityContent(state: state, staleDate: nil), dismissalPolicy: .immediate)
+            } else { await activity.update(ActivityContent(state: state, staleDate: status == "running" ? end : nil)) }
+          }
+          if call.method == "timer" && (status == "running" || status == "paused") && (end > Date() || status == "paused") &&
+            !Activity<MedCasesTimerAttributes>.activities.contains(where: { $0.attributes.timerId == id }) {
+            guard ActivityAuthorizationInfo().areActivitiesEnabled else { reply(FlutterError(code: "LIVE_ACTIVITY_DISABLED", message: nil, details: nil)); return }
+            do { _ = try Activity.request(attributes: MedCasesTimerAttributes(timerId: id), content: ActivityContent(state: state, staleDate: status == "running" ? end : nil), pushType: nil) }
+            catch { reply(FlutterError(code: "LIVE_ACTIVITY_FAILED", message: nil, details: nil)); return }
+          }
+          reply(nil)
+        }
+        return
+      }
+      guard let args = call.arguments as? [String: Any],
+            let owner = args["owner"] as? String, Auth.auth().currentUser?.uid == owner,
+            let id = args["id"] as? String else { reply(FlutterError(code: "CALENDAR_OWNER_INVALID", message: nil, details: nil)); return }
+      let marker = "medcases://agenda/\(owner)/\(id)"
+      guard call.method == "saveCalendar" || call.method == "deleteCalendar" else { reply(FlutterMethodNotImplemented); return }
+      let perform: () -> Void = {
+        DispatchQueue.main.async {
+          guard Auth.auth().currentUser?.uid == owner else { reply(FlutterError(code: "CALENDAR_OWNER_CHANGED", message: nil, details: nil)); return }
+          do {
+            let existing = (args["nativeId"] as? String).flatMap { calendar.event(withIdentifier: $0) }
+            if call.method == "deleteCalendar" {
+              if let event = existing, event.url?.absoluteString == marker { try calendar.remove(event, span: .futureEvents) }
+              reply(nil); return
+            }
+            guard let startMs = args["startMs"] as? NSNumber, let endMs = args["endMs"] as? NSNumber,
+                  let title = args["title"] as? String else { throw NSError(domain: "Calendar", code: 1) }
+            let start = Date(timeIntervalSince1970: startMs.doubleValue / 1000)
+            let end = Date(timeIntervalSince1970: endMs.doubleValue / 1000)
+            let predicate = calendar.predicateForEvents(withStart: start.addingTimeInterval(-86400), end: end.addingTimeInterval(86400), calendars: nil)
+            let recovered = calendar.events(matching: predicate).first(where: { $0.url?.absoluteString == marker })
+            let event = existing ?? recovered ?? EKEvent(eventStore: calendar)
+            if event.eventIdentifier != nil && event.url?.absoluteString != marker { throw NSError(domain: "Calendar", code: 2) }
+            event.title = title; event.notes = args["notes"] as? String; event.startDate = start; event.endDate = end
+            event.url = URL(string: marker); event.timeZone = .current
+            if event.calendar == nil { event.calendar = calendar.defaultCalendarForNewEvents }
+            let recurrence = args["recurrence"] as? String ?? "none"
+            let frequency: EKRecurrenceFrequency? = recurrence == "daily" ? .daily : recurrence == "weekly" ? .weekly : recurrence == "monthly" ? .monthly : nil
+            event.recurrenceRules = frequency.map { [EKRecurrenceRule(recurrenceWith: $0, interval: 1, end: nil)] }
+            try calendar.save(event, span: .futureEvents)
+            reply(event.eventIdentifier)
+          } catch { reply(FlutterError(code: "CALENDAR_WRITE_FAILED", message: nil, details: nil)) }
+        }
+      }
+      if #available(iOS 17.0, *) {
+        calendar.requestFullAccessToEvents { granted, _ in
+          if granted { perform() } else { DispatchQueue.main.async { reply(FlutterError(code: "CALENDAR_PERMISSION_DENIED", message: nil, details: nil)) } }
+        }
+      } else {
+        calendar.requestAccess(to: .event) { granted, _ in
+          if granted { perform() } else { DispatchQueue.main.async { reply(FlutterError(code: "CALENDAR_PERMISSION_DENIED", message: nil, details: nil)) } }
+        }
+      }
+    }
   }
 }

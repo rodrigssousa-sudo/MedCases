@@ -1,3 +1,4 @@
+import '../services/guide_navigation_intent.dart';
 import '../testimonials/testimonial_intent.dart';
 // ── Tela de preview pré-login — MedCases Pro V2 (dark institucional) ─────────
 // MEDCASES_PRE_LOGIN_ONBOARDING_UI_V2_B_R1
@@ -10,19 +11,19 @@ import '../widgets/public_landing/public_landing.dart';
 import '../screens/legal_screen.dart';
 
 // ── Paleta MedCases Pro (dark premium clínico institucional) ─────────────────
-const _kBg          = Color(0xFF1A1D23);   // fundo — preto-verde profundo (MedCases Pro)
-   // card escuro MedCases Pro
-   // verde principal
-   // verde médio
-const _kGreenLight  = Color(0xFF0D6B57);   // verde claro acento
-   // acento institucional MedCases Pro
-   // acento de profundidade
-   // dourado — CTA
-   // texto principal MedCases Pro (quase branco)
-   // texto secundário MedCases Pro
-   // texto suave
-   // bordas MedCases Pro
-   // vermelho acento
+const _kBg = Color(0xFF1A1D23); // fundo — preto-verde profundo (MedCases Pro)
+// card escuro MedCases Pro
+// verde principal
+// verde médio
+const _kGreenLight = Color(0xFF0D6B57); // verde claro acento
+// acento institucional MedCases Pro
+// acento de profundidade
+// dourado — CTA
+// texto principal MedCases Pro (quase branco)
+// texto secundário MedCases Pro
+// texto suave
+// bordas MedCases Pro
+// vermelho acento
 
 const String _kAppStoreUrl = String.fromEnvironment(
   'MEDCASES_APP_STORE_URL',
@@ -37,16 +38,13 @@ class PreLoginPreview extends StatefulWidget {
 }
 
 class _PreLoginPreviewState extends State<PreLoginPreview> {
-  bool _showLogin  = false;
+  bool _showLogin = false;
   bool? _hasConsented;
-  String _lang     = 'es';
+  String _lang = 'es';
 
-  bool   get _isEs     => _lang == 'es';
+  bool get _isEs => _lang == 'es';
 
   // ── Dados protocolos — mesmos dados, novo layout visual ──────────────────
-
-
-
 
   @override
   void initState() {
@@ -56,14 +54,21 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
 
   Future<void> _loadLangAndConsent() async {
     final prefs = await SharedPreferences.getInstance();
-    final lang  = prefs.getString('lang') ?? 'es';
-    final ok    = await ConsentGate.hasConsented();
-    if (mounted) setState(() { _lang = lang; _hasConsented = ok; });
+    final lang = prefs.getString('lang') ?? 'es';
+    final slug = kIsWeb ? Uri.base.queryParameters['guide'] : null;
+    if (slug != null && await GuideNavigationIntent.request(slug))
+      _showLogin = true;
+    final ok = await ConsentGate.hasConsented();
+    if (mounted)
+      setState(() {
+        _lang = lang;
+        _hasConsented = ok;
+      });
   }
 
   Future<void> _toggleLang() async {
     final newLang = _isEs ? 'pt' : 'es';
-    final prefs   = await SharedPreferences.getInstance();
+    final prefs = await SharedPreferences.getInstance();
     await prefs.setString('lang', newLang);
     if (mounted) setState(() => _lang = newLang);
   }
@@ -97,9 +102,10 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
   }
 
   void _onConsentAccepted() => setState(() => _hasConsented = true);
-  void _goLogin()           => setState(() => _showLogin = true);
+  void _goLogin() => setState(() => _showLogin = true);
   void _backToPreview() {
     TestimonialIntent.clear();
+    GuideNavigationIntent.clear();
     setState(() => _showLogin = false);
   }
 
@@ -115,14 +121,17 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
       if (!_hasConsented!) {
         return Stack(children: [
           LoginScreen(onBack: _backToPreview),
-          Positioned.fill(child: ColoredBox(
-            color: Colors.black.withOpacity(0.55))),
+          Positioned.fill(
+              child: ColoredBox(color: Colors.black.withOpacity(0.55))),
           Positioned(
-            left: 0, right: 0, bottom: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
             child: ConsentModal(lang: _lang, onAccepted: _onConsentAccepted),
           ),
           Positioned(
-            top: MediaQuery.of(context).padding.top + 4, left: 8,
+            top: MediaQuery.of(context).padding.top + 4,
+            left: 8,
             child: IconButton(
               onPressed: _backToPreview,
               tooltip: _isEs ? 'Volver a la página' : 'Voltar à página',
@@ -139,19 +148,37 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
         backgroundColor: _kBg,
         body: PublicLanding(
           language: _lang,
+          onGuide: (slug, language) async {
+            if (!await GuideNavigationIntent.request(slug)) return;
+            await TestimonialIntent.clear();
+            await (await SharedPreferences.getInstance())
+                .setString('lang', language);
+            if (mounted)
+              setState(() {
+                _lang = language;
+                _showLogin = true;
+              });
+          },
           onTestimonial: (language) async {
             await TestimonialIntent.request();
             final prefs = await SharedPreferences.getInstance();
             await prefs.setString('lang', language);
             if (!mounted) return;
-            setState(() { _lang = language; _showLogin = true; });
+            setState(() {
+              _lang = language;
+              _showLogin = true;
+            });
           },
           onLogin: (language) async {
             await TestimonialIntent.clear();
+            await GuideNavigationIntent.clear();
             final prefs = await SharedPreferences.getInstance();
             await prefs.setString('lang', language);
             if (!mounted) return;
-            setState(() { _lang = language; _showLogin = true; });
+            setState(() {
+              _lang = language;
+              _showLogin = true;
+            });
           },
         ),
       );
@@ -166,12 +193,12 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
           child: ListView(
             padding: const EdgeInsets.fromLTRB(0, 2, 0, 130),
             children: [
-                _R77Landing(
-                  isEs: _isEs,
-                  onCreateAccount: _goLogin,
-                  onAppStore: _openAppStore,
-                ),
-              ],
+              _R77Landing(
+                isEs: _isEs,
+                onCreateAccount: _goLogin,
+                onAppStore: _openAppStore,
+              ),
+            ],
           ),
         ),
       ]),
@@ -185,100 +212,35 @@ class _PreLoginPreviewState extends State<PreLoginPreview> {
 // HEADER DARK — radicalmente diferente do branco anterior
 // ══════════════════════════════════════════════════════════════════════════════
 
-
 // ══════════════════════════════════════════════════════════════════════════════
 // SECTION TITLE — estilo dark, diferente do anterior (círculo colorido)
 // ══════════════════════════════════════════════════════════════════════════════
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // ══════════════════════════════════════════════════════════════════════════════
 // MODELOS
 // ══════════════════════════════════════════════════════════════════════════════
 
-
-
-
 // ══════════════════════════════════════════════════════════════════════════════
 // CARD PROTOCOLO — dark, sem bordas brancas, acento esquerdo verde
 // ══════════════════════════════════════════════════════════════════════════════
-
 
 // ══════════════════════════════════════════════════════════════════════════════
 // CARD CRÍTICO — dark, compacto
 // ══════════════════════════════════════════════════════════════════════════════
 
-
 // ══════════════════════════════════════════════════════════════════════════════
 // BLOCO IA — MedCases Pro: profundidade sutil + radial gradient + glassmorphism
 // ══════════════════════════════════════════════════════════════════════════════
-
 
 // ══════════════════════════════════════════════════════════════════════════════
 // MÉTRICAS RÁPIDAS — MedCases Pro: 2 cards lado a lado, ícone circular
 // ══════════════════════════════════════════════════════════════════════════════
 
-
 // ── Card de métrica individual — MedCases Pro style ──────────────────────────────
-
 
 // ══════════════════════════════════════════════════════════════════════════════
 // CTA INFERIOR DARK — verde sólido + subtítulo (diferente do dourado pill)
 // ══════════════════════════════════════════════════════════════════════════════
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 class _R77Header extends StatelessWidget {
   final bool isEs;
@@ -293,11 +255,9 @@ class _R77Header extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        Theme.of(context).textTheme;
+    final theme = Theme.of(context).textTheme;
 
-    final mobile =
-        MediaQuery.sizeOf(context).width < 700;
+    final mobile = MediaQuery.sizeOf(context).width < 700;
 
     return Container(
       height: mobile ? 58 : 66,
@@ -312,51 +272,36 @@ class _R77Header extends StatelessWidget {
       ),
       child: Center(
         child: ConstrainedBox(
-          constraints:
-              const BoxConstraints(
+          constraints: const BoxConstraints(
             maxWidth: 1100,
           ),
           child: Padding(
-            padding:
-                EdgeInsets.symmetric(
-              horizontal:
-                  mobile ? 14 : 28,
+            padding: EdgeInsets.symmetric(
+              horizontal: mobile ? 14 : 28,
             ),
             child: Row(
               children: [
                 SizedBox(
-                  width:
-                      mobile ? 34 : 39,
-                  height:
-                      mobile ? 34 : 39,
+                  width: mobile ? 34 : 39,
+                  height: mobile ? 34 : 39,
                   child: Image.asset(
                     'assets/icon/splash_mplus_premium.png',
                     fit: BoxFit.contain,
-                    filterQuality:
-                        FilterQuality.high,
+                    filterQuality: FilterQuality.high,
                   ),
                 ),
                 SizedBox(
-                  width:
-                      mobile ? 7 : 10,
+                  width: mobile ? 7 : 10,
                 ),
                 Text(
                   'MedCases',
-                  style:
-                      theme.titleMedium
-                          ?.copyWith(
-                    color:
-                        const Color(
+                  style: theme.titleMedium?.copyWith(
+                    color: const Color(
                       0xFFF2F3F4,
                     ),
-                    fontSize:
-                        mobile
-                            ? 15.5
-                            : 19,
-                    fontWeight:
-                        FontWeight.w700,
-                    letterSpacing:
-                        -0.35,
+                    fontSize: mobile ? 15.5 : 19,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.35,
                   ),
                 ),
                 const SizedBox(
@@ -364,116 +309,71 @@ class _R77Header extends StatelessWidget {
                 ),
                 Text(
                   'PRO',
-                  style:
-                      theme.titleMedium
-                          ?.copyWith(
-                    color:
-                        const Color(
+                  style: theme.titleMedium?.copyWith(
+                    color: const Color(
                       0xFF00B978,
                     ),
-                    fontSize:
-                        mobile
-                            ? 15.5
-                            : 19,
-                    fontWeight:
-                        FontWeight.w700,
-                    letterSpacing:
-                        -0.25,
+                    fontSize: mobile ? 15.5 : 19,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: -0.25,
                   ),
                 ),
                 const Spacer(),
                 InkWell(
                   onTap: onToggleLang,
-                  borderRadius:
-                      BorderRadius.circular(
+                  borderRadius: BorderRadius.circular(
                     4,
                   ),
                   child: Padding(
-                    padding:
-                        const EdgeInsets
-                            .symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 3,
                       vertical: 8,
                     ),
                     child: Text(
                       'ES / PT',
-                      style:
-                          theme.labelMedium
-                              ?.copyWith(
-                        color:
-                            const Color(
+                      style: theme.labelMedium?.copyWith(
+                        color: const Color(
                           0xFFC7CCD1,
                         ),
-                        fontSize:
-                            mobile
-                                ? 10.5
-                                : 11.5,
-                        fontWeight:
-                            FontWeight.w500,
-                        letterSpacing:
-                            0.15,
+                        fontSize: mobile ? 10.5 : 11.5,
+                        fontWeight: FontWeight.w500,
+                        letterSpacing: 0.15,
                       ),
                     ),
                   ),
                 ),
                 SizedBox(
-                  width:
-                      mobile ? 11 : 16,
+                  width: mobile ? 11 : 16,
                 ),
                 SizedBox(
-                  height:
-                      mobile ? 33 : 36,
-                  child:
-                      OutlinedButton(
+                  height: mobile ? 33 : 36,
+                  child: OutlinedButton(
                     onPressed: onLogin,
-                    style:
-                        OutlinedButton
-                            .styleFrom(
-                      foregroundColor:
-                          const Color(
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: const Color(
                         0xFFF0F2F3,
                       ),
-                      backgroundColor:
-                          Colors
-                              .transparent,
-                      side:
-                          const BorderSide(
-                        color:
-                            Color(
+                      backgroundColor: Colors.transparent,
+                      side: const BorderSide(
+                        color: Color(
                           0x9900B978,
                         ),
                         width: 1,
                       ),
-                      padding:
-                          EdgeInsets
-                              .symmetric(
-                        horizontal:
-                            mobile
-                                ? 11
-                                : 15,
+                      padding: EdgeInsets.symmetric(
+                        horizontal: mobile ? 11 : 15,
                       ),
-                      shape:
-                          RoundedRectangleBorder(
-                        borderRadius:
-                            BorderRadius
-                                .circular(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(
                           9,
                         ),
                       ),
                     ),
                     child: Text(
-                      isEs
-                          ? 'Acceso gratis'
-                          : 'Acesso grátis',
-                      style:
-                          theme.labelLarge
-                              ?.copyWith(
-                        fontSize:
-                            mobile
-                                ? 10.1
-                                : 11.2,
-                        fontWeight:
-                            FontWeight.w600,
+                      isEs ? 'Acceso gratis' : 'Acesso grátis',
+                      style: theme.labelLarge?.copyWith(
+                        fontSize: mobile ? 10.1 : 11.2,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
@@ -500,8 +400,7 @@ class _R77Landing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final viewportWidth =
-        MediaQuery.sizeOf(context).width;
+    final viewportWidth = MediaQuery.sizeOf(context).width;
 
     return UnconstrainedBox(
       alignment: Alignment.topCenter,
@@ -517,8 +416,7 @@ class _R77Landing extends StatelessWidget {
   }
 }
 
-class _R717PremiumPosterHero
-    extends StatelessWidget {
+class _R717PremiumPosterHero extends StatelessWidget {
   final bool isEs;
   final double width;
 
@@ -530,8 +428,7 @@ class _R717PremiumPosterHero
   @override
   Widget build(BuildContext context) {
     final mobile = width < 700;
-    final tablet =
-        width >= 700 && width < 1100;
+    final tablet = width >= 700 && width < 1100;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -539,17 +436,14 @@ class _R717PremiumPosterHero
         Container(
           width: double.infinity,
           decoration: BoxDecoration(
-            color:
-                const Color(
+            color: const Color(
               0xFF071016,
             ),
-            borderRadius:
-                BorderRadius.zero,
+            borderRadius: BorderRadius.zero,
             border: mobile
                 ? null
                 : Border.all(
-                    color:
-                        const Color(
+                    color: const Color(
                       0xFF172B34,
                     ),
                   ),
@@ -557,14 +451,12 @@ class _R717PremiumPosterHero
                 ? null
                 : const [
                     BoxShadow(
-                      color:
-                          Color(
+                      color: Color(
                         0x2400C98B,
                       ),
                       blurRadius: 38,
                       spreadRadius: 1,
-                      offset:
-                          Offset(
+                      offset: Offset(
                         0,
                         12,
                       ),
@@ -577,25 +469,21 @@ class _R717PremiumPosterHero
               Positioned.fill(
                 child: Image.network(
                   mobile
-                          ? '/landing/medcases-bg-mobile.png'
-                          : '/landing/medcases-bg-desktop.png',
+                      ? '/landing/medcases-bg-mobile.png'
+                      : '/landing/medcases-bg-desktop.png',
                   fit: BoxFit.cover,
                   alignment: mobile
                       ? const Alignment(0.62, 0.0)
                       : const Alignment(0.18, 0.0),
-                  filterQuality:
-                      FilterQuality.high,
+                  filterQuality: FilterQuality.high,
                 ),
               ),
               Positioned.fill(
                 child: DecoratedBox(
                   decoration: BoxDecoration(
-                    gradient:
-                        LinearGradient(
-                      begin:
-                          Alignment.centerLeft,
-                      end:
-                          Alignment.centerRight,
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
                       colors: mobile
                           ? const [
                               Color(
@@ -640,14 +528,10 @@ class _R717PremiumPosterHero
               ),
               Positioned.fill(
                 child: DecoratedBox(
-                  decoration:
-                      const BoxDecoration(
-                    gradient:
-                        LinearGradient(
-                      begin:
-                          Alignment.topCenter,
-                      end:
-                          Alignment.bottomCenter,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                       stops: [
                         0,
                         0.73,
@@ -669,8 +553,7 @@ class _R717PremiumPosterHero
                 ),
               ),
               Padding(
-                padding:
-                    EdgeInsets.fromLTRB(
+                padding: EdgeInsets.fromLTRB(
                   mobile ? 20 : 48,
                   mobile ? 36 : 54,
                   mobile ? 20 : 48,
@@ -692,17 +575,11 @@ class _R717PremiumPosterHero
                         ],
                       )
                     : Row(
-                        crossAxisAlignment:
-                            CrossAxisAlignment
-                                .start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
-                            flex:
-                                tablet
-                                    ? 10
-                                    : 9,
-                            child:
-                                _R721R3PremiumCopy(
+                            flex: tablet ? 10 : 9,
+                            child: _R721R3PremiumCopy(
                               isEs: isEs,
                             ),
                           ),
@@ -710,12 +587,8 @@ class _R717PremiumPosterHero
                             width: 28,
                           ),
                           Expanded(
-                            flex:
-                                tablet
-                                    ? 9
-                                    : 10,
-                            child:
-                                const _R717DeviceStage(
+                            flex: tablet ? 9 : 10,
+                            child: const _R717DeviceStage(
                               mobile: false,
                             ),
                           ),
@@ -742,13 +615,10 @@ class _R717PremiumPosterHero
           height: mobile ? 20 : 28,
         ),
         Padding(
-          padding:
-              EdgeInsets.symmetric(
-            horizontal:
-                mobile ? 12 : 62,
+          padding: EdgeInsets.symmetric(
+            horizontal: mobile ? 12 : 62,
           ),
-          child:
-              _R719PricingSection(
+          child: _R719PricingSection(
             isEs: isEs,
           ),
         ),
@@ -756,10 +626,8 @@ class _R717PremiumPosterHero
           height: mobile ? 24 : 34,
         ),
         Padding(
-          padding:
-              EdgeInsets.symmetric(
-            horizontal:
-                mobile ? 18 : 90,
+          padding: EdgeInsets.symmetric(
+            horizontal: mobile ? 18 : 90,
           ),
           child: _R77Disclaimer(
             isEs: isEs,
@@ -773,8 +641,7 @@ class _R717PremiumPosterHero
   }
 }
 
-class _R717DeviceStage
-    extends StatelessWidget {
+class _R717DeviceStage extends StatelessWidget {
   final bool mobile;
 
   const _R717DeviceStage({
@@ -788,8 +655,7 @@ class _R717DeviceStage
         context,
         constraints,
       ) {
-        final available =
-            constraints.maxWidth;
+        final available = constraints.maxWidth;
 
         final homeWidth = mobile
             ? 224.0
@@ -809,33 +675,24 @@ class _R717DeviceStage
                 )
                 .toDouble();
 
-        final stageHeight =
-            mobile ? 650.0 : 815.0;
+        final stageHeight = mobile ? 650.0 : 815.0;
 
         return SizedBox(
           height: stageHeight,
           child: Stack(
-            clipBehavior:
-                Clip.none,
+            clipBehavior: Clip.none,
             children: [
               Positioned(
                 left: 0,
                 right: 0,
-                bottom:
-                    mobile ? 10 : 18,
-                child:
-                    IgnorePointer(
+                bottom: mobile ? 10 : 18,
+                child: IgnorePointer(
                   child: Center(
                     child: Container(
-                      width:
-                          mobile
-                              ? 280
-                              : 370,
+                      width: mobile ? 280 : 370,
                       height: 28,
-                      decoration:
-                          const BoxDecoration(
-                        borderRadius:
-                            BorderRadius.all(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(
                           Radius.elliptical(
                             185,
                             24,
@@ -843,8 +700,7 @@ class _R717DeviceStage
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color:
-                                Color(
+                            color: Color(
                               0x6500C98B,
                             ),
                             blurRadius: 46,
@@ -857,29 +713,19 @@ class _R717DeviceStage
                 ),
               ),
               Positioned(
-                right:
-                    mobile ? 0 : 4,
-                top:
-                    mobile ? 35 : 42,
-                child:
-                    Transform.rotate(
-                  angle:
-                      mobile
-                          ? 0.025
-                          : 0.020,
-                  child:
-                      _R713AiPhone(
+                right: mobile ? 0 : 4,
+                top: mobile ? 35 : 42,
+                child: Transform.rotate(
+                  angle: mobile ? 0.025 : 0.020,
+                  child: _R713AiPhone(
                     width: aiWidth,
                   ),
                 ),
               ),
               Positioned(
-                left:
-                    mobile ? 4 : 0,
-                top:
-                    mobile ? 115 : 92,
-                child:
-                    _R79ScrollPhone(
+                left: mobile ? 4 : 0,
+                top: mobile ? 115 : 92,
+                child: _R79ScrollPhone(
                   width: homeWidth,
                 ),
               ),
@@ -891,8 +737,7 @@ class _R717DeviceStage
   }
 }
 
-class _R717PlansIntro
-    extends StatelessWidget {
+class _R717PlansIntro extends StatelessWidget {
   final bool isEs;
   final bool mobile;
 
@@ -903,51 +748,36 @@ class _R717PlansIntro
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        Theme.of(context).textTheme;
+    final theme = Theme.of(context).textTheme;
 
     return Padding(
-      padding:
-          EdgeInsets.symmetric(
-        horizontal:
-            mobile ? 22 : 40,
+      padding: EdgeInsets.symmetric(
+        horizontal: mobile ? 22 : 40,
       ),
       child: Column(
         children: [
           Text(
-            isEs
-                ? 'PLANES'
-                : 'PLANOS',
-            style:
-                theme.labelSmall
-                    ?.copyWith(
-              color:
-                  const Color(
+            isEs ? 'PLANES' : 'PLANOS',
+            style: theme.labelSmall?.copyWith(
+              color: const Color(
                 0xFF87949E,
               ),
               fontSize: 9,
-              fontWeight:
-                  FontWeight.w700,
+              fontWeight: FontWeight.w700,
               letterSpacing: 3.5,
             ),
           ),
           const SizedBox(height: 10),
           RichText(
-            textAlign:
-                TextAlign.center,
+            textAlign: TextAlign.center,
             text: TextSpan(
-              style:
-                  theme.headlineMedium
-                      ?.copyWith(
-                color:
-                    const Color(
+              style: theme.headlineMedium?.copyWith(
+                color: const Color(
                   0xFFF1F3F4,
                 ),
-                fontSize:
-                    mobile ? 26 : 34,
+                fontSize: mobile ? 26 : 34,
                 height: 1.05,
-                fontWeight:
-                    FontWeight.w800,
+                fontWeight: FontWeight.w800,
                 letterSpacing: -0.9,
               ),
               children: [
@@ -959,8 +789,7 @@ class _R717PlansIntro
                 const TextSpan(
                   text: 'más lejos',
                   style: TextStyle(
-                    color:
-                        Color(
+                    color: Color(
                       0xFF28D5A0,
                     ),
                   ),
@@ -973,17 +802,12 @@ class _R717PlansIntro
             isEs
                 ? 'Elige el acceso que mejor acompaña tu formación y tu práctica.'
                 : 'Escolha o acesso que melhor acompanha sua formação e sua prática.',
-            textAlign:
-                TextAlign.center,
-            style:
-                theme.bodyMedium
-                    ?.copyWith(
-              color:
-                  const Color(
+            textAlign: TextAlign.center,
+            style: theme.bodyMedium?.copyWith(
+              color: const Color(
                 0xFFA9B3BA,
               ),
-              fontSize:
-                  mobile ? 11.5 : 13,
+              fontSize: mobile ? 11.5 : 13,
               height: 1.4,
             ),
           ),
@@ -993,10 +817,7 @@ class _R717PlansIntro
   }
 }
 
-
-
-class _R721R3PremiumCopy
-    extends StatelessWidget {
+class _R721R3PremiumCopy extends StatelessWidget {
   final bool isEs;
   final bool mobile;
 
@@ -1074,61 +895,41 @@ class _R721R3PremiumCopy
           ];
 
     return Column(
-      crossAxisAlignment: mobile
-          ? CrossAxisAlignment.center
-          : CrossAxisAlignment.start,
+      crossAxisAlignment:
+          mobile ? CrossAxisAlignment.center : CrossAxisAlignment.start,
       children: [
         Text(
-          isEs
-              ? 'CONOCIMIENTO REAL'
-              : 'CONHECIMENTO REAL',
-          textAlign: mobile
-              ? TextAlign.center
-              : TextAlign.left,
+          isEs ? 'CONOCIMIENTO REAL' : 'CONHECIMENTO REAL',
+          textAlign: mobile ? TextAlign.center : TextAlign.left,
           style: TextStyle(
             color: const Color(
               0xFFB7C2CB,
             ),
-            fontSize: mobile
-                ? 10
-                : 11,
-            fontWeight:
-                FontWeight.w700,
+            fontSize: mobile ? 10 : 11,
+            fontWeight: FontWeight.w700,
             letterSpacing: 3.8,
           ),
         ),
         SizedBox(
-          height: mobile
-              ? 15
-              : 17,
+          height: mobile ? 15 : 17,
         ),
         RichText(
-          textAlign: mobile
-              ? TextAlign.center
-              : TextAlign.left,
+          textAlign: mobile ? TextAlign.center : TextAlign.left,
           text: TextSpan(
             style: TextStyle(
               color: Colors.white,
-              fontSize: mobile
-                  ? 34
-                  : 52,
+              fontSize: mobile ? 34 : 52,
               height: 1.02,
-              fontWeight:
-                  FontWeight.w800,
+              fontWeight: FontWeight.w800,
               letterSpacing: -1.1,
             ),
             children: [
               TextSpan(
-                text: isEs
-                    ? 'Mejores médicos'
-                    : 'Melhores médicos',
+                text: isEs ? 'Mejores médicos' : 'Melhores médicos',
               ),
               TextSpan(
-                text: isEs
-                    ? '\nempiezan aquí'
-                    : '\ncomeçam aqui',
-                style:
-                    const TextStyle(
+                text: isEs ? '\nempiezan aquí' : '\ncomeçam aqui',
+                style: const TextStyle(
                   color: Color(
                     0xFF00D084,
                   ),
@@ -1138,37 +939,28 @@ class _R721R3PremiumCopy
           ),
         ),
         SizedBox(
-          height: mobile
-              ? 16
-              : 18,
+          height: mobile ? 16 : 18,
         ),
         ConstrainedBox(
-          constraints:
-              const BoxConstraints(
+          constraints: const BoxConstraints(
             maxWidth: 540,
           ),
           child: Text(
             isEs
                 ? 'Casos clínicos, herramientas e IA para aprender, consultar y trabajar con más agilidad.'
                 : 'Casos clínicos, ferramentas e IA para aprender, consultar e trabalhar com mais agilidade.',
-            textAlign: mobile
-                ? TextAlign.center
-                : TextAlign.left,
+            textAlign: mobile ? TextAlign.center : TextAlign.left,
             style: TextStyle(
               color: const Color(
                 0xFFD3DDE4,
               ),
-              fontSize: mobile
-                  ? 14.5
-                  : 17,
+              fontSize: mobile ? 14.5 : 17,
               height: 1.45,
             ),
           ),
         ),
         SizedBox(
-          height: mobile
-              ? 22
-              : 27,
+          height: mobile ? 22 : 27,
         ),
         _R721R3FeatureGrid(
           mobile: mobile,
@@ -1179,8 +971,7 @@ class _R721R3PremiumCopy
   }
 }
 
-class _R721R3FeatureGrid
-    extends StatelessWidget {
+class _R721R3FeatureGrid extends StatelessWidget {
   final bool mobile;
   final List<_R721R3FeatureSpec> features;
 
@@ -1194,18 +985,13 @@ class _R721R3FeatureGrid
     return GridView.builder(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
-      physics:
-          const NeverScrollableScrollPhysics(),
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: features.length,
-      gridDelegate:
-          SliverGridDelegateWithFixedCrossAxisCount(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-        crossAxisSpacing:
-            mobile ? 10 : 12,
-        mainAxisSpacing:
-            mobile ? 10 : 12,
-        mainAxisExtent:
-            mobile ? 108 : 116,
+        crossAxisSpacing: mobile ? 10 : 12,
+        mainAxisSpacing: mobile ? 10 : 12,
+        mainAxisExtent: mobile ? 108 : 116,
       ),
       itemBuilder: (
         context,
@@ -1232,8 +1018,7 @@ class _R721R3FeatureSpec {
   });
 }
 
-class _R721R3FeatureCard
-    extends StatelessWidget {
+class _R721R3FeatureCard extends StatelessWidget {
   final bool mobile;
   final _R721R3FeatureSpec feature;
 
@@ -1252,8 +1037,7 @@ class _R721R3FeatureCard
         color: const Color(
           0xB50A151D,
         ),
-        borderRadius:
-            BorderRadius.circular(
+        borderRadius: BorderRadius.circular(
           16,
         ),
         border: Border.all(
@@ -1272,16 +1056,11 @@ class _R721R3FeatureCard
         ],
       ),
       child: Row(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: mobile
-                ? 31
-                : 34,
-            height: mobile
-                ? 31
-                : 34,
+            width: mobile ? 31 : 34,
+            height: mobile ? 31 : 34,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: const Color(
@@ -1295,9 +1074,7 @@ class _R721R3FeatureCard
             ),
             child: Icon(
               feature.icon,
-              size: mobile
-                  ? 16
-                  : 18,
+              size: mobile ? 16 : 18,
               color: const Color(
                 0xFF29D6A0,
               ),
@@ -1306,22 +1083,17 @@ class _R721R3FeatureCard
           const SizedBox(width: 9),
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   feature.title,
                   maxLines: 2,
-                  overflow:
-                      TextOverflow.ellipsis,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: mobile
-                        ? 11.5
-                        : 13,
+                    fontSize: mobile ? 11.5 : 13,
                     height: 1.08,
-                    fontWeight:
-                        FontWeight.w700,
+                    fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(
@@ -1331,15 +1103,12 @@ class _R721R3FeatureCard
                   child: Text(
                     feature.subtitle,
                     maxLines: 3,
-                    overflow:
-                        TextOverflow.ellipsis,
+                    overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       color: const Color(
                         0xFF9FADB7,
                       ),
-                      fontSize: mobile
-                          ? 9.4
-                          : 10.3,
+                      fontSize: mobile ? 9.4 : 10.3,
                       height: 1.22,
                     ),
                   ),
@@ -1353,12 +1122,7 @@ class _R721R3FeatureCard
   }
 }
 
-
-
-
-
-class _R713AiPhone
-    extends StatelessWidget {
+class _R713AiPhone extends StatelessWidget {
   final double width;
 
   const _R713AiPhone({
@@ -1371,48 +1135,39 @@ class _R713AiPhone
       return Image.network(
         '/landing/medcases-app-current.png',
         fit: BoxFit.cover,
-        alignment:
-            Alignment.topCenter,
-        filterQuality:
-            FilterQuality.high,
+        alignment: Alignment.topCenter,
+        filterQuality: FilterQuality.high,
       );
     }
 
     return Container(
       width: width,
-      padding:
-          const EdgeInsets.all(4.5),
+      padding: const EdgeInsets.all(4.5),
       decoration: BoxDecoration(
-        color:
-            const Color(
+        color: const Color(
           0xFF030506,
         ),
-        borderRadius:
-            BorderRadius.circular(34),
+        borderRadius: BorderRadius.circular(34),
         border: Border.all(
-          color:
-              const Color(
+          color: const Color(
             0xFF747C82,
           ),
           width: 1.1,
         ),
         boxShadow: const [
           BoxShadow(
-            color:
-                Color(
+            color: Color(
               0x4C00BE80,
             ),
             blurRadius: 34,
             spreadRadius: 1,
           ),
           BoxShadow(
-            color:
-                Color(
+            color: Color(
               0xA6000000,
             ),
             blurRadius: 38,
-            offset:
-                Offset(
+            offset: Offset(
               0,
               22,
             ),
@@ -1422,17 +1177,14 @@ class _R713AiPhone
       child: AspectRatio(
         aspectRatio: 941 / 2048,
         child: ClipRRect(
-          borderRadius:
-              BorderRadius.circular(
+          borderRadius: BorderRadius.circular(
             29,
           ),
           child: Image.network(
             '/landing/medcases-ai-current.png',
             fit: BoxFit.cover,
-            alignment:
-                Alignment.topCenter,
-            filterQuality:
-                FilterQuality.high,
+            alignment: Alignment.topCenter,
+            filterQuality: FilterQuality.high,
             errorBuilder: (
               context,
               error,
@@ -1447,14 +1199,6 @@ class _R713AiPhone
   }
 }
 
-
-
-
-
-
-
-
-
 class _R79ScrollPhone extends StatefulWidget {
   final double width;
 
@@ -1463,12 +1207,10 @@ class _R79ScrollPhone extends StatefulWidget {
   });
 
   @override
-  State<_R79ScrollPhone> createState() =>
-      _R79ScrollPhoneState();
+  State<_R79ScrollPhone> createState() => _R79ScrollPhoneState();
 }
 
-class _R79ScrollPhoneState
-    extends State<_R79ScrollPhone> {
+class _R79ScrollPhoneState extends State<_R79ScrollPhone> {
   ScrollPosition? _position;
   double _pixels = 0;
 
@@ -1476,8 +1218,7 @@ class _R79ScrollPhoneState
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    final next =
-        Scrollable.maybeOf(context)?.position;
+    final next = Scrollable.maybeOf(context)?.position;
 
     if (identical(
       next,
@@ -1492,8 +1233,7 @@ class _R79ScrollPhoneState
 
     _position = next;
 
-    _pixels =
-        _position?.pixels ?? 0;
+    _pixels = _position?.pixels ?? 0;
 
     _position?.addListener(
       _handleScroll,
@@ -1505,8 +1245,7 @@ class _R79ScrollPhoneState
       return;
     }
 
-    final next =
-        _position?.pixels ?? 0;
+    final next = _position?.pixels ?? 0;
 
     if ((next - _pixels).abs() < 0.4) {
       return;
@@ -1528,39 +1267,32 @@ class _R79ScrollPhoneState
 
   @override
   Widget build(BuildContext context) {
-    final safePixels =
-        _pixels < 0 ? 0.0 : _pixels;
+    final safePixels = _pixels < 0 ? 0.0 : _pixels;
 
-    final travel =
-        (safePixels * 0.10)
-            .clamp(
-              0.0,
-              42.0,
-            )
-            .toDouble();
+    final travel = (safePixels * 0.10)
+        .clamp(
+          0.0,
+          42.0,
+        )
+        .toDouble();
 
-    final scaleBoost =
-        (safePixels / 1400.0)
-            .clamp(
-              0.0,
-              0.025,
-            )
-            .toDouble();
+    final scaleBoost = (safePixels / 1400.0)
+        .clamp(
+          0.0,
+          0.025,
+        )
+        .toDouble();
 
-    final progress =
-        (safePixels / 900.0)
-            .clamp(
-              0.0,
-              1.0,
-            )
-            .toDouble();
+    final progress = (safePixels / 900.0)
+        .clamp(
+          0.0,
+          1.0,
+        )
+        .toDouble();
 
-    final phase =
-        (safePixels % 320.0) /
-        320.0;
+    final phase = (safePixels % 320.0) / 320.0;
 
-    final tilt =
-        (phase - 0.5) * 0.008;
+    final tilt = (phase - 0.5) * 0.008;
 
     return RepaintBoundary(
       child: Transform.translate(
@@ -1570,40 +1302,29 @@ class _R79ScrollPhoneState
         ),
         child: Transform.rotate(
           angle: tilt,
-          alignment:
-              Alignment.topCenter,
+          alignment: Alignment.topCenter,
           child: Transform.scale(
-            scale:
-                1.0 + scaleBoost,
-            alignment:
-                Alignment.topCenter,
+            scale: 1.0 + scaleBoost,
+            alignment: Alignment.topCenter,
             child: Container(
               decoration: BoxDecoration(
-                borderRadius:
-                    BorderRadius.circular(
+                borderRadius: BorderRadius.circular(
                   42,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color:
-                        const Color(
+                    color: const Color(
                       0x3600B978,
                     ),
-                    blurRadius:
-                        28 +
-                        (progress * 22),
-                    spreadRadius:
-                        1 +
-                        (progress * 3),
+                    blurRadius: 28 + (progress * 22),
+                    spreadRadius: 1 + (progress * 3),
                   ),
                   const BoxShadow(
-                    color:
-                        Color(
+                    color: Color(
                       0x85000000,
                     ),
                     blurRadius: 42,
-                    offset:
-                        Offset(
+                    offset: Offset(
                       0,
                       22,
                     ),
@@ -1632,41 +1353,33 @@ class _R77Phone extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: width,
-      padding:
-          const EdgeInsets.all(5),
-      decoration:
-          BoxDecoration(
-        color:
-            const Color(
+      padding: const EdgeInsets.all(5),
+      decoration: BoxDecoration(
+        color: const Color(
           0xFF050607,
         ),
-        borderRadius:
-            BorderRadius.circular(
+        borderRadius: BorderRadius.circular(
           34,
         ),
         border: Border.all(
-          color:
-              const Color(
+          color: const Color(
             0xFF899097,
           ),
           width: 1.15,
         ),
         boxShadow: const [
           BoxShadow(
-            color:
-                Color(
+            color: Color(
               0xB0000000,
             ),
             blurRadius: 42,
-            offset:
-                Offset(
+            offset: Offset(
               0,
               23,
             ),
           ),
           BoxShadow(
-            color:
-                Color(
+            color: Color(
               0x1400D491,
             ),
             blurRadius: 30,
@@ -1674,20 +1387,16 @@ class _R77Phone extends StatelessWidget {
         ],
       ),
       child: AspectRatio(
-        aspectRatio:
-            941 / 2048,
+        aspectRatio: 941 / 2048,
         child: ClipRRect(
-          borderRadius:
-              BorderRadius.circular(
+          borderRadius: BorderRadius.circular(
             29,
           ),
           child: Image.network(
             '/landing/medcases-app-current.png',
             fit: BoxFit.cover,
-            alignment:
-                Alignment.topCenter,
-            filterQuality:
-                FilterQuality.high,
+            alignment: Alignment.topCenter,
+            filterQuality: FilterQuality.high,
           ),
         ),
       ),
@@ -1695,9 +1404,8 @@ class _R77Phone extends StatelessWidget {
   }
 }
 
-
-
-const String _r722AppStoreUrl = 'https://apps.apple.com/mx/app/medcases-pro/id6771750300#information';
+const String _r722AppStoreUrl =
+    'https://apps.apple.com/mx/app/medcases-pro/id6771750300#information';
 
 class _R710StoreButtons extends StatelessWidget {
   final bool isEs;
@@ -1708,11 +1416,9 @@ class _R710StoreButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        Theme.of(context).textTheme;
+    final theme = Theme.of(context).textTheme;
 
-    final width =
-        MediaQuery.sizeOf(context).width;
+    final width = MediaQuery.sizeOf(context).width;
 
     final mobile = width < 700;
 
@@ -1725,22 +1431,15 @@ class _R710StoreButtons extends StatelessWidget {
               Expanded(
                 child: _R710StoreButton(
                   type: _R710StoreType.apple,
-                  eyebrow:
-                      isEs
-                          ? 'Descargar en'
-                          : 'Baixar na',
+                  eyebrow: isEs ? 'Descargar en' : 'Baixar na',
                   title: 'App Store',
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: _R710StoreButton(
-                  type:
-                      _R710StoreType.googlePlay,
-                  eyebrow:
-                      isEs
-                          ? 'Disponible en'
-                          : 'Disponível no',
+                  type: _R710StoreType.googlePlay,
+                  eyebrow: isEs ? 'Disponible en' : 'Disponível no',
                   title: 'Google Play',
                 ),
               ),
@@ -1748,14 +1447,10 @@ class _R710StoreButtons extends StatelessWidget {
           ),
           const SizedBox(height: 14),
           Text(
-            isEs
-                ? 'Prueba gratis 30 días'
-                : 'Teste grátis por 30 dias',
+            isEs ? 'Prueba gratis 30 días' : 'Teste grátis por 30 dias',
             textAlign: TextAlign.center,
-            style:
-                theme.bodyMedium?.copyWith(
-              color:
-                  const Color(0xFFC2C7CC),
+            style: theme.bodyMedium?.copyWith(
+              color: const Color(0xFFC2C7CC),
               fontSize: 12.5,
               fontWeight: FontWeight.w500,
               letterSpacing: 0.1,
@@ -1785,21 +1480,17 @@ class _R710StoreButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        Theme.of(context).textTheme;
+    final theme = Theme.of(context).textTheme;
 
-    final apple =
-        type == _R710StoreType.apple;
+    final apple = type == _R710StoreType.apple;
 
     final _r722Button = Container(
       height: 61,
       decoration: BoxDecoration(
         color: const Color(0xFF050607),
-        borderRadius:
-            BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color:
-              const Color(0xFF6A7076),
+          color: const Color(0xFF6A7076),
           width: 1,
         ),
         boxShadow: const [
@@ -1810,8 +1501,7 @@ class _R710StoreButton extends StatelessWidget {
           ),
         ],
       ),
-      padding:
-          const EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: 12,
       ),
       child: Row(
@@ -1826,50 +1516,38 @@ class _R710StoreButton extends StatelessWidget {
                     color: Colors.white,
                   )
                 : const CustomPaint(
-                    painter:
-                        _R711GooglePlayPainter(),
+                    painter: _R711GooglePlayPainter(),
                   ),
           ),
           const SizedBox(width: 9),
           Expanded(
             child: Column(
-              mainAxisAlignment:
-                  MainAxisAlignment.center,
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   eyebrow,
                   maxLines: 1,
-                  overflow:
-                      TextOverflow.ellipsis,
-                  style:
-                      theme.labelSmall
-                          ?.copyWith(
-                    color:
-                        const Color(
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.labelSmall?.copyWith(
+                    color: const Color(
                       0xFFD1D3D5,
                     ),
                     fontSize: 8.8,
                     height: 1,
-                    fontWeight:
-                        FontWeight.w400,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   title,
                   maxLines: 1,
-                  overflow:
-                      TextOverflow.ellipsis,
-                  style:
-                      theme.titleSmall
-                          ?.copyWith(
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.titleSmall?.copyWith(
                     color: Colors.white,
                     fontSize: 14.2,
                     height: 1,
-                    fontWeight:
-                        FontWeight.w700,
+                    fontWeight: FontWeight.w700,
                     letterSpacing: -0.25,
                   ),
                 ),
@@ -1880,8 +1558,7 @@ class _R710StoreButton extends StatelessWidget {
       ),
     );
 
-    final _r722IsAppStore =
-        type == _R710StoreType.apple;
+    final _r722IsAppStore = type == _R710StoreType.apple;
 
     if (!_r722IsAppStore) {
       return _r722Button;
@@ -1900,12 +1577,10 @@ class _R710StoreButton extends StatelessWidget {
         child: _r722Button,
       ),
     );
-
   }
 }
 
-class _R711GooglePlayPainter
-    extends CustomPainter {
+class _R711GooglePlayPainter extends CustomPainter {
   const _R711GooglePlayPainter();
 
   @override
@@ -1953,9 +1628,7 @@ class _R711GooglePlayPainter
 
     canvas.drawPath(
       top,
-      Paint()
-        ..color =
-            const Color(0xFF00D7FF),
+      Paint()..color = const Color(0xFF00D7FF),
     );
 
     final bottom = Path()
@@ -1975,9 +1648,7 @@ class _R711GooglePlayPainter
 
     canvas.drawPath(
       bottom,
-      Paint()
-        ..color =
-            const Color(0xFF00D26A),
+      Paint()..color = const Color(0xFF00D26A),
     );
 
     final rightTop = Path()
@@ -1997,9 +1668,7 @@ class _R711GooglePlayPainter
 
     canvas.drawPath(
       rightTop,
-      Paint()
-        ..color =
-            const Color(0xFFFFD400),
+      Paint()..color = const Color(0xFFFFD400),
     );
 
     final rightBottom = Path()
@@ -2019,9 +1688,7 @@ class _R711GooglePlayPainter
 
     canvas.drawPath(
       rightBottom,
-      Paint()
-        ..color =
-            const Color(0xFFFF3956),
+      Paint()..color = const Color(0xFFFF3956),
     );
   }
 
@@ -2032,32 +1699,7 @@ class _R711GooglePlayPainter
       false;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-class _R719PricingSection
-    extends StatelessWidget {
+class _R719PricingSection extends StatelessWidget {
   final bool isEs;
 
   const _R719PricingSection({
@@ -2071,8 +1713,7 @@ class _R719PricingSection
         context,
         constraints,
       ) {
-        final stacked =
-            constraints.maxWidth < 840;
+        final stacked = constraints.maxWidth < 840;
 
         if (stacked) {
           return Column(
@@ -2093,8 +1734,7 @@ class _R719PricingSection
         }
 
         return Row(
-          crossAxisAlignment:
-              CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: _R719PlanCard(
@@ -2116,8 +1756,7 @@ class _R719PricingSection
   }
 }
 
-class _R719PlanCard
-    extends StatelessWidget {
+class _R719PlanCard extends StatelessWidget {
   final bool premium;
   final bool isEs;
 
@@ -2178,13 +1817,11 @@ class _R719PlanCard
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        Theme.of(context).textTheme;
+    final theme = Theme.of(context).textTheme;
 
     return Container(
       width: double.infinity,
-      padding:
-          const EdgeInsets.fromLTRB(
+      padding: const EdgeInsets.fromLTRB(
         23,
         24,
         23,
@@ -2198,8 +1835,7 @@ class _R719PlanCard
             : const Color(
                 0xF20C141B,
               ),
-        borderRadius:
-            BorderRadius.circular(27),
+        borderRadius: BorderRadius.circular(27),
         border: Border.all(
           color: premium
               ? const Color(
@@ -2213,14 +1849,12 @@ class _R719PlanCard
         boxShadow: premium
             ? const [
                 BoxShadow(
-                  color:
-                      Color(
+                  color: Color(
                     0x3320D3A0,
                   ),
                   blurRadius: 36,
                   spreadRadius: 1,
-                  offset:
-                      Offset(
+                  offset: Offset(
                     0,
                     14,
                   ),
@@ -2228,13 +1862,11 @@ class _R719PlanCard
               ]
             : const [
                 BoxShadow(
-                  color:
-                      Color(
+                  color: Color(
                     0x26000000,
                   ),
                   blurRadius: 24,
-                  offset:
-                      Offset(
+                  offset: Offset(
                     0,
                     12,
                   ),
@@ -2242,65 +1874,50 @@ class _R719PlanCard
               ],
       ),
       child: Column(
-        mainAxisSize:
-            MainAxisSize.min,
-        crossAxisAlignment:
-            CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (premium)
             Align(
-              alignment:
-                  Alignment.centerRight,
+              alignment: Alignment.centerRight,
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(
+                padding: const EdgeInsets.symmetric(
                   horizontal: 11,
                   vertical: 6,
                 ),
                 decoration: BoxDecoration(
-                  color:
-                      const Color(
+                  color: const Color(
                     0x1620D3A0,
                   ),
-                  borderRadius:
-                      BorderRadius.circular(
+                  borderRadius: BorderRadius.circular(
                     30,
                   ),
                   border: Border.all(
-                    color:
-                        const Color(
+                    color: const Color(
                       0x7720D3A0,
                     ),
                   ),
                 ),
                 child: Text(
-                  isEs
-                      ? 'MÁS POPULAR'
-                      : 'MAIS POPULAR',
-                  style:
-                      theme.labelSmall
-                          ?.copyWith(
-                    color:
-                        const Color(
+                  isEs ? 'MÁS POPULAR' : 'MAIS POPULAR',
+                  style: theme.labelSmall?.copyWith(
+                    color: const Color(
                       0xFF79E9C6,
                     ),
                     fontSize: 8.6,
-                    fontWeight:
-                        FontWeight.w800,
+                    fontWeight: FontWeight.w800,
                     letterSpacing: 0.4,
                   ),
                 ),
               ),
             ),
-          if (premium)
-            const SizedBox(height: 11),
+          if (premium) const SizedBox(height: 11),
           Row(
             children: [
               Container(
                 width: 51,
                 height: 51,
-                decoration:
-                    BoxDecoration(
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: premium
                       ? const Color(
@@ -2321,10 +1938,8 @@ class _R719PlanCard
                 ),
                 child: Icon(
                   premium
-                      ? Icons
-                          .workspace_premium_outlined
-                      : Icons
-                          .school_outlined,
+                      ? Icons.workspace_premium_outlined
+                      : Icons.school_outlined,
                   color: premium
                       ? const Color(
                           0xFF4AE0AF,
@@ -2338,21 +1953,14 @@ class _R719PlanCard
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      premium
-                          ? 'MEDCASES PREMIUM'
-                          : 'GRATIS',
-                      style:
-                          theme.titleLarge
-                              ?.copyWith(
-                        color:
-                            Colors.white,
+                      premium ? 'MEDCASES PREMIUM' : 'GRATIS',
+                      style: theme.titleLarge?.copyWith(
+                        color: Colors.white,
                         fontSize: 19.5,
-                        fontWeight:
-                            FontWeight.w800,
+                        fontWeight: FontWeight.w800,
                         letterSpacing: -0.4,
                       ),
                     ),
@@ -2360,16 +1968,12 @@ class _R719PlanCard
                     if (!premium)
                       Text(
                         'US\$ 0',
-                        style:
-                            theme.bodyMedium
-                                ?.copyWith(
-                          color:
-                              const Color(
+                        style: theme.bodyMedium?.copyWith(
+                          color: const Color(
                             0xFFB1BBC2,
                           ),
                           fontSize: 12,
-                          fontWeight:
-                              FontWeight.w700,
+                          fontWeight: FontWeight.w700,
                         ),
                       ),
                   ],
@@ -2387,17 +1991,13 @@ class _R719PlanCard
               isEs
                   ? 'Todo lo esencial para conocer MedCases y empezar a usarlo hoy.'
                   : 'Tudo o que é essencial para conhecer o MedCases e começar a usar hoje.',
-              style:
-                  theme.bodyMedium
-                      ?.copyWith(
-                color:
-                    const Color(
+              style: theme.bodyMedium?.copyWith(
+                color: const Color(
                   0xFFD6DDE1,
                 ),
                 fontSize: 12.2,
                 height: 1.42,
-                fontWeight:
-                    FontWeight.w600,
+                fontWeight: FontWeight.w600,
               ),
             ),
           const SizedBox(height: 20),
@@ -2414,47 +2014,30 @@ class _R719PlanCard
           const SizedBox(height: 18),
           Text(
             premium
-                ? (
-                    isEs
-                        ? 'INCLUYE TODO LO DE GRATIS, MÁS:'
-                        : 'INCLUI TUDO DO GRÁTIS, MAIS:'
-                  )
-                : (
-                    isEs
-                        ? 'INCLUYE'
-                        : 'INCLUI'
-                  ),
-            style:
-                theme.labelSmall
-                    ?.copyWith(
-              color:
-                  premium
-                      ? const Color(
-                          0xFF7CE3C3,
-                        )
-                      : const Color(
-                          0xFF818E96,
-                        ),
+                ? (isEs
+                    ? 'INCLUYE TODO LO DE GRATIS, MÁS:'
+                    : 'INCLUI TUDO DO GRÁTIS, MAIS:')
+                : (isEs ? 'INCLUYE' : 'INCLUI'),
+            style: theme.labelSmall?.copyWith(
+              color: premium
+                  ? const Color(
+                      0xFF7CE3C3,
+                    )
+                  : const Color(
+                      0xFF818E96,
+                    ),
               fontSize: 8.7,
-              fontWeight:
-                  FontWeight.w800,
+              fontWeight: FontWeight.w800,
               letterSpacing: 1.6,
             ),
           ),
           const SizedBox(height: 15),
-          for (
-            var i = 0;
-            i < features.length;
-            i++
-          ) ...[
+          for (var i = 0; i < features.length; i++) ...[
             _R719PlanFeature(
               premium: premium,
               text: features[i],
             ),
-            if (
-              i !=
-                  features.length - 1
-            )
+            if (i != features.length - 1)
               const SizedBox(
                 height: 10,
               ),
@@ -2462,24 +2045,19 @@ class _R719PlanCard
           if (!premium) ...[
             const SizedBox(height: 17),
             Container(
-              padding:
-                  const EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: 12,
                 vertical: 10,
               ),
-              decoration:
-                  BoxDecoration(
-                color:
-                    const Color(
+              decoration: BoxDecoration(
+                color: const Color(
                   0xFF101920,
                 ),
-                borderRadius:
-                    BorderRadius.circular(
+                borderRadius: BorderRadius.circular(
                   13,
                 ),
                 border: Border.all(
-                  color:
-                      const Color(
+                  color: const Color(
                     0xFF263742,
                   ),
                 ),
@@ -2488,13 +2066,9 @@ class _R719PlanCard
                 isEs
                     ? 'Funciones seleccionadas sujetas a límites de uso en el plan gratuito.'
                     : 'Funções selecionadas sujeitas a limites de uso no plano gratuito.',
-                textAlign:
-                    TextAlign.center,
-                style:
-                    theme.bodySmall
-                        ?.copyWith(
-                  color:
-                      const Color(
+                textAlign: TextAlign.center,
+                style: theme.bodySmall?.copyWith(
+                  color: const Color(
                     0xFF8E9AA2,
                   ),
                   fontSize: 8.8,
@@ -2506,36 +2080,31 @@ class _R719PlanCard
           const SizedBox(height: 23),
           Container(
             height: 54,
-            alignment:
-                Alignment.center,
+            alignment: Alignment.center,
             decoration: BoxDecoration(
               color: premium
                   ? const Color(
                       0xFF2BD3A4,
                     )
                   : Colors.transparent,
-              borderRadius:
-                  BorderRadius.circular(
+              borderRadius: BorderRadius.circular(
                 16,
               ),
               border: premium
                   ? null
                   : Border.all(
-                      color:
-                          const Color(
+                      color: const Color(
                         0xFF465761,
                       ),
                     ),
               boxShadow: premium
                   ? const [
                       BoxShadow(
-                        color:
-                            Color(
+                        color: Color(
                           0x3320D3A0,
                         ),
                         blurRadius: 20,
-                        offset:
-                            Offset(
+                        offset: Offset(
                           0,
                           8,
                         ),
@@ -2544,35 +2113,24 @@ class _R719PlanCard
                   : null,
             ),
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(
+              padding: const EdgeInsets.symmetric(
                 horizontal: 12,
               ),
               child: Text(
                 premium
-                    ? (
-                        isEs
-                            ? 'Probar Premium gratis por 30 días'
-                            : 'Testar Premium grátis por 30 dias'
-                      )
-                    : (
-                        isEs
-                            ? 'Empezar gratis'
-                            : 'Começar grátis'
-                      ),
-                textAlign:
-                    TextAlign.center,
-                style:
-                    theme.labelLarge
-                        ?.copyWith(
+                    ? (isEs
+                        ? 'Probar Premium gratis por 30 días'
+                        : 'Testar Premium grátis por 30 dias')
+                    : (isEs ? 'Empezar gratis' : 'Começar grátis'),
+                textAlign: TextAlign.center,
+                style: theme.labelLarge?.copyWith(
                   color: premium
                       ? const Color(
                           0xFF03110D,
                         )
                       : Colors.white,
                   fontSize: 12.5,
-                  fontWeight:
-                      FontWeight.w800,
+                  fontWeight: FontWeight.w800,
                 ),
               ),
             ),
@@ -2583,8 +2141,7 @@ class _R719PlanCard
   }
 }
 
-class _R719PremiumPrice
-    extends StatelessWidget {
+class _R719PremiumPrice extends StatelessWidget {
   final bool isEs;
 
   const _R719PremiumPrice({
@@ -2593,67 +2150,49 @@ class _R719PremiumPrice
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        Theme.of(context).textTheme;
+    final theme = Theme.of(context).textTheme;
 
     return Container(
-      padding:
-          const EdgeInsets.fromLTRB(
+      padding: const EdgeInsets.fromLTRB(
         15,
         14,
         15,
         14,
       ),
       decoration: BoxDecoration(
-        color:
-            const Color(
+        color: const Color(
           0xAA071B16,
         ),
-        borderRadius:
-            BorderRadius.circular(17),
+        borderRadius: BorderRadius.circular(17),
         border: Border.all(
-          color:
-              const Color(
+          color: const Color(
             0x4420D3A0,
           ),
         ),
       ),
       child: Column(
-        crossAxisAlignment:
-            CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            isEs
-                ? '30 días gratis'
-                : '30 dias grátis',
-            style:
-                theme.labelLarge
-                    ?.copyWith(
-              color:
-                  const Color(
+            isEs ? '30 días gratis' : '30 dias grátis',
+            style: theme.labelLarge?.copyWith(
+              color: const Color(
                 0xFF69E4BD,
               ),
               fontSize: 11,
-              fontWeight:
-                  FontWeight.w800,
+              fontWeight: FontWeight.w800,
             ),
           ),
           const SizedBox(height: 11),
           Text(
             'US\$ 19,99',
-            style:
-                theme.bodyMedium
-                    ?.copyWith(
-              color:
-                  const Color(
+            style: theme.bodyMedium?.copyWith(
+              color: const Color(
                 0xFF717C82,
               ),
               fontSize: 11.5,
-              decoration:
-                  TextDecoration
-                      .lineThrough,
-              decorationColor:
-                  const Color(
+              decoration: TextDecoration.lineThrough,
+              decorationColor: const Color(
                 0xFF717C82,
               ),
             ),
@@ -2664,34 +2203,24 @@ class _R719PremiumPrice
               children: [
                 TextSpan(
                   text: 'US\$ 14,99',
-                  style:
-                      theme.headlineMedium
-                          ?.copyWith(
-                    color:
-                        const Color(
+                  style: theme.headlineMedium?.copyWith(
+                    color: const Color(
                       0xFF69E4BD,
                     ),
                     fontSize: 29,
                     height: 1,
-                    fontWeight:
-                        FontWeight.w900,
+                    fontWeight: FontWeight.w900,
                     letterSpacing: -0.9,
                   ),
                 ),
                 TextSpan(
-                  text: isEs
-                      ? '/mes'
-                      : '/mês',
-                  style:
-                      theme.bodyMedium
-                          ?.copyWith(
-                    color:
-                        const Color(
+                  text: isEs ? '/mes' : '/mês',
+                  style: theme.bodyMedium?.copyWith(
+                    color: const Color(
                       0xFFD8DFDC,
                     ),
                     fontSize: 10.5,
-                    fontWeight:
-                        FontWeight.w600,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
               ],
@@ -2702,16 +2231,12 @@ class _R719PremiumPrice
             isEs
                 ? 'Precio especial de lanzamiento'
                 : 'Preço especial de lançamento',
-            style:
-                theme.labelMedium
-                    ?.copyWith(
-              color:
-                  const Color(
+            style: theme.labelMedium?.copyWith(
+              color: const Color(
                 0xFF7BE3C1,
               ),
               fontSize: 10,
-              fontWeight:
-                  FontWeight.w800,
+              fontWeight: FontWeight.w800,
             ),
           ),
           const SizedBox(height: 4),
@@ -2719,11 +2244,8 @@ class _R719PremiumPrice
             isEs
                 ? 'Durante los primeros 3 meses'
                 : 'Durante os primeiros 3 meses',
-            style:
-                theme.bodySmall
-                    ?.copyWith(
-              color:
-                  const Color(
+            style: theme.bodySmall?.copyWith(
+              color: const Color(
                 0xFFB5BFC3,
               ),
               fontSize: 9.5,
@@ -2731,31 +2253,20 @@ class _R719PremiumPrice
           ),
           const SizedBox(height: 9),
           Text(
-            isEs
-                ? 'Después US\$ 19,99/mes'
-                : 'Depois US\$ 19,99/mês',
-            style:
-                theme.bodySmall
-                    ?.copyWith(
-              color:
-                  const Color(
+            isEs ? 'Después US\$ 19,99/mes' : 'Depois US\$ 19,99/mês',
+            style: theme.bodySmall?.copyWith(
+              color: const Color(
                 0xFFDDE2DF,
               ),
               fontSize: 9.7,
-              fontWeight:
-                  FontWeight.w700,
+              fontWeight: FontWeight.w700,
             ),
           ),
           const SizedBox(height: 3),
           Text(
-            isEs
-                ? 'Cancela cuando quieras.'
-                : 'Cancele quando quiser.',
-            style:
-                theme.bodySmall
-                    ?.copyWith(
-              color:
-                  const Color(
+            isEs ? 'Cancela cuando quieras.' : 'Cancele quando quiser.',
+            style: theme.bodySmall?.copyWith(
+              color: const Color(
                 0xFF929CA1,
               ),
               fontSize: 9.1,
@@ -2767,8 +2278,7 @@ class _R719PremiumPrice
   }
 }
 
-class _R719PlanFeature
-    extends StatelessWidget {
+class _R719PlanFeature extends StatelessWidget {
   final bool premium;
   final String text;
 
@@ -2779,12 +2289,10 @@ class _R719PlanFeature
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        Theme.of(context).textTheme;
+    final theme = Theme.of(context).textTheme;
 
     return Row(
-      crossAxisAlignment:
-          CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           width: 20,
@@ -2815,9 +2323,7 @@ class _R719PlanFeature
         Expanded(
           child: Text(
             text,
-            style:
-                theme.bodySmall
-                    ?.copyWith(
+            style: theme.bodySmall?.copyWith(
               color: premium
                   ? const Color(
                       0xFFE0E9E5,
@@ -2827,8 +2333,7 @@ class _R719PlanFeature
                     ),
               fontSize: 9.8,
               height: 1.27,
-              fontWeight:
-                  FontWeight.w600,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ),
@@ -2837,8 +2342,7 @@ class _R719PlanFeature
   }
 }
 
-class _R77Disclaimer
-    extends StatelessWidget {
+class _R77Disclaimer extends StatelessWidget {
   final bool isEs;
 
   const _R77Disclaimer({
@@ -2847,8 +2351,7 @@ class _R77Disclaimer
 
   @override
   Widget build(BuildContext context) {
-    final theme =
-        Theme.of(context).textTheme;
+    final theme = Theme.of(context).textTheme;
 
     return Column(
       children: [
@@ -2856,18 +2359,13 @@ class _R77Disclaimer
           isEs
               ? 'HERRAMIENTA EDUCATIVA DE APOYO CLÍNICO'
               : 'FERRAMENTA EDUCATIVA DE APOIO CLÍNICO',
-          textAlign:
-              TextAlign.center,
-          style:
-              theme.labelSmall
-                  ?.copyWith(
-            color:
-                const Color(
+          textAlign: TextAlign.center,
+          style: theme.labelSmall?.copyWith(
+            color: const Color(
               0xFFD3D7DA,
             ),
             fontSize: 8.5,
-            fontWeight:
-                FontWeight.w500,
+            fontWeight: FontWeight.w500,
             letterSpacing: 1.9,
           ),
         ),
@@ -2878,19 +2376,14 @@ class _R77Disclaimer
           isEs
               ? 'La decisión y verificación de dosis son responsabilidad exclusiva del médico asistente.'
               : 'A decisão e a verificação das doses são responsabilidade exclusiva do médico assistente.',
-          textAlign:
-              TextAlign.center,
-          style:
-              theme.bodySmall
-                  ?.copyWith(
-            color:
-                const Color(
+          textAlign: TextAlign.center,
+          style: theme.bodySmall?.copyWith(
+            color: const Color(
               0xFF9DA4AA,
             ),
             fontSize: 8.8,
             height: 1.35,
-            fontWeight:
-                FontWeight.w400,
+            fontWeight: FontWeight.w400,
           ),
         ),
       ],

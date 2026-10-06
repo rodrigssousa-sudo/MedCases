@@ -22,20 +22,13 @@
 //     é o único orchestrador; chamá-los diretamente causaria duplicidade.
 // ============================================================
 
-import 'dart:ui' as ui;
 import 'package:flutter/foundation.dart';
 
 class UiProvider extends ChangeNotifier {
   // ── Estado ────────────────────────────────────────────────────────────────
-  String _lang       = _systemLang();
+  String _lang       = 'es';
   bool   _darkMode   = true;   // DARK-FIRST: padrão escuro
   bool   _hapticEnabled = true;
-
-  // ── Idioma padrão baseado no locale do sistema ────────────────────────────
-  static String _systemLang() {
-    final locale = ui.PlatformDispatcher.instance.locale;
-    return locale.languageCode == 'pt' ? 'pt' : 'es';
-  }
 
   // ── Getters públicos ──────────────────────────────────────────────────────
   String get lang          => _lang;

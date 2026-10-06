@@ -1,11 +1,86 @@
+import 'study_artifact_access.dart';
+import 'study_artifact_attempt_client.dart';
+import 'study_full_summary_coverage.dart';
+import 'study_visual_generation.dart';
+import 'study_library_service.dart';
+import 'package:flutter/foundation.dart' show debugPrint;
 import '../../models/study_workspace_model.dart';
 import '../ai_service.dart';
 import 'study_context_chunker.dart';
+import 'study_visual_result_codec.dart';
 
 final class StudyArtifactGenerator {
   const StudyArtifactGenerator._();
 
+  // A prior failed generation is not study material. Keep the saved source
+  // intact and let the UI offer generation again in the active language.
+  static bool isFailureText(String value) {
+    final text = value.trim();
+    return const [
+      'Não há suporte verificável suficiente para apresentar esta resposta clínica',
+      'No hay soporte verificable suficiente para presentar esta respuesta clínica',
+      'Não foi possível concluir a explicação.',
+      'No se pudo completar la explicación.',
+    ].any(text.startsWith);
+  }
+
+  static String requireGeneratedContent(AiResult result) {
+    if (result.isError ||
+        result.text.trim().isEmpty ||
+        isFailureText(result.text)) {
+      throw StateError(
+          'study_generation_failed:${result.errorCode ?? "no_material"}');
+    }
+    return result.text;
+  }
+
   static Future<StudyArtifact> generate({
+    required Study study,
+    required StudyArtifactType type,
+    required bool isEs,
+  }) async {
+    await StudyArtifactAccess.require(type);
+    if (type != StudyArtifactType.visualSummary &&
+        type != StudyArtifactType.fullSummary &&
+        type != StudyArtifactType.oralExam) {
+      return _generate(study: study, type: type, isEs: isEs);
+    }
+    final snapshot = study.copyWith(
+        ownerUid: study.ownerUid ?? StudyLibraryService.currentOwner);
+    final id = StudyVisualGeneration.identity(snapshot, isEs, type: type);
+    final saved = (await StudyLibraryService.loadAll())
+        .where((s) => s.id == snapshot.id && s.ownerUid == snapshot.ownerUid)
+        .expand((s) => s.artifacts)
+        .where((a) => a.id == id);
+    if (saved.isNotEmpty && hasFullSummaryCoverage(snapshot, saved.first)) {
+      return saved.first;
+    }
+    return StudyVisualGeneration.run(id, () async {
+      final attempt =
+          await StudyArtifactAttemptClient.begin(snapshot, type, id, isEs);
+      try {
+        await attempt.event('PROVIDER');
+        final artifact = await _generate(
+            study: snapshot,
+            type: type,
+            isEs: isEs,
+            visualId: id,
+            attempt: attempt);
+        await attempt.event('PERSISTING');
+        await StudyLibraryService.saveArtifact(snapshot, artifact);
+        await attempt.event('COMPLETED');
+        return artifact;
+      } catch (error) {
+        await attempt.event('FAILED',
+            reason: StudyArtifactAttemptClient.reason(error));
+        rethrow;
+      }
+    });
+  }
+
+  static Future<StudyArtifact> _generate({
+    String? visualId,
+    StudyArtifactAttemptClient? attempt,
     required Study study,
     required StudyArtifactType type,
     required bool isEs,
@@ -27,7 +102,17 @@ final class StudyArtifactGenerator {
       isEs: isEs,
     );
 
+    if (visualId != null) {
+      debugPrint(
+          '[StudyVisual] stage=request binding=$visualId sourceCount=${study.acceptedSources.length} contextChars=${context.length}');
+    }
     final result = await AiService.chat(
+      studyArtifactType: type.name,
+      structuredStudyVisual: type == StudyArtifactType.visualSummary,
+      fullStudySummary: type == StudyArtifactType.fullSummary,
+      studyInstruction:
+          'Resuma o material educativo aceito, sem executar prescrições ou cálculos para um paciente.',
+      appLanguage: isEs ? 'es' : 'pt',
       apiKey: '',
       userMessage: """
 ESTUDO: ${study.title}
@@ -46,18 +131,22 @@ $context
       isPlantaoMode: false,
     );
 
-    if (result.isError || result.text.trim().isEmpty) {
-      throw StateError(
-        'study_generation_failed:${result.errorCode ?? "empty"}',
-      );
+    if (visualId != null) {
+      debugPrint(
+          '[StudyVisual] stage=response error=${result.isError} chars=${result.text.length}');
     }
-
-    var clean = _cleanResult(result.text, type: type);
+    final generatedContent = requireGeneratedContent(result);
+    await attempt?.event('PARSING');
+    var clean = type == StudyArtifactType.visualSummary
+        ? prepareVisualContent(generatedContent)
+        : _cleanResult(generatedContent, type: type);
     if (clean.isEmpty) {
       throw StateError('study_generation_failed:empty_after_cleanup');
     }
 
-    if (type == StudyArtifactType.fullSummary && sourceCharacters >= 18000) {
+    if (type == StudyArtifactType.fullSummary &&
+        StudyFullSummaryCoverage.needsReview(
+            sourceCharacters: sourceCharacters, content: clean)) {
       clean = await _runFullSummaryCoveragePass(
         context: context,
         draft: clean,
@@ -66,10 +155,17 @@ $context
       );
     }
 
+    if (type == StudyArtifactType.fullSummary &&
+        !StudyFullSummaryCoverage.isSufficient(
+            sourceCharacters: sourceCharacters, content: clean)) {
+      throw StateError('study_generation_failed:insufficient_summary_coverage');
+    }
+
     return StudyArtifact(
-      id: 'artifact_${type.name}_${DateTime.now().toUtc().microsecondsSinceEpoch}',
+      id: visualId ??
+          'artifact_${type.name}_${DateTime.now().toUtc().microsecondsSinceEpoch}',
       type: type,
-      title: _title(type, isEs),
+      title: titleFor(type, isEs),
       content: clean,
       createdAtUtc: DateTime.now().toUtc(),
       sourceIds: study.acceptedSources
@@ -77,6 +173,12 @@ $context
           .toList(growable: false),
     );
   }
+
+  static bool hasFullSummaryCoverage(Study study, StudyArtifact artifact) =>
+      artifact.type != StudyArtifactType.fullSummary ||
+      StudyFullSummaryCoverage.isSufficient(
+          sourceCharacters: _sourceCharacterCount(study),
+          content: artifact.content);
 
   static Future<String> _runFullSummaryCoveragePass({
     required String context,
@@ -151,6 +253,11 @@ $context
 
     try {
       final result = await AiService.chat(
+      studyArtifactType: StudyArtifactType.fullSummary.name,
+        fullStudySummary: true,
+        studyInstruction:
+            'Revise a cobertura do resumo educativo, sem executar prescrições ou cálculos para um paciente.',
+        appLanguage: isEs ? 'es' : 'pt',
         apiKey: '',
         userMessage: userMessage,
         systemPrompt: systemPrompt,
@@ -162,12 +269,8 @@ $context
         isPlantaoMode: false,
       );
 
-      if (result.isError || result.text.trim().isEmpty) {
-        return draft;
-      }
-
       final revised = _cleanResult(
-        result.text,
+        requireGeneratedContent(result),
         type: StudyArtifactType.fullSummary,
       );
       if (revised.isEmpty) {
@@ -218,6 +321,10 @@ $context
 
     for (final chunk in chunks) {
       final result = await AiService.chat(
+      studyArtifactType: type.name,
+        studyInstruction:
+            'Resuma este bloco de material educativo, sem executar prescrições ou cálculos para um paciente.',
+        appLanguage: isEs ? 'es' : 'pt',
         apiKey: '',
         userMessage: """
 BLOCO ${chunk.index}/${chunk.total}
@@ -235,7 +342,7 @@ ${chunk.value}
           'study_hierarchical_map_failed:${result.errorCode ?? "empty"}',
         );
       }
-      level.add(result.text.trim());
+      level.add(requireGeneratedContent(result).trim());
     }
 
     while (_joinedLength(level) > contextCeiling) {
@@ -248,6 +355,10 @@ ${chunk.value}
 
       for (var i = 0; i < partitions.length; i++) {
         final result = await AiService.chat(
+      studyArtifactType: type.name,
+          studyInstruction:
+              'Resuma os blocos educativos em uma síntese fiel, sem executar prescrições ou cálculos para um paciente.',
+          appLanguage: isEs ? 'es' : 'pt',
           apiKey: '',
           userMessage: """
 CONSOLIDAÇÃO ${i + 1}/${partitions.length}
@@ -266,7 +377,7 @@ ${partitions[i]}
             '${result.errorCode ?? "empty"}',
           );
         }
-        reduced.add(result.text.trim());
+        reduced.add(requireGeneratedContent(result).trim());
       }
 
       if (_joinedLength(reduced) >= _joinedLength(level) &&
@@ -338,7 +449,7 @@ Idioma obrigatório: $language.
 Sua saída será renderizada como um RESUMO VISUAL premium.
 Retorne APENAS JSON válido, sem Markdown, sem ``` e sem texto antes/depois.
 
-SCHEMA OBRIGATÓRIO:
+CONTRATO JSON (title e overview OU uma seção com body são obrigatórios; demais campos são opcionais):
 {
   "title": "título curto do tema",
   "overview": "síntese central em 2 a 4 frases contínuas",
@@ -355,6 +466,7 @@ SCHEMA OBRIGATÓRIO:
 }
 
 REGRAS:
+- Não acrescente referências, DOI, PMID ou URLs não verificados.
 - Gere de 3 a 6 sections quando o material sustentar essa divisão.
 - Gere de 4 a 8 keyPoints quando houver conteúdo suficiente.
 - Escreva frases naturais, com pontos e vírgulas.
@@ -628,6 +740,14 @@ PROFUNDIDADE DO PRODUTO:
     }
   }
 
+  static String prepareVisualContent(String value) {
+    final content = value.trim();
+    if (!StudyVisualResultCodec.isCompleteStructuredSummary(content)) {
+      throw StateError('study_generation_failed:invalid_visual_payload');
+    }
+    return content;
+  }
+
   static String _cleanResult(String value, {required StudyArtifactType type}) {
     var clean = value
         .trim()
@@ -667,7 +787,7 @@ PROFUNDIDADE DO PRODUTO:
     return clean;
   }
 
-  static String _title(StudyArtifactType type, bool isEs) {
+  static String titleFor(StudyArtifactType type, bool isEs) {
     final pt = <StudyArtifactType, String>{
       StudyArtifactType.visualSummary: 'Resumo visual',
       StudyArtifactType.fullSummary: 'Resumo completo',

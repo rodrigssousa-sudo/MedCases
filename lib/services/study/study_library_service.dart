@@ -1,4 +1,8 @@
+import 'dart:async';
+import '../notifications/durable_result_notification.dart';
+import '../notifications/notification_contract.dart';
 import 'dart:convert';
+import '../audio/recording_deletion_store.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -9,10 +13,20 @@ final class StudyLibraryService {
 
   static const _key = 'medcases.study.library.v1';
   static const int maxStudies = 40;
+  static String? get currentOwner => RecordingDeletionStore.owner;
+  static String _ownerKey(String uid) =>
+      '$_key.${base64Url.encode(utf8.encode(uid))}';
+  static void _checkOwner(String? uid) {
+    if (uid == null || currentOwner != uid)
+      throw StateError('study_owner_changed');
+  }
 
   static Future<List<Study>> loadAll() async {
+    final uid = currentOwner;
+    if (uid == null) return const <Study>[];
     final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_key);
+    _checkOwner(uid);
+    final raw = prefs.getString(_ownerKey(uid)) ?? prefs.getString(_key);
     if (raw == null || raw.trim().isEmpty) return const <Study>[];
 
     try {
@@ -23,17 +37,144 @@ final class StudyLibraryService {
       for (final item in decoded) {
         if (item is Map) {
           final map = item.map((k, v) => MapEntry('$k', v));
-          studies.add(_decodeStudy(map));
+          final study = _decodeStudy(map);
+          final proven = study.ownerUid == uid ||
+              (study.ownerUid == null &&
+                  study.sources.isNotEmpty &&
+                  study.sources.every((source) => prefs
+                          .getKeys()
+                          .where((k) => k.startsWith(
+                              'medcases.recorded.pending.$uid.${study.id}.'))
+                          .any((k) {
+                        try {
+                          final binding =
+                              jsonDecode(prefs.getString(k)!) as Map;
+                          return binding['sourceId'] == source.id &&
+                              binding['sessionId'] == source.recordingSessionId;
+                        } catch (_) {
+                          return false;
+                        }
+                      })));
+          if (proven)
+            studies.add(await _withoutDeleted(study.copyWith(ownerUid: uid)));
         }
       }
       studies.sort((a, b) => b.createdAtUtc.compareTo(a.createdAtUtc));
+      _checkOwner(uid);
       return List<Study>.unmodifiable(studies.take(maxStudies));
     } catch (_) {
       return const <Study>[];
     }
   }
 
-  static Future<void> save(Study study) async {
+  static Future<String?> activeStudyId() async {
+    final uid = currentOwner;
+    if (uid == null) return null;
+    final prefs = await SharedPreferences.getInstance();
+    _checkOwner(uid);
+    return prefs.getString('${_ownerKey(uid)}.activeStudy');
+  }
+
+  static Future<void> _writes = Future.value();
+  static Future<Study> saveSource(Study study, StudySource source) {
+    final uid = currentOwner;
+    _checkOwner(uid);
+    if (study.ownerUid != null && study.ownerUid != uid)
+      throw StateError("study_owner_changed");
+    study = study.copyWith(ownerUid: uid);
+    late Study merged;
+    final next = _writes.then((_) async {
+      _checkOwner(uid);
+      final owner = uid;
+      final sid = source.recordingSessionId;
+      if (owner != null &&
+          sid != null &&
+          await RecordingDeletionStore.state(owner, sid) != null) {
+        merged = await _withoutDeleted(study);
+        return;
+      }
+      final all = await loadAll();
+      final current = all.where((s) => s.id == study.id).firstOrNull ?? study;
+      final exists = current.sources.any((s) => s.id == source.id);
+      merged = current.copyWith(
+          sources: exists
+              ? current.sources
+                  .map((s) => s.id == source.id ? source : s)
+                  .toList()
+              : [...current.sources, source]);
+      await _save(merged);
+    });
+    _writes = next.catchError((Object _) {});
+    return next.then((_) => merged);
+  }
+
+  static Future<Study> saveArtifact(Study snapshot, StudyArtifact artifact) {
+    final uid = currentOwner;
+    _checkOwner(uid);
+    if (snapshot.ownerUid != null && snapshot.ownerUid != uid)
+      throw StateError('study_owner_changed');
+    snapshot = snapshot.copyWith(ownerUid: uid);
+    late Study merged;
+    final next = _writes.then((_) async {
+      _checkOwner(uid);
+      final current =
+          (await loadAll()).where((s) => s.id == snapshot.id).firstOrNull ??
+              snapshot;
+      merged = current.copyWith(artifacts: [
+        ...current.artifacts.where((a) => a.id != artifact.id),
+        artifact,
+      ]);
+      await _save(merged);
+      if (artifact.type == StudyArtifactType.visualSummary ||
+          artifact.type == StudyArtifactType.fullSummary ||
+          artifact.type == StudyArtifactType.oralExam) {
+        final persisted = (await loadAll())
+            .where((s) => s.id == snapshot.id && s.ownerUid == uid)
+            .expand((s) => s.artifacts)
+            .any((a) => a.id == artifact.id && a.content == artifact.content);
+        if (!persisted) throw StateError('study_visual_persistence_failed');
+      }
+    });
+    _writes = next.catchError((Object _) {});
+    return next.then((_) => merged);
+  }
+
+  static Future<void> save(Study study) {
+    final uid = currentOwner;
+    _checkOwner(uid);
+    if (study.ownerUid != null && study.ownerUid != uid)
+      throw StateError('study_owner_changed');
+    final bound = study.copyWith(ownerUid: uid);
+    final next = _writes.then((_) async {
+      _checkOwner(uid);
+      await _save(bound);
+      _checkOwner(uid);
+      await (await SharedPreferences.getInstance())
+          .setString('${_ownerKey(uid!)}.activeStudy', bound.id);
+    });
+    _writes = next.catchError((Object _) {});
+    return next;
+  }
+
+  static Future<Study> _withoutDeleted(Study study) async {
+    final owner = RecordingDeletionStore.owner;
+    if (owner == null) return study;
+    final sources = <StudySource>[];
+    for (final source in study.sources) {
+      final sid = source.recordingSessionId;
+      if (sid != null &&
+          await RecordingDeletionStore.state(owner, sid) == 'deleted') continue;
+      sources.add(source);
+    }
+    return study.copyWith(sources: sources);
+  }
+
+  static Future<void> _save(Study study) async {
+    final owner = study.ownerUid;
+    _checkOwner(owner);
+    final previousIds =
+        (await loadAll()).expand((s) => s.artifacts).map((a) => a.id).toSet();
+    study = await _withoutDeleted(study);
     final studies = List<Study>.from(await loadAll())
       ..removeWhere((item) => item.id == study.id)
       ..insert(0, study);
@@ -43,24 +184,41 @@ final class StudyLibraryService {
     }
 
     final prefs = await SharedPreferences.getInstance();
+    _checkOwner(owner);
     await prefs.setString(
-      _key,
+      _ownerKey(study.ownerUid!),
       jsonEncode(studies.map(_encodeStudy).toList(growable: false)),
     );
+    if (owner != null) {
+      for (final artifact
+          in study.artifacts.where((a) => !previousIds.contains(a.id))) {
+        unawaited(DurableResultNotification.publish(
+            event: artifact.type == StudyArtifactType.fullSummary ||
+                    artifact.type == StudyArtifactType.visualSummary
+                ? NotificationEvent.consultationSummaryReady
+                : NotificationEvent.contentProcessed,
+            resourceId: artifact.id,
+            ownerUid: owner));
+      }
+    }
   }
 
   static Future<void> deleteById(String studyId) async {
+    final uid = currentOwner;
+    _checkOwner(uid);
     final normalized = studyId.trim();
     if (normalized.isEmpty) return;
     final studies = List<Study>.from(await loadAll())
       ..removeWhere((item) => item.id == normalized);
     final prefs = await SharedPreferences.getInstance();
     if (studies.isEmpty) {
-      await prefs.remove(_key);
+      _checkOwner(uid);
+      await prefs.remove(_ownerKey(uid!));
       return;
     }
+    _checkOwner(uid);
     await prefs.setString(
-      _key,
+      _ownerKey(uid!),
       jsonEncode(studies.map(_encodeStudy).toList(growable: false)),
     );
   }
@@ -68,6 +226,8 @@ final class StudyLibraryService {
   static Map<String, Object?> _encodeStudy(Study study) {
     return <String, Object?>{
       'id': study.id,
+      'ownerUid': study.ownerUid,
+      'activeSourceId': study.activeSourceId,
       'title': study.title,
       'locale': study.locale,
       'createdAtUtc': study.createdAtUtc.toUtc().toIso8601String(),
@@ -85,6 +245,9 @@ final class StudyLibraryService {
       'createdAtUtc': source.createdAtUtc.toUtc().toIso8601String(),
       'text': source.text,
       'errorCode': source.errorCode,
+      'recordingSessionId': source.recordingSessionId,
+      'audioPaths': source.audioPaths,
+      'audioDurationMs': source.audioDurationMs,
       'refs': source.refs
           .map(
             (ref) => <String, Object?>{
@@ -135,12 +298,26 @@ final class StudyLibraryService {
 
     return Study(
       id: '${json['id'] ?? ''}',
+      ownerUid: json['ownerUid'] as String?,
+      activeSourceId: json.containsKey('activeSourceId')
+          ? json['activeSourceId'] as String?
+          : _legacyActive(sources),
       title: '${json['title'] ?? ''}',
       locale: '${json['locale'] ?? 'pt-BR'}',
       createdAtUtc: _date(json['createdAtUtc']),
       sources: List<StudySource>.unmodifiable(sources),
       artifacts: List<StudyArtifact>.unmodifiable(artifacts),
     );
+  }
+
+  // Deterministic one-time selection for existing records without a pointer.
+  static String? _legacyActive(List<StudySource> sources) {
+    final audio = sources.where((s) => s.isAudio).toList()
+      ..sort((a, b) {
+        final time = a.createdAtUtc.compareTo(b.createdAtUtc);
+        return time != 0 ? time : a.id.compareTo(b.id);
+      });
+    return audio.isEmpty ? null : audio.last.id;
   }
 
   static StudySource _decodeSource(Map<String, dynamic> json) {
@@ -174,6 +351,9 @@ final class StudyLibraryService {
       text: '${json['text'] ?? ''}',
       refs: List<SourceRef>.unmodifiable(refs),
       errorCode: json['errorCode']?.toString(),
+      recordingSessionId: json['recordingSessionId']?.toString(),
+      audioPaths: List<String>.from(json['audioPaths'] ?? const []),
+      audioDurationMs: _int(json['audioDurationMs']) ?? 0,
     );
   }
 

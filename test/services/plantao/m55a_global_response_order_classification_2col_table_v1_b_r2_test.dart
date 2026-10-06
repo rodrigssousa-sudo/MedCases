@@ -17,27 +17,20 @@ void main() {
       );
 
       expect(es, contains('M55A_ESTRUCTURA_Y_CLASIFICACION_2_COLUMNAS'));
-      expect(es, contains('1) PATOLOGÍA/TEMA CLÍNICO'));
-      expect(es, contains('2) Conducta inmediata'));
-      expect(es, contains('3) Tratamiento farmacológico'));
-      expect(es, contains('4) Clasificación'));
-      expect(es, contains('5) Puntos clave'));
-      expect(es, contains('6) RED FLAGS'));
+      expect(es, contains('contrato editorial canónico adaptativo'));
       expect(
-        es,
-        contains('| Criterio / clasificación | Resultado en este paciente |'),
-      );
-      expect(es, contains('| --- | --- |'));
-
+          es,
+          contains(
+              'No crear tablas de datos faltantes para consultas generales'));
+      expect(es, contains('Signos de alarma'));
+      expect(es, isNot(contains('6) RED FLAGS')));
       expect(pt, contains('M55A_ESTRUTURA_E_CLASSIFICACAO_2_COLUNAS'));
-      expect(pt, contains('1) PATOLOGIA/TEMA CLÍNICO'));
-      expect(pt, contains('2) Conduta imediata'));
-      expect(pt, contains('3) Tratamento farmacológico'));
-      expect(pt, contains('4) Classificação'));
+      expect(pt, contains('contrato editorial canônico adaptativo'));
       expect(
-        pt,
-        contains('| Critério / classificação | Resultado neste paciente |'),
-      );
+          pt,
+          contains(
+              'Não criar tabelas de dados ausentes para consultas gerais'));
+      expect(pt, contains('Sinais de alarme'));
     });
 
     test(

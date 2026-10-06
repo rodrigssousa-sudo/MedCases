@@ -6,9 +6,10 @@
 // Conformidade: Apple App Store Review Guidelines Section 5.1 (Privacy)
 //               Google Play Developer Policy — Personal and Sensitive Information
 //               LGPD (Lei 13.709/2018) Art. 7º, I e IX
-//               IEC 62304 (Medical device software lifecycle) — auditabilidade
+//               Referências jurídicas não equivalem a certificação do produto.
 
 import 'dart:ui';
+import '../widgets/legal_links.dart';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -314,6 +315,7 @@ class _LegalSheet extends StatelessWidget {
                     },
                   ),
                 ),
+                MedCasesLegalLinks(isEs: isEs, compact: true),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.fromLTRB(16, 9, 16, 11),
@@ -355,344 +357,180 @@ class _LegalSection {
 // TERMOS DE USO — Português
 // ═══════════════════════════════════════════════════════════════════════════════
 const _termsPt = [
-  _LegalSection('1. Aceitação dos Termos', isTitle: true),
+  _LegalSection("Aceitação e licença", isTitle: true),
   _LegalSection(
-    'Ao acessar o MedCases Pro, você concorda com estes Termos de Uso. '
-    'Se não concordar com qualquer disposição, não utilize o aplicativo.',
-  ),
-  _LegalSection('2. Natureza da Plataforma', isTitle: true),
+      "Ao usar o MedCases Pro, você aceita estes termos. Se não concordar, interrompa o uso. É concedida uma licença limitada, pessoal e não transferível para acessar as funcionalidades disponíveis, conforme os termos da loja e direitos legais aplicáveis. O serviço é destinado a estudantes e profissionais da saúde com capacidade para contratar."),
+  _LegalSection("Conta e uso permitido", isTitle: true),
   _LegalSection(
-    'O MedCases Pro é uma plataforma educacional e de suporte à decisão clínica '
-    'destinada exclusivamente a profissionais e estudantes da área de saúde. '
-    'Não constitui dispositivo médico, nem substitui julgamento clínico individual.',
-  ),
-  _LegalSection('3. Uso Permitido', isTitle: true),
+      "Proteja suas credenciais, mantenha dados de cadastro corretos e reporte acesso indevido. Não contorne controles de acesso, explore vulnerabilidades, distribua malware, use conta alheia ou copie e comercialize conteúdo protegido sem autorização. O uso para estudo e consulta profissional permanece sujeito à conferência independente."),
+  _LegalSection("Conteúdo e propriedade intelectual", isTitle: true),
   _LegalSection(
-    'Você pode utilizar o conteúdo para fins educacionais, consulta de protocolos '
-    'e apoio ao raciocínio clínico. É vedada a distribuição, reprodução ou '
-    'comercialização do conteúdo sem autorização expressa.',
-  ),
-  _LegalSection('4. Responsabilidade Clínica', isTitle: true),
+      "A licença de uso não transfere direitos sobre software, marca ou conteúdo MedCases. Materiais e links de terceiros pertencem aos respectivos titulares e possuem seus próprios termos. Você mantém os direitos sobre o conteúdo que fornece e autoriza o processamento necessário às funções que solicitar."),
+  _LegalSection("IA e responsabilidade profissional", isTitle: true),
   _LegalSection(
-    'As informações disponibilizadas são baseadas em diretrizes e evidências '
-    'científicas atualizadas, porém não substituem a avaliação médica individualizada. '
-    'O profissional de saúde é integralmente responsável pelas decisões clínicas tomadas.',
-  ),
-  _LegalSection('5. Conta de Usuário', isTitle: true),
+      "Respostas automatizadas e transcrições podem conter erros, omissões ou informação desatualizada. O conteúdo é educacional e informacional, não substitui avaliação individual, diagnóstico, prescrição, protocolos locais ou decisão profissional. Confira cálculos, unidades, doses, formulações, contraindicações e referências antes de qualquer uso clínico. Consulte /medical-disclaimer."),
+  _LegalSection("Dados enviados", isTitle: true),
   _LegalSection(
-    'Você é responsável pela confidencialidade de suas credenciais de acesso. '
-    'Contas são pessoais e intransferíveis. Atividades suspeitas devem ser '
-    'reportadas imediatamente.',
-  ),
-  _LegalSection('6. Modificações', isTitle: true),
+      "Insira somente dados necessários e sobre os quais tenha autorização ou outra base aplicável. Não use o serviço para expor dados de pacientes ou terceiros indevidamente. Áudio e transcrição seguem as escolhas e avisos de processamento do app e a política em /privacy."),
+  _LegalSection("Assinaturas", isTitle: true),
   _LegalSection(
-    'Reservamo-nos o direito de modificar estes Termos a qualquer momento. '
-    'O uso contínuo da plataforma após alterações implica aceitação dos novos termos.',
-  ),
-  _LegalSection('7. Lei Aplicável', isTitle: true),
+      "Premium Monthly e Premium Yearly, quando oferecidos, são assinaturas com renovação automática. O preço, período, recursos incluídos e eventual teste são exibidos antes da compra na loja correspondente. Gerenciamento, cancelamento e reembolso seguem Apple ou Google Play e a legislação aplicável. Restauração está disponível no fluxo de compra; consulte /subscriptions. Excluir a conta não cancela a assinatura."),
+  _LegalSection("Disponibilidade e encerramento", isTitle: true),
   _LegalSection(
-    'Estes Termos são regidos pela legislação brasileira. Eventuais disputas '
-    'serão resolvidas no foro da comarca competente.',
-  ),
-  _LegalSection('Última atualização: Junho de 2026 | Versão v2.0-2026',
-      isTitle: false),
+      "Manutenção e falhas podem interromper o serviço. Contas podem ser suspensas por abuso ou violação destes termos, observados os direitos aplicáveis. Você pode encerrar o uso e solicitar exclusão. Não garantimos disponibilidade contínua, exatidão absoluta ou resultados clínicos específicos."),
+  _LegalSection("Responsabilidade e direitos preservados", isTitle: true),
+  _LegalSection(
+      "Nos limites permitidos pela lei, não respondemos por uso indevido, decisões independentes ou falhas de serviços de terceiros fora de nosso controle. Não se excluem garantias obrigatórias, direitos do consumidor ou responsabilidade que não possa ser limitada. Não se cria obrigação de indenização que contrarie esses direitos."),
+  _LegalSection("Licenciante e contato", isTitle: true),
+  _LegalSection(
+      "MedCases Pro LTDA, representada por Bruno Rodrigues de Sousa. Avenida República Argentina, 2613, Foz do Iguaçu — PR, CEP 85852-018, Brasil. medcasespro@gmail.com · +55 45 98808-1338."),
+  _LegalSection("Lei aplicável e foro", isTitle: true),
+  _LegalSection(
+      "Estes Termos e esta Licença são regidos pelas leis da República Federativa do Brasil, observadas as normas imperativas aplicáveis ao usuário. Ressalvadas as hipóteses em que a legislação aplicável determine competência diversa ou assegure ao usuário o direito de demandar em outro foro, fica eleito o foro da Comarca de São Paulo, Estado de São Paulo, Brasil, para dirimir controvérsias decorrentes destes Termos."),
+  _LegalSection("2026-10-03 | 2026.10.R2"),
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // TERMOS DE USO — Español
 // ═══════════════════════════════════════════════════════════════════════════════
 const _termsEs = [
-  _LegalSection('1. Aceptación de los Términos', isTitle: true),
+  _LegalSection("Aceptación y licencia", isTitle: true),
   _LegalSection(
-    'Al acceder a MedCases Pro, usted acepta estos Términos de Uso. '
-    'Si no está de acuerdo con alguna disposición, no utilice la aplicación.',
-  ),
-  _LegalSection('2. Naturaleza de la Plataforma', isTitle: true),
+      "Al utilizar MedCases Pro acepta estos términos; si no está de acuerdo, deje de usarlo. Se concede una licencia limitada, personal e intransferible para acceder a las funciones disponibles, conforme a la tienda y los derechos legales aplicables. El servicio se dirige a estudiantes y profesionales sanitarios con capacidad para contratar."),
+  _LegalSection("Cuenta y uso permitido", isTitle: true),
   _LegalSection(
-    'MedCases Pro es una plataforma educativa y de apoyo a la decisión clínica, '
-    'destinada exclusivamente a profesionales y estudiantes del área de salud. '
-    'No constituye un dispositivo médico ni reemplaza el juicio clínico individual.',
-  ),
-  _LegalSection('3. Uso Permitido', isTitle: true),
+      "Proteja credenciales, mantenga datos correctos y reporte acceso indebido. No eluda controles, explote vulnerabilidades, distribuya malware, use cuentas ajenas ni copie y comercialice contenido protegido sin autorización. El estudio y la consulta profesional requieren verificación independiente."),
+  _LegalSection("Contenido y propiedad intelectual", isTitle: true),
   _LegalSection(
-    'Puede utilizar el contenido con fines educativos, consulta de protocolos '
-    'y apoyo al razonamiento clínico. Se prohíbe la distribución, reproducción o '
-    'comercialización del contenido sin autorización expresa.',
-  ),
-  _LegalSection('4. Responsabilidad Clínica', isTitle: true),
+      "La licencia no transfiere derechos sobre software, marca ni contenido MedCases. Los materiales y enlaces de terceros pertenecen a sus titulares y tienen sus propios términos. Conserva sus derechos sobre el contenido aportado y autoriza el procesamiento necesario para las funciones solicitadas."),
+  _LegalSection("IA y responsabilidad profesional", isTitle: true),
   _LegalSection(
-    'La información disponible se basa en directrices y evidencias científicas '
-    'actualizadas, pero no reemplaza la evaluación médica individualizada. '
-    'El profesional de salud es completamente responsable de las decisiones clínicas tomadas.',
-  ),
-  _LegalSection('5. Cuenta de Usuario', isTitle: true),
+      "Respuestas automatizadas y transcripciones pueden contener errores, omisiones o información desactualizada. El contenido es educativo e informativo; no sustituye evaluación individual, diagnóstico, prescripción, protocolos locales ni decisión profesional. Verifique cálculos, unidades, dosis, formulaciones, contraindicaciones y referencias antes del uso clínico. Consulte /medical-disclaimer."),
+  _LegalSection("Datos enviados", isTitle: true),
   _LegalSection(
-    'Usted es responsable de la confidencialidad de sus credenciales de acceso. '
-    'Las cuentas son personales e intransferibles. Las actividades sospechosas deben '
-    'reportarse de inmediato.',
-  ),
-  _LegalSection('6. Modificaciones', isTitle: true),
+      "Aporte solo datos necesarios y para los que disponga de autorización u otra base aplicable. No exponga indebidamente información de pacientes o terceros. El audio y la transcripción siguen las opciones y avisos del app y la política en /privacy."),
+  _LegalSection("Suscripciones", isTitle: true),
   _LegalSection(
-    'Nos reservamos el derecho de modificar estos Términos en cualquier momento. '
-    'El uso continuo de la plataforma después de los cambios implica la aceptación '
-    'de los nuevos términos.',
-  ),
-  _LegalSection('7. Ley Aplicable', isTitle: true),
+      "Premium Monthly y Premium Yearly, cuando se ofrezcan, se renuevan automáticamente. Precio, período, recursos y eventual prueba se muestran antes de comprar en la tienda correspondiente. Gestión, cancelación y reembolso siguen Apple o Google Play y la normativa aplicable. La restauración está disponible en el flujo de compra; consulte /subscriptions. Eliminar la cuenta no cancela la suscripción."),
+  _LegalSection("Disponibilidad y finalización", isTitle: true),
   _LegalSection(
-    'Estos Términos se rigen por la legislación brasileña. Las disputas se '
-    'resolverán en el foro jurisdiccional competente.',
-  ),
-  _LegalSection('Última actualización: Junio de 2026 | Versión v2.0-2026',
-      isTitle: false),
+      "El mantenimiento y los fallos pueden interrumpir el servicio. Se pueden suspender cuentas por abuso o incumplimiento, respetando derechos aplicables. Puede dejar de usarlo y solicitar eliminación. No garantizamos disponibilidad continua, exactitud absoluta ni resultados clínicos concretos."),
+  _LegalSection("Responsabilidad y derechos preservados", isTitle: true),
+  _LegalSection(
+      "En los límites legales, no respondemos por uso indebido, decisiones independientes ni fallos ajenos fuera de nuestro control. No se excluyen garantías obligatorias, derechos del consumidor ni responsabilidad no limitable. No se impone indemnización contraria a esos derechos."),
+  _LegalSection("Licenciante y contacto", isTitle: true),
+  _LegalSection(
+      "MedCases Pro LTDA, representada por Bruno Rodrigues de Sousa. Avenida República Argentina, 2613, Foz do Iguaçu — PR, CEP 85852-018, Brasil. medcasespro@gmail.com · +55 45 98808-1338."),
+  _LegalSection("Ley aplicable y jurisdicción", isTitle: true),
+  _LegalSection(
+      "Estos Términos y esta Licencia se rigen por las leyes de la República Federativa de Brasil, respetando las normas imperativas aplicables al usuario. Salvo cuando la ley determine otra competencia o reconozca al usuario el derecho de acudir a otro foro, se elige el foro de la Comarca de São Paulo, Estado de São Paulo, Brasil, para las controversias derivadas de estos Términos."),
+  _LegalSection("2026-10-03 | 2026.10.R2"),
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // POLÍTICA DE PRIVACIDADE — Português
 // ═══════════════════════════════════════════════════════════════════════════════
 const _privacyPt = [
-  _LegalSection('1. Dados Coletados', isTitle: true),
+  _LegalSection("Serviço e alcance", isTitle: true),
   _LegalSection(
-    'Coletamos dados da conta e do uso do serviço, como nome, e-mail profissional, '
-    'profissão, instituição de vínculo, preferências de idioma e tema e histórico '
-    'de interações com a IA. O MedCases Pro não exige identificadores de pacientes '
-    'como dados cadastrais da conta. Entretanto, campos livres, documentos e '
-    'gravações clínicas inseridos pelo profissional podem conter informações de saúde.',
-  ),
-  _LegalSection('2. Finalidade do Tratamento', isTitle: true),
+      "Esta política descreve o tratamento de dados no MedCases Pro e em medcasespro.com. Controlador e responsável: MedCases Pro LTDA, representada por Bruno Rodrigues de Sousa. Avenida República Argentina, 2613, Foz do Iguaçu — PR, CEP 85852-018, Brasil. medcasespro@gmail.com · +55 45 98808-1338."),
+  _LegalSection("Dados fornecidos", isTitle: true),
   _LegalSection(
-    'Os dados são utilizados para autenticação e gestão de conta, personalização '
-    'da experiência, execução de recursos solicitados pelo usuário, suporte à '
-    'transcrição e organização de conteúdo clínico, segurança e cumprimento de '
-    'obrigações legais.',
-  ),
-  _LegalSection('3. Base Legal (LGPD)', isTitle: true),
+      "Podemos tratar nome, e-mail, profissão, instituição, identificador da conta, idioma, preferências, solicitações de suporte e dados necessários à autenticação. Ferramentas e IA recebem as perguntas, textos, documentos ou histórias clínicas que você inserir. Evite identificadores de pacientes e forneça dados de terceiros apenas quando houver autorização ou outra base aplicável."),
+  _LegalSection("Áudio e transcrições", isTitle: true),
   _LegalSection(
-    'O tratamento ocorre com base no consentimento do titular quando aplicável '
-    '(Art. 7º, I, LGPD), no legítimo interesse para prestação e segurança do '
-    'serviço (Art. 7º, IX, LGPD) e nas demais bases legais aplicáveis.',
-  ),
-  _LegalSection('4. Compartilhamento', isTitle: true),
+      "O áudio gravado ou importado pode permanecer no dispositivo e, quando você solicitar transcrição remota, ser enviado ao serviço e ao provedor usado naquela operação. São tratados também a transcrição e os materiais derivados solicitados. Áudio e campos livres podem conter dados de saúde; forneça somente o necessário. O consentimento específico de áudio remoto pode ser revogado no fluxo do aplicativo, impedindo novos envios autorizados por esse consentimento."),
+  _LegalSection("Dados técnicos e registros", isTitle: true),
   _LegalSection(
-    'Não vendemos dados pessoais nem os compartilhamos para publicidade. '
-    'Podemos utilizar provedores de infraestrutura, autenticação e processamento '
-    'sob obrigações de proteção de dados. Quando a transcrição remota de áudio '
-    'for disponibilizada e o profissional der consentimento específico, segmentos '
-    'selecionados poderão ser transmitidos de forma criptografada em trânsito pelo '
-    'backend do MedCases Pro a um provedor externo de IA/transcrição exclusivamente '
-    'para atender à solicitação de transcrição.',
-  ),
-  _LegalSection('5. Transcrição remota de áudio', isTitle: true),
+      "Identificadores do dispositivo e de notificações, versão do app, idioma, registros de tentativas, duração, uso e falhas são tratados para funcionamento, contabilização, suporte, segurança e prevenção de abuso. A aplicação usa armazenamento local e sessões de autenticação. Não se presume anonimato de informações vinculadas à sua conta."),
+  _LegalSection("Finalidades", isTitle: true),
   _LegalSection(
-    'A transcrição remota é opcional e separada do ditado padrão. A documentação '
-    'pública atual do provedor informa que o endpoint /v1/audio/transcriptions não '
-    'mantém conteúdo do cliente em retenção de monitoramento de abuso nem em estado '
-    'de aplicação. Essa verificação é específica do endpoint e não significa que a '
-    'organização do MedCases Pro esteja provisionada com Zero Data Retention. '
-    'O backend do MedCases Pro continua projetado para usar somente uma cópia '
-    'temporária durante a requisição e eliminá-la após o processamento.',
-  ),
-  _LegalSection('6. Consentimento e Revogação', isTitle: true),
+      "Tratamos dados para autenticar, disponibilizar ferramentas solicitadas, transcrever, gerar materiais, salvar conteúdos escolhidos, administrar assinaturas, controlar uso, responder suporte e investigar falhas. Dados agregados ou operacionais podem ajudar a avaliar o funcionamento do produto. Solicitações opcionais e comunicações seguem as escolhas disponíveis no app."),
+  _LegalSection("Serviços envolvidos", isTitle: true),
   _LegalSection(
-    'O consentimento para transcrição remota de áudio será específico, opcional, '
-    'registrado separadamente e desativado por padrão. O profissional poderá '
-    'revogar o consentimento específico a qualquer momento; a revogação impede '
-    'novas transmissões remotas de áudio. O consentimento geral para uso do '
-    'aplicativo não autoriza automaticamente a transmissão remota de áudio.',
-  ),
-  _LegalSection('7. Retenção e Eliminação', isTitle: true),
+      "A arquitetura contém Firebase/Google para autenticação, banco, armazenamento e notificações; Google Sign-In para acesso escolhido pelo usuário; Apple e Google Play para distribuição e compras; RevenueCat para validação e sincronização de assinaturas; DigitalOcean para hospedagem e gateway; OpenAI e serviços Google Gemini em rotas de IA/transcrição. O serviço efetivamente utilizado depende da função e configuração. Dados necessários à tarefa são encaminhados ao serviço correspondente, não a todos os fornecedores em todas as operações. Pagamentos são processados pela loja, sem coleta dos dados completos do cartão pelo app."),
+  _LegalSection("Armazenamento, transferências e retenção", isTitle: true),
   _LegalSection(
-    'Dados da conta são retidos enquanto necessário para a prestação do serviço '
-    'e conforme obrigações legais. O áudio clínico temporário no dispositivo segue '
-    'um ciclo próprio de revisão: permanece sob controle do app até a revisão do '
-    'usuário e, após a confirmação, é excluído por padrão, preservando apenas a '
-    'transcrição ou os materiais derivados escolhidos. Cópias temporárias no '
-    'backend do MedCases Pro não devem ser persistidas de forma durável.',
-  ),
-  _LegalSection('8. Segurança', isTitle: true),
+      "Os dados pessoais são mantidos pelo período necessário para fornecer o serviço, cumprir obrigações legais, resolver disputas, prevenir abuso e atender às finalidades descritas nesta Política. Os períodos específicos podem variar conforme o tipo de dado e a finalidade do tratamento. Dados podem estar no dispositivo, backend e fornecedores, inclusive em outros países. Não prometemos retenção zero ou exclusão instantânea. Não há prazo global de retenção aprovado."),
+  _LegalSection("Segurança", isTitle: true),
   _LegalSection(
-    'Utilizamos criptografia em trânsito, proteção de dados sensíveis em repouso, '
-    'controle de acesso e mecanismos de redução de persistência desnecessária. '
-    'Credenciais padrão de provedores de IA não são incorporadas ao aplicativo.',
-  ),
-  _LegalSection('9. Seus Direitos e Contato', isTitle: true),
+      "O projeto usa HTTPS, autenticação e controles de acesso. Esses mecanismos reduzem riscos, mas não garantem segurança absoluta. Esta política não afirma criptografia ponta a ponta nem certificação HIPAA, GDPR, LGPD, SOC 2 ou ISO. Não compartilhe senhas ou chaves no suporte."),
+  _LegalSection("Direitos, exclusão e contato", isTitle: true),
   _LegalSection(
-    'Você pode acessar, corrigir ou solicitar exclusão de dados aplicáveis, '
-    'revogar consentimentos e solicitar informações sobre o tratamento. '
-    'Encarregado de Proteção de Dados (DPO): contato disponível pelo suporte do '
-    'aplicativo. ANPD: www.gov.br/anpd',
-  ),
+      "Você pode solicitar informações, acesso, correção e exclusão pelo contato medcasespro@gmail.com, sujeito à verificação da titularidade e às regras aplicáveis. Consulte /data-deletion para o fluxo no app e solicitações complementares. Cancelar uma assinatura é uma operação separada. Informe apenas dados necessários para localizar a conta, nunca prontuários completos."),
+  _LegalSection("Público e atualizações", isTitle: true),
   _LegalSection(
-    'Última atualização: Agosto de 2026 | Versão v2.1-2026-remote-audio',
-    isTitle: false,
-  ),
+      "O produto é destinado a estudantes e profissionais da saúde, não a serviços dirigidos a crianças. Mudanças relevantes serão refletidas nesta página com data e versão; não há ampliação automática de autorização para uso de dados por simples alteração de texto."),
+  _LegalSection("2026-10-03 | 2026.10.R2"),
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // POLÍTICA DE PRIVACIDADE — Español
 // ═══════════════════════════════════════════════════════════════════════════════
 const _privacyEs = [
-  _LegalSection('1. Datos Recopilados', isTitle: true),
+  _LegalSection("Servicio y alcance", isTitle: true),
   _LegalSection(
-    'Recopilamos datos de la cuenta y del uso del servicio, como nombre, correo '
-    'profesional, profesión, institución, preferencias de idioma y tema e historial '
-    'de interacciones con la IA. MedCases Pro no exige identificadores de pacientes '
-    'como datos de registro de la cuenta. Sin embargo, los campos libres, documentos '
-    'y grabaciones clínicas incorporados por el profesional pueden contener '
-    'información de salud.',
-  ),
-  _LegalSection('2. Finalidad del Tratamiento', isTitle: true),
+      "Esta política describe el tratamiento de datos en MedCases Pro y medcasespro.com. Responsable del tratamiento: MedCases Pro LTDA, representada por Bruno Rodrigues de Sousa. Avenida República Argentina, 2613, Foz do Iguaçu — PR, CEP 85852-018, Brasil. medcasespro@gmail.com · +55 45 98808-1338."),
+  _LegalSection("Datos aportados", isTitle: true),
   _LegalSection(
-    'Los datos se utilizan para autenticación y gestión de cuenta, personalización '
-    'de la experiencia, ejecución de funciones solicitadas por el usuario, soporte '
-    'a la transcripción y organización de contenido clínico, seguridad y '
-    'cumplimiento de obligaciones legales.',
-  ),
-  _LegalSection('3. Base Legal', isTitle: true),
+      "Podemos tratar nombre, correo, profesión, institución, identificador de cuenta, idioma, preferencias, solicitudes de soporte y datos de autenticación. Las herramientas e IA reciben las preguntas, textos, documentos e historias clínicas que usted introduzca. Evite identificadores de pacientes; aporte datos de terceros solo con autorización u otra base aplicable."),
+  _LegalSection("Audio y transcripciones", isTitle: true),
   _LegalSection(
-    'El tratamiento se realiza con base en el consentimiento cuando corresponda, '
-    'el interés legítimo para la prestación y seguridad del servicio y las demás '
-    'bases legales aplicables.',
-  ),
-  _LegalSection('4. Compartición', isTitle: true),
+      "El audio grabado o importado puede permanecer en el dispositivo y, al solicitar transcripción remota, enviarse al servicio y proveedor de esa operación. También se procesan la transcripción y los materiales derivados solicitados. El audio y los campos libres pueden contener información de salud; aporte solo lo necesario. El consentimiento específico de audio remoto puede revocarse en el flujo de la aplicación, impidiendo nuevos envíos amparados en ese consentimiento."),
+  _LegalSection("Datos técnicos y registros", isTitle: true),
   _LegalSection(
-    'No vendemos datos personales ni los compartimos para publicidad. Podemos '
-    'utilizar proveedores de infraestructura, autenticación y procesamiento bajo '
-    'obligaciones de protección de datos. Cuando la transcripción remota de audio '
-    'esté disponible y el profesional otorgue un consentimiento específico, los '
-    'segmentos seleccionados podrán transmitirse cifrados en tránsito a través del '
-    'backend de MedCases Pro a un proveedor externo de IA/transcripción '
-    'exclusivamente para atender la solicitud de transcripción.',
-  ),
-  _LegalSection('5. Transcripción remota de audio', isTitle: true),
+      "Se tratan identificadores del dispositivo y de notificaciones, versión, idioma, intentos, duración, uso y fallos para funcionamiento, contabilización, soporte, seguridad y prevención de abuso. La aplicación utiliza almacenamiento local y sesiones de autenticación. No se presume anonimato de datos asociados a su cuenta."),
+  _LegalSection("Finalidades", isTitle: true),
   _LegalSection(
-    'La transcripción remota es opcional y separada del dictado estándar. La '
-    'documentación pública actual del proveedor indica que el endpoint '
-    '/v1/audio/transcriptions no conserva contenido del cliente en retención de '
-    'monitoreo de abuso ni en estado de aplicación. Esta verificación es específica '
-    'del endpoint y no significa que la organización de MedCases Pro tenga '
-    'provisionado Zero Data Retention. El backend de MedCases Pro continúa diseñado '
-    'para utilizar únicamente una copia temporal durante la solicitud y eliminarla '
-    'después del procesamiento.',
-  ),
-  _LegalSection('6. Consentimiento y Revocación', isTitle: true),
+      "Tratamos datos para autenticar, proporcionar herramientas solicitadas, transcribir, generar materiales, guardar contenidos elegidos, administrar suscripciones, contabilizar uso, responder soporte e investigar fallos. Los datos agregados u operativos pueden ayudar a evaluar el funcionamiento. Las solicitudes opcionales y comunicaciones siguen las opciones disponibles en la aplicación."),
+  _LegalSection("Servicios involucrados", isTitle: true),
   _LegalSection(
-    'El consentimiento para la transcripción remota de audio será específico, '
-    'opcional, registrado por separado y desactivado por defecto. El profesional '
-    'podrá revocar el consentimiento específico en cualquier momento; la revocación '
-    'impide nuevas transmisiones remotas de audio. El consentimiento general para '
-    'usar la aplicación no autoriza automáticamente la transmisión remota de audio.',
-  ),
-  _LegalSection('7. Retención y Eliminación', isTitle: true),
+      "La arquitectura contiene Firebase/Google para autenticación, base de datos, almacenamiento y notificaciones; Google Sign-In para acceso elegido; Apple y Google Play para distribución y compras; RevenueCat para validación y sincronización de suscripciones; DigitalOcean para alojamiento y gateway; OpenAI y servicios Google Gemini en rutas de IA/transcripción. El servicio utilizado depende de la función y configuración. Solo se envían los datos necesarios al servicio correspondiente, no a todos los proveedores en cada operación. La tienda procesa pagos; la aplicación no recoge los datos completos de la tarjeta."),
+  _LegalSection("Almacenamiento, transferencias y conservación", isTitle: true),
   _LegalSection(
-    'Los datos de la cuenta se conservan mientras sea necesario para prestar el '
-    'servicio y conforme a las obligaciones legales. El audio clínico temporal en '
-    'el dispositivo sigue un ciclo de revisión: permanece bajo control de la app '
-    'hasta la revisión del usuario y, tras su confirmación, se elimina por defecto, '
-    'conservando únicamente la transcripción o los materiales derivados elegidos. '
-    'Las copias temporales en el backend de MedCases Pro no deben persistirse de '
-    'forma duradera.',
-  ),
-  _LegalSection('8. Seguridad', isTitle: true),
+      "Los datos personales se mantienen durante el período necesario para prestar el servicio, cumplir obligaciones legales, resolver disputas, prevenir abuso y atender las finalidades de esta Política. Los períodos pueden variar según el tipo de dato y su finalidad. Pueden almacenarse en el dispositivo, backend y proveedores, incluso en otros países. No prometemos conservación cero ni eliminación instantánea. No existe un plazo global aprobado."),
+  _LegalSection("Seguridad", isTitle: true),
   _LegalSection(
-    'Utilizamos cifrado en tránsito, protección de datos sensibles en reposo, '
-    'control de acceso y mecanismos para reducir la persistencia innecesaria. '
-    'Las credenciales estándar de proveedores de IA no se incorporan a la app.',
-  ),
-  _LegalSection('9. Sus Derechos y Contacto', isTitle: true),
+      "El proyecto utiliza HTTPS, autenticación y controles de acceso. Reducen riesgos, sin garantizar seguridad absoluta. Esta política no afirma cifrado de extremo a extremo ni certificación HIPAA, GDPR, LGPD, SOC 2 o ISO. No comparta contraseñas ni claves con soporte."),
+  _LegalSection("Derechos, eliminación y contacto", isTitle: true),
   _LegalSection(
-    'Puede acceder, corregir o solicitar la eliminación de los datos aplicables, '
-    'revocar consentimientos y solicitar información sobre el tratamiento. '
-    'Responsable de Protección de Datos: disponible a través del soporte de la '
-    'aplicación. ANPD: www.gov.br/anpd',
-  ),
+      "Puede solicitar información, acceso, corrección y eliminación mediante medcasespro@gmail.com, sujeto a verificación de titularidad y normas aplicables. Consulte /data-deletion para el flujo y solicitudes adicionales. Cancelar una suscripción es una operación distinta. Aporte solo datos necesarios para localizar la cuenta, nunca historias clínicas completas."),
+  _LegalSection("Público y cambios", isTitle: true),
   _LegalSection(
-    'Última actualización: Agosto de 2026 | Versión v2.1-2026-remote-audio',
-    isTitle: false,
-  ),
+      "El producto se dirige a estudiantes y profesionales sanitarios, no a servicios dirigidos a niños. Los cambios relevantes se reflejarán con fecha y versión; una modificación del texto no amplía automáticamente la autorización para utilizar datos."),
+  _LegalSection("2026-10-03 | 2026.10.R2"),
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // AVISO MÉDICO — Português
 // ═══════════════════════════════════════════════════════════════════════════════
 const _disclaimerPt = [
-  _LegalSection('Natureza Educacional', isTitle: true),
+  _LegalSection("Apoio educacional", isTitle: true),
   _LegalSection(
-    'O MedCases Pro é uma plataforma educacional e de suporte à decisão clínica. '
-    'Todo o conteúdo — incluindo casos clínicos, protocolos, calculadoras, '
-    'informações sobre fármacos e respostas da IA — tem fins exclusivamente educacionais.',
-  ),
-  _LegalSection('Não é um Dispositivo Médico', isTitle: true),
+      "MedCases Pro é ferramenta de apoio educacional e informacional para estudantes e profissionais da saúde. Não é serviço de emergência nem substitui avaliação individual, prescrição, decisão profissional ou protocolos institucionais."),
+  _LegalSection("Verificação", isTitle: true),
   _LegalSection(
-    'Esta plataforma NÃO é um dispositivo médico regulamentado e NÃO foi aprovada '
-    'por agências regulatórias (ANVISA, FDA ou equivalentes) para uso diagnóstico '
-    'ou terapêutico. Não deve ser utilizada como substituto de avaliação clínica profissional.',
-  ),
-  _LegalSection('Responsabilidade do Profissional', isTitle: true),
+      "Conteúdo e sistemas automatizados podem apresentar limitações, erros, omissões ou informações incompletas. Confira fontes, indicações, unidades, dose, via, formulação e contexto clínico antes do uso. A responsabilidade pelas decisões permanece com o profissional. Calculadoras não validam por si só a adequação de uma conduta."),
+  _LegalSection("Emergências", isTitle: true),
   _LegalSection(
-    'O profissional de saúde é o único responsável pelas decisões clínicas tomadas '
-    'com base em qualquer informação consultada nesta plataforma. '
-    'Cada paciente apresenta características individuais que requerem avaliação personalizada.',
-  ),
-  _LegalSection('Limitações da IA', isTitle: true),
-  _LegalSection(
-    'As respostas geradas pela inteligência artificial podem conter imprecisões, '
-    'omissões ou erros. Sempre verifique as informações em fontes primárias '
-    'e diretrizes institucionais atualizadas antes de qualquer aplicação clínica.',
-  ),
-  _LegalSection('Atualização de Conteúdo', isTitle: true),
-  _LegalSection(
-    'Embora nos esforcemos para manter o conteúdo atualizado com as evidências '
-    'científicas mais recentes, a medicina é dinâmica. Protocolos e diretrizes '
-    'podem ser atualizados. Consulte sempre as fontes originais.',
-  ),
-  _LegalSection('Uso em Emergências', isTitle: true),
-  _LegalSection(
-    'Em situações de emergência, siga os protocolos institucionais estabelecidos '
-    'e os guidelines oficiais. Esta plataforma NÃO substitui treinamentos de '
-    'emergência (ACLS, BLS, PALS) nem protocolos hospitalares vigentes.',
-  ),
+      "Em emergência, procure o sistema assistencial apropriado da sua região. Não espere uma resposta do aplicativo para buscar atendimento urgente."),
+  _LegalSection("2026-10-03 | 2026.10.R2"),
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════
 // AVISO MÉDICO — Español
 // ═══════════════════════════════════════════════════════════════════════════════
 const _disclaimerEs = [
-  _LegalSection('Naturaleza Educativa', isTitle: true),
+  _LegalSection("Apoyo educativo", isTitle: true),
   _LegalSection(
-    'MedCases Pro es una plataforma educativa y de apoyo a la decisión clínica. '
-    'Todo el contenido —incluidos casos clínicos, protocolos, calculadoras, '
-    'información sobre fármacos y respuestas de la IA— tiene fines exclusivamente educativos.',
-  ),
-  _LegalSection('No es un Dispositivo Médico', isTitle: true),
+      "MedCases Pro es una herramienta educativa e informativa para estudiantes y profesionales sanitarios. No es un servicio de emergencias ni sustituye evaluación individual, prescripción, decisión profesional o protocolos institucionales."),
+  _LegalSection("Verificación", isTitle: true),
   _LegalSection(
-    'Esta plataforma NO es un dispositivo médico regulado y NO ha sido aprobada '
-    'por agencias regulatorias (ANVISA, FDA o equivalentes) para uso diagnóstico '
-    'o terapéutico. No debe utilizarse como sustituto de la evaluación clínica profesional.',
-  ),
-  _LegalSection('Responsabilidad del Profesional', isTitle: true),
+      "Los contenidos y sistemas automatizados pueden presentar limitaciones, errores, omisiones o información incompleta. Verifique fuentes, indicaciones, unidades, dosis, vía, formulación y contexto antes de usar. El profesional conserva la responsabilidad por sus decisiones. Una calculadora no valida por sí sola la adecuación de una conducta."),
+  _LegalSection("Emergencias", isTitle: true),
   _LegalSection(
-    'El profesional de salud es el único responsable de las decisiones clínicas '
-    'tomadas con base en cualquier información consultada en esta plataforma. '
-    'Cada paciente presenta características individuales que requieren evaluación personalizada.',
-  ),
-  _LegalSection('Limitaciones de la IA', isTitle: true),
-  _LegalSection(
-    'Las respuestas generadas por la inteligencia artificial pueden contener '
-    'inexactitudes, omisiones o errores. Siempre verifique la información en '
-    'fuentes primarias y directrices institucionales actualizadas antes de cualquier aplicación clínica.',
-  ),
-  _LegalSection('Actualización de Contenido', isTitle: true),
-  _LegalSection(
-    'Aunque nos esforzamos por mantener el contenido actualizado con las evidencias '
-    'científicas más recientes, la medicina es dinámica. Protocolos y directrices '
-    'pueden cambiar. Consulte siempre las fuentes originales.',
-  ),
-  _LegalSection('Uso en Emergencias', isTitle: true),
-  _LegalSection(
-    'En situaciones de emergencia, siga los protocolos institucionales establecidos '
-    'y las guías oficiales. Esta plataforma NO reemplaza los entrenamientos de '
-    'emergencia (ACLS, BLS, PALS) ni los protocolos hospitalarios vigentes.',
-  ),
+      "En una emergencia, acuda al sistema asistencial apropiado de su región. No espere una respuesta de la aplicación para buscar atención urgente."),
+  _LegalSection("2026-10-03 | 2026.10.R2"),
 ];
 
 // ═══════════════════════════════════════════════════════════════════════════════

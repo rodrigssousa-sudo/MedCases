@@ -1,3 +1,4 @@
+import '../../../screens/ai/widgets/ai_response_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -9,6 +10,64 @@ Color _homeAccent(HomeV2Palette palette) {
   return identical(palette, HomeV2Palette.dark)
       ? const Color(0xFF0D6B57)
       : palette.accent;
+}
+
+/// Home owns only the quick input. Answers/history live in AiScreen.
+class HomeClinicalEntryView extends StatelessWidget {
+  const HomeClinicalEntryView(
+      {super.key,
+      required this.dark,
+      required this.isEs,
+      required this.userName,
+      required this.controller,
+      required this.focusNode,
+      required this.onSend,
+      required this.onVoice,
+      required this.sttListening,
+      required this.onHistory,
+      required this.onNewChat});
+  final bool dark, isEs, sttListening;
+  final String userName;
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final VoidCallback onSend, onVoice, onHistory, onNewChat;
+  @override
+  Widget build(BuildContext context) {
+    final palette = HomeV2Palette.resolve(dark);
+    return HomeV2PressSurface(
+        palette: palette,
+        backgroundColor: palette.surface,
+        child:
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          _InlineChatHeader(
+              palette: palette,
+              isEs: isEs,
+              expanded: false,
+              hasExpandableContent: false,
+              onHistory: onHistory,
+              onNewChat: onNewChat,
+              onToggleExpanded: onSend),
+          Padding(
+              padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
+              child: Column(children: [
+                ConstrainedBox(
+                    constraints: const BoxConstraints(minHeight: 142),
+                    child: Center(
+                        child: _InlineEmptyGreeting(
+                            palette: palette, isEs: isEs, userName: userName))),
+                const SizedBox(height: 12),
+                _InlineComposer(
+                    palette: palette,
+                    isEs: isEs,
+                    controller: controller,
+                    focusNode: focusNode,
+                    thinking: false,
+                    onSend: onSend,
+                    onVoice: onVoice,
+                    sttListening: sttListening),
+              ])),
+        ]));
+  }
 }
 
 class HomeInlineChatV2View extends StatelessWidget {
@@ -259,7 +318,7 @@ class _InlineChatHeader extends StatelessWidget {
                           ),
                         ),
                         TextSpan(
-                          text: 'IA',
+                          text: 'Clinical',
                           style: TextStyle(
                             color: _homeAccent(palette),
                           ),
@@ -804,57 +863,12 @@ class _InlineAnswerAction extends StatelessWidget {
 }
 
 class _InlineThinking extends StatelessWidget {
-  const _InlineThinking({
-    required this.palette,
-    required this.isEs,
-  });
-
+  const _InlineThinking({required this.palette, required this.isEs});
   final HomeV2Palette palette;
   final bool isEs;
-
   @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(
-        bottom: 18,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset(
-                'assets/icons/home_v2/ic_ia.svg',
-                width: 18,
-                height: 18,
-                fit: BoxFit.contain,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                isEs ? 'GENERANDO RESPUESTA' : 'GERANDO RESPOSTA',
-                style: TextStyle(
-                  color: palette.textPrimary,
-                  fontSize: 10.2,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 1.2,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          SizedBox(
-            width: 52,
-            child: LinearProgressIndicator(
-              minHeight: 2,
-              borderRadius: BorderRadius.circular(4),
-              color: _homeAccent(palette),
-              backgroundColor: palette.surfaceStrong,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) => AiResponseLoading(
+    dark: identical(palette, HomeV2Palette.dark), lang: isEs ? 'es' : 'pt');
 }
 
 Color _homeComposerUnifiedFill(
@@ -996,8 +1010,9 @@ class _InlineComposer extends StatelessWidget {
                   child: Icon(
                     Icons.arrow_upward_rounded,
                     size: 19,
-                    color:
-                        thinking ? palette.textSecondary : const Color(0xFF009C3B),
+                    color: thinking
+                        ? palette.textSecondary
+                        : const Color(0xFF009C3B),
                   ),
                 ),
               ),

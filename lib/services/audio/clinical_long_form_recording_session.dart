@@ -69,6 +69,7 @@ final class ClinicalLongFormRecordingSession {
   }
 
   bool reachedMaxDuration(DateTime nowUtc) =>
+      !_config.unlimitedLocalCapture &&
       activeDurationAt(nowUtc) >= _config.maxDuration;
 
   Future<void> start({
@@ -124,7 +125,8 @@ final class ClinicalLongFormRecordingSession {
     await _capture.stopSegment();
     _completeCurrentSegment();
 
-    if (_completedActiveDuration >= _config.maxDuration ||
+    if ((!_config.unlimitedLocalCapture &&
+            _completedActiveDuration >= _config.maxDuration) ||
         (shouldStopAfterCurrentSegment?.call() ?? false)) {
       _state = ClinicalLongFormRecordingState.stopped;
       return;

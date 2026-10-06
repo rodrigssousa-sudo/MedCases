@@ -24,6 +24,13 @@ String _section(
 }
 
 void main() {
+  test('iOS forwards local notification presentation through Flutter delegate', () {
+    final native = File('ios/Runner/AppDelegate.swift').readAsStringSync();
+    expect(native, contains('UNUserNotificationCenter.current().delegate = self'));
+    expect(native.indexOf('UNUserNotificationCenter.current().delegate = self'),
+        lessThan(native.indexOf('GeneratedPluginRegistrant.register')));
+  });
+
   late String home;
   late String service;
   late String shiftOwner;
@@ -207,15 +214,15 @@ void main() {
 
       expect(
         disposeBlock,
-        contains('_cancelTimer(updateUi: false)'),
+        isNot(contains('_cancelTimer(')),
       );
       expect(
         disposeBlock,
-        isNot(contains('_countdownTimer?.cancel()')),
+        contains('_countdownTimer?.cancel()'),
       );
       expect(
         disposeBlock,
-        isNot(contains('_countdownTimer = null')),
+        contains('_countdownTimer = null'),
       );
       expect(disposeBlock, contains('super.dispose()'));
 
@@ -436,9 +443,10 @@ void main() {
     });
 
     test('Timer tenta exact e faz fallback inexact sem perder o alerta', () {
-      final exact = service.indexOf('AndroidScheduleMode.exactAllowWhileIdle');
+      final legacySchedule = service.substring(service.indexOf('final scheduleModes = isShiftTimer'));
+      final exact = legacySchedule.indexOf('AndroidScheduleMode.exactAllowWhileIdle');
       final inexact =
-          service.indexOf('AndroidScheduleMode.inexactAllowWhileIdle');
+          legacySchedule.indexOf('AndroidScheduleMode.inexactAllowWhileIdle');
 
       expect(exact, greaterThanOrEqualTo(0));
       expect(inexact, greaterThan(exact));
@@ -488,7 +496,7 @@ void main() {
       expect(countdownIndex, greaterThan(assignmentIndex));
     });
 
-    test('copy do Timer usa Doc sem emoji em português e espanhol', () {
+    test('copy do Timer usa conclusão localizada sem emoji', () {
       final bridgeStart = historialOwner.indexOf(
         'Future<void> startFromShiftConsumer',
       );
@@ -502,8 +510,8 @@ void main() {
 
       final bridge = historialOwner.substring(bridgeStart, bridgeEnd);
 
-      expect(bridge, contains("'Hola Doc.'"));
-      expect(bridge, contains("'Olá Doc.'"));
+      expect(bridge, contains("'Temporizador finalizado'"));
+      expect(bridge, contains("'Timer concluído'"));
       expect(
         bridge,
         contains("'Es hora de revisar el paciente.'"),

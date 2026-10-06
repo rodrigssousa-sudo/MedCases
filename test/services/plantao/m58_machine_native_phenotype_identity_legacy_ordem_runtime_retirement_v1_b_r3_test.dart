@@ -310,7 +310,7 @@ Puntos clave
       final window = source.substring(guard, visible);
       expect(window, contains('m56cMachineContext.authoritative'));
       expect(window, contains('m56bGlobalGate.hasCriticalIssue'));
-      expect(window, contains('blocked=true reason=critical_machine_gate'));
+      expect(window, contains('degradeCriticalResultForPresentation'));
     });
   });
 }

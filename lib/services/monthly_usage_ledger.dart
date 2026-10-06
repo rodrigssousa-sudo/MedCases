@@ -52,6 +52,7 @@ class MonthlyUsageLedger {
           required Set<UsageKind> kinds,
           required int maximumMs,
           bool allowPartial = false,
+          bool verifiedMediaOnly = false,
           int executionCount = 1}) =>
       _serialized(() async {
         final owner = uid();
@@ -92,8 +93,12 @@ class MonthlyUsageLedger {
             'maximumMs': maximumMs,
             'allowPartial': allowPartial,
             'executionCount': executionCount,
+            if (verifiedMediaOnly) 'verifiedMediaOnly': true,
           });
           if (uid() != owner) throw StateError('USAGE_USER_CHANGED');
+          if (verifiedMediaOnly && receipt['verifiedMediaOnly'] != true) {
+            throw StateError('VERIFIED_MEDIA_ACCOUNTING_UNAVAILABLE');
+          }
           grant = receipt['maximumMs'] as int;
           attempt = receipt['attempt'] as String;
         }
@@ -109,6 +114,39 @@ class MonthlyUsageLedger {
         return UsageReservation._(this, key, operationId, owner, grant,
             Set.unmodifiable(kinds), attempt, receipt);
       });
+
+  /// Reattach to an existing reservation without granting or charging new usage.
+  Future<UsageReservation?> resume(String operationId,
+          {bool includeCompleted = false}) =>
+      _serialized(() async {
+        final owner = uid();
+        if (owner == null) return null;
+        final prefs = await preferences();
+        await prefs.reload();
+        if (uid() != owner) throw StateError('USAGE_USER_CHANGED');
+        final prefix = 'usage.v1.${base64Url.encode(utf8.encode(owner))}.';
+        for (final key
+            in prefs.getKeys().where((key) => key.startsWith(prefix))) {
+          final op = _read(prefs, key)[operationId] as Map?;
+          if (op == null ||
+              (op['state'] != 'reserved' &&
+                  !(includeCompleted && op['state'] == 'completed'))) continue;
+          return UsageReservation._(
+              this,
+              key,
+              operationId,
+              owner,
+              op['amount'] as int,
+              Set.unmodifiable(
+                  (op['kinds'] as List).map((k) => UsageKind.values.byName(k))),
+              op['attempt'] as String,
+              op['server'] == null
+                  ? null
+                  : Map<String, dynamic>.from(op['server']));
+        }
+        return null;
+      });
+
   Map<String, dynamic> _read(SharedPreferences prefs, String key) {
     final raw = prefs.getString(key);
     if (raw == null) return {};
@@ -158,6 +196,22 @@ class MonthlyUsageLedger {
         if (uid() == reservation.owner)
           await _reconcile(prefs, reservation.owner);
       });
+  Future<void> confirmServerCompletion(UsageReservation reservation) async {
+    if (uid() != reservation.owner) throw StateError('USAGE_USER_CHANGED');
+    final receipt = reservation._server;
+    if (authority == null || receipt == null)
+      throw StateError('SERVER_RESERVATION_REQUIRED');
+    // This is an acknowledgement. The server's media proof remains the sole
+    // authority for chargeMs; no client refund/duration override is introduced.
+    await authority!.finish(reservation.owner, {
+      'id': receipt['id'],
+      'attempt': receipt['attempt'],
+      'actualMs': reservation.maximumMs,
+      'success': true,
+    });
+    if (uid() != reservation.owner) throw StateError('USAGE_USER_CHANGED');
+  }
+
   Future<void> reconcile() => _serialized(() async {
         final owner = uid();
         if (owner != null) await _reconcile(await preferences(), owner);

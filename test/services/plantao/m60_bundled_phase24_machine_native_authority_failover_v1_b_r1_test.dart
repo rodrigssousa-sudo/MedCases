@@ -234,7 +234,7 @@ void main() {
     });
 
     test(
-      'default source is failover and M59 fail-closed code is preserved',
+      'default source uses a shared snapshot and M59 fail-closed code is preserved',
       () {
         final prefetchSource = File(
           'lib/services/plantao_machine_native_context_prefetch.dart',
@@ -244,13 +244,13 @@ void main() {
         expect(
           prefetchSource,
           contains(
-            '_source = source ?? PlantaoFailoverMachineNativeRegistrySource();',
+            '(_repository ?? SharedClinicalCatalog.instance).acquire()',
           ),
         );
         expect(prefetchSource, contains('M59_REGISTRY_READ_DIAGNOSTICS_V1'));
         expect(
           screen,
-          contains('M59_MACHINE_NATIVE_REGISTRY_FAIL_CLOSED_BEFORE_PROVIDER'),
+          contains('M59_MACHINE_NATIVE_REGISTRY_DEGRADED_PROVIDER_V2'),
         );
       },
     );

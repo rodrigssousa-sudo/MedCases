@@ -19,3 +19,6 @@
 
 /* ── Biblioteca de Fotos (escrita/salvar) ─────────────────────────────── */
 "NSPhotoLibraryAddUsageDescription" = "O MedCases Pro pode salvar imagens geradas pelo app — como gráficos de acompanhamento clínico ou capturas de protocolos — diretamente na sua biblioteca de fotos, somente quando você solicitar explicitamente.";
+
+"NSCalendarsUsageDescription" = "MedCases pode adicionar compromissos ao calendário do dispositivo somente quando você escolher essa opção.";
+"NSCalendarsFullAccessUsageDescription" = "MedCases pode adicionar compromissos ao calendário do dispositivo somente quando você escolher essa opção.";

@@ -1,7 +1,9 @@
+import 'continuous_aac_file.dart';
+import 'package:flutter/foundation.dart';
+import 'recording_start_failure.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import 'dart:async';
-import '../monthly_usage_ledger.dart';
-import '../entitlement_service.dart';
 
 import 'package:flutter/services.dart';
 import 'package:record/record.dart';
@@ -15,25 +17,23 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
   RecordLongFormAudioProvider({
     AudioRecorder? recorder,
     this.onQuotaReached,
-    MonthlyUsageLedger? usageLedger,
-    Future<void> Function()? refreshEntitlement,
-  })  : _recorder = recorder ?? AudioRecorder(),
-        _ledger = usageLedger ?? MonthlyUsageLedger.instance,
-        _refreshEntitlement = refreshEntitlement ??
-            (() async {
-              await EntitlementService.instance.refreshAuthoritativeTier();
-            });
+    this.scheduleQuota = Timer.new,
+    Future<PermissionStatus> Function()? microphonePermission,
+  })  : _microphonePermission =
+            microphonePermission ?? (() => Permission.microphone.request()),
+        _recorder = recorder ?? AudioRecorder();
 
   static const bool productionCutoverEnabled = false;
   static const bool productionPersistenceEnabled = false;
   static const bool remoteUploadEnabled = false;
 
+  final Future<PermissionStatus> Function() _microphonePermission;
   final AudioRecorder _recorder;
-  final MonthlyUsageLedger _ledger;
-  final Future<void> Function() _refreshEntitlement;
   final void Function()? onQuotaReached;
+  final Timer Function(Duration, void Function()) scheduleQuota;
   Future<void> _quotaReached() async {
-    if (!_active) return;
+    if (!_active || _quotaTransitionPending) return;
+    _quotaTransitionPending = true;
     _usageClock?.stop();
     await _recorder.pause();
     if (onQuotaReached != null) {
@@ -43,21 +43,27 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
     }
   }
 
+  // A quota boundary deliberately pauses before the owner rotates files.
+  // Do not report that pause as an OS interruption.
+  bool _quotaTransitionPending = false;
+  bool get segmentBoundaryPending => _quotaTransitionPending;
   String? _quotaStoppedPath;
-  UsageReservation? _usage;
+  int _segmentBudgetMs = 0;
+  bool _unlimitedLocalCapture = false;
   Stopwatch? _usageClock;
   Timer? _usageTimer;
   Future<void> _finishUsage(bool success) async {
-    final usage = _usage;
-    _usage = null;
+    // Local capture has no billable reservation. This clock bounds the file.
     _usageTimer?.cancel();
-    final ms = _usageClock?.elapsedMilliseconds ?? 0;
     _usageClock?.stop();
-    if (usage != null)
-      await usage.finish(
-          actualMs: ms.clamp(0, usage.maximumMs), success: success);
   }
 
+  String notificationLanguage = 'pt';
+  Duration? sessionRemaining;
+  ContinuousAacFile? _continuousFile;
+  StreamSubscription<dynamic>? _audioFrames;
+  Completer<void>? _framesDone;
+  Object? _frameFailure;
   bool _active = false;
   bool _starting = false;
   Future<String?>? _stopFlight;
@@ -80,6 +86,14 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
       noiseSuppress: false,
     );
   }
+
+  Stream<bool> get captureActiveChanges => _recorder
+      .onStateChanged()
+      .where((_) => !_quotaTransitionPending)
+      .map((s) => s == RecordState.record);
+  Future<bool> isCaptureRunning() async =>
+      _quotaTransitionPending ||
+      (await _recorder.isRecording() && !await _recorder.isPaused());
 
   Future<bool> isAacLcSupported() =>
       _recorder.isEncoderSupported(AudioEncoder.aacLc);
@@ -105,38 +119,87 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
     _guardNotDisposed();
 
     if (_active || _starting) {
-      throw StateError('Long-form segment already active.');
+      throw const RecordingStartFailure(
+          'RECORDER_ALREADY_ACTIVE', 'recorder_availability');
     }
-    if (!path.toLowerCase().endsWith('.m4a')) {
+    if (!path.toLowerCase().endsWith(config.continuous ? '.aac' : '.m4a')) {
       throw ArgumentError.value(path, 'path');
     }
 
     _starting = true;
     try {
+      final permission = await _microphonePermission();
+      debugPrint('MIC_PERMISSION_STATE=${permission.name}');
+      if (!permission.isGranted) {
+        throw RecordingStartFailure(
+            permission.isRestricted
+                ? 'MIC_PERMISSION_RESTRICTED'
+                : 'MIC_PERMISSION_DENIED',
+            'microphone_permission');
+      }
       final supported = await isAacLcSupported();
       if (!supported) {
-        throw StateError('AAC-LC is not supported on this platform.');
+        throw const RecordingStartFailure(
+            'RECORDER_INITIALIZATION_FAILED', 'encoder_availability');
       }
 
-      await _refreshEntitlement();
-      _usage = await _ledger.begin(
-          operationId: MonthlyUsageLedger.operationId(),
-          kinds: {UsageKind.recording},
-          maximumMs: config.segmentDuration.inMilliseconds,
-          allowPartial: true);
+      _unlimitedLocalCapture = config.unlimitedLocalCapture;
+      final captureLimit = config.continuous
+          ? config.maxDuration.inMilliseconds
+          : config.segmentDuration.inMilliseconds;
+      _segmentBudgetMs = sessionRemaining == null
+          ? captureLimit
+          : sessionRemaining!.inMilliseconds.clamp(0, captureLimit);
+      if (!_unlimitedLocalCapture && _segmentBudgetMs <= 0) {
+        throw const RecordingStartFailure(
+            'TECHNICAL_RECORDING_LIMIT', 'technical_limit');
+      }
       try {
-        await _prepareIosAudioSession();
+        try {
+          await _prepareIosAudioSession();
+          debugPrint('AUDIO_SESSION_STATE=PREPARED');
+        } catch (_) {
+          throw const RecordingStartFailure(
+              'AUDIO_SESSION_ACTIVATION_FAILED', 'audio_session');
+        }
         await _beginPlatformBackgroundGuard();
-        await _recorder.start(
-          buildRecordConfig(config),
-          path: path,
-        );
+        if (config.continuous) {
+          _continuousFile = ContinuousAacFile(path, append: config.append);
+          _frameFailure = null;
+          _framesDone = Completer<void>();
+          final frames = await _recorder.startStream(buildRecordConfig(config));
+          _audioFrames = frames.listen((bytes) {
+            if (_frameFailure != null) return;
+            try {
+              _continuousFile!.add(bytes);
+            } catch (error) {
+              _frameFailure = error;
+              unawaited(_recorder.pause().catchError((_) {}));
+            }
+          }, onError: (Object error) {
+            _frameFailure = error;
+            unawaited(_recorder.pause().catchError((_) {}));
+          }, onDone: () {
+            if (!_framesDone!.isCompleted) _framesDone!.complete();
+          });
+        } else {
+          await _recorder.start(buildRecordConfig(config), path: path);
+        }
         _active = true;
         _usageClock = Stopwatch()..start();
-        _usageTimer = Timer(Duration(milliseconds: _usage!.maximumMs), () {
-          unawaited(_quotaReached());
-        });
+        if (!_unlimitedLocalCapture)
+          _usageTimer =
+              scheduleQuota(Duration(milliseconds: _segmentBudgetMs), () {
+            unawaited(_quotaReached());
+          });
       } catch (_) {
+        // Stop the producer before draining/closing a partially started stream.
+        if (_continuousFile != null) {
+          try {
+            await _recorder.stop();
+          } catch (_) {}
+        }
+        await _closeContinuousFile();
         await _finishUsage(false);
         await _releaseIosAudioSession();
         await _endPlatformBackgroundGuard();
@@ -153,6 +216,15 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
     await _recorder.pause();
     _usageClock?.stop();
     _usageTimer?.cancel();
+    await _notifyCaptureState(true);
+  }
+
+  /// Refresh the paused encoder timer from the same policy as the UI timer.
+  void updateRemainingCaptureBudget(Duration remaining) {
+    if (remaining <= Duration.zero)
+      throw StateError('TECHNICAL_RECORDING_LIMIT');
+    _segmentBudgetMs =
+        (_usageClock?.elapsedMilliseconds ?? 0) + remaining.inMilliseconds;
   }
 
   @override
@@ -160,12 +232,13 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
     _guardActive();
     await _recorder.resume();
     _usageClock?.start();
-    if (_usage != null)
-      _usageTimer = Timer(
+    await _notifyCaptureState(false);
+    if (!_unlimitedLocalCapture && _segmentBudgetMs > 0)
+      _usageTimer = scheduleQuota(
           Duration(
               milliseconds:
-                  (_usage!.maximumMs - (_usageClock?.elapsedMilliseconds ?? 0))
-                      .clamp(0, _usage!.maximumMs)), () {
+                  (_segmentBudgetMs - (_usageClock?.elapsedMilliseconds ?? 0))
+                      .clamp(0, _segmentBudgetMs)), () {
         unawaited(_quotaReached());
       });
   }
@@ -185,7 +258,11 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
     }
 
     try {
-      final path = await _recorder.stop();
+      final nativePath = await _recorder.stop();
+      final path = _continuousFile?.path ?? nativePath;
+      await _closeContinuousFile();
+      if (_frameFailure != null)
+        throw StateError('RECORDING_FILE_WRITE_FAILED');
       await _finishUsage(path != null);
       return path;
     } catch (_) {
@@ -194,6 +271,26 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
     } finally {
       _active = false;
     }
+  }
+
+  Future<void> _closeContinuousFile() async {
+    if (_continuousFile == null) return;
+    // record.stop closes its stream; drain queued frames before closing disk.
+    if (_audioFrames != null) {
+      try {
+        await _framesDone?.future.timeout(const Duration(seconds: 5));
+      } catch (_) {
+        _frameFailure ??= StateError('RECORDING_STREAM_DRAIN_FAILED');
+      }
+      await _audioFrames?.cancel();
+      _audioFrames = null;
+    }
+    try {
+      _continuousFile!.close();
+    } catch (error) {
+      _frameFailure ??= error;
+    }
+    _continuousFile = null;
   }
 
   @override
@@ -205,6 +302,7 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
 
     try {
       await _recorder.cancel();
+      await _closeContinuousFile();
     } finally {
       await _finishUsage(false);
       _active = false;
@@ -212,7 +310,7 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
   }
 
   @override
-  Future<void> dispose() async {
+  Future<void> dispose({bool preservePlatformSession = false}) async {
     if (_disposed) {
       return;
     }
@@ -221,21 +319,38 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
       if (_active) {
         try {
           await _recorder.stop();
+          await _closeContinuousFile();
         } finally {
           _active = false;
         }
       }
     } finally {
-      await _releaseIosAudioSession();
-      await _endPlatformBackgroundGuard();
+      if (!preservePlatformSession) {
+        await _releaseIosAudioSession();
+        await _endPlatformBackgroundGuard();
+      }
       await _recorder.dispose();
       await _finishUsage(false);
       _disposed = true;
     }
   }
 
+  /// Transfers an already active native guard between immutable file segments.
+  /// No microphone instance is transferred and no permission is newly granted.
+  void takePlatformSessionFrom(RecordLongFormAudioProvider previous) {
+    _iosAudioSessionPrepared = previous._iosAudioSessionPrepared;
+    _androidBackgroundGuardActive = previous._androidBackgroundGuardActive;
+    previous._iosAudioSessionPrepared = false;
+    previous._androidBackgroundGuardActive = false;
+  }
+
+  Future<void> releaseRetainedPlatformSession() async {
+    await _releaseIosAudioSession();
+    await _endPlatformBackgroundGuard();
+  }
+
   Future<void> _prepareIosAudioSession() async {
-    if (!Platform.isIOS || _iosAudioSessionPrepared) {
+    if (!Platform.isIOS) {
       return;
     }
 
@@ -245,6 +360,7 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
     }
 
     await ios.manageAudioSession(false);
+    if (_iosAudioSessionPrepared) return;
     try {
       await ios.setAudioSessionCategory(
         category: IosAudioCategory.playAndRecord,
@@ -255,6 +371,8 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
           IosAudioCategoryOptions.allowBluetoothA2DP,
         ],
       );
+      await const MethodChannel('medcases/recording_events_v1')
+          .invokeMethod<bool>('prepareSession');
       await ios.setAudioSessionActive(true);
       _iosAudioSessionPrepared = true;
     } catch (_) {
@@ -284,12 +402,21 @@ final class RecordLongFormAudioProvider implements ClinicalLongFormFileCapture {
     }
   }
 
+  Future<void> _notifyCaptureState(bool paused) async {
+    if (!Platform.isAndroid || !_androidBackgroundGuardActive) return;
+    try {
+      await _backgroundGuardChannel.invokeMethod<bool>(
+          'status', {'language': notificationLanguage, 'paused': paused});
+    } catch (_) {/* Capture is independent of notification refresh. */}
+  }
+
   Future<void> _beginPlatformBackgroundGuard() async {
     if (!Platform.isAndroid || _androidBackgroundGuardActive) {
       return;
     }
 
-    final started = await _backgroundGuardChannel.invokeMethod<bool>('begin');
+    final started = await _backgroundGuardChannel
+        .invokeMethod<bool>('begin', {'language': notificationLanguage});
     if (started != true) {
       throw StateError('android_recording_background_guard_unavailable');
     }
