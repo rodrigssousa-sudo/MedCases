@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Síndrome do túnel do carpo — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Compressão do nervo mediano no punho com parestesia, especialmente em polegar, indicador e dedo médio.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Compressão do nervo mediano no punho com parestesia, especialmente em polegar, indicador e dedo médio."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Retenção de líquido da gestação pode contribuir; é distinta de neuropatia ulnar do túnel cubital."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Avaliar distribuição, sintomas noturnos, força e atrofia; quadro atípico exige diferenciar radiculopatia e outras neuropatias."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Tala de punho em posição neutra, especialmente à noite; adaptar atividades repetitivas e evitar compressão. Fisioterapia/terapia da mão conforme necessidade."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Não iniciar automaticamente corticosteroide sistêmico ou anti-inflamatório. Infiltração ou cirurgia exige avaliação especializada e balanço clínico, sobretudo se déficit persistente."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Muitos casos melhoram após a gestação; isso não justifica ignorar fraqueza progressiva ou atrofia. Alta com orientações e retorno por perda funcional; seguimento se persistir após parto."
+        }
+      ],
+      "references": [
+        "[carp] NHS South Tees — túnel do carpo na gravidez — https://www.southtees.nhs.uk/resources/carpel-tunnel-syndrome-cts-in-pregnancy/",
+        "[carpn] NHS — síndrome do túnel do carpo — https://www.nhs.uk/conditions/carpal-tunnel-syndrome/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Síndrome del túnel carpiano — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Compresión del nervio mediano en la muñeca con parestesia, especialmente en pulgar, índice y dedo medio.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Compresión del nervio mediano en la muñeca con parestesia, especialmente en pulgar, índice y dedo medio."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La retención de líquido del embarazo puede contribuir; es distinta de neuropatía cubital en el codo."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evaluar distribución, síntomas nocturnos, fuerza y atrofia; un cuadro atípico exige diferenciar radiculopatía y otras neuropatías."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Férula de muñeca en posición neutra, especialmente de noche; adaptar actividades repetitivas y evitar compresión. Fisioterapia/terapia de mano según necesidad."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "No iniciar automáticamente corticoide sistémico o antiinflamatorio. Infiltración o cirugía exige evaluación especializada y balance clínico, especialmente ante déficit persistente."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Muchos casos mejoran después del embarazo; esto no justifica ignorar debilidad progresiva o atrofia. Alta con orientaciones y retorno por pérdida funcional; seguimiento si persiste después del parto."
+        }
+      ],
+      "references": [
+        "[carp] NHS South Tees — túnel do carpo na gravidez — https://www.southtees.nhs.uk/resources/carpel-tunnel-syndrome-cts-in-pregnancy/",
+        "[carpn] NHS — síndrome do túnel do carpo — https://www.nhs.uk/conditions/carpal-tunnel-syndrome/"
+      ]
+    }
+  }
+}

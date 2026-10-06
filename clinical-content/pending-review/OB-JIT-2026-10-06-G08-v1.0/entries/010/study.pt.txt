@@ -1,0 +1,33 @@
+# Hipotireoidismo — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Deficiência de hormônio tireoidiano na gravidez, manifesta ou subclínica conforme TSH e tiroxina livre.
+
+## Fisiopatologia e raciocínio
+
+A necessidade de tiroxina pode aumentar na gestação; tratar adequadamente reduz risco materno-fetal. Não usar referência não gestacional indiscriminadamente.
+
+## Diagnóstico, exames e diferenciais
+
+Interpretar TSH e tiroxina livre com intervalos específicos do trimestre, população e método. Registrar autoimunidade, dose atual, adesão e interações.
+
+## Tratamento e doses
+
+Levotiroxina é o tratamento preferido. Quem já utiliza pode necessitar aumento precoce de aproximadamente 20–30%, orientado por plano clínico e exames; novos tratamentos exigem cálculo individual.
+
+## Segurança e monitorização
+
+Não substituir por combinações com triiodotironina ou extratos tireoidianos. Conferir administração e interações com suplementos; reavaliar TSH após ajustes.
+
+## Escalonamento, alta e seguimento
+
+Seguimento obstétrico/endócrino durante gravidez e pós-parto. Alteração de consciência, hipotermia ou instabilidade exige hospital; não manejar como ajuste ambulatorial de rotina.
+
+## Referências
+
+[thy] RCOG Green-top 76 — tireoide na gravidez, final 2025 — https://obgyn.onlinelibrary.wiley.com/doi/10.1111/1471-0528.18088
+
+[hypo] American Thyroid Association — hipotireoidismo na gravidez — https://www.thyroid.org/hypothyroidism-in-pregnancy/

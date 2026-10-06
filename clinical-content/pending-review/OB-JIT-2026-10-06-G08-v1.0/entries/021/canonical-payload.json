@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "hepatite_b_cronica",
+  "titles": {
+    "pt": "Hepatite B crônica — gestação",
+    "es": "Hepatitis B crónica — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Infecção crônica pelo vírus da hepatite B na grávida; é distinta do owner de hepatite B aguda.",
+      "es": "Infección crónica por virus de hepatitis B en la embarazada; es distinta del owner de hepatitis B aguda."
+    },
+    {
+      "id": "reasoning",
+      "pt": "A carga viral materna condiciona risco de transmissão; profilaxia perinatal não substitui avaliação da doença hepática materna.",
+      "es": "La carga viral materna condiciona riesgo de transmisión; la profilaxis perinatal no sustituye la evaluación de enfermedad hepática materna."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar HBsAg, carga viral, antígeno e, transaminases, função renal e indicação de tratamento materno. Distinguir infecção aguda, crônica e reativação.",
+      "es": "Evaluar HBsAg, carga viral, antígeno e, transaminasas, función renal e indicación de tratamiento materno. Distinguir infección aguda, crónica y reactivación."
+    },
+    {
+      "id": "treatment",
+      "pt": "Para prevenção com carga viral ≥200.000 unidades internacionais/mL ou antígeno e positivo, OMS 2024 orienta tenofovir disoproxila, preferencialmente desde o segundo trimestre. SMFM especifica 300 mg por via oral por dia e início entre 28–32 semanas; explicitar qual protocolo será utilizado.",
+      "es": "Para prevención con carga viral ≥200.000 unidades internacionales/mL o antígeno e positivo, OMS 2024 indica tenofovir disoproxilo, preferentemente desde el segundo trimestre. SMFM especifica 300 mg por vía oral por día e inicio entre 28–32 semanas; explicitar qué protocolo se utilizará."
+    },
+    {
+      "id": "safety",
+      "pt": "Ajustar à função renal e planejar vigilância após eventual suspensão. Recém-nascido exposto deve receber vacina e imunoglobulina específica dentro de 12 horas, conforme SMFM.",
+      "es": "Ajustar a función renal y planificar vigilancia tras eventual suspensión. El recién nacido expuesto debe recibir vacuna e inmunoglobulina específica dentro de 12 horas, según SMFM."
+    },
+    {
+      "id": "disposition",
+      "pt": "Coordenar hepatologia, obstetrícia e pediatria. Não indicar cesariana apenas por hepatite B; aleitamento pode ocorrer com imunoprofilaxia neonatal apropriada. Icterícia grave, coagulopatia ou encefalopatia exigem hospital.",
+      "es": "Coordinar hepatología, obstetricia y pediatría. No indicar cesárea solamente por hepatitis B; puede amamantarse con inmunoprofilaxis neonatal apropiada. Ictericia grave, coagulopatía o encefalopatía requieren hospital."
+    }
+  ],
+  "references": [
+    {
+      "id": "hbv",
+      "title": "OMS — hepatite B crônica, prevenção da transmissão materna, 2024",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK615006/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "hbvs",
+      "title": "SMFM Consult 69 — hepatite B na gravidez, 2024",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38141870/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 21,
+    "owner": "hepatite_b_cronica",
+    "title": {
+      "pt": "Hepatite B crônica — gestação",
+      "es": "Hepatitis B crónica — embarazo"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "hepatite_b_cronica",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [
+      "hepatitis_b_aguda_detallada_2026"
+    ],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "c782fbb1fda3edfa2b91b00db6b9639a633aa90f5a6dbb8e7496d4c7a28138f9"
+}

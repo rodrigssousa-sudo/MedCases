@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "pielonefrite_aguda",
+  "titles": {
+    "pt": "Pielonefrite aguda — gestação",
+    "es": "Pielonefritis aguda — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Infecção renal na gravidez, geralmente com febre, dor em flanco e evidência urinária de infecção.",
+      "es": "Infección renal durante el embarazo, generalmente con fiebre, dolor en flanco y evidencia urinaria de infección."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Pode provocar sepse, lesão renal e parto prematuro; distinguir cólica renal e obstrução infectada.",
+      "es": "Puede provocar sepsis, lesión renal y parto prematuro; distinguir cólico renal y obstrucción infectada."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar sinais vitais, perfusão, diurese, urina e cultura, hemograma e função renal. Buscar obstrução por ultrassom quando indicada; avaliação fetal conforme idade gestacional.",
+      "es": "Evaluar signos vitales, perfusión, diuresis, orina y cultivo, hemograma y función renal. Buscar obstrucción por ecografía cuando corresponda; evaluación fetal según edad gestacional."
+    },
+    {
+      "id": "treatment",
+      "pt": "ACOG recomenda internação inicial e antibiótico parenteral com penetração renal. Cefuroxima intravenosa 750 mg–1,5 g, a cada 8 horas, é opção NICE; escolher pelo quadro, antibiograma e função renal.",
+      "es": "ACOG recomienda internación inicial y antibiótico parenteral con penetración renal. Cefuroxima intravenosa 750 mg–1,5 g, cada 8 horas, es una opción NICE; elegir según cuadro, antibiograma y función renal."
+    },
+    {
+      "id": "safety",
+      "pt": "Reavaliar terapia intravenosa em 48 horas. Neste pacote, adota-se duração total de 14 dias da ACOG, incluindo fase oral, explicitamente distinta dos 7–10 dias previstos em NICE para alguns esquemas.",
+      "es": "Reevaluar tratamiento intravenoso a las 48 horas. En este paquete se adopta duración total de 14 días de ACOG, incluida fase oral, explícitamente distinta de los 7–10 días previstos por NICE para algunos esquemas."
+    },
+    {
+      "id": "disposition",
+      "pt": "Sepse, hipoxemia, oligúria ou obstrução requerem escalonamento imediato. Alta após melhora clínica e tolerância oral, com antibiótico direcionado e plano de seguimento.",
+      "es": "Sepsis, hipoxemia, oliguria u obstrucción requieren escalamiento inmediato. Alta tras mejoría clínica y tolerancia oral, con antibiótico dirigido y plan de seguimiento."
+    }
+  ],
+  "references": [
+    {
+      "id": "uti",
+      "title": "ACOG — infecções urinárias na gravidez, consenso 2023",
+      "url": "https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "pyelo",
+      "title": "NICE NG111 — antibióticos para pielonefrite",
+      "url": "https://www.nice.org.uk/guidance/NG111/chapter/recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 15,
+    "owner": "pielonefrite_aguda",
+    "title": {
+      "pt": "Pielonefrite aguda — gestação",
+      "es": "Pielonefritis aguda — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "pielonefrite_aguda",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "50d5d0c4b094dc0c49179a594f1210b1e5e2c1c59fdc6cf830b5c33cd70d54c4"
+}

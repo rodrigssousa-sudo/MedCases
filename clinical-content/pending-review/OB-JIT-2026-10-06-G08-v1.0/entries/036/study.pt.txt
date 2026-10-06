@@ -1,0 +1,33 @@
+# Cólica renal — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Dor por cálculo urinário na gravidez; diferenciar de dilatação fisiológica e obstrução infectada.
+
+## Fisiopatologia e raciocínio
+
+A hidronefrose gestacional pode dificultar interpretação. Infecção associada a obstrução é emergência urológica.
+
+## Diagnóstico, exames e diferenciais
+
+Avaliar dor, temperatura, urina/cultura, função renal e diurese. EAU: ultrassom primeiro, ressonância como segunda opção e tomografia de baixa dose como último recurso quando necessária.
+
+## Tratamento e doses
+
+Manejo conservador se sem complicações, com analgesia apropriada e hidratação conforme necessidade, sem forçar líquidos. Obstrução infectada exige antibiótico e drenagem urgente.
+
+## Segurança e monitorização
+
+Litotripsia extracorpórea é contraindicada na gravidez. Não iniciar terapia expulsiva de rotina sem evidência e orientação específica para gestantes.
+
+## Escalonamento, alta e seguimento
+
+Internar por sepse, dor/vômitos refratários, deterioração renal ou complicação obstétrica. Alta somente se estável, com controle da dor, seguimento urológico e retorno por febre ou oligúria.
+
+## Referências
+
+[stone] EAU — urolitíase, final 2026 — https://uroweb.org/guidelines/urolithiasis/chapter/guidelines
+
+[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/

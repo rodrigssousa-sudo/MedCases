@@ -1,0 +1,33 @@
+# Várices de miembros inferiores — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Dilatación venosa superficial con pesadez, molestias o edema en piernas durante el embarazo.
+
+## Fisiopatología y razonamiento
+
+Los cambios venosos y compresión por útero pueden agravar enfermedad previa. Las várices no son sinónimo de trombosis profunda.
+
+## Diagnóstico, estudios y diferenciales
+
+Evaluar lateralidad, dolor, edema y piel. Edema unilateral nuevo, dolor importante, calor local o disnea exige investigar trombosis/embolia, no atribuirlo simplemente a várices.
+
+## Tratamiento y dosis
+
+Movimiento regular, evitar permanecer inmóvil por períodos prolongados y elevar piernas para comodidad. Medias de compresión adecuadas pueden aliviar síntomas.
+
+## Seguridad y monitoreo
+
+Los procedimientos electivos para várices generalmente se postergan durante el embarazo. No indicar anticoagulación solamente por várices no complicadas.
+
+## Escalamiento, alta y seguimiento
+
+Seguimiento ambulatorio si no hay complicaciones. Sangrado de várice, úlcera, infección o sospecha de trombosis exige evaluación; reevaluar persistencia después del parto.
+
+## Referencias
+
+[vein] NHS — problemas comuns na gravidez, varizes — https://www.nhs.uk/pregnancy/common-symptoms/common-health-problems/
+
+[veinn] NHS — varizes — https://www.nhs.uk/conditions/varicose-veins/

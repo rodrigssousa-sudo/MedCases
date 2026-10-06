@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "asma_grave",
+  "titles": {
+    "pt": "Crise grave de asma — gestação",
+    "es": "Crisis grave de asma — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Exacerbação grave de asma na grávida; preservar owner de gravidade, sem transformá-lo em asma leve.",
+      "es": "Exacerbación grave de asma en la embarazada; preservar el owner de gravedad, sin transformarlo en asma leve."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Broncoconstrição e inflamação prejudicam oxigenação materna e fetal. Suspender controlador por medo de medicamentos aumenta risco.",
+      "es": "La broncoconstricción e inflamación perjudican oxigenación materna y fetal. Suspender controlador por temor a medicamentos aumenta el riesgo."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar fala, esforço respiratório, consciência, ausculta, saturação e fluxo expiratório quando possível, sem atrasar tratamento. Excluir embolia, pneumonia e edema pulmonar.",
+      "es": "Evaluar habla, esfuerzo respiratorio, conciencia, auscultación, saturación y flujo espiratorio cuando sea posible, sin demorar tratamiento. Excluir embolia, neumonía y edema pulmonar."
+    },
+    {
+      "id": "treatment",
+      "pt": "Oxigênio e salbutamol inalatório de ação rápida, com ipratrópio em crise grave, conforme protocolo agudo. Prednisolona 40–50 mg por via oral, 1 vez por dia, durante 5–7 dias em adulta, conforme GINA 2026; via alternativa se oral inviável.",
+      "es": "Oxígeno y salbutamol inhalatorio de acción rápida, con ipratropio en crisis grave, según protocolo agudo. Prednisolona 40–50 mg por vía oral, 1 vez por día, durante 5–7 días en adulta, según GINA 2026; vía alternativa si la oral no es viable."
+    },
+    {
+      "id": "safety",
+      "pt": "Não retardar terapia necessária por gravidez. Vigiar resposta, frequência cardíaca, potássio em uso intensivo e bem-estar fetal; manter tratamento contendo corticoide inalatório.",
+      "es": "No demorar terapia necesaria por embarazo. Vigilar respuesta, frecuencia cardíaca, potasio en uso intensivo y bienestar fetal; mantener tratamiento que contenga corticoide inhalado."
+    },
+    {
+      "id": "disposition",
+      "pt": "Exaustão, tórax silencioso, alteração de consciência ou hipoxemia persistente exigem terapia intensiva. Crise grave requer hospital; saída apenas após resposta sustentada e plano de controlador, técnica e retorno.",
+      "es": "Agotamiento, tórax silencioso, alteración de conciencia o hipoxemia persistente requieren terapia intensiva. La crisis grave requiere hospital; salida solamente tras respuesta sostenida y plan de controlador, técnica y retorno."
+    }
+  ],
+  "references": [
+    {
+      "id": "asth",
+      "title": "GINA — estratégia global, final 2026",
+      "url": "https://ginasthma.org/wp-content/uploads/2026/05/GINA-2026-Strategy-Report-WMS.pdf",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "pain",
+      "title": "NHS SPS — tratamento da dor na gravidez",
+      "url": "https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 27,
+    "owner": "asma_grave",
+    "title": {
+      "pt": "Crise grave de asma — gestação",
+      "es": "Crisis grave de asma — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "asma_grave",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "af3ad45d89dceeddd9217ff2a502ef0ece940b8c8b094ee8532e310bb7c3603a"
+}

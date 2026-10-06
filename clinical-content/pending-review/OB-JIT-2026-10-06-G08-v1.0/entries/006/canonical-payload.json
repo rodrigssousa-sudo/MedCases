@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "diabetes_mellitus_tipo2",
+  "titles": {
+    "pt": "Diabetes mellitus tipo 2 — gestação",
+    "es": "Diabetes mellitus tipo 2 — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Diabetes tipo 2 preexistente ou manifesto na gestação; não reclassificar automaticamente como diabetes gestacional.",
+      "es": "Diabetes tipo 2 previa o manifiesta durante el embarazo; no reclasificar automáticamente como diabetes gestacional."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Hiperglicemia no período de organogênese aumenta risco fetal; obesidade, hipertensão e doença renal podem acrescentar risco.",
+      "es": "La hiperglucemia durante la organogénesis aumenta el riesgo fetal; obesidad, hipertensión y enfermedad renal pueden añadir riesgo."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar controle glicêmico, função renal, retina, pressão e medicamentos usados antes da concepção. Diferenciar diabetes manifesto de hiperglicemia exclusivamente gestacional.",
+      "es": "Evaluar control glucémico, función renal, retina, presión y medicamentos usados antes de la concepción. Diferenciar diabetes manifiesta de hiperglucemia exclusivamente gestacional."
+    },
+    {
+      "id": "treatment",
+      "pt": "Nutrição e atividade adaptadas; insulina é preferida pela ADA na gravidez, com ajuste individual. Rever medicamentos sem evidência adequada na gestação; não manter agonistas de GLP-1 como tratamento habitual da grávida.",
+      "es": "Nutrición y actividad adaptadas; la ADA prefiere insulina en el embarazo, con ajuste individual. Revisar medicamentos sin evidencia adecuada durante el embarazo; no mantener agonistas de GLP-1 como tratamiento habitual de la embarazada."
+    },
+    {
+      "id": "safety",
+      "pt": "A revisão de fármacos deve assegurar alternativa e controle, evitando suspensão desassistida. Monitorar hipoglicemia, ganho ponderal e complicações maternas. Metas ADA, se alcançáveis sem hipoglicemia: jejum abaixo de 95 mg/dL; após refeição, abaixo de 140 mg/dL em 1 hora ou 120 mg/dL em 2 horas; individualizar.",
+      "es": "La revisión de fármacos debe asegurar alternativa y control, evitando suspensión sin asistencia. Vigilar hipoglucemia, aumento de peso y complicaciones maternas. Metas ADA, si se alcanzan sin hipoglucemia: ayuno inferior a 95 mg/dL; después de comer, inferior a 140 mg/dL a 1 hora o 120 mg/dL a 2 horas; individualizar."
+    },
+    {
+      "id": "disposition",
+      "pt": "Manter equipe obstétrica/endócrina e plano pós-parto. Descompensação, cetose ou sinais de pré-eclâmpsia exigem avaliação urgente; alta com plano de glicemias e tratamento compreensível.",
+      "es": "Mantener equipo obstétrico/endocrinológico y plan posparto. Descompensación, cetosis o signos de preeclampsia requieren evaluación urgente; alta con plan comprensible de glucemias y tratamiento."
+    }
+  ],
+  "references": [
+    {
+      "id": "dm",
+      "title": "ADA — Management of Diabetes in Pregnancy, Standards 2026",
+      "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S321/163918/15-Management-of-Diabetes-in-Pregnancy-Standards",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "dmn",
+      "title": "NIDDK — diabetes e gravidez",
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/diabetes-pregnancy",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    },
+    {
+      "id": "dmuk",
+      "title": "NICE NG3 — diabetes e gravidez",
+      "url": "https://www.nice.org.uk/guidance/NG3/chapter/recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "dmvis",
+      "title": "ADA — monitorização da glicose na gravidez, apoio aos critérios vigentes",
+      "url": "https://diabetes.org/sites/default/files/2024-10/Glucose-Monitoring-During-Pregnancy-patient-FINAL.pdf",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 6,
+    "owner": "diabetes_mellitus_tipo2",
+    "title": {
+      "pt": "Diabetes mellitus tipo 2 — gestação",
+      "es": "Diabetes mellitus tipo 2 — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "diabetes_mellitus_tipo2",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "5dcae1181f239b615f223a03137ce42702b8bcc723c9b8ab1c9ab3d0c6e6bae1"
+}

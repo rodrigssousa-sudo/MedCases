@@ -1,0 +1,38 @@
+# Influenza — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Influenza suspeita ou confirmada na grávida tem maior risco de complicações; tratar prontamente, mesmo sem confirmação laboratorial.
+
+## Diagnóstico, exames e diferenciais
+
+- Avaliar início, febre, sinais respiratórios, oxigenação, hidratação e diagnósticos alternativos.
+- Não esperar teste para tratar uma suspeita convincente em gestante.
+
+## Tratamento e doses
+
+- Oseltamivir 75 mg por via oral, 2 vezes por dia, durante 5 dias para adulta com função renal normal.
+- É o antiviral preferido pelo CDC na gestação; ajustar à função renal.
+
+## Segurança e monitorização
+
+- Não recomendar baloxavir de rotina na gravidez.
+- Casos hospitalizados ou complicados podem exigir duração individualizada; não prolongar automaticamente tratamento de quadro simples.
+
+## Escalonamento, alta e seguimento
+
+- Dispneia, hipoxemia, instabilidade ou incapacidade de ingerir líquidos exigem hospital.
+- Alta com retorno por piora, prevenção e vacinação indicada no pré-natal.
+
+## Fisiopatologia e raciocínio
+
+- Risco aumentado também ocorre no pós-parto recente.
+- Benefício do antiviral é maior quando precoce, mas doença grave pode justificar início tardio.
+
+## Referências
+
+[flu] CDC — influenza em gestantes, atualização dezembro 2025 — https://www.cdc.gov/flu/hcp/antivirals/treatment_obstetric.html
+
+[flud] CDC — antivirais para influenza, resumo clínico — https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html

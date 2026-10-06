@@ -1,0 +1,37 @@
+# Diabetes mellitus tipo 1 — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Diabetes por deficiencia de insulina, previa o reconocida durante el embarazo; el embarazo es contexto del mismo owner.
+
+## Fisiopatología y razonamiento
+
+El embarazo modifica necesidades de insulina; la cetoacidosis puede ocurrir con glucemia menos elevada que fuera del embarazo.
+
+## Diagnóstico, estudios y diferenciales
+
+Revisar glucemias, episodios de hipoglucemia, función renal, retina y comorbilidades. Vómitos, dolor abdominal, taquipnea o enfermedad intercurrente exigen evaluar cetonas y acidosis.
+
+## Tratamiento y dosis
+
+La insulina es indispensable; nunca suspender basal por ayuno o vómitos sin sustitución supervisada. Ajustar basal y prandial con un equipo experimentado; el monitoreo continuo puede apoyar decisiones.
+
+## Seguridad y monitoreo
+
+Evitar metas que provoquen hipoglucemia recurrente. Verificar concentración del producto, unidades prescritas y dispositivo; no convertir unidades de insulina en volumen sin concentración explícita. Metas ADA, si se alcanzan sin hipoglucemia: ayuno inferior a 95 mg/dL; después de comer, inferior a 140 mg/dL a 1 hora o 120 mg/dL a 2 horas; individualizar.
+
+## Escalamiento, alta y seguimiento
+
+La cetoacidosis es una emergencia hospitalaria maternofetal. Planificar parto y reducción de necesidades tras la salida de la placenta, con reevaluación estrecha y seguimiento durante lactancia.
+
+## Referencias
+
+[dm] ADA — Management of Diabetes in Pregnancy, Standards 2026 — https://diabetesjournals.org/care/article/49/Supplement_1/S321/163918/15-Management-of-Diabetes-in-Pregnancy-Standards
+
+[dmn] NIDDK — diabetes e gravidez — https://www.niddk.nih.gov/health-information/diabetes/diabetes-pregnancy
+
+[dmuk] NICE NG3 — diabetes e gravidez — https://www.nice.org.uk/guidance/NG3/chapter/recommendations
+
+[dmvis] ADA — monitorização da glicose na gravidez, apoio aos critérios vigentes — https://diabetes.org/sites/default/files/2024-10/Glucose-Monitoring-During-Pregnancy-patient-FINAL.pdf

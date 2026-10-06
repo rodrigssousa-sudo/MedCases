@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "bacteriuria_assintomatica",
+  "titles": {
+    "pt": "Bacteriúria assintomática — gestação",
+    "es": "Bacteriuria asintomática — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Urocultura com bacteriúria significativa, sem sintomas urinários; na gravidez é indicação de tratamento dirigido.",
+      "es": "Urocultivo con bacteriuria significativa, sin síntomas urinarios; durante el embarazo indica tratamiento dirigido."
+    },
+    {
+      "id": "reasoning",
+      "pt": "A estase urinária da gestação aumenta risco de progressão para pielonefrite. Não confundir cultura contaminada com infecção verdadeira.",
+      "es": "La estasis urinaria del embarazo aumenta el riesgo de progresión a pielonefritis. No confundir cultivo contaminado con infección verdadera."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Rastrear com urocultura no início do pré-natal. ACOG utiliza ≥100.000 unidades formadoras de colônia por mL; considerar espécie, coleta e contaminação.",
+      "es": "Detectar con urocultivo al inicio del control prenatal. ACOG utiliza ≥100.000 unidades formadoras de colonias por mL; considerar especie, recolección y contaminación."
+    },
+    {
+      "id": "treatment",
+      "pt": "Selecionar antibiótico pelo antibiograma. Exemplo NICE: cefalexina 500 mg por via oral, 2 vezes por dia, durante 7 dias, se sensível e sem contraindicação; ajustar à função renal.",
+      "es": "Elegir antibiótico por antibiograma. Ejemplo NICE: cefalexina 500 mg por vía oral, 2 veces por día, durante 7 días, si es sensible y sin contraindicaciones; ajustar a función renal."
+    },
+    {
+      "id": "safety",
+      "pt": "Não extrapolar esse esquema para pielonefrite. Nitrofurantoína requer atenção a função renal, deficiência de G6PD e proximidade do termo; escolha não depende apenas de antibiograma.",
+      "es": "No extrapolar este esquema a pielonefritis. La nitrofurantoína requiere atención a función renal, déficit de G6PD y proximidad del término; la elección no depende solamente del antibiograma."
+    },
+    {
+      "id": "disposition",
+      "pt": "Pode ser tratada ambulatorialmente se realmente assintomática e estável. Febre, dor lombar ou vômitos mudam a classificação e exigem avaliação imediata. Seguimento da cultura conforme protocolo obstétrico.",
+      "es": "Puede tratarse ambulatoriamente si es realmente asintomática y estable. Fiebre, dolor lumbar o vómitos cambian la clasificación y requieren evaluación inmediata. Seguimiento del cultivo según protocolo obstétrico."
+    }
+  ],
+  "references": [
+    {
+      "id": "uti",
+      "title": "ACOG — infecções urinárias na gravidez, consenso 2023",
+      "url": "https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "cyst",
+      "title": "NICE NG109 — antibióticos para infecção urinária baixa",
+      "url": "https://www.nice.org.uk/guidance/NG109/chapter/recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 13,
+    "owner": "bacteriuria_assintomatica",
+    "title": {
+      "pt": "Bacteriúria assintomática — gestação",
+      "es": "Bacteriuria asintomática — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "bacteriuria_assintomatica",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "44c1563b0939817a5bc3239912c110238d72c3774fd612b65f269ce15a525e7b"
+}

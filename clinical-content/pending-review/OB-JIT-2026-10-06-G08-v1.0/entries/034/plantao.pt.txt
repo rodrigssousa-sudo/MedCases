@@ -1,0 +1,37 @@
+# Colelitíase/cólica biliar — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Dor biliar por cálculos, sem evidência de colecistite, colangite ou pancreatite; esses diagnósticos mudam a urgência.
+
+## Diagnóstico, exames e diferenciais
+
+- Avaliar dor em hipocôndrio direito, duração, febre e icterícia; ultrassom é exame inicial.
+- Laboratório dirigido ajuda a excluir inflamação, obstrução e pancreatite.
+
+## Tratamento e doses
+
+- Analgesia compatível com gestação e avaliação cirúrgica conforme recorrência/gravidade.
+- SAGES 2024 favorece laparoscopia em doença biliar em cenários definidos; cólica no terceiro trimestre admite decisão individual operatória ou conservadora.
+
+## Segurança e monitorização
+
+- Não indicar cirurgia imediata para toda cólica, nem adiar intervenção necessária apenas por trimestre.
+- Selecionar analgesia sem copiar anti-inflamatório de rotina não gestacional.
+
+## Escalonamento, alta e seguimento
+
+- Alta somente após melhora, tolerância oral e exclusão de complicação, com retorno e seguimento cirúrgico.
+- Febre, icterícia, dor persistente ou instabilidade requerem hospital.
+
+## Fisiopatologia e raciocínio
+
+- Estase e composição biliar da gravidez favorecem cálculos; recorrência pode levar a complicações.
+
+## Referências
+
+[surg] SAGES — laparoscopia na gravidez, final 2024 — https://www.sages.org/publications/guidelines/guidelines-for-the-use-of-laparoscopy-during-pregnancy/
+
+[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/

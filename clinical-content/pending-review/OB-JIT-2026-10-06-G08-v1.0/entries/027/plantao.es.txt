@@ -1,0 +1,38 @@
+# Crisis grave de asma — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Exacerbación grave de asma en la embarazada; preservar el owner de gravedad, sin transformarlo en asma leve.
+
+## Diagnóstico, estudios y diferenciales
+
+- Evaluar habla, esfuerzo respiratorio, conciencia, auscultación, saturación y flujo espiratorio cuando sea posible, sin demorar tratamiento.
+- Excluir embolia, neumonía y edema pulmonar.
+
+## Tratamiento y dosis
+
+- Oxígeno y salbutamol inhalatorio de acción rápida, con ipratropio en crisis grave, según protocolo agudo.
+- Prednisolona 40–50 mg por vía oral, 1 vez por día, durante 5–7 días en adulta, según GINA 2026; vía alternativa si la oral no es viable.
+
+## Seguridad y monitoreo
+
+- No demorar terapia necesaria por embarazo.
+- Vigilar respuesta, frecuencia cardíaca, potasio en uso intensivo y bienestar fetal; mantener tratamiento que contenga corticoide inhalado.
+
+## Escalamiento, alta y seguimiento
+
+- Agotamiento, tórax silencioso, alteración de conciencia o hipoxemia persistente requieren terapia intensiva.
+- La crisis grave requiere hospital; salida solamente tras respuesta sostenida y plan de controlador, técnica y retorno.
+
+## Fisiopatología y razonamiento
+
+- La broncoconstricción e inflamación perjudican oxigenación materna y fetal.
+- Suspender controlador por temor a medicamentos aumenta el riesgo.
+
+## Referencias
+
+[asth] GINA — estratégia global, final 2026 — https://ginasthma.org/wp-content/uploads/2026/05/GINA-2026-Strategy-Report-WMS.pdf
+
+[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/

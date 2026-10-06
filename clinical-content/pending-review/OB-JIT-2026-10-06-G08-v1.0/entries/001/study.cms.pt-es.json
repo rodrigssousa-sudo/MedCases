@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Náuseas e vômitos da gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Náuseas precoces da gestação com ingestão ainda possível; avaliar repercussão funcional.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Náuseas precoces da gestação com ingestão ainda possível; avaliar repercussão funcional."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alterações hormonais participam; sintomas persistentes ou incapacitantes exigem investigar hiperêmese e causas não obstétricas."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Verificar idade gestacional, perda ponderal, ingestão, hidratação e medicamentos. Dor focal, febre ou início tardio não devem ser atribuídos automaticamente à gravidez."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Refeições pequenas e líquidos tolerados. Doxilamina/piridoxina de liberação retardada, 10 mg/10 mg por comprimido: iniciar 2 comprimidos por via oral ao deitar; titulação conforme bula, máximo 4 comprimidos por dia, em uso programado."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Essa formulação não é intercambiável com outras concentrações. Alertar sobre sedação, evitar álcool e outros sedativos; não triturar."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alta com tolerância oral e retorno se oligúria, desmaio ou incapacidade de ingerir líquidos. Desidratação ou falha ambulatorial requer avaliação hospitalar."
+        }
+      ],
+      "references": [
+        "[nvp] RCOG Green-top 69 — náuseas, vômitos e hiperêmese; final 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/the-management-of-nausea-and-vomiting-of-pregnancy-and-hyperemesis-gravidarum-green-top-guideline-no-69/",
+        "[dox] DailyMed — doxilamina/piridoxina 10 mg/10 mg, liberação retardada — https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c283720d-f9a5-471f-9616-853a70f2b31d",
+        "[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Náuseas y vómitos del embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Náuseas tempranas del embarazo con ingesta todavía posible; evaluar repercusión funcional.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Náuseas tempranas del embarazo con ingesta todavía posible; evaluar repercusión funcional."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Participan cambios hormonales; los síntomas persistentes o incapacitantes exigen investigar hiperémesis y causas no obstétricas."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Verificar edad gestacional, pérdida de peso, ingesta, hidratación y medicamentos. Dolor focal, fiebre o inicio tardío no deben atribuirse automáticamente al embarazo."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Comidas pequeñas y líquidos tolerados. Doxilamina/piridoxina de liberación retardada, 10 mg/10 mg por comprimido: iniciar 2 comprimidos por vía oral al acostarse; titulación según ficha técnica, máximo 4 comprimidos por día, en uso programado."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Esta formulación no es intercambiable con otras concentraciones. Advertir sobre sedación, evitar alcohol y otros sedantes; no triturar."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alta con tolerancia oral y retorno ante oliguria, desmayo o imposibilidad de beber. Deshidratación o fracaso ambulatorio requieren evaluación hospitalaria."
+        }
+      ],
+      "references": [
+        "[nvp] RCOG Green-top 69 — náuseas, vômitos e hiperêmese; final 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/the-management-of-nausea-and-vomiting-of-pregnancy-and-hyperemesis-gravidarum-green-top-guideline-no-69/",
+        "[dox] DailyMed — doxilamina/piridoxina 10 mg/10 mg, liberação retardada — https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c283720d-f9a5-471f-9616-853a70f2b31d",
+        "[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations"
+      ]
+    }
+  }
+}

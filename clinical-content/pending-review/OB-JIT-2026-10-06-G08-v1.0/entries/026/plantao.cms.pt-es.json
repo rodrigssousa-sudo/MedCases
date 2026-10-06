@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "COVID-19 — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Plantão",
+      "summary": "COVID-19 na gestação exige avaliar risco de progressão e janela de tratamento; a gravidez não justifica negar terapia eficaz.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "COVID-19 na gestação exige avaliar risco de progressão e janela de tratamento; a gravidez não justifica negar terapia eficaz."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Confirmar infecção por teste apropriado; verificar oxigenação, função renal/hepática e lista completa de medicamentos antes de antiviral."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Para adulta elegível com taxa de filtração glomerular estimada ≥60 mL por minuto, nirmatrelvir 300 mg mais ritonavir 100 mg, juntos por via oral, 2 vezes por dia durante 5 dias, iniciados até 5 dias após início dos sintomas."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Interações por CYP3A podem impedir esse esquema.",
+            "Insuficiência renal requer esquema específico da bula atual; não afirmar contraindicação absoluta em toda doença renal grave.",
+            "Evitar uso na insuficiência hepática grave e não usar molnupiravir como alternativa habitual na gestação."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Hipoxemia, dor torácica, confusão ou piora clínica exigem hospital e avaliação obstétrica.",
+            "Alta apenas com estabilidade e plano de reavaliação, sem corticoide sistêmico de rotina para doença sem necessidade de oxigênio."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "A gestação aumenta risco de doença grave.",
+            "Considerar comorbidades, vacinação, sintomas e disponibilidade regional de antivirais."
+          ]
+        }
+      ],
+      "references": [
+        "[cov] CDC — COVID-19 e populações especiais — https://www.cdc.gov/covid/hcp/clinical-care/considerations-special-groups.html",
+        "[pax] FDA — nirmatrelvir/ritonavir, bula revisada 2025 — https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/217188s010lbl.pdf"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "COVID-19 — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Guardia",
+      "summary": "COVID-19 durante el embarazo exige evaluar riesgo de progresión y ventana de tratamiento; el embarazo no justifica negar terapia eficaz.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "COVID-19 durante el embarazo exige evaluar riesgo de progresión y ventana de tratamiento; el embarazo no justifica negar terapia eficaz."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Confirmar infección mediante prueba apropiada; verificar oxigenación, función renal/hepática y lista completa de medicamentos antes del antiviral."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Para adulta elegible con tasa de filtración glomerular estimada ≥60 mL por minuto, nirmatrelvir 300 mg más ritonavir 100 mg, juntos por vía oral, 2 veces por día durante 5 días, iniciados hasta 5 días después del inicio de síntomas."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Las interacciones por CYP3A pueden impedir este esquema.",
+            "La insuficiencia renal requiere esquema específico de la ficha actual; no afirmar contraindicación absoluta en toda enfermedad renal grave.",
+            "Evitar uso en insuficiencia hepática grave y no usar molnupiravir como alternativa habitual en el embarazo."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Hipoxemia, dolor torácico, confusión o empeoramiento requieren hospital y evaluación obstétrica.",
+            "Alta solamente con estabilidad y plan de reevaluación, sin corticoide sistémico rutinario para enfermedad sin necesidad de oxígeno."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "El embarazo aumenta el riesgo de enfermedad grave.",
+            "Considerar comorbilidades, vacunación, síntomas y disponibilidad regional de antivirales."
+          ]
+        }
+      ],
+      "references": [
+        "[cov] CDC — COVID-19 e populações especiais — https://www.cdc.gov/covid/hcp/clinical-care/considerations-special-groups.html",
+        "[pax] FDA — nirmatrelvir/ritonavir, bula revisada 2025 — https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/217188s010lbl.pdf"
+      ]
+    }
+  }
+}

@@ -1,0 +1,932 @@
+{
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "count": 50,
+  "date": "2026-10-06",
+  "humanApproval": false,
+  "entries": [
+    {
+      "rank": 1,
+      "owner": "nauseas_vomitos_gestacao",
+      "title": {
+        "pt": "Náuseas e vômitos da gestação",
+        "es": "Náuseas y vómitos del embarazo"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "nauseas_vomitos_gestacao",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [
+        "06611cff8cfe4e57ea48d05a9ee81bb4009526571aa0db43"
+      ],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "b115d23c124e1bbc6d6036d04c64d68b3ba4b0352f3bfd0f7dc679b05a8039a5"
+    },
+    {
+      "rank": 2,
+      "owner": "hiperemese_gravidica",
+      "title": {
+        "pt": "Hiperêmese gravídica",
+        "es": "Hiperémesis gravídica"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "hiperemese_gravidica",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "ac4792f93ffd226aefd01a089fcb39caa447b7cec8fc1c0084a930f55a4712b7"
+    },
+    {
+      "rank": 3,
+      "owner": "anemia_ferropriva",
+      "title": {
+        "pt": "Anemia ferropriva — gestação",
+        "es": "Anemia ferropénica — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "anemia_ferropriva",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "b11313e300c4e476b726eac0d4a6659cf6b46405a0783bc825757663d9583f9e"
+    },
+    {
+      "rank": 4,
+      "owner": "diabetes_gestacional",
+      "title": {
+        "pt": "Diabetes gestacional",
+        "es": "Diabetes gestacional"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "diabetes_gestacional",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "cb50f9dbf60260c126b7bd0b1dff061a7983c947aabb5559915f9e56614ab27d"
+    },
+    {
+      "rank": 5,
+      "owner": "diabetes_mellitus_tipo1",
+      "title": {
+        "pt": "Diabetes mellitus tipo 1 — gestação",
+        "es": "Diabetes mellitus tipo 1 — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "diabetes_mellitus_tipo1",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "2e179f224be2be914f478b08094db43804b7ceadd4e10481a1ce22a13683de95"
+    },
+    {
+      "rank": 6,
+      "owner": "diabetes_mellitus_tipo2",
+      "title": {
+        "pt": "Diabetes mellitus tipo 2 — gestação",
+        "es": "Diabetes mellitus tipo 2 — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "diabetes_mellitus_tipo2",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "5dcae1181f239b615f223a03137ce42702b8bcc723c9b8ab1c9ab3d0c6e6bae1"
+    },
+    {
+      "rank": 7,
+      "owner": "hipertensao_gestacional",
+      "title": {
+        "pt": "Hipertensão gestacional",
+        "es": "Hipertensión gestacional"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": false,
+      "cmsDocumentId": "hipertensao_gestacional",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "64222f5a114d5fff210b351e17ff3146ad8081eb6aec45d35dd908af19ca5770"
+    },
+    {
+      "rank": 8,
+      "owner": "hipertensao_arterial",
+      "title": {
+        "pt": "Hipertensão arterial crônica — gestação",
+        "es": "Hipertensión arterial crónica — embarazo"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "hipertensao_arterial",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [
+        "crise_hipertensiva",
+        "estenose_arteria_renal"
+      ],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "49ab4cc28966c398096a1e358755422fe102a2421b4686a99d2a799e1503c7d7"
+    },
+    {
+      "rank": 9,
+      "owner": "pre_eclampsia",
+      "title": {
+        "pt": "Pré-eclâmpsia",
+        "es": "Preeclampsia"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "pre_eclampsia",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [
+        "eclampsia_hellp",
+        "hipertensao_gestacional"
+      ],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "a71e90d7772405aaaca1ac949f067c69677929342d74c407c7a67156c32c8c62"
+    },
+    {
+      "rank": 10,
+      "owner": "hipotireoidismo",
+      "title": {
+        "pt": "Hipotireoidismo — gestação",
+        "es": "Hipotiroidismo — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "hipotireoidismo",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "c21a1996dca8f2a960186dca1b4331532d048a0579b7fffa3286f1d0846dc373"
+    },
+    {
+      "rank": 11,
+      "owner": "hipertireoidismo",
+      "title": {
+        "pt": "Hipertireoidismo — gestação",
+        "es": "Hipertiroidismo — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "hipertireoidismo",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "00b197662b993234d0ca6a6af446496ca6d818d24af637c71a208d9ccefe6efd"
+    },
+    {
+      "rank": 12,
+      "owner": "obesidade",
+      "title": {
+        "pt": "Obesidade — gestação",
+        "es": "Obesidad — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "obesidade",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "ce86e2b539d40e0a8468c840771d9e8518087c279a2fcc052543cb261d923250"
+    },
+    {
+      "rank": 13,
+      "owner": "bacteriuria_assintomatica",
+      "title": {
+        "pt": "Bacteriúria assintomática — gestação",
+        "es": "Bacteriuria asintomática — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "bacteriuria_assintomatica",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "44c1563b0939817a5bc3239912c110238d72c3774fd612b65f269ce15a525e7b"
+    },
+    {
+      "rank": 14,
+      "owner": "caso_cistite_aguda",
+      "title": {
+        "pt": "Cistite aguda — complemento gestacional do cadastro existente",
+        "es": "Cistitis aguda — complemento gestacional del registro existente"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "caso_cistite_aguda",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": true,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Retained original case/aura scope; pregnancy context only.",
+      "clinicalPayloadSha256": "1559dd7ce4d8dabbb3f52a71d37f3abc92c70d050a09fbb2eb19742fea2d6c32"
+    },
+    {
+      "rank": 15,
+      "owner": "pielonefrite_aguda",
+      "title": {
+        "pt": "Pielonefrite aguda — gestação",
+        "es": "Pielonefritis aguda — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "pielonefrite_aguda",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "50d5d0c4b094dc0c49179a594f1210b1e5e2c1c59fdc6cf830b5c33cd70d54c4"
+    },
+    {
+      "rank": 16,
+      "owner": "candidiase_vulvovaginal",
+      "title": {
+        "pt": "Candidíase vulvovaginal — gestação",
+        "es": "Candidiasis vulvovaginal — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "candidiase_vulvovaginal",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "b304b2d410bb50c2a415c7de3112cad5308add8cebbbba791d26ba4c5aaa59ba"
+    },
+    {
+      "rank": 17,
+      "owner": "vaginose_bacteriana",
+      "title": {
+        "pt": "Vaginose bacteriana — gestação",
+        "es": "Vaginosis bacteriana — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "vaginose_bacteriana",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "4eb3225dae455d0ebfdb6b5b3779c53499416fda482905900245580acca586ac"
+    },
+    {
+      "rank": 18,
+      "owner": "tricomoniase",
+      "title": {
+        "pt": "Tricomoníase — gestação",
+        "es": "Tricomoniasis — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "tricomoniase",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "4e7f52e1c907b04332a5d4ed6717cfede30a0183616264b7b10d043736dc22df"
+    },
+    {
+      "rank": 19,
+      "owner": "sifilis",
+      "title": {
+        "pt": "Sífilis — gestação",
+        "es": "Sífilis — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "sifilis",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "d18a2a4a2af8dfa57e8a18087485982e7c49dc2f58a32c8bd27e1c87e39628dc"
+    },
+    {
+      "rank": 20,
+      "owner": "infeccao_hiv",
+      "title": {
+        "pt": "Infecção por HIV — gestação",
+        "es": "Infección por VIH — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "infeccao_hiv",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "dee4b4f7fca269c770c4c5d33a6173cfd86bd5e7b2e22b98e921f79717b70099"
+    },
+    {
+      "rank": 21,
+      "owner": "hepatite_b_cronica",
+      "title": {
+        "pt": "Hepatite B crônica — gestação",
+        "es": "Hepatitis B crónica — embarazo"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "hepatite_b_cronica",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [
+        "hepatitis_b_aguda_detallada_2026"
+      ],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "c782fbb1fda3edfa2b91b00db6b9639a633aa90f5a6dbb8e7496d4c7a28138f9"
+    },
+    {
+      "rank": 22,
+      "owner": "herpes_genital",
+      "title": {
+        "pt": "Herpes genital — gestação",
+        "es": "Herpes genital — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "herpes_genital",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "d555d1f569361b5b8ded9ee637e23f2ed5f586f740d36bacf4bcd5c524047b4d"
+    },
+    {
+      "rank": 23,
+      "owner": "infeccao_chlamydia_trachomatis",
+      "title": {
+        "pt": "Infecção por Chlamydia trachomatis — gestação",
+        "es": "Infección por Chlamydia trachomatis — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "infeccao_chlamydia_trachomatis",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "d79ccc4fe15a8efcdb953b2f588c776f9a64198b73f093f562d71dc0a156e0c8"
+    },
+    {
+      "rank": 24,
+      "owner": "infeccao_gonococica",
+      "title": {
+        "pt": "Infecção gonocócica — gestação",
+        "es": "Infección gonocócica — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "infeccao_gonococica",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "9445a46828fa36e385b6eeb1594b8a2bd860bd8db95ddb1b3c2686cfa1b70e56"
+    },
+    {
+      "rank": 25,
+      "owner": "gripe_influenza_010",
+      "title": {
+        "pt": "Influenza — gestação",
+        "es": "Influenza — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "gripe_influenza_010",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "73284dfccf98b6c2578b911ec74881672b7b5c8060eaab190e59eb9ee622782b"
+    },
+    {
+      "rank": 26,
+      "owner": "covid19",
+      "title": {
+        "pt": "COVID-19 — gestação",
+        "es": "COVID-19 — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "covid19",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "fe857528b79d13aec0b70bbd4dfc8f258847c2948c10bd2aa631343910bbf725"
+    },
+    {
+      "rank": 27,
+      "owner": "asma_grave",
+      "title": {
+        "pt": "Crise grave de asma — gestação",
+        "es": "Crisis grave de asma — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "asma_grave",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "af3ad45d89dceeddd9217ff2a502ef0ece940b8c8b094ee8532e310bb7c3603a"
+    },
+    {
+      "rank": 28,
+      "owner": "pneumonia_grave",
+      "title": {
+        "pt": "Pneumonia grave — gestação",
+        "es": "Neumonía grave — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "pneumonia_grave",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "111ae698b21927ac1061709754882acd4f5ad0bd2b3d2a430bf5b695dc4045ee"
+    },
+    {
+      "rank": 29,
+      "owner": "doenca_refluxo_gastroesofagico",
+      "title": {
+        "pt": "Refluxo gastroesofágico — gestação",
+        "es": "Reflujo gastroesofágico — embarazo"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "doenca_refluxo_gastroesofagico",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "9181f1a1b54013371dbae46b1ab940739e3faca9660fec9538d2a9b3c0d5318a"
+    },
+    {
+      "rank": 30,
+      "owner": "constipacao_funcional",
+      "title": {
+        "pt": "Constipação funcional — gestação",
+        "es": "Constipación funcional — embarazo"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": true,
+      "cmsDocumentId": "constipacao_funcional",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "7000d363111fdc98725fd9094a6325b9f3f18ba2c0aea67c440fc23372b1e493"
+    },
+    {
+      "rank": 31,
+      "owner": "doenca_hemorroidaria",
+      "title": {
+        "pt": "Doença hemorroidária — gestação",
+        "es": "Enfermedad hemorroidal — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "doenca_hemorroidaria",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "2ed202c7d027b53cfc5eb138cfa7a0d3d9b0cf0f8e6abad79c416fd81d063aee"
+    },
+    {
+      "rank": 32,
+      "owner": "fissura_anal",
+      "title": {
+        "pt": "Fissura anal — gestação",
+        "es": "Fisura anal — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "fissura_anal",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "7de56dda1931c369f17a9e6c3b06579858aee5e88092e5186f642aea96cfa37f"
+    },
+    {
+      "rank": 33,
+      "owner": "diarrea_aguda_009",
+      "title": {
+        "pt": "Diarreia aguda infecciosa — gestação",
+        "es": "Diarrea aguda infecciosa — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "diarrea_aguda_009",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "7093f1a816a8e51810c3f65de27da4f16493500759381f4f4c66fcf3b0e22241"
+    },
+    {
+      "rank": 34,
+      "owner": "colelitiase_colica_biliar",
+      "title": {
+        "pt": "Colelitíase/cólica biliar — gestação",
+        "es": "Colelitiasis/cólico biliar — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "colelitiase_colica_biliar",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "d27b0764a4edc4e556d5bab2513cf50b2cee272c6452aaa6c0a87f5a123c6b58"
+    },
+    {
+      "rank": 35,
+      "owner": "colecistite_aguda",
+      "title": {
+        "pt": "Colecistite aguda — gestação",
+        "es": "Colecistitis aguda — embarazo"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "colecistite_aguda",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [
+        "colelitiase_colica_biliar",
+        "coledocolitiase"
+      ],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "0da857a4d89a186e0fcf6e84f79bd531b3f03568b6c94536a9d1f97c3ec351f0"
+    },
+    {
+      "rank": 36,
+      "owner": "colica_nefretica",
+      "title": {
+        "pt": "Cólica renal — gestação",
+        "es": "Cólico renal — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "colica_nefretica",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "cebf4ce66e5b09c6a16fc96790d1c2eaabff80228634c79af7fd10a32fcd8161"
+    },
+    {
+      "rank": 37,
+      "owner": "lombalgia_mecanica",
+      "title": {
+        "pt": "Lombalgia mecânica — gestação",
+        "es": "Lumbalgia mecánica — embarazo"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "lombalgia_mecanica",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "cda58490aec05395104268e265ee01d79fc66d704226d80919493fd926b42309"
+    },
+    {
+      "rank": 38,
+      "owner": "dor_cintura_pelvica_gestacao",
+      "title": {
+        "pt": "Dor da cintura pélvica relacionada à gestação",
+        "es": "Dolor de cintura pélvica relacionado con el embarazo"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "dor_cintura_pelvica_gestacao",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [
+        "lombalgia_mecanica"
+      ],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "08e3847ae148316ff7bc3e4adef6ce905164fd361b2ea5248677437b2e0f237e"
+    },
+    {
+      "rank": 39,
+      "owner": "sindrome_tunel_carpo",
+      "title": {
+        "pt": "Síndrome do túnel do carpo — gestação",
+        "es": "Síndrome del túnel carpiano — embarazo"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "sindrome_tunel_carpo",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [
+        "sindrome_tunel_cubital_neuropatia_ulnar"
+      ],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "25f05ded333cac24b8dc54ede5debce7867f3067f82c94745899caf9fffd583a"
+    },
+    {
+      "rank": 40,
+      "owner": "varizes_membros_inferiores",
+      "title": {
+        "pt": "Varizes de membros inferiores — gestação",
+        "es": "Várices de miembros inferiores — embarazo"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "varizes_membros_inferiores",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "e1ec3b738d6db0429bba8cf5407290bf98005bf287469942c33e1f79441856a5"
+    },
+    {
+      "rank": 41,
+      "owner": "dermatite_atopica",
+      "title": {
+        "pt": "Dermatite atópica — gestação",
+        "es": "Dermatitis atópica — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "dermatite_atopica",
+      "cmsAction": "UPDATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "d31ccc5fa25364007b5ffde6e3766becc4be630e501338f76f62e9fa11624b33"
+    },
+    {
+      "rank": 42,
+      "owner": "colestase_intra_hepatica_gestacao",
+      "title": {
+        "pt": "Colestase intra-hepática da gestação",
+        "es": "Colestasis intrahepática del embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": false,
+      "cmsDocumentId": "colestase_intra_hepatica_gestacao",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "063d23c334fc0c84b5620cd3d12856cc8b2bd5a35e7328906bfe10455b5a0c39"
+    },
+    {
+      "rank": 43,
+      "owner": "psiqui_depressao_maior",
+      "title": {
+        "pt": "Depressão maior — gestação",
+        "es": "Depresión mayor — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "psiqui_depressao_maior",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "03cbc1c2b4243e78f7a3ef0c93a9292b9c716c5dd6250ceea524e23fe3aef840"
+    },
+    {
+      "rank": 44,
+      "owner": "psiqui_ansiedade_generalizada",
+      "title": {
+        "pt": "Ansiedade generalizada — gestação",
+        "es": "Ansiedad generalizada — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "psiqui_ansiedade_generalizada",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "c506680af4430def62bad21c644e7869b1f318ee34abd14d41bfcbe77b686108"
+    },
+    {
+      "rank": 45,
+      "owner": "caso_enxaqueca_aura",
+      "title": {
+        "pt": "Enxaqueca com aura — gestação",
+        "es": "Migraña con aura — embarazo"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "caso_enxaqueca_aura",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": true,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Retained original case/aura scope; pregnancy context only.",
+      "clinicalPayloadSha256": "d69fdfef2603326225c5b05c73b608e94cbde6bdd683079a824145d265a547a6"
+    },
+    {
+      "rank": 46,
+      "owner": "ameaca_abortamento",
+      "title": {
+        "pt": "Ameaça de abortamento",
+        "es": "Amenaza de aborto"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "ameaca_abortamento",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [
+        "abortamento_espontaneo"
+      ],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "299c191b500dc50bfe204f17b2970b4c23663c4da83d42bc6ea3bed4243dc5b4"
+    },
+    {
+      "rank": 47,
+      "owner": "abortamento_espontaneo",
+      "title": {
+        "pt": "Abortamento espontâneo precoce não séptico",
+        "es": "Aborto espontáneo temprano no séptico"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "abortamento_espontaneo",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [
+        "obstetr_abortamento_septico"
+      ],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "746c1b1a33df9e256c49e62293108a0afe5f40651d759d318f1038dd846074d9"
+    },
+    {
+      "rank": 48,
+      "owner": "obstetr_gravidez_ectopica_rota",
+      "title": {
+        "pt": "Gravidez ectópica rota ou suspeita de ruptura",
+        "es": "Embarazo ectópico roto o sospecha de rotura"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": true,
+      "cmsDocumentId": "obstetr_gravidez_ectopica_rota",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "19f54f3fe80fab818b7dd23d03f0eec93896e8752e9016f9dbde94166ccebb94"
+    },
+    {
+      "rank": 49,
+      "owner": "trabalho_parto_prematuro",
+      "title": {
+        "pt": "Trabalho de parto prematuro",
+        "es": "Trabajo de parto prematuro"
+      },
+      "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+      "ownerExistsRemotely": true,
+      "nativeExists": false,
+      "cmsDocumentId": "trabalho_parto_prematuro",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": true,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [],
+      "scopeResolution": "Existing ID preserved; no gestational alias owner.",
+      "clinicalPayloadSha256": "2d4dea2189aba4fe4a127f2df16016332431e626048f60111348bfdd81042b8d"
+    },
+    {
+      "rank": 50,
+      "owner": "rotura_prematura_pre_termo_membranas",
+      "title": {
+        "pt": "Rotura prematura pré-termo das membranas",
+        "es": "Rotura prematura pretérmino de membranas"
+      },
+      "action": "NEW_CONDITION_DRAFT",
+      "ownerExistsRemotely": false,
+      "nativeExists": false,
+      "cmsDocumentId": "rotura_prematura_pre_termo_membranas",
+      "cmsAction": "CREATE_DRAFT",
+      "preserveExistingGeneralContent": false,
+      "caseOwnerPreserved": false,
+      "relatedNonEquivalentIds": [
+        "trabalho_parto_prematuro",
+        "corioamnionite_sepse_obstetrica"
+      ],
+      "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated.",
+      "clinicalPayloadSha256": "08206420e0ae0a0d8184e869bf5dfa70e77e1f60d1eec4bf734212315423fd18"
+    }
+  ]
+}

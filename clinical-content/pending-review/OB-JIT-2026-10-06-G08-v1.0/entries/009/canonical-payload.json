@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "pre_eclampsia",
+  "titles": {
+    "pt": "Pré-eclâmpsia",
+    "es": "Preeclampsia"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Doença hipertensiva após 20 semanas com proteinúria ou disfunção materna/uteroplacentária; proteinúria não é obrigatória.",
+      "es": "Enfermedad hipertensiva después de 20 semanas con proteinuria o disfunción materna/uteroplacentaria; la proteinuria no es obligatoria."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Disfunção placentária e endotelial pode comprometer múltiplos órgãos. Eclâmpsia e HELLP são complicações relacionadas, não aliases que autorizem fundir owners.",
+      "es": "La disfunción placentaria y endotelial puede afectar múltiples órganos. Eclampsia y HELLP son complicaciones relacionadas, no alias que autoricen fusionar owners."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar pressão, cefaleia, visão, dor epigástrica, dispneia, plaquetas, creatinina, transaminases e proteinúria, com avaliação fetal. Não esperar todos os exames para tratar instabilidade.",
+      "es": "Evaluar presión, cefalea, visión, dolor epigástrico, disnea, plaquetas, creatinina, transaminasas y proteinuria, con evaluación fetal. No esperar todos los análisis para tratar inestabilidad."
+    },
+    {
+      "id": "treatment",
+      "pt": "Hipertensão grave requer anti-hipertensivo supervisionado e planejamento obstétrico. Se indicado magnésio para doença grave: sulfato de magnésio 4 g intravenosos em 5–15 minutos, depois 1 g por hora durante 24 horas, conforme NICE e situação clínica.",
+      "es": "La hipertensión grave requiere antihipertensivo supervisado y planificación obstétrica. Si se indica magnesio para enfermedad grave: sulfato de magnesio 4 g intravenosos en 5–15 minutos, después 1 g por hora durante 24 horas, según NICE y situación clínica."
+    },
+    {
+      "id": "safety",
+      "pt": "Magnésio não substitui controle pressórico. Monitorar respiração, reflexos e diurese; disfunção renal exige ajuste e vigilância. Diluição depende da concentração disponível e protocolo institucional.",
+      "es": "El magnesio no sustituye el control de presión. Vigilar respiración, reflejos y diuresis; disfunción renal exige ajuste y vigilancia. La dilución depende de la concentración disponible y del protocolo institucional."
+    },
+    {
+      "id": "disposition",
+      "pt": "Convulsão, edema pulmonar, deterioração laboratorial ou comprometimento fetal exigem internação e escalonamento. Decisão de parto deve equilibrar estabilidade e prematuridade, sem adiar resolução de emergência.",
+      "es": "Convulsión, edema pulmonar, deterioro de laboratorio o compromiso fetal exigen internación y escalamiento. La decisión del parto debe equilibrar estabilidad y prematuridad, sin demorar la resolución de una emergencia."
+    }
+  ],
+  "references": [
+    {
+      "id": "ht",
+      "title": "NICE NG133 — hipertensão na gravidez, atualização 2023",
+      "url": "https://www.nice.org.uk/guidance/ng133/chapter/Recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "mg",
+      "title": "NICE NG133 — cuidado crítico em hipertensão e pré-eclâmpsia",
+      "url": "https://www.nice.org.uk/guidance/ng133/resources/criteria-for-choice-of-critical-care-level-hypertension-preeclampsia-and-eclampsia-pdf-8720711396",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 9,
+    "owner": "pre_eclampsia",
+    "title": {
+      "pt": "Pré-eclâmpsia",
+      "es": "Preeclampsia"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "pre_eclampsia",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [
+      "eclampsia_hellp",
+      "hipertensao_gestacional"
+    ],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "a71e90d7772405aaaca1ac949f067c69677929342d74c407c7a67156c32c8c62"
+}

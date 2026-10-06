@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "hipertensao_gestacional",
+  "titles": {
+    "pt": "Hipertensão gestacional",
+    "es": "Hipertensión gestacional"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Hipertensão nova após 20 semanas, sem critérios atuais de pré-eclâmpsia; pode evoluir para ela.",
+      "es": "Hipertensión nueva después de 20 semanas, sin criterios actuales de preeclampsia; puede evolucionar hacia ella."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Não é sinônimo de hipertensão crônica nem de eclâmpsia. Ausência de proteinúria não exclui pré-eclâmpsia com disfunção de órgãos.",
+      "es": "No es sinónimo de hipertensión crónica ni de eclampsia. La ausencia de proteinuria no excluye preeclampsia con disfunción de órganos."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Confirmar pressão com técnica adequada; investigar sintomas, urina, hemograma, plaquetas, creatinina e enzimas hepáticas conforme quadro, além de bem-estar fetal.",
+      "es": "Confirmar presión con técnica adecuada; investigar síntomas, orina, hemograma, plaquetas, creatinina y enzimas hepáticas según cuadro, además de bienestar fetal."
+    },
+    {
+      "id": "treatment",
+      "pt": "Conforme NICE, tratar pressão persistente ≥140/90 mmHg, com alvo 135/85 mmHg. Labetalol é opção inicial; nifedipino ou metildopa são alternativas conforme contraindicações e tolerância.",
+      "es": "Según NICE, tratar presión persistente ≥140/90 mmHg, con objetivo 135/85 mmHg. Labetalol es una opción inicial; nifedipino o metildopa son alternativas según contraindicaciones y tolerancia."
+    },
+    {
+      "id": "safety",
+      "pt": "Pressão sistólica ≥160 mmHg ou diastólica ≥110 mmHg requer atendimento hospitalar imediato e tratamento supervisionado. Não usar inibidores da ECA ou bloqueadores de receptor de angiotensina como rotina na gestação.",
+      "es": "Presión sistólica ≥160 mmHg o diastólica ≥110 mmHg requiere atención hospitalaria inmediata y tratamiento supervisado. No usar inhibidores de la ECA o bloqueantes del receptor de angiotensina como rutina durante el embarazo."
+    },
+    {
+      "id": "disposition",
+      "pt": "Cefaleia persistente, escotomas, dor epigástrica, dispneia ou redução de movimentos fetais impedem alta simples. Programar vigilância e parto de acordo com gravidade e idade gestacional.",
+      "es": "Cefalea persistente, escotomas, dolor epigástrico, disnea o disminución de movimientos fetales impiden un alta simple. Programar vigilancia y parto según gravedad y edad gestacional."
+    }
+  ],
+  "references": [
+    {
+      "id": "ht",
+      "title": "NICE NG133 — hipertensão na gravidez, atualização 2023",
+      "url": "https://www.nice.org.uk/guidance/ng133/chapter/Recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "lab",
+      "title": "DailyMed — labetalol, prescrição oficial",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=35e7bce0-d9ff-4f8b-95c5-218da2a2d929",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 7,
+    "owner": "hipertensao_gestacional",
+    "title": {
+      "pt": "Hipertensão gestacional",
+      "es": "Hipertensión gestacional"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": false,
+    "cmsDocumentId": "hipertensao_gestacional",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "64222f5a114d5fff210b351e17ff3146ad8081eb6aec45d35dd908af19ca5770"
+}

@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Colestase intra-hepática da gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Prurido gestacional com elevação de ácidos biliares após exclusão de outras causas; costuma não haver erupção primária.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Prurido gestacional com elevação de ácidos biliares após exclusão de outras causas; costuma não haver erupção primária."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alterações do transporte biliar podem produzir prurido e risco fetal. Reduzir prurido não comprova redução de morte fetal."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Solicitar ácidos biliares e testes hepáticos; repetir se prurido persiste com exames iniciais normais. RCOG classifica pico de 19–39 micromol/L como leve, 40–99 como moderado e ≥100 como grave."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Cuidados de pele e ácido ursodesoxicólico podem aliviar sintomas; dose deve ser individualizada por equipe obstétrica. Não apresentar o medicamento como garantia de prevenção de morte fetal."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Programar vigilância e momento do parto conforme pico de ácidos biliares, idade gestacional, comorbidades e diretriz adotada. Não aguardar piora materna para avaliar risco fetal."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Redução de movimentos fetais exige atendimento imediato. Seguimento obstétrico e confirmação de resolução pós-parto; alterações persistentes exigem investigação hepática."
+        }
+      ],
+      "references": [
+        "[icp] RCOG Green-top 43 — colestase gestacional, final 2022 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/intrahepatic-cholestasis-of-pregnancy-green-top-guideline-no-43/",
+        "[icpp] RCOG — colestase, informação atualizada abril 2026 — https://www.rcog.org.uk/for-the-public/browse-our-patient-information/intrahepatic-cholestasis-of-pregnancy/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Colestasis intrahepática del embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Prurito gestacional con elevación de ácidos biliares tras excluir otras causas; suele no haber erupción primaria.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Prurito gestacional con elevación de ácidos biliares tras excluir otras causas; suele no haber erupción primaria."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Los cambios del transporte biliar pueden producir prurito y riesgo fetal. Reducir prurito no demuestra reducción de muerte fetal."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Solicitar ácidos biliares y pruebas hepáticas; repetir si persiste prurito con análisis iniciales normales. RCOG clasifica pico de 19–39 micromol/L como leve, 40–99 como moderado y ≥100 como grave."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Cuidados de piel y ácido ursodesoxicólico pueden aliviar síntomas; individualizar dosis por equipo obstétrico. No presentar el medicamento como garantía de prevención de muerte fetal."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Programar vigilancia y momento del parto según pico de ácidos biliares, edad gestacional, comorbilidades y guía adoptada. No esperar empeoramiento materno para evaluar riesgo fetal."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La disminución de movimientos fetales exige atención inmediata. Seguimiento obstétrico y confirmación de resolución posparto; alteraciones persistentes requieren investigación hepática."
+        }
+      ],
+      "references": [
+        "[icp] RCOG Green-top 43 — colestase gestacional, final 2022 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/intrahepatic-cholestasis-of-pregnancy-green-top-guideline-no-43/",
+        "[icpp] RCOG — colestase, informação atualizada abril 2026 — https://www.rcog.org.uk/for-the-public/browse-our-patient-information/intrahepatic-cholestasis-of-pregnancy/"
+      ]
+    }
+  }
+}

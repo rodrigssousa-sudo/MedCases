@@ -1,0 +1,33 @@
+# Hipertireoidismo — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Excesso de hormônios tireoidianos na gestação; distinguir doença de Graves de tireotoxicose transitória gestacional.
+
+## Fisiopatologia e raciocínio
+
+O estímulo por gonadotrofina coriônica pode reduzir TSH, especialmente com hiperêmese; TSH baixo isolado não define necessidade de antitireoidiano.
+
+## Diagnóstico, exames e diferenciais
+
+Dosar TSH, tiroxina livre e, quando indicado, anticorpos contra receptor de TSH. Investigar bócio, orbitopatia, perda ponderal, palpitações e exposição a fármacos.
+
+## Tratamento e doses
+
+Quando necessário, propiltiouracila costuma ser preferida no primeiro trimestre; a escolha posterior deve ponderar toxicidade hepática e embriopatia. Utilizar a menor dose eficaz, titulada por exames, sem dose universal.
+
+## Segurança e monitorização
+
+Iodo radioativo é contraindicado. Monitorar efeitos adversos e função fetal quando há anticorpos relevantes; não tratar tireotoxicose transitória apenas por TSH suprimido.
+
+## Escalonamento, alta e seguimento
+
+Febre, delirium, insuficiência cardíaca ou arritmia instável sugerem crise tireotóxica e exigem hospital. Casos estáveis precisam de seguimento obstétrico/endócrino e plano pós-parto.
+
+## Referências
+
+[thy] RCOG Green-top 76 — tireoide na gravidez, final 2025 — https://obgyn.onlinelibrary.wiley.com/doi/10.1111/1471-0528.18088
+
+[hyper] American Thyroid Association — hipertireoidismo na gravidez — https://www.thyroid.org/hyperthyroidism-in-pregnancy/

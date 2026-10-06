@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Crise grave de asma — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Plantão",
+      "summary": "Exacerbação grave de asma na grávida; preservar owner de gravidade, sem transformá-lo em asma leve.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Exacerbação grave de asma na grávida; preservar owner de gravidade, sem transformá-lo em asma leve."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Avaliar fala, esforço respiratório, consciência, ausculta, saturação e fluxo expiratório quando possível, sem atrasar tratamento.",
+            "Excluir embolia, pneumonia e edema pulmonar."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Oxigênio e salbutamol inalatório de ação rápida, com ipratrópio em crise grave, conforme protocolo agudo.",
+            "Prednisolona 40–50 mg por via oral, 1 vez por dia, durante 5–7 dias em adulta, conforme GINA 2026; via alternativa se oral inviável."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Não retardar terapia necessária por gravidez.",
+            "Vigiar resposta, frequência cardíaca, potássio em uso intensivo e bem-estar fetal; manter tratamento contendo corticoide inalatório."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Exaustão, tórax silencioso, alteração de consciência ou hipoxemia persistente exigem terapia intensiva.",
+            "Crise grave requer hospital; saída apenas após resposta sustentada e plano de controlador, técnica e retorno."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Broncoconstrição e inflamação prejudicam oxigenação materna e fetal.",
+            "Suspender controlador por medo de medicamentos aumenta risco."
+          ]
+        }
+      ],
+      "references": [
+        "[asth] GINA — estratégia global, final 2026 — https://ginasthma.org/wp-content/uploads/2026/05/GINA-2026-Strategy-Report-WMS.pdf",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Crisis grave de asma — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Guardia",
+      "summary": "Exacerbación grave de asma en la embarazada; preservar el owner de gravedad, sin transformarlo en asma leve.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Exacerbación grave de asma en la embarazada; preservar el owner de gravedad, sin transformarlo en asma leve."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Evaluar habla, esfuerzo respiratorio, conciencia, auscultación, saturación y flujo espiratorio cuando sea posible, sin demorar tratamiento.",
+            "Excluir embolia, neumonía y edema pulmonar."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Oxígeno y salbutamol inhalatorio de acción rápida, con ipratropio en crisis grave, según protocolo agudo.",
+            "Prednisolona 40–50 mg por vía oral, 1 vez por día, durante 5–7 días en adulta, según GINA 2026; vía alternativa si la oral no es viable."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "No demorar terapia necesaria por embarazo.",
+            "Vigilar respuesta, frecuencia cardíaca, potasio en uso intensivo y bienestar fetal; mantener tratamiento que contenga corticoide inhalado."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Agotamiento, tórax silencioso, alteración de conciencia o hipoxemia persistente requieren terapia intensiva.",
+            "La crisis grave requiere hospital; salida solamente tras respuesta sostenida y plan de controlador, técnica y retorno."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La broncoconstricción e inflamación perjudican oxigenación materna y fetal.",
+            "Suspender controlador por temor a medicamentos aumenta el riesgo."
+          ]
+        }
+      ],
+      "references": [
+        "[asth] GINA — estratégia global, final 2026 — https://ginasthma.org/wp-content/uploads/2026/05/GINA-2026-Strategy-Report-WMS.pdf",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "caso_enxaqueca_aura",
+  "titles": {
+    "pt": "Enxaqueca com aura — gestação",
+    "es": "Migraña con aura — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Enxaqueca com aura conhecida na grávida; nova manifestação neurológica exige excluir causas secundárias antes de atribuí-la à aura.",
+      "es": "Migraña con aura conocida en la embarazada; una nueva manifestación neurológica exige excluir causas secundarias antes de atribuirla al aura."
+    },
+    {
+      "id": "reasoning",
+      "pt": "O padrão pode mudar durante a gravidez. Cefaleia nova ou diferente, especialmente com hipertensão, não deve receber diagnóstico automático de enxaqueca.",
+      "es": "El patrón puede cambiar durante el embarazo. Una cefalea nueva o diferente, especialmente con hipertensión, no debe diagnosticarse automáticamente como migraña."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Verificar pressão, exame neurológico, início súbito, febre, visão e sintomas de pré-eclâmpsia. Déficit focal ou dor explosiva requer investigação urgente.",
+      "es": "Verificar presión, examen neurológico, inicio súbito, fiebre, visión y síntomas de preeclampsia. Déficit focal o dolor explosivo requiere investigación urgente."
+    },
+    {
+      "id": "treatment",
+      "pt": "Hidratação, sono e manejo de desencadeantes. Paracetamol 500 mg–1 g por via oral por dose, intervalo mínimo de 4 horas, no máximo 4 doses e 4 g em 24 horas para adulta sem fatores de risco; usar menor dose eficaz pelo menor tempo.",
+      "es": "Hidratación, sueño y manejo de desencadenantes. Paracetamol 500 mg–1 g por vía oral por dosis, intervalo mínimo de 4 horas, máximo 4 dosis y 4 g en 24 horas para adulta sin factores de riesgo; usar menor dosis eficaz por el menor tiempo."
+    },
+    {
+      "id": "safety",
+      "pt": "Baixo peso, hepatopatia, desnutrição ou doença renal podem exigir redução/ajuste. Evitar duplicar produtos com paracetamol; terapias específicas de enxaqueca na gestação exigem avaliação individual.",
+      "es": "Bajo peso, hepatopatía, desnutrición o enfermedad renal pueden exigir reducción/ajuste. Evitar duplicar productos con paracetamol; las terapias específicas de migraña durante el embarazo requieren evaluación individual."
+    },
+    {
+      "id": "disposition",
+      "pt": "Alta apenas se padrão conhecido, exame adequado e melhora, com retorno por mudança do quadro. Suspeita de pré-eclâmpsia, trombose venosa cerebral, hemorragia ou meningite exige hospital.",
+      "es": "Alta solamente ante patrón conocido, examen adecuado y mejoría, con retorno ante cambio del cuadro. Sospecha de preeclampsia, trombosis venosa cerebral, hemorragia o meningitis exige hospital."
+    }
+  ],
+  "references": [
+    {
+      "id": "mig",
+      "title": "ACOG — cefaleias e gravidez",
+      "url": "https://www.acog.org/womens-health/faqs/headaches-and-pregnancy",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    },
+    {
+      "id": "mign",
+      "title": "NHS — cefaleias na gravidez",
+      "url": "https://www.nhs.uk/pregnancy/common-symptoms/headaches/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    },
+    {
+      "id": "para",
+      "title": "NHS — paracetamol em adultos e gravidez",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 45,
+    "owner": "caso_enxaqueca_aura",
+    "title": {
+      "pt": "Enxaqueca com aura — gestação",
+      "es": "Migraña con aura — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "caso_enxaqueca_aura",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": true,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Retained original case/aura scope; pregnancy context only."
+  },
+  "clinicalPayloadSha256": "d69fdfef2603326225c5b05c73b608e94cbde6bdd683079a824145d265a547a6"
+}

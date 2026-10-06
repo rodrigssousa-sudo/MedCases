@@ -1,0 +1,175 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Rotura prematura pré-termo das membranas",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Plantão",
+      "summary": "Rotura de membranas antes do trabalho de parto e antes do termo; separar de rotura a termo e corioamnionite.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Rotura de membranas antes do trabalho de parto e antes do termo; separar de rotura a termo e corioamnionite."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "História de perda de líquido e exame com espéculo estéril; teste específico se necessário.",
+            "Evitar exames digitais repetidos.",
+            "Não diagnosticar infecção apenas por leucócitos ou proteína C reativa isolados."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "NICE para latência: eritromicina 250 mg por via oral, 4 vezes por dia, por no máximo 10 dias ou até trabalho de parto estabelecido, o que ocorrer primeiro.",
+            "Corticoide antenatal e neuroproteção conforme idade gestacional e previsão de parto."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Não usar amoxicilina/clavulanato como profilaxia de latência.",
+            "Não indicar tocolítico de rotina na rotura pré-termo.",
+            "Infecção exige tratamento e decisão de parto, não prolongamento cego da latência."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Avaliação hospitalar inicial, comunicação com neonatologia e plano individual de parto.",
+            "Febre, dor uterina, sangramento, alteração fetal ou cordão prolapsado exige intervenção imediata."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Há risco de prematuridade, infecção, descolamento e prolapso de cordão.",
+            "A vigilância combina condições maternas e fetais."
+          ]
+        }
+      ],
+      "references": [
+        "[pprom] RCOG Green-top 73 — rotura pré-termo, vigência estendida em 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/care-of-women-presenting-with-suspected-preterm-prelabour-rupture-of-membranes-from-24plus0-weeks-of-gestation-green-top-guideline-no-73/",
+        "[ptl] NICE NG25 — trabalho de parto prematuro — https://www.nice.org.uk/guidance/ng25/chapter/recommendations",
+        "[ster] ACOG Committee Opinion 713 — corticosteroide antenatal — https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Rotura prematura pretérmino de membranas",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Guardia",
+      "summary": "Rotura de membranas antes del trabajo de parto y antes del término; separar de rotura a término y corioamnionitis.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Rotura de membranas antes del trabajo de parto y antes del término; separar de rotura a término y corioamnionitis."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Historia de pérdida de líquido y examen con espéculo estéril; prueba específica si es necesaria.",
+            "Evitar exámenes digitales repetidos.",
+            "No diagnosticar infección solamente por leucocitos o proteína C reactiva aislados."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "NICE para latencia: eritromicina 250 mg por vía oral, 4 veces por día, durante un máximo de 10 días o hasta trabajo de parto establecido, lo que ocurra primero.",
+            "Corticoide prenatal y neuroprotección según edad gestacional y previsión de parto."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "No usar amoxicilina/clavulanato como profilaxis de latencia.",
+            "No indicar tocolítico rutinario en rotura pretérmino.",
+            "La infección exige tratamiento y decisión del parto, no prolongación ciega de latencia."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Evaluación hospitalaria inicial, comunicación con neonatología y plan individual del parto.",
+            "Fiebre, dolor uterino, sangrado, alteración fetal o cordón prolapsado exige intervención inmediata."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Existe riesgo de prematuridad, infección, desprendimiento y prolapso de cordón.",
+            "La vigilancia combina condiciones maternas y fetales."
+          ]
+        }
+      ],
+      "references": [
+        "[pprom] RCOG Green-top 73 — rotura pré-termo, vigência estendida em 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/care-of-women-presenting-with-suspected-preterm-prelabour-rupture-of-membranes-from-24plus0-weeks-of-gestation-green-top-guideline-no-73/",
+        "[ptl] NICE NG25 — trabalho de parto prematuro — https://www.nice.org.uk/guidance/ng25/chapter/recommendations",
+        "[ster] ACOG Committee Opinion 713 — corticosteroide antenatal — https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation"
+      ]
+    }
+  }
+}

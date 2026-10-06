@@ -1,0 +1,33 @@
+# Hipertensión arterial crónica — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Hipertensión presente antes del embarazo o identificada antes de 20 semanas; preservar identidad de enfermedad crónica.
+
+## Fisiopatología y razonamiento
+
+Existe riesgo de preeclampsia sobreagregada, restricción del crecimiento y complicaciones vasculares. Un empeoramiento no debe atribuirse solamente a la hipertensión basal.
+
+## Diagnóstico, estudios y diferenciales
+
+Registrar presión basal, función renal, proteinuria y fármacos. Alteraciones de plaquetas, hígado, riñón o síntomas neurológicos exigen evaluar preeclampsia sobreagregada.
+
+## Tratamiento y dosis
+
+Revisar y sustituir inhibidores de la ECA o bloqueantes de angiotensina. Labetalol oral puede iniciarse en 100 mg, 2 veces por día, con titulación clínica; evitar ante asma importante, bradicardia o bloqueo.
+
+## Seguridad y monitoreo
+
+La dosis inicial no es un protocolo de crisis. Para prevención en alto riesgo, NICE indica ácido acetilsalicílico 75–150 mg por vía oral, 1 vez por día, desde las 12 semanas; evaluar contraindicaciones.
+
+## Escalamiento, alta y seguimiento
+
+Seguimiento de alto riesgo y crecimiento fetal. Crisis grave o signos de lesión de órganos requieren hospital; plan escrito de monitoreo y revisión también después del parto.
+
+## Referencias
+
+[ht] NICE NG133 — hipertensão na gravidez, atualização 2023 — https://www.nice.org.uk/guidance/ng133/chapter/Recommendations
+
+[lab] DailyMed — labetalol, prescrição oficial — https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=35e7bce0-d9ff-4f8b-95c5-218da2a2d929

@@ -1,0 +1,40 @@
+# Anemia ferropriva — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Deficiência de ferro com anemia na gestação; interpretar hemoglobina por trimestre.
+
+## Diagnóstico, exames e diferenciais
+
+- OMS 2024: hemoglobina abaixo de 11 g/dL no primeiro e terceiro trimestres, ou 10,5 g/dL no segundo.
+- Solicitar hemograma e ferritina; considerar inflamação, hemoglobinopatia e outras deficiências.
+
+## Tratamento e doses
+
+- Para anemia na gestação, a OMS recomenda 120 mg de ferro elemental por via oral por dia, com 400 microgramas de ácido fólico por dia, até normalização.
+- Depois, retornar à profilaxia de 30–60 mg de ferro elemental por dia.
+
+## Segurança e monitorização
+
+- Conferir ferro elemental, não a massa total do sal.
+- Avaliar tolerância e resposta; ferro intravenoso depende do produto, trimestre e cálculo individual, não de uma dose universal.
+
+## Escalonamento, alta e seguimento
+
+- Dispneia em repouso, síncope, instabilidade ou anemia muito sintomática exigem avaliação urgente.
+- Falta de resposta requer revisar adesão, absorção, perdas e diagnóstico.
+
+## Fisiopatologia e raciocínio
+
+- Expansão plasmática causa hemodiluição; não explica automaticamente anemia patológica.
+- A demanda de ferro cresce e perdas ou dieta insuficiente podem esgotar reservas.
+
+## Referências
+
+[hb] OMS — pontos de corte de hemoglobina, final 2024 — https://www.who.int/publications-detail-redirect/9789240088542
+
+[fe] OMS — suplementação diária de ferro na gestação — https://www.who.int/tools/elena/interventions/daily-iron-pregnancy
+
+[fet] OMS — recomendações de cuidado pré-natal, 2016 — https://iris.who.int/bitstream/10665/250796/1/9789241549912-eng.pdf

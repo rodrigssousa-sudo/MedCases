@@ -1,0 +1,23 @@
+{
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ADMIN_DRAFTS_SAVED": 50,
+  "ADMIN_READBACK_GATE": "PASS",
+  "GUIDES_PUBLISHED": 0,
+  "RUNTIME_WRITES": 0,
+  "newGuidesCreated": 28,
+  "existingGuidesUpdated": 22,
+  "unrelatedFieldsPreserved": true,
+  "approved": false,
+  "atomicDraftSave": "PASS",
+  "metrics": {
+    "guidesTotal": 329,
+    "guidesDraft": 289,
+    "guidesPublished": 40,
+    "legacyInventoryCollectionCount": 0,
+    "nativeCatalogPathologies": 514,
+    "adminDisplayedPathologyCount": "NOT_VERIFIED"
+  },
+  "readAt": "2026-10-06T17:37:03.539051+00:00",
+  "finalClarificationsUpdated": 4,
+  "finalCanonicalHashesVerified": 50
+}

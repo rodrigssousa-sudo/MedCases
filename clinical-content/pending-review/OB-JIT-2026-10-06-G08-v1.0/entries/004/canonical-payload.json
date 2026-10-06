@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "diabetes_gestacional",
+  "titles": {
+    "pt": "Diabetes gestacional",
+    "es": "Diabetes gestacional"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Hiperglicemia diagnosticada durante a gestação que não satisfaz critérios de diabetes manifesto prévio.",
+      "es": "Hiperglucemia diagnosticada durante el embarazo que no cumple criterios de diabetes manifiesta previa."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Resistência à insulina aumenta com hormônios placentários; hiperglicemia materna favorece crescimento fetal excessivo e hipoglicemia neonatal.",
+      "es": "La resistencia a la insulina aumenta por hormonas placentarias; la hiperglucemia materna favorece crecimiento fetal excesivo e hipoglucemia neonatal."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Na estratégia de etapa única, teste com 75 g de glicose entre 24–28 semanas: jejum ≥92 mg/dL, após 1 hora ≥180 mg/dL ou após 2 horas ≥153 mg/dL; 1 valor alterado diagnostica. Não misturar critérios de outra estratégia.",
+      "es": "En la estrategia de un solo paso, prueba con 75 g de glucosa entre 24–28 semanas: ayuno ≥92 mg/dL, después de 1 hora ≥180 mg/dL o después de 2 horas ≥153 mg/dL; 1 valor alterado diagnostica. No mezclar criterios de otra estrategia."
+    },
+    {
+      "id": "treatment",
+      "pt": "Nutrição individualizada, atividade apropriada e automonitorização. Insulina é a opção farmacológica preferencial da ADA quando metas não são atingidas; dose e tipo são individualizados, sem esquema fixo para toda gestante.",
+      "es": "Nutrición individualizada, actividad adecuada y automonitoreo. La insulina es la opción farmacológica preferida por la ADA cuando no se alcanzan metas; dosis y tipo individualizados, sin esquema fijo para toda embarazada."
+    },
+    {
+      "id": "safety",
+      "pt": "Metformina atravessa a placenta; NICE permite seu uso em contextos definidos, enquanto ADA não a recomenda como primeira opção. Escolher protocolo explicitamente, sem combinar recomendações incompatíveis. Metas ADA, se alcançáveis sem hipoglicemia: jejum abaixo de 95 mg/dL; após refeição, abaixo de 140 mg/dL em 1 hora ou 120 mg/dL em 2 horas; individualizar.",
+      "es": "La metformina atraviesa la placenta; NICE permite su uso en contextos definidos, mientras ADA no la recomienda como primera opción. Elegir explícitamente el protocolo, sin combinar recomendaciones incompatibles. Metas ADA, si se alcanzan sin hipoglucemia: ayuno inferior a 95 mg/dL; después de comer, inferior a 140 mg/dL a 1 hora o 120 mg/dL a 2 horas; individualizar."
+    },
+    {
+      "id": "disposition",
+      "pt": "Seguimento obstétrico/endócrino e plano pós-parto. ADA recomenda teste com 75 g entre 4–12 semanas após o parto e vigilância metabólica posterior; hipoglicemia ou suspeita de cetoacidose exige urgência.",
+      "es": "Seguimiento obstétrico/endocrinológico y plan posparto. ADA recomienda prueba con 75 g entre 4–12 semanas después del parto y vigilancia metabólica posterior; hipoglucemia o sospecha de cetoacidosis requieren urgencias."
+    }
+  ],
+  "references": [
+    {
+      "id": "dmd",
+      "title": "ADA — Diagnosis and Classification, Standards 2026",
+      "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S27/163926/2-Diagnosis-and-Classification-of-Diabetes",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "dm",
+      "title": "ADA — Management of Diabetes in Pregnancy, Standards 2026",
+      "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S321/163918/15-Management-of-Diabetes-in-Pregnancy-Standards",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "dmuk",
+      "title": "NICE NG3 — diabetes e gravidez",
+      "url": "https://www.nice.org.uk/guidance/NG3/chapter/recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "dmvis",
+      "title": "ADA — monitorização da glicose na gravidez, apoio aos critérios vigentes",
+      "url": "https://diabetes.org/sites/default/files/2024-10/Glucose-Monitoring-During-Pregnancy-patient-FINAL.pdf",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 4,
+    "owner": "diabetes_gestacional",
+    "title": {
+      "pt": "Diabetes gestacional",
+      "es": "Diabetes gestacional"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "diabetes_gestacional",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "cb50f9dbf60260c126b7bd0b1dff061a7983c947aabb5559915f9e56614ab27d"
+}

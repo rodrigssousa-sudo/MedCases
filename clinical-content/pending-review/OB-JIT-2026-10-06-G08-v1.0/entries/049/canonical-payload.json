@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "trabalho_parto_prematuro",
+  "titles": {
+    "pt": "Trabalho de parto prematuro",
+    "es": "Trabajo de parto prematuro"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Contrações com suspeita ou confirmação de alteração cervical antes do termo; não diagnosticar apenas por desconforto inespecífico.",
+      "es": "Contracciones con sospecha o confirmación de cambio cervical antes del término; no diagnosticar solamente por molestias inespecíficas."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Prematuridade ameaça o recém-nascido; intervenções visam maturação, neuroproteção e transferência apropriada, sem prolongar gestação perigosa.",
+      "es": "La prematuridad amenaza al recién nacido; las intervenciones buscan maduración, neuroprotección y traslado adecuado, sin prolongar un embarazo peligroso."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Verificar idade gestacional, membranas, sangramento, infecção, colo e bem-estar fetal. Comprimento cervical ou biomarcador pode apoiar decisão em contexto apropriado.",
+      "es": "Verificar edad gestacional, membranas, sangrado, infección, cuello y bienestar fetal. Longitud cervical o biomarcador puede apoyar decisiones en contexto apropiado."
+    },
+    {
+      "id": "treatment",
+      "pt": "Pelo NICE, oferecer entre 24 semanas e 33 semanas e 6 dias, considerando também janelas especiais com a equipe, se risco de parto dentro de 7 dias, betametasona 12 mg intramusculares, 2 doses separadas por 24 horas. Tocolítico, como nifedipino, depende de idade gestacional, membranas e contraindicações, conforme protocolo obstétrico.",
+      "es": "Según NICE, ofrecer entre 24 semanas y 33 semanas y 6 días, considerando también ventanas especiales con el equipo, ante riesgo de parto dentro de 7 días, betametasona 12 mg intramusculares, 2 dosis separadas por 24 horas. Un tocolítico, como nifedipino, depende de edad gestacional, membranas y contraindicaciones, según protocolo obstétrico."
+    },
+    {
+      "id": "safety",
+      "pt": "Neuroproteção NICE: oferecer magnésio entre 24–29 semanas e 6 dias, considerar entre 30–33 semanas e 6 dias se parto previsto dentro de 24 horas. Regime: 4 g intravenosos em 15 minutos, depois 1 g por hora até parto ou 24 horas, o que ocorrer primeiro; monitorar respiração, reflexos e diurese.",
+      "es": "Neuroprotección NICE: ofrecer magnesio entre 24–29 semanas y 6 días, considerar entre 30–33 semanas y 6 días si se prevé parto dentro de 24 horas. Régimen: 4 g intravenosos en 15 minutos, después 1 g por hora hasta parto o 24 horas, lo que ocurra primero; vigilar respiración, reflejos y diuresis."
+    },
+    {
+      "id": "disposition",
+      "pt": "Infecção, hemorragia ou sofrimento fetal pode exigir parto, sem esperar completar medicamentos. Internar/transferir se risco significativo; alta só após avaliação obstétrica e plano de retorno.",
+      "es": "Infección, hemorragia o sufrimiento fetal puede exigir parto, sin esperar completar medicamentos. Internar/trasladar ante riesgo significativo; alta solamente tras evaluación obstétrica y plan de retorno."
+    }
+  ],
+  "references": [
+    {
+      "id": "ptl",
+      "title": "NICE NG25 — trabalho de parto prematuro",
+      "url": "https://www.nice.org.uk/guidance/ng25/chapter/recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "ster",
+      "title": "ACOG Committee Opinion 713 — corticosteroide antenatal",
+      "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 49,
+    "owner": "trabalho_parto_prematuro",
+    "title": {
+      "pt": "Trabalho de parto prematuro",
+      "es": "Trabajo de parto prematuro"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": false,
+    "cmsDocumentId": "trabalho_parto_prematuro",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "2d4dea2189aba4fe4a127f2df16016332431e626048f60111348bfdd81042b8d"
+}

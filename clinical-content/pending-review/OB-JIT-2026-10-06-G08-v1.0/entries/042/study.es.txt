@@ -1,0 +1,33 @@
+# Colestasis intrahepática del embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Prurito gestacional con elevación de ácidos biliares tras excluir otras causas; suele no haber erupción primaria.
+
+## Fisiopatología y razonamiento
+
+Los cambios del transporte biliar pueden producir prurito y riesgo fetal. Reducir prurito no demuestra reducción de muerte fetal.
+
+## Diagnóstico, estudios y diferenciales
+
+Solicitar ácidos biliares y pruebas hepáticas; repetir si persiste prurito con análisis iniciales normales. RCOG clasifica pico de 19–39 micromol/L como leve, 40–99 como moderado y ≥100 como grave.
+
+## Tratamiento y dosis
+
+Cuidados de piel y ácido ursodesoxicólico pueden aliviar síntomas; individualizar dosis por equipo obstétrico. No presentar el medicamento como garantía de prevención de muerte fetal.
+
+## Seguridad y monitoreo
+
+Programar vigilancia y momento del parto según pico de ácidos biliares, edad gestacional, comorbilidades y guía adoptada. No esperar empeoramiento materno para evaluar riesgo fetal.
+
+## Escalamiento, alta y seguimiento
+
+La disminución de movimientos fetales exige atención inmediata. Seguimiento obstétrico y confirmación de resolución posparto; alteraciones persistentes requieren investigación hepática.
+
+## Referencias
+
+[icp] RCOG Green-top 43 — colestase gestacional, final 2022 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/intrahepatic-cholestasis-of-pregnancy-green-top-guideline-no-43/
+
+[icpp] RCOG — colestase, informação atualizada abril 2026 — https://www.rcog.org.uk/for-the-public/browse-our-patient-information/intrahepatic-cholestasis-of-pregnancy/

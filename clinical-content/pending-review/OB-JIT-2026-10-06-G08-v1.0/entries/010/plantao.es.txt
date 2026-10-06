@@ -1,0 +1,38 @@
+# Hipotiroidismo — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Deficiencia de hormona tiroidea durante el embarazo, manifiesta o subclínica según TSH y tiroxina libre.
+
+## Diagnóstico, estudios y diferenciales
+
+- Interpretar TSH y tiroxina libre con intervalos específicos del trimestre, población y método.
+- Registrar autoinmunidad, dosis actual, adherencia e interacciones.
+
+## Tratamiento y dosis
+
+- La levotiroxina es el tratamiento preferido.
+- Quien ya la utiliza puede necesitar aumento temprano de aproximadamente 20–30%, orientado por plan clínico y análisis; los nuevos tratamientos exigen cálculo individual.
+
+## Seguridad y monitoreo
+
+- No sustituir por combinaciones con triyodotironina o extractos tiroideos.
+- Verificar administración e interacciones con suplementos; reevaluar TSH después de ajustes.
+
+## Escalamiento, alta y seguimiento
+
+- Seguimiento obstétrico/endocrinológico durante embarazo y posparto.
+- Alteración de conciencia, hipotermia o inestabilidad exige hospital; no manejar como ajuste ambulatorio rutinario.
+
+## Fisiopatología y razonamiento
+
+- La necesidad de tiroxina puede aumentar durante el embarazo; tratar adecuadamente reduce riesgo maternofetal.
+- No usar indiscriminadamente referencias no gestacionales.
+
+## Referencias
+
+[thy] RCOG Green-top 76 — tireoide na gravidez, final 2025 — https://obgyn.onlinelibrary.wiley.com/doi/10.1111/1471-0528.18088
+
+[hypo] American Thyroid Association — hipotireoidismo na gravidez — https://www.thyroid.org/hypothyroidism-in-pregnancy/

@@ -1,0 +1,37 @@
+# Lumbalgia mecánica — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Dolor lumbar asociado con movimiento y carga, sin signos de causa infecciosa, neurológica grave u obstétrica.
+
+## Diagnóstico, estudios y diferenciales
+
+- Examinar movilidad, fuerza, sensibilidad y síntomas urinarios/obstétricos.
+- Fiebre, déficit progresivo, anestesia perineal o retención urinaria exige urgencias.
+
+## Tratamiento y dosis
+
+- Mantener actividad tolerada, ajustes ergonómicos, evitar sobrecarga y considerar fisioterapia.
+- Individualizar analgesia compatible con el embarazo, a la menor dosis eficaz por el menor tiempo necesario.
+
+## Seguridad y monitoreo
+
+- No recomendar reposo prolongado ni antiinflamatorios por automedicación; existe riesgo renal fetal y de bajo líquido amniótico desde las 20 semanas con uso prolongado.
+
+## Escalamiento, alta y seguimiento
+
+- Alta sin signos de alarma y con movilidad funcional.
+- Reevaluar persistencia, dolor nocturno importante, síntomas sistémicos o aparición de contracciones.
+
+## Fisiopatología y razonamiento
+
+- Pueden contribuir cambios de carga y postura.
+- El diagnóstico mecánico exige reconocer causas peligrosas y no se basa solamente en estar embarazada.
+
+## Referencias
+
+[back] NHS — lombalgia na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/back-pain/
+
+[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/

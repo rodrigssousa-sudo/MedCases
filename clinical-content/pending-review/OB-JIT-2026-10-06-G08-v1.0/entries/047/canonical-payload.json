@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "abortamento_espontaneo",
+  "titles": {
+    "pt": "Abortamento espontâneo precoce não séptico",
+    "es": "Aborto espontáneo temprano no séptico"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Perda gestacional precoce confirmada, sem sepse; distinguir retido, incompleto e completo. Este esquema não é protocolo para perdas gestacionais tardias.",
+      "es": "Pérdida gestacional temprana confirmada, sin sepsis; distinguir diferido, incompleto y completo. Este esquema no es un protocolo para pérdidas gestacionales tardías."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Diagnóstico incorreto pode interromper uma gravidez viável. Confirmar critérios e repetir avaliação quando houver dúvida; não usar hCG isoladamente para declarar perda.",
+      "es": "Un diagnóstico incorrecto puede interrumpir un embarazo viable. Confirmar criterios y repetir evaluación ante duda; no usar hCG aislada para declarar pérdida."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar estabilidade, sangramento, dor, ultrassom e possibilidade de ectópica. Febre, secreção fétida ou instabilidade mudam para emergência infecciosa/hemorrágica.",
+      "es": "Evaluar estabilidad, sangrado, dolor, ecografía y posibilidad de ectópico. Fiebre, secreción fétida o inestabilidad cambian a emergencia infecciosa/hemorrágica."
+    },
+    {
+      "id": "treatment",
+      "pt": "Manejo expectante, medicamentoso ou cirúrgico conforme quadro e preferência. NICE para retido: mifepristona 200 mg oral, dose única; 48 horas depois, misoprostol 800 microgramas vaginal, oral ou sublingual, salvo expulsão prévia.",
+      "es": "Manejo expectante, farmacológico o quirúrgico según cuadro y preferencia. NICE para diferido: mifepristona 200 mg oral, dosis única; 48 horas después, misoprostol 800 microgramos vaginal, oral o sublingual, salvo expulsión previa."
+    },
+    {
+      "id": "safety",
+      "pt": "No incompleto, NICE recomenda misoprostol 600 microgramas por via vaginal, oral ou sublingual, em dose única; não adicionar mifepristona automaticamente. Procedimentos e medicamentos exigem serviço habilitado e regras regionais; profilaxia RhD deve seguir atualização vigente.",
+      "es": "En el incompleto, NICE recomienda misoprostol 600 microgramos por vía vaginal, oral o sublingual, en dosis única; no añadir mifepristona automáticamente. Procedimientos y medicamentos exigen servicio habilitado y reglas regionales; la profilaxis RhD debe seguir la actualización vigente."
+    },
+    {
+      "id": "disposition",
+      "pt": "Hemorragia, sepse ou instabilidade requer hospital. Após manejo medicamentoso, teste de gravidez em 3 semanas; positivo, dor, febre ou sangramento persistente exigem reavaliação. Oferecer apoio emocional.",
+      "es": "Hemorragia, sepsis o inestabilidad requiere hospital. Tras manejo farmacológico, prueba de embarazo a las 3 semanas; resultado positivo, dolor, fiebre o sangrado persistente exigen reevaluación. Ofrecer apoyo emocional."
+    }
+  ],
+  "references": [
+    {
+      "id": "loss",
+      "title": "NICE NG126 — manejo de abortamento, atualizado junho 2026",
+      "url": "https://www.nice.org.uk/guidance/ng126/chapter/management-of-miscarriage",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "lossd",
+      "title": "NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda",
+      "url": "https://www.nice.org.uk/guidance/ng126",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 47,
+    "owner": "abortamento_espontaneo",
+    "title": {
+      "pt": "Abortamento espontâneo precoce não séptico",
+      "es": "Aborto espontáneo temprano no séptico"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "abortamento_espontaneo",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [
+      "obstetr_abortamento_septico"
+    ],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "746c1b1a33df9e256c49e62293108a0afe5f40651d759d318f1038dd846074d9"
+}

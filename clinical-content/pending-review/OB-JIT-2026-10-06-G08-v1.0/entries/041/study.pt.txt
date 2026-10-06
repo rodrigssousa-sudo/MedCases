@@ -1,0 +1,33 @@
+# Dermatite atópica — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Dermatose inflamatória pruriginosa com barreira cutânea comprometida; pode piorar ou melhorar na gravidez.
+
+## Fisiopatologia e raciocínio
+
+Inflamação e ressecamento favorecem escoriações e infecção secundária. Prurido sem lesão primária exige considerar colestase.
+
+## Diagnóstico, exames e diferenciais
+
+Examinar distribuição, extensão, sono e sinais de infecção. Prurido palmar/plantar intenso, sobretudo noturno, merece avaliação obstétrica e hepática.
+
+## Tratamento e doses
+
+Emolientes regulares, limpeza suave e evitar irritantes. Corticoide tópico pode ser utilizado com seleção de potência, área e duração adequadas, sob orientação clínica; não há quantidade universal.
+
+## Segurança e monitorização
+
+Evitar aplicação extensa ou prolongada não supervisionada e revisar tratamentos sistêmicos prévios. Lesões dolorosas vesiculares disseminadas podem representar eczema herpético.
+
+## Escalonamento, alta e seguimento
+
+Alta se controlável e sem infecção grave, com seguimento. Febre, rápida piora, lesões herpéticas ou grande comprometimento exigem avaliação especializada urgente.
+
+## Referências
+
+[ecz] UKTIS/BUMPS — corticosteroides tópicos na gravidez — https://www.medicinesinpregnancy.org/leaflets-a-z/corticosteroids---topical/
+
+[eczn] NHS — eczema atópico, revisão 2024 — https://www.nhs.uk/conditions/atopic-eczema/

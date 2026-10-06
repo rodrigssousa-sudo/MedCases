@@ -1,0 +1,37 @@
+# Diabetes mellitus tipo 2 — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Diabetes tipo 2 previa o manifiesta durante el embarazo; no reclasificar automáticamente como diabetes gestacional.
+
+## Fisiopatología y razonamiento
+
+La hiperglucemia durante la organogénesis aumenta el riesgo fetal; obesidad, hipertensión y enfermedad renal pueden añadir riesgo.
+
+## Diagnóstico, estudios y diferenciales
+
+Evaluar control glucémico, función renal, retina, presión y medicamentos usados antes de la concepción. Diferenciar diabetes manifiesta de hiperglucemia exclusivamente gestacional.
+
+## Tratamiento y dosis
+
+Nutrición y actividad adaptadas; la ADA prefiere insulina en el embarazo, con ajuste individual. Revisar medicamentos sin evidencia adecuada durante el embarazo; no mantener agonistas de GLP-1 como tratamiento habitual de la embarazada.
+
+## Seguridad y monitoreo
+
+La revisión de fármacos debe asegurar alternativa y control, evitando suspensión sin asistencia. Vigilar hipoglucemia, aumento de peso y complicaciones maternas. Metas ADA, si se alcanzan sin hipoglucemia: ayuno inferior a 95 mg/dL; después de comer, inferior a 140 mg/dL a 1 hora o 120 mg/dL a 2 horas; individualizar.
+
+## Escalamiento, alta y seguimiento
+
+Mantener equipo obstétrico/endocrinológico y plan posparto. Descompensación, cetosis o signos de preeclampsia requieren evaluación urgente; alta con plan comprensible de glucemias y tratamiento.
+
+## Referencias
+
+[dm] ADA — Management of Diabetes in Pregnancy, Standards 2026 — https://diabetesjournals.org/care/article/49/Supplement_1/S321/163918/15-Management-of-Diabetes-in-Pregnancy-Standards
+
+[dmn] NIDDK — diabetes e gravidez — https://www.niddk.nih.gov/health-information/diabetes/diabetes-pregnancy
+
+[dmuk] NICE NG3 — diabetes e gravidez — https://www.nice.org.uk/guidance/NG3/chapter/recommendations
+
+[dmvis] ADA — monitorização da glicose na gravidez, apoio aos critérios vigentes — https://diabetes.org/sites/default/files/2024-10/Glucose-Monitoring-During-Pregnancy-patient-FINAL.pdf

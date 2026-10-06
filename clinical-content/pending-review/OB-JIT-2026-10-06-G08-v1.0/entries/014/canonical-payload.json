@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "caso_cistite_aguda",
+  "titles": {
+    "pt": "Cistite aguda — complemento gestacional do cadastro existente",
+    "es": "Cistitis aguda — complemento gestacional del registro existente"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Infecção urinária baixa com disúria, urgência ou polaciúria, sem sinais de infecção renal.",
+      "es": "Infección urinaria baja con disuria, urgencia o polaquiuria, sin signos de infección renal."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Sintomas podem se sobrepor a alterações fisiológicas e vaginite; gravidez exige confirmação microbiológica e tratamento oportuno.",
+      "es": "Los síntomas pueden superponerse a cambios fisiológicos y vaginitis; el embarazo requiere confirmación microbiológica y tratamiento oportuno."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Colher urocultura antes do antibiótico, sem atrasar tratamento de quadro convincente. Avaliar febre, dor em flanco e sinais de sepse para excluir pielonefrite.",
+      "es": "Obtener urocultivo antes del antibiótico, sin demorar el tratamiento de un cuadro convincente. Evaluar fiebre, dolor en flanco y signos de sepsis para excluir pielonefritis."
+    },
+    {
+      "id": "treatment",
+      "pt": "Cefalexina 500 mg por via oral, 2 vezes por dia, durante 7 dias é opção NICE, com ajuste ao antibiograma. Evitar amoxicilina ou ampicilina empíricas quando resistência local é elevada.",
+      "es": "Cefalexina 500 mg por vía oral, 2 veces por día, durante 7 días es una opción NICE, con ajuste al antibiograma. Evitar amoxicilina o ampicilina empíricas cuando la resistencia local es elevada."
+    },
+    {
+      "id": "safety",
+      "pt": "Revisar alergias e função renal. Não usar agentes de infecção baixa para tratar infecção renal; nitrofurantoína e fosfomicina não substituem tratamento de pielonefrite.",
+      "es": "Revisar alergias y función renal. No usar agentes de infección baja para tratar infección renal; nitrofurantoína y fosfomicina no sustituyen el tratamiento de pielonefritis."
+    },
+    {
+      "id": "disposition",
+      "pt": "Reavaliar se ausência de melhora ou piora; pode-se considerar cultura de controle 1–2 semanas após tratamento. Alta com retorno imediato por febre, dor lombar, contrações ou intolerância oral.",
+      "es": "Reevaluar ante ausencia de mejoría o empeoramiento; puede considerarse cultivo de control 1–2 semanas después del tratamiento. Alta con retorno inmediato por fiebre, dolor lumbar, contracciones o intolerancia oral."
+    }
+  ],
+  "references": [
+    {
+      "id": "uti",
+      "title": "ACOG — infecções urinárias na gravidez, consenso 2023",
+      "url": "https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "cyst",
+      "title": "NICE NG109 — antibióticos para infecção urinária baixa",
+      "url": "https://www.nice.org.uk/guidance/NG109/chapter/recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 14,
+    "owner": "caso_cistite_aguda",
+    "title": {
+      "pt": "Cistite aguda — complemento gestacional do cadastro existente",
+      "es": "Cistitis aguda — complemento gestacional del registro existente"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "caso_cistite_aguda",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": true,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Retained original case/aura scope; pregnancy context only."
+  },
+  "clinicalPayloadSha256": "1559dd7ce4d8dabbb3f52a71d37f3abc92c70d050a09fbb2eb19742fea2d6c32"
+}

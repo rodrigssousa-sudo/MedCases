@@ -1,0 +1,33 @@
+# Influenza — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+La influenza sospechada o confirmada en la embarazada tiene mayor riesgo de complicaciones; tratar pronto, incluso sin confirmación de laboratorio.
+
+## Fisiopatología y razonamiento
+
+El riesgo aumentado también ocurre en el posparto reciente. El beneficio antiviral es mayor si es temprano, pero la enfermedad grave puede justificar inicio tardío.
+
+## Diagnóstico, estudios y diferenciales
+
+Evaluar inicio, fiebre, signos respiratorios, oxigenación, hidratación y diagnósticos alternativos. No esperar una prueba para tratar sospecha convincente en una embarazada.
+
+## Tratamiento y dosis
+
+Oseltamivir 75 mg por vía oral, 2 veces por día, durante 5 días para adulta con función renal normal. Es el antiviral preferido por CDC durante el embarazo; ajustar a función renal.
+
+## Seguridad y monitoreo
+
+No recomendar baloxavir rutinariamente durante el embarazo. Los casos hospitalizados o complicados pueden exigir duración individualizada; no prolongar automáticamente el tratamiento de un cuadro simple.
+
+## Escalamiento, alta y seguimiento
+
+Disnea, hipoxemia, inestabilidad o incapacidad de beber requieren hospital. Alta con retorno por empeoramiento, prevención y vacunación indicada en el control prenatal.
+
+## Referencias
+
+[flu] CDC — influenza em gestantes, atualização dezembro 2025 — https://www.cdc.gov/flu/hcp/antivirals/treatment_obstetric.html
+
+[flud] CDC — antivirais para influenza, resumo clínico — https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html

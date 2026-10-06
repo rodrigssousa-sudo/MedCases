@@ -1,0 +1,33 @@
+# Hiperémesis gravídica
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Síndrome de vómitos incapacitantes del embarazo, con ingesta insuficiente y repercusión clínica; no es solamente náusea habitual.
+
+## Fisiopatología y razonamiento
+
+Pueden ocurrir deshidratación, alteraciones electrolíticas y déficit de tiamina. La cetonuria aislada no mide gravedad ni debe impedir el tratamiento.
+
+## Diagnóstico, estudios y diferenciales
+
+Evaluar peso, signos vitales, electrolitos, función renal y causas alternativas. Dolor, fiebre, sangrado y alteraciones neurológicas requieren investigación dirigida.
+
+## Tratamiento y dosis
+
+Reposición con solución salina al 0,9%; potasio solamente según análisis y función renal. En internación por vómitos o ingesta muy reducida: tiamina 100 mg por vía oral, 3 veces por día, antes de glucosa o nutrición parenteral; vía parenteral si la oral no es viable, según preparación institucional.
+
+## Seguridad y monitoreo
+
+Pueden combinarse antieméticos según respuesta; vigilar efectos extrapiramidales y riesgo de QT cuando corresponda. Reevaluar electrolitos durante hidratación y evitar realimentación brusca en desnutrición.
+
+## Escalamiento, alta y seguimiento
+
+Internar ante intolerancia persistente, deshidratación, trastorno electrolítico o comorbilidad descompensada. Alta tras recuperar la ingesta, con plan antiemético y seguimiento obstétrico.
+
+## Referencias
+
+[nvp] RCOG Green-top 69 — náuseas, vômitos e hiperêmese; final 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/the-management-of-nausea-and-vomiting-of-pregnancy-and-hyperemesis-gravidarum-green-top-guideline-no-69/
+
+[hg] RCOG 69 — publicação normativa, 2024 — https://pubmed.ncbi.nlm.nih.gov/38311315/

@@ -1,0 +1,36 @@
+# Síndrome do túnel do carpo — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Compressão do nervo mediano no punho com parestesia, especialmente em polegar, indicador e dedo médio.
+
+## Diagnóstico, exames e diferenciais
+
+- Avaliar distribuição, sintomas noturnos, força e atrofia; quadro atípico exige diferenciar radiculopatia e outras neuropatias.
+
+## Tratamento e doses
+
+- Tala de punho em posição neutra, especialmente à noite; adaptar atividades repetitivas e evitar compressão.
+- Fisioterapia/terapia da mão conforme necessidade.
+
+## Segurança e monitorização
+
+- Não iniciar automaticamente corticosteroide sistêmico ou anti-inflamatório.
+- Infiltração ou cirurgia exige avaliação especializada e balanço clínico, sobretudo se déficit persistente.
+
+## Escalonamento, alta e seguimento
+
+- Muitos casos melhoram após a gestação; isso não justifica ignorar fraqueza progressiva ou atrofia.
+- Alta com orientações e retorno por perda funcional; seguimento se persistir após parto.
+
+## Fisiopatologia e raciocínio
+
+- Retenção de líquido da gestação pode contribuir; é distinta de neuropatia ulnar do túnel cubital.
+
+## Referências
+
+[carp] NHS South Tees — túnel do carpo na gravidez — https://www.southtees.nhs.uk/resources/carpel-tunnel-syndrome-cts-in-pregnancy/
+
+[carpn] NHS — síndrome do túnel do carpo — https://www.nhs.uk/conditions/carpal-tunnel-syndrome/

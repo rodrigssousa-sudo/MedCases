@@ -1,0 +1,38 @@
+# Cólico renal — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Dolor por cálculo urinario durante el embarazo; diferenciar de dilatación fisiológica y obstrucción infectada.
+
+## Diagnóstico, estudios y diferenciales
+
+- Evaluar dolor, temperatura, orina/cultivo, función renal y diuresis.
+- EAU: ecografía primero, resonancia como segunda opción y tomografía de baja dosis como último recurso cuando sea necesaria.
+
+## Tratamiento y dosis
+
+- Manejo conservador si no hay complicaciones, con analgesia apropiada e hidratación según necesidad, sin forzar líquidos.
+- La obstrucción infectada exige antibiótico y drenaje urgente.
+
+## Seguridad y monitoreo
+
+- La litotricia extracorpórea está contraindicada durante el embarazo.
+- No iniciar terapia expulsiva rutinaria sin evidencia y orientación específica para embarazadas.
+
+## Escalamiento, alta y seguimiento
+
+- Internar ante sepsis, dolor/vómitos refractarios, deterioro renal o complicación obstétrica.
+- Alta solamente si está estable, con control del dolor, seguimiento urológico y retorno por fiebre u oliguria.
+
+## Fisiopatología y razonamiento
+
+- La hidronefrosis gestacional puede dificultar interpretación.
+- La infección asociada a obstrucción es una emergencia urológica.
+
+## Referencias
+
+[stone] EAU — urolitíase, final 2026 — https://uroweb.org/guidelines/urolithiasis/chapter/guidelines
+
+[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/

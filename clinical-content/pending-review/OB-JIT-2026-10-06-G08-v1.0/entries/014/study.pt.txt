@@ -1,0 +1,33 @@
+# Cistite aguda — complemento gestacional do cadastro existente
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Infecção urinária baixa com disúria, urgência ou polaciúria, sem sinais de infecção renal.
+
+## Fisiopatologia e raciocínio
+
+Sintomas podem se sobrepor a alterações fisiológicas e vaginite; gravidez exige confirmação microbiológica e tratamento oportuno.
+
+## Diagnóstico, exames e diferenciais
+
+Colher urocultura antes do antibiótico, sem atrasar tratamento de quadro convincente. Avaliar febre, dor em flanco e sinais de sepse para excluir pielonefrite.
+
+## Tratamento e doses
+
+Cefalexina 500 mg por via oral, 2 vezes por dia, durante 7 dias é opção NICE, com ajuste ao antibiograma. Evitar amoxicilina ou ampicilina empíricas quando resistência local é elevada.
+
+## Segurança e monitorização
+
+Revisar alergias e função renal. Não usar agentes de infecção baixa para tratar infecção renal; nitrofurantoína e fosfomicina não substituem tratamento de pielonefrite.
+
+## Escalonamento, alta e seguimento
+
+Reavaliar se ausência de melhora ou piora; pode-se considerar cultura de controle 1–2 semanas após tratamento. Alta com retorno imediato por febre, dor lombar, contrações ou intolerância oral.
+
+## Referências
+
+[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals
+
+[cyst] NICE NG109 — antibióticos para infecção urinária baixa — https://www.nice.org.uk/guidance/NG109/chapter/recommendations

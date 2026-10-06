@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Herpes genital — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Plantão",
+      "summary": "Infecção genital pelo herpes simples, primeiro episódio ou recorrência; risco neonatal depende do contexto da aquisição e parto.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infecção genital pelo herpes simples, primeiro episódio ou recorrência; risco neonatal depende do contexto da aquisição e parto."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pesquisar lesões, dor e pródromo; confirmar por teste da lesão quando indicado.",
+            "Avaliar disúria grave, retenção, disseminação ou sintomas neurológicos."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Primeiro episódio: aciclovir 400 mg por via oral, 3 vezes por dia, durante 7–10 dias.",
+            "Supressão a partir de 36 semanas: aciclovir 400 mg por via oral, 3 vezes por dia, até o parto, conforme CDC."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Ajustar à função renal.",
+            "Doença disseminada, encefalite ou hepatite herpética exige terapia intravenosa e internação, não o esquema oral simples."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Lesões genitais ou pródromo no trabalho de parto indicam avaliação para cesariana.",
+            "Orientar risco de aquisição tardia, parceria e seguimento; supressão não elimina completamente transmissão neonatal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infecção próxima ao parto merece avaliação especializada rápida.",
+            "História de herpes não implica cesariana em toda gravidez."
+          ]
+        }
+      ],
+      "references": [
+        "[herp] CDC — herpes genital, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/herpes.htm"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Herpes genital — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Guardia",
+      "summary": "Infección genital por herpes simple, primer episodio o recurrencia; el riesgo neonatal depende del contexto de adquisición y parto.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infección genital por herpes simple, primer episodio o recurrencia; el riesgo neonatal depende del contexto de adquisición y parto."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Buscar lesiones, dolor y pródromo; confirmar mediante prueba de lesión cuando corresponda.",
+            "Evaluar disuria grave, retención, diseminación o síntomas neurológicos."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Primer episodio: aciclovir 400 mg por vía oral, 3 veces por día, durante 7–10 días.",
+            "Supresión desde las 36 semanas: aciclovir 400 mg por vía oral, 3 veces por día, hasta el parto, según CDC."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Ajustar a función renal.",
+            "Enfermedad diseminada, encefalitis o hepatitis herpética exige tratamiento intravenoso e internación, no el esquema oral simple."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Lesiones genitales o pródromo durante el trabajo de parto indican evaluación para cesárea.",
+            "Orientar sobre adquisición tardía, pareja y seguimiento; la supresión no elimina completamente transmisión neonatal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La infección cercana al parto merece evaluación especializada rápida.",
+            "Tener antecedentes de herpes no implica cesárea en todo embarazo."
+          ]
+        }
+      ],
+      "references": [
+        "[herp] CDC — herpes genital, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/herpes.htm"
+      ]
+    }
+  }
+}

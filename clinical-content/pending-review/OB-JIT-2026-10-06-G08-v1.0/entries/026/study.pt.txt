@@ -1,0 +1,33 @@
+# COVID-19 — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+COVID-19 na gestação exige avaliar risco de progressão e janela de tratamento; a gravidez não justifica negar terapia eficaz.
+
+## Fisiopatologia e raciocínio
+
+A gestação aumenta risco de doença grave. Considerar comorbidades, vacinação, sintomas e disponibilidade regional de antivirais.
+
+## Diagnóstico, exames e diferenciais
+
+Confirmar infecção por teste apropriado; verificar oxigenação, função renal/hepática e lista completa de medicamentos antes de antiviral.
+
+## Tratamento e doses
+
+Para adulta elegível com taxa de filtração glomerular estimada ≥60 mL por minuto, nirmatrelvir 300 mg mais ritonavir 100 mg, juntos por via oral, 2 vezes por dia durante 5 dias, iniciados até 5 dias após início dos sintomas.
+
+## Segurança e monitorização
+
+Interações por CYP3A podem impedir esse esquema. Insuficiência renal requer esquema específico da bula atual; não afirmar contraindicação absoluta em toda doença renal grave. Evitar uso na insuficiência hepática grave e não usar molnupiravir como alternativa habitual na gestação.
+
+## Escalonamento, alta e seguimento
+
+Hipoxemia, dor torácica, confusão ou piora clínica exigem hospital e avaliação obstétrica. Alta apenas com estabilidade e plano de reavaliação, sem corticoide sistêmico de rotina para doença sem necessidade de oxigênio.
+
+## Referências
+
+[cov] CDC — COVID-19 e populações especiais — https://www.cdc.gov/covid/hcp/clinical-care/considerations-special-groups.html
+
+[pax] FDA — nirmatrelvir/ritonavir, bula revisada 2025 — https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/217188s010lbl.pdf

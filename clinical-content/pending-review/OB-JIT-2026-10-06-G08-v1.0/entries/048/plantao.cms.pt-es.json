@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Gravidez ectópica rota ou suspeita de ruptura",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Plantão",
+      "summary": "Gravidez extrauterina com hemorragia ou suspeita de ruptura; manter o escopo cirúrgico do owner existente.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Gravidez extrauterina com hemorragia ou suspeita de ruptura; manter o escopo cirúrgico do owner existente."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Dor abdominal, síncope, dor no ombro, sangramento e instabilidade exigem suspeita.",
+            "Avaliar perfusão, acessos, hemograma, tipagem e reserva de sangue; ultrassom se não atrasar intervenção."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Acionar obstetrícia/cirurgia, ressuscitar e controlar hemorragia.",
+            "Suspeita de ruptura ou instabilidade exige tratamento cirúrgico urgente; não esperar série de hCG para encaminhar."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Metotrexato e manejo expectante não são tratamento de ectópica rota.",
+            "Não reutilizar protocolo de ectópica estável neste owner; profilaxia RhD conforme diretriz atual e contexto."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Internação e vigilância pós-operatória, com seguimento definido pelo procedimento e risco de tecido persistente.",
+            "Apoio emocional e orientação para avaliação precoce em futura gravidez."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Ruptura pode causar hemoperitônio e choque mesmo antes de diagnóstico formal.",
+            "Ausência de fatores de risco não exclui ectópica."
+          ]
+        }
+      ],
+      "references": [
+        "[lossd] NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda — https://www.nice.org.uk/guidance/ng126"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Embarazo ectópico roto o sospecha de rotura",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Guardia",
+      "summary": "Embarazo extrauterino con hemorragia o sospecha de rotura; mantener el alcance quirúrgico del owner existente.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Embarazo extrauterino con hemorragia o sospecha de rotura; mantener el alcance quirúrgico del owner existente."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Dolor abdominal, síncope, dolor de hombro, sangrado e inestabilidad exigen sospecha.",
+            "Evaluar perfusión, accesos, hemograma, grupo y reserva de sangre; ecografía si no demora intervención."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Activar obstetricia/cirugía, reanimar y controlar hemorragia.",
+            "Sospecha de rotura o inestabilidad exige tratamiento quirúrgico urgente; no esperar una serie de hCG para derivar."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Metotrexato y manejo expectante no son tratamiento de ectópico roto.",
+            "No reutilizar protocolo de ectópico estable en este owner; profilaxis RhD según guía actual y contexto."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Internación y vigilancia posoperatoria, con seguimiento definido por procedimiento y riesgo de tejido persistente.",
+            "Apoyo emocional y orientación para evaluación temprana en un futuro embarazo."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La rotura puede causar hemoperitoneo y shock incluso antes del diagnóstico formal.",
+            "La ausencia de factores de riesgo no excluye ectópico."
+          ]
+        }
+      ],
+      "references": [
+        "[lossd] NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda — https://www.nice.org.uk/guidance/ng126"
+      ]
+    }
+  }
+}

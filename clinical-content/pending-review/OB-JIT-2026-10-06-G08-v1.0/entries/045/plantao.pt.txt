@@ -1,0 +1,40 @@
+# Enxaqueca com aura — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Enxaqueca com aura conhecida na grávida; nova manifestação neurológica exige excluir causas secundárias antes de atribuí-la à aura.
+
+## Diagnóstico, exames e diferenciais
+
+- Verificar pressão, exame neurológico, início súbito, febre, visão e sintomas de pré-eclâmpsia.
+- Déficit focal ou dor explosiva requer investigação urgente.
+
+## Tratamento e doses
+
+- Hidratação, sono e manejo de desencadeantes.
+- Paracetamol 500 mg–1 g por via oral por dose, intervalo mínimo de 4 horas, no máximo 4 doses e 4 g em 24 horas para adulta sem fatores de risco; usar menor dose eficaz pelo menor tempo.
+
+## Segurança e monitorização
+
+- Baixo peso, hepatopatia, desnutrição ou doença renal podem exigir redução/ajuste.
+- Evitar duplicar produtos com paracetamol; terapias específicas de enxaqueca na gestação exigem avaliação individual.
+
+## Escalonamento, alta e seguimento
+
+- Alta apenas se padrão conhecido, exame adequado e melhora, com retorno por mudança do quadro.
+- Suspeita de pré-eclâmpsia, trombose venosa cerebral, hemorragia ou meningite exige hospital.
+
+## Fisiopatologia e raciocínio
+
+- O padrão pode mudar durante a gravidez.
+- Cefaleia nova ou diferente, especialmente com hipertensão, não deve receber diagnóstico automático de enxaqueca.
+
+## Referências
+
+[mig] ACOG — cefaleias e gravidez — https://www.acog.org/womens-health/faqs/headaches-and-pregnancy
+
+[mign] NHS — cefaleias na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/headaches/
+
+[para] NHS — paracetamol em adultos e gravidez — https://www.nhs.uk/medicines/paracetamol-for-adults/

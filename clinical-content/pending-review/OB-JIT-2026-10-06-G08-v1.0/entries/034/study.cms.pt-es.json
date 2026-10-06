@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Colelitíase/cólica biliar — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Dor biliar por cálculos, sem evidência de colecistite, colangite ou pancreatite; esses diagnósticos mudam a urgência.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dor biliar por cálculos, sem evidência de colecistite, colangite ou pancreatite; esses diagnósticos mudam a urgência."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Estase e composição biliar da gravidez favorecem cálculos; recorrência pode levar a complicações."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Avaliar dor em hipocôndrio direito, duração, febre e icterícia; ultrassom é exame inicial. Laboratório dirigido ajuda a excluir inflamação, obstrução e pancreatite."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Analgesia compatível com gestação e avaliação cirúrgica conforme recorrência/gravidade. SAGES 2024 favorece laparoscopia em doença biliar em cenários definidos; cólica no terceiro trimestre admite decisão individual operatória ou conservadora."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Não indicar cirurgia imediata para toda cólica, nem adiar intervenção necessária apenas por trimestre. Selecionar analgesia sem copiar anti-inflamatório de rotina não gestacional."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alta somente após melhora, tolerância oral e exclusão de complicação, com retorno e seguimento cirúrgico. Febre, icterícia, dor persistente ou instabilidade requerem hospital."
+        }
+      ],
+      "references": [
+        "[surg] SAGES — laparoscopia na gravidez, final 2024 — https://www.sages.org/publications/guidelines/guidelines-for-the-use-of-laparoscopy-during-pregnancy/",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Colelitiasis/cólico biliar — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Dolor biliar por cálculos, sin evidencia de colecistitis, colangitis o pancreatitis; estos diagnósticos cambian la urgencia.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dolor biliar por cálculos, sin evidencia de colecistitis, colangitis o pancreatitis; estos diagnósticos cambian la urgencia."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La estasis y composición biliar del embarazo favorecen cálculos; la recurrencia puede causar complicaciones."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evaluar dolor en hipocondrio derecho, duración, fiebre e ictericia; ecografía como examen inicial. El laboratorio dirigido ayuda a excluir inflamación, obstrucción y pancreatitis."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Analgesia compatible con embarazo y evaluación quirúrgica según recurrencia/gravedad. SAGES 2024 favorece laparoscopia en enfermedad biliar en escenarios definidos; el cólico en el tercer trimestre admite decisión individual operatoria o conservadora."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "No indicar cirugía inmediata para todo cólico, ni demorar intervención necesaria solamente por trimestre. Elegir analgesia sin copiar antiinflamatorios rutinarios del contexto no gestacional."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alta solamente tras mejoría, tolerancia oral y exclusión de complicación, con retorno y seguimiento quirúrgico. Fiebre, ictericia, dolor persistente o inestabilidad requieren hospital."
+        }
+      ],
+      "references": [
+        "[surg] SAGES — laparoscopia na gravidez, final 2024 — https://www.sages.org/publications/guidelines/guidelines-for-the-use-of-laparoscopy-during-pregnancy/",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    }
+  }
+}

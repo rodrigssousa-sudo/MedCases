@@ -1,0 +1,31 @@
+# Herpes genital — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Infección genital por herpes simple, primer episodio o recurrencia; el riesgo neonatal depende del contexto de adquisición y parto.
+
+## Fisiopatología y razonamiento
+
+La infección cercana al parto merece evaluación especializada rápida. Tener antecedentes de herpes no implica cesárea en todo embarazo.
+
+## Diagnóstico, estudios y diferenciales
+
+Buscar lesiones, dolor y pródromo; confirmar mediante prueba de lesión cuando corresponda. Evaluar disuria grave, retención, diseminación o síntomas neurológicos.
+
+## Tratamiento y dosis
+
+Primer episodio: aciclovir 400 mg por vía oral, 3 veces por día, durante 7–10 días. Supresión desde las 36 semanas: aciclovir 400 mg por vía oral, 3 veces por día, hasta el parto, según CDC.
+
+## Seguridad y monitoreo
+
+Ajustar a función renal. Enfermedad diseminada, encefalitis o hepatitis herpética exige tratamiento intravenoso e internación, no el esquema oral simple.
+
+## Escalamiento, alta y seguimiento
+
+Lesiones genitales o pródromo durante el trabajo de parto indican evaluación para cesárea. Orientar sobre adquisición tardía, pareja y seguimiento; la supresión no elimina completamente transmisión neonatal.
+
+## Referencias
+
+[herp] CDC — herpes genital, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/herpes.htm

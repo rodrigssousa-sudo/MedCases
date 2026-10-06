@@ -1,0 +1,31 @@
+# Candidíase vulvovaginal — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Vulvovaginite por Candida com prurido, irritação e corrimento; colonização sem sintomas não exige tratamento.
+
+## Fisiopatologia e raciocínio
+
+Alterações da gestação favorecem colonização. O diagnóstico não deve ser baseado apenas em aspecto do corrimento.
+
+## Diagnóstico, exames e diferenciais
+
+Examinar e realizar microscopia ou teste apropriado quando disponível. Em recorrência ou falha, confirmar agente e excluir vaginose, tricomoníase e dermatose.
+
+## Tratamento e doses
+
+Na gestação, CDC recomenda azol tópico durante 7 dias. Exemplo: miconazol 100 mg por via vaginal, 1 óvulo por dia, durante 7 dias.
+
+## Segurança e monitorização
+
+Evitar fluconazol oral na gestação e não transpor esquemas não gestacionais de dose única. Conferir formulação e tolerância local.
+
+## Escalonamento, alta e seguimento
+
+Tratamento ambulatorial se quadro típico e estável. Persistência exige reavaliação, não repetição indefinida; dor pélvica, febre ou perda de líquido demandam avaliação obstétrica.
+
+## Referências
+
+[cand] CDC — candidíase vulvovaginal, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm

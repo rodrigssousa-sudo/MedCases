@@ -1,0 +1,39 @@
+# Dolor de cintura pélvica relacionado con el embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Dolor en región púbica o sacroilíaca, frecuentemente provocado por movimientos asimétricos, durante el embarazo.
+
+## Diagnóstico, estudios y diferenciales
+
+- Caracterizar dolor al subir escaleras, girar en la cama o apoyar una pierna.
+- Excluir infección, traumatismo, trombosis, síntomas neurológicos y causas obstétricas.
+
+## Tratamiento y dosis
+
+- Fisioterapia con orientaciones y ejercicios adaptados; considerar cinturón pélvico no rígido cuando corresponda.
+- Reducir actividades desencadenantes sin inmovilización indiscriminada.
+
+## Seguridad y monitoreo
+
+- La analgesia debe ser compatible con el embarazo.
+- Movilidad muy limitada exige evaluar riesgo trombótico y asistencia; no indicar anticoagulación solamente por el nombre del diagnóstico.
+
+## Escalamiento, alta y seguimiento
+
+- Puede permitir parto vaginal, con posición y movimientos planificados; la cesárea no es obligatoria.
+- Seguimiento funcional y posparto; dolor incapacitante o signos de alarma requieren reevaluación.
+
+## Fisiopatología y razonamiento
+
+- Es multifactorial y distinto de lumbalgia pura; no atribuir todo cuadro a desplazamiento óseo o inestabilidad demostrada.
+
+## Referencias
+
+[pgp] NHS — dor pélvica na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/pelvic-pain/
+
+[pgpr] RCOG — dor da cintura pélvica e gravidez — https://www.rcog.org.uk/for-the-public/browse-our-patient-information/pelvic-girdle-pain-and-pregnancy/
+
+[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations

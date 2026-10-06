@@ -1,0 +1,38 @@
+# Obesidad — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- La obesidad preexistente es un factor de riesgo obstétrico; el embarazo no crea un nuevo owner para esta enfermedad.
+
+## Diagnóstico, estudios y diferenciales
+
+- Registrar peso previo al embarazo cuando esté disponible, evolución, presión, alimentación y riesgo metabólico.
+- Detectar diabetes según protocolo y evaluar necesidades de seguimiento especializado.
+
+## Tratamiento y dosis
+
+- Plan nutricional suficiente y actividad adecuada al embarazo.
+- No recomendar adelgazamiento deliberado ni dietas restrictivas para perder peso durante el embarazo.
+
+## Seguridad y monitoreo
+
+- Los medicamentos para adelgazar no son tratamiento habitual de embarazadas; revisar exposición a agonistas de GLP-1 y otros fármacos con el equipo.
+- No prometer ausencia de riesgo fetal.
+
+## Escalamiento, alta y seguimiento
+
+- Seguimiento de aumento de peso, presión y metabolismo.
+- Planificar parto y cuidados posparto según riesgo, sin imponer cesárea solamente por obesidad.
+
+## Fisiopatología y razonamiento
+
+- La mayor adiposidad se asocia con resistencia a la insulina, hipertensión y dificultades de evaluación, anestesia y parto.
+- El manejo debe ser respetuoso e individualizado.
+
+## Referencias
+
+[ob] NICE NG247 — nutrição materna, 2025 — https://www.nice.org.uk/guidance/NG247/chapter/rationale-and-impact
+
+[obdrug] NICE NG246 — medicamentos para controle de peso — https://www.nice.org.uk/guidance/ng246/chapter/Medicines-and-surgery

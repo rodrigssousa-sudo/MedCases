@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Anemia ferropriva — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Deficiência de ferro com anemia na gestação; interpretar hemoglobina por trimestre.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Deficiência de ferro com anemia na gestação; interpretar hemoglobina por trimestre."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Expansão plasmática causa hemodiluição; não explica automaticamente anemia patológica. A demanda de ferro cresce e perdas ou dieta insuficiente podem esgotar reservas."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "OMS 2024: hemoglobina abaixo de 11 g/dL no primeiro e terceiro trimestres, ou 10,5 g/dL no segundo. Solicitar hemograma e ferritina; considerar inflamação, hemoglobinopatia e outras deficiências."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Para anemia na gestação, a OMS recomenda 120 mg de ferro elemental por via oral por dia, com 400 microgramas de ácido fólico por dia, até normalização. Depois, retornar à profilaxia de 30–60 mg de ferro elemental por dia."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Conferir ferro elemental, não a massa total do sal. Avaliar tolerância e resposta; ferro intravenoso depende do produto, trimestre e cálculo individual, não de uma dose universal."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dispneia em repouso, síncope, instabilidade ou anemia muito sintomática exigem avaliação urgente. Falta de resposta requer revisar adesão, absorção, perdas e diagnóstico."
+        }
+      ],
+      "references": [
+        "[hb] OMS — pontos de corte de hemoglobina, final 2024 — https://www.who.int/publications-detail-redirect/9789240088542",
+        "[fe] OMS — suplementação diária de ferro na gestação — https://www.who.int/tools/elena/interventions/daily-iron-pregnancy",
+        "[fet] OMS — recomendações de cuidado pré-natal, 2016 — https://iris.who.int/bitstream/10665/250796/1/9789241549912-eng.pdf"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Anemia ferropénica — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Deficiencia de hierro con anemia durante el embarazo; interpretar hemoglobina por trimestre.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Deficiencia de hierro con anemia durante el embarazo; interpretar hemoglobina por trimestre."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La expansión plasmática causa hemodilución; no explica automáticamente una anemia patológica. Aumenta la demanda de hierro y las pérdidas o la ingesta insuficiente pueden agotar reservas."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "OMS 2024: hemoglobina inferior a 11 g/dL en el primer y tercer trimestre, o 10,5 g/dL en el segundo. Solicitar hemograma y ferritina; considerar inflamación, hemoglobinopatías y otros déficits."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Para anemia en el embarazo, la OMS recomienda 120 mg de hierro elemental por vía oral por día, con 400 microgramos de ácido fólico por día, hasta normalización. Después, volver a profilaxis de 30–60 mg de hierro elemental por día."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Verificar hierro elemental, no la masa total de la sal. Evaluar tolerancia y respuesta; el hierro intravenoso depende del producto, trimestre y cálculo individual, no de una dosis universal."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Disnea en reposo, síncope, inestabilidad o anemia muy sintomática requieren evaluación urgente. La falta de respuesta exige revisar adherencia, absorción, pérdidas y diagnóstico."
+        }
+      ],
+      "references": [
+        "[hb] OMS — pontos de corte de hemoglobina, final 2024 — https://www.who.int/publications-detail-redirect/9789240088542",
+        "[fe] OMS — suplementação diária de ferro na gestação — https://www.who.int/tools/elena/interventions/daily-iron-pregnancy",
+        "[fet] OMS — recomendações de cuidado pré-natal, 2016 — https://iris.who.int/bitstream/10665/250796/1/9789241549912-eng.pdf"
+      ]
+    }
+  }
+}

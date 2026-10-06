@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Ameaça de abortamento",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Sangramento no início da gravidez intrauterina potencialmente viável, sem confirmação de perda; excluir ectópica e hemorragia importante.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Sangramento no início da gravidez intrauterina potencialmente viável, sem confirmação de perda; excluir ectópica e hemorragia importante."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Sangramento não comprova inviabilidade. O tratamento depende de localização, viabilidade e história de perda anterior."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Avaliar estabilidade, dor, sangramento e ultrassom transvaginal quando indicado. Gravidez de localização desconhecida exige seguimento até esclarecimento, sem rotular como aborto completo."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "NICE: em sangramento com gravidez intrauterina confirmada por ultrassom e abortamento anterior, progesterona micronizada 400 mg por via vaginal, 2 vezes por dia; se batimento fetal confirmado, continuar até 16 semanas completas."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Não indicar esse esquema para toda grávida com sangramento, nem antes de excluir localização ectópica. Avaliar RhD e profilaxia conforme diretriz vigente, idade gestacional e procedimento; não copiar regra antiga universal."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Instabilidade, síncope, dor intensa ou sangramento importante exige urgência. Se estável, plano de reavaliação e retorno; sangramento persistente além de 14 dias ou agravamento exige nova avaliação."
+        }
+      ],
+      "references": [
+        "[loss] NICE NG126 — manejo de abortamento, atualizado junho 2026 — https://www.nice.org.uk/guidance/ng126/chapter/management-of-miscarriage",
+        "[lossd] NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda — https://www.nice.org.uk/guidance/ng126"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Amenaza de aborto",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Sangrado al inicio del embarazo intrauterino potencialmente viable, sin confirmación de pérdida; excluir ectópico y hemorragia importante.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Sangrado al inicio del embarazo intrauterino potencialmente viable, sin confirmación de pérdida; excluir ectópico y hemorragia importante."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "El sangrado no demuestra inviabilidad. El tratamiento depende de localización, viabilidad e historia de pérdida anterior."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evaluar estabilidad, dolor, sangrado y ecografía transvaginal cuando corresponda. El embarazo de localización desconocida exige seguimiento hasta aclaración, sin rotular como aborto completo."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "NICE: ante sangrado con embarazo intrauterino confirmado por ecografía y aborto previo, progesterona micronizada 400 mg por vía vaginal, 2 veces por día; si se confirma latido fetal, continuar hasta 16 semanas completas."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "No indicar este esquema para toda embarazada con sangrado, ni antes de excluir localización ectópica. Evaluar RhD y profilaxis según guía vigente, edad gestacional y procedimiento; no copiar una regla antigua universal."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Inestabilidad, síncope, dolor intenso o sangrado importante exige urgencias. Si está estable, plan de reevaluación y retorno; sangrado persistente más allá de 14 días o empeoramiento exige nueva evaluación."
+        }
+      ],
+      "references": [
+        "[loss] NICE NG126 — manejo de abortamento, atualizado junho 2026 — https://www.nice.org.uk/guidance/ng126/chapter/management-of-miscarriage",
+        "[lossd] NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda — https://www.nice.org.uk/guidance/ng126"
+      ]
+    }
+  }
+}

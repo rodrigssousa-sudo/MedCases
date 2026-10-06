@@ -1,0 +1,39 @@
+# Bacteriuria asintomática — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Urocultivo con bacteriuria significativa, sin síntomas urinarios; durante el embarazo indica tratamiento dirigido.
+
+## Diagnóstico, estudios y diferenciales
+
+- Detectar con urocultivo al inicio del control prenatal.
+- ACOG utiliza ≥100.000 unidades formadoras de colonias por mL; considerar especie, recolección y contaminación.
+
+## Tratamiento y dosis
+
+- Elegir antibiótico por antibiograma.
+- Ejemplo NICE: cefalexina 500 mg por vía oral, 2 veces por día, durante 7 días, si es sensible y sin contraindicaciones; ajustar a función renal.
+
+## Seguridad y monitoreo
+
+- No extrapolar este esquema a pielonefritis.
+- La nitrofurantoína requiere atención a función renal, déficit de G6PD y proximidad del término; la elección no depende solamente del antibiograma.
+
+## Escalamiento, alta y seguimiento
+
+- Puede tratarse ambulatoriamente si es realmente asintomática y estable.
+- Fiebre, dolor lumbar o vómitos cambian la clasificación y requieren evaluación inmediata.
+- Seguimiento del cultivo según protocolo obstétrico.
+
+## Fisiopatología y razonamiento
+
+- La estasis urinaria del embarazo aumenta el riesgo de progresión a pielonefritis.
+- No confundir cultivo contaminado con infección verdadera.
+
+## Referencias
+
+[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals
+
+[cyst] NICE NG109 — antibióticos para infecção urinária baixa — https://www.nice.org.uk/guidance/NG109/chapter/recommendations

@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "psiqui_depressao_maior",
+  "titles": {
+    "pt": "Depressão maior — gestação",
+    "es": "Depresión mayor — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Episódio depressivo durante gravidez ou doença preexistente, com sofrimento e prejuízo funcional; não confundir com tristeza passageira.",
+      "es": "Episodio depresivo durante embarazo o enfermedad previa, con sufrimiento y deterioro funcional; no confundir con tristeza pasajera."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Não tratar também tem riscos maternos e familiares. Gravidez não justifica suspensão abrupta de tratamento eficaz.",
+      "es": "No tratar también tiene riesgos maternos y familiares. El embarazo no justifica suspensión brusca de tratamiento eficaz."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar sintomas, funcionalidade, escala validada, bipolaridade, uso de substâncias e risco suicida. Perguntar sobre segurança doméstica e rede de apoio.",
+      "es": "Evaluar síntomas, funcionalidad, escala validada, bipolaridad, consumo de sustancias y riesgo suicida. Preguntar sobre seguridad doméstica y red de apoyo."
+    },
+    {
+      "id": "treatment",
+      "pt": "Psicoterapia é opção central; farmacoterapia depende de gravidade, resposta prévia e decisão compartilhada. Se indicada, selecionar antidepressivo e dose conforme avaliação perinatal, evitando mudança desnecessária de regime eficaz.",
+      "es": "La psicoterapia es una opción central; la farmacoterapia depende de gravedad, respuesta previa y decisión compartida. Si está indicada, elegir antidepresivo y dosis según evaluación perinatal, evitando cambio innecesario de régimen eficaz."
+    },
+    {
+      "id": "safety",
+      "pt": "Rastrear bipolaridade antes de antidepressivo isolado. Monitorar sintomas, adesão e efeitos adversos; não prometer risco fetal zero nem atribuir todo sintoma à gravidez.",
+      "es": "Detectar bipolaridad antes de antidepresivo aislado. Vigilar síntomas, adherencia y efectos adversos; no prometer riesgo fetal cero ni atribuir todo síntoma al embarazo."
+    },
+    {
+      "id": "disposition",
+      "pt": "Ideação suicida com intenção, psicose ou incapacidade grave de autocuidado exige avaliação urgente e proteção. Casos estáveis: seguimento programado, plano de crise e articulação obstetrícia/saúde mental.",
+      "es": "Ideación suicida con intención, psicosis o incapacidad grave de autocuidado exige evaluación urgente y protección. Casos estables: seguimiento programado, plan de crisis y articulación obstetricia/salud mental."
+    }
+  ],
+  "references": [
+    {
+      "id": "psy",
+      "title": "ACOG Clinical Practice Guideline 5 — saúde mental perinatal, 2023",
+      "url": "https://www.acog.org/clinical/clinical-guidance/clinical-practice-guideline/articles/2023/06/treatment-and-management-of-mental-health-conditions-during-pregnancy-and-postpartum",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "psyp",
+      "title": "ACOG — avaliação e tratamento de saúde mental perinatal",
+      "url": "https://www.acog.org/programs/perinatal-mental-health/assessment-and-treatment-of-perinatal-mental-health-conditions",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 43,
+    "owner": "psiqui_depressao_maior",
+    "title": {
+      "pt": "Depressão maior — gestação",
+      "es": "Depresión mayor — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "psiqui_depressao_maior",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "03cbc1c2b4243e78f7a3ef0c93a9292b9c716c5dd6250ceea524e23fe3aef840"
+}

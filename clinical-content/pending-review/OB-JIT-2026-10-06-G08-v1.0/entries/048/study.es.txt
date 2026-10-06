@@ -1,0 +1,31 @@
+# Embarazo ectópico roto o sospecha de rotura
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Embarazo extrauterino con hemorragia o sospecha de rotura; mantener el alcance quirúrgico del owner existente.
+
+## Fisiopatología y razonamiento
+
+La rotura puede causar hemoperitoneo y shock incluso antes del diagnóstico formal. La ausencia de factores de riesgo no excluye ectópico.
+
+## Diagnóstico, estudios y diferenciales
+
+Dolor abdominal, síncope, dolor de hombro, sangrado e inestabilidad exigen sospecha. Evaluar perfusión, accesos, hemograma, grupo y reserva de sangre; ecografía si no demora intervención.
+
+## Tratamiento y dosis
+
+Activar obstetricia/cirugía, reanimar y controlar hemorragia. Sospecha de rotura o inestabilidad exige tratamiento quirúrgico urgente; no esperar una serie de hCG para derivar.
+
+## Seguridad y monitoreo
+
+Metotrexato y manejo expectante no son tratamiento de ectópico roto. No reutilizar protocolo de ectópico estable en este owner; profilaxis RhD según guía actual y contexto.
+
+## Escalamiento, alta y seguimiento
+
+Internación y vigilancia posoperatoria, con seguimiento definido por procedimiento y riesgo de tejido persistente. Apoyo emocional y orientación para evaluación temprana en un futuro embarazo.
+
+## Referencias
+
+[lossd] NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda — https://www.nice.org.uk/guidance/ng126

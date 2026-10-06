@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Candidíase vulvovaginal — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Vulvovaginite por Candida com prurido, irritação e corrimento; colonização sem sintomas não exige tratamento.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Vulvovaginite por Candida com prurido, irritação e corrimento; colonização sem sintomas não exige tratamento."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alterações da gestação favorecem colonização. O diagnóstico não deve ser baseado apenas em aspecto do corrimento."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Examinar e realizar microscopia ou teste apropriado quando disponível. Em recorrência ou falha, confirmar agente e excluir vaginose, tricomoníase e dermatose."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Na gestação, CDC recomenda azol tópico durante 7 dias. Exemplo: miconazol 100 mg por via vaginal, 1 óvulo por dia, durante 7 dias."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evitar fluconazol oral na gestação e não transpor esquemas não gestacionais de dose única. Conferir formulação e tolerância local."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Tratamento ambulatorial se quadro típico e estável. Persistência exige reavaliação, não repetição indefinida; dor pélvica, febre ou perda de líquido demandam avaliação obstétrica."
+        }
+      ],
+      "references": [
+        "[cand] CDC — candidíase vulvovaginal, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Candidiasis vulvovaginal — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Vulvovaginitis por Candida con prurito, irritación y flujo; la colonización sin síntomas no exige tratamiento.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Vulvovaginitis por Candida con prurito, irritación y flujo; la colonización sin síntomas no exige tratamiento."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Los cambios del embarazo favorecen colonización. El diagnóstico no debe basarse solamente en el aspecto del flujo."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Examinar y realizar microscopía o prueba apropiada cuando esté disponible. Ante recurrencia o fracaso, confirmar agente y excluir vaginosis, tricomoniasis y dermatosis."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Durante el embarazo, CDC recomienda azol tópico durante 7 días. Ejemplo: miconazol 100 mg por vía vaginal, 1 óvulo por día, durante 7 días."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evitar fluconazol oral durante el embarazo y no trasladar esquemas no gestacionales de dosis única. Verificar formulación y tolerancia local."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Tratamiento ambulatorio ante cuadro típico y estable. La persistencia requiere reevaluación, no repetición indefinida; dolor pélvico, fiebre o pérdida de líquido requieren evaluación obstétrica."
+        }
+      ],
+      "references": [
+        "[cand] CDC — candidíase vulvovaginal, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm"
+      ]
+    }
+  }
+}

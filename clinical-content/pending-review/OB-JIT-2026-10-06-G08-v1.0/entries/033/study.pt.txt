@@ -1,0 +1,33 @@
+# Diarreia aguda infecciosa — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Diarreia de provável causa infecciosa na gestante; preservar owner geral já existente, sem criar gastroenterite gestacional duplicada.
+
+## Fisiopatologia e raciocínio
+
+Perdas de água e eletrólitos podem comprometer perfusão; gravidez não indica antibiótico automaticamente.
+
+## Diagnóstico, exames e diferenciais
+
+Avaliar exposição, duração, sangue, febre, diurese e sinais obstétricos. Testes fecais são dirigidos por gravidade, surto, imunossupressão e suspeita etiológica.
+
+## Tratamento e doses
+
+Solução de reidratação oral para desidratação leve ou moderada; solução isotônica intravenosa se choque, desidratação grave ou intolerância. Antimicrobiano apenas por indicação clínica/etiológica, com escolha compatível com gravidez.
+
+## Segurança e monitorização
+
+Diarreia sanguinolenta pode exigir pesquisa de toxina Shiga; não iniciar antibiótico indiscriminado nem antiperistáltico diante de infecção invasiva suspeita.
+
+## Escalonamento, alta e seguimento
+
+Alta com ingestão e perfusão recuperadas. Febre persistente, oligúria, sangue, dor focal, contrações ou redução de movimentos fetais exigem reavaliação/hospital conforme gravidade.
+
+## Referências
+
+[diarr] IDSA — diarreia infecciosa, guideline final vigente de 2017 — https://www.idsociety.org/practice-guideline/infectious-diarrhea
+
+[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/

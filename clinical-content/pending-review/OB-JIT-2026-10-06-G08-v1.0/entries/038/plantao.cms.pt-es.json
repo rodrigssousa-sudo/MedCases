@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Dor da cintura pélvica relacionada à gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Plantão",
+      "summary": "Dor na região púbica ou sacroilíaca, frequentemente provocada por movimentos assimétricos, durante a gravidez.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Dor na região púbica ou sacroilíaca, frequentemente provocada por movimentos assimétricos, durante a gravidez."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Caracterizar dor ao subir escadas, virar na cama ou apoiar uma perna.",
+            "Excluir infecção, trauma, trombose, sintomas neurológicos e causas obstétricas."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Fisioterapia com orientações e exercícios adaptados; considerar cinta pélvica não rígida quando apropriada.",
+            "Reduzir atividades provocadoras sem imobilização indiscriminada."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Analgesia deve ser compatível com gravidez.",
+            "Mobilidade muito limitada requer avaliar risco trombótico e assistência; não prescrever anticoagulação apenas pelo nome do diagnóstico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pode permitir parto vaginal, com posição e movimentos planejados; cesariana não é obrigatória.",
+            "Seguimento funcional e pós-parto; dor incapacitante ou sinais de alarme requerem reavaliação."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "É multifatorial e distinta de lombalgia pura; não atribuir todo quadro a deslocamento de ossos ou instabilidade comprovada."
+          ]
+        }
+      ],
+      "references": [
+        "[pgp] NHS — dor pélvica na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/pelvic-pain/",
+        "[pgpr] RCOG — dor da cintura pélvica e gravidez — https://www.rcog.org.uk/for-the-public/browse-our-patient-information/pelvic-girdle-pain-and-pregnancy/",
+        "[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Dolor de cintura pélvica relacionado con el embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Guardia",
+      "summary": "Dolor en región púbica o sacroilíaca, frecuentemente provocado por movimientos asimétricos, durante el embarazo.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Dolor en región púbica o sacroilíaca, frecuentemente provocado por movimientos asimétricos, durante el embarazo."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Caracterizar dolor al subir escaleras, girar en la cama o apoyar una pierna.",
+            "Excluir infección, traumatismo, trombosis, síntomas neurológicos y causas obstétricas."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Fisioterapia con orientaciones y ejercicios adaptados; considerar cinturón pélvico no rígido cuando corresponda.",
+            "Reducir actividades desencadenantes sin inmovilización indiscriminada."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La analgesia debe ser compatible con el embarazo.",
+            "Movilidad muy limitada exige evaluar riesgo trombótico y asistencia; no indicar anticoagulación solamente por el nombre del diagnóstico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Puede permitir parto vaginal, con posición y movimientos planificados; la cesárea no es obligatoria.",
+            "Seguimiento funcional y posparto; dolor incapacitante o signos de alarma requieren reevaluación."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Es multifactorial y distinto de lumbalgia pura; no atribuir todo cuadro a desplazamiento óseo o inestabilidad demostrada."
+          ]
+        }
+      ],
+      "references": [
+        "[pgp] NHS — dor pélvica na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/pelvic-pain/",
+        "[pgpr] RCOG — dor da cintura pélvica e gravidez — https://www.rcog.org.uk/for-the-public/browse-our-patient-information/pelvic-girdle-pain-and-pregnancy/",
+        "[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations"
+      ]
+    }
+  }
+}

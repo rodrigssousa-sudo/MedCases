@@ -1,0 +1,33 @@
+# Varizes de membros inferiores — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Dilatação venosa superficial com peso, desconforto ou edema nas pernas durante a gravidez.
+
+## Fisiopatologia e raciocínio
+
+Mudanças venosas e compressão pelo útero podem agravar doença prévia. Varizes não são sinônimo de trombose profunda.
+
+## Diagnóstico, exames e diferenciais
+
+Avaliar lateralidade, dor, edema e pele. Edema unilateral novo, dor importante, calor local ou dispneia exige investigar trombose/embolia, não atribuir simplesmente a varizes.
+
+## Tratamento e doses
+
+Movimento regular, evitar permanecer imóvel por longos períodos e elevar pernas para conforto. Meias de compressão adequadas podem aliviar sintomas.
+
+## Segurança e monitorização
+
+Procedimentos eletivos para varizes em geral são adiados durante a gravidez. Não indicar anticoagulação apenas por varizes não complicadas.
+
+## Escalonamento, alta e seguimento
+
+Seguimento ambulatorial se sem complicações. Sangramento de variz, úlcera, infecção ou suspeita de trombose exige avaliação; reavaliar persistência após parto.
+
+## Referências
+
+[vein] NHS — problemas comuns na gravidez, varizes — https://www.nhs.uk/pregnancy/common-symptoms/common-health-problems/
+
+[veinn] NHS — varizes — https://www.nhs.uk/conditions/varicose-veins/

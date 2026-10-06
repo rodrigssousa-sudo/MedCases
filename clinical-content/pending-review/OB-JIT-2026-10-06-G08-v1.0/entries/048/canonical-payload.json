@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "obstetr_gravidez_ectopica_rota",
+  "titles": {
+    "pt": "Gravidez ectópica rota ou suspeita de ruptura",
+    "es": "Embarazo ectópico roto o sospecha de rotura"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Gravidez extrauterina com hemorragia ou suspeita de ruptura; manter o escopo cirúrgico do owner existente.",
+      "es": "Embarazo extrauterino con hemorragia o sospecha de rotura; mantener el alcance quirúrgico del owner existente."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Ruptura pode causar hemoperitônio e choque mesmo antes de diagnóstico formal. Ausência de fatores de risco não exclui ectópica.",
+      "es": "La rotura puede causar hemoperitoneo y shock incluso antes del diagnóstico formal. La ausencia de factores de riesgo no excluye ectópico."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Dor abdominal, síncope, dor no ombro, sangramento e instabilidade exigem suspeita. Avaliar perfusão, acessos, hemograma, tipagem e reserva de sangue; ultrassom se não atrasar intervenção.",
+      "es": "Dolor abdominal, síncope, dolor de hombro, sangrado e inestabilidad exigen sospecha. Evaluar perfusión, accesos, hemograma, grupo y reserva de sangre; ecografía si no demora intervención."
+    },
+    {
+      "id": "treatment",
+      "pt": "Acionar obstetrícia/cirurgia, ressuscitar e controlar hemorragia. Suspeita de ruptura ou instabilidade exige tratamento cirúrgico urgente; não esperar série de hCG para encaminhar.",
+      "es": "Activar obstetricia/cirugía, reanimar y controlar hemorragia. Sospecha de rotura o inestabilidad exige tratamiento quirúrgico urgente; no esperar una serie de hCG para derivar."
+    },
+    {
+      "id": "safety",
+      "pt": "Metotrexato e manejo expectante não são tratamento de ectópica rota. Não reutilizar protocolo de ectópica estável neste owner; profilaxia RhD conforme diretriz atual e contexto.",
+      "es": "Metotrexato y manejo expectante no son tratamiento de ectópico roto. No reutilizar protocolo de ectópico estable en este owner; profilaxis RhD según guía actual y contexto."
+    },
+    {
+      "id": "disposition",
+      "pt": "Internação e vigilância pós-operatória, com seguimento definido pelo procedimento e risco de tecido persistente. Apoio emocional e orientação para avaliação precoce em futura gravidez.",
+      "es": "Internación y vigilancia posoperatoria, con seguimiento definido por procedimiento y riesgo de tejido persistente. Apoyo emocional y orientación para evaluación temprana en un futuro embarazo."
+    }
+  ],
+  "references": [
+    {
+      "id": "lossd",
+      "title": "NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda",
+      "url": "https://www.nice.org.uk/guidance/ng126",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 48,
+    "owner": "obstetr_gravidez_ectopica_rota",
+    "title": {
+      "pt": "Gravidez ectópica rota ou suspeita de ruptura",
+      "es": "Embarazo ectópico roto o sospecha de rotura"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "obstetr_gravidez_ectopica_rota",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "19f54f3fe80fab818b7dd23d03f0eec93896e8752e9016f9dbde94166ccebb94"
+}

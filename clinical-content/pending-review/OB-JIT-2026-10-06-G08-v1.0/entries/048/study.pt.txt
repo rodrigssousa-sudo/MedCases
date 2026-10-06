@@ -1,0 +1,31 @@
+# Gravidez ectópica rota ou suspeita de ruptura
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Gravidez extrauterina com hemorragia ou suspeita de ruptura; manter o escopo cirúrgico do owner existente.
+
+## Fisiopatologia e raciocínio
+
+Ruptura pode causar hemoperitônio e choque mesmo antes de diagnóstico formal. Ausência de fatores de risco não exclui ectópica.
+
+## Diagnóstico, exames e diferenciais
+
+Dor abdominal, síncope, dor no ombro, sangramento e instabilidade exigem suspeita. Avaliar perfusão, acessos, hemograma, tipagem e reserva de sangue; ultrassom se não atrasar intervenção.
+
+## Tratamento e doses
+
+Acionar obstetrícia/cirurgia, ressuscitar e controlar hemorragia. Suspeita de ruptura ou instabilidade exige tratamento cirúrgico urgente; não esperar série de hCG para encaminhar.
+
+## Segurança e monitorização
+
+Metotrexato e manejo expectante não são tratamento de ectópica rota. Não reutilizar protocolo de ectópica estável neste owner; profilaxia RhD conforme diretriz atual e contexto.
+
+## Escalonamento, alta e seguimento
+
+Internação e vigilância pós-operatória, com seguimento definido pelo procedimento e risco de tecido persistente. Apoio emocional e orientação para avaliação precoce em futura gravidez.
+
+## Referências
+
+[lossd] NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda — https://www.nice.org.uk/guidance/ng126

@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "hiperemese_gravidica",
+  "titles": {
+    "pt": "Hiperêmese gravídica",
+    "es": "Hiperémesis gravídica"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Síndrome de vômitos incapacitantes na gravidez, com ingestão insuficiente e repercussão clínica; não é apenas náusea habitual.",
+      "es": "Síndrome de vómitos incapacitantes del embarazo, con ingesta insuficiente y repercusión clínica; no es solamente náusea habitual."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Desidratação, alterações eletrolíticas e deficiência de tiamina podem ocorrer. A cetonúria isolada não mede gravidade nem deve impedir tratamento.",
+      "es": "Pueden ocurrir deshidratación, alteraciones electrolíticas y déficit de tiamina. La cetonuria aislada no mide gravedad ni debe impedir el tratamiento."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar peso, sinais vitais, eletrólitos, função renal e causas alternativas. Dor, febre, sangramento e alteração neurológica exigem investigação dirigida.",
+      "es": "Evaluar peso, signos vitales, electrolitos, función renal y causas alternativas. Dolor, fiebre, sangrado y alteraciones neurológicas requieren investigación dirigida."
+    },
+    {
+      "id": "treatment",
+      "pt": "Reposição com solução salina a 0,9%; potássio apenas conforme exames e função renal. Em internação por vômitos ou ingestão muito reduzida: tiamina 100 mg por via oral, 3 vezes por dia, antes de glicose ou nutrição parenteral; via parenteral se oral inviável, conforme preparação institucional.",
+      "es": "Reposición con solución salina al 0,9%; potasio solamente según análisis y función renal. En internación por vómitos o ingesta muy reducida: tiamina 100 mg por vía oral, 3 veces por día, antes de glucosa o nutrición parenteral; vía parenteral si la oral no es viable, según preparación institucional."
+    },
+    {
+      "id": "safety",
+      "pt": "Antieméticos podem ser combinados conforme resposta; vigiar efeitos extrapiramidais e risco de QT quando aplicável. Reavaliar eletrólitos durante hidratação e evitar realimentação abrupta em desnutrição.",
+      "es": "Pueden combinarse antieméticos según respuesta; vigilar efectos extrapiramidales y riesgo de QT cuando corresponda. Reevaluar electrolitos durante hidratación y evitar realimentación brusca en desnutrición."
+    },
+    {
+      "id": "disposition",
+      "pt": "Internar se intolerância persistente, desidratação, distúrbio eletrolítico ou comorbidade descompensada. Alta após recuperação da ingestão, com plano de antiemético e seguimento obstétrico.",
+      "es": "Internar ante intolerancia persistente, deshidratación, trastorno electrolítico o comorbilidad descompensada. Alta tras recuperar la ingesta, con plan antiemético y seguimiento obstétrico."
+    }
+  ],
+  "references": [
+    {
+      "id": "nvp",
+      "title": "RCOG Green-top 69 — náuseas, vômitos e hiperêmese; final 2024",
+      "url": "https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/the-management-of-nausea-and-vomiting-of-pregnancy-and-hyperemesis-gravidarum-green-top-guideline-no-69/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "hg",
+      "title": "RCOG 69 — publicação normativa, 2024",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38311315/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 2,
+    "owner": "hiperemese_gravidica",
+    "title": {
+      "pt": "Hiperêmese gravídica",
+      "es": "Hiperémesis gravídica"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "hiperemese_gravidica",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "ac4792f93ffd226aefd01a089fcb39caa447b7cec8fc1c0084a930f55a4712b7"
+}

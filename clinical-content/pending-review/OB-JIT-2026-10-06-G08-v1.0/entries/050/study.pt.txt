@@ -1,0 +1,35 @@
+# Rotura prematura pré-termo das membranas
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Rotura de membranas antes do trabalho de parto e antes do termo; separar de rotura a termo e corioamnionite.
+
+## Fisiopatologia e raciocínio
+
+Há risco de prematuridade, infecção, descolamento e prolapso de cordão. A vigilância combina condições maternas e fetais.
+
+## Diagnóstico, exames e diferenciais
+
+História de perda de líquido e exame com espéculo estéril; teste específico se necessário. Evitar exames digitais repetidos. Não diagnosticar infecção apenas por leucócitos ou proteína C reativa isolados.
+
+## Tratamento e doses
+
+NICE para latência: eritromicina 250 mg por via oral, 4 vezes por dia, por no máximo 10 dias ou até trabalho de parto estabelecido, o que ocorrer primeiro. Corticoide antenatal e neuroproteção conforme idade gestacional e previsão de parto.
+
+## Segurança e monitorização
+
+Não usar amoxicilina/clavulanato como profilaxia de latência. Não indicar tocolítico de rotina na rotura pré-termo. Infecção exige tratamento e decisão de parto, não prolongamento cego da latência.
+
+## Escalonamento, alta e seguimento
+
+Avaliação hospitalar inicial, comunicação com neonatologia e plano individual de parto. Febre, dor uterina, sangramento, alteração fetal ou cordão prolapsado exige intervenção imediata.
+
+## Referências
+
+[pprom] RCOG Green-top 73 — rotura pré-termo, vigência estendida em 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/care-of-women-presenting-with-suspected-preterm-prelabour-rupture-of-membranes-from-24plus0-weeks-of-gestation-green-top-guideline-no-73/
+
+[ptl] NICE NG25 — trabalho de parto prematuro — https://www.nice.org.uk/guidance/ng25/chapter/recommendations
+
+[ster] ACOG Committee Opinion 713 — corticosteroide antenatal — https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation

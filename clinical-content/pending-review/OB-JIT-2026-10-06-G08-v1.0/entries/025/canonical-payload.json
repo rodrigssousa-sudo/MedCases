@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "gripe_influenza_010",
+  "titles": {
+    "pt": "Influenza — gestação",
+    "es": "Influenza — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Influenza suspeita ou confirmada na grávida tem maior risco de complicações; tratar prontamente, mesmo sem confirmação laboratorial.",
+      "es": "La influenza sospechada o confirmada en la embarazada tiene mayor riesgo de complicaciones; tratar pronto, incluso sin confirmación de laboratorio."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Risco aumentado também ocorre no pós-parto recente. Benefício do antiviral é maior quando precoce, mas doença grave pode justificar início tardio.",
+      "es": "El riesgo aumentado también ocurre en el posparto reciente. El beneficio antiviral es mayor si es temprano, pero la enfermedad grave puede justificar inicio tardío."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar início, febre, sinais respiratórios, oxigenação, hidratação e diagnósticos alternativos. Não esperar teste para tratar uma suspeita convincente em gestante.",
+      "es": "Evaluar inicio, fiebre, signos respiratorios, oxigenación, hidratación y diagnósticos alternativos. No esperar una prueba para tratar sospecha convincente en una embarazada."
+    },
+    {
+      "id": "treatment",
+      "pt": "Oseltamivir 75 mg por via oral, 2 vezes por dia, durante 5 dias para adulta com função renal normal. É o antiviral preferido pelo CDC na gestação; ajustar à função renal.",
+      "es": "Oseltamivir 75 mg por vía oral, 2 veces por día, durante 5 días para adulta con función renal normal. Es el antiviral preferido por CDC durante el embarazo; ajustar a función renal."
+    },
+    {
+      "id": "safety",
+      "pt": "Não recomendar baloxavir de rotina na gravidez. Casos hospitalizados ou complicados podem exigir duração individualizada; não prolongar automaticamente tratamento de quadro simples.",
+      "es": "No recomendar baloxavir rutinariamente durante el embarazo. Los casos hospitalizados o complicados pueden exigir duración individualizada; no prolongar automáticamente el tratamiento de un cuadro simple."
+    },
+    {
+      "id": "disposition",
+      "pt": "Dispneia, hipoxemia, instabilidade ou incapacidade de ingerir líquidos exigem hospital. Alta com retorno por piora, prevenção e vacinação indicada no pré-natal.",
+      "es": "Disnea, hipoxemia, inestabilidad o incapacidad de beber requieren hospital. Alta con retorno por empeoramiento, prevención y vacunación indicada en el control prenatal."
+    }
+  ],
+  "references": [
+    {
+      "id": "flu",
+      "title": "CDC — influenza em gestantes, atualização dezembro 2025",
+      "url": "https://www.cdc.gov/flu/hcp/antivirals/treatment_obstetric.html",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "flud",
+      "title": "CDC — antivirais para influenza, resumo clínico",
+      "url": "https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 25,
+    "owner": "gripe_influenza_010",
+    "title": {
+      "pt": "Influenza — gestação",
+      "es": "Influenza — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "gripe_influenza_010",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "73284dfccf98b6c2578b911ec74881672b7b5c8060eaab190e59eb9ee622782b"
+}

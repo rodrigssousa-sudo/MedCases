@@ -1,0 +1,33 @@
+# Pré-eclâmpsia
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Doença hipertensiva após 20 semanas com proteinúria ou disfunção materna/uteroplacentária; proteinúria não é obrigatória.
+
+## Fisiopatologia e raciocínio
+
+Disfunção placentária e endotelial pode comprometer múltiplos órgãos. Eclâmpsia e HELLP são complicações relacionadas, não aliases que autorizem fundir owners.
+
+## Diagnóstico, exames e diferenciais
+
+Avaliar pressão, cefaleia, visão, dor epigástrica, dispneia, plaquetas, creatinina, transaminases e proteinúria, com avaliação fetal. Não esperar todos os exames para tratar instabilidade.
+
+## Tratamento e doses
+
+Hipertensão grave requer anti-hipertensivo supervisionado e planejamento obstétrico. Se indicado magnésio para doença grave: sulfato de magnésio 4 g intravenosos em 5–15 minutos, depois 1 g por hora durante 24 horas, conforme NICE e situação clínica.
+
+## Segurança e monitorização
+
+Magnésio não substitui controle pressórico. Monitorar respiração, reflexos e diurese; disfunção renal exige ajuste e vigilância. Diluição depende da concentração disponível e protocolo institucional.
+
+## Escalonamento, alta e seguimento
+
+Convulsão, edema pulmonar, deterioração laboratorial ou comprometimento fetal exigem internação e escalonamento. Decisão de parto deve equilibrar estabilidade e prematuridade, sem adiar resolução de emergência.
+
+## Referências
+
+[ht] NICE NG133 — hipertensão na gravidez, atualização 2023 — https://www.nice.org.uk/guidance/ng133/chapter/Recommendations
+
+[mg] NICE NG133 — cuidado crítico em hipertensão e pré-eclâmpsia — https://www.nice.org.uk/guidance/ng133/resources/criteria-for-choice-of-critical-care-level-hypertension-preeclampsia-and-eclampsia-pdf-8720711396

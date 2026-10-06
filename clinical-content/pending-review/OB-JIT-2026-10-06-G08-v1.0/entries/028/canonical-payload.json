@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "pneumonia_grave",
+  "titles": {
+    "pt": "Pneumonia grave — gestação",
+    "es": "Neumonía grave — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Pneumonia grave na grávida com risco respiratório ou sistêmico; preservar o escopo grave deste owner.",
+      "es": "Neumonía grave en la embarazada con riesgo respiratorio o sistémico; preservar el alcance grave de este owner."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Comprometimento de troca gasosa pode ameaçar mãe e feto. Critérios clínicos e deterioração prevalecem sobre escore isolado.",
+      "es": "El compromiso del intercambio gaseoso puede amenazar a madre y feto. Los criterios clínicos y el deterioro prevalecen sobre una escala aislada."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar saturação, pressão, frequência respiratória, perfusão e consciência. Radiografia indicada não deve ser omitida por gravidez; colher culturas conforme gravidade sem atrasar antibiótico.",
+      "es": "Evaluar saturación, presión, frecuencia respiratoria, perfusión y conciencia. No omitir una radiografía indicada por embarazo; obtener cultivos según gravedad sin demorar antibiótico."
+    },
+    {
+      "id": "treatment",
+      "pt": "Exemplo NICE para pneumonia comunitária grave: amoxicilina/clavulanato 1,2 g intravenosos, 3 vezes por dia, mais eritromicina 500 mg por via oral, 4 vezes por dia, quando apropriado à gestante. Rever em 5 dias e adequar duração à estabilidade e agente.",
+      "es": "Ejemplo NICE para neumonía comunitaria grave: amoxicilina/clavulanato 1,2 g intravenosos, 3 veces por día, más eritromicina 500 mg por vía oral, 4 veces por día, cuando corresponda a la embarazada. Revisar a los 5 días y ajustar duración a estabilidad y agente."
+    },
+    {
+      "id": "safety",
+      "pt": "Conferir alergia, função renal, QT e interações; trocar via do macrolídeo se ingestão inviável, sob protocolo hospitalar. Não transpor doxiciclina do esquema não gestacional.",
+      "es": "Verificar alergia, función renal, QT e interacciones; cambiar vía del macrólido si la ingesta no es viable, bajo protocolo hospitalario. No trasladar doxiciclina del esquema no gestacional."
+    },
+    {
+      "id": "disposition",
+      "pt": "Internar, oferecer suporte de oxigênio e avaliação obstétrica. Choque, necessidade crescente de oxigênio ou falência de órgãos exige escalonamento; alta após estabilidade, tolerância oral e seguimento.",
+      "es": "Internar, ofrecer soporte de oxígeno y evaluación obstétrica. Shock, necesidad creciente de oxígeno o falla orgánica exigen escalamiento; alta tras estabilidad, tolerancia oral y seguimiento."
+    }
+  ],
+  "references": [
+    {
+      "id": "pneu",
+      "title": "NICE NG250 — pneumonia, final 2025",
+      "url": "https://www.nice.org.uk/guidance/ng250/chapter/Recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "pneud",
+      "title": "NICE NG250 — pneumonia comunitária em adultos, tabela atualizada 2026",
+      "url": "https://www.nice.org.uk/guidance/ng250/resources/visual-summary-communityacquired-pneumonia-adults-presenting-to-hospital-pdf-15434376301",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 28,
+    "owner": "pneumonia_grave",
+    "title": {
+      "pt": "Pneumonia grave — gestação",
+      "es": "Neumonía grave — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "pneumonia_grave",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "111ae698b21927ac1061709754882acd4f5ad0bd2b3d2a430bf5b695dc4045ee"
+}

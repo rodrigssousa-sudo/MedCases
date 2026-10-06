@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Trabalho de parto prematuro",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Plantão",
+      "summary": "Contrações com suspeita ou confirmação de alteração cervical antes do termo; não diagnosticar apenas por desconforto inespecífico.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Contrações com suspeita ou confirmação de alteração cervical antes do termo; não diagnosticar apenas por desconforto inespecífico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Verificar idade gestacional, membranas, sangramento, infecção, colo e bem-estar fetal.",
+            "Comprimento cervical ou biomarcador pode apoiar decisão em contexto apropriado."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pelo NICE, oferecer entre 24 semanas e 33 semanas e 6 dias, considerando também janelas especiais com a equipe, se risco de parto dentro de 7 dias, betametasona 12 mg intramusculares, 2 doses separadas por 24 horas.",
+            "Tocolítico, como nifedipino, depende de idade gestacional, membranas e contraindicações, conforme protocolo obstétrico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Neuroproteção NICE: oferecer magnésio entre 24–29 semanas e 6 dias, considerar entre 30–33 semanas e 6 dias se parto previsto dentro de 24 horas.",
+            "Regime: 4 g intravenosos em 15 minutos, depois 1 g por hora até parto ou 24 horas, o que ocorrer primeiro; monitorar respiração, reflexos e diurese."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infecção, hemorragia ou sofrimento fetal pode exigir parto, sem esperar completar medicamentos.",
+            "Internar/transferir se risco significativo; alta só após avaliação obstétrica e plano de retorno."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Prematuridade ameaça o recém-nascido; intervenções visam maturação, neuroproteção e transferência apropriada, sem prolongar gestação perigosa."
+          ]
+        }
+      ],
+      "references": [
+        "[ptl] NICE NG25 — trabalho de parto prematuro — https://www.nice.org.uk/guidance/ng25/chapter/recommendations",
+        "[ster] ACOG Committee Opinion 713 — corticosteroide antenatal — https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Trabajo de parto prematuro",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Guardia",
+      "summary": "Contracciones con sospecha o confirmación de cambio cervical antes del término; no diagnosticar solamente por molestias inespecíficas.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Contracciones con sospecha o confirmación de cambio cervical antes del término; no diagnosticar solamente por molestias inespecíficas."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Verificar edad gestacional, membranas, sangrado, infección, cuello y bienestar fetal.",
+            "Longitud cervical o biomarcador puede apoyar decisiones en contexto apropiado."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Según NICE, ofrecer entre 24 semanas y 33 semanas y 6 días, considerando también ventanas especiales con el equipo, ante riesgo de parto dentro de 7 días, betametasona 12 mg intramusculares, 2 dosis separadas por 24 horas.",
+            "Un tocolítico, como nifedipino, depende de edad gestacional, membranas y contraindicaciones, según protocolo obstétrico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Neuroprotección NICE: ofrecer magnesio entre 24–29 semanas y 6 días, considerar entre 30–33 semanas y 6 días si se prevé parto dentro de 24 horas.",
+            "Régimen: 4 g intravenosos en 15 minutos, después 1 g por hora hasta parto o 24 horas, lo que ocurra primero; vigilar respiración, reflejos y diuresis."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infección, hemorragia o sufrimiento fetal puede exigir parto, sin esperar completar medicamentos.",
+            "Internar/trasladar ante riesgo significativo; alta solamente tras evaluación obstétrica y plan de retorno."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La prematuridad amenaza al recién nacido; las intervenciones buscan maduración, neuroprotección y traslado adecuado, sin prolongar un embarazo peligroso."
+          ]
+        }
+      ],
+      "references": [
+        "[ptl] NICE NG25 — trabalho de parto prematuro — https://www.nice.org.uk/guidance/ng25/chapter/recommendations",
+        "[ster] ACOG Committee Opinion 713 — corticosteroide antenatal — https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation"
+      ]
+    }
+  }
+}

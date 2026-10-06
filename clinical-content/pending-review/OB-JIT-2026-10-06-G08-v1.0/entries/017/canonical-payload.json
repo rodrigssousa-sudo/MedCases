@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "vaginose_bacteriana",
+  "titles": {
+    "pt": "Vaginose bacteriana — gestação",
+    "es": "Vaginosis bacteriana — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Disbiose vaginal com corrimento e odor característicos; não equivale a candidíase nem tricomoníase.",
+      "es": "Disbiosis vaginal con flujo y olor característicos; no equivale a candidiasis ni tricomoniasis."
+    },
+    {
+      "id": "reasoning",
+      "pt": "A perda de predominância de lactobacilos altera o ambiente vaginal. Associações obstétricas não justificam tratar indiscriminadamente toda gestante assintomática.",
+      "es": "La pérdida del predominio de lactobacilos altera el ambiente vaginal. Las asociaciones obstétricas no justifican tratar indiscriminadamente a toda embarazada asintomática."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Usar critérios clínicos validados ou teste apropriado para sintomas; avaliar outras infecções e causas de corrimento.",
+      "es": "Usar criterios clínicos validados o prueba apropiada para síntomas; evaluar otras infecciones y causas de flujo."
+    },
+    {
+      "id": "treatment",
+      "pt": "Tratar gestantes sintomáticas. Metronidazol 500 mg por via oral, 2 vezes por dia, durante 7 dias é opção CDC.",
+      "es": "Tratar a las embarazadas sintomáticas. Metronidazol 500 mg por vía oral, 2 veces por día, durante 7 días es una opción CDC."
+    },
+    {
+      "id": "safety",
+      "pt": "Revisar interações, tolerância e história de recorrência. Não indicar tinidazol como substituição automática na gravidez. Tratamento de parceiro em recorrência requer orientação atual específica.",
+      "es": "Revisar interacciones, tolerancia e historia de recurrencia. No indicar tinidazol como sustitución automática en el embarazo. El tratamiento de pareja ante recurrencia requiere orientación actual específica."
+    },
+    {
+      "id": "disposition",
+      "pt": "Alta com orientação de retorno por persistência. Febre, dor pélvica, contrações ou suspeita de rotura de membranas exigem avaliação obstétrica, não apenas repetir antibiótico.",
+      "es": "Alta con indicación de retorno ante persistencia. Fiebre, dolor pélvico, contracciones o sospecha de rotura de membranas requieren evaluación obstétrica, no solamente repetir antibiótico."
+    }
+  ],
+  "references": [
+    {
+      "id": "bv",
+      "title": "CDC — vaginose bacteriana, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/bv.htm",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 17,
+    "owner": "vaginose_bacteriana",
+    "title": {
+      "pt": "Vaginose bacteriana — gestação",
+      "es": "Vaginosis bacteriana — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "vaginose_bacteriana",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "4eb3225dae455d0ebfdb6b5b3779c53499416fda482905900245580acca586ac"
+}

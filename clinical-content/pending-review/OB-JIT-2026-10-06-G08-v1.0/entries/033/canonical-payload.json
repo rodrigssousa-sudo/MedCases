@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "diarrea_aguda_009",
+  "titles": {
+    "pt": "Diarreia aguda infecciosa — gestação",
+    "es": "Diarrea aguda infecciosa — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Diarreia de provável causa infecciosa na gestante; preservar owner geral já existente, sem criar gastroenterite gestacional duplicada.",
+      "es": "Diarrea de probable causa infecciosa en la embarazada; preservar el owner general existente, sin crear gastroenteritis gestacional duplicada."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Perdas de água e eletrólitos podem comprometer perfusão; gravidez não indica antibiótico automaticamente.",
+      "es": "Las pérdidas de agua y electrolitos pueden comprometer perfusión; el embarazo no indica antibiótico automáticamente."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar exposição, duração, sangue, febre, diurese e sinais obstétricos. Testes fecais são dirigidos por gravidade, surto, imunossupressão e suspeita etiológica.",
+      "es": "Evaluar exposición, duración, sangre, fiebre, diuresis y signos obstétricos. Las pruebas fecales se dirigen por gravedad, brote, inmunosupresión y sospecha etiológica."
+    },
+    {
+      "id": "treatment",
+      "pt": "Solução de reidratação oral para desidratação leve ou moderada; solução isotônica intravenosa se choque, desidratação grave ou intolerância. Antimicrobiano apenas por indicação clínica/etiológica, com escolha compatível com gravidez.",
+      "es": "Solución de rehidratación oral para deshidratación leve o moderada; solución isotónica intravenosa ante shock, deshidratación grave o intolerancia. Antimicrobiano solamente por indicación clínica/etiológica, con elección compatible con el embarazo."
+    },
+    {
+      "id": "safety",
+      "pt": "Diarreia sanguinolenta pode exigir pesquisa de toxina Shiga; não iniciar antibiótico indiscriminado nem antiperistáltico diante de infecção invasiva suspeita.",
+      "es": "La diarrea sanguinolenta puede exigir búsqueda de toxina Shiga; no iniciar antibiótico indiscriminado ni antiperistáltico ante sospecha de infección invasiva."
+    },
+    {
+      "id": "disposition",
+      "pt": "Alta com ingestão e perfusão recuperadas. Febre persistente, oligúria, sangue, dor focal, contrações ou redução de movimentos fetais exigem reavaliação/hospital conforme gravidade.",
+      "es": "Alta con ingesta y perfusión recuperadas. Fiebre persistente, oliguria, sangre, dolor focal, contracciones o disminución de movimientos fetales exigen reevaluación/hospital según gravedad."
+    }
+  ],
+  "references": [
+    {
+      "id": "diarr",
+      "title": "IDSA — diarreia infecciosa, guideline final vigente de 2017",
+      "url": "https://www.idsociety.org/practice-guideline/infectious-diarrhea",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "pain",
+      "title": "NHS SPS — tratamento da dor na gravidez",
+      "url": "https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 33,
+    "owner": "diarrea_aguda_009",
+    "title": {
+      "pt": "Diarreia aguda infecciosa — gestação",
+      "es": "Diarrea aguda infecciosa — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "diarrea_aguda_009",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "7093f1a816a8e51810c3f65de27da4f16493500759381f4f4c66fcf3b0e22241"
+}

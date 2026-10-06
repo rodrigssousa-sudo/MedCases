@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "constipacao_funcional",
+  "titles": {
+    "pt": "Constipação funcional — gestação",
+    "es": "Constipación funcional — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Evacuações difíceis ou infrequentes sem causa orgânica identificada, no contexto da gravidez.",
+      "es": "Evacuaciones difíciles o infrecuentes sin causa orgánica identificada, en el contexto del embarazo."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Motilidade reduzida, dieta, menor atividade e suplementos de ferro podem contribuir. Não confundir com obstrução ou fecaloma complicado.",
+      "es": "Pueden contribuir motilidad reducida, dieta, menor actividad y suplementos de hierro. No confundir con obstrucción o fecaloma complicado."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Revisar padrão prévio, fezes, dor, distensão, medicamentos e eliminação de gases. Sangramento persistente, emagrecimento, vômitos ou obstipação completa exigem investigação.",
+      "es": "Revisar patrón previo, heces, dolor, distensión, medicamentos y eliminación de gases. Sangrado persistente, adelgazamiento, vómitos u obstipación completa requieren investigación."
+    },
+    {
+      "id": "treatment",
+      "pt": "Aumentar fibra gradualmente, líquidos e movimento apropriado. Se necessário, laxante formador de bolo; lactulose ou macrogol são opções osmóticas na gravidez, com dose conforme apresentação e resposta.",
+      "es": "Aumentar fibra gradualmente, líquidos y movimiento adecuado. Si es necesario, laxante formador de bolo; lactulosa o macrogol son opciones osmóticas durante el embarazo, con dosis según presentación y respuesta."
+    },
+    {
+      "id": "safety",
+      "pt": "Uso curto de estimulante pode ser considerado após falha das medidas iniciais. Evitar escalada indiscriminada e suspender automanejo se suspeita de obstrução.",
+      "es": "Puede considerarse uso breve de estimulante tras fracaso de medidas iniciales. Evitar escalamiento indiscriminado y suspender automanejo ante sospecha de obstrucción."
+    },
+    {
+      "id": "disposition",
+      "pt": "Alta com plano de hábitos e revisão dos fármacos constipantes, sem suspender ferro necessário sem alternativa. Persistência ou sinais de alarme exigem reavaliação.",
+      "es": "Alta con plan de hábitos y revisión de fármacos constipantes, sin suspender hierro necesario sin alternativa. Persistencia o signos de alarma requieren reevaluación."
+    }
+  ],
+  "references": [
+    {
+      "id": "const",
+      "title": "NHS SPS — constipação na gestação",
+      "url": "https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "anc",
+      "title": "NICE NG201 — cuidado pré-natal",
+      "url": "https://www.nice.org.uk/guidance/ng201/chapter/Recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 30,
+    "owner": "constipacao_funcional",
+    "title": {
+      "pt": "Constipação funcional — gestação",
+      "es": "Constipación funcional — embarazo"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": true,
+    "cmsDocumentId": "constipacao_funcional",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "7000d363111fdc98725fd9094a6325b9f3f18ba2c0aea67c440fc23372b1e493"
+}

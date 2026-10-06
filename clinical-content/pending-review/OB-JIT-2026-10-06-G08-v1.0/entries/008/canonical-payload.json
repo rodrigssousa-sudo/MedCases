@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "hipertensao_arterial",
+  "titles": {
+    "pt": "Hipertensão arterial crônica — gestação",
+    "es": "Hipertensión arterial crónica — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Hipertensão presente antes da gravidez ou identificada antes de 20 semanas; preservar identidade de doença crônica.",
+      "es": "Hipertensión presente antes del embarazo o identificada antes de 20 semanas; preservar identidad de enfermedad crónica."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Há risco de pré-eclâmpsia sobreposta, restrição de crescimento e complicações vasculares. Uma piora não deve ser atribuída apenas à hipertensão basal.",
+      "es": "Existe riesgo de preeclampsia sobreagregada, restricción del crecimiento y complicaciones vasculares. Un empeoramiento no debe atribuirse solamente a la hipertensión basal."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Registrar pressão basal, função renal, proteinúria e fármacos. Alterações de plaquetas, fígado, rim ou sintomas neurológicos exigem avaliar pré-eclâmpsia sobreposta.",
+      "es": "Registrar presión basal, función renal, proteinuria y fármacos. Alteraciones de plaquetas, hígado, riñón o síntomas neurológicos exigen evaluar preeclampsia sobreagregada."
+    },
+    {
+      "id": "treatment",
+      "pt": "Revisar e substituir inibidores da ECA ou bloqueadores de angiotensina. Labetalol oral pode iniciar em 100 mg, 2 vezes por dia, com titulação clínica; evitar se asma importante, bradicardia ou bloqueio.",
+      "es": "Revisar y sustituir inhibidores de la ECA o bloqueantes de angiotensina. Labetalol oral puede iniciarse en 100 mg, 2 veces por día, con titulación clínica; evitar ante asma importante, bradicardia o bloqueo."
+    },
+    {
+      "id": "safety",
+      "pt": "Dose inicial não é protocolo de crise. Para prevenção em alto risco, NICE orienta ácido acetilsalicílico 75–150 mg por via oral, 1 vez por dia, a partir de 12 semanas; avaliar contraindicações.",
+      "es": "La dosis inicial no es un protocolo de crisis. Para prevención en alto riesgo, NICE indica ácido acetilsalicílico 75–150 mg por vía oral, 1 vez por día, desde las 12 semanas; evaluar contraindicaciones."
+    },
+    {
+      "id": "disposition",
+      "pt": "Seguimento de alto risco e crescimento fetal. Crise grave ou sinais de lesão de órgãos requerem hospital; plano escrito de monitorização e revisão também após o parto.",
+      "es": "Seguimiento de alto riesgo y crecimiento fetal. Crisis grave o signos de lesión de órganos requieren hospital; plan escrito de monitoreo y revisión también después del parto."
+    }
+  ],
+  "references": [
+    {
+      "id": "ht",
+      "title": "NICE NG133 — hipertensão na gravidez, atualização 2023",
+      "url": "https://www.nice.org.uk/guidance/ng133/chapter/Recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "lab",
+      "title": "DailyMed — labetalol, prescrição oficial",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=35e7bce0-d9ff-4f8b-95c5-218da2a2d929",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 8,
+    "owner": "hipertensao_arterial",
+    "title": {
+      "pt": "Hipertensão arterial crônica — gestação",
+      "es": "Hipertensión arterial crónica — embarazo"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "hipertensao_arterial",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [
+      "crise_hipertensiva",
+      "estenose_arteria_renal"
+    ],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "49ab4cc28966c398096a1e358755422fe102a2421b4686a99d2a799e1503c7d7"
+}

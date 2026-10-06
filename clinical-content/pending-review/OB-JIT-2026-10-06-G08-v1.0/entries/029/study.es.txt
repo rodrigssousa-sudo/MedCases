@@ -1,0 +1,31 @@
+# Reflujo gastroesofágico — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Pirosis y regurgitación durante el embarazo, sin signos de alarma, pueden representar reflujo gastroesofágico.
+
+## Fisiopatología y razonamiento
+
+La relajación del esfínter y cambios mecánicos favorecen reflujo. El dolor epigástrico intenso no debe atribuirse automáticamente a acidez.
+
+## Diagnóstico, estudios y diferenciales
+
+Evaluar patrón posprandial, posición, disfagia, pérdida de peso, hematemesis y medicamentos. Dolor torácico o epigástrico con hipertensión exige diferencial cardiovascular o preeclampsia.
+
+## Tratamiento y dosis
+
+Orientar comidas menores, evitar acostarse inmediatamente después de comer e identificar desencadenantes. NICE recomienda considerar antiácido o alginato adecuado al embarazo; la dosis depende de la formulación.
+
+## Seguridad y monitoreo
+
+Verificar sodio, composición e interacciones con suplementos; no inventar dosis en mL sin concentración. La persistencia exige revisión y elección individual de supresión ácida.
+
+## Escalamiento, alta y seguimiento
+
+Seguimiento ambulatorio ante cuadro típico y estable. Disfagia progresiva, sangrado, vómitos persistentes o inestabilidad requieren investigación; alta con orientaciones y retorno por signos de alarma.
+
+## Referencias
+
+[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations

@@ -1,0 +1,35 @@
+# Infección por Chlamydia trachomatis — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Infección genital por clamidia, frecuentemente asintomática, con repercusión materna y neonatal.
+
+## Diagnóstico, estudios y diferenciales
+
+- Prueba molecular según riesgo y detección local.
+- Dolor pélvico y fiebre exigen investigar enfermedad complicada, no solamente cervicitis.
+
+## Tratamiento y dosis
+
+- Durante el embarazo: azitromicina 1 g por vía oral, dosis única, según CDC.
+- No copiar automáticamente doxiciclina del tratamiento no gestacional.
+
+## Seguridad y monitoreo
+
+- Revisar alergias e interacciones.
+- Orientar a parejas y abstinencia durante 7 días después de dosis única, y hasta tratamiento de parejas; los síntomas persistentes requieren reevaluación.
+
+## Escalamiento, alta y seguimiento
+
+- Prueba molecular de curación aproximadamente 4 semanas después del tratamiento en la embarazada; repetir detección a los 3 meses.
+- Registrar resultado y plan obstétrico/neonatal.
+
+## Fisiopatología y razonamiento
+
+- Deben distinguirse persistencia y reinfección; el tratamiento materno y de parejas interrumpe la cadena de transmisión.
+
+## Referencias
+
+[chlam] CDC — clamídia, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm

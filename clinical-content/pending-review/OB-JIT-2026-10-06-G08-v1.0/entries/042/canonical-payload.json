@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "colestase_intra_hepatica_gestacao",
+  "titles": {
+    "pt": "Colestase intra-hepática da gestação",
+    "es": "Colestasis intrahepática del embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Prurido gestacional com elevação de ácidos biliares após exclusão de outras causas; costuma não haver erupção primária.",
+      "es": "Prurito gestacional con elevación de ácidos biliares tras excluir otras causas; suele no haber erupción primaria."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Alterações do transporte biliar podem produzir prurido e risco fetal. Reduzir prurido não comprova redução de morte fetal.",
+      "es": "Los cambios del transporte biliar pueden producir prurito y riesgo fetal. Reducir prurito no demuestra reducción de muerte fetal."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Solicitar ácidos biliares e testes hepáticos; repetir se prurido persiste com exames iniciais normais. RCOG classifica pico de 19–39 micromol/L como leve, 40–99 como moderado e ≥100 como grave.",
+      "es": "Solicitar ácidos biliares y pruebas hepáticas; repetir si persiste prurito con análisis iniciales normales. RCOG clasifica pico de 19–39 micromol/L como leve, 40–99 como moderado y ≥100 como grave."
+    },
+    {
+      "id": "treatment",
+      "pt": "Cuidados de pele e ácido ursodesoxicólico podem aliviar sintomas; dose deve ser individualizada por equipe obstétrica. Não apresentar o medicamento como garantia de prevenção de morte fetal.",
+      "es": "Cuidados de piel y ácido ursodesoxicólico pueden aliviar síntomas; individualizar dosis por equipo obstétrico. No presentar el medicamento como garantía de prevención de muerte fetal."
+    },
+    {
+      "id": "safety",
+      "pt": "Programar vigilância e momento do parto conforme pico de ácidos biliares, idade gestacional, comorbidades e diretriz adotada. Não aguardar piora materna para avaliar risco fetal.",
+      "es": "Programar vigilancia y momento del parto según pico de ácidos biliares, edad gestacional, comorbilidades y guía adoptada. No esperar empeoramiento materno para evaluar riesgo fetal."
+    },
+    {
+      "id": "disposition",
+      "pt": "Redução de movimentos fetais exige atendimento imediato. Seguimento obstétrico e confirmação de resolução pós-parto; alterações persistentes exigem investigação hepática.",
+      "es": "La disminución de movimientos fetales exige atención inmediata. Seguimiento obstétrico y confirmación de resolución posparto; alteraciones persistentes requieren investigación hepática."
+    }
+  ],
+  "references": [
+    {
+      "id": "icp",
+      "title": "RCOG Green-top 43 — colestase gestacional, final 2022",
+      "url": "https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/intrahepatic-cholestasis-of-pregnancy-green-top-guideline-no-43/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "icpp",
+      "title": "RCOG — colestase, informação atualizada abril 2026",
+      "url": "https://www.rcog.org.uk/for-the-public/browse-our-patient-information/intrahepatic-cholestasis-of-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 42,
+    "owner": "colestase_intra_hepatica_gestacao",
+    "title": {
+      "pt": "Colestase intra-hepática da gestação",
+      "es": "Colestasis intrahepática del embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": false,
+    "cmsDocumentId": "colestase_intra_hepatica_gestacao",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "063d23c334fc0c84b5620cd3d12856cc8b2bd5a35e7328906bfe10455b5a0c39"
+}

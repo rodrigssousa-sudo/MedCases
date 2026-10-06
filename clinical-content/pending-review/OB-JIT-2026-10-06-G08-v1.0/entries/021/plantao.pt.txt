@@ -1,0 +1,38 @@
+# Hepatite B crônica — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Infecção crônica pelo vírus da hepatite B na grávida; é distinta do owner de hepatite B aguda.
+
+## Diagnóstico, exames e diferenciais
+
+- Avaliar HBsAg, carga viral, antígeno e, transaminases, função renal e indicação de tratamento materno.
+- Distinguir infecção aguda, crônica e reativação.
+
+## Tratamento e doses
+
+- Para prevenção com carga viral ≥200.000 unidades internacionais/mL ou antígeno e positivo, OMS 2024 orienta tenofovir disoproxila, preferencialmente desde o segundo trimestre.
+- SMFM especifica 300 mg por via oral por dia e início entre 28–32 semanas; explicitar qual protocolo será utilizado.
+
+## Segurança e monitorização
+
+- Ajustar à função renal e planejar vigilância após eventual suspensão.
+- Recém-nascido exposto deve receber vacina e imunoglobulina específica dentro de 12 horas, conforme SMFM.
+
+## Escalonamento, alta e seguimento
+
+- Coordenar hepatologia, obstetrícia e pediatria.
+- Não indicar cesariana apenas por hepatite B; aleitamento pode ocorrer com imunoprofilaxia neonatal apropriada.
+- Icterícia grave, coagulopatia ou encefalopatia exigem hospital.
+
+## Fisiopatologia e raciocínio
+
+- A carga viral materna condiciona risco de transmissão; profilaxia perinatal não substitui avaliação da doença hepática materna.
+
+## Referências
+
+[hbv] OMS — hepatite B crônica, prevenção da transmissão materna, 2024 — https://www.ncbi.nlm.nih.gov/books/NBK615006/
+
+[hbvs] SMFM Consult 69 — hepatite B na gravidez, 2024 — https://pubmed.ncbi.nlm.nih.gov/38141870/

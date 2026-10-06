@@ -1,0 +1,37 @@
+# Diabetes mellitus tipo 1 — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Diabetes por deficiência de insulina, presente antes ou reconhecido na gestação; gravidez é contexto do mesmo owner.
+
+## Fisiopatologia e raciocínio
+
+A gestação modifica necessidades de insulina; cetoacidose pode ocorrer com glicemia menos elevada que fora da gravidez.
+
+## Diagnóstico, exames e diferenciais
+
+Revisar glicemias, episódios de hipoglicemia, função renal, retina e comorbidades. Vômitos, dor abdominal, taquipneia ou doença intercorrente exigem avaliar cetonas e acidose.
+
+## Tratamento e doses
+
+Insulina é indispensável; nunca suspender basal por jejum ou vômitos sem substituição supervisionada. Ajustar basal e prandial com equipe experiente; monitorização contínua pode apoiar decisões.
+
+## Segurança e monitorização
+
+Evitar metas que provoquem hipoglicemia recorrente. Conferir concentração do produto, unidades prescritas e dispositivo; não converter unidades de insulina em volume sem concentração explícita. Metas ADA, se alcançáveis sem hipoglicemia: jejum abaixo de 95 mg/dL; após refeição, abaixo de 140 mg/dL em 1 hora ou 120 mg/dL em 2 horas; individualizar.
+
+## Escalonamento, alta e seguimento
+
+Cetoacidose é emergência hospitalar materno-fetal. Planejar parto e redução de necessidades após saída da placenta, com reavaliação estreita e seguimento durante lactação.
+
+## Referências
+
+[dm] ADA — Management of Diabetes in Pregnancy, Standards 2026 — https://diabetesjournals.org/care/article/49/Supplement_1/S321/163918/15-Management-of-Diabetes-in-Pregnancy-Standards
+
+[dmn] NIDDK — diabetes e gravidez — https://www.niddk.nih.gov/health-information/diabetes/diabetes-pregnancy
+
+[dmuk] NICE NG3 — diabetes e gravidez — https://www.nice.org.uk/guidance/NG3/chapter/recommendations
+
+[dmvis] ADA — monitorização da glicose na gravidez, apoio aos critérios vigentes — https://diabetes.org/sites/default/files/2024-10/Glucose-Monitoring-During-Pregnancy-patient-FINAL.pdf

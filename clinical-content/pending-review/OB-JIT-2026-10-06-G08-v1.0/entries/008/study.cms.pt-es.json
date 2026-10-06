@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Hipertensão arterial crônica — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Hipertensão presente antes da gravidez ou identificada antes de 20 semanas; preservar identidade de doença crônica.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Hipertensão presente antes da gravidez ou identificada antes de 20 semanas; preservar identidade de doença crônica."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Há risco de pré-eclâmpsia sobreposta, restrição de crescimento e complicações vasculares. Uma piora não deve ser atribuída apenas à hipertensão basal."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Registrar pressão basal, função renal, proteinúria e fármacos. Alterações de plaquetas, fígado, rim ou sintomas neurológicos exigem avaliar pré-eclâmpsia sobreposta."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Revisar e substituir inibidores da ECA ou bloqueadores de angiotensina. Labetalol oral pode iniciar em 100 mg, 2 vezes por dia, com titulação clínica; evitar se asma importante, bradicardia ou bloqueio."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dose inicial não é protocolo de crise. Para prevenção em alto risco, NICE orienta ácido acetilsalicílico 75–150 mg por via oral, 1 vez por dia, a partir de 12 semanas; avaliar contraindicações."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Seguimento de alto risco e crescimento fetal. Crise grave ou sinais de lesão de órgãos requerem hospital; plano escrito de monitorização e revisão também após o parto."
+        }
+      ],
+      "references": [
+        "[ht] NICE NG133 — hipertensão na gravidez, atualização 2023 — https://www.nice.org.uk/guidance/ng133/chapter/Recommendations",
+        "[lab] DailyMed — labetalol, prescrição oficial — https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=35e7bce0-d9ff-4f8b-95c5-218da2a2d929"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Hipertensión arterial crónica — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Hipertensión presente antes del embarazo o identificada antes de 20 semanas; preservar identidad de enfermedad crónica.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Hipertensión presente antes del embarazo o identificada antes de 20 semanas; preservar identidad de enfermedad crónica."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Existe riesgo de preeclampsia sobreagregada, restricción del crecimiento y complicaciones vasculares. Un empeoramiento no debe atribuirse solamente a la hipertensión basal."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Registrar presión basal, función renal, proteinuria y fármacos. Alteraciones de plaquetas, hígado, riñón o síntomas neurológicos exigen evaluar preeclampsia sobreagregada."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Revisar y sustituir inhibidores de la ECA o bloqueantes de angiotensina. Labetalol oral puede iniciarse en 100 mg, 2 veces por día, con titulación clínica; evitar ante asma importante, bradicardia o bloqueo."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "La dosis inicial no es un protocolo de crisis. Para prevención en alto riesgo, NICE indica ácido acetilsalicílico 75–150 mg por vía oral, 1 vez por día, desde las 12 semanas; evaluar contraindicaciones."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Seguimiento de alto riesgo y crecimiento fetal. Crisis grave o signos de lesión de órganos requieren hospital; plan escrito de monitoreo y revisión también después del parto."
+        }
+      ],
+      "references": [
+        "[ht] NICE NG133 — hipertensão na gravidez, atualização 2023 — https://www.nice.org.uk/guidance/ng133/chapter/Recommendations",
+        "[lab] DailyMed — labetalol, prescrição oficial — https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=35e7bce0-d9ff-4f8b-95c5-218da2a2d929"
+      ]
+    }
+  }
+}

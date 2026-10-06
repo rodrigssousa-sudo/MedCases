@@ -1,0 +1,36 @@
+# Síndrome del túnel carpiano — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Compresión del nervio mediano en la muñeca con parestesia, especialmente en pulgar, índice y dedo medio.
+
+## Diagnóstico, estudios y diferenciales
+
+- Evaluar distribución, síntomas nocturnos, fuerza y atrofia; un cuadro atípico exige diferenciar radiculopatía y otras neuropatías.
+
+## Tratamiento y dosis
+
+- Férula de muñeca en posición neutra, especialmente de noche; adaptar actividades repetitivas y evitar compresión.
+- Fisioterapia/terapia de mano según necesidad.
+
+## Seguridad y monitoreo
+
+- No iniciar automáticamente corticoide sistémico o antiinflamatorio.
+- Infiltración o cirugía exige evaluación especializada y balance clínico, especialmente ante déficit persistente.
+
+## Escalamiento, alta y seguimiento
+
+- Muchos casos mejoran después del embarazo; esto no justifica ignorar debilidad progresiva o atrofia.
+- Alta con orientaciones y retorno por pérdida funcional; seguimiento si persiste después del parto.
+
+## Fisiopatología y razonamiento
+
+- La retención de líquido del embarazo puede contribuir; es distinta de neuropatía cubital en el codo.
+
+## Referencias
+
+[carp] NHS South Tees — túnel do carpo na gravidez — https://www.southtees.nhs.uk/resources/carpel-tunnel-syndrome-cts-in-pregnancy/
+
+[carpn] NHS — síndrome do túnel do carpo — https://www.nhs.uk/conditions/carpal-tunnel-syndrome/

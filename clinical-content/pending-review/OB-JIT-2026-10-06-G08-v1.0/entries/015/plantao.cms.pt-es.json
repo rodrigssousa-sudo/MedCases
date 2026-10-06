@@ -1,0 +1,167 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Pielonefrite aguda — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Plantão",
+      "summary": "Infecção renal na gravidez, geralmente com febre, dor em flanco e evidência urinária de infecção.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infecção renal na gravidez, geralmente com febre, dor em flanco e evidência urinária de infecção."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Avaliar sinais vitais, perfusão, diurese, urina e cultura, hemograma e função renal.",
+            "Buscar obstrução por ultrassom quando indicada; avaliação fetal conforme idade gestacional."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "ACOG recomenda internação inicial e antibiótico parenteral com penetração renal.",
+            "Cefuroxima intravenosa 750 mg–1,5 g, a cada 8 horas, é opção NICE; escolher pelo quadro, antibiograma e função renal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Reavaliar terapia intravenosa em 48 horas.",
+            "Neste pacote, adota-se duração total de 14 dias da ACOG, incluindo fase oral, explicitamente distinta dos 7–10 dias previstos em NICE para alguns esquemas."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Sepse, hipoxemia, oligúria ou obstrução requerem escalonamento imediato.",
+            "Alta após melhora clínica e tolerância oral, com antibiótico direcionado e plano de seguimento."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pode provocar sepse, lesão renal e parto prematuro; distinguir cólica renal e obstrução infectada."
+          ]
+        }
+      ],
+      "references": [
+        "[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals",
+        "[pyelo] NICE NG111 — antibióticos para pielonefrite — https://www.nice.org.uk/guidance/NG111/chapter/recommendations"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Pielonefritis aguda — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Guardia",
+      "summary": "Infección renal durante el embarazo, generalmente con fiebre, dolor en flanco y evidencia urinaria de infección.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infección renal durante el embarazo, generalmente con fiebre, dolor en flanco y evidencia urinaria de infección."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Evaluar signos vitales, perfusión, diuresis, orina y cultivo, hemograma y función renal.",
+            "Buscar obstrucción por ecografía cuando corresponda; evaluación fetal según edad gestacional."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "ACOG recomienda internación inicial y antibiótico parenteral con penetración renal.",
+            "Cefuroxima intravenosa 750 mg–1,5 g, cada 8 horas, es una opción NICE; elegir según cuadro, antibiograma y función renal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Reevaluar tratamiento intravenoso a las 48 horas.",
+            "En este paquete se adopta duración total de 14 días de ACOG, incluida fase oral, explícitamente distinta de los 7–10 días previstos por NICE para algunos esquemas."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Sepsis, hipoxemia, oliguria u obstrucción requieren escalamiento inmediato.",
+            "Alta tras mejoría clínica y tolerancia oral, con antibiótico dirigido y plan de seguimiento."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Puede provocar sepsis, lesión renal y parto prematuro; distinguir cólico renal y obstrucción infectada."
+          ]
+        }
+      ],
+      "references": [
+        "[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals",
+        "[pyelo] NICE NG111 — antibióticos para pielonefrite — https://www.nice.org.uk/guidance/NG111/chapter/recommendations"
+      ]
+    }
+  }
+}

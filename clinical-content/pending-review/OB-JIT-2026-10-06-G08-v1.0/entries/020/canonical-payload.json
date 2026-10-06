@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "infeccao_hiv",
+  "titles": {
+    "pt": "Infecção por HIV — gestação",
+    "es": "Infección por VIH — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Infecção por HIV na gravidez exige cuidado materno e prevenção coordenada de transmissão vertical.",
+      "es": "La infección por VIH durante el embarazo exige cuidado materno y prevención coordinada de transmisión vertical."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Supressão viral é central. Escolha de regime depende de resistência, tratamento prévio, interações e segurança perinatal, não apenas do diagnóstico.",
+      "es": "La supresión viral es central. La elección del régimen depende de resistencia, tratamiento previo, interacciones y seguridad perinatal, no solamente del diagnóstico."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Confirmar diagnóstico e avaliar carga viral, imunidade, função renal/hepática, hepatites e histórico de antirretrovirais. Não atrasar início necessário aguardando todos os resultados.",
+      "es": "Confirmar diagnóstico y evaluar carga viral, inmunidad, función renal/hepática, hepatitis e historia de antirretrovirales. No demorar un inicio necesario esperando todos los resultados."
+    },
+    {
+      "id": "treatment",
+      "pt": "Usar regime recomendado pelas diretrizes perinatais NIH 2026, individualizado pela equipe. Em geral, manter tratamento supressivo bem tolerado; não interromper por descoberta da gravidez.",
+      "es": "Usar un régimen recomendado por las guías perinatales NIH 2026, individualizado por el equipo. En general, mantener tratamiento supresivo bien tolerado; no interrumpir por descubrir el embarazo."
+    },
+    {
+      "id": "safety",
+      "pt": "Não há dose universal de terapia antirretroviral. Conferir cada produto, interações, resistência e função renal; esquema não supressivo precisa revisão rápida.",
+      "es": "No existe dosis universal de terapia antirretroviral. Verificar cada producto, interacciones, resistencia y función renal; un esquema no supresivo necesita revisión rápida."
+    },
+    {
+      "id": "disposition",
+      "pt": "Planejar parto, profilaxia neonatal e alimentação infantil com equipe especializada e política regional. Seguimento de carga viral deve orientar decisões; infecção oportunista ou instabilidade exige hospital.",
+      "es": "Planificar parto, profilaxis neonatal y alimentación infantil con equipo especializado y política regional. El seguimiento de carga viral debe orientar decisiones; infección oportunista o inestabilidad requieren hospital."
+    }
+  ],
+  "references": [
+    {
+      "id": "hiv",
+      "title": "NIH — diretrizes perinatais de antirretrovirais, 31 março 2026",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-overview?view=full",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "hivc",
+      "title": "NIH — tratamento já utilizado na concepção, 2026",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-art-taken-when-pregnancy-occurs?view=full",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 20,
+    "owner": "infeccao_hiv",
+    "title": {
+      "pt": "Infecção por HIV — gestação",
+      "es": "Infección por VIH — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "infeccao_hiv",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "dee4b4f7fca269c770c4c5d33a6173cfd86bd5e7b2e22b98e921f79717b70099"
+}

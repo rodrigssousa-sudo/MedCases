@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "colelitiase_colica_biliar",
+  "titles": {
+    "pt": "Colelitíase/cólica biliar — gestação",
+    "es": "Colelitiasis/cólico biliar — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Dor biliar por cálculos, sem evidência de colecistite, colangite ou pancreatite; esses diagnósticos mudam a urgência.",
+      "es": "Dolor biliar por cálculos, sin evidencia de colecistitis, colangitis o pancreatitis; estos diagnósticos cambian la urgencia."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Estase e composição biliar da gravidez favorecem cálculos; recorrência pode levar a complicações.",
+      "es": "La estasis y composición biliar del embarazo favorecen cálculos; la recurrencia puede causar complicaciones."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar dor em hipocôndrio direito, duração, febre e icterícia; ultrassom é exame inicial. Laboratório dirigido ajuda a excluir inflamação, obstrução e pancreatite.",
+      "es": "Evaluar dolor en hipocondrio derecho, duración, fiebre e ictericia; ecografía como examen inicial. El laboratorio dirigido ayuda a excluir inflamación, obstrucción y pancreatitis."
+    },
+    {
+      "id": "treatment",
+      "pt": "Analgesia compatível com gestação e avaliação cirúrgica conforme recorrência/gravidade. SAGES 2024 favorece laparoscopia em doença biliar em cenários definidos; cólica no terceiro trimestre admite decisão individual operatória ou conservadora.",
+      "es": "Analgesia compatible con embarazo y evaluación quirúrgica según recurrencia/gravedad. SAGES 2024 favorece laparoscopia en enfermedad biliar en escenarios definidos; el cólico en el tercer trimestre admite decisión individual operatoria o conservadora."
+    },
+    {
+      "id": "safety",
+      "pt": "Não indicar cirurgia imediata para toda cólica, nem adiar intervenção necessária apenas por trimestre. Selecionar analgesia sem copiar anti-inflamatório de rotina não gestacional.",
+      "es": "No indicar cirugía inmediata para todo cólico, ni demorar intervención necesaria solamente por trimestre. Elegir analgesia sin copiar antiinflamatorios rutinarios del contexto no gestacional."
+    },
+    {
+      "id": "disposition",
+      "pt": "Alta somente após melhora, tolerância oral e exclusão de complicação, com retorno e seguimento cirúrgico. Febre, icterícia, dor persistente ou instabilidade requerem hospital.",
+      "es": "Alta solamente tras mejoría, tolerancia oral y exclusión de complicación, con retorno y seguimiento quirúrgico. Fiebre, ictericia, dolor persistente o inestabilidad requieren hospital."
+    }
+  ],
+  "references": [
+    {
+      "id": "surg",
+      "title": "SAGES — laparoscopia na gravidez, final 2024",
+      "url": "https://www.sages.org/publications/guidelines/guidelines-for-the-use-of-laparoscopy-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "pain",
+      "title": "NHS SPS — tratamento da dor na gravidez",
+      "url": "https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 34,
+    "owner": "colelitiase_colica_biliar",
+    "title": {
+      "pt": "Colelitíase/cólica biliar — gestação",
+      "es": "Colelitiasis/cólico biliar — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "colelitiase_colica_biliar",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "d27b0764a4edc4e556d5bab2513cf50b2cee272c6452aaa6c0a87f5a123c6b58"
+}

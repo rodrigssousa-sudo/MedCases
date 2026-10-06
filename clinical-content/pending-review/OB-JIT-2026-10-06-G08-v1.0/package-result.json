@@ -1,0 +1,28 @@
+{
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "conditions": 50,
+  "existingRemoteOwners": 34,
+  "existingNativeOwners": 32,
+  "newOwnerCandidates": 16,
+  "existingCaseIdsPreserved": 2,
+  "projectionsPrepared": 200,
+  "references": 71,
+  "facts": 300,
+  "SOURCE_GATE": "PASS_WITH_DECLARED_SCOPE",
+  "DOSE_NUMERIC_PT_ES_GATE": "PASS",
+  "TIME_UNITS_GATE": "PASS",
+  "PT_ES_AUTHORED_PARITY": "PASS",
+  "STUDY_PLANTAO_FACT_PARITY": "100%",
+  "STUDY_PLANTAO_DOSE_PARITY": "100%",
+  "STUDY_PLANTAO_REFERENCE_PARITY": "100%",
+  "HUMAN_APPROVAL": "PENDING",
+  "RUNTIME_PUBLICATION": "NOT_EXECUTED",
+  "REMOTE_DUAL_MODE_GATE": "BLOCKED_TECHNICAL_STATIC_STUDY_CONSUMER",
+  "GUIDES_ADMIN": "DRAFT_SAVED_READBACK_PASS",
+  "manifestSha256": "b6dcb948b3d8102bcbea00fc051af39241d5444f8bfe9e54e5c5e58b63b68cf4",
+  "adminCounts": {
+    "guidesTotal": 329,
+    "guidesDraft": 289,
+    "guidesPublished": 40
+  }
+}

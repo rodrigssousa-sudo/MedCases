@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Fissura anal — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Plantão",
+      "summary": "Lesão do canal anal com dor ao evacuar e possível sangramento vermelho vivo; não é sinônimo de hemorroida.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Lesão do canal anal com dor ao evacuar e possível sangramento vermelho vivo; não é sinônimo de hemorroida."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Inspeção delicada e avaliação de constipação, abscesso, doença inflamatória e infecção.",
+            "Não forçar exame doloroso desnecessário."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Amolecer fezes com fibra, líquidos e laxante adequado à gravidez quando necessário.",
+            "Banho morno e analgesia apropriada podem ajudar; tratamento tópico específico depende de avaliação profissional."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Não transpor automaticamente nitratos, diltiazem ou procedimentos do protocolo não gestacional.",
+            "Evitar anti-inflamatório por automedicação e investigar infecção se febre."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Reavaliar se não melhora ou se sangramento persiste.",
+            "Dor contínua intensa, febre, tumoração ou instabilidade exigem urgência; cronicidade pede avaliação coloproctológica."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Trauma por fezes duras e espasmo local perpetuam dor.",
+            "Fissuras atípicas ou múltiplas podem apontar outra doença."
+          ]
+        }
+      ],
+      "references": [
+        "[fiss] NHS — fissura anal — https://www.nhs.uk/conditions/anal-fissure/",
+        "[const] NHS SPS — constipação na gestação — https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Fisura anal — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Guardia",
+      "summary": "Lesión del canal anal con dolor al defecar y posible sangrado rojo; no es sinónimo de hemorroides.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Lesión del canal anal con dolor al defecar y posible sangrado rojo; no es sinónimo de hemorroides."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Inspección delicada y evaluación de constipación, absceso, enfermedad inflamatoria e infección.",
+            "No forzar un examen doloroso innecesario."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Ablandar heces con fibra, líquidos y laxante adecuado al embarazo cuando sea necesario.",
+            "Baño tibio y analgesia apropiada pueden ayudar; el tratamiento tópico específico depende de evaluación profesional."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "No trasladar automáticamente nitratos, diltiazem o procedimientos del protocolo no gestacional.",
+            "Evitar antiinflamatorios por automedicación e investigar infección ante fiebre."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Reevaluar si no mejora o persiste sangrado.",
+            "Dolor continuo intenso, fiebre, tumoración o inestabilidad requieren urgencias; la cronicidad exige evaluación coloproctológica."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "El traumatismo por heces duras y espasmo local perpetúan dolor.",
+            "Fisuras atípicas o múltiples pueden indicar otra enfermedad."
+          ]
+        }
+      ],
+      "references": [
+        "[fiss] NHS — fissura anal — https://www.nhs.uk/conditions/anal-fissure/",
+        "[const] NHS SPS — constipação na gestação — https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    }
+  }
+}

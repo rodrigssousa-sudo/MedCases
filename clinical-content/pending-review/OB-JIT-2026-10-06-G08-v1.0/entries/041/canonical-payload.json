@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "dermatite_atopica",
+  "titles": {
+    "pt": "Dermatite atópica — gestação",
+    "es": "Dermatitis atópica — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Dermatose inflamatória pruriginosa com barreira cutânea comprometida; pode piorar ou melhorar na gravidez.",
+      "es": "Dermatosis inflamatoria pruriginosa con barrera cutánea alterada; puede empeorar o mejorar durante el embarazo."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Inflamação e ressecamento favorecem escoriações e infecção secundária. Prurido sem lesão primária exige considerar colestase.",
+      "es": "Inflamación y sequedad favorecen excoriaciones e infección secundaria. El prurito sin lesión primaria exige considerar colestasis."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Examinar distribuição, extensão, sono e sinais de infecção. Prurido palmar/plantar intenso, sobretudo noturno, merece avaliação obstétrica e hepática.",
+      "es": "Examinar distribución, extensión, sueño y signos de infección. El prurito palmoplantar intenso, especialmente nocturno, merece evaluación obstétrica y hepática."
+    },
+    {
+      "id": "treatment",
+      "pt": "Emolientes regulares, limpeza suave e evitar irritantes. Corticoide tópico pode ser utilizado com seleção de potência, área e duração adequadas, sob orientação clínica; não há quantidade universal.",
+      "es": "Emolientes regulares, limpieza suave y evitar irritantes. Puede utilizarse corticoide tópico con selección adecuada de potencia, superficie y duración, bajo orientación clínica; no existe cantidad universal."
+    },
+    {
+      "id": "safety",
+      "pt": "Evitar aplicação extensa ou prolongada não supervisionada e revisar tratamentos sistêmicos prévios. Lesões dolorosas vesiculares disseminadas podem representar eczema herpético.",
+      "es": "Evitar aplicación extensa o prolongada sin supervisión y revisar tratamientos sistémicos previos. Lesiones vesiculares dolorosas diseminadas pueden representar eccema herpético."
+    },
+    {
+      "id": "disposition",
+      "pt": "Alta se controlável e sem infecção grave, com seguimento. Febre, rápida piora, lesões herpéticas ou grande comprometimento exigem avaliação especializada urgente.",
+      "es": "Alta si es controlable y sin infección grave, con seguimiento. Fiebre, rápido empeoramiento, lesiones herpéticas o gran compromiso requieren evaluación especializada urgente."
+    }
+  ],
+  "references": [
+    {
+      "id": "ecz",
+      "title": "UKTIS/BUMPS — corticosteroides tópicos na gravidez",
+      "url": "https://www.medicinesinpregnancy.org/leaflets-a-z/corticosteroids---topical/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    },
+    {
+      "id": "eczn",
+      "title": "NHS — eczema atópico, revisão 2024",
+      "url": "https://www.nhs.uk/conditions/atopic-eczema/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 41,
+    "owner": "dermatite_atopica",
+    "title": {
+      "pt": "Dermatite atópica — gestação",
+      "es": "Dermatitis atópica — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "dermatite_atopica",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "d31ccc5fa25364007b5ffde6e3766becc4be630e501338f76f62e9fa11624b33"
+}

@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Dermatite atópica — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Dermatose inflamatória pruriginosa com barreira cutânea comprometida; pode piorar ou melhorar na gravidez.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dermatose inflamatória pruriginosa com barreira cutânea comprometida; pode piorar ou melhorar na gravidez."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Inflamação e ressecamento favorecem escoriações e infecção secundária. Prurido sem lesão primária exige considerar colestase."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Examinar distribuição, extensão, sono e sinais de infecção. Prurido palmar/plantar intenso, sobretudo noturno, merece avaliação obstétrica e hepática."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Emolientes regulares, limpeza suave e evitar irritantes. Corticoide tópico pode ser utilizado com seleção de potência, área e duração adequadas, sob orientação clínica; não há quantidade universal."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evitar aplicação extensa ou prolongada não supervisionada e revisar tratamentos sistêmicos prévios. Lesões dolorosas vesiculares disseminadas podem representar eczema herpético."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alta se controlável e sem infecção grave, com seguimento. Febre, rápida piora, lesões herpéticas ou grande comprometimento exigem avaliação especializada urgente."
+        }
+      ],
+      "references": [
+        "[ecz] UKTIS/BUMPS — corticosteroides tópicos na gravidez — https://www.medicinesinpregnancy.org/leaflets-a-z/corticosteroids---topical/",
+        "[eczn] NHS — eczema atópico, revisão 2024 — https://www.nhs.uk/conditions/atopic-eczema/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Dermatitis atópica — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Dermatosis inflamatoria pruriginosa con barrera cutánea alterada; puede empeorar o mejorar durante el embarazo.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dermatosis inflamatoria pruriginosa con barrera cutánea alterada; puede empeorar o mejorar durante el embarazo."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Inflamación y sequedad favorecen excoriaciones e infección secundaria. El prurito sin lesión primaria exige considerar colestasis."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Examinar distribución, extensión, sueño y signos de infección. El prurito palmoplantar intenso, especialmente nocturno, merece evaluación obstétrica y hepática."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Emolientes regulares, limpieza suave y evitar irritantes. Puede utilizarse corticoide tópico con selección adecuada de potencia, superficie y duración, bajo orientación clínica; no existe cantidad universal."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evitar aplicación extensa o prolongada sin supervisión y revisar tratamientos sistémicos previos. Lesiones vesiculares dolorosas diseminadas pueden representar eccema herpético."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alta si es controlable y sin infección grave, con seguimiento. Fiebre, rápido empeoramiento, lesiones herpéticas o gran compromiso requieren evaluación especializada urgente."
+        }
+      ],
+      "references": [
+        "[ecz] UKTIS/BUMPS — corticosteroides tópicos na gravidez — https://www.medicinesinpregnancy.org/leaflets-a-z/corticosteroids---topical/",
+        "[eczn] NHS — eczema atópico, revisão 2024 — https://www.nhs.uk/conditions/atopic-eczema/"
+      ]
+    }
+  }
+}

@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Hiperêmese gravídica",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Plantão",
+      "summary": "Síndrome de vômitos incapacitantes na gravidez, com ingestão insuficiente e repercussão clínica; não é apenas náusea habitual.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Síndrome de vômitos incapacitantes na gravidez, com ingestão insuficiente e repercussão clínica; não é apenas náusea habitual."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Avaliar peso, sinais vitais, eletrólitos, função renal e causas alternativas.",
+            "Dor, febre, sangramento e alteração neurológica exigem investigação dirigida."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Reposição com solução salina a 0,9%; potássio apenas conforme exames e função renal.",
+            "Em internação por vômitos ou ingestão muito reduzida: tiamina 100 mg por via oral, 3 vezes por dia, antes de glicose ou nutrição parenteral; via parenteral se oral inviável, conforme preparação institucional."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Antieméticos podem ser combinados conforme resposta; vigiar efeitos extrapiramidais e risco de QT quando aplicável.",
+            "Reavaliar eletrólitos durante hidratação e evitar realimentação abrupta em desnutrição."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Internar se intolerância persistente, desidratação, distúrbio eletrolítico ou comorbidade descompensada.",
+            "Alta após recuperação da ingestão, com plano de antiemético e seguimento obstétrico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Desidratação, alterações eletrolíticas e deficiência de tiamina podem ocorrer.",
+            "A cetonúria isolada não mede gravidade nem deve impedir tratamento."
+          ]
+        }
+      ],
+      "references": [
+        "[nvp] RCOG Green-top 69 — náuseas, vômitos e hiperêmese; final 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/the-management-of-nausea-and-vomiting-of-pregnancy-and-hyperemesis-gravidarum-green-top-guideline-no-69/",
+        "[hg] RCOG 69 — publicação normativa, 2024 — https://pubmed.ncbi.nlm.nih.gov/38311315/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Hiperémesis gravídica",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Guardia",
+      "summary": "Síndrome de vómitos incapacitantes del embarazo, con ingesta insuficiente y repercusión clínica; no es solamente náusea habitual.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Síndrome de vómitos incapacitantes del embarazo, con ingesta insuficiente y repercusión clínica; no es solamente náusea habitual."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Evaluar peso, signos vitales, electrolitos, función renal y causas alternativas.",
+            "Dolor, fiebre, sangrado y alteraciones neurológicas requieren investigación dirigida."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Reposición con solución salina al 0,9%; potasio solamente según análisis y función renal.",
+            "En internación por vómitos o ingesta muy reducida: tiamina 100 mg por vía oral, 3 veces por día, antes de glucosa o nutrición parenteral; vía parenteral si la oral no es viable, según preparación institucional."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pueden combinarse antieméticos según respuesta; vigilar efectos extrapiramidales y riesgo de QT cuando corresponda.",
+            "Reevaluar electrolitos durante hidratación y evitar realimentación brusca en desnutrición."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Internar ante intolerancia persistente, deshidratación, trastorno electrolítico o comorbilidad descompensada.",
+            "Alta tras recuperar la ingesta, con plan antiemético y seguimiento obstétrico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pueden ocurrir deshidratación, alteraciones electrolíticas y déficit de tiamina.",
+            "La cetonuria aislada no mide gravedad ni debe impedir el tratamiento."
+          ]
+        }
+      ],
+      "references": [
+        "[nvp] RCOG Green-top 69 — náuseas, vômitos e hiperêmese; final 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/the-management-of-nausea-and-vomiting-of-pregnancy-and-hyperemesis-gravidarum-green-top-guideline-no-69/",
+        "[hg] RCOG 69 — publicação normativa, 2024 — https://pubmed.ncbi.nlm.nih.gov/38311315/"
+      ]
+    }
+  }
+}

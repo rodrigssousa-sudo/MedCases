@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Refluxo gastroesofágico — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Pirose e regurgitação durante a gravidez, sem sinais de alarme, podem representar refluxo gastroesofágico.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pirose e regurgitação durante a gravidez, sem sinais de alarme, podem representar refluxo gastroesofágico."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Relaxamento do esfíncter e mudanças mecânicas favorecem refluxo. Dor epigástrica intensa não deve ser automaticamente atribuída à azia."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Avaliar padrão pós-prandial, posição, disfagia, perda de peso, hematêmese e medicamentos. Dor torácica ou epigástrica com hipertensão exige diferencial cardiovascular ou pré-eclâmpsia."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Orientar refeições menores, evitar deitar logo após comer e reconhecer alimentos desencadeantes. NICE recomenda considerar antiácido ou alginato apropriado à gravidez; dose depende da formulação."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Conferir sódio, composição e interações com suplementos; não inventar dose em mL sem concentração. Persistência exige revisão e escolha individual de supressão ácida."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Seguimento ambulatorial se típico e estável. Disfagia progressiva, sangramento, vômitos persistentes ou instabilidade exigem investigação; alta com orientações e retorno por sinais de alarme."
+        }
+      ],
+      "references": [
+        "[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Reflujo gastroesofágico — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Pirosis y regurgitación durante el embarazo, sin signos de alarma, pueden representar reflujo gastroesofágico.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pirosis y regurgitación durante el embarazo, sin signos de alarma, pueden representar reflujo gastroesofágico."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La relajación del esfínter y cambios mecánicos favorecen reflujo. El dolor epigástrico intenso no debe atribuirse automáticamente a acidez."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evaluar patrón posprandial, posición, disfagia, pérdida de peso, hematemesis y medicamentos. Dolor torácico o epigástrico con hipertensión exige diferencial cardiovascular o preeclampsia."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Orientar comidas menores, evitar acostarse inmediatamente después de comer e identificar desencadenantes. NICE recomienda considerar antiácido o alginato adecuado al embarazo; la dosis depende de la formulación."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Verificar sodio, composición e interacciones con suplementos; no inventar dosis en mL sin concentración. La persistencia exige revisión y elección individual de supresión ácida."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Seguimiento ambulatorio ante cuadro típico y estable. Disfagia progresiva, sangrado, vómitos persistentes o inestabilidad requieren investigación; alta con orientaciones y retorno por signos de alarma."
+        }
+      ],
+      "references": [
+        "[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations"
+      ]
+    }
+  }
+}

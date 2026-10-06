@@ -1,0 +1,33 @@
+# Infección por VIH — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+La infección por VIH durante el embarazo exige cuidado materno y prevención coordinada de transmisión vertical.
+
+## Fisiopatología y razonamiento
+
+La supresión viral es central. La elección del régimen depende de resistencia, tratamiento previo, interacciones y seguridad perinatal, no solamente del diagnóstico.
+
+## Diagnóstico, estudios y diferenciales
+
+Confirmar diagnóstico y evaluar carga viral, inmunidad, función renal/hepática, hepatitis e historia de antirretrovirales. No demorar un inicio necesario esperando todos los resultados.
+
+## Tratamiento y dosis
+
+Usar un régimen recomendado por las guías perinatales NIH 2026, individualizado por el equipo. En general, mantener tratamiento supresivo bien tolerado; no interrumpir por descubrir el embarazo.
+
+## Seguridad y monitoreo
+
+No existe dosis universal de terapia antirretroviral. Verificar cada producto, interacciones, resistencia y función renal; un esquema no supresivo necesita revisión rápida.
+
+## Escalamiento, alta y seguimiento
+
+Planificar parto, profilaxis neonatal y alimentación infantil con equipo especializado y política regional. El seguimiento de carga viral debe orientar decisiones; infección oportunista o inestabilidad requieren hospital.
+
+## Referencias
+
+[hiv] NIH — diretrizes perinatais de antirretrovirais, 31 março 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-overview?view=full
+
+[hivc] NIH — tratamento já utilizado na concepção, 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-art-taken-when-pregnancy-occurs?view=full

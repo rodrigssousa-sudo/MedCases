@@ -1,0 +1,36 @@
+# Vaginose bacteriana — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Disbiose vaginal com corrimento e odor característicos; não equivale a candidíase nem tricomoníase.
+
+## Diagnóstico, exames e diferenciais
+
+- Usar critérios clínicos validados ou teste apropriado para sintomas; avaliar outras infecções e causas de corrimento.
+
+## Tratamento e doses
+
+- Tratar gestantes sintomáticas.
+- Metronidazol 500 mg por via oral, 2 vezes por dia, durante 7 dias é opção CDC.
+
+## Segurança e monitorização
+
+- Revisar interações, tolerância e história de recorrência.
+- Não indicar tinidazol como substituição automática na gravidez.
+- Tratamento de parceiro em recorrência requer orientação atual específica.
+
+## Escalonamento, alta e seguimento
+
+- Alta com orientação de retorno por persistência.
+- Febre, dor pélvica, contrações ou suspeita de rotura de membranas exigem avaliação obstétrica, não apenas repetir antibiótico.
+
+## Fisiopatologia e raciocínio
+
+- A perda de predominância de lactobacilos altera o ambiente vaginal.
+- Associações obstétricas não justificam tratar indiscriminadamente toda gestante assintomática.
+
+## Referências
+
+[bv] CDC — vaginose bacteriana, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/bv.htm

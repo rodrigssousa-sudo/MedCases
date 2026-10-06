@@ -1,0 +1,38 @@
+# Infecção gonocócica — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Infecção por Neisseria gonorrhoeae, genital ou extragenital; forma disseminada é outro cenário de gravidade.
+
+## Diagnóstico, exames e diferenciais
+
+- Teste molecular por sítio de exposição; cultura e sensibilidade se suspeita de falha.
+- Avaliar clamídia, sífilis e HIV conforme contexto.
+
+## Tratamento e doses
+
+- Infecção não complicada: ceftriaxona 500 mg por via intramuscular, dose única, se peso abaixo de 150 kg; 1 g se peso ≥150 kg, conforme CDC.
+- Se clamídia não foi excluída, usar tratamento adequado à gestação, como azitromicina 1 g oral, dose única.
+
+## Segurança e monitorização
+
+- Alergia importante exige discussão especializada; não substituir automaticamente por gentamicina na grávida.
+- Febre, artrite ou lesões disseminadas requerem investigação hospitalar.
+
+## Escalonamento, alta e seguimento
+
+- Tratar parceiros e evitar relações durante 7 dias após tratamento e até parceiros tratados.
+- Infecção faríngea requer teste de cura em 7–14 dias; repetir detecção em 3 meses.
+
+## Fisiopatologia e raciocínio
+
+- Infecção assintomática pode persistir.
+- Resistência antimicrobiana e reinfecção exigem tratamento e seguimento adequados.
+
+## Referências
+
+[gono] CDC — gonorreia, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm
+
+[gonod] CDC MMWR — dose de ceftriaxona, 2020 — https://www.cdc.gov/mmwr/volumes/69/wr/mm6950a6.htm

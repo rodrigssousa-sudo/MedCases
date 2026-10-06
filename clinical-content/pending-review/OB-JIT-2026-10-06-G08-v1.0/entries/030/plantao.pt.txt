@@ -1,0 +1,38 @@
+# Constipação funcional — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Evacuações difíceis ou infrequentes sem causa orgânica identificada, no contexto da gravidez.
+
+## Diagnóstico, exames e diferenciais
+
+- Revisar padrão prévio, fezes, dor, distensão, medicamentos e eliminação de gases.
+- Sangramento persistente, emagrecimento, vômitos ou obstipação completa exigem investigação.
+
+## Tratamento e doses
+
+- Aumentar fibra gradualmente, líquidos e movimento apropriado.
+- Se necessário, laxante formador de bolo; lactulose ou macrogol são opções osmóticas na gravidez, com dose conforme apresentação e resposta.
+
+## Segurança e monitorização
+
+- Uso curto de estimulante pode ser considerado após falha das medidas iniciais.
+- Evitar escalada indiscriminada e suspender automanejo se suspeita de obstrução.
+
+## Escalonamento, alta e seguimento
+
+- Alta com plano de hábitos e revisão dos fármacos constipantes, sem suspender ferro necessário sem alternativa.
+- Persistência ou sinais de alarme exigem reavaliação.
+
+## Fisiopatologia e raciocínio
+
+- Motilidade reduzida, dieta, menor atividade e suplementos de ferro podem contribuir.
+- Não confundir com obstrução ou fecaloma complicado.
+
+## Referências
+
+[const] NHS SPS — constipação na gestação — https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/
+
+[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations

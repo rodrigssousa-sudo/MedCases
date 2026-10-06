@@ -1,0 +1,38 @@
+# Neumonía grave — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Neumonía grave en la embarazada con riesgo respiratorio o sistémico; preservar el alcance grave de este owner.
+
+## Diagnóstico, estudios y diferenciales
+
+- Evaluar saturación, presión, frecuencia respiratoria, perfusión y conciencia.
+- No omitir una radiografía indicada por embarazo; obtener cultivos según gravedad sin demorar antibiótico.
+
+## Tratamiento y dosis
+
+- Ejemplo NICE para neumonía comunitaria grave: amoxicilina/clavulanato 1,2 g intravenosos, 3 veces por día, más eritromicina 500 mg por vía oral, 4 veces por día, cuando corresponda a la embarazada.
+- Revisar a los 5 días y ajustar duración a estabilidad y agente.
+
+## Seguridad y monitoreo
+
+- Verificar alergia, función renal, QT e interacciones; cambiar vía del macrólido si la ingesta no es viable, bajo protocolo hospitalario.
+- No trasladar doxiciclina del esquema no gestacional.
+
+## Escalamiento, alta y seguimiento
+
+- Internar, ofrecer soporte de oxígeno y evaluación obstétrica.
+- Shock, necesidad creciente de oxígeno o falla orgánica exigen escalamiento; alta tras estabilidad, tolerancia oral y seguimiento.
+
+## Fisiopatología y razonamiento
+
+- El compromiso del intercambio gaseoso puede amenazar a madre y feto.
+- Los criterios clínicos y el deterioro prevalecen sobre una escala aislada.
+
+## Referencias
+
+[pneu] NICE NG250 — pneumonia, final 2025 — https://www.nice.org.uk/guidance/ng250/chapter/Recommendations
+
+[pneud] NICE NG250 — pneumonia comunitária em adultos, tabela atualizada 2026 — https://www.nice.org.uk/guidance/ng250/resources/visual-summary-communityacquired-pneumonia-adults-presenting-to-hospital-pdf-15434376301

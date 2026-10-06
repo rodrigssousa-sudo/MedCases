@@ -1,0 +1,33 @@
+# Amenaza de aborto
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Sangrado al inicio del embarazo intrauterino potencialmente viable, sin confirmación de pérdida; excluir ectópico y hemorragia importante.
+
+## Fisiopatología y razonamiento
+
+El sangrado no demuestra inviabilidad. El tratamiento depende de localización, viabilidad e historia de pérdida anterior.
+
+## Diagnóstico, estudios y diferenciales
+
+Evaluar estabilidad, dolor, sangrado y ecografía transvaginal cuando corresponda. El embarazo de localización desconocida exige seguimiento hasta aclaración, sin rotular como aborto completo.
+
+## Tratamiento y dosis
+
+NICE: ante sangrado con embarazo intrauterino confirmado por ecografía y aborto previo, progesterona micronizada 400 mg por vía vaginal, 2 veces por día; si se confirma latido fetal, continuar hasta 16 semanas completas.
+
+## Seguridad y monitoreo
+
+No indicar este esquema para toda embarazada con sangrado, ni antes de excluir localización ectópica. Evaluar RhD y profilaxis según guía vigente, edad gestacional y procedimiento; no copiar una regla antigua universal.
+
+## Escalamiento, alta y seguimiento
+
+Inestabilidad, síncope, dolor intenso o sangrado importante exige urgencias. Si está estable, plan de reevaluación y retorno; sangrado persistente más allá de 14 días o empeoramiento exige nueva evaluación.
+
+## Referencias
+
+[loss] NICE NG126 — manejo de abortamento, atualizado junho 2026 — https://www.nice.org.uk/guidance/ng126/chapter/management-of-miscarriage
+
+[lossd] NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda — https://www.nice.org.uk/guidance/ng126

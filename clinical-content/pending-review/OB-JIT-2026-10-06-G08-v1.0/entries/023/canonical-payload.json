@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "infeccao_chlamydia_trachomatis",
+  "titles": {
+    "pt": "Infecção por Chlamydia trachomatis — gestação",
+    "es": "Infección por Chlamydia trachomatis — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Infecção genital por clamídia, frequentemente assintomática, com repercussão materna e neonatal.",
+      "es": "Infección genital por clamidia, frecuentemente asintomática, con repercusión materna y neonatal."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Persistência e reinfecção precisam ser distinguidas; tratamento materno e de parceiros interrompe a cadeia de transmissão.",
+      "es": "Deben distinguirse persistencia y reinfección; el tratamiento materno y de parejas interrumpe la cadena de transmisión."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Teste molecular conforme risco e rastreamento local. Dor pélvica e febre exigem investigar doença complicada, não apenas cervicite.",
+      "es": "Prueba molecular según riesgo y detección local. Dolor pélvico y fiebre exigen investigar enfermedad complicada, no solamente cervicitis."
+    },
+    {
+      "id": "treatment",
+      "pt": "Na gravidez: azitromicina 1 g por via oral, dose única, conforme CDC. Não copiar automaticamente doxiciclina do tratamento não gestacional.",
+      "es": "Durante el embarazo: azitromicina 1 g por vía oral, dosis única, según CDC. No copiar automáticamente doxiciclina del tratamiento no gestacional."
+    },
+    {
+      "id": "safety",
+      "pt": "Revisar alergias e interações. Orientar parceiros e abstinência durante 7 dias após dose única, e até tratamento dos parceiros; sintomas persistentes exigem reavaliação.",
+      "es": "Revisar alergias e interacciones. Orientar a parejas y abstinencia durante 7 días después de dosis única, y hasta tratamiento de parejas; los síntomas persistentes requieren reevaluación."
+    },
+    {
+      "id": "disposition",
+      "pt": "Teste de cura molecular aproximadamente 4 semanas após tratamento na gestante; repetir detecção em 3 meses. Registrar resultado e plano obstétrico/neonatal.",
+      "es": "Prueba molecular de curación aproximadamente 4 semanas después del tratamiento en la embarazada; repetir detección a los 3 meses. Registrar resultado y plan obstétrico/neonatal."
+    }
+  ],
+  "references": [
+    {
+      "id": "chlam",
+      "title": "CDC — clamídia, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 23,
+    "owner": "infeccao_chlamydia_trachomatis",
+    "title": {
+      "pt": "Infecção por Chlamydia trachomatis — gestação",
+      "es": "Infección por Chlamydia trachomatis — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "infeccao_chlamydia_trachomatis",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "d79ccc4fe15a8efcdb953b2f588c776f9a64198b73f093f562d71dc0a156e0c8"
+}

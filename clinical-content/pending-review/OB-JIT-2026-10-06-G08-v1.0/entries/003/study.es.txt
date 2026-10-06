@@ -1,0 +1,35 @@
+# Anemia ferropénica — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Deficiencia de hierro con anemia durante el embarazo; interpretar hemoglobina por trimestre.
+
+## Fisiopatología y razonamiento
+
+La expansión plasmática causa hemodilución; no explica automáticamente una anemia patológica. Aumenta la demanda de hierro y las pérdidas o la ingesta insuficiente pueden agotar reservas.
+
+## Diagnóstico, estudios y diferenciales
+
+OMS 2024: hemoglobina inferior a 11 g/dL en el primer y tercer trimestre, o 10,5 g/dL en el segundo. Solicitar hemograma y ferritina; considerar inflamación, hemoglobinopatías y otros déficits.
+
+## Tratamiento y dosis
+
+Para anemia en el embarazo, la OMS recomienda 120 mg de hierro elemental por vía oral por día, con 400 microgramos de ácido fólico por día, hasta normalización. Después, volver a profilaxis de 30–60 mg de hierro elemental por día.
+
+## Seguridad y monitoreo
+
+Verificar hierro elemental, no la masa total de la sal. Evaluar tolerancia y respuesta; el hierro intravenoso depende del producto, trimestre y cálculo individual, no de una dosis universal.
+
+## Escalamiento, alta y seguimiento
+
+Disnea en reposo, síncope, inestabilidad o anemia muy sintomática requieren evaluación urgente. La falta de respuesta exige revisar adherencia, absorción, pérdidas y diagnóstico.
+
+## Referencias
+
+[hb] OMS — pontos de corte de hemoglobina, final 2024 — https://www.who.int/publications-detail-redirect/9789240088542
+
+[fe] OMS — suplementação diária de ferro na gestação — https://www.who.int/tools/elena/interventions/daily-iron-pregnancy
+
+[fet] OMS — recomendações de cuidado pré-natal, 2016 — https://iris.who.int/bitstream/10665/250796/1/9789241549912-eng.pdf

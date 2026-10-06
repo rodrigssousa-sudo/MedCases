@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Cistite aguda — complemento gestacional do cadastro existente",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Infecção urinária baixa com disúria, urgência ou polaciúria, sem sinais de infecção renal.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Infecção urinária baixa com disúria, urgência ou polaciúria, sem sinais de infecção renal."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Sintomas podem se sobrepor a alterações fisiológicas e vaginite; gravidez exige confirmação microbiológica e tratamento oportuno."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Colher urocultura antes do antibiótico, sem atrasar tratamento de quadro convincente. Avaliar febre, dor em flanco e sinais de sepse para excluir pielonefrite."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Cefalexina 500 mg por via oral, 2 vezes por dia, durante 7 dias é opção NICE, com ajuste ao antibiograma. Evitar amoxicilina ou ampicilina empíricas quando resistência local é elevada."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Revisar alergias e função renal. Não usar agentes de infecção baixa para tratar infecção renal; nitrofurantoína e fosfomicina não substituem tratamento de pielonefrite."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Reavaliar se ausência de melhora ou piora; pode-se considerar cultura de controle 1–2 semanas após tratamento. Alta com retorno imediato por febre, dor lombar, contrações ou intolerância oral."
+        }
+      ],
+      "references": [
+        "[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals",
+        "[cyst] NICE NG109 — antibióticos para infecção urinária baixa — https://www.nice.org.uk/guidance/NG109/chapter/recommendations"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Cistitis aguda — complemento gestacional del registro existente",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Infección urinaria baja con disuria, urgencia o polaquiuria, sin signos de infección renal.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Infección urinaria baja con disuria, urgencia o polaquiuria, sin signos de infección renal."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Los síntomas pueden superponerse a cambios fisiológicos y vaginitis; el embarazo requiere confirmación microbiológica y tratamiento oportuno."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Obtener urocultivo antes del antibiótico, sin demorar el tratamiento de un cuadro convincente. Evaluar fiebre, dolor en flanco y signos de sepsis para excluir pielonefritis."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Cefalexina 500 mg por vía oral, 2 veces por día, durante 7 días es una opción NICE, con ajuste al antibiograma. Evitar amoxicilina o ampicilina empíricas cuando la resistencia local es elevada."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Revisar alergias y función renal. No usar agentes de infección baja para tratar infección renal; nitrofurantoína y fosfomicina no sustituyen el tratamiento de pielonefritis."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Reevaluar ante ausencia de mejoría o empeoramiento; puede considerarse cultivo de control 1–2 semanas después del tratamiento. Alta con retorno inmediato por fiebre, dolor lumbar, contracciones o intolerancia oral."
+        }
+      ],
+      "references": [
+        "[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals",
+        "[cyst] NICE NG109 — antibióticos para infecção urinária baixa — https://www.nice.org.uk/guidance/NG109/chapter/recommendations"
+      ]
+    }
+  }
+}

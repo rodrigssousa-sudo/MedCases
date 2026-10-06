@@ -1,0 +1,37 @@
+# Hipertensión gestacional
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Hipertensión nueva después de 20 semanas, sin criterios actuales de preeclampsia; puede evolucionar hacia ella.
+
+## Diagnóstico, estudios y diferenciales
+
+- Confirmar presión con técnica adecuada; investigar síntomas, orina, hemograma, plaquetas, creatinina y enzimas hepáticas según cuadro, además de bienestar fetal.
+
+## Tratamiento y dosis
+
+- Según NICE, tratar presión persistente ≥140/90 mmHg, con objetivo 135/85 mmHg.
+- Labetalol es una opción inicial; nifedipino o metildopa son alternativas según contraindicaciones y tolerancia.
+
+## Seguridad y monitoreo
+
+- Presión sistólica ≥160 mmHg o diastólica ≥110 mmHg requiere atención hospitalaria inmediata y tratamiento supervisado.
+- No usar inhibidores de la ECA o bloqueantes del receptor de angiotensina como rutina durante el embarazo.
+
+## Escalamiento, alta y seguimiento
+
+- Cefalea persistente, escotomas, dolor epigástrico, disnea o disminución de movimientos fetales impiden un alta simple.
+- Programar vigilancia y parto según gravedad y edad gestacional.
+
+## Fisiopatología y razonamiento
+
+- No es sinónimo de hipertensión crónica ni de eclampsia.
+- La ausencia de proteinuria no excluye preeclampsia con disfunción de órganos.
+
+## Referencias
+
+[ht] NICE NG133 — hipertensão na gravidez, atualização 2023 — https://www.nice.org.uk/guidance/ng133/chapter/Recommendations
+
+[lab] DailyMed — labetalol, prescrição oficial — https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=35e7bce0-d9ff-4f8b-95c5-218da2a2d929

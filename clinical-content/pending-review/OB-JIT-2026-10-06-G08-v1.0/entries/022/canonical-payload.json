@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "herpes_genital",
+  "titles": {
+    "pt": "Herpes genital — gestação",
+    "es": "Herpes genital — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Infecção genital pelo herpes simples, primeiro episódio ou recorrência; risco neonatal depende do contexto da aquisição e parto.",
+      "es": "Infección genital por herpes simple, primer episodio o recurrencia; el riesgo neonatal depende del contexto de adquisición y parto."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Infecção próxima ao parto merece avaliação especializada rápida. História de herpes não implica cesariana em toda gravidez.",
+      "es": "La infección cercana al parto merece evaluación especializada rápida. Tener antecedentes de herpes no implica cesárea en todo embarazo."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Pesquisar lesões, dor e pródromo; confirmar por teste da lesão quando indicado. Avaliar disúria grave, retenção, disseminação ou sintomas neurológicos.",
+      "es": "Buscar lesiones, dolor y pródromo; confirmar mediante prueba de lesión cuando corresponda. Evaluar disuria grave, retención, diseminación o síntomas neurológicos."
+    },
+    {
+      "id": "treatment",
+      "pt": "Primeiro episódio: aciclovir 400 mg por via oral, 3 vezes por dia, durante 7–10 dias. Supressão a partir de 36 semanas: aciclovir 400 mg por via oral, 3 vezes por dia, até o parto, conforme CDC.",
+      "es": "Primer episodio: aciclovir 400 mg por vía oral, 3 veces por día, durante 7–10 días. Supresión desde las 36 semanas: aciclovir 400 mg por vía oral, 3 veces por día, hasta el parto, según CDC."
+    },
+    {
+      "id": "safety",
+      "pt": "Ajustar à função renal. Doença disseminada, encefalite ou hepatite herpética exige terapia intravenosa e internação, não o esquema oral simples.",
+      "es": "Ajustar a función renal. Enfermedad diseminada, encefalitis o hepatitis herpética exige tratamiento intravenoso e internación, no el esquema oral simple."
+    },
+    {
+      "id": "disposition",
+      "pt": "Lesões genitais ou pródromo no trabalho de parto indicam avaliação para cesariana. Orientar risco de aquisição tardia, parceria e seguimento; supressão não elimina completamente transmissão neonatal.",
+      "es": "Lesiones genitales o pródromo durante el trabajo de parto indican evaluación para cesárea. Orientar sobre adquisición tardía, pareja y seguimiento; la supresión no elimina completamente transmisión neonatal."
+    }
+  ],
+  "references": [
+    {
+      "id": "herp",
+      "title": "CDC — herpes genital, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 22,
+    "owner": "herpes_genital",
+    "title": {
+      "pt": "Herpes genital — gestação",
+      "es": "Herpes genital — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "herpes_genital",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "d555d1f569361b5b8ded9ee637e23f2ed5f586f740d36bacf4bcd5c524047b4d"
+}

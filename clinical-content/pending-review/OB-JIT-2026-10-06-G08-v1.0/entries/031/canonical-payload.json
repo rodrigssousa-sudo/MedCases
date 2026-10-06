@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "doenca_hemorroidaria",
+  "titles": {
+    "pt": "Doença hemorroidária — gestação",
+    "es": "Enfermedad hemorroidal — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Hemorroidas sintomáticas na gravidez causam prurido, desconforto, prolapso ou sangramento vivo.",
+      "es": "Las hemorroides sintomáticas durante el embarazo causan prurito, molestias, prolapso o sangrado rojo."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Pressão venosa aumentada e constipação favorecem sintomas. Sangramento não deve ser atribuído à doença sem avaliação.",
+      "es": "La presión venosa aumentada y constipación favorecen síntomas. El sangrado no debe atribuirse a esta enfermedad sin evaluación."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Inspeção dirigida, caracterização da dor e sangramento. Dor intensa focal sugere trombose ou fissura; febre ou coleção sugere abscesso.",
+      "es": "Inspección dirigida, caracterización de dolor y sangrado. El dolor intenso focal sugiere trombosis o fisura; fiebre o colección sugieren absceso."
+    },
+    {
+      "id": "treatment",
+      "pt": "Fibra, líquidos, atividade apropriada e evitar esforço evacuatório. Higiene suave e compressa fria podem aliviar; produto tópico apenas após verificar composição e adequação à gestação.",
+      "es": "Fibra, líquidos, actividad adecuada y evitar esfuerzo defecatorio. Higiene suave y compresa fría pueden aliviar; producto tópico solamente tras verificar composición y adecuación al embarazo."
+    },
+    {
+      "id": "safety",
+      "pt": "Não assumir que todo creme combinado é apropriado. Constipação deve ser tratada de forma coordenada; evitar uso prolongado não supervisionado de tópicos.",
+      "es": "No asumir que toda crema combinada es adecuada. Tratar constipación de forma coordinada; evitar uso prolongado de tópicos sin supervisión."
+    },
+    {
+      "id": "disposition",
+      "pt": "Alta se estável, com controle dos sintomas e seguimento. Hemorragia importante, anemia sintomática, febre ou dor refratária exige avaliação presencial e eventual especialista.",
+      "es": "Alta si está estable, con control de síntomas y seguimiento. Hemorragia importante, anemia sintomática, fiebre o dolor refractario requieren evaluación presencial y eventual especialista."
+    }
+  ],
+  "references": [
+    {
+      "id": "hem",
+      "title": "NHS — hemorroidas na gravidez",
+      "url": "https://www.nhs.uk/pregnancy/common-symptoms/piles/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    },
+    {
+      "id": "const",
+      "title": "NHS SPS — constipação na gestação",
+      "url": "https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 31,
+    "owner": "doenca_hemorroidaria",
+    "title": {
+      "pt": "Doença hemorroidária — gestação",
+      "es": "Enfermedad hemorroidal — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "doenca_hemorroidaria",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "2ed202c7d027b53cfc5eb138cfa7a0d3d9b0cf0f8e6abad79c416fd81d063aee"
+}

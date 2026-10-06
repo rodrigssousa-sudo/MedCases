@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Hepatite B crônica — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Infecção crônica pelo vírus da hepatite B na grávida; é distinta do owner de hepatite B aguda.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Infecção crônica pelo vírus da hepatite B na grávida; é distinta do owner de hepatite B aguda."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "A carga viral materna condiciona risco de transmissão; profilaxia perinatal não substitui avaliação da doença hepática materna."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Avaliar HBsAg, carga viral, antígeno e, transaminases, função renal e indicação de tratamento materno. Distinguir infecção aguda, crônica e reativação."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Para prevenção com carga viral ≥200.000 unidades internacionais/mL ou antígeno e positivo, OMS 2024 orienta tenofovir disoproxila, preferencialmente desde o segundo trimestre. SMFM especifica 300 mg por via oral por dia e início entre 28–32 semanas; explicitar qual protocolo será utilizado."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Ajustar à função renal e planejar vigilância após eventual suspensão. Recém-nascido exposto deve receber vacina e imunoglobulina específica dentro de 12 horas, conforme SMFM."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Coordenar hepatologia, obstetrícia e pediatria. Não indicar cesariana apenas por hepatite B; aleitamento pode ocorrer com imunoprofilaxia neonatal apropriada. Icterícia grave, coagulopatia ou encefalopatia exigem hospital."
+        }
+      ],
+      "references": [
+        "[hbv] OMS — hepatite B crônica, prevenção da transmissão materna, 2024 — https://www.ncbi.nlm.nih.gov/books/NBK615006/",
+        "[hbvs] SMFM Consult 69 — hepatite B na gravidez, 2024 — https://pubmed.ncbi.nlm.nih.gov/38141870/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Hepatitis B crónica — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Infección crónica por virus de hepatitis B en la embarazada; es distinta del owner de hepatitis B aguda.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Infección crónica por virus de hepatitis B en la embarazada; es distinta del owner de hepatitis B aguda."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La carga viral materna condiciona riesgo de transmisión; la profilaxis perinatal no sustituye la evaluación de enfermedad hepática materna."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evaluar HBsAg, carga viral, antígeno e, transaminasas, función renal e indicación de tratamiento materno. Distinguir infección aguda, crónica y reactivación."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Para prevención con carga viral ≥200.000 unidades internacionales/mL o antígeno e positivo, OMS 2024 indica tenofovir disoproxilo, preferentemente desde el segundo trimestre. SMFM especifica 300 mg por vía oral por día e inicio entre 28–32 semanas; explicitar qué protocolo se utilizará."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Ajustar a función renal y planificar vigilancia tras eventual suspensión. El recién nacido expuesto debe recibir vacuna e inmunoglobulina específica dentro de 12 horas, según SMFM."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Coordinar hepatología, obstetricia y pediatría. No indicar cesárea solamente por hepatitis B; puede amamantarse con inmunoprofilaxis neonatal apropiada. Ictericia grave, coagulopatía o encefalopatía requieren hospital."
+        }
+      ],
+      "references": [
+        "[hbv] OMS — hepatite B crônica, prevenção da transmissão materna, 2024 — https://www.ncbi.nlm.nih.gov/books/NBK615006/",
+        "[hbvs] SMFM Consult 69 — hepatite B na gravidez, 2024 — https://pubmed.ncbi.nlm.nih.gov/38141870/"
+      ]
+    }
+  }
+}

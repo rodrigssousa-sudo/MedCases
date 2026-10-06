@@ -1,0 +1,38 @@
+# Depresión mayor — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Episodio depresivo durante embarazo o enfermedad previa, con sufrimiento y deterioro funcional; no confundir con tristeza pasajera.
+
+## Diagnóstico, estudios y diferenciales
+
+- Evaluar síntomas, funcionalidad, escala validada, bipolaridad, consumo de sustancias y riesgo suicida.
+- Preguntar sobre seguridad doméstica y red de apoyo.
+
+## Tratamiento y dosis
+
+- La psicoterapia es una opción central; la farmacoterapia depende de gravedad, respuesta previa y decisión compartida.
+- Si está indicada, elegir antidepresivo y dosis según evaluación perinatal, evitando cambio innecesario de régimen eficaz.
+
+## Seguridad y monitoreo
+
+- Detectar bipolaridad antes de antidepresivo aislado.
+- Vigilar síntomas, adherencia y efectos adversos; no prometer riesgo fetal cero ni atribuir todo síntoma al embarazo.
+
+## Escalamiento, alta y seguimiento
+
+- Ideación suicida con intención, psicosis o incapacidad grave de autocuidado exige evaluación urgente y protección.
+- Casos estables: seguimiento programado, plan de crisis y articulación obstetricia/salud mental.
+
+## Fisiopatología y razonamiento
+
+- No tratar también tiene riesgos maternos y familiares.
+- El embarazo no justifica suspensión brusca de tratamiento eficaz.
+
+## Referencias
+
+[psy] ACOG Clinical Practice Guideline 5 — saúde mental perinatal, 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-practice-guideline/articles/2023/06/treatment-and-management-of-mental-health-conditions-during-pregnancy-and-postpartum
+
+[psyp] ACOG — avaliação e tratamento de saúde mental perinatal — https://www.acog.org/programs/perinatal-mental-health/assessment-and-treatment-of-perinatal-mental-health-conditions

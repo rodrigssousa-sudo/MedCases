@@ -1,0 +1,33 @@
+# Bacteriúria assintomática — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Urocultura com bacteriúria significativa, sem sintomas urinários; na gravidez é indicação de tratamento dirigido.
+
+## Fisiopatologia e raciocínio
+
+A estase urinária da gestação aumenta risco de progressão para pielonefrite. Não confundir cultura contaminada com infecção verdadeira.
+
+## Diagnóstico, exames e diferenciais
+
+Rastrear com urocultura no início do pré-natal. ACOG utiliza ≥100.000 unidades formadoras de colônia por mL; considerar espécie, coleta e contaminação.
+
+## Tratamento e doses
+
+Selecionar antibiótico pelo antibiograma. Exemplo NICE: cefalexina 500 mg por via oral, 2 vezes por dia, durante 7 dias, se sensível e sem contraindicação; ajustar à função renal.
+
+## Segurança e monitorização
+
+Não extrapolar esse esquema para pielonefrite. Nitrofurantoína requer atenção a função renal, deficiência de G6PD e proximidade do termo; escolha não depende apenas de antibiograma.
+
+## Escalonamento, alta e seguimento
+
+Pode ser tratada ambulatorialmente se realmente assintomática e estável. Febre, dor lombar ou vômitos mudam a classificação e exigem avaliação imediata. Seguimento da cultura conforme protocolo obstétrico.
+
+## Referências
+
+[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals
+
+[cyst] NICE NG109 — antibióticos para infecção urinária baixa — https://www.nice.org.uk/guidance/NG109/chapter/recommendations

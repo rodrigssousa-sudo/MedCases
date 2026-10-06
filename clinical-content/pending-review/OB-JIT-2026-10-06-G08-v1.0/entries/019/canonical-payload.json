@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "sifilis",
+  "titles": {
+    "pt": "Sífilis — gestação",
+    "es": "Sífilis — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Infecção materna por Treponema pallidum com risco de transmissão fetal; tratamento depende do estágio.",
+      "es": "Infección materna por Treponema pallidum con riesgo de transmisión fetal; el tratamiento depende del estadio."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Penicilina é o único tratamento comprovado para prevenção de sífilis congênita. História vaga de tratamento não substitui documentação.",
+      "es": "La penicilina es el único tratamiento demostrado para prevenir sífilis congénita. Una historia vaga de tratamiento no sustituye documentación."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Combinar teste treponêmico e não treponêmico quantitativo, estágio clínico, tratamentos prévios e risco de reinfecção. Avaliar HIV e parceiros.",
+      "es": "Combinar prueba treponémica y no treponémica cuantitativa, estadio clínico, tratamientos previos y riesgo de reinfección. Evaluar VIH y parejas."
+    },
+    {
+      "id": "treatment",
+      "pt": "Sífilis precoce: penicilina G benzatina 2,4 milhões de unidades por via intramuscular, dose única; CDC admite segunda dose após 1 semana na gravidez. Latente tardia ou duração desconhecida: mesma dose, 1 vez por semana, durante 3 semanas.",
+      "es": "Sífilis temprana: penicilina G benzatina 2,4 millones de unidades por vía intramuscular, dosis única; CDC admite segunda dosis después de 1 semana durante el embarazo. Latente tardía o duración desconocida: misma dosis, 1 vez por semana, durante 3 semanas."
+    },
+    {
+      "id": "safety",
+      "pt": "Intervalo maior que 9 dias no esquema semanal da gestante exige reiniciar série completa. Alergia requer dessensibilização e penicilina; neurossífilis necessita esquema distinto.",
+      "es": "Un intervalo mayor de 9 días en el esquema semanal de la embarazada exige reiniciar la serie completa. La alergia requiere desensibilización y penicilina; la neurosífilis necesita otro esquema."
+    },
+    {
+      "id": "disposition",
+      "pt": "Documentar doses e títulos, com seguimento obstétrico. Febre, contrações ou redução de movimentos após tratamento exigem avaliação; reação de Jarisch–Herxheimer não justifica atrasar terapia necessária.",
+      "es": "Documentar dosis y títulos, con seguimiento obstétrico. Fiebre, contracciones o reducción de movimientos después del tratamiento requieren evaluación; la reacción de Jarisch–Herxheimer no justifica demorar terapia necesaria."
+    }
+  ],
+  "references": [
+    {
+      "id": "syph",
+      "title": "CDC — sífilis na gravidez, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/syphilis-pregnancy.htm",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "syphl",
+      "title": "CDC — sífilis latente",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/latent-syphilis.htm",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 19,
+    "owner": "sifilis",
+    "title": {
+      "pt": "Sífilis — gestação",
+      "es": "Sífilis — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "sifilis",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "d18a2a4a2af8dfa57e8a18087485982e7c49dc2f58a32c8bd27e1c87e39628dc"
+}

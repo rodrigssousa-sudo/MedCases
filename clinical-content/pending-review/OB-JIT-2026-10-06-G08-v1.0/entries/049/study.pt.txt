@@ -1,0 +1,33 @@
+# Trabalho de parto prematuro
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Contrações com suspeita ou confirmação de alteração cervical antes do termo; não diagnosticar apenas por desconforto inespecífico.
+
+## Fisiopatologia e raciocínio
+
+Prematuridade ameaça o recém-nascido; intervenções visam maturação, neuroproteção e transferência apropriada, sem prolongar gestação perigosa.
+
+## Diagnóstico, exames e diferenciais
+
+Verificar idade gestacional, membranas, sangramento, infecção, colo e bem-estar fetal. Comprimento cervical ou biomarcador pode apoiar decisão em contexto apropriado.
+
+## Tratamento e doses
+
+Pelo NICE, oferecer entre 24 semanas e 33 semanas e 6 dias, considerando também janelas especiais com a equipe, se risco de parto dentro de 7 dias, betametasona 12 mg intramusculares, 2 doses separadas por 24 horas. Tocolítico, como nifedipino, depende de idade gestacional, membranas e contraindicações, conforme protocolo obstétrico.
+
+## Segurança e monitorização
+
+Neuroproteção NICE: oferecer magnésio entre 24–29 semanas e 6 dias, considerar entre 30–33 semanas e 6 dias se parto previsto dentro de 24 horas. Regime: 4 g intravenosos em 15 minutos, depois 1 g por hora até parto ou 24 horas, o que ocorrer primeiro; monitorar respiração, reflexos e diurese.
+
+## Escalonamento, alta e seguimento
+
+Infecção, hemorragia ou sofrimento fetal pode exigir parto, sem esperar completar medicamentos. Internar/transferir se risco significativo; alta só após avaliação obstétrica e plano de retorno.
+
+## Referências
+
+[ptl] NICE NG25 — trabalho de parto prematuro — https://www.nice.org.uk/guidance/ng25/chapter/recommendations
+
+[ster] ACOG Committee Opinion 713 — corticosteroide antenatal — https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation

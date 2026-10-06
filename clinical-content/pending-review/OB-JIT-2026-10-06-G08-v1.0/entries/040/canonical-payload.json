@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "varizes_membros_inferiores",
+  "titles": {
+    "pt": "Varizes de membros inferiores — gestação",
+    "es": "Várices de miembros inferiores — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Dilatação venosa superficial com peso, desconforto ou edema nas pernas durante a gravidez.",
+      "es": "Dilatación venosa superficial con pesadez, molestias o edema en piernas durante el embarazo."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Mudanças venosas e compressão pelo útero podem agravar doença prévia. Varizes não são sinônimo de trombose profunda.",
+      "es": "Los cambios venosos y compresión por útero pueden agravar enfermedad previa. Las várices no son sinónimo de trombosis profunda."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar lateralidade, dor, edema e pele. Edema unilateral novo, dor importante, calor local ou dispneia exige investigar trombose/embolia, não atribuir simplesmente a varizes.",
+      "es": "Evaluar lateralidad, dolor, edema y piel. Edema unilateral nuevo, dolor importante, calor local o disnea exige investigar trombosis/embolia, no atribuirlo simplemente a várices."
+    },
+    {
+      "id": "treatment",
+      "pt": "Movimento regular, evitar permanecer imóvel por longos períodos e elevar pernas para conforto. Meias de compressão adequadas podem aliviar sintomas.",
+      "es": "Movimiento regular, evitar permanecer inmóvil por períodos prolongados y elevar piernas para comodidad. Medias de compresión adecuadas pueden aliviar síntomas."
+    },
+    {
+      "id": "safety",
+      "pt": "Procedimentos eletivos para varizes em geral são adiados durante a gravidez. Não indicar anticoagulação apenas por varizes não complicadas.",
+      "es": "Los procedimientos electivos para várices generalmente se postergan durante el embarazo. No indicar anticoagulación solamente por várices no complicadas."
+    },
+    {
+      "id": "disposition",
+      "pt": "Seguimento ambulatorial se sem complicações. Sangramento de variz, úlcera, infecção ou suspeita de trombose exige avaliação; reavaliar persistência após parto.",
+      "es": "Seguimiento ambulatorio si no hay complicaciones. Sangrado de várice, úlcera, infección o sospecha de trombosis exige evaluación; reevaluar persistencia después del parto."
+    }
+  ],
+  "references": [
+    {
+      "id": "vein",
+      "title": "NHS — problemas comuns na gravidez, varizes",
+      "url": "https://www.nhs.uk/pregnancy/common-symptoms/common-health-problems/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    },
+    {
+      "id": "veinn",
+      "title": "NHS — varizes",
+      "url": "https://www.nhs.uk/conditions/varicose-veins/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 40,
+    "owner": "varizes_membros_inferiores",
+    "title": {
+      "pt": "Varizes de membros inferiores — gestação",
+      "es": "Várices de miembros inferiores — embarazo"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "varizes_membros_inferiores",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "e1ec3b738d6db0429bba8cf5407290bf98005bf287469942c33e1f79441856a5"
+}

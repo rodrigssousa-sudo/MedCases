@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Bacteriúria assintomática — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Plantão",
+      "summary": "Urocultura com bacteriúria significativa, sem sintomas urinários; na gravidez é indicação de tratamento dirigido.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Urocultura com bacteriúria significativa, sem sintomas urinários; na gravidez é indicação de tratamento dirigido."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Rastrear com urocultura no início do pré-natal.",
+            "ACOG utiliza ≥100.000 unidades formadoras de colônia por mL; considerar espécie, coleta e contaminação."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Selecionar antibiótico pelo antibiograma.",
+            "Exemplo NICE: cefalexina 500 mg por via oral, 2 vezes por dia, durante 7 dias, se sensível e sem contraindicação; ajustar à função renal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Não extrapolar esse esquema para pielonefrite.",
+            "Nitrofurantoína requer atenção a função renal, deficiência de G6PD e proximidade do termo; escolha não depende apenas de antibiograma."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pode ser tratada ambulatorialmente se realmente assintomática e estável.",
+            "Febre, dor lombar ou vômitos mudam a classificação e exigem avaliação imediata.",
+            "Seguimento da cultura conforme protocolo obstétrico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "A estase urinária da gestação aumenta risco de progressão para pielonefrite.",
+            "Não confundir cultura contaminada com infecção verdadeira."
+          ]
+        }
+      ],
+      "references": [
+        "[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals",
+        "[cyst] NICE NG109 — antibióticos para infecção urinária baixa — https://www.nice.org.uk/guidance/NG109/chapter/recommendations"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Bacteriuria asintomática — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Guardia",
+      "summary": "Urocultivo con bacteriuria significativa, sin síntomas urinarios; durante el embarazo indica tratamiento dirigido.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Urocultivo con bacteriuria significativa, sin síntomas urinarios; durante el embarazo indica tratamiento dirigido."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Detectar con urocultivo al inicio del control prenatal.",
+            "ACOG utiliza ≥100.000 unidades formadoras de colonias por mL; considerar especie, recolección y contaminación."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Elegir antibiótico por antibiograma.",
+            "Ejemplo NICE: cefalexina 500 mg por vía oral, 2 veces por día, durante 7 días, si es sensible y sin contraindicaciones; ajustar a función renal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "No extrapolar este esquema a pielonefritis.",
+            "La nitrofurantoína requiere atención a función renal, déficit de G6PD y proximidad del término; la elección no depende solamente del antibiograma."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Puede tratarse ambulatoriamente si es realmente asintomática y estable.",
+            "Fiebre, dolor lumbar o vómitos cambian la clasificación y requieren evaluación inmediata.",
+            "Seguimiento del cultivo según protocolo obstétrico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La estasis urinaria del embarazo aumenta el riesgo de progresión a pielonefritis.",
+            "No confundir cultivo contaminado con infección verdadera."
+          ]
+        }
+      ],
+      "references": [
+        "[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals",
+        "[cyst] NICE NG109 — antibióticos para infecção urinária baixa — https://www.nice.org.uk/guidance/NG109/chapter/recommendations"
+      ]
+    }
+  }
+}

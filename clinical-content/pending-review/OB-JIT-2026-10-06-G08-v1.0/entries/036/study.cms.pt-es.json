@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Cólica renal — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Dor por cálculo urinário na gravidez; diferenciar de dilatação fisiológica e obstrução infectada.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dor por cálculo urinário na gravidez; diferenciar de dilatação fisiológica e obstrução infectada."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "A hidronefrose gestacional pode dificultar interpretação. Infecção associada a obstrução é emergência urológica."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Avaliar dor, temperatura, urina/cultura, função renal e diurese. EAU: ultrassom primeiro, ressonância como segunda opção e tomografia de baixa dose como último recurso quando necessária."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Manejo conservador se sem complicações, com analgesia apropriada e hidratação conforme necessidade, sem forçar líquidos. Obstrução infectada exige antibiótico e drenagem urgente."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Litotripsia extracorpórea é contraindicada na gravidez. Não iniciar terapia expulsiva de rotina sem evidência e orientação específica para gestantes."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Internar por sepse, dor/vômitos refratários, deterioração renal ou complicação obstétrica. Alta somente se estável, com controle da dor, seguimento urológico e retorno por febre ou oligúria."
+        }
+      ],
+      "references": [
+        "[stone] EAU — urolitíase, final 2026 — https://uroweb.org/guidelines/urolithiasis/chapter/guidelines",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Cólico renal — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Dolor por cálculo urinario durante el embarazo; diferenciar de dilatación fisiológica y obstrucción infectada.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dolor por cálculo urinario durante el embarazo; diferenciar de dilatación fisiológica y obstrucción infectada."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La hidronefrosis gestacional puede dificultar interpretación. La infección asociada a obstrucción es una emergencia urológica."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evaluar dolor, temperatura, orina/cultivo, función renal y diuresis. EAU: ecografía primero, resonancia como segunda opción y tomografía de baja dosis como último recurso cuando sea necesaria."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Manejo conservador si no hay complicaciones, con analgesia apropiada e hidratación según necesidad, sin forzar líquidos. La obstrucción infectada exige antibiótico y drenaje urgente."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "La litotricia extracorpórea está contraindicada durante el embarazo. No iniciar terapia expulsiva rutinaria sin evidencia y orientación específica para embarazadas."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Internar ante sepsis, dolor/vómitos refractarios, deterioro renal o complicación obstétrica. Alta solamente si está estable, con control del dolor, seguimiento urológico y retorno por fiebre u oliguria."
+        }
+      ],
+      "references": [
+        "[stone] EAU — urolitíase, final 2026 — https://uroweb.org/guidelines/urolithiasis/chapter/guidelines",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    }
+  }
+}

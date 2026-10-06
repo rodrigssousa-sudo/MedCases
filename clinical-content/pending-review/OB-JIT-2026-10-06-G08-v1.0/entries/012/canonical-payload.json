@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "obesidade",
+  "titles": {
+    "pt": "Obesidade — gestação",
+    "es": "Obesidad — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Obesidade preexistente é fator de risco obstétrico; a gravidez não cria um novo owner para essa doença.",
+      "es": "La obesidad preexistente es un factor de riesgo obstétrico; el embarazo no crea un nuevo owner para esta enfermedad."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Maior adiposidade se associa a resistência à insulina, hipertensão e dificuldades de avaliação, anestesia e parto. Manejo deve ser respeitoso e individualizado.",
+      "es": "La mayor adiposidad se asocia con resistencia a la insulina, hipertensión y dificultades de evaluación, anestesia y parto. El manejo debe ser respetuoso e individualizado."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Registrar peso pré-gestacional quando disponível, evolução, pressão, alimentação e risco metabólico. Rastrear diabetes conforme protocolo e avaliar necessidades de seguimento especializado.",
+      "es": "Registrar peso previo al embarazo cuando esté disponible, evolución, presión, alimentación y riesgo metabólico. Detectar diabetes según protocolo y evaluar necesidades de seguimiento especializado."
+    },
+    {
+      "id": "treatment",
+      "pt": "Plano nutricional suficiente e atividade apropriada à gestação. Não recomendar emagrecimento deliberado nem dietas restritivas para perda de peso durante a gravidez.",
+      "es": "Plan nutricional suficiente y actividad adecuada al embarazo. No recomendar adelgazamiento deliberado ni dietas restrictivas para perder peso durante el embarazo."
+    },
+    {
+      "id": "safety",
+      "pt": "Medicamentos para emagrecimento não são tratamento habitual de grávidas; revisar exposição a agonistas de GLP-1 e outros fármacos com a equipe. Não prometer ausência de risco fetal.",
+      "es": "Los medicamentos para adelgazar no son tratamiento habitual de embarazadas; revisar exposición a agonistas de GLP-1 y otros fármacos con el equipo. No prometer ausencia de riesgo fetal."
+    },
+    {
+      "id": "disposition",
+      "pt": "Seguimento de ganho ponderal, pressão e metabolismo. Planejar parto e cuidados pós-parto conforme risco, sem impor cesariana apenas por obesidade.",
+      "es": "Seguimiento de aumento de peso, presión y metabolismo. Planificar parto y cuidados posparto según riesgo, sin imponer cesárea solamente por obesidad."
+    }
+  ],
+  "references": [
+    {
+      "id": "ob",
+      "title": "NICE NG247 — nutrição materna, 2025",
+      "url": "https://www.nice.org.uk/guidance/NG247/chapter/rationale-and-impact",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "obdrug",
+      "title": "NICE NG246 — medicamentos para controle de peso",
+      "url": "https://www.nice.org.uk/guidance/ng246/chapter/Medicines-and-surgery",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 12,
+    "owner": "obesidade",
+    "title": {
+      "pt": "Obesidade — gestação",
+      "es": "Obesidad — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "obesidade",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "ce86e2b539d40e0a8468c840771d9e8518087c279a2fcc052543cb261d923250"
+}

@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "fissura_anal",
+  "titles": {
+    "pt": "Fissura anal — gestação",
+    "es": "Fisura anal — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Lesão do canal anal com dor ao evacuar e possível sangramento vermelho vivo; não é sinônimo de hemorroida.",
+      "es": "Lesión del canal anal con dolor al defecar y posible sangrado rojo; no es sinónimo de hemorroides."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Trauma por fezes duras e espasmo local perpetuam dor. Fissuras atípicas ou múltiplas podem apontar outra doença.",
+      "es": "El traumatismo por heces duras y espasmo local perpetúan dolor. Fisuras atípicas o múltiples pueden indicar otra enfermedad."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Inspeção delicada e avaliação de constipação, abscesso, doença inflamatória e infecção. Não forçar exame doloroso desnecessário.",
+      "es": "Inspección delicada y evaluación de constipación, absceso, enfermedad inflamatoria e infección. No forzar un examen doloroso innecesario."
+    },
+    {
+      "id": "treatment",
+      "pt": "Amolecer fezes com fibra, líquidos e laxante adequado à gravidez quando necessário. Banho morno e analgesia apropriada podem ajudar; tratamento tópico específico depende de avaliação profissional.",
+      "es": "Ablandar heces con fibra, líquidos y laxante adecuado al embarazo cuando sea necesario. Baño tibio y analgesia apropiada pueden ayudar; el tratamiento tópico específico depende de evaluación profesional."
+    },
+    {
+      "id": "safety",
+      "pt": "Não transpor automaticamente nitratos, diltiazem ou procedimentos do protocolo não gestacional. Evitar anti-inflamatório por automedicação e investigar infecção se febre.",
+      "es": "No trasladar automáticamente nitratos, diltiazem o procedimientos del protocolo no gestacional. Evitar antiinflamatorios por automedicación e investigar infección ante fiebre."
+    },
+    {
+      "id": "disposition",
+      "pt": "Reavaliar se não melhora ou se sangramento persiste. Dor contínua intensa, febre, tumoração ou instabilidade exigem urgência; cronicidade pede avaliação coloproctológica.",
+      "es": "Reevaluar si no mejora o persiste sangrado. Dolor continuo intenso, fiebre, tumoración o inestabilidad requieren urgencias; la cronicidad exige evaluación coloproctológica."
+    }
+  ],
+  "references": [
+    {
+      "id": "fiss",
+      "title": "NHS — fissura anal",
+      "url": "https://www.nhs.uk/conditions/anal-fissure/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    },
+    {
+      "id": "const",
+      "title": "NHS SPS — constipação na gestação",
+      "url": "https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "pain",
+      "title": "NHS SPS — tratamento da dor na gravidez",
+      "url": "https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 32,
+    "owner": "fissura_anal",
+    "title": {
+      "pt": "Fissura anal — gestação",
+      "es": "Fisura anal — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "fissura_anal",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "7de56dda1931c369f17a9e6c3b06579858aee5e88092e5186f642aea96cfa37f"
+}

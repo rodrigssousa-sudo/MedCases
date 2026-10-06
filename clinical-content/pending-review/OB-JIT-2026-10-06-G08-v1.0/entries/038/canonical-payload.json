@@ -1,0 +1,96 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "dor_cintura_pelvica_gestacao",
+  "titles": {
+    "pt": "Dor da cintura pélvica relacionada à gestação",
+    "es": "Dolor de cintura pélvica relacionado con el embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Dor na região púbica ou sacroilíaca, frequentemente provocada por movimentos assimétricos, durante a gravidez.",
+      "es": "Dolor en región púbica o sacroilíaca, frecuentemente provocado por movimientos asimétricos, durante el embarazo."
+    },
+    {
+      "id": "reasoning",
+      "pt": "É multifatorial e distinta de lombalgia pura; não atribuir todo quadro a deslocamento de ossos ou instabilidade comprovada.",
+      "es": "Es multifactorial y distinto de lumbalgia pura; no atribuir todo cuadro a desplazamiento óseo o inestabilidad demostrada."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Caracterizar dor ao subir escadas, virar na cama ou apoiar uma perna. Excluir infecção, trauma, trombose, sintomas neurológicos e causas obstétricas.",
+      "es": "Caracterizar dolor al subir escaleras, girar en la cama o apoyar una pierna. Excluir infección, traumatismo, trombosis, síntomas neurológicos y causas obstétricas."
+    },
+    {
+      "id": "treatment",
+      "pt": "Fisioterapia com orientações e exercícios adaptados; considerar cinta pélvica não rígida quando apropriada. Reduzir atividades provocadoras sem imobilização indiscriminada.",
+      "es": "Fisioterapia con orientaciones y ejercicios adaptados; considerar cinturón pélvico no rígido cuando corresponda. Reducir actividades desencadenantes sin inmovilización indiscriminada."
+    },
+    {
+      "id": "safety",
+      "pt": "Analgesia deve ser compatível com gravidez. Mobilidade muito limitada requer avaliar risco trombótico e assistência; não prescrever anticoagulação apenas pelo nome do diagnóstico.",
+      "es": "La analgesia debe ser compatible con el embarazo. Movilidad muy limitada exige evaluar riesgo trombótico y asistencia; no indicar anticoagulación solamente por el nombre del diagnóstico."
+    },
+    {
+      "id": "disposition",
+      "pt": "Pode permitir parto vaginal, com posição e movimentos planejados; cesariana não é obrigatória. Seguimento funcional e pós-parto; dor incapacitante ou sinais de alarme requerem reavaliação.",
+      "es": "Puede permitir parto vaginal, con posición y movimientos planificados; la cesárea no es obligatoria. Seguimiento funcional y posparto; dolor incapacitante o signos de alarma requieren reevaluación."
+    }
+  ],
+  "references": [
+    {
+      "id": "pgp",
+      "title": "NHS — dor pélvica na gravidez",
+      "url": "https://www.nhs.uk/pregnancy/common-symptoms/pelvic-pain/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    },
+    {
+      "id": "pgpr",
+      "title": "RCOG — dor da cintura pélvica e gravidez",
+      "url": "https://www.rcog.org.uk/for-the-public/browse-our-patient-information/pelvic-girdle-pain-and-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    },
+    {
+      "id": "anc",
+      "title": "NICE NG201 — cuidado pré-natal",
+      "url": "https://www.nice.org.uk/guidance/ng201/chapter/Recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 38,
+    "owner": "dor_cintura_pelvica_gestacao",
+    "title": {
+      "pt": "Dor da cintura pélvica relacionada à gestação",
+      "es": "Dolor de cintura pélvica relacionado con el embarazo"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "dor_cintura_pelvica_gestacao",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [
+      "lombalgia_mecanica"
+    ],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "08e3847ae148316ff7bc3e4adef6ce905164fd361b2ea5248677437b2e0f237e"
+}

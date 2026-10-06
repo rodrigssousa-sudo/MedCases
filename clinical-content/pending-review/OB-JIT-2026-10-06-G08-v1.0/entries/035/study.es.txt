@@ -1,0 +1,33 @@
+# Colecistitis aguda — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Inflamación aguda de vesícula, generalmente por obstrucción calculosa, con dolor persistente y signos inflamatorios.
+
+## Fisiopatología y razonamiento
+
+No es un cólico simple. La demora del tratamiento puede favorecer necrosis, perforación y sepsis materna.
+
+## Diagnóstico, estudios y diferenciales
+
+Ecografía inicial y laboratorio dirigido; evaluar fiebre, defensa, ictericia, perfusión y causas obstétricas de dolor abdominal.
+
+## Tratamiento y dosis
+
+Internar, hidratar según estado hemodinámico, controlar dolor e iniciar antibiótico hospitalario compatible con embarazo y flora biliar según protocolo local. SAGES 2024 favorece colecistectomía laparoscópica sobre tratamiento no operatorio en colecistitis aguda.
+
+## Seguridad y monitoreo
+
+El esquema antibiótico depende de gravedad, resistencia, alergias y función renal; no existe dosis universal en este suplemento. Coordinar obstetricia, cirugía y anestesia.
+
+## Escalamiento, alta y seguimiento
+
+Sepsis o peritonitis exige escalamiento y control del foco. Alta después de tratamiento y estabilidad, con evaluación obstétrica y seguimiento posoperatorio cuando corresponda.
+
+## Referencias
+
+[surg] SAGES — laparoscopia na gravidez, final 2024 — https://www.sages.org/publications/guidelines/guidelines-for-the-use-of-laparoscopy-during-pregnancy/
+
+[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/

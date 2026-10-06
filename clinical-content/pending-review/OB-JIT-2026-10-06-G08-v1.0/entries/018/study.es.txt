@@ -1,0 +1,31 @@
+# Tricomoniasis — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Infección por Trichomonas vaginalis, con síntomas vaginales o detección mediante prueba; es de transmisión sexual.
+
+## Fisiopatología y razonamiento
+
+La infección y reinfección dependen de exposición y tratamiento de parejas; microscopía negativa no excluye enfermedad cuando está indicada una prueba molecular.
+
+## Diagnóstico, estudios y diferenciales
+
+Confirmar mediante prueba apropiada y buscar otras infecciones de transmisión sexual. Evaluar síntomas obstétricos concomitantes.
+
+## Tratamiento y dosis
+
+Las embarazadas sintomáticas deben tratarse en cualquier trimestre. Metronidazol 500 mg por vía oral, 2 veces por día, durante 7 días, según CDC.
+
+## Seguridad y monitoreo
+
+Evitar tinidazol durante el embarazo. Tratar parejas y evitar relaciones hasta que ambos completen tratamiento y desaparezcan síntomas; revisar adherencia antes de presumir resistencia.
+
+## Escalamiento, alta y seguimiento
+
+Repetir prueba aproximadamente a los 3 meses para mujeres sexualmente activas. Dolor pélvico, fiebre o pérdida de líquido requieren evaluación obstétrica independiente.
+
+## Referencias
+
+[trich] CDC — tricomoníase, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm

@@ -1,0 +1,33 @@
+# Abortamento espontâneo precoce não séptico
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Perda gestacional precoce confirmada, sem sepse; distinguir retido, incompleto e completo. Este esquema não é protocolo para perdas gestacionais tardias.
+
+## Fisiopatologia e raciocínio
+
+Diagnóstico incorreto pode interromper uma gravidez viável. Confirmar critérios e repetir avaliação quando houver dúvida; não usar hCG isoladamente para declarar perda.
+
+## Diagnóstico, exames e diferenciais
+
+Avaliar estabilidade, sangramento, dor, ultrassom e possibilidade de ectópica. Febre, secreção fétida ou instabilidade mudam para emergência infecciosa/hemorrágica.
+
+## Tratamento e doses
+
+Manejo expectante, medicamentoso ou cirúrgico conforme quadro e preferência. NICE para retido: mifepristona 200 mg oral, dose única; 48 horas depois, misoprostol 800 microgramas vaginal, oral ou sublingual, salvo expulsão prévia.
+
+## Segurança e monitorização
+
+No incompleto, NICE recomenda misoprostol 600 microgramas por via vaginal, oral ou sublingual, em dose única; não adicionar mifepristona automaticamente. Procedimentos e medicamentos exigem serviço habilitado e regras regionais; profilaxia RhD deve seguir atualização vigente.
+
+## Escalonamento, alta e seguimento
+
+Hemorragia, sepse ou instabilidade requer hospital. Após manejo medicamentoso, teste de gravidez em 3 semanas; positivo, dor, febre ou sangramento persistente exigem reavaliação. Oferecer apoio emocional.
+
+## Referências
+
+[loss] NICE NG126 — manejo de abortamento, atualizado junho 2026 — https://www.nice.org.uk/guidance/ng126/chapter/management-of-miscarriage
+
+[lossd] NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda — https://www.nice.org.uk/guidance/ng126

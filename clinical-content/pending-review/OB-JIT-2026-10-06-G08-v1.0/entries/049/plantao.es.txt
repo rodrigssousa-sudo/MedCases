@@ -1,0 +1,37 @@
+# Trabajo de parto prematuro
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Contracciones con sospecha o confirmación de cambio cervical antes del término; no diagnosticar solamente por molestias inespecíficas.
+
+## Diagnóstico, estudios y diferenciales
+
+- Verificar edad gestacional, membranas, sangrado, infección, cuello y bienestar fetal.
+- Longitud cervical o biomarcador puede apoyar decisiones en contexto apropiado.
+
+## Tratamiento y dosis
+
+- Según NICE, ofrecer entre 24 semanas y 33 semanas y 6 días, considerando también ventanas especiales con el equipo, ante riesgo de parto dentro de 7 días, betametasona 12 mg intramusculares, 2 dosis separadas por 24 horas.
+- Un tocolítico, como nifedipino, depende de edad gestacional, membranas y contraindicaciones, según protocolo obstétrico.
+
+## Seguridad y monitoreo
+
+- Neuroprotección NICE: ofrecer magnesio entre 24–29 semanas y 6 días, considerar entre 30–33 semanas y 6 días si se prevé parto dentro de 24 horas.
+- Régimen: 4 g intravenosos en 15 minutos, después 1 g por hora hasta parto o 24 horas, lo que ocurra primero; vigilar respiración, reflejos y diuresis.
+
+## Escalamiento, alta y seguimiento
+
+- Infección, hemorragia o sufrimiento fetal puede exigir parto, sin esperar completar medicamentos.
+- Internar/trasladar ante riesgo significativo; alta solamente tras evaluación obstétrica y plan de retorno.
+
+## Fisiopatología y razonamiento
+
+- La prematuridad amenaza al recién nacido; las intervenciones buscan maduración, neuroprotección y traslado adecuado, sin prolongar un embarazo peligroso.
+
+## Referencias
+
+[ptl] NICE NG25 — trabalho de parto prematuro — https://www.nice.org.uk/guidance/ng25/chapter/recommendations
+
+[ster] ACOG Committee Opinion 713 — corticosteroide antenatal — https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation

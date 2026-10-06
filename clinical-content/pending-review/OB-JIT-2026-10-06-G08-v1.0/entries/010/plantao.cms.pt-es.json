@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Hipotireoidismo — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Plantão",
+      "summary": "Deficiência de hormônio tireoidiano na gravidez, manifesta ou subclínica conforme TSH e tiroxina livre.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Deficiência de hormônio tireoidiano na gravidez, manifesta ou subclínica conforme TSH e tiroxina livre."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Interpretar TSH e tiroxina livre com intervalos específicos do trimestre, população e método.",
+            "Registrar autoimunidade, dose atual, adesão e interações."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Levotiroxina é o tratamento preferido.",
+            "Quem já utiliza pode necessitar aumento precoce de aproximadamente 20–30%, orientado por plano clínico e exames; novos tratamentos exigem cálculo individual."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Não substituir por combinações com triiodotironina ou extratos tireoidianos.",
+            "Conferir administração e interações com suplementos; reavaliar TSH após ajustes."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Seguimento obstétrico/endócrino durante gravidez e pós-parto.",
+            "Alteração de consciência, hipotermia ou instabilidade exige hospital; não manejar como ajuste ambulatorial de rotina."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "A necessidade de tiroxina pode aumentar na gestação; tratar adequadamente reduz risco materno-fetal.",
+            "Não usar referência não gestacional indiscriminadamente."
+          ]
+        }
+      ],
+      "references": [
+        "[thy] RCOG Green-top 76 — tireoide na gravidez, final 2025 — https://obgyn.onlinelibrary.wiley.com/doi/10.1111/1471-0528.18088",
+        "[hypo] American Thyroid Association — hipotireoidismo na gravidez — https://www.thyroid.org/hypothyroidism-in-pregnancy/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Hipotiroidismo — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Guardia",
+      "summary": "Deficiencia de hormona tiroidea durante el embarazo, manifiesta o subclínica según TSH y tiroxina libre.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Deficiencia de hormona tiroidea durante el embarazo, manifiesta o subclínica según TSH y tiroxina libre."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Interpretar TSH y tiroxina libre con intervalos específicos del trimestre, población y método.",
+            "Registrar autoinmunidad, dosis actual, adherencia e interacciones."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La levotiroxina es el tratamiento preferido.",
+            "Quien ya la utiliza puede necesitar aumento temprano de aproximadamente 20–30%, orientado por plan clínico y análisis; los nuevos tratamientos exigen cálculo individual."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "No sustituir por combinaciones con triyodotironina o extractos tiroideos.",
+            "Verificar administración e interacciones con suplementos; reevaluar TSH después de ajustes."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Seguimiento obstétrico/endocrinológico durante embarazo y posparto.",
+            "Alteración de conciencia, hipotermia o inestabilidad exige hospital; no manejar como ajuste ambulatorio rutinario."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La necesidad de tiroxina puede aumentar durante el embarazo; tratar adecuadamente reduce riesgo maternofetal.",
+            "No usar indiscriminadamente referencias no gestacionales."
+          ]
+        }
+      ],
+      "references": [
+        "[thy] RCOG Green-top 76 — tireoide na gravidez, final 2025 — https://obgyn.onlinelibrary.wiley.com/doi/10.1111/1471-0528.18088",
+        "[hypo] American Thyroid Association — hipotireoidismo na gravidez — https://www.thyroid.org/hypothyroidism-in-pregnancy/"
+      ]
+    }
+  }
+}

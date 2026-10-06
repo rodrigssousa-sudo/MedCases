@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "psiqui_ansiedade_generalizada",
+  "titles": {
+    "pt": "Ansiedade generalizada — gestação",
+    "es": "Ansiedad generalizada — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Preocupação excessiva e persistente com prejuízo funcional, distinta de preocupação proporcional à gravidez.",
+      "es": "Preocupación excesiva y persistente con deterioro funcional, distinta de preocupación proporcional al embarazo."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Sintomas somáticos podem sobrepor-se a alterações gestacionais, doença tireoidiana e uso de estimulantes; diagnóstico exige contexto.",
+      "es": "Los síntomas somáticos pueden superponerse a cambios gestacionales, enfermedad tiroidea y uso de estimulantes; el diagnóstico exige contexto."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar preocupações, sono, funcionamento, depressão, bipolaridade, substâncias e risco suicida. Excluir causas clínicas conforme sinais, sem exames indiscriminados.",
+      "es": "Evaluar preocupaciones, sueño, funcionamiento, depresión, bipolaridad, sustancias y riesgo suicida. Excluir causas clínicas según signos, sin análisis indiscriminados."
+    },
+    {
+      "id": "treatment",
+      "pt": "Psicoterapia e medidas de suporte. Medicamento quando indicado por gravidade ou persistência, com decisão compartilhada e revisão de resposta prévia; dose individualizada pela equipe.",
+      "es": "Psicoterapia y medidas de apoyo. Medicamento cuando se indica por gravedad o persistencia, con decisión compartida y revisión de respuesta previa; dosis individualizada por el equipo."
+    },
+    {
+      "id": "safety",
+      "pt": "Benzodiazepínicos não são solução habitual para toda ansiedade perinatal. Não suspender abruptamente fármacos que possam causar abstinência; planejar revisão supervisionada.",
+      "es": "Las benzodiazepinas no son una solución habitual para toda ansiedad perinatal. No suspender bruscamente fármacos que puedan causar abstinencia; planificar revisión supervisada."
+    },
+    {
+      "id": "disposition",
+      "pt": "Crise com risco de autoagressão, psicose ou comprometimento grave exige urgência. Alta com plano de seguimento, apoio e critérios de retorno, evitando visitas repetidas sem manejo longitudinal.",
+      "es": "Una crisis con riesgo de autoagresión, psicosis o compromiso grave exige urgencias. Alta con plan de seguimiento, apoyo y criterios de retorno, evitando consultas repetidas sin manejo longitudinal."
+    }
+  ],
+  "references": [
+    {
+      "id": "psy",
+      "title": "ACOG Clinical Practice Guideline 5 — saúde mental perinatal, 2023",
+      "url": "https://www.acog.org/clinical/clinical-guidance/clinical-practice-guideline/articles/2023/06/treatment-and-management-of-mental-health-conditions-during-pregnancy-and-postpartum",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "psyp",
+      "title": "ACOG — avaliação e tratamento de saúde mental perinatal",
+      "url": "https://www.acog.org/programs/perinatal-mental-health/assessment-and-treatment-of-perinatal-mental-health-conditions",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 44,
+    "owner": "psiqui_ansiedade_generalizada",
+    "title": {
+      "pt": "Ansiedade generalizada — gestação",
+      "es": "Ansiedad generalizada — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "psiqui_ansiedade_generalizada",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "c506680af4430def62bad21c644e7869b1f318ee34abd14d41bfcbe77b686108"
+}

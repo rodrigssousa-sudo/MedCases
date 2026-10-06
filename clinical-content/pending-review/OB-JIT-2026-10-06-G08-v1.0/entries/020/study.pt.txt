@@ -1,0 +1,33 @@
+# Infecção por HIV — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Infecção por HIV na gravidez exige cuidado materno e prevenção coordenada de transmissão vertical.
+
+## Fisiopatologia e raciocínio
+
+Supressão viral é central. Escolha de regime depende de resistência, tratamento prévio, interações e segurança perinatal, não apenas do diagnóstico.
+
+## Diagnóstico, exames e diferenciais
+
+Confirmar diagnóstico e avaliar carga viral, imunidade, função renal/hepática, hepatites e histórico de antirretrovirais. Não atrasar início necessário aguardando todos os resultados.
+
+## Tratamento e doses
+
+Usar regime recomendado pelas diretrizes perinatais NIH 2026, individualizado pela equipe. Em geral, manter tratamento supressivo bem tolerado; não interromper por descoberta da gravidez.
+
+## Segurança e monitorização
+
+Não há dose universal de terapia antirretroviral. Conferir cada produto, interações, resistência e função renal; esquema não supressivo precisa revisão rápida.
+
+## Escalonamento, alta e seguimento
+
+Planejar parto, profilaxia neonatal e alimentação infantil com equipe especializada e política regional. Seguimento de carga viral deve orientar decisões; infecção oportunista ou instabilidade exige hospital.
+
+## Referências
+
+[hiv] NIH — diretrizes perinatais de antirretrovirais, 31 março 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-overview?view=full
+
+[hivc] NIH — tratamento já utilizado na concepção, 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-art-taken-when-pregnancy-occurs?view=full

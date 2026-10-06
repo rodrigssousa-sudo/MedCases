@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Hipertensão gestacional",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Hipertensão nova após 20 semanas, sem critérios atuais de pré-eclâmpsia; pode evoluir para ela.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Hipertensão nova após 20 semanas, sem critérios atuais de pré-eclâmpsia; pode evoluir para ela."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Não é sinônimo de hipertensão crônica nem de eclâmpsia. Ausência de proteinúria não exclui pré-eclâmpsia com disfunção de órgãos."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Confirmar pressão com técnica adequada; investigar sintomas, urina, hemograma, plaquetas, creatinina e enzimas hepáticas conforme quadro, além de bem-estar fetal."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Conforme NICE, tratar pressão persistente ≥140/90 mmHg, com alvo 135/85 mmHg. Labetalol é opção inicial; nifedipino ou metildopa são alternativas conforme contraindicações e tolerância."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pressão sistólica ≥160 mmHg ou diastólica ≥110 mmHg requer atendimento hospitalar imediato e tratamento supervisionado. Não usar inibidores da ECA ou bloqueadores de receptor de angiotensina como rotina na gestação."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Cefaleia persistente, escotomas, dor epigástrica, dispneia ou redução de movimentos fetais impedem alta simples. Programar vigilância e parto de acordo com gravidade e idade gestacional."
+        }
+      ],
+      "references": [
+        "[ht] NICE NG133 — hipertensão na gravidez, atualização 2023 — https://www.nice.org.uk/guidance/ng133/chapter/Recommendations",
+        "[lab] DailyMed — labetalol, prescrição oficial — https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=35e7bce0-d9ff-4f8b-95c5-218da2a2d929"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Hipertensión gestacional",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Hipertensión nueva después de 20 semanas, sin criterios actuales de preeclampsia; puede evolucionar hacia ella.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Hipertensión nueva después de 20 semanas, sin criterios actuales de preeclampsia; puede evolucionar hacia ella."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "No es sinónimo de hipertensión crónica ni de eclampsia. La ausencia de proteinuria no excluye preeclampsia con disfunción de órganos."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Confirmar presión con técnica adecuada; investigar síntomas, orina, hemograma, plaquetas, creatinina y enzimas hepáticas según cuadro, además de bienestar fetal."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Según NICE, tratar presión persistente ≥140/90 mmHg, con objetivo 135/85 mmHg. Labetalol es una opción inicial; nifedipino o metildopa son alternativas según contraindicaciones y tolerancia."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Presión sistólica ≥160 mmHg o diastólica ≥110 mmHg requiere atención hospitalaria inmediata y tratamiento supervisado. No usar inhibidores de la ECA o bloqueantes del receptor de angiotensina como rutina durante el embarazo."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Cefalea persistente, escotomas, dolor epigástrico, disnea o disminución de movimientos fetales impiden un alta simple. Programar vigilancia y parto según gravedad y edad gestacional."
+        }
+      ],
+      "references": [
+        "[ht] NICE NG133 — hipertensão na gravidez, atualização 2023 — https://www.nice.org.uk/guidance/ng133/chapter/Recommendations",
+        "[lab] DailyMed — labetalol, prescrição oficial — https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=35e7bce0-d9ff-4f8b-95c5-218da2a2d929"
+      ]
+    }
+  }
+}

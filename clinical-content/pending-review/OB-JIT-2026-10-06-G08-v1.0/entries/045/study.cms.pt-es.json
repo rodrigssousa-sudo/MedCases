@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Enxaqueca com aura — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Enxaqueca com aura conhecida na grávida; nova manifestação neurológica exige excluir causas secundárias antes de atribuí-la à aura.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Enxaqueca com aura conhecida na grávida; nova manifestação neurológica exige excluir causas secundárias antes de atribuí-la à aura."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "O padrão pode mudar durante a gravidez. Cefaleia nova ou diferente, especialmente com hipertensão, não deve receber diagnóstico automático de enxaqueca."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Verificar pressão, exame neurológico, início súbito, febre, visão e sintomas de pré-eclâmpsia. Déficit focal ou dor explosiva requer investigação urgente."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Hidratação, sono e manejo de desencadeantes. Paracetamol 500 mg–1 g por via oral por dose, intervalo mínimo de 4 horas, no máximo 4 doses e 4 g em 24 horas para adulta sem fatores de risco; usar menor dose eficaz pelo menor tempo."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Baixo peso, hepatopatia, desnutrição ou doença renal podem exigir redução/ajuste. Evitar duplicar produtos com paracetamol; terapias específicas de enxaqueca na gestação exigem avaliação individual."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alta apenas se padrão conhecido, exame adequado e melhora, com retorno por mudança do quadro. Suspeita de pré-eclâmpsia, trombose venosa cerebral, hemorragia ou meningite exige hospital."
+        }
+      ],
+      "references": [
+        "[mig] ACOG — cefaleias e gravidez — https://www.acog.org/womens-health/faqs/headaches-and-pregnancy",
+        "[mign] NHS — cefaleias na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/headaches/",
+        "[para] NHS — paracetamol em adultos e gravidez — https://www.nhs.uk/medicines/paracetamol-for-adults/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Migraña con aura — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Migraña con aura conocida en la embarazada; una nueva manifestación neurológica exige excluir causas secundarias antes de atribuirla al aura.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Migraña con aura conocida en la embarazada; una nueva manifestación neurológica exige excluir causas secundarias antes de atribuirla al aura."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "El patrón puede cambiar durante el embarazo. Una cefalea nueva o diferente, especialmente con hipertensión, no debe diagnosticarse automáticamente como migraña."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Verificar presión, examen neurológico, inicio súbito, fiebre, visión y síntomas de preeclampsia. Déficit focal o dolor explosivo requiere investigación urgente."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Hidratación, sueño y manejo de desencadenantes. Paracetamol 500 mg–1 g por vía oral por dosis, intervalo mínimo de 4 horas, máximo 4 dosis y 4 g en 24 horas para adulta sin factores de riesgo; usar menor dosis eficaz por el menor tiempo."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Bajo peso, hepatopatía, desnutrición o enfermedad renal pueden exigir reducción/ajuste. Evitar duplicar productos con paracetamol; las terapias específicas de migraña durante el embarazo requieren evaluación individual."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alta solamente ante patrón conocido, examen adecuado y mejoría, con retorno ante cambio del cuadro. Sospecha de preeclampsia, trombosis venosa cerebral, hemorragia o meningitis exige hospital."
+        }
+      ],
+      "references": [
+        "[mig] ACOG — cefaleias e gravidez — https://www.acog.org/womens-health/faqs/headaches-and-pregnancy",
+        "[mign] NHS — cefaleias na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/headaches/",
+        "[para] NHS — paracetamol em adultos e gravidez — https://www.nhs.uk/medicines/paracetamol-for-adults/"
+      ]
+    }
+  }
+}

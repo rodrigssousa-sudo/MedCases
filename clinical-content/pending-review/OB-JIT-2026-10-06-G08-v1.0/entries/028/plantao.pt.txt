@@ -1,0 +1,38 @@
+# Pneumonia grave — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Pneumonia grave na grávida com risco respiratório ou sistêmico; preservar o escopo grave deste owner.
+
+## Diagnóstico, exames e diferenciais
+
+- Avaliar saturação, pressão, frequência respiratória, perfusão e consciência.
+- Radiografia indicada não deve ser omitida por gravidez; colher culturas conforme gravidade sem atrasar antibiótico.
+
+## Tratamento e doses
+
+- Exemplo NICE para pneumonia comunitária grave: amoxicilina/clavulanato 1,2 g intravenosos, 3 vezes por dia, mais eritromicina 500 mg por via oral, 4 vezes por dia, quando apropriado à gestante.
+- Rever em 5 dias e adequar duração à estabilidade e agente.
+
+## Segurança e monitorização
+
+- Conferir alergia, função renal, QT e interações; trocar via do macrolídeo se ingestão inviável, sob protocolo hospitalar.
+- Não transpor doxiciclina do esquema não gestacional.
+
+## Escalonamento, alta e seguimento
+
+- Internar, oferecer suporte de oxigênio e avaliação obstétrica.
+- Choque, necessidade crescente de oxigênio ou falência de órgãos exige escalonamento; alta após estabilidade, tolerância oral e seguimento.
+
+## Fisiopatologia e raciocínio
+
+- Comprometimento de troca gasosa pode ameaçar mãe e feto.
+- Critérios clínicos e deterioração prevalecem sobre escore isolado.
+
+## Referências
+
+[pneu] NICE NG250 — pneumonia, final 2025 — https://www.nice.org.uk/guidance/ng250/chapter/Recommendations
+
+[pneud] NICE NG250 — pneumonia comunitária em adultos, tabela atualizada 2026 — https://www.nice.org.uk/guidance/ng250/resources/visual-summary-communityacquired-pneumonia-adults-presenting-to-hospital-pdf-15434376301

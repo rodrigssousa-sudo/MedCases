@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "diabetes_mellitus_tipo1",
+  "titles": {
+    "pt": "Diabetes mellitus tipo 1 — gestação",
+    "es": "Diabetes mellitus tipo 1 — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Diabetes por deficiência de insulina, presente antes ou reconhecido na gestação; gravidez é contexto do mesmo owner.",
+      "es": "Diabetes por deficiencia de insulina, previa o reconocida durante el embarazo; el embarazo es contexto del mismo owner."
+    },
+    {
+      "id": "reasoning",
+      "pt": "A gestação modifica necessidades de insulina; cetoacidose pode ocorrer com glicemia menos elevada que fora da gravidez.",
+      "es": "El embarazo modifica necesidades de insulina; la cetoacidosis puede ocurrir con glucemia menos elevada que fuera del embarazo."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Revisar glicemias, episódios de hipoglicemia, função renal, retina e comorbidades. Vômitos, dor abdominal, taquipneia ou doença intercorrente exigem avaliar cetonas e acidose.",
+      "es": "Revisar glucemias, episodios de hipoglucemia, función renal, retina y comorbilidades. Vómitos, dolor abdominal, taquipnea o enfermedad intercurrente exigen evaluar cetonas y acidosis."
+    },
+    {
+      "id": "treatment",
+      "pt": "Insulina é indispensável; nunca suspender basal por jejum ou vômitos sem substituição supervisionada. Ajustar basal e prandial com equipe experiente; monitorização contínua pode apoiar decisões.",
+      "es": "La insulina es indispensable; nunca suspender basal por ayuno o vómitos sin sustitución supervisada. Ajustar basal y prandial con un equipo experimentado; el monitoreo continuo puede apoyar decisiones."
+    },
+    {
+      "id": "safety",
+      "pt": "Evitar metas que provoquem hipoglicemia recorrente. Conferir concentração do produto, unidades prescritas e dispositivo; não converter unidades de insulina em volume sem concentração explícita. Metas ADA, se alcançáveis sem hipoglicemia: jejum abaixo de 95 mg/dL; após refeição, abaixo de 140 mg/dL em 1 hora ou 120 mg/dL em 2 horas; individualizar.",
+      "es": "Evitar metas que provoquen hipoglucemia recurrente. Verificar concentración del producto, unidades prescritas y dispositivo; no convertir unidades de insulina en volumen sin concentración explícita. Metas ADA, si se alcanzan sin hipoglucemia: ayuno inferior a 95 mg/dL; después de comer, inferior a 140 mg/dL a 1 hora o 120 mg/dL a 2 horas; individualizar."
+    },
+    {
+      "id": "disposition",
+      "pt": "Cetoacidose é emergência hospitalar materno-fetal. Planejar parto e redução de necessidades após saída da placenta, com reavaliação estreita e seguimento durante lactação.",
+      "es": "La cetoacidosis es una emergencia hospitalaria maternofetal. Planificar parto y reducción de necesidades tras la salida de la placenta, con reevaluación estrecha y seguimiento durante lactancia."
+    }
+  ],
+  "references": [
+    {
+      "id": "dm",
+      "title": "ADA — Management of Diabetes in Pregnancy, Standards 2026",
+      "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S321/163918/15-Management-of-Diabetes-in-Pregnancy-Standards",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "dmn",
+      "title": "NIDDK — diabetes e gravidez",
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/diabetes-pregnancy",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    },
+    {
+      "id": "dmuk",
+      "title": "NICE NG3 — diabetes e gravidez",
+      "url": "https://www.nice.org.uk/guidance/NG3/chapter/recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "dmvis",
+      "title": "ADA — monitorização da glicose na gravidez, apoio aos critérios vigentes",
+      "url": "https://diabetes.org/sites/default/files/2024-10/Glucose-Monitoring-During-Pregnancy-patient-FINAL.pdf",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 5,
+    "owner": "diabetes_mellitus_tipo1",
+    "title": {
+      "pt": "Diabetes mellitus tipo 1 — gestação",
+      "es": "Diabetes mellitus tipo 1 — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "diabetes_mellitus_tipo1",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "2e179f224be2be914f478b08094db43804b7ceadd4e10481a1ce22a13683de95"
+}

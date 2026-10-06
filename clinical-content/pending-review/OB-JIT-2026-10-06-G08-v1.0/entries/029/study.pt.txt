@@ -1,0 +1,31 @@
+# Refluxo gastroesofágico — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Pirose e regurgitação durante a gravidez, sem sinais de alarme, podem representar refluxo gastroesofágico.
+
+## Fisiopatologia e raciocínio
+
+Relaxamento do esfíncter e mudanças mecânicas favorecem refluxo. Dor epigástrica intensa não deve ser automaticamente atribuída à azia.
+
+## Diagnóstico, exames e diferenciais
+
+Avaliar padrão pós-prandial, posição, disfagia, perda de peso, hematêmese e medicamentos. Dor torácica ou epigástrica com hipertensão exige diferencial cardiovascular ou pré-eclâmpsia.
+
+## Tratamento e doses
+
+Orientar refeições menores, evitar deitar logo após comer e reconhecer alimentos desencadeantes. NICE recomenda considerar antiácido ou alginato apropriado à gravidez; dose depende da formulação.
+
+## Segurança e monitorização
+
+Conferir sódio, composição e interações com suplementos; não inventar dose em mL sem concentração. Persistência exige revisão e escolha individual de supressão ácida.
+
+## Escalonamento, alta e seguimento
+
+Seguimento ambulatorial se típico e estável. Disfagia progressiva, sangramento, vômitos persistentes ou instabilidade exigem investigação; alta com orientações e retorno por sinais de alarme.
+
+## Referências
+
+[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations

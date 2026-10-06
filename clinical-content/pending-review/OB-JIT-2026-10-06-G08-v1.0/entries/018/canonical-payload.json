@@ -1,0 +1,80 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "tricomoniase",
+  "titles": {
+    "pt": "Tricomoníase — gestação",
+    "es": "Tricomoniasis — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Infecção por Trichomonas vaginalis, com sintomas vaginais ou detecção em teste; é sexualmente transmissível.",
+      "es": "Infección por Trichomonas vaginalis, con síntomas vaginales o detección mediante prueba; es de transmisión sexual."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Infecção e reinfecção dependem de exposição e tratamento de parceiros; microscopia negativa não exclui doença quando teste molecular está indicado.",
+      "es": "La infección y reinfección dependen de exposición y tratamiento de parejas; microscopía negativa no excluye enfermedad cuando está indicada una prueba molecular."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Confirmar por teste apropriado e pesquisar outras infecções sexualmente transmissíveis. Avaliar sintomas obstétricos concomitantes.",
+      "es": "Confirmar mediante prueba apropiada y buscar otras infecciones de transmisión sexual. Evaluar síntomas obstétricos concomitantes."
+    },
+    {
+      "id": "treatment",
+      "pt": "Gestantes sintomáticas devem ser tratadas, em qualquer trimestre. Metronidazol 500 mg por via oral, 2 vezes por dia, durante 7 dias, conforme CDC.",
+      "es": "Las embarazadas sintomáticas deben tratarse en cualquier trimestre. Metronidazol 500 mg por vía oral, 2 veces por día, durante 7 días, según CDC."
+    },
+    {
+      "id": "safety",
+      "pt": "Evitar tinidazol na gestação. Tratar parceiros e evitar relações até ambos concluírem tratamento e sintomas resolverem; revisar adesão antes de presumir resistência.",
+      "es": "Evitar tinidazol durante el embarazo. Tratar parejas y evitar relaciones hasta que ambos completen tratamiento y desaparezcan síntomas; revisar adherencia antes de presumir resistencia."
+    },
+    {
+      "id": "disposition",
+      "pt": "Repetir teste em aproximadamente 3 meses para mulheres sexualmente ativas. Dor pélvica, febre ou perda de líquido requerem avaliação obstétrica independente.",
+      "es": "Repetir prueba aproximadamente a los 3 meses para mujeres sexualmente activas. Dolor pélvico, fiebre o pérdida de líquido requieren evaluación obstétrica independiente."
+    }
+  ],
+  "references": [
+    {
+      "id": "trich",
+      "title": "CDC — tricomoníase, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 18,
+    "owner": "tricomoniase",
+    "title": {
+      "pt": "Tricomoníase — gestação",
+      "es": "Tricomoniasis — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "tricomoniase",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "4e7f52e1c907b04332a5d4ed6717cfede30a0183616264b7b10d043736dc22df"
+}

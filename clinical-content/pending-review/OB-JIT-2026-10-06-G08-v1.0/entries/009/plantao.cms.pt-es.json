@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Pré-eclâmpsia",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Plantão",
+      "summary": "Doença hipertensiva após 20 semanas com proteinúria ou disfunção materna/uteroplacentária; proteinúria não é obrigatória.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Doença hipertensiva após 20 semanas com proteinúria ou disfunção materna/uteroplacentária; proteinúria não é obrigatória."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Avaliar pressão, cefaleia, visão, dor epigástrica, dispneia, plaquetas, creatinina, transaminases e proteinúria, com avaliação fetal.",
+            "Não esperar todos os exames para tratar instabilidade."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Hipertensão grave requer anti-hipertensivo supervisionado e planejamento obstétrico.",
+            "Se indicado magnésio para doença grave: sulfato de magnésio 4 g intravenosos em 5–15 minutos, depois 1 g por hora durante 24 horas, conforme NICE e situação clínica."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Magnésio não substitui controle pressórico.",
+            "Monitorar respiração, reflexos e diurese; disfunção renal exige ajuste e vigilância.",
+            "Diluição depende da concentração disponível e protocolo institucional."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Convulsão, edema pulmonar, deterioração laboratorial ou comprometimento fetal exigem internação e escalonamento.",
+            "Decisão de parto deve equilibrar estabilidade e prematuridade, sem adiar resolução de emergência."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Disfunção placentária e endotelial pode comprometer múltiplos órgãos.",
+            "Eclâmpsia e HELLP são complicações relacionadas, não aliases que autorizem fundir owners."
+          ]
+        }
+      ],
+      "references": [
+        "[ht] NICE NG133 — hipertensão na gravidez, atualização 2023 — https://www.nice.org.uk/guidance/ng133/chapter/Recommendations",
+        "[mg] NICE NG133 — cuidado crítico em hipertensão e pré-eclâmpsia — https://www.nice.org.uk/guidance/ng133/resources/criteria-for-choice-of-critical-care-level-hypertension-preeclampsia-and-eclampsia-pdf-8720711396"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Preeclampsia",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Guardia",
+      "summary": "Enfermedad hipertensiva después de 20 semanas con proteinuria o disfunción materna/uteroplacentaria; la proteinuria no es obligatoria.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Enfermedad hipertensiva después de 20 semanas con proteinuria o disfunción materna/uteroplacentaria; la proteinuria no es obligatoria."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Evaluar presión, cefalea, visión, dolor epigástrico, disnea, plaquetas, creatinina, transaminasas y proteinuria, con evaluación fetal.",
+            "No esperar todos los análisis para tratar inestabilidad."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La hipertensión grave requiere antihipertensivo supervisado y planificación obstétrica.",
+            "Si se indica magnesio para enfermedad grave: sulfato de magnesio 4 g intravenosos en 5–15 minutos, después 1 g por hora durante 24 horas, según NICE y situación clínica."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "El magnesio no sustituye el control de presión.",
+            "Vigilar respiración, reflejos y diuresis; disfunción renal exige ajuste y vigilancia.",
+            "La dilución depende de la concentración disponible y del protocolo institucional."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Convulsión, edema pulmonar, deterioro de laboratorio o compromiso fetal exigen internación y escalamiento.",
+            "La decisión del parto debe equilibrar estabilidad y prematuridad, sin demorar la resolución de una emergencia."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La disfunción placentaria y endotelial puede afectar múltiples órganos.",
+            "Eclampsia y HELLP son complicaciones relacionadas, no alias que autoricen fusionar owners."
+          ]
+        }
+      ],
+      "references": [
+        "[ht] NICE NG133 — hipertensão na gravidez, atualização 2023 — https://www.nice.org.uk/guidance/ng133/chapter/Recommendations",
+        "[mg] NICE NG133 — cuidado crítico em hipertensão e pré-eclâmpsia — https://www.nice.org.uk/guidance/ng133/resources/criteria-for-choice-of-critical-care-level-hypertension-preeclampsia-and-eclampsia-pdf-8720711396"
+      ]
+    }
+  }
+}

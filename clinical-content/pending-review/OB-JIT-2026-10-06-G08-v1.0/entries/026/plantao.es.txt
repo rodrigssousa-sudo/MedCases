@@ -1,0 +1,37 @@
+# COVID-19 — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- COVID-19 durante el embarazo exige evaluar riesgo de progresión y ventana de tratamiento; el embarazo no justifica negar terapia eficaz.
+
+## Diagnóstico, estudios y diferenciales
+
+- Confirmar infección mediante prueba apropiada; verificar oxigenación, función renal/hepática y lista completa de medicamentos antes del antiviral.
+
+## Tratamiento y dosis
+
+- Para adulta elegible con tasa de filtración glomerular estimada ≥60 mL por minuto, nirmatrelvir 300 mg más ritonavir 100 mg, juntos por vía oral, 2 veces por día durante 5 días, iniciados hasta 5 días después del inicio de síntomas.
+
+## Seguridad y monitoreo
+
+- Las interacciones por CYP3A pueden impedir este esquema.
+- La insuficiencia renal requiere esquema específico de la ficha actual; no afirmar contraindicación absoluta en toda enfermedad renal grave.
+- Evitar uso en insuficiencia hepática grave y no usar molnupiravir como alternativa habitual en el embarazo.
+
+## Escalamiento, alta y seguimiento
+
+- Hipoxemia, dolor torácico, confusión o empeoramiento requieren hospital y evaluación obstétrica.
+- Alta solamente con estabilidad y plan de reevaluación, sin corticoide sistémico rutinario para enfermedad sin necesidad de oxígeno.
+
+## Fisiopatología y razonamiento
+
+- El embarazo aumenta el riesgo de enfermedad grave.
+- Considerar comorbilidades, vacunación, síntomas y disponibilidad regional de antivirales.
+
+## Referencias
+
+[cov] CDC — COVID-19 e populações especiais — https://www.cdc.gov/covid/hcp/clinical-care/considerations-special-groups.html
+
+[pax] FDA — nirmatrelvir/ritonavir, bula revisada 2025 — https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/217188s010lbl.pdf

@@ -1,0 +1,89 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "sindrome_tunel_carpo",
+  "titles": {
+    "pt": "Síndrome do túnel do carpo — gestação",
+    "es": "Síndrome del túnel carpiano — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Compressão do nervo mediano no punho com parestesia, especialmente em polegar, indicador e dedo médio.",
+      "es": "Compresión del nervio mediano en la muñeca con parestesia, especialmente en pulgar, índice y dedo medio."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Retenção de líquido da gestação pode contribuir; é distinta de neuropatia ulnar do túnel cubital.",
+      "es": "La retención de líquido del embarazo puede contribuir; es distinta de neuropatía cubital en el codo."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar distribuição, sintomas noturnos, força e atrofia; quadro atípico exige diferenciar radiculopatia e outras neuropatias.",
+      "es": "Evaluar distribución, síntomas nocturnos, fuerza y atrofia; un cuadro atípico exige diferenciar radiculopatía y otras neuropatías."
+    },
+    {
+      "id": "treatment",
+      "pt": "Tala de punho em posição neutra, especialmente à noite; adaptar atividades repetitivas e evitar compressão. Fisioterapia/terapia da mão conforme necessidade.",
+      "es": "Férula de muñeca en posición neutra, especialmente de noche; adaptar actividades repetitivas y evitar compresión. Fisioterapia/terapia de mano según necesidad."
+    },
+    {
+      "id": "safety",
+      "pt": "Não iniciar automaticamente corticosteroide sistêmico ou anti-inflamatório. Infiltração ou cirurgia exige avaliação especializada e balanço clínico, sobretudo se déficit persistente.",
+      "es": "No iniciar automáticamente corticoide sistémico o antiinflamatorio. Infiltración o cirugía exige evaluación especializada y balance clínico, especialmente ante déficit persistente."
+    },
+    {
+      "id": "disposition",
+      "pt": "Muitos casos melhoram após a gestação; isso não justifica ignorar fraqueza progressiva ou atrofia. Alta com orientações e retorno por perda funcional; seguimento se persistir após parto.",
+      "es": "Muchos casos mejoran después del embarazo; esto no justifica ignorar debilidad progresiva o atrofia. Alta con orientaciones y retorno por pérdida funcional; seguimiento si persiste después del parto."
+    }
+  ],
+  "references": [
+    {
+      "id": "carp",
+      "title": "NHS South Tees — túnel do carpo na gravidez",
+      "url": "https://www.southtees.nhs.uk/resources/carpel-tunnel-syndrome-cts-in-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    },
+    {
+      "id": "carpn",
+      "title": "NHS — síndrome do túnel do carpo",
+      "url": "https://www.nhs.uk/conditions/carpal-tunnel-syndrome/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 39,
+    "owner": "sindrome_tunel_carpo",
+    "title": {
+      "pt": "Síndrome do túnel do carpo — gestação",
+      "es": "Síndrome del túnel carpiano — embarazo"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "sindrome_tunel_carpo",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [
+      "sindrome_tunel_cubital_neuropatia_ulnar"
+    ],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "25f05ded333cac24b8dc54ede5debce7867f3067f82c94745899caf9fffd583a"
+}

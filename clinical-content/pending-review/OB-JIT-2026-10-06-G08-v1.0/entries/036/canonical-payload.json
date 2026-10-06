@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.0",
+  "ownerId": "colica_nefretica",
+  "titles": {
+    "pt": "Cólica renal — gestação",
+    "es": "Cólico renal — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Dor por cálculo urinário na gravidez; diferenciar de dilatação fisiológica e obstrução infectada.",
+      "es": "Dolor por cálculo urinario durante el embarazo; diferenciar de dilatación fisiológica y obstrucción infectada."
+    },
+    {
+      "id": "reasoning",
+      "pt": "A hidronefrose gestacional pode dificultar interpretação. Infecção associada a obstrução é emergência urológica.",
+      "es": "La hidronefrosis gestacional puede dificultar interpretación. La infección asociada a obstrucción es una emergencia urológica."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar dor, temperatura, urina/cultura, função renal e diurese. EAU: ultrassom primeiro, ressonância como segunda opção e tomografia de baixa dose como último recurso quando necessária.",
+      "es": "Evaluar dolor, temperatura, orina/cultivo, función renal y diuresis. EAU: ecografía primero, resonancia como segunda opción y tomografía de baja dosis como último recurso cuando sea necesaria."
+    },
+    {
+      "id": "treatment",
+      "pt": "Manejo conservador se sem complicações, com analgesia apropriada e hidratação conforme necessidade, sem forçar líquidos. Obstrução infectada exige antibiótico e drenagem urgente.",
+      "es": "Manejo conservador si no hay complicaciones, con analgesia apropiada e hidratación según necesidad, sin forzar líquidos. La obstrucción infectada exige antibiótico y drenaje urgente."
+    },
+    {
+      "id": "safety",
+      "pt": "Litotripsia extracorpórea é contraindicada na gravidez. Não iniciar terapia expulsiva de rotina sem evidência e orientação específica para gestantes.",
+      "es": "La litotricia extracorpórea está contraindicada durante el embarazo. No iniciar terapia expulsiva rutinaria sin evidencia y orientación específica para embarazadas."
+    },
+    {
+      "id": "disposition",
+      "pt": "Internar por sepse, dor/vômitos refratários, deterioração renal ou complicação obstétrica. Alta somente se estável, com controle da dor, seguimento urológico e retorno por febre ou oligúria.",
+      "es": "Internar ante sepsis, dolor/vómitos refractarios, deterioro renal o complicación obstétrica. Alta solamente si está estable, con control del dolor, seguimiento urológico y retorno por fiebre u oliguria."
+    }
+  ],
+  "references": [
+    {
+      "id": "stone",
+      "title": "EAU — urolitíase, final 2026",
+      "url": "https://uroweb.org/guidelines/urolithiasis/chapter/guidelines",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "pain",
+      "title": "NHS SPS — tratamento da dor na gravidez",
+      "url": "https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 36,
+    "owner": "colica_nefretica",
+    "title": {
+      "pt": "Cólica renal — gestação",
+      "es": "Cólico renal — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "colica_nefretica",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "cebf4ce66e5b09c6a16fc96790d1c2eaabff80228634c79af7fd10a32fcd8161"
+}

@@ -1,0 +1,169 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Infecção por HIV — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Plantão",
+      "summary": "Infecção por HIV na gravidez exige cuidado materno e prevenção coordenada de transmissão vertical.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infecção por HIV na gravidez exige cuidado materno e prevenção coordenada de transmissão vertical."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Confirmar diagnóstico e avaliar carga viral, imunidade, função renal/hepática, hepatites e histórico de antirretrovirais.",
+            "Não atrasar início necessário aguardando todos os resultados."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Usar regime recomendado pelas diretrizes perinatais NIH 2026, individualizado pela equipe.",
+            "Em geral, manter tratamento supressivo bem tolerado; não interromper por descoberta da gravidez."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Não há dose universal de terapia antirretroviral.",
+            "Conferir cada produto, interações, resistência e função renal; esquema não supressivo precisa revisão rápida."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Planejar parto, profilaxia neonatal e alimentação infantil com equipe especializada e política regional.",
+            "Seguimento de carga viral deve orientar decisões; infecção oportunista ou instabilidade exige hospital."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Supressão viral é central.",
+            "Escolha de regime depende de resistência, tratamento prévio, interações e segurança perinatal, não apenas do diagnóstico."
+          ]
+        }
+      ],
+      "references": [
+        "[hiv] NIH — diretrizes perinatais de antirretrovirais, 31 março 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-overview?view=full",
+        "[hivc] NIH — tratamento já utilizado na concepção, 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-art-taken-when-pregnancy-occurs?view=full"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Infección por VIH — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Guardia",
+      "summary": "La infección por VIH durante el embarazo exige cuidado materno y prevención coordinada de transmisión vertical.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La infección por VIH durante el embarazo exige cuidado materno y prevención coordinada de transmisión vertical."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Confirmar diagnóstico y evaluar carga viral, inmunidad, función renal/hepática, hepatitis e historia de antirretrovirales.",
+            "No demorar un inicio necesario esperando todos los resultados."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Usar un régimen recomendado por las guías perinatales NIH 2026, individualizado por el equipo.",
+            "En general, mantener tratamiento supresivo bien tolerado; no interrumpir por descubrir el embarazo."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "No existe dosis universal de terapia antirretroviral.",
+            "Verificar cada producto, interacciones, resistencia y función renal; un esquema no supresivo necesita revisión rápida."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Planificar parto, profilaxis neonatal y alimentación infantil con equipo especializado y política regional.",
+            "El seguimiento de carga viral debe orientar decisiones; infección oportunista o inestabilidad requieren hospital."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La supresión viral es central.",
+            "La elección del régimen depende de resistencia, tratamiento previo, interacciones y seguridad perinatal, no solamente del diagnóstico."
+          ]
+        }
+      ],
+      "references": [
+        "[hiv] NIH — diretrizes perinatais de antirretrovirais, 31 março 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-overview?view=full",
+        "[hivc] NIH — tratamento já utilizado na concepção, 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-art-taken-when-pregnancy-occurs?view=full"
+      ]
+    }
+  }
+}

@@ -1,0 +1,33 @@
+# Sífilis — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Infecção materna por Treponema pallidum com risco de transmissão fetal; tratamento depende do estágio.
+
+## Fisiopatologia e raciocínio
+
+Penicilina é o único tratamento comprovado para prevenção de sífilis congênita. História vaga de tratamento não substitui documentação.
+
+## Diagnóstico, exames e diferenciais
+
+Combinar teste treponêmico e não treponêmico quantitativo, estágio clínico, tratamentos prévios e risco de reinfecção. Avaliar HIV e parceiros.
+
+## Tratamento e doses
+
+Sífilis precoce: penicilina G benzatina 2,4 milhões de unidades por via intramuscular, dose única; CDC admite segunda dose após 1 semana na gravidez. Latente tardia ou duração desconhecida: mesma dose, 1 vez por semana, durante 3 semanas.
+
+## Segurança e monitorização
+
+Intervalo maior que 9 dias no esquema semanal da gestante exige reiniciar série completa. Alergia requer dessensibilização e penicilina; neurossífilis necessita esquema distinto.
+
+## Escalonamento, alta e seguimento
+
+Documentar doses e títulos, com seguimento obstétrico. Febre, contrações ou redução de movimentos após tratamento exigem avaliação; reação de Jarisch–Herxheimer não justifica atrasar terapia necessária.
+
+## Referências
+
+[syph] CDC — sífilis na gravidez, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/syphilis-pregnancy.htm
+
+[syphl] CDC — sífilis latente — https://www.cdc.gov/std/treatment-guidelines/latent-syphilis.htm

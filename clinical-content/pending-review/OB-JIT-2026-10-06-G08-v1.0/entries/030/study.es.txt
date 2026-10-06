@@ -1,0 +1,33 @@
+# Constipación funcional — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Evacuaciones difíciles o infrecuentes sin causa orgánica identificada, en el contexto del embarazo.
+
+## Fisiopatología y razonamiento
+
+Pueden contribuir motilidad reducida, dieta, menor actividad y suplementos de hierro. No confundir con obstrucción o fecaloma complicado.
+
+## Diagnóstico, estudios y diferenciales
+
+Revisar patrón previo, heces, dolor, distensión, medicamentos y eliminación de gases. Sangrado persistente, adelgazamiento, vómitos u obstipación completa requieren investigación.
+
+## Tratamiento y dosis
+
+Aumentar fibra gradualmente, líquidos y movimiento adecuado. Si es necesario, laxante formador de bolo; lactulosa o macrogol son opciones osmóticas durante el embarazo, con dosis según presentación y respuesta.
+
+## Seguridad y monitoreo
+
+Puede considerarse uso breve de estimulante tras fracaso de medidas iniciales. Evitar escalamiento indiscriminado y suspender automanejo ante sospecha de obstrucción.
+
+## Escalamiento, alta y seguimiento
+
+Alta con plan de hábitos y revisión de fármacos constipantes, sin suspender hierro necesario sin alternativa. Persistencia o signos de alarma requieren reevaluación.
+
+## Referencias
+
+[const] NHS SPS — constipação na gestação — https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/
+
+[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations

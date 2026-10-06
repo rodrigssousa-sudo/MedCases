@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Tricomoníase — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudo",
+      "summary": "Infecção por Trichomonas vaginalis, com sintomas vaginais ou detecção em teste; é sexualmente transmissível.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Infecção por Trichomonas vaginalis, com sintomas vaginais ou detecção em teste; é sexualmente transmissível."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Infecção e reinfecção dependem de exposição e tratamento de parceiros; microscopia negativa não exclui doença quando teste molecular está indicado."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Confirmar por teste apropriado e pesquisar outras infecções sexualmente transmissíveis. Avaliar sintomas obstétricos concomitantes."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Gestantes sintomáticas devem ser tratadas, em qualquer trimestre. Metronidazol 500 mg por via oral, 2 vezes por dia, durante 7 dias, conforme CDC."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evitar tinidazol na gestação. Tratar parceiros e evitar relações até ambos concluírem tratamento e sintomas resolverem; revisar adesão antes de presumir resistência."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Repetir teste em aproximadamente 3 meses para mulheres sexualmente ativas. Dor pélvica, febre ou perda de líquido requerem avaliação obstétrica independente."
+        }
+      ],
+      "references": [
+        "[trich] CDC — tricomoníase, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Tricomoniasis — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.0 · Estudio",
+      "summary": "Infección por Trichomonas vaginalis, con síntomas vaginales o detección mediante prueba; es de transmisión sexual.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Infección por Trichomonas vaginalis, con síntomas vaginales o detección mediante prueba; es de transmisión sexual."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La infección y reinfección dependen de exposición y tratamiento de parejas; microscopía negativa no excluye enfermedad cuando está indicada una prueba molecular."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Confirmar mediante prueba apropiada y buscar otras infecciones de transmisión sexual. Evaluar síntomas obstétricos concomitantes."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Las embarazadas sintomáticas deben tratarse en cualquier trimestre. Metronidazol 500 mg por vía oral, 2 veces por día, durante 7 días, según CDC."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evitar tinidazol durante el embarazo. Tratar parejas y evitar relaciones hasta que ambos completen tratamiento y desaparezcan síntomas; revisar adherencia antes de presumir resistencia."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Repetir prueba aproximadamente a los 3 meses para mujeres sexualmente activas. Dolor pélvico, fiebre o pérdida de líquido requieren evaluación obstétrica independiente."
+        }
+      ],
+      "references": [
+        "[trich] CDC — tricomoníase, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm"
+      ]
+    }
+  }
+}
