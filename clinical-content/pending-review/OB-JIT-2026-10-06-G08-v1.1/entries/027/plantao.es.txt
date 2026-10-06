@@ -1,0 +1,43 @@
+# Crisis grave de asma — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Exacerbación grave de asma en la embarazada; preservar el owner de gravedad, sin transformarlo en asma leve.
+
+## Diagnóstico, estudios y diferenciales
+
+- Evaluar habla, esfuerzo respiratorio, conciencia, auscultación, saturación y flujo espiratorio cuando sea posible, sin demorar tratamiento.
+- Excluir embolia, neumonía y edema pulmonar.
+
+## Tratamiento y dosis
+
+- Vía de crisis — tratar rápidamente exacerbación con salbutamol inhalatorio, oxígeno cuando sea necesario y corticoide sistémico temprano; en adulto con vía oral viable, prednisolona 40–50 mg por día durante 5–7 días.
+- La dosis del broncodilatador depende de dispositivo, concentración y gravedad: confirmar prescripción y técnica; no convertir gotas en disparos.
+- Crisis grave exige hospital, dosis repetidas guiadas por respuesta y consideración de ipratropio/adyuvantes y ventilación.
+- Vía de control — mantener tratamiento que contenga corticoide inhalatorio y revisar adherencia/técnica, exposición y plan de acción.
+- Especialista puede optimizar combinación y tratamiento adicional según fenotipo y seguridad gestacional.
+- Esta vía no sustituye rescate de crisis; no suspender controlador por embarazo.
+- Falta de respuesta, agotamiento o caída de oxigenación exige escalamiento inmediato, no cambio ambulatorio por una segunda medicación.
+
+## Seguridad y monitoreo
+
+- No demorar terapia necesaria por embarazo.
+- Vigilar respuesta, frecuencia cardíaca, potasio en uso intensivo y bienestar fetal; mantener tratamiento que contenga corticoide inhalado.
+
+## Escalamiento, alta y seguimiento
+
+- Agotamiento, tórax silencioso, alteración de conciencia o hipoxemia persistente requieren terapia intensiva.
+- La crisis grave requiere hospital; salida solamente tras respuesta sostenida y plan de controlador, técnica y retorno.
+
+## Fisiopatología y razonamiento
+
+- La broncoconstricción e inflamación perjudican oxigenación materna y fetal.
+- Suspender controlador por temor a medicamentos aumenta el riesgo.
+
+## Referencias
+
+[asth] GINA — estratégia global, final 2026 — https://ginasthma.org/wp-content/uploads/2026/05/GINA-2026-Strategy-Report-WMS.pdf
+
+[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/

@@ -1,0 +1,40 @@
+# Anemia ferropriva — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Deficiência de ferro com anemia na gestação; interpretar hemoglobina por trimestre.
+
+## Fisiopatologia e raciocínio
+
+Expansão plasmática causa hemodiluição; não explica automaticamente anemia patológica. A demanda de ferro cresce e perdas ou dieta insuficiente podem esgotar reservas.
+
+## Diagnóstico, exames e diferenciais
+
+OMS 2024: hemoglobina abaixo de 11 g/dL no primeiro e terceiro trimestres, ou 10,5 g/dL no segundo. Solicitar hemograma e ferritina; considerar inflamação, hemoglobinopatia e outras deficiências.
+
+## Tratamento e doses
+
+Opção 1 — ferro oral: pelo esquema terapêutico OMS, 120 mg de ferro ELEMENTAR por dia mais ácido fólico 400 microgramas por dia, até normalizar hemoglobina; depois retornar à suplementação preventiva. Não confundir massa do sal de ferro com ferro elementar. Conferir concentração no produto, tolerância, adesão e resposta do hemograma.
+Opção 2 — ferro intravenoso, geralmente após o primeiro trimestre, se intolerância persistente, má absorção, ausência de resposta adequada ou necessidade de reposição mais rápida: calcular déficit e dose pela formulação específica em serviço habilitado. As formulações não compartilham a mesma dose máxima/velocidade; não prescrever volume sem produto e concentração. Transfusão é outra conduta para hemorragia, instabilidade ou anemia grave sintomática, não substituto rotineiro do ferro.
+
+## Segurança e monitorização
+
+Conferir ferro elemental, não a massa total do sal. Avaliar tolerância e resposta; ferro intravenoso depende do produto, trimestre e cálculo individual, não de uma dose universal.
+
+## Escalonamento, alta e seguimento
+
+Dispneia em repouso, síncope, instabilidade ou anemia muito sintomática exigem avaliação urgente. Falta de resposta requer revisar adesão, absorção, perdas e diagnóstico.
+
+## Referências
+
+[hb] OMS — pontos de corte de hemoglobina, final 2024 — https://www.who.int/publications-detail-redirect/9789240088542
+
+[fe] OMS — suplementação diária de ferro na gestação — https://www.who.int/tools/elena/interventions/daily-iron-pregnancy
+
+[fet] OMS — recomendações de cuidado pré-natal, 2016 — https://iris.who.int/bitstream/10665/250796/1/9789241549912-eng.pdf
+
+[feacog] ACOG — anemia na gravidez, Practice Bulletin 233 — https://www.acog.org/clinical/clinical-guidance/practice-bulletin/articles/2021/08/anemia-in-pregnancy
+
+[febsh] British Society for Haematology — deficiência de ferro na gravidez — https://b-s-h.org.uk/guidelines/guidelines/uk-guidelines-on-the-management-of-iron-deficiency-in-pregnancy

@@ -1,0 +1,42 @@
+# Cistite aguda — complemento gestacional do cadastro existente
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Infecção urinária baixa com disúria, urgência ou polaciúria, sem sinais de infecção renal.
+
+## Diagnóstico, exames e diferenciais
+
+- Colher urocultura antes do antibiótico, sem atrasar tratamento de quadro convincente.
+- Avaliar febre, dor em flanco e sinais de sepse para excluir pielonefrite.
+
+## Tratamento e doses
+
+- Opção 1 — nitrofurantoína de liberação modificada 100 mg por via oral a cada 12 horas durante 7 dias, se cultura/sensibilidade e função renal permitirem; NICE exige filtração estimada ≥45 mL por minuto.
+- Evitar no termo e na deficiência de G6PD.
+- Opção 2 — cefalexina 500 mg por via oral a cada 12 horas durante 7 dias, conforme sensibilidade e alergias.
+- Amoxicilina 500 mg oral a cada 8 horas durante 7 dias é alternativa SOMENTE com microrganismo sensível.
+- Ajustar à função renal e ao antibiograma.
+- Não usar esses esquemas de infecção baixa para febre com dor lombar/pielonefrite; colher cultura e reavaliar resposta.
+- Não repetir empiricamente o mesmo antibiótico se persistência.
+
+## Segurança e monitorização
+
+- Revisar alergias e função renal.
+- Não usar agentes de infecção baixa para tratar infecção renal; nitrofurantoína e fosfomicina não substituem tratamento de pielonefrite.
+
+## Escalonamento, alta e seguimento
+
+- Reavaliar se ausência de melhora ou piora; pode-se considerar cultura de controle 1–2 semanas após tratamento.
+- Alta com retorno imediato por febre, dor lombar, contrações ou intolerância oral.
+
+## Fisiopatologia e raciocínio
+
+- Sintomas podem se sobrepor a alterações fisiológicas e vaginite; gravidez exige confirmação microbiológica e tratamento oportuno.
+
+## Referências
+
+[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals
+
+[cyst] NICE NG109 — antibióticos para infecção urinária baixa — https://www.nice.org.uk/guidance/NG109/chapter/recommendations

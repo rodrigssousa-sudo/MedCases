@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "tricomoniase",
+  "titles": {
+    "pt": "Tricomoníase — gestação",
+    "es": "Tricomoniasis — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "NO_ROUTINE_EQUIVALENT_SECOND_DRUG",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Infecção por Trichomonas vaginalis, com sintomas vaginais ou detecção em teste; é sexualmente transmissível.",
+      "es": "Infección por Trichomonas vaginalis, con síntomas vaginales o detección mediante prueba; es de transmisión sexual."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Infecção e reinfecção dependem de exposição e tratamento de parceiros; microscopia negativa não exclui doença quando teste molecular está indicado.",
+      "es": "La infección y reinfección dependen de exposición y tratamiento de parejas; microscopía negativa no excluye enfermedad cuando está indicada una prueba molecular."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Confirmar por teste apropriado e pesquisar outras infecções sexualmente transmissíveis. Avaliar sintomas obstétricos concomitantes.",
+      "es": "Confirmar mediante prueba apropiada y buscar otras infecciones de transmisión sexual. Evaluar síntomas obstétricos concomitantes."
+    },
+    {
+      "id": "treatment",
+      "pt": "Tratamento preferido — metronidazol 500 mg por via oral a cada 12 horas durante 7 dias; tratar parceria sexual, evitar relações até todos completarem tratamento e sintomas resolverem, e programar novo teste em aproximadamente 3 meses.\nConduta para falha/intolerância — confirmar adesão, reinfecção e diagnóstico antes de repetir ou aumentar doses. Alergia verdadeira a nitroimidazólicos exige avaliação especializada para dessensibilização; resistência exige esquema orientado por especialista. Não oferecer tinidazol como alternativa de rotina na gestação, nem gel vaginal de metronidazol como substituto eficaz. Não há uma segunda opção gestacional rotineira equivalente ao esquema preferido.",
+      "es": "Tratamiento preferido — metronidazol 500 mg por vía oral cada 12 horas durante 7 días; tratar pareja sexual, evitar relaciones hasta que todos completen tratamiento y se resuelvan síntomas, y programar nueva prueba aproximadamente a los 3 meses.\nConducta ante falla/intolerancia — confirmar adherencia, reinfección y diagnóstico antes de repetir o aumentar dosis. Alergia verdadera a nitroimidazoles exige evaluación especializada para desensibilización; resistencia exige esquema guiado por especialista. No ofrecer tinidazol como alternativa rutinaria en embarazo, ni gel vaginal de metronidazol como sustituto eficaz. No existe una segunda opción gestacional rutinaria equivalente al esquema preferido."
+    },
+    {
+      "id": "safety",
+      "pt": "Evitar tinidazol na gestação. Tratar parceiros e evitar relações até ambos concluírem tratamento e sintomas resolverem; revisar adesão antes de presumir resistência.",
+      "es": "Evitar tinidazol durante el embarazo. Tratar parejas y evitar relaciones hasta que ambos completen tratamiento y desaparezcan síntomas; revisar adherencia antes de presumir resistencia."
+    },
+    {
+      "id": "disposition",
+      "pt": "Repetir teste em aproximadamente 3 meses para mulheres sexualmente ativas. Dor pélvica, febre ou perda de líquido requerem avaliação obstétrica independente.",
+      "es": "Repetir prueba aproximadamente a los 3 meses para mujeres sexualmente activas. Dolor pélvico, fiebre o pérdida de líquido requieren evaluación obstétrica independiente."
+    }
+  ],
+  "references": [
+    {
+      "id": "trich",
+      "title": "CDC — tricomoníase, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 18,
+    "owner": "tricomoniase",
+    "title": {
+      "pt": "Tricomoníase — gestação",
+      "es": "Tricomoniasis — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "tricomoniase",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "25106ca05a2d59386781f3ef02eae1ea303eed2075dfb44e4190f45e81b457ea"
+}

@@ -1,0 +1,139 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Diabetes mellitus tipo 1 — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "Diabetes por deficiência de insulina, presente antes ou reconhecido na gestação; gravidez é contexto do mesmo owner.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Diabetes por deficiência de insulina, presente antes ou reconhecido na gestação; gravidez é contexto do mesmo owner."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "A gestação modifica necessidades de insulina; cetoacidose pode ocorrer com glicemia menos elevada que fora da gravidez."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Revisar glicemias, episódios de hipoglicemia, função renal, retina e comorbidades. Vômitos, dor abdominal, taquipneia ou doença intercorrente exigem avaliar cetonas e acidose."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opção 1 — insulina subcutânea em múltiplas injeções, com componente basal e prandial, monitorização contínua ou capilar e ajuste frequente por alimentação, trimestre e hipoglicemias.\nOpção 2 — bomba de infusão contínua de insulina em equipe treinada, com plano de contingência para falha do dispositivo e avaliação do sistema apropriado à gestação. Ambas exigem insulina; metformina e dieta não substituem insulina no diabetes tipo 1. Não suspender a basal quando houver vômitos; verificar glicose e cetonas, procurar urgência diante de suspeita de cetoacidose, que pode ocorrer com glicemia menos elevada na gestação. Doses são individualizadas, não uma tabela fixa por trimestre."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evitar metas que provoquem hipoglicemia recorrente. Conferir concentração do produto, unidades prescritas e dispositivo; não converter unidades de insulina em volume sem concentração explícita. Metas ADA, se alcançáveis sem hipoglicemia: jejum abaixo de 95 mg/dL; após refeição, abaixo de 140 mg/dL em 1 hora ou 120 mg/dL em 2 horas; individualizar."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Cetoacidose é emergência hospitalar materno-fetal. Planejar parto e redução de necessidades após saída da placenta, com reavaliação estreita e seguimento durante lactação."
+        }
+      ],
+      "references": [
+        "[dm] ADA — Management of Diabetes in Pregnancy, Standards 2026 — https://diabetesjournals.org/care/article/49/Supplement_1/S321/163918/15-Management-of-Diabetes-in-Pregnancy-Standards",
+        "[dmn] NIDDK — diabetes e gravidez — https://www.niddk.nih.gov/health-information/diabetes/diabetes-pregnancy",
+        "[dmuk] NICE NG3 — diabetes e gravidez — https://www.nice.org.uk/guidance/NG3/chapter/recommendations",
+        "[dmvis] ADA — monitorização da glicose na gravidez, apoio aos critérios vigentes — https://diabetes.org/sites/default/files/2024-10/Glucose-Monitoring-During-Pregnancy-patient-FINAL.pdf"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Diabetes mellitus tipo 1 — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "Diabetes por deficiencia de insulina, previa o reconocida durante el embarazo; el embarazo es contexto del mismo owner.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Diabetes por deficiencia de insulina, previa o reconocida durante el embarazo; el embarazo es contexto del mismo owner."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "El embarazo modifica necesidades de insulina; la cetoacidosis puede ocurrir con glucemia menos elevada que fuera del embarazo."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Revisar glucemias, episodios de hipoglucemia, función renal, retina y comorbilidades. Vómitos, dolor abdominal, taquipnea o enfermedad intercurrente exigen evaluar cetonas y acidosis."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opción 1 — insulina subcutánea en múltiples inyecciones, con componente basal y prandial, monitoreo continuo o capilar y ajustes frecuentes por alimentación, trimestre e hipoglucemias.\nOpción 2 — bomba de infusión continua de insulina con equipo entrenado, plan de contingencia ante falla del dispositivo y evaluación del sistema apropiado al embarazo. Ambas requieren insulina; metformina y dieta no sustituyen insulina en diabetes tipo 1. No suspender la basal cuando existan vómitos; verificar glucosa y cetonas, buscar urgencias ante sospecha de cetoacidosis, que puede ocurrir con glucemia menos elevada en embarazo. Las dosis son individualizadas, no una tabla fija por trimestre."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evitar metas que provoquen hipoglucemia recurrente. Verificar concentración del producto, unidades prescritas y dispositivo; no convertir unidades de insulina en volumen sin concentración explícita. Metas ADA, si se alcanzan sin hipoglucemia: ayuno inferior a 95 mg/dL; después de comer, inferior a 140 mg/dL a 1 hora o 120 mg/dL a 2 horas; individualizar."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La cetoacidosis es una emergencia hospitalaria maternofetal. Planificar parto y reducción de necesidades tras la salida de la placenta, con reevaluación estrecha y seguimiento durante lactancia."
+        }
+      ],
+      "references": [
+        "[dm] ADA — Management of Diabetes in Pregnancy, Standards 2026 — https://diabetesjournals.org/care/article/49/Supplement_1/S321/163918/15-Management-of-Diabetes-in-Pregnancy-Standards",
+        "[dmn] NIDDK — diabetes e gravidez — https://www.niddk.nih.gov/health-information/diabetes/diabetes-pregnancy",
+        "[dmuk] NICE NG3 — diabetes e gravidez — https://www.nice.org.uk/guidance/NG3/chapter/recommendations",
+        "[dmvis] ADA — monitorização da glicose na gravidez, apoio aos critérios vigentes — https://diabetes.org/sites/default/files/2024-10/Glucose-Monitoring-During-Pregnancy-patient-FINAL.pdf"
+      ]
+    }
+  }
+}

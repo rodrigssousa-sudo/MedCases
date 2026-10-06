@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Fissura anal — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "Lesão do canal anal com dor ao evacuar e possível sangramento vermelho vivo; não é sinônimo de hemorroida.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Lesão do canal anal com dor ao evacuar e possível sangramento vermelho vivo; não é sinônimo de hemorroida."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Trauma por fezes duras e espasmo local perpetuam dor. Fissuras atípicas ou múltiplas podem apontar outra doença."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Inspeção delicada e avaliação de constipação, abscesso, doença inflamatória e infecção. Não forçar exame doloroso desnecessário."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Via 1 — amolecer fezes com alimentação/hidratação e laxativo gestacional apropriado se necessário; banho morno, evitar esforço e analgesia compatível.\nVia 2 — se fissura persistente, muito dolorosa ou atípica, encaminhar para avaliação coloproctológica e seleção individual de tratamento local/procedimento. Nitroglicerina e diltiazem tópicos de protocolos gerais não devem ser copiados como opções gestacionais automaticamente. Confirmar que sangramento é anal e excluir abscesso/doença inflamatória. Esta segunda via é escalonamento, não prescrição de um segundo fármaco sem evidência de segurança."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Não transpor automaticamente nitratos, diltiazem ou procedimentos do protocolo não gestacional. Evitar anti-inflamatório por automedicação e investigar infecção se febre."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Reavaliar se não melhora ou se sangramento persiste. Dor contínua intensa, febre, tumoração ou instabilidade exigem urgência; cronicidade pede avaliação coloproctológica."
+        }
+      ],
+      "references": [
+        "[fiss] NHS — fissura anal — https://www.nhs.uk/conditions/anal-fissure/",
+        "[const] NHS SPS — constipação na gestação — https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Fisura anal — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "Lesión del canal anal con dolor al defecar y posible sangrado rojo; no es sinónimo de hemorroides.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Lesión del canal anal con dolor al defecar y posible sangrado rojo; no es sinónimo de hemorroides."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "El traumatismo por heces duras y espasmo local perpetúan dolor. Fisuras atípicas o múltiples pueden indicar otra enfermedad."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Inspección delicada y evaluación de constipación, absceso, enfermedad inflamatoria e infección. No forzar un examen doloroso innecesario."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Vía 1 — ablandar heces con alimentación/hidratación y laxante gestacional apropiado si es necesario; baño tibio, evitar esfuerzo y analgesia compatible.\nVía 2 — ante fisura persistente, muy dolorosa o atípica, derivar para evaluación coloproctológica y selección individual de tratamiento local/procedimiento. Nitroglicerina y diltiazem tópicos de protocolos generales no deben copiarse como opciones gestacionales automáticamente. Confirmar que sangrado es anal y excluir absceso/enfermedad inflamatoria. Esta segunda vía es escalamiento, no prescripción de un segundo fármaco sin evidencia de seguridad."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "No trasladar automáticamente nitratos, diltiazem o procedimientos del protocolo no gestacional. Evitar antiinflamatorios por automedicación e investigar infección ante fiebre."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Reevaluar si no mejora o persiste sangrado. Dolor continuo intenso, fiebre, tumoración o inestabilidad requieren urgencias; la cronicidad exige evaluación coloproctológica."
+        }
+      ],
+      "references": [
+        "[fiss] NHS — fissura anal — https://www.nhs.uk/conditions/anal-fissure/",
+        "[const] NHS SPS — constipação na gestação — https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    }
+  }
+}

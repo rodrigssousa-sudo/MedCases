@@ -1,0 +1,44 @@
+# Hipertensión gestacional
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Hipertensión nueva después de 20 semanas, sin criterios actuales de preeclampsia; puede evolucionar hacia ella.
+
+## Diagnóstico, estudios y diferenciales
+
+- Confirmar presión con técnica adecuada; investigar síntomas, orina, hemograma, plaquetas, creatinina y enzimas hepáticas según cuadro, además de bienestar fetal.
+
+## Tratamiento y dosis
+
+- Opción 1 — labetalol oral para mantenimiento, si es apropiado; evitar en asma con broncoespasmo, bradicardia o bloqueo cardíaco.
+- Ejemplo del protocolo obstétrico NHS North West 2026: iniciar 100–200 mg, 3 veces por día, titular según presión y tolerancia.
+- Opción 2 — nifedipino de liberación modificada si labetalol es inadecuado: iniciar 10–20 mg por vía oral, 2 veces por día, en el mismo protocolo; confirmar formulación, pues las presentaciones tienen duraciones diferentes.
+- No usar por vía sublingual.
+- Individualizar titulación, vigilar cefalea, hipotensión y frecuencia cardíaca; metildopa es tercera alternativa si ambos son inadecuados.
+- Son esquemas de mantenimiento, no el algoritmo de emergencia.
+- Presión sistólica ≥160 o diastólica ≥110 mmHg exige evaluación hospitalaria urgente y tratamiento de acción apropiada, sin esperar efecto del mantenimiento; objetivo de mantenimiento NICE 135/85 mmHg.
+
+## Seguridad y monitoreo
+
+- Presión sistólica ≥160 mmHg o diastólica ≥110 mmHg requiere atención hospitalaria inmediata y tratamiento supervisado.
+- No usar inhibidores de la ECA o bloqueantes del receptor de angiotensina como rutina durante el embarazo.
+
+## Escalamiento, alta y seguimiento
+
+- Cefalea persistente, escotomas, dolor epigástrico, disnea o disminución de movimientos fetales impiden un alta simple.
+- Programar vigilancia y parto según gravedad y edad gestacional.
+
+## Fisiopatología y razonamiento
+
+- No es sinónimo de hipertensión crónica ni de eclampsia.
+- La ausencia de proteinuria no excluye preeclampsia con disfunción de órganos.
+
+## Referencias
+
+[ht] NICE NG133 — hipertensão na gravidez, atualização 2023 — https://www.nice.org.uk/guidance/ng133/chapter/Recommendations
+
+[lab] DailyMed — labetalol, prescrição oficial — https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=35e7bce0-d9ff-4f8b-95c5-218da2a2d929
+
+[htnw] NHS England North West — hipertensão gestacional, FINAL abril 2026 — https://www.england.nhs.uk/north-west/wp-content/uploads/sites/48/2026/04/NW-Management-of-Gestational-Hypertension-V1-FINAL.pdf

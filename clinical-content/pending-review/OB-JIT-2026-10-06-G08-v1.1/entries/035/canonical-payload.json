@@ -1,0 +1,95 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "colecistite_aguda",
+  "titles": {
+    "pt": "Colecistite aguda — gestação",
+    "es": "Colecistitis aguda — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "DEFINITIVE_SURGERY_AND_BRIDGE_ONLY",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Inflamação aguda da vesícula, geralmente por obstrução calculosa, com dor persistente e sinais inflamatórios.",
+      "es": "Inflamación aguda de vesícula, generalmente por obstrucción calculosa, con dolor persistente y signos inflamatorios."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Não é cólica simples. Atraso no tratamento pode favorecer necrose, perfuração e sepse materna.",
+      "es": "No es un cólico simple. La demora del tratamiento puede favorecer necrosis, perforación y sepsis materna."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Ultrassom inicial e laboratório dirigido; avaliar febre, defesa, icterícia, perfusão e causas obstétricas de dor abdominal.",
+      "es": "Ecografía inicial y laboratorio dirigido; evaluar fiebre, defensa, ictericia, perfusión y causas obstétricas de dolor abdominal."
+    },
+    {
+      "id": "treatment",
+      "pt": "Tratamento preferido — avaliação hospitalar, hidratação, analgesia e antibiótico apropriado à gestação conforme gravidade, alergias e flora local, associados a colecistectomia laparoscópica quando indicada; SAGES favorece cirurgia sobre tratamento não operatório na colecistite aguda.\nConduta alternativa temporária — se impossibilidade cirúrgica imediata ou risco excepcional, tratamento hospitalar não operatório e eventual drenagem decidida pela equipe, com plano de controle definitivo. Não é alternativa equivalente de rotina, pois persistem riscos de recorrência e complicação. Não adiar cirurgia necessária apenas pelo trimestre; dose/intervalo do antibiótico devem corresponder ao protocolo escolhido, não à lista de fármacos de infecção urinária.",
+      "es": "Tratamiento preferido — evaluación hospitalaria, hidratación, analgesia y antibiótico apropiado al embarazo según gravedad, alergias y flora local, asociados a colecistectomía laparoscópica cuando esté indicada; SAGES favorece cirugía sobre tratamiento no operatorio en colecistitis aguda.\nConducta alternativa temporal — ante imposibilidad quirúrgica inmediata o riesgo excepcional, tratamiento hospitalario no operatorio y eventual drenaje decidido por el equipo, con plan de control definitivo. No es alternativa equivalente rutinaria, pues persisten riesgos de recurrencia y complicación. No demorar cirugía necesaria solamente por trimestre; dosis/intervalo del antibiótico deben corresponder al protocolo elegido, no a la lista de fármacos de infección urinaria."
+    },
+    {
+      "id": "safety",
+      "pt": "Esquema antibiótico depende de gravidade, resistência, alergias e função renal; não há dose universal neste suplemento. Coordenar obstetrícia, cirurgia e anestesia.",
+      "es": "El esquema antibiótico depende de gravedad, resistencia, alergias y función renal; no existe dosis universal en este suplemento. Coordinar obstetricia, cirugía y anestesia."
+    },
+    {
+      "id": "disposition",
+      "pt": "Sepse ou peritonite exige escalonamento e controle do foco. Alta após tratamento e estabilidade, com avaliação obstétrica e seguimento pós-operatório quando aplicável.",
+      "es": "Sepsis o peritonitis exige escalamiento y control del foco. Alta después de tratamiento y estabilidad, con evaluación obstétrica y seguimiento posoperatorio cuando corresponda."
+    }
+  ],
+  "references": [
+    {
+      "id": "surg",
+      "title": "SAGES — laparoscopia na gravidez, final 2024",
+      "url": "https://www.sages.org/publications/guidelines/guidelines-for-the-use-of-laparoscopy-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "pain",
+      "title": "NHS SPS — tratamento da dor na gravidez",
+      "url": "https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 35,
+    "owner": "colecistite_aguda",
+    "title": {
+      "pt": "Colecistite aguda — gestação",
+      "es": "Colecistitis aguda — embarazo"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "colecistite_aguda",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [
+      "colelitiase_colica_biliar",
+      "coledocolitiase"
+    ],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "05bb5723289091c3be72c973fe7f58dd9909f78dfe7eea4f2e00620c97f69d5c"
+}

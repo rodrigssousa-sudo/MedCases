@@ -1,0 +1,36 @@
+# Hepatite B crônica — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Infecção crônica pelo vírus da hepatite B na grávida; é distinta do owner de hepatite B aguda.
+
+## Fisiopatologia e raciocínio
+
+A carga viral materna condiciona risco de transmissão; profilaxia perinatal não substitui avaliação da doença hepática materna.
+
+## Diagnóstico, exames e diferenciais
+
+Avaliar HBsAg, carga viral, antígeno e, transaminases, função renal e indicação de tratamento materno. Distinguir infecção aguda, crônica e reativação.
+
+## Tratamento e doses
+
+Opção 1 — tenofovir disoproxil fumarato 300 mg por via oral 1 vez por dia para prevenção de transmissão em alta carga viral, com avaliação renal.
+Opção 2 — tenofovir alafenamida 25 mg por via oral 1 vez por dia é alternativa na recomendação SMFM 69; considerar evidência, disponibilidade e indicação individual. SMFM indica início entre 28–32 semanas quando carga viral >200.000 unidades internacionais/mL; OMS privilegia tenofovir disoproxil e estratégia com início preferencial no segundo trimestre. Documentar a diretriz adotada, sem misturar critérios. Não iniciar automaticamente em toda portadora. Antiviral não substitui vacina e imunoglobulina do recém-nascido dentro de 12 horas; planejar término e vigilância de exacerbação hepática após suspensão.
+
+## Segurança e monitorização
+
+Ajustar à função renal e planejar vigilância após eventual suspensão. Recém-nascido exposto deve receber vacina e imunoglobulina específica dentro de 12 horas, conforme SMFM.
+
+## Escalonamento, alta e seguimento
+
+Coordenar hepatologia, obstetrícia e pediatria. Não indicar cesariana apenas por hepatite B; aleitamento pode ocorrer com imunoprofilaxia neonatal apropriada. Icterícia grave, coagulopatia ou encefalopatia exigem hospital.
+
+## Referências
+
+[hbv] OMS — hepatite B crônica, prevenção da transmissão materna, 2024 — https://www.ncbi.nlm.nih.gov/books/NBK615006/
+
+[hbvs] SMFM Consult 69 — hepatite B na gravidez, 2024 — https://pubmed.ncbi.nlm.nih.gov/38141870/
+
+[hbvsmfm] SMFM Consult 69 — opções de tenofovir na gravidez — https://publications.smfm.org/publications/553-society-for-maternal-fetal-medicine-consult-series-69/

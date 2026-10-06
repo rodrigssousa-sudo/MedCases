@@ -1,0 +1,32 @@
+# Infecção por Chlamydia trachomatis — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Infecção genital por clamídia, frequentemente assintomática, com repercussão materna e neonatal.
+
+## Fisiopatologia e raciocínio
+
+Persistência e reinfecção precisam ser distinguidas; tratamento materno e de parceiros interrompe a cadeia de transmissão.
+
+## Diagnóstico, exames e diferenciais
+
+Teste molecular conforme risco e rastreamento local. Dor pélvica e febre exigem investigar doença complicada, não apenas cervicite.
+
+## Tratamento e doses
+
+Opção 1 — azitromicina 1 g por via oral em dose única, preferida pelo CDC na gestação.
+Opção 2 — amoxicilina 500 mg por via oral a cada 8 horas durante 7 dias, alternativa quando apropriada, não equivalente em todas as situações. Não usar doxiciclina como esquema gestacional padrão. Tratar parceria sexual e orientar abstinência até conclusão do esquema/período indicado e tratamento da parceria. Teste de cura aproximadamente 4 semanas depois; novo teste em 3 meses e repetição no terceiro trimestre se risco.
+
+## Segurança e monitorização
+
+Revisar alergias e interações. Orientar parceiros e abstinência durante 7 dias após dose única, e até tratamento dos parceiros; sintomas persistentes exigem reavaliação.
+
+## Escalonamento, alta e seguimento
+
+Teste de cura molecular aproximadamente 4 semanas após tratamento na gestante; repetir detecção em 3 meses. Registrar resultado e plano obstétrico/neonatal.
+
+## Referências
+
+[chlam] CDC — clamídia, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm

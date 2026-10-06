@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Tricomoníase — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Infecção por Trichomonas vaginalis, com sintomas vaginais ou detecção em teste; é sexualmente transmissível.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infecção por Trichomonas vaginalis, com sintomas vaginais ou detecção em teste; é sexualmente transmissível."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Confirmar por teste apropriado e pesquisar outras infecções sexualmente transmissíveis.",
+            "Avaliar sintomas obstétricos concomitantes."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Tratamento preferido — metronidazol 500 mg por via oral a cada 12 horas durante 7 dias; tratar parceria sexual, evitar relações até todos completarem tratamento e sintomas resolverem, e programar novo teste em aproximadamente 3 meses.",
+            "Conduta para falha/intolerância — confirmar adesão, reinfecção e diagnóstico antes de repetir ou aumentar doses.",
+            "Alergia verdadeira a nitroimidazólicos exige avaliação especializada para dessensibilização; resistência exige esquema orientado por especialista.",
+            "Não oferecer tinidazol como alternativa de rotina na gestação, nem gel vaginal de metronidazol como substituto eficaz.",
+            "Não há uma segunda opção gestacional rotineira equivalente ao esquema preferido."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Evitar tinidazol na gestação.",
+            "Tratar parceiros e evitar relações até ambos concluírem tratamento e sintomas resolverem; revisar adesão antes de presumir resistência."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Repetir teste em aproximadamente 3 meses para mulheres sexualmente ativas.",
+            "Dor pélvica, febre ou perda de líquido requerem avaliação obstétrica independente."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infecção e reinfecção dependem de exposição e tratamento de parceiros; microscopia negativa não exclui doença quando teste molecular está indicado."
+          ]
+        }
+      ],
+      "references": [
+        "[trich] CDC — tricomoníase, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Tricomoniasis — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "Infección por Trichomonas vaginalis, con síntomas vaginales o detección mediante prueba; es de transmisión sexual.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infección por Trichomonas vaginalis, con síntomas vaginales o detección mediante prueba; es de transmisión sexual."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Confirmar mediante prueba apropiada y buscar otras infecciones de transmisión sexual.",
+            "Evaluar síntomas obstétricos concomitantes."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Tratamiento preferido — metronidazol 500 mg por vía oral cada 12 horas durante 7 días; tratar pareja sexual, evitar relaciones hasta que todos completen tratamiento y se resuelvan síntomas, y programar nueva prueba aproximadamente a los 3 meses.",
+            "Conducta ante falla/intolerancia — confirmar adherencia, reinfección y diagnóstico antes de repetir o aumentar dosis.",
+            "Alergia verdadera a nitroimidazoles exige evaluación especializada para desensibilización; resistencia exige esquema guiado por especialista.",
+            "No ofrecer tinidazol como alternativa rutinaria en embarazo, ni gel vaginal de metronidazol como sustituto eficaz.",
+            "No existe una segunda opción gestacional rutinaria equivalente al esquema preferido."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Evitar tinidazol durante el embarazo.",
+            "Tratar parejas y evitar relaciones hasta que ambos completen tratamiento y desaparezcan síntomas; revisar adherencia antes de presumir resistencia."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Repetir prueba aproximadamente a los 3 meses para mujeres sexualmente activas.",
+            "Dolor pélvico, fiebre o pérdida de líquido requieren evaluación obstétrica independiente."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La infección y reinfección dependen de exposición y tratamiento de parejas; microscopía negativa no excluye enfermedad cuando está indicada una prueba molecular."
+          ]
+        }
+      ],
+      "references": [
+        "[trich] CDC — tricomoníase, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm"
+      ]
+    }
+  }
+}

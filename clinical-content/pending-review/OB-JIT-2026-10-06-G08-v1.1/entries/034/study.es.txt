@@ -1,0 +1,34 @@
+# Colelitiasis/cólico biliar — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Dolor biliar por cálculos, sin evidencia de colecistitis, colangitis o pancreatitis; estos diagnósticos cambian la urgencia.
+
+## Fisiopatología y razonamiento
+
+La estasis y composición biliar del embarazo favorecen cálculos; la recurrencia puede causar complicaciones.
+
+## Diagnóstico, estudios y diferenciales
+
+Evaluar dolor en hipocondrio derecho, duración, fiebre e ictericia; ecografía como examen inicial. El laboratorio dirigido ayuda a excluir inflamación, obstrucción y pancreatitis.
+
+## Tratamiento y dosis
+
+Opción 1 — episodio de cólico biliar sin inflamación/obstrucción: hidratación, analgesia compatible, ajuste alimentario y reevaluación; no indicar antibiótico para cólico aislado.
+Opción 2 — colecistectomía laparoscópica cuando esté indicada tras evaluación quirúrgica/obstétrica, especialmente enfermedad recurrente o complicada. En tercer trimestre, cólico no complicado puede permitir decisión individual entre manejo conservador y cirugía; esto no se aplica automáticamente a colecistitis. Fiebre, ictericia o dolor persistente exige excluir colecistitis, colangitis y pancreatitis.
+
+## Seguridad y monitoreo
+
+No indicar cirugía inmediata para todo cólico, ni demorar intervención necesaria solamente por trimestre. Elegir analgesia sin copiar antiinflamatorios rutinarios del contexto no gestacional.
+
+## Escalamiento, alta y seguimiento
+
+Alta solamente tras mejoría, tolerancia oral y exclusión de complicación, con retorno y seguimiento quirúrgico. Fiebre, ictericia, dolor persistente o inestabilidad requieren hospital.
+
+## Referencias
+
+[surg] SAGES — laparoscopia na gravidez, final 2024 — https://www.sages.org/publications/guidelines/guidelines-for-the-use-of-laparoscopy-during-pregnancy/
+
+[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/

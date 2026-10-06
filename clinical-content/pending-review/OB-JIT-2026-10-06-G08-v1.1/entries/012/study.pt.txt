@@ -1,0 +1,34 @@
+# Obesidade — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Obesidade preexistente é fator de risco obstétrico; a gravidez não cria um novo owner para essa doença.
+
+## Fisiopatologia e raciocínio
+
+Maior adiposidade se associa a resistência à insulina, hipertensão e dificuldades de avaliação, anestesia e parto. Manejo deve ser respeitoso e individualizado.
+
+## Diagnóstico, exames e diferenciais
+
+Registrar peso pré-gestacional quando disponível, evolução, pressão, alimentação e risco metabólico. Rastrear diabetes conforme protocolo e avaliar necessidades de seguimento especializado.
+
+## Tratamento e doses
+
+Via 1 — plano nutricional com profissional, adequação da qualidade alimentar e acompanhamento de ganho ponderal, sem prescrever emagrecimento intencional durante a gravidez.
+Via 2 — atividade física adaptada e permitida pela obstetrícia, com abordagem das barreiras de mobilidade, sono e apoio psicossocial; complementar o plano alimentar, não substituir cuidado pré-natal. Rastrear diabetes/hipertensão e individualizar risco trombótico. Fármacos para perda de peso e cirurgia bariátrica não são opções de tratamento da obesidade iniciadas na gestação.
+
+## Segurança e monitorização
+
+Medicamentos para emagrecimento não são tratamento habitual de grávidas; revisar exposição a agonistas de GLP-1 e outros fármacos com a equipe. Não prometer ausência de risco fetal.
+
+## Escalonamento, alta e seguimento
+
+Seguimento de ganho ponderal, pressão e metabolismo. Planejar parto e cuidados pós-parto conforme risco, sem impor cesariana apenas por obesidade.
+
+## Referências
+
+[ob] NICE NG247 — nutrição materna, 2025 — https://www.nice.org.uk/guidance/NG247/chapter/rationale-and-impact
+
+[obdrug] NICE NG246 — medicamentos para controle de peso — https://www.nice.org.uk/guidance/ng246/chapter/Medicines-and-surgery

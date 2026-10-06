@@ -1,0 +1,38 @@
+# Diabetes gestacional
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Hiperglicemia diagnosticada durante a gestação que não satisfaz critérios de diabetes manifesto prévio.
+
+## Fisiopatologia e raciocínio
+
+Resistência à insulina aumenta com hormônios placentários; hiperglicemia materna favorece crescimento fetal excessivo e hipoglicemia neonatal.
+
+## Diagnóstico, exames e diferenciais
+
+Na estratégia de etapa única, teste com 75 g de glicose entre 24–28 semanas: jejum ≥92 mg/dL, após 1 hora ≥180 mg/dL ou após 2 horas ≥153 mg/dL; 1 valor alterado diagnostica. Não misturar critérios de outra estratégia.
+
+## Tratamento e doses
+
+Opção 1 — alimentação individualizada, atividade física permitida pela obstetrícia e automonitorização; se metas não forem atingidas, insulina subcutânea é o fármaco preferido pela ADA. Escolher basal e/ou prandial segundo o padrão glicêmico e titular com equipe; não existe dose única segura para todas as gestantes.
+Opção 2 — metformina pode ser considerada conforme NICE após 1–2 semanas sem atingir metas com alimentação/atividade, ou como adjuvante à insulina, após discutir passagem placentária e incertezas de longo prazo. A ADA não a recomenda como primeira linha na gestação: documentar qual diretriz está sendo adotada. Contraindicação, intolerância ou controle insuficiente exigem insulina. Não retardar insulina diante de hiperglicemia importante ou complicações.
+
+## Segurança e monitorização
+
+Metformina atravessa a placenta; NICE permite seu uso em contextos definidos, enquanto ADA não a recomenda como primeira opção. Escolher protocolo explicitamente, sem combinar recomendações incompatíveis. Metas ADA, se alcançáveis sem hipoglicemia: jejum abaixo de 95 mg/dL; após refeição, abaixo de 140 mg/dL em 1 hora ou 120 mg/dL em 2 horas; individualizar.
+
+## Escalonamento, alta e seguimento
+
+Seguimento obstétrico/endócrino e plano pós-parto. ADA recomenda teste com 75 g entre 4–12 semanas após o parto e vigilância metabólica posterior; hipoglicemia ou suspeita de cetoacidose exige urgência.
+
+## Referências
+
+[dmd] ADA — Diagnosis and Classification, Standards 2026 — https://diabetesjournals.org/care/article/49/Supplement_1/S27/163926/2-Diagnosis-and-Classification-of-Diabetes
+
+[dm] ADA — Management of Diabetes in Pregnancy, Standards 2026 — https://diabetesjournals.org/care/article/49/Supplement_1/S321/163918/15-Management-of-Diabetes-in-Pregnancy-Standards
+
+[dmuk] NICE NG3 — diabetes e gravidez — https://www.nice.org.uk/guidance/NG3/chapter/recommendations
+
+[dmvis] ADA — monitorização da glicose na gravidez, apoio aos critérios vigentes — https://diabetes.org/sites/default/files/2024-10/Glucose-Monitoring-During-Pregnancy-patient-FINAL.pdf

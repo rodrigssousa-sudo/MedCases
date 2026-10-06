@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "bacteriuria_assintomatica",
+  "titles": {
+    "pt": "Bacteriúria assintomática — gestação",
+    "es": "Bacteriuria asintomática — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "CULTURE_DIRECTED_ALTERNATIVES",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Urocultura com bacteriúria significativa, sem sintomas urinários; na gravidez é indicação de tratamento dirigido.",
+      "es": "Urocultivo con bacteriuria significativa, sin síntomas urinarios; durante el embarazo indica tratamiento dirigido."
+    },
+    {
+      "id": "reasoning",
+      "pt": "A estase urinária da gestação aumenta risco de progressão para pielonefrite. Não confundir cultura contaminada com infecção verdadeira.",
+      "es": "La estasis urinaria del embarazo aumenta el riesgo de progresión a pielonefritis. No confundir cultivo contaminado con infección verdadera."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Rastrear com urocultura no início do pré-natal. ACOG utiliza ≥100.000 unidades formadoras de colônia por mL; considerar espécie, coleta e contaminação.",
+      "es": "Detectar con urocultivo al inicio del control prenatal. ACOG utiliza ≥100.000 unidades formadoras de colonias por mL; considerar especie, recolección y contaminación."
+    },
+    {
+      "id": "treatment",
+      "pt": "Opção 1 — nitrofurantoína de liberação modificada 100 mg por via oral a cada 12 horas durante 7 dias, se cultura/sensibilidade e função renal permitirem; NICE exige filtração estimada ≥45 mL por minuto. Evitar no termo e na deficiência de G6PD.\nOpção 2 — cefalexina 500 mg por via oral a cada 12 horas durante 7 dias, conforme sensibilidade e alergias. Amoxicilina 500 mg oral a cada 8 horas durante 7 dias é alternativa SOMENTE com microrganismo sensível. Ajustar à função renal e ao antibiograma. Não usar esses esquemas de infecção baixa para febre com dor lombar/pielonefrite; colher cultura e reavaliar resposta. Não repetir empiricamente o mesmo antibiótico se persistência.",
+      "es": "Opción 1 — nitrofurantoína de liberación modificada 100 mg por vía oral cada 12 horas durante 7 días, si cultivo/sensibilidad y función renal lo permiten; NICE exige filtración estimada ≥45 mL por minuto. Evitar al término y en deficiencia de G6PD.\nOpción 2 — cefalexina 500 mg por vía oral cada 12 horas durante 7 días, según sensibilidad y alergias. Amoxicilina 500 mg oral cada 8 horas durante 7 días es alternativa SOLAMENTE con microorganismo sensible. Ajustar a función renal y antibiograma. No usar estos esquemas de infección baja ante fiebre con dolor lumbar/pielonefritis; obtener cultivo y reevaluar respuesta. No repetir empíricamente el mismo antibiótico ante persistencia."
+    },
+    {
+      "id": "safety",
+      "pt": "Não extrapolar esse esquema para pielonefrite. Nitrofurantoína requer atenção a função renal, deficiência de G6PD e proximidade do termo; escolha não depende apenas de antibiograma.",
+      "es": "No extrapolar este esquema a pielonefritis. La nitrofurantoína requiere atención a función renal, déficit de G6PD y proximidad del término; la elección no depende solamente del antibiograma."
+    },
+    {
+      "id": "disposition",
+      "pt": "Pode ser tratada ambulatorialmente se realmente assintomática e estável. Febre, dor lombar ou vômitos mudam a classificação e exigem avaliação imediata. Seguimento da cultura conforme protocolo obstétrico.",
+      "es": "Puede tratarse ambulatoriamente si es realmente asintomática y estable. Fiebre, dolor lumbar o vómitos cambian la clasificación y requieren evaluación inmediata. Seguimiento del cultivo según protocolo obstétrico."
+    }
+  ],
+  "references": [
+    {
+      "id": "uti",
+      "title": "ACOG — infecções urinárias na gravidez, consenso 2023",
+      "url": "https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "cyst",
+      "title": "NICE NG109 — antibióticos para infecção urinária baixa",
+      "url": "https://www.nice.org.uk/guidance/NG109/chapter/recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 13,
+    "owner": "bacteriuria_assintomatica",
+    "title": {
+      "pt": "Bacteriúria assintomática — gestação",
+      "es": "Bacteriuria asintomática — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "bacteriuria_assintomatica",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "e49f1a694729c879a22fcbc1648a38abc06434a1a80aacbf87af0e1cd303c061"
+}

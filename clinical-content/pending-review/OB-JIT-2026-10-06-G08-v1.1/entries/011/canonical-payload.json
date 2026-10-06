@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "hipertireoidismo",
+  "titles": {
+    "pt": "Hipertireoidismo — gestação",
+    "es": "Hipertiroidismo — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "TRIMESTER_DEPENDENT_ALTERNATIVES",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Excesso de hormônios tireoidianos na gestação; distinguir doença de Graves de tireotoxicose transitória gestacional.",
+      "es": "Exceso de hormonas tiroideas durante el embarazo; distinguir enfermedad de Graves de tirotoxicosis transitoria gestacional."
+    },
+    {
+      "id": "reasoning",
+      "pt": "O estímulo por gonadotrofina coriônica pode reduzir TSH, especialmente com hiperêmese; TSH baixo isolado não define necessidade de antitireoidiano.",
+      "es": "El estímulo por gonadotropina coriónica puede reducir TSH, especialmente con hiperémesis; TSH baja aislada no define necesidad de antitiroideos."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Dosar TSH, tiroxina livre e, quando indicado, anticorpos contra receptor de TSH. Investigar bócio, orbitopatia, perda ponderal, palpitações e exposição a fármacos.",
+      "es": "Medir TSH, tiroxina libre y, cuando corresponda, anticuerpos contra receptor de TSH. Investigar bocio, orbitopatía, pérdida de peso, palpitaciones y exposición a fármacos."
+    },
+    {
+      "id": "treatment",
+      "pt": "Opção 1 — propiltiouracil quando antitireoidiano for necessário no primeiro trimestre, na menor dose capaz de manter tiroxina livre no alvo gestacional; dose e intervalo dependem de gravidade e exames.\nOpção 2 — metimazol após o primeiro trimestre pode ser preferido para reduzir risco hepático do propiltiouracil, após revisão especializada; a troca exige conversão e monitorização, não equivalência automática de miligramas. Explicar risco de agranulocitose: febre/dor de garganta exige suspensão e hemograma urgente; icterícia/urina escura exige avaliação hepática. Tireotoxicose transitória por hCG pode demandar apenas suporte. Cirurgia é recurso para casos selecionados com intolerância/falha; radioiodo é contraindicado na gestação.",
+      "es": "Opción 1 — propiltiouracilo cuando sea necesario un antitiroideo en el primer trimestre, en la menor dosis capaz de mantener tiroxina libre en el objetivo gestacional; dosis e intervalo dependen de gravedad y estudios.\nOpción 2 — metimazol después del primer trimestre puede preferirse para reducir riesgo hepático de propiltiouracilo, tras revisión especializada; el cambio exige conversión y monitoreo, no equivalencia automática de miligramos. Explicar riesgo de agranulocitosis: fiebre/dolor de garganta exige suspensión y hemograma urgente; ictericia/orina oscura exige evaluación hepática. Tirotoxicosis transitoria por hCG puede requerir solamente soporte. Cirugía es recurso en casos seleccionados con intolerancia/falla; radioyodo está contraindicado en embarazo."
+    },
+    {
+      "id": "safety",
+      "pt": "Iodo radioativo é contraindicado. Monitorar efeitos adversos e função fetal quando há anticorpos relevantes; não tratar tireotoxicose transitória apenas por TSH suprimido.",
+      "es": "El yodo radiactivo está contraindicado. Vigilar efectos adversos y función fetal cuando existen anticuerpos relevantes; no tratar tirotoxicosis transitoria solamente por TSH suprimida."
+    },
+    {
+      "id": "disposition",
+      "pt": "Febre, delirium, insuficiência cardíaca ou arritmia instável sugerem crise tireotóxica e exigem hospital. Casos estáveis precisam de seguimento obstétrico/endócrino e plano pós-parto.",
+      "es": "Fiebre, delirium, insuficiencia cardíaca o arritmia inestable sugieren tormenta tiroidea y requieren hospital. Los casos estables necesitan seguimiento obstétrico/endocrinológico y plan posparto."
+    }
+  ],
+  "references": [
+    {
+      "id": "thy",
+      "title": "RCOG Green-top 76 — tireoide na gravidez, final 2025",
+      "url": "https://obgyn.onlinelibrary.wiley.com/doi/10.1111/1471-0528.18088",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "hyper",
+      "title": "American Thyroid Association — hipertireoidismo na gravidez",
+      "url": "https://www.thyroid.org/hyperthyroidism-in-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 11,
+    "owner": "hipertireoidismo",
+    "title": {
+      "pt": "Hipertireoidismo — gestação",
+      "es": "Hipertiroidismo — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "hipertireoidismo",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "da9879612e93a39ecef7540f01fedc08c83ec5bb9774fc0a22a779958f7dd0e6"
+}

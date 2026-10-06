@@ -1,0 +1,99 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "doenca_refluxo_gastroesofagico",
+  "titles": {
+    "pt": "Refluxo gastroesofágico — gestação",
+    "es": "Reflujo gastroesofágico — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "STEP_UP_ALTERNATIVES",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Pirose e regurgitação durante a gravidez, sem sinais de alarme, podem representar refluxo gastroesofágico.",
+      "es": "Pirosis y regurgitación durante el embarazo, sin signos de alarma, pueden representar reflujo gastroesofágico."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Relaxamento do esfíncter e mudanças mecânicas favorecem refluxo. Dor epigástrica intensa não deve ser automaticamente atribuída à azia.",
+      "es": "La relajación del esfínter y cambios mecánicos favorecen reflujo. El dolor epigástrico intenso no debe atribuirse automáticamente a acidez."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar padrão pós-prandial, posição, disfagia, perda de peso, hematêmese e medicamentos. Dor torácica ou epigástrica com hipertensão exige diferencial cardiovascular ou pré-eclâmpsia.",
+      "es": "Evaluar patrón posprandial, posición, disfagia, pérdida de peso, hematemesis y medicamentos. Dolor torácico o epigástrico con hipertensión exige diferencial cardiovascular o preeclampsia."
+    },
+    {
+      "id": "treatment",
+      "pt": "Opção 1 — medidas alimentares/posturais e antiácido ou alginato apropriado à gestação, conforme composição e dose do produto; refeições menores e evitar deitar após comer. Separar antiácido de ferro/ácido fólico por pelo menos 2 horas.\nOpção 2 — se persistente apesar dessas medidas, supressão ácida prescrita, preferencialmente omeprazol pelo maior conhecimento de segurança gestacional; selecionar dose conforme intensidade, indicação e produto, com reavaliação da necessidade. Não prolongar automedicação sem avaliação. Disfagia, sangramento, perda ponderal ou dor intensa exige investigação, não apenas acrescentar medicamento.",
+      "es": "Opción 1 — medidas alimentarias/posturales y antiácido o alginato apropiado al embarazo, según composición y dosis del producto; comidas menores y evitar acostarse después de comer. Separar antiácido de hierro/ácido fólico al menos 2 horas.\nOpción 2 — si persiste pese a estas medidas, supresión ácida prescrita, preferentemente omeprazol por mayor conocimiento de seguridad gestacional; seleccionar dosis según intensidad, indicación y producto, con reevaluación de necesidad. No prolongar automedicación sin evaluación. Disfagia, sangrado, pérdida ponderal o dolor intenso exige investigación, no solamente añadir medicación."
+    },
+    {
+      "id": "safety",
+      "pt": "Conferir sódio, composição e interações com suplementos; não inventar dose em mL sem concentração. Persistência exige revisão e escolha individual de supressão ácida.",
+      "es": "Verificar sodio, composición e interacciones con suplementos; no inventar dosis en mL sin concentración. La persistencia exige revisión y elección individual de supresión ácida."
+    },
+    {
+      "id": "disposition",
+      "pt": "Seguimento ambulatorial se típico e estável. Disfagia progressiva, sangramento, vômitos persistentes ou instabilidade exigem investigação; alta com orientações e retorno por sinais de alarme.",
+      "es": "Seguimiento ambulatorio ante cuadro típico y estable. Disfagia progresiva, sangrado, vómitos persistentes o inestabilidad requieren investigación; alta con orientaciones y retorno por signos de alarma."
+    }
+  ],
+  "references": [
+    {
+      "id": "anc",
+      "title": "NICE NG201 — cuidado pré-natal",
+      "url": "https://www.nice.org.uk/guidance/ng201/chapter/Recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "refluxpreg",
+      "title": "NHS — refluxo na gravidez",
+      "url": "https://www.nhs.uk/pregnancy/common-symptoms/indigestion-and-heartburn/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "omep",
+      "title": "NHS — omeprazol e gravidez",
+      "url": "https://www.nhs.uk/medicines/omeprazole/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 29,
+    "owner": "doenca_refluxo_gastroesofagico",
+    "title": {
+      "pt": "Refluxo gastroesofágico — gestação",
+      "es": "Reflujo gastroesofágico — embarazo"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "doenca_refluxo_gastroesofagico",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "5da11b3326680ca4112ab3d10ad2da673393a48c2492b9678d855b94c26600a6"
+}

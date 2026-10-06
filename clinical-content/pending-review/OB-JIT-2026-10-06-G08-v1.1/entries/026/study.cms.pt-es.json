@@ -1,0 +1,139 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "COVID-19 — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "COVID-19 na gestação exige avaliar risco de progressão e janela de tratamento; a gravidez não justifica negar terapia eficaz.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "COVID-19 na gestação exige avaliar risco de progressão e janela de tratamento; a gravidez não justifica negar terapia eficaz."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "A gestação aumenta risco de doença grave. Considerar comorbidades, vacinação, sintomas e disponibilidade regional de antivirais."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Confirmar infecção por teste apropriado; verificar oxigenação, função renal/hepática e lista completa de medicamentos antes de antiviral."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opção 1 — se elegível para tratamento ambulatorial de alto risco, nirmatrelvir 300 mg mais ritonavir 100 mg por via oral a cada 12 horas durante 5 dias, iniciar dentro de 5 dias dos sintomas, quando filtração estimada ≥60 mL por minuto. Outras funções renais exigem apresentação/esquema específicos da bula atual; revisão de todas as interações é obrigatória.\nOpção 2 — remdesivir intravenoso em adultas com peso ≥40 kg, iniciar dentro de 7 dias dos sintomas: 200 mg no primeiro dia e 100 mg no segundo e terceiro dias, 1 administração por dia, com infusão durante 30–120 minutos, em serviço habilitado. Avaliar função hepática e reações à infusão; insuficiência renal não é contraindicação automática na bula vigente. Escolher conforme janela, interações e acesso. Hipoxemia exige avaliação hospitalar e outro plano; molnupiravir não é alternativa gestacional de rotina."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Interações por CYP3A podem impedir esse esquema. Insuficiência renal requer esquema específico da bula atual; não afirmar contraindicação absoluta em toda doença renal grave. Evitar uso na insuficiência hepática grave e não usar molnupiravir como alternativa habitual na gestação."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Hipoxemia, dor torácica, confusão ou piora clínica exigem hospital e avaliação obstétrica. Alta apenas com estabilidade e plano de reavaliação, sem corticoide sistêmico de rotina para doença sem necessidade de oxigênio."
+        }
+      ],
+      "references": [
+        "[cov] CDC — COVID-19 e populações especiais — https://www.cdc.gov/covid/hcp/clinical-care/considerations-special-groups.html",
+        "[pax] FDA — nirmatrelvir/ritonavir, bula revisada 2025 — https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/217188s010lbl.pdf",
+        "[covout] CDC — tratamento ambulatorial de COVID-19 — https://www.cdc.gov/covid/hcp/clinical-care/outpatient-treatment.html",
+        "[rem] Gilead — remdesivir, prescrição oficial vigente — https://www.gilead.com/-/media/files/pdfs/medicines/covid-19/veklury/veklury_pi.pdf"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "COVID-19 — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "COVID-19 durante el embarazo exige evaluar riesgo de progresión y ventana de tratamiento; el embarazo no justifica negar terapia eficaz.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "COVID-19 durante el embarazo exige evaluar riesgo de progresión y ventana de tratamiento; el embarazo no justifica negar terapia eficaz."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "El embarazo aumenta el riesgo de enfermedad grave. Considerar comorbilidades, vacunación, síntomas y disponibilidad regional de antivirales."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Confirmar infección mediante prueba apropiada; verificar oxigenación, función renal/hepática y lista completa de medicamentos antes del antiviral."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opción 1 — si es elegible para tratamiento ambulatorio de alto riesgo, nirmatrelvir 300 mg más ritonavir 100 mg por vía oral cada 12 horas durante 5 días, iniciar dentro de 5 días de síntomas, cuando filtración estimada ≥60 mL por minuto. Otras funciones renales exigen presentación/esquema específicos del prospecto actual; revisar todas las interacciones es obligatorio.\nOpción 2 — remdesivir intravenoso en adultas con peso ≥40 kg, iniciar dentro de 7 días de síntomas: 200 mg el primer día y 100 mg el segundo y tercer días, 1 administración por día, con infusión durante 30–120 minutos, en servicio habilitado. Evaluar función hepática y reacciones a infusión; insuficiencia renal no es contraindicación automática según prospecto vigente. Elegir según ventana, interacciones y acceso. Hipoxemia exige evaluación hospitalaria y otro plan; molnupiravir no es alternativa gestacional rutinaria."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Las interacciones por CYP3A pueden impedir este esquema. La insuficiencia renal requiere esquema específico de la ficha actual; no afirmar contraindicación absoluta en toda enfermedad renal grave. Evitar uso en insuficiencia hepática grave y no usar molnupiravir como alternativa habitual en el embarazo."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Hipoxemia, dolor torácico, confusión o empeoramiento requieren hospital y evaluación obstétrica. Alta solamente con estabilidad y plan de reevaluación, sin corticoide sistémico rutinario para enfermedad sin necesidad de oxígeno."
+        }
+      ],
+      "references": [
+        "[cov] CDC — COVID-19 e populações especiais — https://www.cdc.gov/covid/hcp/clinical-care/considerations-special-groups.html",
+        "[pax] FDA — nirmatrelvir/ritonavir, bula revisada 2025 — https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/217188s010lbl.pdf",
+        "[covout] CDC — tratamento ambulatorial de COVID-19 — https://www.cdc.gov/covid/hcp/clinical-care/outpatient-treatment.html",
+        "[rem] Gilead — remdesivir, prescrição oficial vigente — https://www.gilead.com/-/media/files/pdfs/medicines/covid-19/veklury/veklury_pi.pdf"
+      ]
+    }
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Rotura prematura pré-termo das membranas",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "Rotura de membranas antes do trabalho de parto e antes do termo; separar de rotura a termo e corioamnionite.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Rotura de membranas antes do trabalho de parto e antes do termo; separar de rotura a termo e corioamnionite."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Há risco de prematuridade, infecção, descolamento e prolapso de cordão. A vigilância combina condições maternas e fetais."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "História de perda de líquido e exame com espéculo estéril; teste específico se necessário. Evitar exames digitais repetidos. Não diagnosticar infecção apenas por leucócitos ou proteína C reativa isolados."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Via 1 — se elegível, manejo expectante com vigilância materno-fetal e antibiótico de latência: eritromicina 250 mg por via oral a cada 6 horas por no máximo 10 dias ou até trabalho de parto estabelecido, o que ocorrer primeiro. Se intolerância/contraindicação, NICE permite considerar penicilina oral, com produto/dose definidos pelo protocolo e alergias. Não usar amoxicilina/clavulanato para latência.\nVia 2 — parto quando houver infecção, comprometimento fetal, hemorragia, prolapso de cordão ou outra indicação; tratar infecção e não prolongar latência indiscriminadamente. Corticoide antenatal, neuroproteção e antibiótico intraparto para estreptococo do grupo B têm indicações próprias, não substituem essas vias. Não indicar tocolítico de rotina na rotura pré-termo."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Não usar amoxicilina/clavulanato como profilaxia de latência. Não indicar tocolítico de rotina na rotura pré-termo. Infecção exige tratamento e decisão de parto, não prolongamento cego da latência."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Avaliação hospitalar inicial, comunicação com neonatologia e plano individual de parto. Febre, dor uterina, sangramento, alteração fetal ou cordão prolapsado exige intervenção imediata."
+        }
+      ],
+      "references": [
+        "[pprom] RCOG Green-top 73 — rotura pré-termo, vigência estendida em 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/care-of-women-presenting-with-suspected-preterm-prelabour-rupture-of-membranes-from-24plus0-weeks-of-gestation-green-top-guideline-no-73/",
+        "[ptl] NICE NG25 — trabalho de parto prematuro — https://www.nice.org.uk/guidance/ng25/chapter/recommendations",
+        "[ster] ACOG Committee Opinion 713 — corticosteroide antenatal — https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Rotura prematura pretérmino de membranas",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "Rotura de membranas antes del trabajo de parto y antes del término; separar de rotura a término y corioamnionitis.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Rotura de membranas antes del trabajo de parto y antes del término; separar de rotura a término y corioamnionitis."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Existe riesgo de prematuridad, infección, desprendimiento y prolapso de cordón. La vigilancia combina condiciones maternas y fetales."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Historia de pérdida de líquido y examen con espéculo estéril; prueba específica si es necesaria. Evitar exámenes digitales repetidos. No diagnosticar infección solamente por leucocitos o proteína C reactiva aislados."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Vía 1 — si es elegible, manejo expectante con vigilancia maternofetal y antibiótico de latencia: eritromicina 250 mg por vía oral cada 6 horas durante un máximo de 10 días o hasta trabajo de parto establecido, lo que ocurra primero. Ante intolerancia/contraindicación, NICE permite considerar penicilina oral, con producto/dosis definidos por protocolo y alergias. No usar amoxicilina/clavulanato para latencia.\nVía 2 — parto ante infección, compromiso fetal, hemorragia, prolapso de cordón u otra indicación; tratar infección y no prolongar latencia indiscriminadamente. Corticoide prenatal, neuroprotección y antibiótico intraparto para estreptococo del grupo B tienen indicaciones propias, no sustituyen estas vías. No indicar tocolítico rutinario en rotura pretérmino."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "No usar amoxicilina/clavulanato como profilaxis de latencia. No indicar tocolítico rutinario en rotura pretérmino. La infección exige tratamiento y decisión del parto, no prolongación ciega de latencia."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evaluación hospitalaria inicial, comunicación con neonatología y plan individual del parto. Fiebre, dolor uterino, sangrado, alteración fetal o cordón prolapsado exige intervención inmediata."
+        }
+      ],
+      "references": [
+        "[pprom] RCOG Green-top 73 — rotura pré-termo, vigência estendida em 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/care-of-women-presenting-with-suspected-preterm-prelabour-rupture-of-membranes-from-24plus0-weeks-of-gestation-green-top-guideline-no-73/",
+        "[ptl] NICE NG25 — trabalho de parto prematuro — https://www.nice.org.uk/guidance/ng25/chapter/recommendations",
+        "[ster] ACOG Committee Opinion 713 — corticosteroide antenatal — https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation"
+      ]
+    }
+  }
+}

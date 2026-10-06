@@ -1,0 +1,36 @@
+# Colestase intra-hepática da gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Prurido gestacional com elevação de ácidos biliares após exclusão de outras causas; costuma não haver erupção primária.
+
+## Fisiopatologia e raciocínio
+
+Alterações do transporte biliar podem produzir prurido e risco fetal. Reduzir prurido não comprova redução de morte fetal.
+
+## Diagnóstico, exames e diferenciais
+
+Solicitar ácidos biliares e testes hepáticos; repetir se prurido persiste com exames iniciais normais. RCOG classifica pico de 19–39 micromol/L como leve, 40–99 como moderado e ≥100 como grave.
+
+## Tratamento e doses
+
+Via 1 — alívio do prurido: ácido ursodesoxicólico, dose inicial usual SMFM 10–15 mg por kg por dia por via oral, dividida em 2–3 administrações, prescrita e ajustada por obstetrícia; emolientes podem complementar. Benefício é predominantemente sintomático; não afirmar que previne morte fetal.
+Via 2 — redução do risco obstétrico por estratificação dos ácidos biliares, avaliação materno-fetal e planejamento do parto. RCOG, sem outros fatores de risco: considerar até 40 semanas nos casos leves, 38–39 semanas nos moderados e 35–36 semanas se ácidos biliares ≥100 micromol/L. Essa via é complementar e pode ser necessária mesmo se o prurido melhorar; não substituir planejamento do parto por outro antipruriginoso. Reavaliar função hepática e sintomas após parto.
+
+## Segurança e monitorização
+
+Programar vigilância e momento do parto conforme pico de ácidos biliares, idade gestacional, comorbidades e diretriz adotada. Não aguardar piora materna para avaliar risco fetal.
+
+## Escalonamento, alta e seguimento
+
+Redução de movimentos fetais exige atendimento imediato. Seguimento obstétrico e confirmação de resolução pós-parto; alterações persistentes exigem investigação hepática.
+
+## Referências
+
+[icp] RCOG Green-top 43 — colestase gestacional, final 2022 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/intrahepatic-cholestasis-of-pregnancy-green-top-guideline-no-43/
+
+[icpp] RCOG — colestase, informação atualizada abril 2026 — https://www.rcog.org.uk/for-the-public/browse-our-patient-information/intrahepatic-cholestasis-of-pregnancy/
+
+[icpsmfm] SMFM Consult 53 — colestase, dose inicial de ursodesoxicólico — https://cdn.smfm.org.s3.amazonaws.com/attachments/876/52ce00b24a640231d1a2130433df7d3d.pdf

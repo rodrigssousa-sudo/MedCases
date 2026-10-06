@@ -1,0 +1,41 @@
+# Influenza — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- La influenza sospechada o confirmada en la embarazada tiene mayor riesgo de complicaciones; tratar pronto, incluso sin confirmación de laboratorio.
+
+## Diagnóstico, estudios y diferenciales
+
+- Evaluar inicio, fiebre, signos respiratorios, oxigenación, hidratación y diagnósticos alternativos.
+- No esperar una prueba para tratar sospecha convincente en una embarazada.
+
+## Tratamiento y dosis
+
+- Opción 1 — oseltamivir 75 mg por vía oral cada 12 horas durante 5 días, con función renal adecuada; ajustar a función renal.
+- Iniciar pronto ante sospecha, en cualquier trimestre, sin esperar confirmación ni negar tratamiento después de 48 horas.
+- Opción 2 — zanamivir inhalatorio 10 mg cada 12 horas durante 5 días puede considerarse si oseltamivir es inadecuado y el cuadro permite vía inhalatoria; es menos preferido en embarazo, no usar en asma/enfermedad de vías aéreas por riesgo de broncoespasmo.
+- Neumonía, hipoxemia o incapacidad para hidratar exige hospital; enfermedad grave puede requerir tratamiento más prolongado individualizado.
+- Baloxavir no se recomienda en embarazo.
+
+## Seguridad y monitoreo
+
+- No recomendar baloxavir rutinariamente durante el embarazo.
+- Los casos hospitalizados o complicados pueden exigir duración individualizada; no prolongar automáticamente el tratamiento de un cuadro simple.
+
+## Escalamiento, alta y seguimiento
+
+- Disnea, hipoxemia, inestabilidad o incapacidad de beber requieren hospital.
+- Alta con retorno por empeoramiento, prevención y vacunación indicada en el control prenatal.
+
+## Fisiopatología y razonamiento
+
+- El riesgo aumentado también ocurre en el posparto reciente.
+- El beneficio antiviral es mayor si es temprano, pero la enfermedad grave puede justificar inicio tardío.
+
+## Referencias
+
+[flu] CDC — influenza em gestantes, atualização dezembro 2025 — https://www.cdc.gov/flu/hcp/antivirals/treatment_obstetric.html
+
+[flud] CDC — antivirais para influenza, resumo clínico — https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html

@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Depressão maior — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "Episódio depressivo durante gravidez ou doença preexistente, com sofrimento e prejuízo funcional; não confundir com tristeza passageira.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Episódio depressivo durante gravidez ou doença preexistente, com sofrimento e prejuízo funcional; não confundir com tristeza passageira."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Não tratar também tem riscos maternos e familiares. Gravidez não justifica suspensão abrupta de tratamento eficaz."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Avaliar sintomas, funcionalidade, escala validada, bipolaridade, uso de substâncias e risco suicida. Perguntar sobre segurança doméstica e rede de apoio."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opção 1 — psicoterapia estruturada, como terapia cognitivo-comportamental ou interpessoal, especialmente em quadros leves/moderados, com escala validada e acompanhamento de função e risco suicida.\nOpção 2 — antidepressivo selecionado conforme resposta prévia, gravidade e preferência, frequentemente um inibidor seletivo de recaptação de serotonina, associado ou não à psicoterapia. Não interromper tratamento eficaz apenas por gestação; escolher fármaco e dose individualmente e rastrear bipolaridade antes de monoterapia antidepressiva. Quadro grave, psicose, mania ou risco suicida exige avaliação urgente; não aguardar resposta ambulatorial. Discussão de riscos deve incluir doença não tratada e monitorização materna/neonatal."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Rastrear bipolaridade antes de antidepressivo isolado. Monitorar sintomas, adesão e efeitos adversos; não prometer risco fetal zero nem atribuir todo sintoma à gravidez."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Ideação suicida com intenção, psicose ou incapacidade grave de autocuidado exige avaliação urgente e proteção. Casos estáveis: seguimento programado, plano de crise e articulação obstetrícia/saúde mental."
+        }
+      ],
+      "references": [
+        "[psy] ACOG Clinical Practice Guideline 5 — saúde mental perinatal, 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-practice-guideline/articles/2023/06/treatment-and-management-of-mental-health-conditions-during-pregnancy-and-postpartum",
+        "[psyp] ACOG — avaliação e tratamento de saúde mental perinatal — https://www.acog.org/programs/perinatal-mental-health/assessment-and-treatment-of-perinatal-mental-health-conditions"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Depresión mayor — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "Episodio depresivo durante embarazo o enfermedad previa, con sufrimiento y deterioro funcional; no confundir con tristeza pasajera.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Episodio depresivo durante embarazo o enfermedad previa, con sufrimiento y deterioro funcional; no confundir con tristeza pasajera."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "No tratar también tiene riesgos maternos y familiares. El embarazo no justifica suspensión brusca de tratamiento eficaz."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evaluar síntomas, funcionalidad, escala validada, bipolaridad, consumo de sustancias y riesgo suicida. Preguntar sobre seguridad doméstica y red de apoyo."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opción 1 — psicoterapia estructurada, como terapia cognitivo-conductual o interpersonal, especialmente en cuadros leves/moderados, con escala validada y seguimiento de función y riesgo suicida.\nOpción 2 — antidepresivo seleccionado según respuesta previa, gravedad y preferencia, frecuentemente un inhibidor selectivo de recaptación de serotonina, asociado o no a psicoterapia. No suspender tratamiento eficaz solamente por embarazo; elegir fármaco y dosis individualmente y evaluar bipolaridad antes de monoterapia antidepresiva. Cuadro grave, psicosis, manía o riesgo suicida exige evaluación urgente; no esperar respuesta ambulatoria. Discusión de riesgos debe incluir enfermedad no tratada y monitoreo materno/neonatal."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Detectar bipolaridad antes de antidepresivo aislado. Vigilar síntomas, adherencia y efectos adversos; no prometer riesgo fetal cero ni atribuir todo síntoma al embarazo."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Ideación suicida con intención, psicosis o incapacidad grave de autocuidado exige evaluación urgente y protección. Casos estables: seguimiento programado, plan de crisis y articulación obstetricia/salud mental."
+        }
+      ],
+      "references": [
+        "[psy] ACOG Clinical Practice Guideline 5 — saúde mental perinatal, 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-practice-guideline/articles/2023/06/treatment-and-management-of-mental-health-conditions-during-pregnancy-and-postpartum",
+        "[psyp] ACOG — avaliação e tratamento de saúde mental perinatal — https://www.acog.org/programs/perinatal-mental-health/assessment-and-treatment-of-perinatal-mental-health-conditions"
+      ]
+    }
+  }
+}

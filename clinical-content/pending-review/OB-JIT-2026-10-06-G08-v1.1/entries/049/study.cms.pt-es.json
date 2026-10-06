@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Trabalho de parto prematuro",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "Contrações com suspeita ou confirmação de alteração cervical antes do termo; não diagnosticar apenas por desconforto inespecífico.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Contrações com suspeita ou confirmação de alteração cervical antes do termo; não diagnosticar apenas por desconforto inespecífico."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Prematuridade ameaça o recém-nascido; intervenções visam maturação, neuroproteção e transferência apropriada, sem prolongar gestação perigosa."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Verificar idade gestacional, membranas, sangramento, infecção, colo e bem-estar fetal. Comprimento cervical ou biomarcador pode apoiar decisão em contexto apropriado."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Maturação fetal, quando indicada: opção 1 — betametasona 12 mg intramusculares, 2 doses separadas por 24 horas; opção 2 — dexametasona 6 mg intramusculares, 4 doses separadas por 12 horas. Escolher um ciclo, não associar ambos. NICE oferece corticoide entre 24 semanas e 33 semanas e 6 dias; outras janelas exigem decisão obstétrica individualizada.\nPara ganhar tempo em paciente elegível com membranas íntegras, nifedipino é opção de tocolítico; se contraindicado, NICE recomenda antagonista de receptor de ocitocina, como atosibana, com regime da formulação hospitalar. Não prolongar gravidez com infecção, sangramento relevante ou comprometimento fetal. Neuroproteção com magnésio é intervenção complementar distinta: 4 g intravenosos em 15 minutos, depois 1 g por hora até parto ou 24 horas, o que ocorrer primeiro, nas janelas gestacionais indicadas; monitorar respiração, reflexos e diurese."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Neuroproteção NICE: oferecer magnésio entre 24–29 semanas e 6 dias, considerar entre 30–33 semanas e 6 dias se parto previsto dentro de 24 horas. Regime: 4 g intravenosos em 15 minutos, depois 1 g por hora até parto ou 24 horas, o que ocorrer primeiro; monitorar respiração, reflexos e diurese."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Infecção, hemorragia ou sofrimento fetal pode exigir parto, sem esperar completar medicamentos. Internar/transferir se risco significativo; alta só após avaliação obstétrica e plano de retorno."
+        }
+      ],
+      "references": [
+        "[ptl] NICE NG25 — trabalho de parto prematuro — https://www.nice.org.uk/guidance/ng25/chapter/recommendations",
+        "[ster] ACOG Committee Opinion 713 — corticosteroide antenatal — https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Trabajo de parto prematuro",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "Contracciones con sospecha o confirmación de cambio cervical antes del término; no diagnosticar solamente por molestias inespecíficas.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Contracciones con sospecha o confirmación de cambio cervical antes del término; no diagnosticar solamente por molestias inespecíficas."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La prematuridad amenaza al recién nacido; las intervenciones buscan maduración, neuroprotección y traslado adecuado, sin prolongar un embarazo peligroso."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Verificar edad gestacional, membranas, sangrado, infección, cuello y bienestar fetal. Longitud cervical o biomarcador puede apoyar decisiones en contexto apropiado."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Maduración fetal, cuando esté indicada: opción 1 — betametasona 12 mg intramusculares, 2 dosis separadas por 24 horas; opción 2 — dexametasona 6 mg intramusculares, 4 dosis separadas por 12 horas. Elegir un ciclo, no combinar ambos. NICE ofrece corticoide entre 24 semanas y 33 semanas y 6 días; otras ventanas exigen decisión obstétrica individualizada.\nPara ganar tiempo en paciente elegible con membranas íntegras, nifedipino es opción de tocolítico; si está contraindicado, NICE recomienda antagonista de receptor de oxitocina, como atosibán, con régimen de formulación hospitalaria. No prolongar embarazo ante infección, sangrado relevante o compromiso fetal. Neuroprotección con magnesio es intervención complementaria distinta: 4 g intravenosos en 15 minutos, después 1 g por hora hasta parto o 24 horas, lo que ocurra primero, en las ventanas gestacionales indicadas; vigilar respiración, reflejos y diuresis."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Neuroprotección NICE: ofrecer magnesio entre 24–29 semanas y 6 días, considerar entre 30–33 semanas y 6 días si se prevé parto dentro de 24 horas. Régimen: 4 g intravenosos en 15 minutos, después 1 g por hora hasta parto o 24 horas, lo que ocurra primero; vigilar respiración, reflejos y diuresis."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Infección, hemorragia o sufrimiento fetal puede exigir parto, sin esperar completar medicamentos. Internar/trasladar ante riesgo significativo; alta solamente tras evaluación obstétrica y plan de retorno."
+        }
+      ],
+      "references": [
+        "[ptl] NICE NG25 — trabalho de parto prematuro — https://www.nice.org.uk/guidance/ng25/chapter/recommendations",
+        "[ster] ACOG Committee Opinion 713 — corticosteroide antenatal — https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation"
+      ]
+    }
+  }
+}

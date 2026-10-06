@@ -1,0 +1,46 @@
+# COVID-19 — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- COVID-19 na gestação exige avaliar risco de progressão e janela de tratamento; a gravidez não justifica negar terapia eficaz.
+
+## Diagnóstico, exames e diferenciais
+
+- Confirmar infecção por teste apropriado; verificar oxigenação, função renal/hepática e lista completa de medicamentos antes de antiviral.
+
+## Tratamento e doses
+
+- Opção 1 — se elegível para tratamento ambulatorial de alto risco, nirmatrelvir 300 mg mais ritonavir 100 mg por via oral a cada 12 horas durante 5 dias, iniciar dentro de 5 dias dos sintomas, quando filtração estimada ≥60 mL por minuto.
+- Outras funções renais exigem apresentação/esquema específicos da bula atual; revisão de todas as interações é obrigatória.
+- Opção 2 — remdesivir intravenoso em adultas com peso ≥40 kg, iniciar dentro de 7 dias dos sintomas: 200 mg no primeiro dia e 100 mg no segundo e terceiro dias, 1 administração por dia, com infusão durante 30–120 minutos, em serviço habilitado.
+- Avaliar função hepática e reações à infusão; insuficiência renal não é contraindicação automática na bula vigente.
+- Escolher conforme janela, interações e acesso.
+- Hipoxemia exige avaliação hospitalar e outro plano; molnupiravir não é alternativa gestacional de rotina.
+
+## Segurança e monitorização
+
+- Interações por CYP3A podem impedir esse esquema.
+- Insuficiência renal requer esquema específico da bula atual; não afirmar contraindicação absoluta em toda doença renal grave.
+- Evitar uso na insuficiência hepática grave e não usar molnupiravir como alternativa habitual na gestação.
+
+## Escalonamento, alta e seguimento
+
+- Hipoxemia, dor torácica, confusão ou piora clínica exigem hospital e avaliação obstétrica.
+- Alta apenas com estabilidade e plano de reavaliação, sem corticoide sistêmico de rotina para doença sem necessidade de oxigênio.
+
+## Fisiopatologia e raciocínio
+
+- A gestação aumenta risco de doença grave.
+- Considerar comorbidades, vacinação, sintomas e disponibilidade regional de antivirais.
+
+## Referências
+
+[cov] CDC — COVID-19 e populações especiais — https://www.cdc.gov/covid/hcp/clinical-care/considerations-special-groups.html
+
+[pax] FDA — nirmatrelvir/ritonavir, bula revisada 2025 — https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/217188s010lbl.pdf
+
+[covout] CDC — tratamento ambulatorial de COVID-19 — https://www.cdc.gov/covid/hcp/clinical-care/outpatient-treatment.html
+
+[rem] Gilead — remdesivir, prescrição oficial vigente — https://www.gilead.com/-/media/files/pdfs/medicines/covid-19/veklury/veklury_pi.pdf

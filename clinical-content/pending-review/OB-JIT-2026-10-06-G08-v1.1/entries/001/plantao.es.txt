@@ -1,0 +1,48 @@
+# Náuseas y vómitos del embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Náuseas tempranas del embarazo con ingesta todavía posible; evaluar repercusión funcional.
+
+## Diagnóstico, estudios y diferenciales
+
+- Verificar edad gestacional, pérdida de peso, ingesta, hidratación y medicamentos.
+- Dolor focal, fiebre o inicio tardío no deben atribuirse automáticamente al embarazo.
+
+## Tratamiento y dosis
+
+- Opción 1 — doxilamina/piridoxina de liberación retardada, 10 mg/10 mg por comprimido: iniciar 2 comprimidos por vía oral al acostarse.
+- Si persiste, el tercer día usar 1 por la mañana y 2 al acostarse; el cuarto día, 1 por la mañana, 1 por la tarde y 2 al acostarse, máximo 4 por día.
+- Usar en horario programado, en ayunas, sin partir; evitar conducir si hay somnolencia y combinar sedantes.
+- Opción 2 — si falla la primera línea, metoclopramida 10 mg por vía oral hasta 3 veces por día, con intervalo mínimo de 6 horas, durante un máximo de 5 días.
+- Ajustar en insuficiencia renal; suspender ante distonía o acatisia.
+- Es segunda línea, no una combinación automática.
+- Fraccionar comidas, líquidos en pequeños volúmenes y reevaluar ingesta, peso y síntomas.
+
+## Seguridad y monitoreo
+
+- Esta formulación no es intercambiable con otras concentraciones.
+- Advertir sobre sedación, evitar alcohol y otros sedantes; no triturar.
+
+## Escalamiento, alta y seguimiento
+
+- Alta con tolerancia oral y retorno ante oliguria, desmayo o imposibilidad de beber.
+- Deshidratación o fracaso ambulatorio requieren evaluación hospitalaria.
+
+## Fisiopatología y razonamiento
+
+- Participan cambios hormonales; los síntomas persistentes o incapacitantes exigen investigar hiperémesis y causas no obstétricas.
+
+## Referencias
+
+[nvp] RCOG Green-top 69 — náuseas, vômitos e hiperêmese; final 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/the-management-of-nausea-and-vomiting-of-pregnancy-and-hyperemesis-gravidarum-green-top-guideline-no-69/
+
+[dox] DailyMed — doxilamina/piridoxina 10 mg/10 mg, liberação retardada — https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c283720d-f9a5-471f-9616-853a70f2b31d
+
+[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations
+
+[metpreg] NHS Somerset — medicamentos na gravidez, metoclopramida como segunda linha — https://nhssomerset.nhs.uk/prescribing-and-medicines-management/prescribing-guidelines-by-clinical-area/medicines-in-pregnancy-children-and-lactation/medicines-used-in-pregnancy/
+
+[met] NHS — metoclopramida: dose, intervalo e duração — https://www.nhs.uk/medicines/metoclopramide/

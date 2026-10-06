@@ -1,0 +1,42 @@
+# Dor da cintura pélvica relacionada à gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Dor na região púbica ou sacroilíaca, frequentemente provocada por movimentos assimétricos, durante a gravidez.
+
+## Diagnóstico, exames e diferenciais
+
+- Caracterizar dor ao subir escadas, virar na cama ou apoiar uma perna.
+- Excluir infecção, trauma, trombose, sintomas neurológicos e causas obstétricas.
+
+## Tratamento e doses
+
+- Opção 1 — fisioterapia com orientações posturais, adaptação de atividades e exercícios individualizados.
+- Opção 2 — teste de suporte pélvico não rígido/auxílios de mobilidade quando indicados, associado à reabilitação; analgesia se necessária: Paracetamol 500 mg–1 g por via oral se necessário, intervalo mínimo de 4 horas, máximo 4 administrações e 4 g em 24 horas em adulto sem fatores de risco; peso inferior a 50 kg, hepatopatia, desnutrição ou outras vulnerabilidades exigem limite individual menor.
+- Conferir outros produtos com paracetamol e usar pelo menor tempo necessário.
+- Não indicar imobilização prolongada ou manipulação isolada como tratamento suficiente.
+- Reavaliar limitação funcional, necessidade de apoio e risco trombótico se mobilidade muito reduzida.
+
+## Segurança e monitorização
+
+- Analgesia deve ser compatível com gravidez.
+- Mobilidade muito limitada requer avaliar risco trombótico e assistência; não prescrever anticoagulação apenas pelo nome do diagnóstico.
+
+## Escalonamento, alta e seguimento
+
+- Pode permitir parto vaginal, com posição e movimentos planejados; cesariana não é obrigatória.
+- Seguimento funcional e pós-parto; dor incapacitante ou sinais de alarme requerem reavaliação.
+
+## Fisiopatologia e raciocínio
+
+- É multifatorial e distinta de lombalgia pura; não atribuir todo quadro a deslocamento de ossos ou instabilidade comprovada.
+
+## Referências
+
+[pgp] NHS — dor pélvica na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/pelvic-pain/
+
+[pgpr] RCOG — dor da cintura pélvica e gravidez — https://www.rcog.org.uk/for-the-public/browse-our-patient-information/pelvic-girdle-pain-and-pregnancy/
+
+[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations

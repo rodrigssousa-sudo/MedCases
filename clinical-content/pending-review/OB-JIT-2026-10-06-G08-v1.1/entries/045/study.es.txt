@@ -1,0 +1,40 @@
+# Migraña con aura — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Migraña con aura conocida en la embarazada; una nueva manifestación neurológica exige excluir causas secundarias antes de atribuirla al aura.
+
+## Fisiopatología y razonamiento
+
+El patrón puede cambiar durante el embarazo. Una cefalea nueva o diferente, especialmente con hipertensión, no debe diagnosticarse automáticamente como migraña.
+
+## Diagnóstico, estudios y diferenciales
+
+Verificar presión, examen neurológico, inicio súbito, fiebre, visión y síntomas de preeclampsia. Déficit focal o dolor explosivo requiere investigación urgente.
+
+## Tratamiento y dosis
+
+Opción 1 — reposo en ambiente tranquilo, hidratación y paracetamol: Paracetamol 500 mg–1 g por vía oral si es necesario, intervalo mínimo de 4 horas, máximo 4 administraciones y 4 g en 24 horas en adulto sin factores de riesgo; peso inferior a 50 kg, hepatopatía, desnutrición u otras vulnerabilidades exigen límite individual menor. Verificar otros productos con paracetamol y usar durante el menor tiempo necesario.
+Opción 2 — si persiste crisis después de confirmar diagnóstico y excluir causas secundarias, sumatriptán 50 mg por vía oral puede considerarse por médico tras discusión de riesgo/beneficio gestacional; verificar prospecto y contraindicaciones cardiovasculares antes de prescribir. No usar para aura aislada ni cefalea nueva sin investigación. Limitar uso frecuente para evitar cefalea por uso excesivo; ergotamínicos no son alternativa en embarazo.
+
+## Seguridad y monitoreo
+
+Bajo peso, hepatopatía, desnutrición o enfermedad renal pueden exigir reducción/ajuste. Evitar duplicar productos con paracetamol; las terapias específicas de migraña durante el embarazo requieren evaluación individual.
+
+## Escalamiento, alta y seguimiento
+
+Alta solamente ante patrón conocido, examen adecuado y mejoría, con retorno ante cambio del cuadro. Sospecha de preeclampsia, trombosis venosa cerebral, hemorragia o meningitis exige hospital.
+
+## Referencias
+
+[mig] ACOG — cefaleias e gravidez — https://www.acog.org/womens-health/faqs/headaches-and-pregnancy
+
+[mign] NHS — cefaleias na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/headaches/
+
+[para] NHS — paracetamol em adultos e gravidez — https://www.nhs.uk/medicines/paracetamol-for-adults/
+
+[sum] NHS — sumatriptana, segurança e avaliação na gestação, setembro 2026 — https://www.nhs.uk/medicines/sumatriptan/
+
+[sumob] NHS Buckinghamshire/Oxfordshire/Berkshire — enxaqueca na gravidez, protocolo 2018 (apoio posológico; segurança confrontada com NHS 2026) — https://www.bucksoxonberksw.icb.nhs.uk/media/5082/migraine-in-pregnancy-and-breastfeeding-guidelines.pdf

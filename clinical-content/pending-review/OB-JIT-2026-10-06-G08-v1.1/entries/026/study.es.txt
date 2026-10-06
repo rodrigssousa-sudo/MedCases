@@ -1,0 +1,38 @@
+# COVID-19 — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+COVID-19 durante el embarazo exige evaluar riesgo de progresión y ventana de tratamiento; el embarazo no justifica negar terapia eficaz.
+
+## Fisiopatología y razonamiento
+
+El embarazo aumenta el riesgo de enfermedad grave. Considerar comorbilidades, vacunación, síntomas y disponibilidad regional de antivirales.
+
+## Diagnóstico, estudios y diferenciales
+
+Confirmar infección mediante prueba apropiada; verificar oxigenación, función renal/hepática y lista completa de medicamentos antes del antiviral.
+
+## Tratamiento y dosis
+
+Opción 1 — si es elegible para tratamiento ambulatorio de alto riesgo, nirmatrelvir 300 mg más ritonavir 100 mg por vía oral cada 12 horas durante 5 días, iniciar dentro de 5 días de síntomas, cuando filtración estimada ≥60 mL por minuto. Otras funciones renales exigen presentación/esquema específicos del prospecto actual; revisar todas las interacciones es obligatorio.
+Opción 2 — remdesivir intravenoso en adultas con peso ≥40 kg, iniciar dentro de 7 días de síntomas: 200 mg el primer día y 100 mg el segundo y tercer días, 1 administración por día, con infusión durante 30–120 minutos, en servicio habilitado. Evaluar función hepática y reacciones a infusión; insuficiencia renal no es contraindicación automática según prospecto vigente. Elegir según ventana, interacciones y acceso. Hipoxemia exige evaluación hospitalaria y otro plan; molnupiravir no es alternativa gestacional rutinaria.
+
+## Seguridad y monitoreo
+
+Las interacciones por CYP3A pueden impedir este esquema. La insuficiencia renal requiere esquema específico de la ficha actual; no afirmar contraindicación absoluta en toda enfermedad renal grave. Evitar uso en insuficiencia hepática grave y no usar molnupiravir como alternativa habitual en el embarazo.
+
+## Escalamiento, alta y seguimiento
+
+Hipoxemia, dolor torácico, confusión o empeoramiento requieren hospital y evaluación obstétrica. Alta solamente con estabilidad y plan de reevaluación, sin corticoide sistémico rutinario para enfermedad sin necesidad de oxígeno.
+
+## Referencias
+
+[cov] CDC — COVID-19 e populações especiais — https://www.cdc.gov/covid/hcp/clinical-care/considerations-special-groups.html
+
+[pax] FDA — nirmatrelvir/ritonavir, bula revisada 2025 — https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/217188s010lbl.pdf
+
+[covout] CDC — tratamento ambulatorial de COVID-19 — https://www.cdc.gov/covid/hcp/clinical-care/outpatient-treatment.html
+
+[rem] Gilead — remdesivir, prescrição oficial vigente — https://www.gilead.com/-/media/files/pdfs/medicines/covid-19/veklury/veklury_pi.pdf

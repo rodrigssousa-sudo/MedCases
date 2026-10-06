@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Obesidade — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "Obesidade preexistente é fator de risco obstétrico; a gravidez não cria um novo owner para essa doença.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Obesidade preexistente é fator de risco obstétrico; a gravidez não cria um novo owner para essa doença."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Maior adiposidade se associa a resistência à insulina, hipertensão e dificuldades de avaliação, anestesia e parto. Manejo deve ser respeitoso e individualizado."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Registrar peso pré-gestacional quando disponível, evolução, pressão, alimentação e risco metabólico. Rastrear diabetes conforme protocolo e avaliar necessidades de seguimento especializado."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Via 1 — plano nutricional com profissional, adequação da qualidade alimentar e acompanhamento de ganho ponderal, sem prescrever emagrecimento intencional durante a gravidez.\nVia 2 — atividade física adaptada e permitida pela obstetrícia, com abordagem das barreiras de mobilidade, sono e apoio psicossocial; complementar o plano alimentar, não substituir cuidado pré-natal. Rastrear diabetes/hipertensão e individualizar risco trombótico. Fármacos para perda de peso e cirurgia bariátrica não são opções de tratamento da obesidade iniciadas na gestação."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Medicamentos para emagrecimento não são tratamento habitual de grávidas; revisar exposição a agonistas de GLP-1 e outros fármacos com a equipe. Não prometer ausência de risco fetal."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Seguimento de ganho ponderal, pressão e metabolismo. Planejar parto e cuidados pós-parto conforme risco, sem impor cesariana apenas por obesidade."
+        }
+      ],
+      "references": [
+        "[ob] NICE NG247 — nutrição materna, 2025 — https://www.nice.org.uk/guidance/NG247/chapter/rationale-and-impact",
+        "[obdrug] NICE NG246 — medicamentos para controle de peso — https://www.nice.org.uk/guidance/ng246/chapter/Medicines-and-surgery"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Obesidad — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "La obesidad preexistente es un factor de riesgo obstétrico; el embarazo no crea un nuevo owner para esta enfermedad.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La obesidad preexistente es un factor de riesgo obstétrico; el embarazo no crea un nuevo owner para esta enfermedad."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La mayor adiposidad se asocia con resistencia a la insulina, hipertensión y dificultades de evaluación, anestesia y parto. El manejo debe ser respetuoso e individualizado."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Registrar peso previo al embarazo cuando esté disponible, evolución, presión, alimentación y riesgo metabólico. Detectar diabetes según protocolo y evaluar necesidades de seguimiento especializado."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Vía 1 — plan nutricional con profesional, adecuación de calidad alimentaria y seguimiento de ganancia ponderal, sin indicar adelgazamiento intencional durante el embarazo.\nVía 2 — actividad física adaptada y permitida por obstetricia, abordando barreras de movilidad, sueño y apoyo psicosocial; complementar el plan alimentario, no sustituir cuidado prenatal. Evaluar diabetes/hipertensión e individualizar riesgo trombótico. Fármacos para pérdida de peso y cirugía bariátrica no son opciones para iniciar tratamiento de obesidad durante embarazo."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Los medicamentos para adelgazar no son tratamiento habitual de embarazadas; revisar exposición a agonistas de GLP-1 y otros fármacos con el equipo. No prometer ausencia de riesgo fetal."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Seguimiento de aumento de peso, presión y metabolismo. Planificar parto y cuidados posparto según riesgo, sin imponer cesárea solamente por obesidad."
+        }
+      ],
+      "references": [
+        "[ob] NICE NG247 — nutrição materna, 2025 — https://www.nice.org.uk/guidance/NG247/chapter/rationale-and-impact",
+        "[obdrug] NICE NG246 — medicamentos para controle de peso — https://www.nice.org.uk/guidance/ng246/chapter/Medicines-and-surgery"
+      ]
+    }
+  }
+}

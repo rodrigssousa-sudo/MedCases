@@ -1,0 +1,46 @@
+# Rotura prematura pretérmino de membranas
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Rotura de membranas antes del trabajo de parto y antes del término; separar de rotura a término y corioamnionitis.
+
+## Diagnóstico, estudios y diferenciales
+
+- Historia de pérdida de líquido y examen con espéculo estéril; prueba específica si es necesaria.
+- Evitar exámenes digitales repetidos.
+- No diagnosticar infección solamente por leucocitos o proteína C reactiva aislados.
+
+## Tratamiento y dosis
+
+- Vía 1 — si es elegible, manejo expectante con vigilancia maternofetal y antibiótico de latencia: eritromicina 250 mg por vía oral cada 6 horas durante un máximo de 10 días o hasta trabajo de parto establecido, lo que ocurra primero.
+- Ante intolerancia/contraindicación, NICE permite considerar penicilina oral, con producto/dosis definidos por protocolo y alergias.
+- No usar amoxicilina/clavulanato para latencia.
+- Vía 2 — parto ante infección, compromiso fetal, hemorragia, prolapso de cordón u otra indicación; tratar infección y no prolongar latencia indiscriminadamente.
+- Corticoide prenatal, neuroprotección y antibiótico intraparto para estreptococo del grupo B tienen indicaciones propias, no sustituyen estas vías.
+- No indicar tocolítico rutinario en rotura pretérmino.
+
+## Seguridad y monitoreo
+
+- No usar amoxicilina/clavulanato como profilaxis de latencia.
+- No indicar tocolítico rutinario en rotura pretérmino.
+- La infección exige tratamiento y decisión del parto, no prolongación ciega de latencia.
+
+## Escalamiento, alta y seguimiento
+
+- Evaluación hospitalaria inicial, comunicación con neonatología y plan individual del parto.
+- Fiebre, dolor uterino, sangrado, alteración fetal o cordón prolapsado exige intervención inmediata.
+
+## Fisiopatología y razonamiento
+
+- Existe riesgo de prematuridad, infección, desprendimiento y prolapso de cordón.
+- La vigilancia combina condiciones maternas y fetales.
+
+## Referencias
+
+[pprom] RCOG Green-top 73 — rotura pré-termo, vigência estendida em 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/care-of-women-presenting-with-suspected-preterm-prelabour-rupture-of-membranes-from-24plus0-weeks-of-gestation-green-top-guideline-no-73/
+
+[ptl] NICE NG25 — trabalho de parto prematuro — https://www.nice.org.uk/guidance/ng25/chapter/recommendations
+
+[ster] ACOG Committee Opinion 713 — corticosteroide antenatal — https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation

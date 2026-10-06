@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "diarrea_aguda_009",
+  "titles": {
+    "pt": "Diarreia aguda infecciosa — gestação",
+    "es": "Diarrea aguda infecciosa — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "REHYDRATION_ROUTE_ALTERNATIVES",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Diarreia de provável causa infecciosa na gestante; preservar owner geral já existente, sem criar gastroenterite gestacional duplicada.",
+      "es": "Diarrea de probable causa infecciosa en la embarazada; preservar el owner general existente, sin crear gastroenteritis gestacional duplicada."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Perdas de água e eletrólitos podem comprometer perfusão; gravidez não indica antibiótico automaticamente.",
+      "es": "Las pérdidas de agua y electrolitos pueden comprometer perfusión; el embarazo no indica antibiótico automáticamente."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar exposição, duração, sangue, febre, diurese e sinais obstétricos. Testes fecais são dirigidos por gravidade, surto, imunossupressão e suspeita etiológica.",
+      "es": "Evaluar exposición, duración, sangre, fiebre, diuresis y signos obstétricos. Las pruebas fecales se dirigen por gravedad, brote, inmunosupresión y sospecha etiológica."
+    },
+    {
+      "id": "treatment",
+      "pt": "Opção 1 — solução de reidratação oral de composição padronizada, em volumes frequentes conforme perdas e tolerância, mantendo alimentação; não substituir por bebida muito açucarada.\nOpção 2 — solução isotônica intravenosa em serviço de saúde se choque, desidratação grave ou falha da via oral; volume e velocidade guiados por perfusão, diurese e comorbidades, evitando sobrecarga. Antibiótico só quando etiologia/gravidade justificar e com escolha gestacional; não tratar toda diarreia com antibiótico. Suspeita de STEC requer evitar antibióticos e antiperistálticos; sangue, febre importante ou oligúria exige investigação e retorno urgente.",
+      "es": "Opción 1 — solución de rehidratación oral de composición estandarizada, en volúmenes frecuentes según pérdidas y tolerancia, manteniendo alimentación; no sustituir por bebida muy azucarada.\nOpción 2 — solución isotónica intravenosa en servicio de salud ante shock, deshidratación grave o falla de vía oral; volumen y velocidad guiados por perfusión, diuresis y comorbilidades, evitando sobrecarga. Antibiótico solamente cuando etiología/gravedad lo justifique y con elección gestacional; no tratar toda diarrea con antibiótico. Sospecha de STEC exige evitar antibióticos y antiperistálticos; sangre, fiebre importante u oliguria exige investigación y retorno urgente."
+    },
+    {
+      "id": "safety",
+      "pt": "Diarreia sanguinolenta pode exigir pesquisa de toxina Shiga; não iniciar antibiótico indiscriminado nem antiperistáltico diante de infecção invasiva suspeita.",
+      "es": "La diarrea sanguinolenta puede exigir búsqueda de toxina Shiga; no iniciar antibiótico indiscriminado ni antiperistáltico ante sospecha de infección invasiva."
+    },
+    {
+      "id": "disposition",
+      "pt": "Alta com ingestão e perfusão recuperadas. Febre persistente, oligúria, sangue, dor focal, contrações ou redução de movimentos fetais exigem reavaliação/hospital conforme gravidade.",
+      "es": "Alta con ingesta y perfusión recuperadas. Fiebre persistente, oliguria, sangre, dolor focal, contracciones o disminución de movimientos fetales exigen reevaluación/hospital según gravedad."
+    }
+  ],
+  "references": [
+    {
+      "id": "diarr",
+      "title": "IDSA — diarreia infecciosa, guideline final vigente de 2017",
+      "url": "https://www.idsociety.org/practice-guideline/infectious-diarrhea",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "pain",
+      "title": "NHS SPS — tratamento da dor na gravidez",
+      "url": "https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 33,
+    "owner": "diarrea_aguda_009",
+    "title": {
+      "pt": "Diarreia aguda infecciosa — gestação",
+      "es": "Diarrea aguda infecciosa — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "diarrea_aguda_009",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "d4f9fa120e1e85d17aae09457c8fbd695b4961c58fdc330dc8c6d0f310372cf0"
+}

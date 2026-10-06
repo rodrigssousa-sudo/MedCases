@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Hipertireoidismo — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "Excesso de hormônios tireoidianos na gestação; distinguir doença de Graves de tireotoxicose transitória gestacional.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Excesso de hormônios tireoidianos na gestação; distinguir doença de Graves de tireotoxicose transitória gestacional."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "O estímulo por gonadotrofina coriônica pode reduzir TSH, especialmente com hiperêmese; TSH baixo isolado não define necessidade de antitireoidiano."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dosar TSH, tiroxina livre e, quando indicado, anticorpos contra receptor de TSH. Investigar bócio, orbitopatia, perda ponderal, palpitações e exposição a fármacos."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opção 1 — propiltiouracil quando antitireoidiano for necessário no primeiro trimestre, na menor dose capaz de manter tiroxina livre no alvo gestacional; dose e intervalo dependem de gravidade e exames.\nOpção 2 — metimazol após o primeiro trimestre pode ser preferido para reduzir risco hepático do propiltiouracil, após revisão especializada; a troca exige conversão e monitorização, não equivalência automática de miligramas. Explicar risco de agranulocitose: febre/dor de garganta exige suspensão e hemograma urgente; icterícia/urina escura exige avaliação hepática. Tireotoxicose transitória por hCG pode demandar apenas suporte. Cirurgia é recurso para casos selecionados com intolerância/falha; radioiodo é contraindicado na gestação."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Iodo radioativo é contraindicado. Monitorar efeitos adversos e função fetal quando há anticorpos relevantes; não tratar tireotoxicose transitória apenas por TSH suprimido."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Febre, delirium, insuficiência cardíaca ou arritmia instável sugerem crise tireotóxica e exigem hospital. Casos estáveis precisam de seguimento obstétrico/endócrino e plano pós-parto."
+        }
+      ],
+      "references": [
+        "[thy] RCOG Green-top 76 — tireoide na gravidez, final 2025 — https://obgyn.onlinelibrary.wiley.com/doi/10.1111/1471-0528.18088",
+        "[hyper] American Thyroid Association — hipertireoidismo na gravidez — https://www.thyroid.org/hyperthyroidism-in-pregnancy/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Hipertiroidismo — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "Exceso de hormonas tiroideas durante el embarazo; distinguir enfermedad de Graves de tirotoxicosis transitoria gestacional.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Exceso de hormonas tiroideas durante el embarazo; distinguir enfermedad de Graves de tirotoxicosis transitoria gestacional."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "El estímulo por gonadotropina coriónica puede reducir TSH, especialmente con hiperémesis; TSH baja aislada no define necesidad de antitiroideos."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Medir TSH, tiroxina libre y, cuando corresponda, anticuerpos contra receptor de TSH. Investigar bocio, orbitopatía, pérdida de peso, palpitaciones y exposición a fármacos."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opción 1 — propiltiouracilo cuando sea necesario un antitiroideo en el primer trimestre, en la menor dosis capaz de mantener tiroxina libre en el objetivo gestacional; dosis e intervalo dependen de gravedad y estudios.\nOpción 2 — metimazol después del primer trimestre puede preferirse para reducir riesgo hepático de propiltiouracilo, tras revisión especializada; el cambio exige conversión y monitoreo, no equivalencia automática de miligramos. Explicar riesgo de agranulocitosis: fiebre/dolor de garganta exige suspensión y hemograma urgente; ictericia/orina oscura exige evaluación hepática. Tirotoxicosis transitoria por hCG puede requerir solamente soporte. Cirugía es recurso en casos seleccionados con intolerancia/falla; radioyodo está contraindicado en embarazo."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "El yodo radiactivo está contraindicado. Vigilar efectos adversos y función fetal cuando existen anticuerpos relevantes; no tratar tirotoxicosis transitoria solamente por TSH suprimida."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Fiebre, delirium, insuficiencia cardíaca o arritmia inestable sugieren tormenta tiroidea y requieren hospital. Los casos estables necesitan seguimiento obstétrico/endocrinológico y plan posparto."
+        }
+      ],
+      "references": [
+        "[thy] RCOG Green-top 76 — tireoide na gravidez, final 2025 — https://obgyn.onlinelibrary.wiley.com/doi/10.1111/1471-0528.18088",
+        "[hyper] American Thyroid Association — hipertireoidismo na gravidez — https://www.thyroid.org/hyperthyroidism-in-pregnancy/"
+      ]
+    }
+  }
+}

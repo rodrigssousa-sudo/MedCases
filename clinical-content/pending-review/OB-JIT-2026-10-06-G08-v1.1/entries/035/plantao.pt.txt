@@ -1,0 +1,39 @@
+# Colecistite aguda — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Inflamação aguda da vesícula, geralmente por obstrução calculosa, com dor persistente e sinais inflamatórios.
+
+## Diagnóstico, exames e diferenciais
+
+- Ultrassom inicial e laboratório dirigido; avaliar febre, defesa, icterícia, perfusão e causas obstétricas de dor abdominal.
+
+## Tratamento e doses
+
+- Tratamento preferido — avaliação hospitalar, hidratação, analgesia e antibiótico apropriado à gestação conforme gravidade, alergias e flora local, associados a colecistectomia laparoscópica quando indicada; SAGES favorece cirurgia sobre tratamento não operatório na colecistite aguda.
+- Conduta alternativa temporária — se impossibilidade cirúrgica imediata ou risco excepcional, tratamento hospitalar não operatório e eventual drenagem decidida pela equipe, com plano de controle definitivo.
+- Não é alternativa equivalente de rotina, pois persistem riscos de recorrência e complicação.
+- Não adiar cirurgia necessária apenas pelo trimestre; dose/intervalo do antibiótico devem corresponder ao protocolo escolhido, não à lista de fármacos de infecção urinária.
+
+## Segurança e monitorização
+
+- Esquema antibiótico depende de gravidade, resistência, alergias e função renal; não há dose universal neste suplemento.
+- Coordenar obstetrícia, cirurgia e anestesia.
+
+## Escalonamento, alta e seguimento
+
+- Sepse ou peritonite exige escalonamento e controle do foco.
+- Alta após tratamento e estabilidade, com avaliação obstétrica e seguimento pós-operatório quando aplicável.
+
+## Fisiopatologia e raciocínio
+
+- Não é cólica simples.
+- Atraso no tratamento pode favorecer necrose, perfuração e sepse materna.
+
+## Referências
+
+[surg] SAGES — laparoscopia na gravidez, final 2024 — https://www.sages.org/publications/guidelines/guidelines-for-the-use-of-laparoscopy-during-pregnancy/
+
+[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/

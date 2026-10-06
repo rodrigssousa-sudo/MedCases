@@ -1,0 +1,44 @@
+{
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "treatmentsExpanded": 50,
+  "fourModeProjections": 200,
+  "sourcesTotal": 90,
+  "allOwnersPreserved": true,
+  "timeUnits": "FULL_WORDS",
+  "referencesPosition": "END",
+  "optionPolicy": "Alternatives, sequential stages, complementary pathways and contraindication/failure pathways are distinguished. Two equivalent drugs are never forced.",
+  "exceptionsToEquivalentSecondTherapy": [
+    {
+      "rank": 10,
+      "owner": "hipotireoidismo",
+      "classification": "NO_EQUIVALENT_SECOND_DRUG"
+    },
+    {
+      "rank": 18,
+      "owner": "tricomoniase",
+      "classification": "NO_ROUTINE_EQUIVALENT_SECOND_DRUG"
+    },
+    {
+      "rank": 19,
+      "owner": "sifilis",
+      "classification": "PENICILLIN_ONLY_FETAL_EFFICACY"
+    },
+    {
+      "rank": 24,
+      "owner": "infeccao_gonococica",
+      "classification": "PREFERRED_REGIMEN_SPECIALIST_FALLBACK"
+    },
+    {
+      "rank": 35,
+      "owner": "colecistite_aguda",
+      "classification": "DEFINITIVE_SURGERY_AND_BRIDGE_ONLY"
+    },
+    {
+      "rank": 48,
+      "owner": "obstetr_gravidez_ectopica_rota",
+      "classification": "URGENT_SURGERY_ONLY_APPROACH_SELECTION"
+    }
+  ],
+  "medicalReview": "WAITING_HUMAN_APPROVAL",
+  "runtimePublication": false
+}

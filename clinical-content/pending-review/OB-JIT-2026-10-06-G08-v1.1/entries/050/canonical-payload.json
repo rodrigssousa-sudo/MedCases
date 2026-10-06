@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "rotura_prematura_pre_termo_membranas",
+  "titles": {
+    "pt": "Rotura prematura pré-termo das membranas",
+    "es": "Rotura prematura pretérmino de membranas"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "EXPECTANT_OR_DELIVERY_BY_INDICATION",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Rotura de membranas antes do trabalho de parto e antes do termo; separar de rotura a termo e corioamnionite.",
+      "es": "Rotura de membranas antes del trabajo de parto y antes del término; separar de rotura a término y corioamnionitis."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Há risco de prematuridade, infecção, descolamento e prolapso de cordão. A vigilância combina condições maternas e fetais.",
+      "es": "Existe riesgo de prematuridad, infección, desprendimiento y prolapso de cordón. La vigilancia combina condiciones maternas y fetales."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "História de perda de líquido e exame com espéculo estéril; teste específico se necessário. Evitar exames digitais repetidos. Não diagnosticar infecção apenas por leucócitos ou proteína C reativa isolados.",
+      "es": "Historia de pérdida de líquido y examen con espéculo estéril; prueba específica si es necesaria. Evitar exámenes digitales repetidos. No diagnosticar infección solamente por leucocitos o proteína C reactiva aislados."
+    },
+    {
+      "id": "treatment",
+      "pt": "Via 1 — se elegível, manejo expectante com vigilância materno-fetal e antibiótico de latência: eritromicina 250 mg por via oral a cada 6 horas por no máximo 10 dias ou até trabalho de parto estabelecido, o que ocorrer primeiro. Se intolerância/contraindicação, NICE permite considerar penicilina oral, com produto/dose definidos pelo protocolo e alergias. Não usar amoxicilina/clavulanato para latência.\nVia 2 — parto quando houver infecção, comprometimento fetal, hemorragia, prolapso de cordão ou outra indicação; tratar infecção e não prolongar latência indiscriminadamente. Corticoide antenatal, neuroproteção e antibiótico intraparto para estreptococo do grupo B têm indicações próprias, não substituem essas vias. Não indicar tocolítico de rotina na rotura pré-termo.",
+      "es": "Vía 1 — si es elegible, manejo expectante con vigilancia maternofetal y antibiótico de latencia: eritromicina 250 mg por vía oral cada 6 horas durante un máximo de 10 días o hasta trabajo de parto establecido, lo que ocurra primero. Ante intolerancia/contraindicación, NICE permite considerar penicilina oral, con producto/dosis definidos por protocolo y alergias. No usar amoxicilina/clavulanato para latencia.\nVía 2 — parto ante infección, compromiso fetal, hemorragia, prolapso de cordón u otra indicación; tratar infección y no prolongar latencia indiscriminadamente. Corticoide prenatal, neuroprotección y antibiótico intraparto para estreptococo del grupo B tienen indicaciones propias, no sustituyen estas vías. No indicar tocolítico rutinario en rotura pretérmino."
+    },
+    {
+      "id": "safety",
+      "pt": "Não usar amoxicilina/clavulanato como profilaxia de latência. Não indicar tocolítico de rotina na rotura pré-termo. Infecção exige tratamento e decisão de parto, não prolongamento cego da latência.",
+      "es": "No usar amoxicilina/clavulanato como profilaxis de latencia. No indicar tocolítico rutinario en rotura pretérmino. La infección exige tratamiento y decisión del parto, no prolongación ciega de latencia."
+    },
+    {
+      "id": "disposition",
+      "pt": "Avaliação hospitalar inicial, comunicação com neonatologia e plano individual de parto. Febre, dor uterina, sangramento, alteração fetal ou cordão prolapsado exige intervenção imediata.",
+      "es": "Evaluación hospitalaria inicial, comunicación con neonatología y plan individual del parto. Fiebre, dolor uterino, sangrado, alteración fetal o cordón prolapsado exige intervención inmediata."
+    }
+  ],
+  "references": [
+    {
+      "id": "pprom",
+      "title": "RCOG Green-top 73 — rotura pré-termo, vigência estendida em 2024",
+      "url": "https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/care-of-women-presenting-with-suspected-preterm-prelabour-rupture-of-membranes-from-24plus0-weeks-of-gestation-green-top-guideline-no-73/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "ptl",
+      "title": "NICE NG25 — trabalho de parto prematuro",
+      "url": "https://www.nice.org.uk/guidance/ng25/chapter/recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "ster",
+      "title": "ACOG Committee Opinion 713 — corticosteroide antenatal",
+      "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 50,
+    "owner": "rotura_prematura_pre_termo_membranas",
+    "title": {
+      "pt": "Rotura prematura pré-termo das membranas",
+      "es": "Rotura prematura pretérmino de membranas"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "rotura_prematura_pre_termo_membranas",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [
+      "trabalho_parto_prematuro",
+      "corioamnionite_sepse_obstetrica"
+    ],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "07062a5bccfadb15f8f583ffb3ea2c5cffbb8126f47eb0ddbd332036ca5fd51a"
+}

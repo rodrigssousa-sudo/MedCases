@@ -1,0 +1,139 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Diabetes gestacional",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "Hiperglicemia diagnosticada durante a gestação que não satisfaz critérios de diabetes manifesto prévio.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Hiperglicemia diagnosticada durante a gestação que não satisfaz critérios de diabetes manifesto prévio."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Resistência à insulina aumenta com hormônios placentários; hiperglicemia materna favorece crescimento fetal excessivo e hipoglicemia neonatal."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Na estratégia de etapa única, teste com 75 g de glicose entre 24–28 semanas: jejum ≥92 mg/dL, após 1 hora ≥180 mg/dL ou após 2 horas ≥153 mg/dL; 1 valor alterado diagnostica. Não misturar critérios de outra estratégia."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opção 1 — alimentação individualizada, atividade física permitida pela obstetrícia e automonitorização; se metas não forem atingidas, insulina subcutânea é o fármaco preferido pela ADA. Escolher basal e/ou prandial segundo o padrão glicêmico e titular com equipe; não existe dose única segura para todas as gestantes.\nOpção 2 — metformina pode ser considerada conforme NICE após 1–2 semanas sem atingir metas com alimentação/atividade, ou como adjuvante à insulina, após discutir passagem placentária e incertezas de longo prazo. A ADA não a recomenda como primeira linha na gestação: documentar qual diretriz está sendo adotada. Contraindicação, intolerância ou controle insuficiente exigem insulina. Não retardar insulina diante de hiperglicemia importante ou complicações."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Metformina atravessa a placenta; NICE permite seu uso em contextos definidos, enquanto ADA não a recomenda como primeira opção. Escolher protocolo explicitamente, sem combinar recomendações incompatíveis. Metas ADA, se alcançáveis sem hipoglicemia: jejum abaixo de 95 mg/dL; após refeição, abaixo de 140 mg/dL em 1 hora ou 120 mg/dL em 2 horas; individualizar."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Seguimento obstétrico/endócrino e plano pós-parto. ADA recomenda teste com 75 g entre 4–12 semanas após o parto e vigilância metabólica posterior; hipoglicemia ou suspeita de cetoacidose exige urgência."
+        }
+      ],
+      "references": [
+        "[dmd] ADA — Diagnosis and Classification, Standards 2026 — https://diabetesjournals.org/care/article/49/Supplement_1/S27/163926/2-Diagnosis-and-Classification-of-Diabetes",
+        "[dm] ADA — Management of Diabetes in Pregnancy, Standards 2026 — https://diabetesjournals.org/care/article/49/Supplement_1/S321/163918/15-Management-of-Diabetes-in-Pregnancy-Standards",
+        "[dmuk] NICE NG3 — diabetes e gravidez — https://www.nice.org.uk/guidance/NG3/chapter/recommendations",
+        "[dmvis] ADA — monitorização da glicose na gravidez, apoio aos critérios vigentes — https://diabetes.org/sites/default/files/2024-10/Glucose-Monitoring-During-Pregnancy-patient-FINAL.pdf"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Diabetes gestacional",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "Hiperglucemia diagnosticada durante el embarazo que no cumple criterios de diabetes manifiesta previa.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Hiperglucemia diagnosticada durante el embarazo que no cumple criterios de diabetes manifiesta previa."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La resistencia a la insulina aumenta por hormonas placentarias; la hiperglucemia materna favorece crecimiento fetal excesivo e hipoglucemia neonatal."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "En la estrategia de un solo paso, prueba con 75 g de glucosa entre 24–28 semanas: ayuno ≥92 mg/dL, después de 1 hora ≥180 mg/dL o después de 2 horas ≥153 mg/dL; 1 valor alterado diagnostica. No mezclar criterios de otra estrategia."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opción 1 — alimentación individualizada, actividad física permitida por obstetricia y automonitoreo; si no se alcanzan metas, insulina subcutánea es el fármaco preferido por ADA. Elegir basal y/o prandial según patrón glucémico y titular con el equipo; no existe una dosis única segura para todas las embarazadas.\nOpción 2 — metformina puede considerarse según NICE tras 1–2 semanas sin alcanzar metas con alimentación/actividad, o como adyuvante a insulina, después de discutir paso placentario e incertidumbres a largo plazo. ADA no la recomienda como primera línea en embarazo: documentar qué guía se adopta. Contraindicación, intolerancia o control insuficiente exigen insulina. No demorar insulina ante hiperglucemia importante o complicaciones."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "La metformina atraviesa la placenta; NICE permite su uso en contextos definidos, mientras ADA no la recomienda como primera opción. Elegir explícitamente el protocolo, sin combinar recomendaciones incompatibles. Metas ADA, si se alcanzan sin hipoglucemia: ayuno inferior a 95 mg/dL; después de comer, inferior a 140 mg/dL a 1 hora o 120 mg/dL a 2 horas; individualizar."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Seguimiento obstétrico/endocrinológico y plan posparto. ADA recomienda prueba con 75 g entre 4–12 semanas después del parto y vigilancia metabólica posterior; hipoglucemia o sospecha de cetoacidosis requieren urgencias."
+        }
+      ],
+      "references": [
+        "[dmd] ADA — Diagnosis and Classification, Standards 2026 — https://diabetesjournals.org/care/article/49/Supplement_1/S27/163926/2-Diagnosis-and-Classification-of-Diabetes",
+        "[dm] ADA — Management of Diabetes in Pregnancy, Standards 2026 — https://diabetesjournals.org/care/article/49/Supplement_1/S321/163918/15-Management-of-Diabetes-in-Pregnancy-Standards",
+        "[dmuk] NICE NG3 — diabetes e gravidez — https://www.nice.org.uk/guidance/NG3/chapter/recommendations",
+        "[dmvis] ADA — monitorização da glicose na gravidez, apoio aos critérios vigentes — https://diabetes.org/sites/default/files/2024-10/Glucose-Monitoring-During-Pregnancy-patient-FINAL.pdf"
+      ]
+    }
+  }
+}

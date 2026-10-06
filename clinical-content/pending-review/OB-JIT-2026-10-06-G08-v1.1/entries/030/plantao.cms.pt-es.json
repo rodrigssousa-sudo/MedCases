@@ -1,0 +1,175 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Constipação funcional — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Evacuações difíceis ou infrequentes sem causa orgânica identificada, no contexto da gravidez.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Evacuações difíceis ou infrequentes sem causa orgânica identificada, no contexto da gravidez."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Revisar padrão prévio, fezes, dor, distensão, medicamentos e eliminação de gases.",
+            "Sangramento persistente, emagrecimento, vômitos ou obstipação completa exigem investigação."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opção 1 — após adequar fibras, líquidos e mobilidade, laxativo formador de bolo, como ispágula, conforme produto e com água suficiente; não usar diante de obstrução suspeita.",
+            "Opção 2 — se insuficiente, laxativo osmótico, como lactulose ou macrogol, conforme concentração/apresentação e resposta; não converter número de sachês entre produtos diferentes.",
+            "Evitar desidratação e excesso que cause diarreia.",
+            "Estimulante por curto prazo ou glicerol são recursos selecionados após avaliação, não associações obrigatórias.",
+            "Sangramento, vômitos, distensão importante ou ausência de eliminação de gases exige excluir causa orgânica antes de laxativos."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Uso curto de estimulante pode ser considerado após falha das medidas iniciais.",
+            "Evitar escalada indiscriminada e suspender automanejo se suspeita de obstrução."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Alta com plano de hábitos e revisão dos fármacos constipantes, sem suspender ferro necessário sem alternativa.",
+            "Persistência ou sinais de alarme exigem reavaliação."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Motilidade reduzida, dieta, menor atividade e suplementos de ferro podem contribuir.",
+            "Não confundir com obstrução ou fecaloma complicado."
+          ]
+        }
+      ],
+      "references": [
+        "[const] NHS SPS — constipação na gestação — https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/",
+        "[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Constipación funcional — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "Evacuaciones difíciles o infrecuentes sin causa orgánica identificada, en el contexto del embarazo.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Evacuaciones difíciles o infrecuentes sin causa orgánica identificada, en el contexto del embarazo."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Revisar patrón previo, heces, dolor, distensión, medicamentos y eliminación de gases.",
+            "Sangrado persistente, adelgazamiento, vómitos u obstipación completa requieren investigación."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opción 1 — tras adecuar fibra, líquidos y movilidad, laxante formador de bolo, como ispágula, según producto y con suficiente agua; no usar ante sospecha de obstrucción.",
+            "Opción 2 — si es insuficiente, laxante osmótico, como lactulosa o macrogol, según concentración/presentación y respuesta; no convertir número de sobres entre productos diferentes.",
+            "Evitar deshidratación y exceso que cause diarrea.",
+            "Estimulante por corto plazo o glicerol son recursos seleccionados tras evaluación, no combinaciones obligatorias.",
+            "Sangrado, vómitos, distensión importante o ausencia de eliminación de gases exige excluir causa orgánica antes de laxantes."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Puede considerarse uso breve de estimulante tras fracaso de medidas iniciales.",
+            "Evitar escalamiento indiscriminado y suspender automanejo ante sospecha de obstrucción."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Alta con plan de hábitos y revisión de fármacos constipantes, sin suspender hierro necesario sin alternativa.",
+            "Persistencia o signos de alarma requieren reevaluación."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pueden contribuir motilidad reducida, dieta, menor actividad y suplementos de hierro.",
+            "No confundir con obstrucción o fecaloma complicado."
+          ]
+        }
+      ],
+      "references": [
+        "[const] NHS SPS — constipação na gestação — https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/",
+        "[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations"
+      ]
+    }
+  }
+}

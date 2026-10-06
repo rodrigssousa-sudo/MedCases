@@ -1,0 +1,45 @@
+# Diabetes mellitus tipo 2 — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Diabetes tipo 2 preexistente ou manifesto na gestação; não reclassificar automaticamente como diabetes gestacional.
+
+## Diagnóstico, exames e diferenciais
+
+- Avaliar controle glicêmico, função renal, retina, pressão e medicamentos usados antes da concepção.
+- Diferenciar diabetes manifesto de hiperglicemia exclusivamente gestacional.
+
+## Tratamento e doses
+
+- Opção 1 — insulina subcutânea, preferida pela ADA na gestação, com esquema e titulação conforme glicemia de jejum/pós-refeições, ingestão e risco de hipoglicemia; manter orientação nutricional e monitorização.
+- Opção 2 — metformina como alternativa/adjuvante em situações selecionadas segundo NICE, se benefício superar riscos e após decisão compartilhada; atravessa a placenta e não é primeira linha pela ADA.
+- Rever função renal, tolerância e necessidade de acrescentar insulina.
+- Não manter automaticamente outros antidiabéticos de uso geral sem avaliar segurança gestacional.
+- Evitar suspensão abrupta de tratamento eficaz sem esquema substituto.
+
+## Segurança e monitorização
+
+- A revisão de fármacos deve assegurar alternativa e controle, evitando suspensão desassistida.
+- Monitorar hipoglicemia, ganho ponderal e complicações maternas.
+- Metas ADA, se alcançáveis sem hipoglicemia: jejum abaixo de 95 mg/dL; após refeição, abaixo de 140 mg/dL em 1 hora ou 120 mg/dL em 2 horas; individualizar.
+
+## Escalonamento, alta e seguimento
+
+- Manter equipe obstétrica/endócrina e plano pós-parto.
+- Descompensação, cetose ou sinais de pré-eclâmpsia exigem avaliação urgente; alta com plano de glicemias e tratamento compreensível.
+
+## Fisiopatologia e raciocínio
+
+- Hiperglicemia no período de organogênese aumenta risco fetal; obesidade, hipertensão e doença renal podem acrescentar risco.
+
+## Referências
+
+[dm] ADA — Management of Diabetes in Pregnancy, Standards 2026 — https://diabetesjournals.org/care/article/49/Supplement_1/S321/163918/15-Management-of-Diabetes-in-Pregnancy-Standards
+
+[dmn] NIDDK — diabetes e gravidez — https://www.niddk.nih.gov/health-information/diabetes/diabetes-pregnancy
+
+[dmuk] NICE NG3 — diabetes e gravidez — https://www.nice.org.uk/guidance/NG3/chapter/recommendations
+
+[dmvis] ADA — monitorização da glicose na gravidez, apoio aos critérios vigentes — https://diabetes.org/sites/default/files/2024-10/Glucose-Monitoring-During-Pregnancy-patient-FINAL.pdf

@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Dor da cintura pélvica relacionada à gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "Dor na região púbica ou sacroilíaca, frequentemente provocada por movimentos assimétricos, durante a gravidez.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dor na região púbica ou sacroilíaca, frequentemente provocada por movimentos assimétricos, durante a gravidez."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "É multifatorial e distinta de lombalgia pura; não atribuir todo quadro a deslocamento de ossos ou instabilidade comprovada."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Caracterizar dor ao subir escadas, virar na cama ou apoiar uma perna. Excluir infecção, trauma, trombose, sintomas neurológicos e causas obstétricas."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opção 1 — fisioterapia com orientações posturais, adaptação de atividades e exercícios individualizados.\nOpção 2 — teste de suporte pélvico não rígido/auxílios de mobilidade quando indicados, associado à reabilitação; analgesia se necessária: Paracetamol 500 mg–1 g por via oral se necessário, intervalo mínimo de 4 horas, máximo 4 administrações e 4 g em 24 horas em adulto sem fatores de risco; peso inferior a 50 kg, hepatopatia, desnutrição ou outras vulnerabilidades exigem limite individual menor. Conferir outros produtos com paracetamol e usar pelo menor tempo necessário. Não indicar imobilização prolongada ou manipulação isolada como tratamento suficiente. Reavaliar limitação funcional, necessidade de apoio e risco trombótico se mobilidade muito reduzida."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Analgesia deve ser compatível com gravidez. Mobilidade muito limitada requer avaliar risco trombótico e assistência; não prescrever anticoagulação apenas pelo nome do diagnóstico."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pode permitir parto vaginal, com posição e movimentos planejados; cesariana não é obrigatória. Seguimento funcional e pós-parto; dor incapacitante ou sinais de alarme requerem reavaliação."
+        }
+      ],
+      "references": [
+        "[pgp] NHS — dor pélvica na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/pelvic-pain/",
+        "[pgpr] RCOG — dor da cintura pélvica e gravidez — https://www.rcog.org.uk/for-the-public/browse-our-patient-information/pelvic-girdle-pain-and-pregnancy/",
+        "[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Dolor de cintura pélvica relacionado con el embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "Dolor en región púbica o sacroilíaca, frecuentemente provocado por movimientos asimétricos, durante el embarazo.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dolor en región púbica o sacroilíaca, frecuentemente provocado por movimientos asimétricos, durante el embarazo."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Es multifactorial y distinto de lumbalgia pura; no atribuir todo cuadro a desplazamiento óseo o inestabilidad demostrada."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Caracterizar dolor al subir escaleras, girar en la cama o apoyar una pierna. Excluir infección, traumatismo, trombosis, síntomas neurológicos y causas obstétricas."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opción 1 — fisioterapia con orientación postural, adaptación de actividades y ejercicios individualizados.\nOpción 2 — prueba de soporte pélvico no rígido/ayudas de movilidad cuando correspondan, asociada a rehabilitación; analgesia si es necesaria: Paracetamol 500 mg–1 g por vía oral si es necesario, intervalo mínimo de 4 horas, máximo 4 administraciones y 4 g en 24 horas en adulto sin factores de riesgo; peso inferior a 50 kg, hepatopatía, desnutrición u otras vulnerabilidades exigen límite individual menor. Verificar otros productos con paracetamol y usar durante el menor tiempo necesario. No indicar inmovilización prolongada ni manipulación aislada como tratamiento suficiente. Reevaluar limitación funcional, necesidad de apoyo y riesgo trombótico si movilidad muy reducida."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "La analgesia debe ser compatible con el embarazo. Movilidad muy limitada exige evaluar riesgo trombótico y asistencia; no indicar anticoagulación solamente por el nombre del diagnóstico."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Puede permitir parto vaginal, con posición y movimientos planificados; la cesárea no es obligatoria. Seguimiento funcional y posparto; dolor incapacitante o signos de alarma requieren reevaluación."
+        }
+      ],
+      "references": [
+        "[pgp] NHS — dor pélvica na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/pelvic-pain/",
+        "[pgpr] RCOG — dor da cintura pélvica e gravidez — https://www.rcog.org.uk/for-the-public/browse-our-patient-information/pelvic-girdle-pain-and-pregnancy/",
+        "[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations"
+      ]
+    }
+  }
+}

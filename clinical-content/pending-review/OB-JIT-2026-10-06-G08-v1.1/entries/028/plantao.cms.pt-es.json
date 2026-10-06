@@ -1,0 +1,177 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Pneumonia grave — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Pneumonia grave na grávida com risco respiratório ou sistêmico; preservar o escopo grave deste owner.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pneumonia grave na grávida com risco respiratório ou sistêmico; preservar o escopo grave deste owner."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Avaliar saturação, pressão, frequência respiratória, perfusão e consciência.",
+            "Radiografia indicada não deve ser omitida por gravidez; colher culturas conforme gravidade sem atrasar antibiótico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Via 1 — pneumonia comunitária grave: tratamento hospitalar imediato, suporte respiratório e antibiótico empírico combinado apropriado à gestação.",
+            "Exemplo NICE: amoxicilina/clavulanato 1,2 g intravenosos a cada 8 horas MAIS eritromicina 500 mg por via oral a cada 6 horas, quando via oral viável; confirmar protocolo e função renal.",
+            "Rever duração inicial de 5 dias segundo estabilidade e microbiologia, prolongando quando indicado.",
+            "Via 2 — esquema dirigido após culturas/testes, ou alternativa hospitalar especializada se alergia grave, resistência, aspiração ou etiologia diferente.",
+            "Não há segundo esquema gestacional universal seguro para todas essas situações; selecionar betalactâmico/macrolídeo conforme agente, antibiograma e alergia, com doses do protocolo específico.",
+            "Transição oral somente após melhora clínica; não oferecer tratamento ambulatorial como equivalente para owner de pneumonia grave."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Conferir alergia, função renal, QT e interações; trocar via do macrolídeo se ingestão inviável, sob protocolo hospitalar.",
+            "Não transpor doxiciclina do esquema não gestacional."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Internar, oferecer suporte de oxigênio e avaliação obstétrica.",
+            "Choque, necessidade crescente de oxigênio ou falência de órgãos exige escalonamento; alta após estabilidade, tolerância oral e seguimento."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Comprometimento de troca gasosa pode ameaçar mãe e feto.",
+            "Critérios clínicos e deterioração prevalecem sobre escore isolado."
+          ]
+        }
+      ],
+      "references": [
+        "[pneu] NICE NG250 — pneumonia, final 2025 — https://www.nice.org.uk/guidance/ng250/chapter/Recommendations",
+        "[pneud] NICE NG250 — pneumonia comunitária em adultos, tabela atualizada 2026 — https://www.nice.org.uk/guidance/ng250/resources/visual-summary-communityacquired-pneumonia-adults-presenting-to-hospital-pdf-15434376301"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Neumonía grave — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "Neumonía grave en la embarazada con riesgo respiratorio o sistémico; preservar el alcance grave de este owner.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Neumonía grave en la embarazada con riesgo respiratorio o sistémico; preservar el alcance grave de este owner."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Evaluar saturación, presión, frecuencia respiratoria, perfusión y conciencia.",
+            "No omitir una radiografía indicada por embarazo; obtener cultivos según gravedad sin demorar antibiótico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Vía 1 — neumonía comunitaria grave: tratamiento hospitalario inmediato, soporte respiratorio y antibiótico empírico combinado apropiado al embarazo.",
+            "Ejemplo NICE: amoxicilina/clavulanato 1,2 g intravenosos cada 8 horas MÁS eritromicina 500 mg por vía oral cada 6 horas, cuando sea viable la vía oral; confirmar protocolo y función renal.",
+            "Revisar duración inicial de 5 días según estabilidad y microbiología, prolongando cuando esté indicado.",
+            "Vía 2 — esquema dirigido tras cultivos/pruebas, o alternativa hospitalaria especializada ante alergia grave, resistencia, aspiración o etiología diferente.",
+            "No existe un segundo esquema gestacional universal seguro para todas esas situaciones; seleccionar betalactámico/macrólido según agente, antibiograma y alergia, con dosis del protocolo específico.",
+            "Transición oral solamente tras mejoría clínica; no ofrecer tratamiento ambulatorio como equivalente para owner de neumonía grave."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Verificar alergia, función renal, QT e interacciones; cambiar vía del macrólido si la ingesta no es viable, bajo protocolo hospitalario.",
+            "No trasladar doxiciclina del esquema no gestacional."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Internar, ofrecer soporte de oxígeno y evaluación obstétrica.",
+            "Shock, necesidad creciente de oxígeno o falla orgánica exigen escalamiento; alta tras estabilidad, tolerancia oral y seguimiento."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "El compromiso del intercambio gaseoso puede amenazar a madre y feto.",
+            "Los criterios clínicos y el deterioro prevalecen sobre una escala aislada."
+          ]
+        }
+      ],
+      "references": [
+        "[pneu] NICE NG250 — pneumonia, final 2025 — https://www.nice.org.uk/guidance/ng250/chapter/Recommendations",
+        "[pneud] NICE NG250 — pneumonia comunitária em adultos, tabela atualizada 2026 — https://www.nice.org.uk/guidance/ng250/resources/visual-summary-communityacquired-pneumonia-adults-presenting-to-hospital-pdf-15434376301"
+      ]
+    }
+  }
+}

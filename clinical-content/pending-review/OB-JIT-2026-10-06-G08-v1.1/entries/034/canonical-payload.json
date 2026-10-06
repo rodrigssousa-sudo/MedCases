@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "colelitiase_colica_biliar",
+  "titles": {
+    "pt": "Colelitíase/cólica biliar — gestação",
+    "es": "Colelitiasis/cólico biliar — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "CONDITIONAL_CONSERVATIVE_OR_SURGICAL",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Dor biliar por cálculos, sem evidência de colecistite, colangite ou pancreatite; esses diagnósticos mudam a urgência.",
+      "es": "Dolor biliar por cálculos, sin evidencia de colecistitis, colangitis o pancreatitis; estos diagnósticos cambian la urgencia."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Estase e composição biliar da gravidez favorecem cálculos; recorrência pode levar a complicações.",
+      "es": "La estasis y composición biliar del embarazo favorecen cálculos; la recurrencia puede causar complicaciones."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar dor em hipocôndrio direito, duração, febre e icterícia; ultrassom é exame inicial. Laboratório dirigido ajuda a excluir inflamação, obstrução e pancreatite.",
+      "es": "Evaluar dolor en hipocondrio derecho, duración, fiebre e ictericia; ecografía como examen inicial. El laboratorio dirigido ayuda a excluir inflamación, obstrucción y pancreatitis."
+    },
+    {
+      "id": "treatment",
+      "pt": "Opção 1 — episódio de cólica biliar sem inflamação/obstrução: hidratação, analgesia compatível, ajuste alimentar e reavaliação; não indicar antibiótico para cólica isolada.\nOpção 2 — colecistectomia laparoscópica quando indicada após avaliação cirúrgica/obstétrica, sobretudo doença recorrente ou complicada. No terceiro trimestre, cólica não complicada pode permitir decisão individual entre manejo conservador e cirurgia; isso não se aplica automaticamente à colecistite. Febre, icterícia ou dor persistente exige excluir colecistite, colangite e pancreatite.",
+      "es": "Opción 1 — episodio de cólico biliar sin inflamación/obstrucción: hidratación, analgesia compatible, ajuste alimentario y reevaluación; no indicar antibiótico para cólico aislado.\nOpción 2 — colecistectomía laparoscópica cuando esté indicada tras evaluación quirúrgica/obstétrica, especialmente enfermedad recurrente o complicada. En tercer trimestre, cólico no complicado puede permitir decisión individual entre manejo conservador y cirugía; esto no se aplica automáticamente a colecistitis. Fiebre, ictericia o dolor persistente exige excluir colecistitis, colangitis y pancreatitis."
+    },
+    {
+      "id": "safety",
+      "pt": "Não indicar cirurgia imediata para toda cólica, nem adiar intervenção necessária apenas por trimestre. Selecionar analgesia sem copiar anti-inflamatório de rotina não gestacional.",
+      "es": "No indicar cirugía inmediata para todo cólico, ni demorar intervención necesaria solamente por trimestre. Elegir analgesia sin copiar antiinflamatorios rutinarios del contexto no gestacional."
+    },
+    {
+      "id": "disposition",
+      "pt": "Alta somente após melhora, tolerância oral e exclusão de complicação, com retorno e seguimento cirúrgico. Febre, icterícia, dor persistente ou instabilidade requerem hospital.",
+      "es": "Alta solamente tras mejoría, tolerancia oral y exclusión de complicación, con retorno y seguimiento quirúrgico. Fiebre, ictericia, dolor persistente o inestabilidad requieren hospital."
+    }
+  ],
+  "references": [
+    {
+      "id": "surg",
+      "title": "SAGES — laparoscopia na gravidez, final 2024",
+      "url": "https://www.sages.org/publications/guidelines/guidelines-for-the-use-of-laparoscopy-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "pain",
+      "title": "NHS SPS — tratamento da dor na gravidez",
+      "url": "https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 34,
+    "owner": "colelitiase_colica_biliar",
+    "title": {
+      "pt": "Colelitíase/cólica biliar — gestação",
+      "es": "Colelitiasis/cólico biliar — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "colelitiase_colica_biliar",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "fe7629ccf7465b96ff7b37d0fbec086f4cc786fc69c0c32adf45c3dc2c06688a"
+}

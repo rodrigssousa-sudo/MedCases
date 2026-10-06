@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Hipotireoidismo — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "Deficiência de hormônio tireoidiano na gravidez, manifesta ou subclínica conforme TSH e tiroxina livre.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Deficiência de hormônio tireoidiano na gravidez, manifesta ou subclínica conforme TSH e tiroxina livre."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "A necessidade de tiroxina pode aumentar na gestação; tratar adequadamente reduz risco materno-fetal. Não usar referência não gestacional indiscriminadamente."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Interpretar TSH e tiroxina livre com intervalos específicos do trimestre, população e método. Registrar autoimunidade, dose atual, adesão e interações."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Tratamento indicado — levotiroxina oral; em paciente já tratada, aumentar habitualmente a dose total em 20–30% ao confirmar gravidez e obter avaliação laboratorial/ajuste individual. Para novo diagnóstico, a dose depende de peso, TSH, gravidade e cardiopatia. Não substituir por liotironina ou extrato tireoidiano.\nConduta se controle insuficiente — verificar adesão, tomada correta, vômitos e interações; separar ferro/cálcio por pelo menos 4 horas e retitular levotiroxina. Controlar TSH aproximadamente a cada 4 semanas na primeira metade da gestação e após ajustes. Não existe um segundo fármaco equivalente recomendado para preencher uma lista de opções; corrigir causa de falha e encaminhar se necessário."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Não substituir por combinações com triiodotironina ou extratos tireoidianos. Conferir administração e interações com suplementos; reavaliar TSH após ajustes."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Seguimento obstétrico/endócrino durante gravidez e pós-parto. Alteração de consciência, hipotermia ou instabilidade exige hospital; não manejar como ajuste ambulatorial de rotina."
+        }
+      ],
+      "references": [
+        "[thy] RCOG Green-top 76 — tireoide na gravidez, final 2025 — https://obgyn.onlinelibrary.wiley.com/doi/10.1111/1471-0528.18088",
+        "[hypo] American Thyroid Association — hipotireoidismo na gravidez — https://www.thyroid.org/hypothyroidism-in-pregnancy/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Hipotiroidismo — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "Deficiencia de hormona tiroidea durante el embarazo, manifiesta o subclínica según TSH y tiroxina libre.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Deficiencia de hormona tiroidea durante el embarazo, manifiesta o subclínica según TSH y tiroxina libre."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La necesidad de tiroxina puede aumentar durante el embarazo; tratar adecuadamente reduce riesgo maternofetal. No usar indiscriminadamente referencias no gestacionales."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Interpretar TSH y tiroxina libre con intervalos específicos del trimestre, población y método. Registrar autoinmunidad, dosis actual, adherencia e interacciones."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Tratamiento indicado — levotiroxina oral; en paciente ya tratada, aumentar habitualmente la dosis total en 20–30% al confirmar embarazo y obtener evaluación de laboratorio/ajuste individual. Para diagnóstico nuevo, la dosis depende de peso, TSH, gravedad y cardiopatía. No sustituir por liotironina ni extracto tiroideo.\nConducta ante control insuficiente — verificar adherencia, toma correcta, vómitos e interacciones; separar hierro/calcio al menos 4 horas y retitular levotiroxina. Controlar TSH aproximadamente cada 4 semanas en la primera mitad del embarazo y tras ajustes. No existe un segundo fármaco equivalente recomendado para completar una lista de opciones; corregir la causa de falla y derivar si es necesario."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "No sustituir por combinaciones con triyodotironina o extractos tiroideos. Verificar administración e interacciones con suplementos; reevaluar TSH después de ajustes."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Seguimiento obstétrico/endocrinológico durante embarazo y posparto. Alteración de conciencia, hipotermia o inestabilidad exige hospital; no manejar como ajuste ambulatorio rutinario."
+        }
+      ],
+      "references": [
+        "[thy] RCOG Green-top 76 — tireoide na gravidez, final 2025 — https://obgyn.onlinelibrary.wiley.com/doi/10.1111/1471-0528.18088",
+        "[hypo] American Thyroid Association — hipotireoidismo na gravidez — https://www.thyroid.org/hypothyroidism-in-pregnancy/"
+      ]
+    }
+  }
+}

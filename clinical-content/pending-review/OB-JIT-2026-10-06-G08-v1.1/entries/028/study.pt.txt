@@ -1,0 +1,34 @@
+# Pneumonia grave — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Pneumonia grave na grávida com risco respiratório ou sistêmico; preservar o escopo grave deste owner.
+
+## Fisiopatologia e raciocínio
+
+Comprometimento de troca gasosa pode ameaçar mãe e feto. Critérios clínicos e deterioração prevalecem sobre escore isolado.
+
+## Diagnóstico, exames e diferenciais
+
+Avaliar saturação, pressão, frequência respiratória, perfusão e consciência. Radiografia indicada não deve ser omitida por gravidez; colher culturas conforme gravidade sem atrasar antibiótico.
+
+## Tratamento e doses
+
+Via 1 — pneumonia comunitária grave: tratamento hospitalar imediato, suporte respiratório e antibiótico empírico combinado apropriado à gestação. Exemplo NICE: amoxicilina/clavulanato 1,2 g intravenosos a cada 8 horas MAIS eritromicina 500 mg por via oral a cada 6 horas, quando via oral viável; confirmar protocolo e função renal. Rever duração inicial de 5 dias segundo estabilidade e microbiologia, prolongando quando indicado.
+Via 2 — esquema dirigido após culturas/testes, ou alternativa hospitalar especializada se alergia grave, resistência, aspiração ou etiologia diferente. Não há segundo esquema gestacional universal seguro para todas essas situações; selecionar betalactâmico/macrolídeo conforme agente, antibiograma e alergia, com doses do protocolo específico. Transição oral somente após melhora clínica; não oferecer tratamento ambulatorial como equivalente para owner de pneumonia grave.
+
+## Segurança e monitorização
+
+Conferir alergia, função renal, QT e interações; trocar via do macrolídeo se ingestão inviável, sob protocolo hospitalar. Não transpor doxiciclina do esquema não gestacional.
+
+## Escalonamento, alta e seguimento
+
+Internar, oferecer suporte de oxigênio e avaliação obstétrica. Choque, necessidade crescente de oxigênio ou falência de órgãos exige escalonamento; alta após estabilidade, tolerância oral e seguimento.
+
+## Referências
+
+[pneu] NICE NG250 — pneumonia, final 2025 — https://www.nice.org.uk/guidance/ng250/chapter/Recommendations
+
+[pneud] NICE NG250 — pneumonia comunitária em adultos, tabela atualizada 2026 — https://www.nice.org.uk/guidance/ng250/resources/visual-summary-communityacquired-pneumonia-adults-presenting-to-hospital-pdf-15434376301

@@ -1,0 +1,47 @@
+# Infecção por HIV — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Infecção por HIV na gravidez exige cuidado materno e prevenção coordenada de transmissão vertical.
+
+## Diagnóstico, exames e diferenciais
+
+- Confirmar diagnóstico e avaliar carga viral, imunidade, função renal/hepática, hepatites e histórico de antirretrovirais.
+- Não atrasar início necessário aguardando todos os resultados.
+
+## Tratamento e doses
+
+- Opção 1 — em início de terapia e sem situações especiais de resistência/exposição prévia, bictegravir/emtricitabina/tenofovir alafenamida 50 mg/200 mg/25 mg, 1 comprimido por via oral 1 vez por dia, é esquema preferido NIH 2026; verificar função renal, hepatite B e interações.
+- Não usar formulação pediátrica como equivalente.
+- Opção 2 — esquema com dolutegravir mais combinação de 2 análogos nucleosídeos contendo tenofovir, selecionados pela equipe de HIV conforme função renal, resistência, coinfecção e interações.
+- A dose deve ser definida pelos componentes exatos, não pela sigla do esquema.
+- Não trocar automaticamente terapia já tolerada e supressiva na concepção.
+- A presença de cabotegravir de longa ação prévio como profilaxia muda a escolha inicial.
+- Monitorar carga viral e adesão; prevenção neonatal/conduta no parto são etapas adicionais, não substitutos da terapia materna.
+
+## Segurança e monitorização
+
+- Não há dose universal de terapia antirretroviral.
+- Conferir cada produto, interações, resistência e função renal; esquema não supressivo precisa revisão rápida.
+
+## Escalonamento, alta e seguimento
+
+- Planejar parto, profilaxia neonatal e alimentação infantil com equipe especializada e política regional.
+- Seguimento de carga viral deve orientar decisões; infecção oportunista ou instabilidade exige hospital.
+
+## Fisiopatologia e raciocínio
+
+- Supressão viral é central.
+- Escolha de regime depende de resistência, tratamento prévio, interações e segurança perinatal, não apenas do diagnóstico.
+
+## Referências
+
+[hiv] NIH — diretrizes perinatais de antirretrovirais, 31 março 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-overview?view=full
+
+[hivc] NIH — tratamento já utilizado na concepção, 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-art-taken-when-pregnancy-occurs?view=full
+
+[hivi] NIH — início de terapia antirretroviral na gravidez, 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-initial-use-antiretroviral-therapy
+
+[hivbic] NIH — bictegravir: dose e segurança gestacional, 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/safety-toxicity-arv-agents-integrase-inhibitors-bictegravir

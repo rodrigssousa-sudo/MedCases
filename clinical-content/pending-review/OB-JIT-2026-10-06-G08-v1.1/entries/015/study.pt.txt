@@ -1,0 +1,34 @@
+# Pielonefrite aguda — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Infecção renal na gravidez, geralmente com febre, dor em flanco e evidência urinária de infecção.
+
+## Fisiopatologia e raciocínio
+
+Pode provocar sepse, lesão renal e parto prematuro; distinguir cólica renal e obstrução infectada.
+
+## Diagnóstico, exames e diferenciais
+
+Avaliar sinais vitais, perfusão, diurese, urina e cultura, hemograma e função renal. Buscar obstrução por ultrassom quando indicada; avaliação fetal conforme idade gestacional.
+
+## Tratamento e doses
+
+Via 1 — tratamento inicial hospitalar com antibiótico intravenoso de penetração renal; exemplo NICE para gestantes: cefuroxima 750 mg–1,5 g intravenosos a cada 8 horas, ajustada à gravidade, função renal e cultura. Avaliar sepse, obstrução e necessidade de suporte; colher cultura sem retardar tratamento.
+Via 2 — após melhora, estabilidade e tolerância oral, transição para antibiótico oral sensível; exemplo cefalexina 500 mg por via oral a cada 8 horas, ajustada ao quadro e antibiograma. É etapa sequencial, não alternativa ambulatorial equivalente para gestante instável. Revisar necessidade intravenosa em 48 horas. Este pacote adota ACOG: completar 14 dias TOTAIS de tratamento, contando ambas as vias; não somar 14 dias após a fase intravenosa. NICE utiliza 7–10 dias em determinados esquemas: não misturar durações. Nitrofurantoína e fosfomicina não tratam parênquima renal.
+
+## Segurança e monitorização
+
+Reavaliar terapia intravenosa em 48 horas. Neste pacote, adota-se duração total de 14 dias da ACOG, incluindo fase oral, explicitamente distinta dos 7–10 dias previstos em NICE para alguns esquemas.
+
+## Escalonamento, alta e seguimento
+
+Sepse, hipoxemia, oligúria ou obstrução requerem escalonamento imediato. Alta após melhora clínica e tolerância oral, com antibiótico direcionado e plano de seguimento.
+
+## Referências
+
+[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals
+
+[pyelo] NICE NG111 — antibióticos para pielonefrite — https://www.nice.org.uk/guidance/NG111/chapter/recommendations

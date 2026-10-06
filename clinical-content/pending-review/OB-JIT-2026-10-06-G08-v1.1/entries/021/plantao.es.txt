@@ -1,0 +1,44 @@
+# Hepatitis B crónica — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Infección crónica por virus de hepatitis B en la embarazada; es distinta del owner de hepatitis B aguda.
+
+## Diagnóstico, estudios y diferenciales
+
+- Evaluar HBsAg, carga viral, antígeno e, transaminasas, función renal e indicación de tratamiento materno.
+- Distinguir infección aguda, crónica y reactivación.
+
+## Tratamiento y dosis
+
+- Opción 1 — tenofovir disoproxilo fumarato 300 mg por vía oral 1 vez por día para prevenir transmisión con alta carga viral, con evaluación renal.
+- Opción 2 — tenofovir alafenamida 25 mg por vía oral 1 vez por día es alternativa en recomendación SMFM 69; considerar evidencia, disponibilidad e indicación individual.
+- SMFM indica inicio entre 28–32 semanas cuando carga viral >200.000 unidades internacionales/mL; OMS prioriza tenofovir disoproxilo y estrategia con inicio preferente en segundo trimestre.
+- Documentar la guía adoptada, sin mezclar criterios.
+- No iniciar automáticamente en toda portadora.
+- Antiviral no sustituye vacuna e inmunoglobulina del recién nacido dentro de 12 horas; planificar finalización y vigilancia de exacerbación hepática tras suspensión.
+
+## Seguridad y monitoreo
+
+- Ajustar a función renal y planificar vigilancia tras eventual suspensión.
+- El recién nacido expuesto debe recibir vacuna e inmunoglobulina específica dentro de 12 horas, según SMFM.
+
+## Escalamiento, alta y seguimiento
+
+- Coordinar hepatología, obstetricia y pediatría.
+- No indicar cesárea solamente por hepatitis B; puede amamantarse con inmunoprofilaxis neonatal apropiada.
+- Ictericia grave, coagulopatía o encefalopatía requieren hospital.
+
+## Fisiopatología y razonamiento
+
+- La carga viral materna condiciona riesgo de transmisión; la profilaxis perinatal no sustituye la evaluación de enfermedad hepática materna.
+
+## Referencias
+
+[hbv] OMS — hepatite B crônica, prevenção da transmissão materna, 2024 — https://www.ncbi.nlm.nih.gov/books/NBK615006/
+
+[hbvs] SMFM Consult 69 — hepatite B na gravidez, 2024 — https://pubmed.ncbi.nlm.nih.gov/38141870/
+
+[hbvsmfm] SMFM Consult 69 — opções de tenofovir na gravidez — https://publications.smfm.org/publications/553-society-for-maternal-fetal-medicine-consult-series-69/

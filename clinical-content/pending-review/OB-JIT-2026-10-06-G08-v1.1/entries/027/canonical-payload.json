@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "asma_grave",
+  "titles": {
+    "pt": "Crise grave de asma — gestação",
+    "es": "Crisis grave de asma — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "COMPLEMENTARY_ACUTE_AND_CONTROL_PATHWAYS",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Exacerbação grave de asma na grávida; preservar owner de gravidade, sem transformá-lo em asma leve.",
+      "es": "Exacerbación grave de asma en la embarazada; preservar el owner de gravedad, sin transformarlo en asma leve."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Broncoconstrição e inflamação prejudicam oxigenação materna e fetal. Suspender controlador por medo de medicamentos aumenta risco.",
+      "es": "La broncoconstricción e inflamación perjudican oxigenación materna y fetal. Suspender controlador por temor a medicamentos aumenta el riesgo."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar fala, esforço respiratório, consciência, ausculta, saturação e fluxo expiratório quando possível, sem atrasar tratamento. Excluir embolia, pneumonia e edema pulmonar.",
+      "es": "Evaluar habla, esfuerzo respiratorio, conciencia, auscultación, saturación y flujo espiratorio cuando sea posible, sin demorar tratamiento. Excluir embolia, neumonía y edema pulmonar."
+    },
+    {
+      "id": "treatment",
+      "pt": "Via de crise — tratar rapidamente exacerbação com salbutamol inalatório, oxigênio quando necessário e corticoide sistêmico precoce; em adulto com via oral viável, prednisolona 40–50 mg por dia durante 5–7 dias. A dose do broncodilatador depende de dispositivo, concentração e gravidade: confirmar prescrição e técnica; não converter gotas em jatos. Crise grave exige hospital, doses repetidas guiadas por resposta e consideração de ipratrópio/adjuvantes e ventilação.\nVia de controle — manter tratamento contendo corticoide inalatório e revisar adesão/técnica, exposição e plano de ação. Especialista pode otimizar combinação e tratamento adicional conforme fenótipo e segurança gestacional. Esta via não substitui resgate de crise; não suspender controlador por gravidez. Ausência de resposta, exaustão ou queda de oxigenação exige escalonamento imediato, não troca ambulatorial por uma segunda medicação.",
+      "es": "Vía de crisis — tratar rápidamente exacerbación con salbutamol inhalatorio, oxígeno cuando sea necesario y corticoide sistémico temprano; en adulto con vía oral viable, prednisolona 40–50 mg por día durante 5–7 días. La dosis del broncodilatador depende de dispositivo, concentración y gravedad: confirmar prescripción y técnica; no convertir gotas en disparos. Crisis grave exige hospital, dosis repetidas guiadas por respuesta y consideración de ipratropio/adyuvantes y ventilación.\nVía de control — mantener tratamiento que contenga corticoide inhalatorio y revisar adherencia/técnica, exposición y plan de acción. Especialista puede optimizar combinación y tratamiento adicional según fenotipo y seguridad gestacional. Esta vía no sustituye rescate de crisis; no suspender controlador por embarazo. Falta de respuesta, agotamiento o caída de oxigenación exige escalamiento inmediato, no cambio ambulatorio por una segunda medicación."
+    },
+    {
+      "id": "safety",
+      "pt": "Não retardar terapia necessária por gravidez. Vigiar resposta, frequência cardíaca, potássio em uso intensivo e bem-estar fetal; manter tratamento contendo corticoide inalatório.",
+      "es": "No demorar terapia necesaria por embarazo. Vigilar respuesta, frecuencia cardíaca, potasio en uso intensivo y bienestar fetal; mantener tratamiento que contenga corticoide inhalado."
+    },
+    {
+      "id": "disposition",
+      "pt": "Exaustão, tórax silencioso, alteração de consciência ou hipoxemia persistente exigem terapia intensiva. Crise grave requer hospital; saída apenas após resposta sustentada e plano de controlador, técnica e retorno.",
+      "es": "Agotamiento, tórax silencioso, alteración de conciencia o hipoxemia persistente requieren terapia intensiva. La crisis grave requiere hospital; salida solamente tras respuesta sostenida y plan de controlador, técnica y retorno."
+    }
+  ],
+  "references": [
+    {
+      "id": "asth",
+      "title": "GINA — estratégia global, final 2026",
+      "url": "https://ginasthma.org/wp-content/uploads/2026/05/GINA-2026-Strategy-Report-WMS.pdf",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "pain",
+      "title": "NHS SPS — tratamento da dor na gravidez",
+      "url": "https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 27,
+    "owner": "asma_grave",
+    "title": {
+      "pt": "Crise grave de asma — gestação",
+      "es": "Crisis grave de asma — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "asma_grave",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "f259775099e98e6e37db7bc6d8ad01f5adaddd7a0fab676928b273b995f891ca"
+}

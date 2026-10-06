@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "sifilis",
+  "titles": {
+    "pt": "Sífilis — gestação",
+    "es": "Sífilis — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "PENICILLIN_ONLY_FETAL_EFFICACY",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Infecção materna por Treponema pallidum com risco de transmissão fetal; tratamento depende do estágio.",
+      "es": "Infección materna por Treponema pallidum con riesgo de transmisión fetal; el tratamiento depende del estadio."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Penicilina é o único tratamento comprovado para prevenção de sífilis congênita. História vaga de tratamento não substitui documentação.",
+      "es": "La penicilina es el único tratamiento demostrado para prevenir sífilis congénita. Una historia vaga de tratamiento no sustituye documentación."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Combinar teste treponêmico e não treponêmico quantitativo, estágio clínico, tratamentos prévios e risco de reinfecção. Avaliar HIV e parceiros.",
+      "es": "Combinar prueba treponémica y no treponémica cuantitativa, estadio clínico, tratamientos previos y riesgo de reinfección. Evaluar VIH y parejas."
+    },
+    {
+      "id": "treatment",
+      "pt": "Via 1 — penicilina conforme estágio: sífilis recente, penicilina G benzatina 2,4 milhões de unidades intramusculares em dose única; CDC admite dose adicional 1 semana depois em gestantes. Tardia/duração desconhecida: 2,4 milhões de unidades intramusculares a cada 1 semana, durante 3 semanas. Intervalo superior a 9 dias na gestação exige reiniciar o ciclo tardio completo.\nVia 2 — diante de alergia à penicilina, confirmar história e realizar dessensibilização em ambiente apropriado, seguida de penicilina; é manejo da alergia, não outro antibiótico equivalente. Penicilina é o único tratamento comprovado para tratar infecção fetal/prevenir sífilis congênita. Suspeita neurológica/ocular exige outro regime de penicilina e especialista. Não substituir por doxiciclina, macrolídeo ou ceftriaxona apenas para oferecer uma segunda opção.",
+      "es": "Vía 1 — penicilina según estadio: sífilis reciente, penicilina G benzatínica 2,4 millones de unidades intramusculares en dosis única; CDC admite dosis adicional 1 semana después en embarazadas. Tardía/duración desconocida: 2,4 millones de unidades intramusculares cada 1 semana, durante 3 semanas. Intervalo superior a 9 días en embarazo exige reiniciar el ciclo tardío completo.\nVía 2 — ante alergia a penicilina, confirmar historia y realizar desensibilización en ambiente apropiado, seguida de penicilina; es manejo de alergia, no otro antibiótico equivalente. Penicilina es el único tratamiento comprobado para tratar infección fetal/prevenir sífilis congénita. Sospecha neurológica/ocular exige otro régimen de penicilina y especialista. No sustituir por doxiciclina, macrólido ni ceftriaxona solamente para ofrecer una segunda opción."
+    },
+    {
+      "id": "safety",
+      "pt": "Intervalo maior que 9 dias no esquema semanal da gestante exige reiniciar série completa. Alergia requer dessensibilização e penicilina; neurossífilis necessita esquema distinto.",
+      "es": "Un intervalo mayor de 9 días en el esquema semanal de la embarazada exige reiniciar la serie completa. La alergia requiere desensibilización y penicilina; la neurosífilis necesita otro esquema."
+    },
+    {
+      "id": "disposition",
+      "pt": "Documentar doses e títulos, com seguimento obstétrico. Febre, contrações ou redução de movimentos após tratamento exigem avaliação; reação de Jarisch–Herxheimer não justifica atrasar terapia necessária.",
+      "es": "Documentar dosis y títulos, con seguimiento obstétrico. Fiebre, contracciones o reducción de movimientos después del tratamiento requieren evaluación; la reacción de Jarisch–Herxheimer no justifica demorar terapia necesaria."
+    }
+  ],
+  "references": [
+    {
+      "id": "syph",
+      "title": "CDC — sífilis na gravidez, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/syphilis-pregnancy.htm",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "syphl",
+      "title": "CDC — sífilis latente",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/latent-syphilis.htm",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 19,
+    "owner": "sifilis",
+    "title": {
+      "pt": "Sífilis — gestação",
+      "es": "Sífilis — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "sifilis",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "c48e4104469f2031ee572380dd52b86afbfefee9020806c82a7b6431dab41522"
+}

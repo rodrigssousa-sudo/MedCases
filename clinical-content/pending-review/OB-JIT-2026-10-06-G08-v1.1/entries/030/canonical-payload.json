@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "constipacao_funcional",
+  "titles": {
+    "pt": "Constipação funcional — gestação",
+    "es": "Constipación funcional — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "LAXATIVE_CLASS_ALTERNATIVES",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Evacuações difíceis ou infrequentes sem causa orgânica identificada, no contexto da gravidez.",
+      "es": "Evacuaciones difíciles o infrecuentes sin causa orgánica identificada, en el contexto del embarazo."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Motilidade reduzida, dieta, menor atividade e suplementos de ferro podem contribuir. Não confundir com obstrução ou fecaloma complicado.",
+      "es": "Pueden contribuir motilidad reducida, dieta, menor actividad y suplementos de hierro. No confundir con obstrucción o fecaloma complicado."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Revisar padrão prévio, fezes, dor, distensão, medicamentos e eliminação de gases. Sangramento persistente, emagrecimento, vômitos ou obstipação completa exigem investigação.",
+      "es": "Revisar patrón previo, heces, dolor, distensión, medicamentos y eliminación de gases. Sangrado persistente, adelgazamiento, vómitos u obstipación completa requieren investigación."
+    },
+    {
+      "id": "treatment",
+      "pt": "Opção 1 — após adequar fibras, líquidos e mobilidade, laxativo formador de bolo, como ispágula, conforme produto e com água suficiente; não usar diante de obstrução suspeita.\nOpção 2 — se insuficiente, laxativo osmótico, como lactulose ou macrogol, conforme concentração/apresentação e resposta; não converter número de sachês entre produtos diferentes. Evitar desidratação e excesso que cause diarreia. Estimulante por curto prazo ou glicerol são recursos selecionados após avaliação, não associações obrigatórias. Sangramento, vômitos, distensão importante ou ausência de eliminação de gases exige excluir causa orgânica antes de laxativos.",
+      "es": "Opción 1 — tras adecuar fibra, líquidos y movilidad, laxante formador de bolo, como ispágula, según producto y con suficiente agua; no usar ante sospecha de obstrucción.\nOpción 2 — si es insuficiente, laxante osmótico, como lactulosa o macrogol, según concentración/presentación y respuesta; no convertir número de sobres entre productos diferentes. Evitar deshidratación y exceso que cause diarrea. Estimulante por corto plazo o glicerol son recursos seleccionados tras evaluación, no combinaciones obligatorias. Sangrado, vómitos, distensión importante o ausencia de eliminación de gases exige excluir causa orgánica antes de laxantes."
+    },
+    {
+      "id": "safety",
+      "pt": "Uso curto de estimulante pode ser considerado após falha das medidas iniciais. Evitar escalada indiscriminada e suspender automanejo se suspeita de obstrução.",
+      "es": "Puede considerarse uso breve de estimulante tras fracaso de medidas iniciales. Evitar escalamiento indiscriminado y suspender automanejo ante sospecha de obstrucción."
+    },
+    {
+      "id": "disposition",
+      "pt": "Alta com plano de hábitos e revisão dos fármacos constipantes, sem suspender ferro necessário sem alternativa. Persistência ou sinais de alarme exigem reavaliação.",
+      "es": "Alta con plan de hábitos y revisión de fármacos constipantes, sin suspender hierro necesario sin alternativa. Persistencia o signos de alarma requieren reevaluación."
+    }
+  ],
+  "references": [
+    {
+      "id": "const",
+      "title": "NHS SPS — constipação na gestação",
+      "url": "https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "anc",
+      "title": "NICE NG201 — cuidado pré-natal",
+      "url": "https://www.nice.org.uk/guidance/ng201/chapter/Recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 30,
+    "owner": "constipacao_funcional",
+    "title": {
+      "pt": "Constipação funcional — gestação",
+      "es": "Constipación funcional — embarazo"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": true,
+    "cmsDocumentId": "constipacao_funcional",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "c13a14564f2fa6feeb0836701dd6d32a8edc2ab38122818cbbacb4208eb8f343"
+}

@@ -1,0 +1,37 @@
+# Pré-eclâmpsia
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Doença hipertensiva após 20 semanas com proteinúria ou disfunção materna/uteroplacentária; proteinúria não é obrigatória.
+
+## Fisiopatologia e raciocínio
+
+Disfunção placentária e endotelial pode comprometer múltiplos órgãos. Eclâmpsia e HELLP são complicações relacionadas, não aliases que autorizem fundir owners.
+
+## Diagnóstico, exames e diferenciais
+
+Avaliar pressão, cefaleia, visão, dor epigástrica, dispneia, plaquetas, creatinina, transaminases e proteinúria, com avaliação fetal. Não esperar todos os exames para tratar instabilidade.
+
+## Tratamento e doses
+
+Opção 1 — labetalol oral para manutenção, se apropriado; evitar em asma com broncoespasmo, bradicardia ou bloqueio cardíaco. Exemplo do protocolo obstétrico NHS North West 2026: iniciar 100–200 mg, 3 vezes por dia, titular conforme pressão e tolerância.
+Opção 2 — nifedipino de liberação modificada se labetalol inadequado: iniciar 10–20 mg por via oral, 2 vezes por dia, no mesmo protocolo; confirmar formulação, pois apresentações têm durações diferentes. Não usar por via sublingual. Individualizar titulação, monitorar cefaleia, hipotensão e frequência cardíaca; metildopa é terceira alternativa se ambos inadequados. Estes são esquemas de manutenção, não o algoritmo para emergência. Pressão sistólica ≥160 ou diastólica ≥110 mmHg exige avaliação hospitalar urgente e tratamento de ação apropriada, sem esperar efeito da manutenção; alvo de manutenção NICE 135/85 mmHg.
+Via obstétrica 1 — vigilância hospitalar expectante somente se elegível e sem indicação imediata de parto, conforme idade gestacional e condições maternas/fetais. Via obstétrica 2 — estabilização seguida de parto quando houver indicação; deterioração, eclâmpsia ou comprometimento fetal não devem aguardar completar corticoide. Sulfato de magnésio não substitui anti-hipertensivo: quando indicado em quadro grave/eclâmpsia, 4 g intravenosos em 5–15 minutos, depois 1 g por hora durante 24 horas, conforme protocolo NICE; monitorar respiração, reflexos, diurese e função renal.
+
+## Segurança e monitorização
+
+Magnésio não substitui controle pressórico. Monitorar respiração, reflexos e diurese; disfunção renal exige ajuste e vigilância. Diluição depende da concentração disponível e protocolo institucional.
+
+## Escalonamento, alta e seguimento
+
+Convulsão, edema pulmonar, deterioração laboratorial ou comprometimento fetal exigem internação e escalonamento. Decisão de parto deve equilibrar estabilidade e prematuridade, sem adiar resolução de emergência.
+
+## Referências
+
+[ht] NICE NG133 — hipertensão na gravidez, atualização 2023 — https://www.nice.org.uk/guidance/ng133/chapter/Recommendations
+
+[mg] NICE NG133 — cuidado crítico em hipertensão e pré-eclâmpsia — https://www.nice.org.uk/guidance/ng133/resources/criteria-for-choice-of-critical-care-level-hypertension-preeclampsia-and-eclampsia-pdf-8720711396
+
+[htnw] NHS England North West — hipertensão gestacional, FINAL abril 2026 — https://www.england.nhs.uk/north-west/wp-content/uploads/sites/48/2026/04/NW-Management-of-Gestational-Hypertension-V1-FINAL.pdf

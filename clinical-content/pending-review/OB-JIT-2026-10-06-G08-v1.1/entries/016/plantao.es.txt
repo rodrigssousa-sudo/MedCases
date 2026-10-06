@@ -1,0 +1,39 @@
+# Candidiasis vulvovaginal — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Vulvovaginitis por Candida con prurito, irritación y flujo; la colonización sin síntomas no exige tratamiento.
+
+## Diagnóstico, estudios y diferenciales
+
+- Examinar y realizar microscopía o prueba apropiada cuando esté disponible.
+- Ante recurrencia o fracaso, confirmar agente y excluir vaginosis, tricomoniasis y dermatosis.
+
+## Tratamiento y dosis
+
+- Opción 1 — miconazol crema vaginal 2%, 5 g por vía intravaginal 1 vez por día durante 7 días.
+- Opción 2 — clotrimazol crema vaginal 1%, 5 g por vía intravaginal 1 vez por día durante 7 días.
+- Elegir un esquema, no combinar ambos.
+- En embarazo, CDC recomienda solamente azol tópico durante 7 días: no copiar esquemas de dosis única ni fluconazol oral.
+- Persistencia, recurrencia o cuadro complicado exige confirmación, cultivo y evaluación de especie/resistencia; no añadir ácido bórico por cuenta propia.
+
+## Seguridad y monitoreo
+
+- Evitar fluconazol oral durante el embarazo y no trasladar esquemas no gestacionales de dosis única.
+- Verificar formulación y tolerancia local.
+
+## Escalamiento, alta y seguimiento
+
+- Tratamiento ambulatorio ante cuadro típico y estable.
+- La persistencia requiere reevaluación, no repetición indefinida; dolor pélvico, fiebre o pérdida de líquido requieren evaluación obstétrica.
+
+## Fisiopatología y razonamiento
+
+- Los cambios del embarazo favorecen colonización.
+- El diagnóstico no debe basarse solamente en el aspecto del flujo.
+
+## Referencias
+
+[cand] CDC — candidíase vulvovaginal, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm

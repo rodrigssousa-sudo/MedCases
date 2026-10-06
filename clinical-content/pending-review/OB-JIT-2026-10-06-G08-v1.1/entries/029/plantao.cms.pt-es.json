@@ -1,0 +1,177 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Refluxo gastroesofágico — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Pirose e regurgitação durante a gravidez, sem sinais de alarme, podem representar refluxo gastroesofágico.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pirose e regurgitação durante a gravidez, sem sinais de alarme, podem representar refluxo gastroesofágico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Avaliar padrão pós-prandial, posição, disfagia, perda de peso, hematêmese e medicamentos.",
+            "Dor torácica ou epigástrica com hipertensão exige diferencial cardiovascular ou pré-eclâmpsia."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opção 1 — medidas alimentares/posturais e antiácido ou alginato apropriado à gestação, conforme composição e dose do produto; refeições menores e evitar deitar após comer.",
+            "Separar antiácido de ferro/ácido fólico por pelo menos 2 horas.",
+            "Opção 2 — se persistente apesar dessas medidas, supressão ácida prescrita, preferencialmente omeprazol pelo maior conhecimento de segurança gestacional; selecionar dose conforme intensidade, indicação e produto, com reavaliação da necessidade.",
+            "Não prolongar automedicação sem avaliação.",
+            "Disfagia, sangramento, perda ponderal ou dor intensa exige investigação, não apenas acrescentar medicamento."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Conferir sódio, composição e interações com suplementos; não inventar dose em mL sem concentração.",
+            "Persistência exige revisão e escolha individual de supressão ácida."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Seguimento ambulatorial se típico e estável.",
+            "Disfagia progressiva, sangramento, vômitos persistentes ou instabilidade exigem investigação; alta com orientações e retorno por sinais de alarme."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Relaxamento do esfíncter e mudanças mecânicas favorecem refluxo.",
+            "Dor epigástrica intensa não deve ser automaticamente atribuída à azia."
+          ]
+        }
+      ],
+      "references": [
+        "[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations",
+        "[refluxpreg] NHS — refluxo na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/indigestion-and-heartburn/",
+        "[omep] NHS — omeprazol e gravidez — https://www.nhs.uk/medicines/omeprazole/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Reflujo gastroesofágico — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "Pirosis y regurgitación durante el embarazo, sin signos de alarma, pueden representar reflujo gastroesofágico.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pirosis y regurgitación durante el embarazo, sin signos de alarma, pueden representar reflujo gastroesofágico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Evaluar patrón posprandial, posición, disfagia, pérdida de peso, hematemesis y medicamentos.",
+            "Dolor torácico o epigástrico con hipertensión exige diferencial cardiovascular o preeclampsia."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opción 1 — medidas alimentarias/posturales y antiácido o alginato apropiado al embarazo, según composición y dosis del producto; comidas menores y evitar acostarse después de comer.",
+            "Separar antiácido de hierro/ácido fólico al menos 2 horas.",
+            "Opción 2 — si persiste pese a estas medidas, supresión ácida prescrita, preferentemente omeprazol por mayor conocimiento de seguridad gestacional; seleccionar dosis según intensidad, indicación y producto, con reevaluación de necesidad.",
+            "No prolongar automedicación sin evaluación.",
+            "Disfagia, sangrado, pérdida ponderal o dolor intenso exige investigación, no solamente añadir medicación."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Verificar sodio, composición e interacciones con suplementos; no inventar dosis en mL sin concentración.",
+            "La persistencia exige revisión y elección individual de supresión ácida."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Seguimiento ambulatorio ante cuadro típico y estable.",
+            "Disfagia progresiva, sangrado, vómitos persistentes o inestabilidad requieren investigación; alta con orientaciones y retorno por signos de alarma."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La relajación del esfínter y cambios mecánicos favorecen reflujo.",
+            "El dolor epigástrico intenso no debe atribuirse automáticamente a acidez."
+          ]
+        }
+      ],
+      "references": [
+        "[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations",
+        "[refluxpreg] NHS — refluxo na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/indigestion-and-heartburn/",
+        "[omep] NHS — omeprazol e gravidez — https://www.nhs.uk/medicines/omeprazole/"
+      ]
+    }
+  }
+}

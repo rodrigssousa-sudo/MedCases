@@ -1,0 +1,42 @@
+# Neumonía grave — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Neumonía grave en la embarazada con riesgo respiratorio o sistémico; preservar el alcance grave de este owner.
+
+## Diagnóstico, estudios y diferenciales
+
+- Evaluar saturación, presión, frecuencia respiratoria, perfusión y conciencia.
+- No omitir una radiografía indicada por embarazo; obtener cultivos según gravedad sin demorar antibiótico.
+
+## Tratamiento y dosis
+
+- Vía 1 — neumonía comunitaria grave: tratamiento hospitalario inmediato, soporte respiratorio y antibiótico empírico combinado apropiado al embarazo.
+- Ejemplo NICE: amoxicilina/clavulanato 1,2 g intravenosos cada 8 horas MÁS eritromicina 500 mg por vía oral cada 6 horas, cuando sea viable la vía oral; confirmar protocolo y función renal.
+- Revisar duración inicial de 5 días según estabilidad y microbiología, prolongando cuando esté indicado.
+- Vía 2 — esquema dirigido tras cultivos/pruebas, o alternativa hospitalaria especializada ante alergia grave, resistencia, aspiración o etiología diferente.
+- No existe un segundo esquema gestacional universal seguro para todas esas situaciones; seleccionar betalactámico/macrólido según agente, antibiograma y alergia, con dosis del protocolo específico.
+- Transición oral solamente tras mejoría clínica; no ofrecer tratamiento ambulatorio como equivalente para owner de neumonía grave.
+
+## Seguridad y monitoreo
+
+- Verificar alergia, función renal, QT e interacciones; cambiar vía del macrólido si la ingesta no es viable, bajo protocolo hospitalario.
+- No trasladar doxiciclina del esquema no gestacional.
+
+## Escalamiento, alta y seguimiento
+
+- Internar, ofrecer soporte de oxígeno y evaluación obstétrica.
+- Shock, necesidad creciente de oxígeno o falla orgánica exigen escalamiento; alta tras estabilidad, tolerancia oral y seguimiento.
+
+## Fisiopatología y razonamiento
+
+- El compromiso del intercambio gaseoso puede amenazar a madre y feto.
+- Los criterios clínicos y el deterioro prevalecen sobre una escala aislada.
+
+## Referencias
+
+[pneu] NICE NG250 — pneumonia, final 2025 — https://www.nice.org.uk/guidance/ng250/chapter/Recommendations
+
+[pneud] NICE NG250 — pneumonia comunitária em adultos, tabela atualizada 2026 — https://www.nice.org.uk/guidance/ng250/resources/visual-summary-communityacquired-pneumonia-adults-presenting-to-hospital-pdf-15434376301

@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Colestase intra-hepática da gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Prurido gestacional com elevação de ácidos biliares após exclusão de outras causas; costuma não haver erupção primária.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Prurido gestacional com elevação de ácidos biliares após exclusão de outras causas; costuma não haver erupção primária."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Solicitar ácidos biliares e testes hepáticos; repetir se prurido persiste com exames iniciais normais.",
+            "RCOG classifica pico de 19–39 micromol/L como leve, 40–99 como moderado e ≥100 como grave."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Via 1 — alívio do prurido: ácido ursodesoxicólico, dose inicial usual SMFM 10–15 mg por kg por dia por via oral, dividida em 2–3 administrações, prescrita e ajustada por obstetrícia; emolientes podem complementar.",
+            "Benefício é predominantemente sintomático; não afirmar que previne morte fetal.",
+            "Via 2 — redução do risco obstétrico por estratificação dos ácidos biliares, avaliação materno-fetal e planejamento do parto.",
+            "RCOG, sem outros fatores de risco: considerar até 40 semanas nos casos leves, 38–39 semanas nos moderados e 35–36 semanas se ácidos biliares ≥100 micromol/L.",
+            "Essa via é complementar e pode ser necessária mesmo se o prurido melhorar; não substituir planejamento do parto por outro antipruriginoso.",
+            "Reavaliar função hepática e sintomas após parto."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Programar vigilância e momento do parto conforme pico de ácidos biliares, idade gestacional, comorbidades e diretriz adotada.",
+            "Não aguardar piora materna para avaliar risco fetal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Redução de movimentos fetais exige atendimento imediato.",
+            "Seguimento obstétrico e confirmação de resolução pós-parto; alterações persistentes exigem investigação hepática."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Alterações do transporte biliar podem produzir prurido e risco fetal.",
+            "Reduzir prurido não comprova redução de morte fetal."
+          ]
+        }
+      ],
+      "references": [
+        "[icp] RCOG Green-top 43 — colestase gestacional, final 2022 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/intrahepatic-cholestasis-of-pregnancy-green-top-guideline-no-43/",
+        "[icpp] RCOG — colestase, informação atualizada abril 2026 — https://www.rcog.org.uk/for-the-public/browse-our-patient-information/intrahepatic-cholestasis-of-pregnancy/",
+        "[icpsmfm] SMFM Consult 53 — colestase, dose inicial de ursodesoxicólico — https://cdn.smfm.org.s3.amazonaws.com/attachments/876/52ce00b24a640231d1a2130433df7d3d.pdf"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Colestasis intrahepática del embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "Prurito gestacional con elevación de ácidos biliares tras excluir otras causas; suele no haber erupción primaria.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Prurito gestacional con elevación de ácidos biliares tras excluir otras causas; suele no haber erupción primaria."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Solicitar ácidos biliares y pruebas hepáticas; repetir si persiste prurito con análisis iniciales normales.",
+            "RCOG clasifica pico de 19–39 micromol/L como leve, 40–99 como moderado y ≥100 como grave."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Vía 1 — alivio del prurito: ácido ursodesoxicólico, dosis inicial habitual SMFM 10–15 mg por kg por día por vía oral, dividida en 2–3 administraciones, prescrita y ajustada por obstetricia; emolientes pueden complementar.",
+            "Beneficio predominantemente sintomático; no afirmar que previene muerte fetal.",
+            "Vía 2 — reducción de riesgo obstétrico mediante estratificación de ácidos biliares, evaluación maternofetal y planificación del parto.",
+            "RCOG, sin otros factores de riesgo: considerar hasta 40 semanas en casos leves, 38–39 semanas en moderados y 35–36 semanas si ácidos biliares ≥100 micromol/L.",
+            "Esta vía es complementaria y puede ser necesaria aunque mejore prurito; no sustituir planificación del parto por otro antipruriginoso.",
+            "Reevaluar función hepática y síntomas después del parto."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Programar vigilancia y momento del parto según pico de ácidos biliares, edad gestacional, comorbilidades y guía adoptada.",
+            "No esperar empeoramiento materno para evaluar riesgo fetal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La disminución de movimientos fetales exige atención inmediata.",
+            "Seguimiento obstétrico y confirmación de resolución posparto; alteraciones persistentes requieren investigación hepática."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Los cambios del transporte biliar pueden producir prurito y riesgo fetal.",
+            "Reducir prurito no demuestra reducción de muerte fetal."
+          ]
+        }
+      ],
+      "references": [
+        "[icp] RCOG Green-top 43 — colestase gestacional, final 2022 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/intrahepatic-cholestasis-of-pregnancy-green-top-guideline-no-43/",
+        "[icpp] RCOG — colestase, informação atualizada abril 2026 — https://www.rcog.org.uk/for-the-public/browse-our-patient-information/intrahepatic-cholestasis-of-pregnancy/",
+        "[icpsmfm] SMFM Consult 53 — colestase, dose inicial de ursodesoxicólico — https://cdn.smfm.org.s3.amazonaws.com/attachments/876/52ce00b24a640231d1a2130433df7d3d.pdf"
+      ]
+    }
+  }
+}

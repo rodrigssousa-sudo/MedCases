@@ -1,0 +1,175 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Vaginose bacteriana — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Disbiose vaginal com corrimento e odor característicos; não equivale a candidíase nem tricomoníase.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Disbiose vaginal com corrimento e odor característicos; não equivale a candidíase nem tricomoníase."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Usar critérios clínicos validados ou teste apropriado para sintomas; avaliar outras infecções e causas de corrimento."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opção 1 — metronidazol 500 mg por via oral a cada 12 horas durante 7 dias.",
+            "Opção 2 — clindamicina creme vaginal 2%, 5 g intravaginais ao deitar durante 7 dias, especialmente em alergia/intolerância a nitroimidazólicos.",
+            "Outra via aceitável é metronidazol gel vaginal 0,75%, 5 g intravaginais 1 vez por dia durante 5 dias, se não houver alergia ao fármaco.",
+            "Escolher um esquema; avaliar sintomas, alergias e preferência.",
+            "Creme de clindamicina pode enfraquecer preservativos de látex; conferir bula.",
+            "Tratar gestantes sintomáticas; evitar tinidazol e esquemas com segurança gestacional insuficiente."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Revisar interações, tolerância e história de recorrência.",
+            "Não indicar tinidazol como substituição automática na gravidez.",
+            "Tratamento de parceiro em recorrência requer orientação atual específica."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Alta com orientação de retorno por persistência.",
+            "Febre, dor pélvica, contrações ou suspeita de rotura de membranas exigem avaliação obstétrica, não apenas repetir antibiótico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "A perda de predominância de lactobacilos altera o ambiente vaginal.",
+            "Associações obstétricas não justificam tratar indiscriminadamente toda gestante assintomática."
+          ]
+        }
+      ],
+      "references": [
+        "[bv] CDC — vaginose bacteriana, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/bv.htm"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Vaginosis bacteriana — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "Disbiosis vaginal con flujo y olor característicos; no equivale a candidiasis ni tricomoniasis.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Disbiosis vaginal con flujo y olor característicos; no equivale a candidiasis ni tricomoniasis."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Usar criterios clínicos validados o prueba apropiada para síntomas; evaluar otras infecciones y causas de flujo."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opción 1 — metronidazol 500 mg por vía oral cada 12 horas durante 7 días.",
+            "Opción 2 — clindamicina crema vaginal 2%, 5 g intravaginales al acostarse durante 7 días, especialmente ante alergia/intolerancia a nitroimidazoles.",
+            "Otra vía aceptable es metronidazol gel vaginal 0,75%, 5 g intravaginales 1 vez por día durante 5 días, si no hay alergia al fármaco.",
+            "Elegir un esquema; evaluar síntomas, alergias y preferencia.",
+            "La crema de clindamicina puede debilitar preservativos de látex; verificar prospecto.",
+            "Tratar embarazadas sintomáticas; evitar tinidazol y esquemas con seguridad gestacional insuficiente."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Revisar interacciones, tolerancia e historia de recurrencia.",
+            "No indicar tinidazol como sustitución automática en el embarazo.",
+            "El tratamiento de pareja ante recurrencia requiere orientación actual específica."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Alta con indicación de retorno ante persistencia.",
+            "Fiebre, dolor pélvico, contracciones o sospecha de rotura de membranas requieren evaluación obstétrica, no solamente repetir antibiótico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La pérdida del predominio de lactobacilos altera el ambiente vaginal.",
+            "Las asociaciones obstétricas no justifican tratar indiscriminadamente a toda embarazada asintomática."
+          ]
+        }
+      ],
+      "references": [
+        "[bv] CDC — vaginose bacteriana, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/bv.htm"
+      ]
+    }
+  }
+}

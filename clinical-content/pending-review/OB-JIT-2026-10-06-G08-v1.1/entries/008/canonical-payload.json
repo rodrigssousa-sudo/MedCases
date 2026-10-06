@@ -1,0 +1,102 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "hipertensao_arterial",
+  "titles": {
+    "pt": "Hipertensão arterial crônica — gestação",
+    "es": "Hipertensión arterial crónica — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "DRUG_ALTERNATIVES",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Hipertensão presente antes da gravidez ou identificada antes de 20 semanas; preservar identidade de doença crônica.",
+      "es": "Hipertensión presente antes del embarazo o identificada antes de 20 semanas; preservar identidad de enfermedad crónica."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Há risco de pré-eclâmpsia sobreposta, restrição de crescimento e complicações vasculares. Uma piora não deve ser atribuída apenas à hipertensão basal.",
+      "es": "Existe riesgo de preeclampsia sobreagregada, restricción del crecimiento y complicaciones vasculares. Un empeoramiento no debe atribuirse solamente a la hipertensión basal."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Registrar pressão basal, função renal, proteinúria e fármacos. Alterações de plaquetas, fígado, rim ou sintomas neurológicos exigem avaliar pré-eclâmpsia sobreposta.",
+      "es": "Registrar presión basal, función renal, proteinuria y fármacos. Alteraciones de plaquetas, hígado, riñón o síntomas neurológicos exigen evaluar preeclampsia sobreagregada."
+    },
+    {
+      "id": "treatment",
+      "pt": "Opção 1 — labetalol oral para manutenção, se apropriado; evitar em asma com broncoespasmo, bradicardia ou bloqueio cardíaco. Exemplo do protocolo obstétrico NHS North West 2026: iniciar 100–200 mg, 3 vezes por dia, titular conforme pressão e tolerância.\nOpção 2 — nifedipino de liberação modificada se labetalol inadequado: iniciar 10–20 mg por via oral, 2 vezes por dia, no mesmo protocolo; confirmar formulação, pois apresentações têm durações diferentes. Não usar por via sublingual. Individualizar titulação, monitorar cefaleia, hipotensão e frequência cardíaca; metildopa é terceira alternativa se ambos inadequados. Estes são esquemas de manutenção, não o algoritmo para emergência. Pressão sistólica ≥160 ou diastólica ≥110 mmHg exige avaliação hospitalar urgente e tratamento de ação apropriada, sem esperar efeito da manutenção; alvo de manutenção NICE 135/85 mmHg.",
+      "es": "Opción 1 — labetalol oral para mantenimiento, si es apropiado; evitar en asma con broncoespasmo, bradicardia o bloqueo cardíaco. Ejemplo del protocolo obstétrico NHS North West 2026: iniciar 100–200 mg, 3 veces por día, titular según presión y tolerancia.\nOpción 2 — nifedipino de liberación modificada si labetalol es inadecuado: iniciar 10–20 mg por vía oral, 2 veces por día, en el mismo protocolo; confirmar formulación, pues las presentaciones tienen duraciones diferentes. No usar por vía sublingual. Individualizar titulación, vigilar cefalea, hipotensión y frecuencia cardíaca; metildopa es tercera alternativa si ambos son inadecuados. Son esquemas de mantenimiento, no el algoritmo de emergencia. Presión sistólica ≥160 o diastólica ≥110 mmHg exige evaluación hospitalaria urgente y tratamiento de acción apropiada, sin esperar efecto del mantenimiento; objetivo de mantenimiento NICE 135/85 mmHg."
+    },
+    {
+      "id": "safety",
+      "pt": "Dose inicial não é protocolo de crise. Para prevenção em alto risco, NICE orienta ácido acetilsalicílico 75–150 mg por via oral, 1 vez por dia, a partir de 12 semanas; avaliar contraindicações.",
+      "es": "La dosis inicial no es un protocolo de crisis. Para prevención en alto riesgo, NICE indica ácido acetilsalicílico 75–150 mg por vía oral, 1 vez por día, desde las 12 semanas; evaluar contraindicaciones."
+    },
+    {
+      "id": "disposition",
+      "pt": "Seguimento de alto risco e crescimento fetal. Crise grave ou sinais de lesão de órgãos requerem hospital; plano escrito de monitorização e revisão também após o parto.",
+      "es": "Seguimiento de alto riesgo y crecimiento fetal. Crisis grave o signos de lesión de órganos requieren hospital; plan escrito de monitoreo y revisión también después del parto."
+    }
+  ],
+  "references": [
+    {
+      "id": "ht",
+      "title": "NICE NG133 — hipertensão na gravidez, atualização 2023",
+      "url": "https://www.nice.org.uk/guidance/ng133/chapter/Recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "lab",
+      "title": "DailyMed — labetalol, prescrição oficial",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=35e7bce0-d9ff-4f8b-95c5-218da2a2d929",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "htnw",
+      "title": "NHS England North West — hipertensão gestacional, FINAL abril 2026",
+      "url": "https://www.england.nhs.uk/north-west/wp-content/uploads/sites/48/2026/04/NW-Management-of-Gestational-Hypertension-V1-FINAL.pdf",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 8,
+    "owner": "hipertensao_arterial",
+    "title": {
+      "pt": "Hipertensão arterial crônica — gestação",
+      "es": "Hipertensión arterial crónica — embarazo"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "hipertensao_arterial",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [
+      "crise_hipertensiva",
+      "estenose_arteria_renal"
+    ],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "832f5568f499e53d09d3e55e168eb9cda3c47d5880aa07804ba03d0ac37328a6"
+}

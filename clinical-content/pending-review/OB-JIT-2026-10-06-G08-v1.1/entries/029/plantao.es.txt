@@ -1,0 +1,43 @@
+# Reflujo gastroesofágico — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Pirosis y regurgitación durante el embarazo, sin signos de alarma, pueden representar reflujo gastroesofágico.
+
+## Diagnóstico, estudios y diferenciales
+
+- Evaluar patrón posprandial, posición, disfagia, pérdida de peso, hematemesis y medicamentos.
+- Dolor torácico o epigástrico con hipertensión exige diferencial cardiovascular o preeclampsia.
+
+## Tratamiento y dosis
+
+- Opción 1 — medidas alimentarias/posturales y antiácido o alginato apropiado al embarazo, según composición y dosis del producto; comidas menores y evitar acostarse después de comer.
+- Separar antiácido de hierro/ácido fólico al menos 2 horas.
+- Opción 2 — si persiste pese a estas medidas, supresión ácida prescrita, preferentemente omeprazol por mayor conocimiento de seguridad gestacional; seleccionar dosis según intensidad, indicación y producto, con reevaluación de necesidad.
+- No prolongar automedicación sin evaluación.
+- Disfagia, sangrado, pérdida ponderal o dolor intenso exige investigación, no solamente añadir medicación.
+
+## Seguridad y monitoreo
+
+- Verificar sodio, composición e interacciones con suplementos; no inventar dosis en mL sin concentración.
+- La persistencia exige revisión y elección individual de supresión ácida.
+
+## Escalamiento, alta y seguimiento
+
+- Seguimiento ambulatorio ante cuadro típico y estable.
+- Disfagia progresiva, sangrado, vómitos persistentes o inestabilidad requieren investigación; alta con orientaciones y retorno por signos de alarma.
+
+## Fisiopatología y razonamiento
+
+- La relajación del esfínter y cambios mecánicos favorecen reflujo.
+- El dolor epigástrico intenso no debe atribuirse automáticamente a acidez.
+
+## Referencias
+
+[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations
+
+[refluxpreg] NHS — refluxo na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/indigestion-and-heartburn/
+
+[omep] NHS — omeprazol e gravidez — https://www.nhs.uk/medicines/omeprazole/

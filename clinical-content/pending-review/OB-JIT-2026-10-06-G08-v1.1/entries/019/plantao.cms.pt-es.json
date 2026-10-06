@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Sífilis — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Infecção materna por Treponema pallidum com risco de transmissão fetal; tratamento depende do estágio.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infecção materna por Treponema pallidum com risco de transmissão fetal; tratamento depende do estágio."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Combinar teste treponêmico e não treponêmico quantitativo, estágio clínico, tratamentos prévios e risco de reinfecção.",
+            "Avaliar HIV e parceiros."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Via 1 — penicilina conforme estágio: sífilis recente, penicilina G benzatina 2,4 milhões de unidades intramusculares em dose única; CDC admite dose adicional 1 semana depois em gestantes.",
+            "Tardia/duração desconhecida: 2,4 milhões de unidades intramusculares a cada 1 semana, durante 3 semanas.",
+            "Intervalo superior a 9 dias na gestação exige reiniciar o ciclo tardio completo.",
+            "Via 2 — diante de alergia à penicilina, confirmar história e realizar dessensibilização em ambiente apropriado, seguida de penicilina; é manejo da alergia, não outro antibiótico equivalente.",
+            "Penicilina é o único tratamento comprovado para tratar infecção fetal/prevenir sífilis congênita.",
+            "Suspeita neurológica/ocular exige outro regime de penicilina e especialista.",
+            "Não substituir por doxiciclina, macrolídeo ou ceftriaxona apenas para oferecer uma segunda opção."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Intervalo maior que 9 dias no esquema semanal da gestante exige reiniciar série completa.",
+            "Alergia requer dessensibilização e penicilina; neurossífilis necessita esquema distinto."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Documentar doses e títulos, com seguimento obstétrico.",
+            "Febre, contrações ou redução de movimentos após tratamento exigem avaliação; reação de Jarisch–Herxheimer não justifica atrasar terapia necessária."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Penicilina é o único tratamento comprovado para prevenção de sífilis congênita.",
+            "História vaga de tratamento não substitui documentação."
+          ]
+        }
+      ],
+      "references": [
+        "[syph] CDC — sífilis na gravidez, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/syphilis-pregnancy.htm",
+        "[syphl] CDC — sífilis latente — https://www.cdc.gov/std/treatment-guidelines/latent-syphilis.htm"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Sífilis — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "Infección materna por Treponema pallidum con riesgo de transmisión fetal; el tratamiento depende del estadio.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infección materna por Treponema pallidum con riesgo de transmisión fetal; el tratamiento depende del estadio."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Combinar prueba treponémica y no treponémica cuantitativa, estadio clínico, tratamientos previos y riesgo de reinfección.",
+            "Evaluar VIH y parejas."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Vía 1 — penicilina según estadio: sífilis reciente, penicilina G benzatínica 2,4 millones de unidades intramusculares en dosis única; CDC admite dosis adicional 1 semana después en embarazadas.",
+            "Tardía/duración desconocida: 2,4 millones de unidades intramusculares cada 1 semana, durante 3 semanas.",
+            "Intervalo superior a 9 días en embarazo exige reiniciar el ciclo tardío completo.",
+            "Vía 2 — ante alergia a penicilina, confirmar historia y realizar desensibilización en ambiente apropiado, seguida de penicilina; es manejo de alergia, no otro antibiótico equivalente.",
+            "Penicilina es el único tratamiento comprobado para tratar infección fetal/prevenir sífilis congénita.",
+            "Sospecha neurológica/ocular exige otro régimen de penicilina y especialista.",
+            "No sustituir por doxiciclina, macrólido ni ceftriaxona solamente para ofrecer una segunda opción."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Un intervalo mayor de 9 días en el esquema semanal de la embarazada exige reiniciar la serie completa.",
+            "La alergia requiere desensibilización y penicilina; la neurosífilis necesita otro esquema."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Documentar dosis y títulos, con seguimiento obstétrico.",
+            "Fiebre, contracciones o reducción de movimientos después del tratamiento requieren evaluación; la reacción de Jarisch–Herxheimer no justifica demorar terapia necesaria."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La penicilina es el único tratamiento demostrado para prevenir sífilis congénita.",
+            "Una historia vaga de tratamiento no sustituye documentación."
+          ]
+        }
+      ],
+      "references": [
+        "[syph] CDC — sífilis na gravidez, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/syphilis-pregnancy.htm",
+        "[syphl] CDC — sífilis latente — https://www.cdc.gov/std/treatment-guidelines/latent-syphilis.htm"
+      ]
+    }
+  }
+}

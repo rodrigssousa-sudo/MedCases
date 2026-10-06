@@ -1,0 +1,177 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Cistite aguda — complemento gestacional do cadastro existente",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Infecção urinária baixa com disúria, urgência ou polaciúria, sem sinais de infecção renal.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infecção urinária baixa com disúria, urgência ou polaciúria, sem sinais de infecção renal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Colher urocultura antes do antibiótico, sem atrasar tratamento de quadro convincente.",
+            "Avaliar febre, dor em flanco e sinais de sepse para excluir pielonefrite."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opção 1 — nitrofurantoína de liberação modificada 100 mg por via oral a cada 12 horas durante 7 dias, se cultura/sensibilidade e função renal permitirem; NICE exige filtração estimada ≥45 mL por minuto.",
+            "Evitar no termo e na deficiência de G6PD.",
+            "Opção 2 — cefalexina 500 mg por via oral a cada 12 horas durante 7 dias, conforme sensibilidade e alergias.",
+            "Amoxicilina 500 mg oral a cada 8 horas durante 7 dias é alternativa SOMENTE com microrganismo sensível.",
+            "Ajustar à função renal e ao antibiograma.",
+            "Não usar esses esquemas de infecção baixa para febre com dor lombar/pielonefrite; colher cultura e reavaliar resposta.",
+            "Não repetir empiricamente o mesmo antibiótico se persistência."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Revisar alergias e função renal.",
+            "Não usar agentes de infecção baixa para tratar infecção renal; nitrofurantoína e fosfomicina não substituem tratamento de pielonefrite."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Reavaliar se ausência de melhora ou piora; pode-se considerar cultura de controle 1–2 semanas após tratamento.",
+            "Alta com retorno imediato por febre, dor lombar, contrações ou intolerância oral."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Sintomas podem se sobrepor a alterações fisiológicas e vaginite; gravidez exige confirmação microbiológica e tratamento oportuno."
+          ]
+        }
+      ],
+      "references": [
+        "[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals",
+        "[cyst] NICE NG109 — antibióticos para infecção urinária baixa — https://www.nice.org.uk/guidance/NG109/chapter/recommendations"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Cistitis aguda — complemento gestacional del registro existente",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "Infección urinaria baja con disuria, urgencia o polaquiuria, sin signos de infección renal.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infección urinaria baja con disuria, urgencia o polaquiuria, sin signos de infección renal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Obtener urocultivo antes del antibiótico, sin demorar el tratamiento de un cuadro convincente.",
+            "Evaluar fiebre, dolor en flanco y signos de sepsis para excluir pielonefritis."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opción 1 — nitrofurantoína de liberación modificada 100 mg por vía oral cada 12 horas durante 7 días, si cultivo/sensibilidad y función renal lo permiten; NICE exige filtración estimada ≥45 mL por minuto.",
+            "Evitar al término y en deficiencia de G6PD.",
+            "Opción 2 — cefalexina 500 mg por vía oral cada 12 horas durante 7 días, según sensibilidad y alergias.",
+            "Amoxicilina 500 mg oral cada 8 horas durante 7 días es alternativa SOLAMENTE con microorganismo sensible.",
+            "Ajustar a función renal y antibiograma.",
+            "No usar estos esquemas de infección baja ante fiebre con dolor lumbar/pielonefritis; obtener cultivo y reevaluar respuesta.",
+            "No repetir empíricamente el mismo antibiótico ante persistencia."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Revisar alergias y función renal.",
+            "No usar agentes de infección baja para tratar infección renal; nitrofurantoína y fosfomicina no sustituyen el tratamiento de pielonefritis."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Reevaluar ante ausencia de mejoría o empeoramiento; puede considerarse cultivo de control 1–2 semanas después del tratamiento.",
+            "Alta con retorno inmediato por fiebre, dolor lumbar, contracciones o intolerancia oral."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Los síntomas pueden superponerse a cambios fisiológicos y vaginitis; el embarazo requiere confirmación microbiológica y tratamiento oportuno."
+          ]
+        }
+      ],
+      "references": [
+        "[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals",
+        "[cyst] NICE NG109 — antibióticos para infecção urinária baixa — https://www.nice.org.uk/guidance/NG109/chapter/recommendations"
+      ]
+    }
+  }
+}

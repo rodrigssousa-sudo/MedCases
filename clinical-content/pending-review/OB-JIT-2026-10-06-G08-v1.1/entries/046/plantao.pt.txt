@@ -1,0 +1,42 @@
+# Ameaça de abortamento
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Sangramento no início da gravidez intrauterina potencialmente viável, sem confirmação de perda; excluir ectópica e hemorragia importante.
+
+## Diagnóstico, exames e diferenciais
+
+- Avaliar estabilidade, dor, sangramento e ultrassom transvaginal quando indicado.
+- Gravidez de localização desconhecida exige seguimento até esclarecimento, sem rotular como aborto completo.
+
+## Tratamento e doses
+
+- Via 1 — gravidez intrauterina viável, sangramento e abortamento anterior: progesterona micronizada 400 mg por via vaginal a cada 12 horas; se batimento fetal confirmado, continuar até 16 semanas completas, conforme NICE.
+- Via 2 — sem abortamento anterior e com viabilidade confirmada: acompanhamento e orientações de retorno, sem progesterona automática.
+- Se sangramento parar, seguir pré-natal; se piorar ou persistir além de 14 dias, reavaliar.
+- Não são terapias equivalentes para a mesma população: história de perda define indicação.
+- Não tratar localização desconhecida como ameaça simples; excluir ectópica.
+- Repouso absoluto não deve substituir diagnóstico e seguimento.
+
+## Segurança e monitorização
+
+- Não indicar esse esquema para toda grávida com sangramento, nem antes de excluir localização ectópica.
+- Avaliar RhD e profilaxia conforme diretriz vigente, idade gestacional e procedimento; não copiar regra antiga universal.
+
+## Escalonamento, alta e seguimento
+
+- Instabilidade, síncope, dor intensa ou sangramento importante exige urgência.
+- Se estável, plano de reavaliação e retorno; sangramento persistente além de 14 dias ou agravamento exige nova avaliação.
+
+## Fisiopatologia e raciocínio
+
+- Sangramento não comprova inviabilidade.
+- O tratamento depende de localização, viabilidade e história de perda anterior.
+
+## Referências
+
+[loss] NICE NG126 — manejo de abortamento, atualizado junho 2026 — https://www.nice.org.uk/guidance/ng126/chapter/management-of-miscarriage
+
+[lossd] NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda — https://www.nice.org.uk/guidance/ng126

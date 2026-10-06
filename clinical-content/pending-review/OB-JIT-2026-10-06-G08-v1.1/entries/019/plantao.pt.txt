@@ -1,0 +1,43 @@
+# Sífilis — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Infecção materna por Treponema pallidum com risco de transmissão fetal; tratamento depende do estágio.
+
+## Diagnóstico, exames e diferenciais
+
+- Combinar teste treponêmico e não treponêmico quantitativo, estágio clínico, tratamentos prévios e risco de reinfecção.
+- Avaliar HIV e parceiros.
+
+## Tratamento e doses
+
+- Via 1 — penicilina conforme estágio: sífilis recente, penicilina G benzatina 2,4 milhões de unidades intramusculares em dose única; CDC admite dose adicional 1 semana depois em gestantes.
+- Tardia/duração desconhecida: 2,4 milhões de unidades intramusculares a cada 1 semana, durante 3 semanas.
+- Intervalo superior a 9 dias na gestação exige reiniciar o ciclo tardio completo.
+- Via 2 — diante de alergia à penicilina, confirmar história e realizar dessensibilização em ambiente apropriado, seguida de penicilina; é manejo da alergia, não outro antibiótico equivalente.
+- Penicilina é o único tratamento comprovado para tratar infecção fetal/prevenir sífilis congênita.
+- Suspeita neurológica/ocular exige outro regime de penicilina e especialista.
+- Não substituir por doxiciclina, macrolídeo ou ceftriaxona apenas para oferecer uma segunda opção.
+
+## Segurança e monitorização
+
+- Intervalo maior que 9 dias no esquema semanal da gestante exige reiniciar série completa.
+- Alergia requer dessensibilização e penicilina; neurossífilis necessita esquema distinto.
+
+## Escalonamento, alta e seguimento
+
+- Documentar doses e títulos, com seguimento obstétrico.
+- Febre, contrações ou redução de movimentos após tratamento exigem avaliação; reação de Jarisch–Herxheimer não justifica atrasar terapia necessária.
+
+## Fisiopatologia e raciocínio
+
+- Penicilina é o único tratamento comprovado para prevenção de sífilis congênita.
+- História vaga de tratamento não substitui documentação.
+
+## Referências
+
+[syph] CDC — sífilis na gravidez, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/syphilis-pregnancy.htm
+
+[syphl] CDC — sífilis latente — https://www.cdc.gov/std/treatment-guidelines/latent-syphilis.htm

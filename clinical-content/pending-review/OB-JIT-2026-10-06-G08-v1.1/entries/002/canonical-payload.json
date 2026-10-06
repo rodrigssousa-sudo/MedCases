@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "hiperemese_gravidica",
+  "titles": {
+    "pt": "Hiperêmese gravídica",
+    "es": "Hiperémesis gravídica"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "STEP_UP_PATHWAYS",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Síndrome de vômitos incapacitantes na gravidez, com ingestão insuficiente e repercussão clínica; não é apenas náusea habitual.",
+      "es": "Síndrome de vómitos incapacitantes del embarazo, con ingesta insuficiente y repercusión clínica; no es solamente náusea habitual."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Desidratação, alterações eletrolíticas e deficiência de tiamina podem ocorrer. A cetonúria isolada não mede gravidade nem deve impedir tratamento.",
+      "es": "Pueden ocurrir deshidratación, alteraciones electrolíticas y déficit de tiamina. La cetonuria aislada no mide gravedad ni debe impedir el tratamiento."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar peso, sinais vitais, eletrólitos, função renal e causas alternativas. Dor, febre, sangramento e alteração neurológica exigem investigação dirigida.",
+      "es": "Evaluar peso, signos vitales, electrolitos, función renal y causas alternativas. Dolor, fiebre, sangrado y alteraciones neurológicas requieren investigación dirigida."
+    },
+    {
+      "id": "treatment",
+      "pt": "Via 1 — ambulatório intensivo ou unidade de dia se estável: reidratação com solução salina 0,9%, correção de potássio orientada por eletrólitos e antiemético de primeira linha; trocar a via quando não retiver comprimidos. Monitorar balanço hídrico, peso, eletrólitos e função renal.\nVia 2 — internação se não conseguir manter líquidos/medicamentos, houver desidratação importante, distúrbio eletrolítico ou falha ambulatorial: hidratação intravenosa e combinação individualizada de antieméticos de classes diferentes. Metoclopramida é segunda linha; por via oral, 10 mg até 3 vezes por dia, intervalo mínimo de 6 horas, máximo 5 dias; a via parenteral exige prescrição hospitalar e controle de efeitos extrapiramidais. Administrar tiamina 100 mg por via oral 3 vezes por dia a internadas com vômitos ou ingestão muito reduzida, antes de glicose intravenosa/nutrição parenteral; se via oral inviável, reposição intravenosa conforme formulação hospitalar. Corticoide e suporte nutricional são resgate especializado após falha das medidas usuais, não segunda opção rotineira.",
+      "es": "Vía 1 — ambulatorio intensivo o unidad de día si está estable: rehidratación con solución salina 0,9%, corrección de potasio guiada por electrolitos y antiemético de primera línea; cambiar la vía cuando no retenga comprimidos. Vigilar balance hídrico, peso, electrolitos y función renal.\nVía 2 — internación si no puede mantener líquidos/medicamentos, existe deshidratación importante, trastorno electrolítico o falla ambulatoria: hidratación intravenosa y combinación individualizada de antieméticos de clases diferentes. Metoclopramida es segunda línea; por vía oral, 10 mg hasta 3 veces por día, intervalo mínimo de 6 horas, máximo 5 días; la vía parenteral exige prescripción hospitalaria y control de efectos extrapiramidales. Administrar tiamina 100 mg por vía oral 3 veces por día a internadas con vómitos o ingesta muy reducida, antes de glucosa intravenosa/nutrición parenteral; si la vía oral es inviable, reposición intravenosa según formulación hospitalaria. Corticoide y soporte nutricional son rescate especializado tras falla de las medidas habituales, no segunda opción rutinaria."
+    },
+    {
+      "id": "safety",
+      "pt": "Antieméticos podem ser combinados conforme resposta; vigiar efeitos extrapiramidais e risco de QT quando aplicável. Reavaliar eletrólitos durante hidratação e evitar realimentação abrupta em desnutrição.",
+      "es": "Pueden combinarse antieméticos según respuesta; vigilar efectos extrapiramidales y riesgo de QT cuando corresponda. Reevaluar electrolitos durante hidratación y evitar realimentación brusca en desnutrición."
+    },
+    {
+      "id": "disposition",
+      "pt": "Internar se intolerância persistente, desidratação, distúrbio eletrolítico ou comorbidade descompensada. Alta após recuperação da ingestão, com plano de antiemético e seguimento obstétrico.",
+      "es": "Internar ante intolerancia persistente, deshidratación, trastorno electrolítico o comorbilidad descompensada. Alta tras recuperar la ingesta, con plan antiemético y seguimiento obstétrico."
+    }
+  ],
+  "references": [
+    {
+      "id": "nvp",
+      "title": "RCOG Green-top 69 — náuseas, vômitos e hiperêmese; final 2024",
+      "url": "https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/the-management-of-nausea-and-vomiting-of-pregnancy-and-hyperemesis-gravidarum-green-top-guideline-no-69/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "hg",
+      "title": "RCOG 69 — publicação normativa, 2024",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38311315/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "metpreg",
+      "title": "NHS Somerset — medicamentos na gravidez, metoclopramida como segunda linha",
+      "url": "https://nhssomerset.nhs.uk/prescribing-and-medicines-management/prescribing-guidelines-by-clinical-area/medicines-in-pregnancy-children-and-lactation/medicines-used-in-pregnancy/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "met",
+      "title": "NHS — metoclopramida: dose, intervalo e duração",
+      "url": "https://www.nhs.uk/medicines/metoclopramide/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 2,
+    "owner": "hiperemese_gravidica",
+    "title": {
+      "pt": "Hiperêmese gravídica",
+      "es": "Hiperémesis gravídica"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "hiperemese_gravidica",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "968d0e876bcc916d8e1aaa0f87e6de9de2da2edfc0cd87b348940a950f09e7c0"
+}

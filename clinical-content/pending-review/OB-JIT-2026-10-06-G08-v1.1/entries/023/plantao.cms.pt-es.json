@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Infecção por Chlamydia trachomatis — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Infecção genital por clamídia, frequentemente assintomática, com repercussão materna e neonatal.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infecção genital por clamídia, frequentemente assintomática, com repercussão materna e neonatal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Teste molecular conforme risco e rastreamento local.",
+            "Dor pélvica e febre exigem investigar doença complicada, não apenas cervicite."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opção 1 — azitromicina 1 g por via oral em dose única, preferida pelo CDC na gestação.",
+            "Opção 2 — amoxicilina 500 mg por via oral a cada 8 horas durante 7 dias, alternativa quando apropriada, não equivalente em todas as situações.",
+            "Não usar doxiciclina como esquema gestacional padrão.",
+            "Tratar parceria sexual e orientar abstinência até conclusão do esquema/período indicado e tratamento da parceria.",
+            "Teste de cura aproximadamente 4 semanas depois; novo teste em 3 meses e repetição no terceiro trimestre se risco."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Revisar alergias e interações.",
+            "Orientar parceiros e abstinência durante 7 dias após dose única, e até tratamento dos parceiros; sintomas persistentes exigem reavaliação."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Teste de cura molecular aproximadamente 4 semanas após tratamento na gestante; repetir detecção em 3 meses.",
+            "Registrar resultado e plano obstétrico/neonatal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Persistência e reinfecção precisam ser distinguidas; tratamento materno e de parceiros interrompe a cadeia de transmissão."
+          ]
+        }
+      ],
+      "references": [
+        "[chlam] CDC — clamídia, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Infección por Chlamydia trachomatis — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "Infección genital por clamidia, frecuentemente asintomática, con repercusión materna y neonatal.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infección genital por clamidia, frecuentemente asintomática, con repercusión materna y neonatal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Prueba molecular según riesgo y detección local.",
+            "Dolor pélvico y fiebre exigen investigar enfermedad complicada, no solamente cervicitis."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opción 1 — azitromicina 1 g por vía oral en dosis única, preferida por CDC en embarazo.",
+            "Opción 2 — amoxicilina 500 mg por vía oral cada 8 horas durante 7 días, alternativa cuando corresponda, no equivalente en todas las situaciones.",
+            "No usar doxiciclina como esquema gestacional estándar.",
+            "Tratar pareja sexual y aconsejar abstinencia hasta completar el esquema/período indicado y tratar a la pareja.",
+            "Prueba de curación aproximadamente 4 semanas después; nueva prueba a los 3 meses y repetición en tercer trimestre si existe riesgo."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Revisar alergias e interacciones.",
+            "Orientar a parejas y abstinencia durante 7 días después de dosis única, y hasta tratamiento de parejas; los síntomas persistentes requieren reevaluación."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Prueba molecular de curación aproximadamente 4 semanas después del tratamiento en la embarazada; repetir detección a los 3 meses.",
+            "Registrar resultado y plan obstétrico/neonatal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Deben distinguirse persistencia y reinfección; el tratamiento materno y de parejas interrumpe la cadena de transmisión."
+          ]
+        }
+      ],
+      "references": [
+        "[chlam] CDC — clamídia, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm"
+      ]
+    }
+  }
+}

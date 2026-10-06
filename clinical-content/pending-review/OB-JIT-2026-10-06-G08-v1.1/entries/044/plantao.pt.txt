@@ -1,0 +1,41 @@
+# Ansiedade generalizada — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Preocupação excessiva e persistente com prejuízo funcional, distinta de preocupação proporcional à gravidez.
+
+## Diagnóstico, exames e diferenciais
+
+- Avaliar preocupações, sono, funcionamento, depressão, bipolaridade, substâncias e risco suicida.
+- Excluir causas clínicas conforme sinais, sem exames indiscriminados.
+
+## Tratamento e doses
+
+- Opção 1 — terapia cognitivo-comportamental, educação, rotina de sono e intervenções para reduzir prejuízo funcional, com seguimento estruturado.
+- Opção 2 — farmacoterapia individualizada quando gravidade, resposta insuficiente ou preferência justificar, geralmente com inibidor seletivo de recaptação de serotonina; selecionar pela resposta prévia e avaliação perinatal.
+- Não usar benzodiazepínico como alternativa gestacional rotineira nem suspender abruptamente tratamento mantido.
+- Excluir causas médicas, depressão/bipolaridade e risco suicida; monitorar ativação, efeitos adversos e evolução.
+
+## Segurança e monitorização
+
+- Benzodiazepínicos não são solução habitual para toda ansiedade perinatal.
+- Não suspender abruptamente fármacos que possam causar abstinência; planejar revisão supervisionada.
+
+## Escalonamento, alta e seguimento
+
+- Crise com risco de autoagressão, psicose ou comprometimento grave exige urgência.
+- Alta com plano de seguimento, apoio e critérios de retorno, evitando visitas repetidas sem manejo longitudinal.
+
+## Fisiopatologia e raciocínio
+
+- Sintomas somáticos podem sobrepor-se a alterações gestacionais, doença tireoidiana e uso de estimulantes; diagnóstico exige contexto.
+
+## Referências
+
+[psy] ACOG Clinical Practice Guideline 5 — saúde mental perinatal, 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-practice-guideline/articles/2023/06/treatment-and-management-of-mental-health-conditions-during-pregnancy-and-postpartum
+
+[psyp] ACOG — avaliação e tratamento de saúde mental perinatal — https://www.acog.org/programs/perinatal-mental-health/assessment-and-treatment-of-perinatal-mental-health-conditions
+
+[anx] ACOG — ansiedade e gravidez — https://www.acog.org/womens-health/faqs/anxiety-and-pregnancy

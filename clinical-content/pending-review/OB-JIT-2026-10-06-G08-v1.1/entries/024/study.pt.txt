@@ -1,0 +1,34 @@
+# Infecção gonocócica — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Infecção por Neisseria gonorrhoeae, genital ou extragenital; forma disseminada é outro cenário de gravidade.
+
+## Fisiopatologia e raciocínio
+
+Infecção assintomática pode persistir. Resistência antimicrobiana e reinfecção exigem tratamento e seguimento adequados.
+
+## Diagnóstico, exames e diferenciais
+
+Teste molecular por sítio de exposição; cultura e sensibilidade se suspeita de falha. Avaliar clamídia, sífilis e HIV conforme contexto.
+
+## Tratamento e doses
+
+Tratamento preferido — ceftriaxona 500 mg intramusculares em dose única se peso <150 kg; 1 g se ≥150 kg. Se clamídia não foi excluída, acrescentar esquema gestacional apropriado, como azitromicina 1 g oral em dose única.
+Conduta se ceftriaxona inviável — alergia grave, suspeita de resistência ou impossibilidade de administração exige infectologia/especialista e seleção orientada por local da infecção, cultura e suscetibilidade. Não apresentar gentamicina com azitromicina como segunda opção gestacional automática. Infecção faríngea exige teste de cura em 7–14 dias; retestar em 3 meses e tratar parceria. A segunda via é resolução especializada da contraindicação, não um esquema empírico equivalente.
+
+## Segurança e monitorização
+
+Alergia importante exige discussão especializada; não substituir automaticamente por gentamicina na grávida. Febre, artrite ou lesões disseminadas requerem investigação hospitalar.
+
+## Escalonamento, alta e seguimento
+
+Tratar parceiros e evitar relações durante 7 dias após tratamento e até parceiros tratados. Infecção faríngea requer teste de cura em 7–14 dias; repetir detecção em 3 meses.
+
+## Referências
+
+[gono] CDC — gonorreia, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm
+
+[gonod] CDC MMWR — dose de ceftriaxona, 2020 — https://www.cdc.gov/mmwr/volumes/69/wr/mm6950a6.htm

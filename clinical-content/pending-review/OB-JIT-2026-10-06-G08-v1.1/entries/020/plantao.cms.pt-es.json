@@ -1,0 +1,183 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Infecção por HIV — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Infecção por HIV na gravidez exige cuidado materno e prevenção coordenada de transmissão vertical.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infecção por HIV na gravidez exige cuidado materno e prevenção coordenada de transmissão vertical."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Confirmar diagnóstico e avaliar carga viral, imunidade, função renal/hepática, hepatites e histórico de antirretrovirais.",
+            "Não atrasar início necessário aguardando todos os resultados."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opção 1 — em início de terapia e sem situações especiais de resistência/exposição prévia, bictegravir/emtricitabina/tenofovir alafenamida 50 mg/200 mg/25 mg, 1 comprimido por via oral 1 vez por dia, é esquema preferido NIH 2026; verificar função renal, hepatite B e interações.",
+            "Não usar formulação pediátrica como equivalente.",
+            "Opção 2 — esquema com dolutegravir mais combinação de 2 análogos nucleosídeos contendo tenofovir, selecionados pela equipe de HIV conforme função renal, resistência, coinfecção e interações.",
+            "A dose deve ser definida pelos componentes exatos, não pela sigla do esquema.",
+            "Não trocar automaticamente terapia já tolerada e supressiva na concepção.",
+            "A presença de cabotegravir de longa ação prévio como profilaxia muda a escolha inicial.",
+            "Monitorar carga viral e adesão; prevenção neonatal/conduta no parto são etapas adicionais, não substitutos da terapia materna."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Não há dose universal de terapia antirretroviral.",
+            "Conferir cada produto, interações, resistência e função renal; esquema não supressivo precisa revisão rápida."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Planejar parto, profilaxia neonatal e alimentação infantil com equipe especializada e política regional.",
+            "Seguimento de carga viral deve orientar decisões; infecção oportunista ou instabilidade exige hospital."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Supressão viral é central.",
+            "Escolha de regime depende de resistência, tratamento prévio, interações e segurança perinatal, não apenas do diagnóstico."
+          ]
+        }
+      ],
+      "references": [
+        "[hiv] NIH — diretrizes perinatais de antirretrovirais, 31 março 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-overview?view=full",
+        "[hivc] NIH — tratamento já utilizado na concepção, 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-art-taken-when-pregnancy-occurs?view=full",
+        "[hivi] NIH — início de terapia antirretroviral na gravidez, 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-initial-use-antiretroviral-therapy",
+        "[hivbic] NIH — bictegravir: dose e segurança gestacional, 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/safety-toxicity-arv-agents-integrase-inhibitors-bictegravir"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Infección por VIH — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "La infección por VIH durante el embarazo exige cuidado materno y prevención coordinada de transmisión vertical.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La infección por VIH durante el embarazo exige cuidado materno y prevención coordinada de transmisión vertical."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Confirmar diagnóstico y evaluar carga viral, inmunidad, función renal/hepática, hepatitis e historia de antirretrovirales.",
+            "No demorar un inicio necesario esperando todos los resultados."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opción 1 — al iniciar terapia y sin situaciones especiales de resistencia/exposición previa, bictegravir/emtricitabina/tenofovir alafenamida 50 mg/200 mg/25 mg, 1 comprimido por vía oral 1 vez por día, es esquema preferido NIH 2026; verificar función renal, hepatitis B e interacciones.",
+            "No usar formulación pediátrica como equivalente.",
+            "Opción 2 — esquema con dolutegravir más combinación de 2 análogos nucleósidos que contenga tenofovir, seleccionados por el equipo de VIH según función renal, resistencia, coinfección e interacciones.",
+            "La dosis debe definirse por los componentes exactos, no por la sigla del esquema.",
+            "No cambiar automáticamente terapia ya tolerada y supresora al concebir.",
+            "La exposición previa a cabotegravir de acción prolongada como profilaxis modifica la elección inicial.",
+            "Vigilar carga viral y adherencia; prevención neonatal/conducta al parto son etapas adicionales, no sustitutos de terapia materna."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "No existe dosis universal de terapia antirretroviral.",
+            "Verificar cada producto, interacciones, resistencia y función renal; un esquema no supresivo necesita revisión rápida."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Planificar parto, profilaxis neonatal y alimentación infantil con equipo especializado y política regional.",
+            "El seguimiento de carga viral debe orientar decisiones; infección oportunista o inestabilidad requieren hospital."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La supresión viral es central.",
+            "La elección del régimen depende de resistencia, tratamiento previo, interacciones y seguridad perinatal, no solamente del diagnóstico."
+          ]
+        }
+      ],
+      "references": [
+        "[hiv] NIH — diretrizes perinatais de antirretrovirais, 31 março 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-overview?view=full",
+        "[hivc] NIH — tratamento já utilizado na concepção, 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-art-taken-when-pregnancy-occurs?view=full",
+        "[hivi] NIH — início de terapia antirretroviral na gravidez, 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-initial-use-antiretroviral-therapy",
+        "[hivbic] NIH — bictegravir: dose e segurança gestacional, 2026 — https://clinicalinfo.hiv.gov/en/guidelines/perinatal/safety-toxicity-arv-agents-integrase-inhibitors-bictegravir"
+      ]
+    }
+  }
+}

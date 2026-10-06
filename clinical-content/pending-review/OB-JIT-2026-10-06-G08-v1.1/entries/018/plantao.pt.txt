@@ -1,0 +1,38 @@
+# Tricomoníase — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Infecção por Trichomonas vaginalis, com sintomas vaginais ou detecção em teste; é sexualmente transmissível.
+
+## Diagnóstico, exames e diferenciais
+
+- Confirmar por teste apropriado e pesquisar outras infecções sexualmente transmissíveis.
+- Avaliar sintomas obstétricos concomitantes.
+
+## Tratamento e doses
+
+- Tratamento preferido — metronidazol 500 mg por via oral a cada 12 horas durante 7 dias; tratar parceria sexual, evitar relações até todos completarem tratamento e sintomas resolverem, e programar novo teste em aproximadamente 3 meses.
+- Conduta para falha/intolerância — confirmar adesão, reinfecção e diagnóstico antes de repetir ou aumentar doses.
+- Alergia verdadeira a nitroimidazólicos exige avaliação especializada para dessensibilização; resistência exige esquema orientado por especialista.
+- Não oferecer tinidazol como alternativa de rotina na gestação, nem gel vaginal de metronidazol como substituto eficaz.
+- Não há uma segunda opção gestacional rotineira equivalente ao esquema preferido.
+
+## Segurança e monitorização
+
+- Evitar tinidazol na gestação.
+- Tratar parceiros e evitar relações até ambos concluírem tratamento e sintomas resolverem; revisar adesão antes de presumir resistência.
+
+## Escalonamento, alta e seguimento
+
+- Repetir teste em aproximadamente 3 meses para mulheres sexualmente ativas.
+- Dor pélvica, febre ou perda de líquido requerem avaliação obstétrica independente.
+
+## Fisiopatologia e raciocínio
+
+- Infecção e reinfecção dependem de exposição e tratamento de parceiros; microscopia negativa não exclui doença quando teste molecular está indicado.
+
+## Referências
+
+[trich] CDC — tricomoníase, STI Guidelines 2021 — https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm

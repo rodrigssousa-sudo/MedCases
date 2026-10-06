@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Enxaqueca com aura — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "Enxaqueca com aura conhecida na grávida; nova manifestação neurológica exige excluir causas secundárias antes de atribuí-la à aura.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Enxaqueca com aura conhecida na grávida; nova manifestação neurológica exige excluir causas secundárias antes de atribuí-la à aura."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "O padrão pode mudar durante a gravidez. Cefaleia nova ou diferente, especialmente com hipertensão, não deve receber diagnóstico automático de enxaqueca."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Verificar pressão, exame neurológico, início súbito, febre, visão e sintomas de pré-eclâmpsia. Déficit focal ou dor explosiva requer investigação urgente."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opção 1 — medidas de repouso em ambiente tranquilo, hidratação e paracetamol: Paracetamol 500 mg–1 g por via oral se necessário, intervalo mínimo de 4 horas, máximo 4 administrações e 4 g em 24 horas em adulto sem fatores de risco; peso inferior a 50 kg, hepatopatia, desnutrição ou outras vulnerabilidades exigem limite individual menor. Conferir outros produtos com paracetamol e usar pelo menor tempo necessário.\nOpção 2 — se crise persistir após confirmar diagnóstico e excluir causas secundárias, sumatriptana 50 mg por via oral pode ser considerada por médico após discussão de risco/benefício gestacional; conferir bula e contraindicações cardiovasculares antes de prescrever. Não usar para aura isolada nem cefaleia nova sem investigação. Limitar uso frequente para evitar cefaleia por uso excessivo; ergotamínicos não são alternativa na gestação."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Baixo peso, hepatopatia, desnutrição ou doença renal podem exigir redução/ajuste. Evitar duplicar produtos com paracetamol; terapias específicas de enxaqueca na gestação exigem avaliação individual."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alta apenas se padrão conhecido, exame adequado e melhora, com retorno por mudança do quadro. Suspeita de pré-eclâmpsia, trombose venosa cerebral, hemorragia ou meningite exige hospital."
+        }
+      ],
+      "references": [
+        "[mig] ACOG — cefaleias e gravidez — https://www.acog.org/womens-health/faqs/headaches-and-pregnancy",
+        "[mign] NHS — cefaleias na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/headaches/",
+        "[para] NHS — paracetamol em adultos e gravidez — https://www.nhs.uk/medicines/paracetamol-for-adults/",
+        "[sum] NHS — sumatriptana, segurança e avaliação na gestação, setembro 2026 — https://www.nhs.uk/medicines/sumatriptan/",
+        "[sumob] NHS Buckinghamshire/Oxfordshire/Berkshire — enxaqueca na gravidez, protocolo 2018 (apoio posológico; segurança confrontada com NHS 2026) — https://www.bucksoxonberksw.icb.nhs.uk/media/5082/migraine-in-pregnancy-and-breastfeeding-guidelines.pdf"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Migraña con aura — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "Migraña con aura conocida en la embarazada; una nueva manifestación neurológica exige excluir causas secundarias antes de atribuirla al aura.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Migraña con aura conocida en la embarazada; una nueva manifestación neurológica exige excluir causas secundarias antes de atribuirla al aura."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "El patrón puede cambiar durante el embarazo. Una cefalea nueva o diferente, especialmente con hipertensión, no debe diagnosticarse automáticamente como migraña."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Verificar presión, examen neurológico, inicio súbito, fiebre, visión y síntomas de preeclampsia. Déficit focal o dolor explosivo requiere investigación urgente."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opción 1 — reposo en ambiente tranquilo, hidratación y paracetamol: Paracetamol 500 mg–1 g por vía oral si es necesario, intervalo mínimo de 4 horas, máximo 4 administraciones y 4 g en 24 horas en adulto sin factores de riesgo; peso inferior a 50 kg, hepatopatía, desnutrición u otras vulnerabilidades exigen límite individual menor. Verificar otros productos con paracetamol y usar durante el menor tiempo necesario.\nOpción 2 — si persiste crisis después de confirmar diagnóstico y excluir causas secundarias, sumatriptán 50 mg por vía oral puede considerarse por médico tras discusión de riesgo/beneficio gestacional; verificar prospecto y contraindicaciones cardiovasculares antes de prescribir. No usar para aura aislada ni cefalea nueva sin investigación. Limitar uso frecuente para evitar cefalea por uso excesivo; ergotamínicos no son alternativa en embarazo."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Bajo peso, hepatopatía, desnutrición o enfermedad renal pueden exigir reducción/ajuste. Evitar duplicar productos con paracetamol; las terapias específicas de migraña durante el embarazo requieren evaluación individual."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alta solamente ante patrón conocido, examen adecuado y mejoría, con retorno ante cambio del cuadro. Sospecha de preeclampsia, trombosis venosa cerebral, hemorragia o meningitis exige hospital."
+        }
+      ],
+      "references": [
+        "[mig] ACOG — cefaleias e gravidez — https://www.acog.org/womens-health/faqs/headaches-and-pregnancy",
+        "[mign] NHS — cefaleias na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/headaches/",
+        "[para] NHS — paracetamol em adultos e gravidez — https://www.nhs.uk/medicines/paracetamol-for-adults/",
+        "[sum] NHS — sumatriptana, segurança e avaliação na gestação, setembro 2026 — https://www.nhs.uk/medicines/sumatriptan/",
+        "[sumob] NHS Buckinghamshire/Oxfordshire/Berkshire — enxaqueca na gravidez, protocolo 2018 (apoio posológico; segurança confrontada com NHS 2026) — https://www.bucksoxonberksw.icb.nhs.uk/media/5082/migraine-in-pregnancy-and-breastfeeding-guidelines.pdf"
+      ]
+    }
+  }
+}

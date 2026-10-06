@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "pneumonia_grave",
+  "titles": {
+    "pt": "Pneumonia grave — gestação",
+    "es": "Neumonía grave — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "HOSPITAL_EMPIRIC_THEN_TARGETED_PATHWAYS",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Pneumonia grave na grávida com risco respiratório ou sistêmico; preservar o escopo grave deste owner.",
+      "es": "Neumonía grave en la embarazada con riesgo respiratorio o sistémico; preservar el alcance grave de este owner."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Comprometimento de troca gasosa pode ameaçar mãe e feto. Critérios clínicos e deterioração prevalecem sobre escore isolado.",
+      "es": "El compromiso del intercambio gaseoso puede amenazar a madre y feto. Los criterios clínicos y el deterioro prevalecen sobre una escala aislada."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar saturação, pressão, frequência respiratória, perfusão e consciência. Radiografia indicada não deve ser omitida por gravidez; colher culturas conforme gravidade sem atrasar antibiótico.",
+      "es": "Evaluar saturación, presión, frecuencia respiratoria, perfusión y conciencia. No omitir una radiografía indicada por embarazo; obtener cultivos según gravedad sin demorar antibiótico."
+    },
+    {
+      "id": "treatment",
+      "pt": "Via 1 — pneumonia comunitária grave: tratamento hospitalar imediato, suporte respiratório e antibiótico empírico combinado apropriado à gestação. Exemplo NICE: amoxicilina/clavulanato 1,2 g intravenosos a cada 8 horas MAIS eritromicina 500 mg por via oral a cada 6 horas, quando via oral viável; confirmar protocolo e função renal. Rever duração inicial de 5 dias segundo estabilidade e microbiologia, prolongando quando indicado.\nVia 2 — esquema dirigido após culturas/testes, ou alternativa hospitalar especializada se alergia grave, resistência, aspiração ou etiologia diferente. Não há segundo esquema gestacional universal seguro para todas essas situações; selecionar betalactâmico/macrolídeo conforme agente, antibiograma e alergia, com doses do protocolo específico. Transição oral somente após melhora clínica; não oferecer tratamento ambulatorial como equivalente para owner de pneumonia grave.",
+      "es": "Vía 1 — neumonía comunitaria grave: tratamiento hospitalario inmediato, soporte respiratorio y antibiótico empírico combinado apropiado al embarazo. Ejemplo NICE: amoxicilina/clavulanato 1,2 g intravenosos cada 8 horas MÁS eritromicina 500 mg por vía oral cada 6 horas, cuando sea viable la vía oral; confirmar protocolo y función renal. Revisar duración inicial de 5 días según estabilidad y microbiología, prolongando cuando esté indicado.\nVía 2 — esquema dirigido tras cultivos/pruebas, o alternativa hospitalaria especializada ante alergia grave, resistencia, aspiración o etiología diferente. No existe un segundo esquema gestacional universal seguro para todas esas situaciones; seleccionar betalactámico/macrólido según agente, antibiograma y alergia, con dosis del protocolo específico. Transición oral solamente tras mejoría clínica; no ofrecer tratamiento ambulatorio como equivalente para owner de neumonía grave."
+    },
+    {
+      "id": "safety",
+      "pt": "Conferir alergia, função renal, QT e interações; trocar via do macrolídeo se ingestão inviável, sob protocolo hospitalar. Não transpor doxiciclina do esquema não gestacional.",
+      "es": "Verificar alergia, función renal, QT e interacciones; cambiar vía del macrólido si la ingesta no es viable, bajo protocolo hospitalario. No trasladar doxiciclina del esquema no gestacional."
+    },
+    {
+      "id": "disposition",
+      "pt": "Internar, oferecer suporte de oxigênio e avaliação obstétrica. Choque, necessidade crescente de oxigênio ou falência de órgãos exige escalonamento; alta após estabilidade, tolerância oral e seguimento.",
+      "es": "Internar, ofrecer soporte de oxígeno y evaluación obstétrica. Shock, necesidad creciente de oxígeno o falla orgánica exigen escalamiento; alta tras estabilidad, tolerancia oral y seguimiento."
+    }
+  ],
+  "references": [
+    {
+      "id": "pneu",
+      "title": "NICE NG250 — pneumonia, final 2025",
+      "url": "https://www.nice.org.uk/guidance/ng250/chapter/Recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "pneud",
+      "title": "NICE NG250 — pneumonia comunitária em adultos, tabela atualizada 2026",
+      "url": "https://www.nice.org.uk/guidance/ng250/resources/visual-summary-communityacquired-pneumonia-adults-presenting-to-hospital-pdf-15434376301",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 28,
+    "owner": "pneumonia_grave",
+    "title": {
+      "pt": "Pneumonia grave — gestação",
+      "es": "Neumonía grave — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "pneumonia_grave",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "93110aaab8eeea6020d98c909d10ef360a91ab5815825d404ba24fb2d1ea87c3"
+}

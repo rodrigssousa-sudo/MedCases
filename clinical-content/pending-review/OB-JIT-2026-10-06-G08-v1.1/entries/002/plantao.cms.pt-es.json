@@ -1,0 +1,181 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Hiperêmese gravídica",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Síndrome de vômitos incapacitantes na gravidez, com ingestão insuficiente e repercussão clínica; não é apenas náusea habitual.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Síndrome de vômitos incapacitantes na gravidez, com ingestão insuficiente e repercussão clínica; não é apenas náusea habitual."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Avaliar peso, sinais vitais, eletrólitos, função renal e causas alternativas.",
+            "Dor, febre, sangramento e alteração neurológica exigem investigação dirigida."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Via 1 — ambulatório intensivo ou unidade de dia se estável: reidratação com solução salina 0,9%, correção de potássio orientada por eletrólitos e antiemético de primeira linha; trocar a via quando não retiver comprimidos.",
+            "Monitorar balanço hídrico, peso, eletrólitos e função renal.",
+            "Via 2 — internação se não conseguir manter líquidos/medicamentos, houver desidratação importante, distúrbio eletrolítico ou falha ambulatorial: hidratação intravenosa e combinação individualizada de antieméticos de classes diferentes.",
+            "Metoclopramida é segunda linha; por via oral, 10 mg até 3 vezes por dia, intervalo mínimo de 6 horas, máximo 5 dias; a via parenteral exige prescrição hospitalar e controle de efeitos extrapiramidais.",
+            "Administrar tiamina 100 mg por via oral 3 vezes por dia a internadas com vômitos ou ingestão muito reduzida, antes de glicose intravenosa/nutrição parenteral; se via oral inviável, reposição intravenosa conforme formulação hospitalar.",
+            "Corticoide e suporte nutricional são resgate especializado após falha das medidas usuais, não segunda opção rotineira."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Antieméticos podem ser combinados conforme resposta; vigiar efeitos extrapiramidais e risco de QT quando aplicável.",
+            "Reavaliar eletrólitos durante hidratação e evitar realimentação abrupta em desnutrição."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Internar se intolerância persistente, desidratação, distúrbio eletrolítico ou comorbidade descompensada.",
+            "Alta após recuperação da ingestão, com plano de antiemético e seguimento obstétrico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Desidratação, alterações eletrolíticas e deficiência de tiamina podem ocorrer.",
+            "A cetonúria isolada não mede gravidade nem deve impedir tratamento."
+          ]
+        }
+      ],
+      "references": [
+        "[nvp] RCOG Green-top 69 — náuseas, vômitos e hiperêmese; final 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/the-management-of-nausea-and-vomiting-of-pregnancy-and-hyperemesis-gravidarum-green-top-guideline-no-69/",
+        "[hg] RCOG 69 — publicação normativa, 2024 — https://pubmed.ncbi.nlm.nih.gov/38311315/",
+        "[metpreg] NHS Somerset — medicamentos na gravidez, metoclopramida como segunda linha — https://nhssomerset.nhs.uk/prescribing-and-medicines-management/prescribing-guidelines-by-clinical-area/medicines-in-pregnancy-children-and-lactation/medicines-used-in-pregnancy/",
+        "[met] NHS — metoclopramida: dose, intervalo e duração — https://www.nhs.uk/medicines/metoclopramide/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Hiperémesis gravídica",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "Síndrome de vómitos incapacitantes del embarazo, con ingesta insuficiente y repercusión clínica; no es solamente náusea habitual.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Síndrome de vómitos incapacitantes del embarazo, con ingesta insuficiente y repercusión clínica; no es solamente náusea habitual."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Evaluar peso, signos vitales, electrolitos, función renal y causas alternativas.",
+            "Dolor, fiebre, sangrado y alteraciones neurológicas requieren investigación dirigida."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Vía 1 — ambulatorio intensivo o unidad de día si está estable: rehidratación con solución salina 0,9%, corrección de potasio guiada por electrolitos y antiemético de primera línea; cambiar la vía cuando no retenga comprimidos.",
+            "Vigilar balance hídrico, peso, electrolitos y función renal.",
+            "Vía 2 — internación si no puede mantener líquidos/medicamentos, existe deshidratación importante, trastorno electrolítico o falla ambulatoria: hidratación intravenosa y combinación individualizada de antieméticos de clases diferentes.",
+            "Metoclopramida es segunda línea; por vía oral, 10 mg hasta 3 veces por día, intervalo mínimo de 6 horas, máximo 5 días; la vía parenteral exige prescripción hospitalaria y control de efectos extrapiramidales.",
+            "Administrar tiamina 100 mg por vía oral 3 veces por día a internadas con vómitos o ingesta muy reducida, antes de glucosa intravenosa/nutrición parenteral; si la vía oral es inviable, reposición intravenosa según formulación hospitalaria.",
+            "Corticoide y soporte nutricional son rescate especializado tras falla de las medidas habituales, no segunda opción rutinaria."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pueden combinarse antieméticos según respuesta; vigilar efectos extrapiramidales y riesgo de QT cuando corresponda.",
+            "Reevaluar electrolitos durante hidratación y evitar realimentación brusca en desnutrición."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Internar ante intolerancia persistente, deshidratación, trastorno electrolítico o comorbilidad descompensada.",
+            "Alta tras recuperar la ingesta, con plan antiemético y seguimiento obstétrico."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pueden ocurrir deshidratación, alteraciones electrolíticas y déficit de tiamina.",
+            "La cetonuria aislada no mide gravedad ni debe impedir el tratamiento."
+          ]
+        }
+      ],
+      "references": [
+        "[nvp] RCOG Green-top 69 — náuseas, vômitos e hiperêmese; final 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/the-management-of-nausea-and-vomiting-of-pregnancy-and-hyperemesis-gravidarum-green-top-guideline-no-69/",
+        "[hg] RCOG 69 — publicação normativa, 2024 — https://pubmed.ncbi.nlm.nih.gov/38311315/",
+        "[metpreg] NHS Somerset — medicamentos na gravidez, metoclopramida como segunda linha — https://nhssomerset.nhs.uk/prescribing-and-medicines-management/prescribing-guidelines-by-clinical-area/medicines-in-pregnancy-children-and-lactation/medicines-used-in-pregnancy/",
+        "[met] NHS — metoclopramida: dose, intervalo e duração — https://www.nhs.uk/medicines/metoclopramide/"
+      ]
+    }
+  }
+}

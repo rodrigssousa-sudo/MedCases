@@ -1,0 +1,34 @@
+# Depressão maior — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Episódio depressivo durante gravidez ou doença preexistente, com sofrimento e prejuízo funcional; não confundir com tristeza passageira.
+
+## Fisiopatologia e raciocínio
+
+Não tratar também tem riscos maternos e familiares. Gravidez não justifica suspensão abrupta de tratamento eficaz.
+
+## Diagnóstico, exames e diferenciais
+
+Avaliar sintomas, funcionalidade, escala validada, bipolaridade, uso de substâncias e risco suicida. Perguntar sobre segurança doméstica e rede de apoio.
+
+## Tratamento e doses
+
+Opção 1 — psicoterapia estruturada, como terapia cognitivo-comportamental ou interpessoal, especialmente em quadros leves/moderados, com escala validada e acompanhamento de função e risco suicida.
+Opção 2 — antidepressivo selecionado conforme resposta prévia, gravidade e preferência, frequentemente um inibidor seletivo de recaptação de serotonina, associado ou não à psicoterapia. Não interromper tratamento eficaz apenas por gestação; escolher fármaco e dose individualmente e rastrear bipolaridade antes de monoterapia antidepressiva. Quadro grave, psicose, mania ou risco suicida exige avaliação urgente; não aguardar resposta ambulatorial. Discussão de riscos deve incluir doença não tratada e monitorização materna/neonatal.
+
+## Segurança e monitorização
+
+Rastrear bipolaridade antes de antidepressivo isolado. Monitorar sintomas, adesão e efeitos adversos; não prometer risco fetal zero nem atribuir todo sintoma à gravidez.
+
+## Escalonamento, alta e seguimento
+
+Ideação suicida com intenção, psicose ou incapacidade grave de autocuidado exige avaliação urgente e proteção. Casos estáveis: seguimento programado, plano de crise e articulação obstetrícia/saúde mental.
+
+## Referências
+
+[psy] ACOG Clinical Practice Guideline 5 — saúde mental perinatal, 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-practice-guideline/articles/2023/06/treatment-and-management-of-mental-health-conditions-during-pregnancy-and-postpartum
+
+[psyp] ACOG — avaliação e tratamento de saúde mental perinatal — https://www.acog.org/programs/perinatal-mental-health/assessment-and-treatment-of-perinatal-mental-health-conditions

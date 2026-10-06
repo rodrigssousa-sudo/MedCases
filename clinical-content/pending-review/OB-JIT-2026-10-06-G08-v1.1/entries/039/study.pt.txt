@@ -1,0 +1,38 @@
+# Síndrome do túnel do carpo — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Compressão do nervo mediano no punho com parestesia, especialmente em polegar, indicador e dedo médio.
+
+## Fisiopatologia e raciocínio
+
+Retenção de líquido da gestação pode contribuir; é distinta de neuropatia ulnar do túnel cubital.
+
+## Diagnóstico, exames e diferenciais
+
+Avaliar distribuição, sintomas noturnos, força e atrofia; quadro atípico exige diferenciar radiculopatia e outras neuropatias.
+
+## Tratamento e doses
+
+Opção 1 — órtese de punho neutro à noite, evitar posições mantidas de flexão e adaptar atividades, com terapia da mão quando indicada.
+Opção 2 — se sintomas persistirem ou houver perda de função, especialista em mão pode considerar infiltração local de corticoide após avaliar gestação, produto e riscos; fraqueza/atrofia ou déficit progressivo exige avaliação para descompressão. Infiltração não é medicação oral de rotina nem substituto para investigar déficit. Muitos casos gestacionais melhoram após o parto, mas déficit importante não deve ser ignorado.
+
+## Segurança e monitorização
+
+Não iniciar automaticamente corticosteroide sistêmico ou anti-inflamatório. Infiltração ou cirurgia exige avaliação especializada e balanço clínico, sobretudo se déficit persistente.
+
+## Escalonamento, alta e seguimento
+
+Muitos casos melhoram após a gestação; isso não justifica ignorar fraqueza progressiva ou atrofia. Alta com orientações e retorno por perda funcional; seguimento se persistir após parto.
+
+## Referências
+
+[carp] NHS South Tees — túnel do carpo na gravidez — https://www.southtees.nhs.uk/resources/carpel-tunnel-syndrome-cts-in-pregnancy/
+
+[carpn] NHS — síndrome do túnel do carpo — https://www.nhs.uk/conditions/carpal-tunnel-syndrome/
+
+[hand] British Society for Surgery of the Hand — túnel do carpo — https://www.bssh.ac.uk/patients/conditions/21/carpal_tunnel_syndrome
+
+[handpreg] NHS — infiltração local de hidrocortisona na gravidez — https://www.nhs.uk/medicines/hydrocortisone-injections/pregnancy-breastfeeding-and-fertility-if-youre-having-hydrocortisone-injections/

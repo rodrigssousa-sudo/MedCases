@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "infeccao_gonococica",
+  "titles": {
+    "pt": "Infecção gonocócica — gestação",
+    "es": "Infección gonocócica — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "PREFERRED_REGIMEN_SPECIALIST_FALLBACK",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Infecção por Neisseria gonorrhoeae, genital ou extragenital; forma disseminada é outro cenário de gravidade.",
+      "es": "Infección por Neisseria gonorrhoeae, genital o extragenital; la forma diseminada es otro escenario de gravedad."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Infecção assintomática pode persistir. Resistência antimicrobiana e reinfecção exigem tratamento e seguimento adequados.",
+      "es": "La infección asintomática puede persistir. La resistencia antimicrobiana y reinfección exigen tratamiento y seguimiento adecuados."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Teste molecular por sítio de exposição; cultura e sensibilidade se suspeita de falha. Avaliar clamídia, sífilis e HIV conforme contexto.",
+      "es": "Prueba molecular según sitio de exposición; cultivo y sensibilidad ante sospecha de fracaso. Evaluar clamidia, sífilis y VIH según contexto."
+    },
+    {
+      "id": "treatment",
+      "pt": "Tratamento preferido — ceftriaxona 500 mg intramusculares em dose única se peso <150 kg; 1 g se ≥150 kg. Se clamídia não foi excluída, acrescentar esquema gestacional apropriado, como azitromicina 1 g oral em dose única.\nConduta se ceftriaxona inviável — alergia grave, suspeita de resistência ou impossibilidade de administração exige infectologia/especialista e seleção orientada por local da infecção, cultura e suscetibilidade. Não apresentar gentamicina com azitromicina como segunda opção gestacional automática. Infecção faríngea exige teste de cura em 7–14 dias; retestar em 3 meses e tratar parceria. A segunda via é resolução especializada da contraindicação, não um esquema empírico equivalente.",
+      "es": "Tratamiento preferido — ceftriaxona 500 mg intramusculares en dosis única si peso <150 kg; 1 g si ≥150 kg. Si no se excluyó clamidia, añadir esquema gestacional apropiado, como azitromicina 1 g oral en dosis única.\nConducta si ceftriaxona es inviable — alergia grave, sospecha de resistencia o imposibilidad de administración exige infectología/especialista y selección guiada por sitio de infección, cultivo y susceptibilidad. No presentar gentamicina con azitromicina como segunda opción gestacional automática. Infección faríngea exige prueba de curación a los 7–14 días; repetir prueba a los 3 meses y tratar pareja. La segunda vía es resolución especializada de contraindicación, no un esquema empírico equivalente."
+    },
+    {
+      "id": "safety",
+      "pt": "Alergia importante exige discussão especializada; não substituir automaticamente por gentamicina na grávida. Febre, artrite ou lesões disseminadas requerem investigação hospitalar.",
+      "es": "La alergia importante exige consulta especializada; no sustituir automáticamente por gentamicina en la embarazada. Fiebre, artritis o lesiones diseminadas requieren investigación hospitalaria."
+    },
+    {
+      "id": "disposition",
+      "pt": "Tratar parceiros e evitar relações durante 7 dias após tratamento e até parceiros tratados. Infecção faríngea requer teste de cura em 7–14 dias; repetir detecção em 3 meses.",
+      "es": "Tratar parejas y evitar relaciones durante 7 días después del tratamiento y hasta tratar parejas. La infección faríngea requiere prueba de curación en 7–14 días; repetir detección a los 3 meses."
+    }
+  ],
+  "references": [
+    {
+      "id": "gono",
+      "title": "CDC — gonorreia, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "gonod",
+      "title": "CDC MMWR — dose de ceftriaxona, 2020",
+      "url": "https://www.cdc.gov/mmwr/volumes/69/wr/mm6950a6.htm",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 24,
+    "owner": "infeccao_gonococica",
+    "title": {
+      "pt": "Infecção gonocócica — gestação",
+      "es": "Infección gonocócica — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "infeccao_gonococica",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "b36a479c3c5fca1d7f1d24aac003c6973ec09172adf8cb7620683d8b772b7856"
+}

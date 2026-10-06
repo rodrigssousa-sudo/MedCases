@@ -1,0 +1,189 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Pré-eclâmpsia",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Doença hipertensiva após 20 semanas com proteinúria ou disfunção materna/uteroplacentária; proteinúria não é obrigatória.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Doença hipertensiva após 20 semanas com proteinúria ou disfunção materna/uteroplacentária; proteinúria não é obrigatória."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Avaliar pressão, cefaleia, visão, dor epigástrica, dispneia, plaquetas, creatinina, transaminases e proteinúria, com avaliação fetal.",
+            "Não esperar todos os exames para tratar instabilidade."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opção 1 — labetalol oral para manutenção, se apropriado; evitar em asma com broncoespasmo, bradicardia ou bloqueio cardíaco.",
+            "Exemplo do protocolo obstétrico NHS North West 2026: iniciar 100–200 mg, 3 vezes por dia, titular conforme pressão e tolerância.",
+            "Opção 2 — nifedipino de liberação modificada se labetalol inadequado: iniciar 10–20 mg por via oral, 2 vezes por dia, no mesmo protocolo; confirmar formulação, pois apresentações têm durações diferentes.",
+            "Não usar por via sublingual.",
+            "Individualizar titulação, monitorar cefaleia, hipotensão e frequência cardíaca; metildopa é terceira alternativa se ambos inadequados.",
+            "Estes são esquemas de manutenção, não o algoritmo para emergência.",
+            "Pressão sistólica ≥160 ou diastólica ≥110 mmHg exige avaliação hospitalar urgente e tratamento de ação apropriada, sem esperar efeito da manutenção; alvo de manutenção NICE 135/85 mmHg.",
+            "Via obstétrica 1 — vigilância hospitalar expectante somente se elegível e sem indicação imediata de parto, conforme idade gestacional e condições maternas/fetais.",
+            "Via obstétrica 2 — estabilização seguida de parto quando houver indicação; deterioração, eclâmpsia ou comprometimento fetal não devem aguardar completar corticoide.",
+            "Sulfato de magnésio não substitui anti-hipertensivo: quando indicado em quadro grave/eclâmpsia, 4 g intravenosos em 5–15 minutos, depois 1 g por hora durante 24 horas, conforme protocolo NICE; monitorar respiração, reflexos, diurese e função renal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Magnésio não substitui controle pressórico.",
+            "Monitorar respiração, reflexos e diurese; disfunção renal exige ajuste e vigilância.",
+            "Diluição depende da concentração disponível e protocolo institucional."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Convulsão, edema pulmonar, deterioração laboratorial ou comprometimento fetal exigem internação e escalonamento.",
+            "Decisão de parto deve equilibrar estabilidade e prematuridade, sem adiar resolução de emergência."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Disfunção placentária e endotelial pode comprometer múltiplos órgãos.",
+            "Eclâmpsia e HELLP são complicações relacionadas, não aliases que autorizem fundir owners."
+          ]
+        }
+      ],
+      "references": [
+        "[ht] NICE NG133 — hipertensão na gravidez, atualização 2023 — https://www.nice.org.uk/guidance/ng133/chapter/Recommendations",
+        "[mg] NICE NG133 — cuidado crítico em hipertensão e pré-eclâmpsia — https://www.nice.org.uk/guidance/ng133/resources/criteria-for-choice-of-critical-care-level-hypertension-preeclampsia-and-eclampsia-pdf-8720711396",
+        "[htnw] NHS England North West — hipertensão gestacional, FINAL abril 2026 — https://www.england.nhs.uk/north-west/wp-content/uploads/sites/48/2026/04/NW-Management-of-Gestational-Hypertension-V1-FINAL.pdf"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Preeclampsia",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "Enfermedad hipertensiva después de 20 semanas con proteinuria o disfunción materna/uteroplacentaria; la proteinuria no es obligatoria.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Enfermedad hipertensiva después de 20 semanas con proteinuria o disfunción materna/uteroplacentaria; la proteinuria no es obligatoria."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Evaluar presión, cefalea, visión, dolor epigástrico, disnea, plaquetas, creatinina, transaminasas y proteinuria, con evaluación fetal.",
+            "No esperar todos los análisis para tratar inestabilidad."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opción 1 — labetalol oral para mantenimiento, si es apropiado; evitar en asma con broncoespasmo, bradicardia o bloqueo cardíaco.",
+            "Ejemplo del protocolo obstétrico NHS North West 2026: iniciar 100–200 mg, 3 veces por día, titular según presión y tolerancia.",
+            "Opción 2 — nifedipino de liberación modificada si labetalol es inadecuado: iniciar 10–20 mg por vía oral, 2 veces por día, en el mismo protocolo; confirmar formulación, pues las presentaciones tienen duraciones diferentes.",
+            "No usar por vía sublingual.",
+            "Individualizar titulación, vigilar cefalea, hipotensión y frecuencia cardíaca; metildopa es tercera alternativa si ambos son inadecuados.",
+            "Son esquemas de mantenimiento, no el algoritmo de emergencia.",
+            "Presión sistólica ≥160 o diastólica ≥110 mmHg exige evaluación hospitalaria urgente y tratamiento de acción apropiada, sin esperar efecto del mantenimiento; objetivo de mantenimiento NICE 135/85 mmHg.",
+            "Vía obstétrica 1 — vigilancia hospitalaria expectante solamente si es elegible y no existe indicación inmediata de parto, según edad gestacional y condiciones maternas/fetales.",
+            "Vía obstétrica 2 — estabilización seguida de parto cuando esté indicado; deterioro, eclampsia o compromiso fetal no deben esperar a completar corticoide.",
+            "Sulfato de magnesio no sustituye antihipertensivo: cuando esté indicado en cuadro grave/eclampsia, 4 g intravenosos en 5–15 minutos, después 1 g por hora durante 24 horas, según protocolo NICE; vigilar respiración, reflejos, diuresis y función renal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "El magnesio no sustituye el control de presión.",
+            "Vigilar respiración, reflejos y diuresis; disfunción renal exige ajuste y vigilancia.",
+            "La dilución depende de la concentración disponible y del protocolo institucional."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Convulsión, edema pulmonar, deterioro de laboratorio o compromiso fetal exigen internación y escalamiento.",
+            "La decisión del parto debe equilibrar estabilidad y prematuridad, sin demorar la resolución de una emergencia."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "La disfunción placentaria y endotelial puede afectar múltiples órganos.",
+            "Eclampsia y HELLP son complicaciones relacionadas, no alias que autoricen fusionar owners."
+          ]
+        }
+      ],
+      "references": [
+        "[ht] NICE NG133 — hipertensão na gravidez, atualização 2023 — https://www.nice.org.uk/guidance/ng133/chapter/Recommendations",
+        "[mg] NICE NG133 — cuidado crítico em hipertensão e pré-eclâmpsia — https://www.nice.org.uk/guidance/ng133/resources/criteria-for-choice-of-critical-care-level-hypertension-preeclampsia-and-eclampsia-pdf-8720711396",
+        "[htnw] NHS England North West — hipertensão gestacional, FINAL abril 2026 — https://www.england.nhs.uk/north-west/wp-content/uploads/sites/48/2026/04/NW-Management-of-Gestational-Hypertension-V1-FINAL.pdf"
+      ]
+    }
+  }
+}

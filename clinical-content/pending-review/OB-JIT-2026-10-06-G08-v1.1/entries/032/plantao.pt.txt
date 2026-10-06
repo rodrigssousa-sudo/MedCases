@@ -1,0 +1,43 @@
+# Fissura anal — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Lesão do canal anal com dor ao evacuar e possível sangramento vermelho vivo; não é sinônimo de hemorroida.
+
+## Diagnóstico, exames e diferenciais
+
+- Inspeção delicada e avaliação de constipação, abscesso, doença inflamatória e infecção.
+- Não forçar exame doloroso desnecessário.
+
+## Tratamento e doses
+
+- Via 1 — amolecer fezes com alimentação/hidratação e laxativo gestacional apropriado se necessário; banho morno, evitar esforço e analgesia compatível.
+- Via 2 — se fissura persistente, muito dolorosa ou atípica, encaminhar para avaliação coloproctológica e seleção individual de tratamento local/procedimento.
+- Nitroglicerina e diltiazem tópicos de protocolos gerais não devem ser copiados como opções gestacionais automaticamente.
+- Confirmar que sangramento é anal e excluir abscesso/doença inflamatória.
+- Esta segunda via é escalonamento, não prescrição de um segundo fármaco sem evidência de segurança.
+
+## Segurança e monitorização
+
+- Não transpor automaticamente nitratos, diltiazem ou procedimentos do protocolo não gestacional.
+- Evitar anti-inflamatório por automedicação e investigar infecção se febre.
+
+## Escalonamento, alta e seguimento
+
+- Reavaliar se não melhora ou se sangramento persiste.
+- Dor contínua intensa, febre, tumoração ou instabilidade exigem urgência; cronicidade pede avaliação coloproctológica.
+
+## Fisiopatologia e raciocínio
+
+- Trauma por fezes duras e espasmo local perpetuam dor.
+- Fissuras atípicas ou múltiplas podem apontar outra doença.
+
+## Referências
+
+[fiss] NHS — fissura anal — https://www.nhs.uk/conditions/anal-fissure/
+
+[const] NHS SPS — constipação na gestação — https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/
+
+[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/

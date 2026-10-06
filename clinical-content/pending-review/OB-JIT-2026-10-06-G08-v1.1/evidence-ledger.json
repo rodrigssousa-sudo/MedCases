@@ -1,0 +1,5555 @@
+{
+  "date": "2026-10-06",
+  "sources": {
+    "nvp": {
+      "title": "RCOG Green-top 69 — náuseas, vômitos e hiperêmese; final 2024",
+      "url": "https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/the-management-of-nausea-and-vomiting-of-pregnancy-and-hyperemesis-gravidarum-green-top-guideline-no-69/"
+    },
+    "hg": {
+      "title": "RCOG 69 — publicação normativa, 2024",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38311315/"
+    },
+    "dox": {
+      "title": "DailyMed — doxilamina/piridoxina 10 mg/10 mg, liberação retardada",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c283720d-f9a5-471f-9616-853a70f2b31d"
+    },
+    "anc": {
+      "title": "NICE NG201 — cuidado pré-natal",
+      "url": "https://www.nice.org.uk/guidance/ng201/chapter/Recommendations"
+    },
+    "fe": {
+      "title": "OMS — suplementação diária de ferro na gestação",
+      "url": "https://www.who.int/tools/elena/interventions/daily-iron-pregnancy"
+    },
+    "fet": {
+      "title": "OMS — recomendações de cuidado pré-natal, 2016",
+      "url": "https://iris.who.int/bitstream/10665/250796/1/9789241549912-eng.pdf"
+    },
+    "hb": {
+      "title": "OMS — pontos de corte de hemoglobina, final 2024",
+      "url": "https://www.who.int/publications-detail-redirect/9789240088542"
+    },
+    "dm": {
+      "title": "ADA — Management of Diabetes in Pregnancy, Standards 2026",
+      "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S321/163918/15-Management-of-Diabetes-in-Pregnancy-Standards"
+    },
+    "dmd": {
+      "title": "ADA — Diagnosis and Classification, Standards 2026",
+      "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S27/163926/2-Diagnosis-and-Classification-of-Diabetes"
+    },
+    "dmn": {
+      "title": "NIDDK — diabetes e gravidez",
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/diabetes-pregnancy"
+    },
+    "dmuk": {
+      "title": "NICE NG3 — diabetes e gravidez",
+      "url": "https://www.nice.org.uk/guidance/NG3/chapter/recommendations"
+    },
+    "ht": {
+      "title": "NICE NG133 — hipertensão na gravidez, atualização 2023",
+      "url": "https://www.nice.org.uk/guidance/ng133/chapter/Recommendations"
+    },
+    "lab": {
+      "title": "DailyMed — labetalol, prescrição oficial",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=35e7bce0-d9ff-4f8b-95c5-218da2a2d929"
+    },
+    "mg": {
+      "title": "NICE NG133 — cuidado crítico em hipertensão e pré-eclâmpsia",
+      "url": "https://www.nice.org.uk/guidance/ng133/resources/criteria-for-choice-of-critical-care-level-hypertension-preeclampsia-and-eclampsia-pdf-8720711396"
+    },
+    "thy": {
+      "title": "RCOG Green-top 76 — tireoide na gravidez, final 2025",
+      "url": "https://obgyn.onlinelibrary.wiley.com/doi/10.1111/1471-0528.18088"
+    },
+    "hypo": {
+      "title": "American Thyroid Association — hipotireoidismo na gravidez",
+      "url": "https://www.thyroid.org/hypothyroidism-in-pregnancy/"
+    },
+    "hyper": {
+      "title": "American Thyroid Association — hipertireoidismo na gravidez",
+      "url": "https://www.thyroid.org/hyperthyroidism-in-pregnancy/"
+    },
+    "ob": {
+      "title": "NICE NG247 — nutrição materna, 2025",
+      "url": "https://www.nice.org.uk/guidance/NG247/chapter/rationale-and-impact"
+    },
+    "obdrug": {
+      "title": "NICE NG246 — medicamentos para controle de peso",
+      "url": "https://www.nice.org.uk/guidance/ng246/chapter/Medicines-and-surgery"
+    },
+    "uti": {
+      "title": "ACOG — infecções urinárias na gravidez, consenso 2023",
+      "url": "https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals"
+    },
+    "cyst": {
+      "title": "NICE NG109 — antibióticos para infecção urinária baixa",
+      "url": "https://www.nice.org.uk/guidance/NG109/chapter/recommendations"
+    },
+    "pyelo": {
+      "title": "NICE NG111 — antibióticos para pielonefrite",
+      "url": "https://www.nice.org.uk/guidance/NG111/chapter/recommendations"
+    },
+    "cand": {
+      "title": "CDC — candidíase vulvovaginal, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm"
+    },
+    "bv": {
+      "title": "CDC — vaginose bacteriana, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/bv.htm"
+    },
+    "trich": {
+      "title": "CDC — tricomoníase, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm"
+    },
+    "syph": {
+      "title": "CDC — sífilis na gravidez, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/syphilis-pregnancy.htm"
+    },
+    "syphl": {
+      "title": "CDC — sífilis latente",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/latent-syphilis.htm"
+    },
+    "hiv": {
+      "title": "NIH — diretrizes perinatais de antirretrovirais, 31 março 2026",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-overview?view=full"
+    },
+    "hivc": {
+      "title": "NIH — tratamento já utilizado na concepção, 2026",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-art-taken-when-pregnancy-occurs?view=full"
+    },
+    "hbv": {
+      "title": "OMS — hepatite B crônica, prevenção da transmissão materna, 2024",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK615006/"
+    },
+    "hbvs": {
+      "title": "SMFM Consult 69 — hepatite B na gravidez, 2024",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38141870/"
+    },
+    "herp": {
+      "title": "CDC — herpes genital, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm"
+    },
+    "chlam": {
+      "title": "CDC — clamídia, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm"
+    },
+    "gono": {
+      "title": "CDC — gonorreia, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/gonorrhea-adults.htm"
+    },
+    "gonod": {
+      "title": "CDC MMWR — dose de ceftriaxona, 2020",
+      "url": "https://www.cdc.gov/mmwr/volumes/69/wr/mm6950a6.htm"
+    },
+    "flu": {
+      "title": "CDC — influenza em gestantes, atualização dezembro 2025",
+      "url": "https://www.cdc.gov/flu/hcp/antivirals/treatment_obstetric.html"
+    },
+    "flud": {
+      "title": "CDC — antivirais para influenza, resumo clínico",
+      "url": "https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html"
+    },
+    "cov": {
+      "title": "CDC — COVID-19 e populações especiais",
+      "url": "https://www.cdc.gov/covid/hcp/clinical-care/considerations-special-groups.html"
+    },
+    "pax": {
+      "title": "FDA — nirmatrelvir/ritonavir, bula revisada 2025",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/217188s010lbl.pdf"
+    },
+    "asth": {
+      "title": "GINA — estratégia global, final 2026",
+      "url": "https://ginasthma.org/wp-content/uploads/2026/05/GINA-2026-Strategy-Report-WMS.pdf"
+    },
+    "pneu": {
+      "title": "NICE NG250 — pneumonia, final 2025",
+      "url": "https://www.nice.org.uk/guidance/ng250/chapter/Recommendations"
+    },
+    "pneud": {
+      "title": "NICE NG250 — pneumonia comunitária em adultos, tabela atualizada 2026",
+      "url": "https://www.nice.org.uk/guidance/ng250/resources/visual-summary-communityacquired-pneumonia-adults-presenting-to-hospital-pdf-15434376301"
+    },
+    "const": {
+      "title": "NHS SPS — constipação na gestação",
+      "url": "https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/"
+    },
+    "hem": {
+      "title": "NHS — hemorroidas na gravidez",
+      "url": "https://www.nhs.uk/pregnancy/common-symptoms/piles/"
+    },
+    "surg": {
+      "title": "SAGES — laparoscopia na gravidez, final 2024",
+      "url": "https://www.sages.org/publications/guidelines/guidelines-for-the-use-of-laparoscopy-during-pregnancy/"
+    },
+    "stone": {
+      "title": "EAU — urolitíase, final 2026",
+      "url": "https://uroweb.org/guidelines/urolithiasis/chapter/guidelines"
+    },
+    "pain": {
+      "title": "NHS SPS — tratamento da dor na gravidez",
+      "url": "https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+    },
+    "para": {
+      "title": "NHS — paracetamol em adultos e gravidez",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/"
+    },
+    "back": {
+      "title": "NHS — lombalgia na gravidez",
+      "url": "https://www.nhs.uk/pregnancy/common-symptoms/back-pain/"
+    },
+    "pgp": {
+      "title": "NHS — dor pélvica na gravidez",
+      "url": "https://www.nhs.uk/pregnancy/common-symptoms/pelvic-pain/"
+    },
+    "pgpr": {
+      "title": "RCOG — dor da cintura pélvica e gravidez",
+      "url": "https://www.rcog.org.uk/for-the-public/browse-our-patient-information/pelvic-girdle-pain-and-pregnancy/"
+    },
+    "carp": {
+      "title": "NHS South Tees — túnel do carpo na gravidez",
+      "url": "https://www.southtees.nhs.uk/resources/carpel-tunnel-syndrome-cts-in-pregnancy/"
+    },
+    "carpn": {
+      "title": "NHS — síndrome do túnel do carpo",
+      "url": "https://www.nhs.uk/conditions/carpal-tunnel-syndrome/"
+    },
+    "vein": {
+      "title": "NHS — problemas comuns na gravidez, varizes",
+      "url": "https://www.nhs.uk/pregnancy/common-symptoms/common-health-problems/"
+    },
+    "veinn": {
+      "title": "NHS — varizes",
+      "url": "https://www.nhs.uk/conditions/varicose-veins/"
+    },
+    "ecz": {
+      "title": "UKTIS/BUMPS — corticosteroides tópicos na gravidez",
+      "url": "https://www.medicinesinpregnancy.org/leaflets-a-z/corticosteroids---topical/"
+    },
+    "icp": {
+      "title": "RCOG Green-top 43 — colestase gestacional, final 2022",
+      "url": "https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/intrahepatic-cholestasis-of-pregnancy-green-top-guideline-no-43/"
+    },
+    "icpp": {
+      "title": "RCOG — colestase, informação atualizada abril 2026",
+      "url": "https://www.rcog.org.uk/for-the-public/browse-our-patient-information/intrahepatic-cholestasis-of-pregnancy/"
+    },
+    "psy": {
+      "title": "ACOG Clinical Practice Guideline 5 — saúde mental perinatal, 2023",
+      "url": "https://www.acog.org/clinical/clinical-guidance/clinical-practice-guideline/articles/2023/06/treatment-and-management-of-mental-health-conditions-during-pregnancy-and-postpartum"
+    },
+    "psyp": {
+      "title": "ACOG — avaliação e tratamento de saúde mental perinatal",
+      "url": "https://www.acog.org/programs/perinatal-mental-health/assessment-and-treatment-of-perinatal-mental-health-conditions"
+    },
+    "mig": {
+      "title": "ACOG — cefaleias e gravidez",
+      "url": "https://www.acog.org/womens-health/faqs/headaches-and-pregnancy"
+    },
+    "mign": {
+      "title": "NHS — cefaleias na gravidez",
+      "url": "https://www.nhs.uk/pregnancy/common-symptoms/headaches/"
+    },
+    "loss": {
+      "title": "NICE NG126 — manejo de abortamento, atualizado junho 2026",
+      "url": "https://www.nice.org.uk/guidance/ng126/chapter/management-of-miscarriage"
+    },
+    "lossd": {
+      "title": "NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda",
+      "url": "https://www.nice.org.uk/guidance/ng126"
+    },
+    "ptl": {
+      "title": "NICE NG25 — trabalho de parto prematuro",
+      "url": "https://www.nice.org.uk/guidance/ng25/chapter/recommendations"
+    },
+    "ster": {
+      "title": "ACOG Committee Opinion 713 — corticosteroide antenatal",
+      "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2017/08/antenatal-corticosteroid-therapy-for-fetal-maturation"
+    },
+    "pprom": {
+      "title": "RCOG Green-top 73 — rotura pré-termo, vigência estendida em 2024",
+      "url": "https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/care-of-women-presenting-with-suspected-preterm-prelabour-rupture-of-membranes-from-24plus0-weeks-of-gestation-green-top-guideline-no-73/"
+    },
+    "fiss": {
+      "title": "NHS — fissura anal",
+      "url": "https://www.nhs.uk/conditions/anal-fissure/"
+    },
+    "diarr": {
+      "title": "IDSA — diarreia infecciosa, guideline final vigente de 2017",
+      "url": "https://www.idsociety.org/practice-guideline/infectious-diarrhea"
+    },
+    "eczn": {
+      "title": "NHS — eczema atópico, revisão 2024",
+      "url": "https://www.nhs.uk/conditions/atopic-eczema/"
+    },
+    "dmvis": {
+      "title": "ADA — monitorização da glicose na gravidez, apoio aos critérios vigentes",
+      "url": "https://diabetes.org/sites/default/files/2024-10/Glucose-Monitoring-During-Pregnancy-patient-FINAL.pdf"
+    },
+    "metpreg": {
+      "title": "NHS Somerset — medicamentos na gravidez, metoclopramida como segunda linha",
+      "url": "https://nhssomerset.nhs.uk/prescribing-and-medicines-management/prescribing-guidelines-by-clinical-area/medicines-in-pregnancy-children-and-lactation/medicines-used-in-pregnancy/"
+    },
+    "met": {
+      "title": "NHS — metoclopramida: dose, intervalo e duração",
+      "url": "https://www.nhs.uk/medicines/metoclopramide/"
+    },
+    "feacog": {
+      "title": "ACOG — anemia na gravidez, Practice Bulletin 233",
+      "url": "https://www.acog.org/clinical/clinical-guidance/practice-bulletin/articles/2021/08/anemia-in-pregnancy"
+    },
+    "febsh": {
+      "title": "British Society for Haematology — deficiência de ferro na gravidez",
+      "url": "https://b-s-h.org.uk/guidelines/guidelines/uk-guidelines-on-the-management-of-iron-deficiency-in-pregnancy"
+    },
+    "htnw": {
+      "title": "NHS England North West — hipertensão gestacional, FINAL abril 2026",
+      "url": "https://www.england.nhs.uk/north-west/wp-content/uploads/sites/48/2026/04/NW-Management-of-Gestational-Hypertension-V1-FINAL.pdf"
+    },
+    "hivi": {
+      "title": "NIH — início de terapia antirretroviral na gravidez, 2026",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/perinatal/recommendations-arv-drugs-pregnancy-initial-use-antiretroviral-therapy"
+    },
+    "hivbic": {
+      "title": "NIH — bictegravir: dose e segurança gestacional, 2026",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/perinatal/safety-toxicity-arv-agents-integrase-inhibitors-bictegravir"
+    },
+    "hbvsmfm": {
+      "title": "SMFM Consult 69 — opções de tenofovir na gravidez",
+      "url": "https://publications.smfm.org/publications/553-society-for-maternal-fetal-medicine-consult-series-69/"
+    },
+    "covout": {
+      "title": "CDC — tratamento ambulatorial de COVID-19",
+      "url": "https://www.cdc.gov/covid/hcp/clinical-care/outpatient-treatment.html"
+    },
+    "rem": {
+      "title": "Gilead — remdesivir, prescrição oficial vigente",
+      "url": "https://www.gilead.com/-/media/files/pdfs/medicines/covid-19/veklury/veklury_pi.pdf"
+    },
+    "refluxpreg": {
+      "title": "NHS — refluxo na gravidez",
+      "url": "https://www.nhs.uk/pregnancy/common-symptoms/indigestion-and-heartburn/"
+    },
+    "omep": {
+      "title": "NHS — omeprazol e gravidez",
+      "url": "https://www.nhs.uk/medicines/omeprazole/"
+    },
+    "handpreg": {
+      "title": "NHS — infiltração local de hidrocortisona na gravidez",
+      "url": "https://www.nhs.uk/medicines/hydrocortisone-injections/pregnancy-breastfeeding-and-fertility-if-youre-having-hydrocortisone-injections/"
+    },
+    "hand": {
+      "title": "British Society for Surgery of the Hand — túnel do carpo",
+      "url": "https://www.bssh.ac.uk/patients/conditions/21/carpal_tunnel_syndrome"
+    },
+    "hydskin": {
+      "title": "NHS — hidrocortisona tópica, frequência e gestação",
+      "url": "https://www.nhs.uk/medicines/hydrocortisone-for-skin/"
+    },
+    "icpsmfm": {
+      "title": "SMFM Consult 53 — colestase, dose inicial de ursodesoxicólico",
+      "url": "https://cdn.smfm.org.s3.amazonaws.com/attachments/876/52ce00b24a640231d1a2130433df7d3d.pdf"
+    },
+    "anx": {
+      "title": "ACOG — ansiedade e gravidez",
+      "url": "https://www.acog.org/womens-health/faqs/anxiety-and-pregnancy"
+    },
+    "sum": {
+      "title": "NHS — sumatriptana, segurança e avaliação na gestação, setembro 2026",
+      "url": "https://www.nhs.uk/medicines/sumatriptan/"
+    },
+    "sumob": {
+      "title": "NHS Buckinghamshire/Oxfordshire/Berkshire — enxaqueca na gravidez, protocolo 2018 (apoio posológico; segurança confrontada com NHS 2026)",
+      "url": "https://www.bucksoxonberksw.icb.nhs.uk/media/5082/migraine-in-pregnancy-and-breastfeeding-guidelines.pdf"
+    }
+  },
+  "facts": [
+    {
+      "ownerId": "nauseas_vomitos_gestacao",
+      "factId": "concept",
+      "factSha256": "b4278e6de10fea507283d2a7deb7ba54df565a99342ebf69a18fb6766f5c49c7",
+      "sourceIds": [
+        "nvp",
+        "dox",
+        "anc",
+        "metpreg",
+        "met"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "nvp",
+      "additionalIndependentSource": "dox",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "nauseas_vomitos_gestacao",
+      "factId": "reasoning",
+      "factSha256": "65fd64ce83de126bb9bc0db5b967950820b6103f2ef1d21c99e4529d8ca036b2",
+      "sourceIds": [
+        "nvp",
+        "dox",
+        "anc",
+        "metpreg",
+        "met"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "nvp",
+      "additionalIndependentSource": "dox",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "nauseas_vomitos_gestacao",
+      "factId": "diagnosis",
+      "factSha256": "371625a26417601cb1f9a66ef8a2e3668a10c2369302400d25e86a05b55cb0ff",
+      "sourceIds": [
+        "nvp",
+        "dox",
+        "anc",
+        "metpreg",
+        "met"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "nvp",
+      "additionalIndependentSource": "dox",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "nauseas_vomitos_gestacao",
+      "factId": "treatment",
+      "factSha256": "c855143a68cc65ebc86d8e8870ab5db6b350944cb849c961d1e95cecd0cb80b5",
+      "sourceIds": [
+        "nvp",
+        "dox",
+        "anc",
+        "metpreg",
+        "met"
+      ],
+      "numericClaims": [
+        "1",
+        "10",
+        "10",
+        "2",
+        "1",
+        "2",
+        "1",
+        "1",
+        "2",
+        "4",
+        "2",
+        "10",
+        "3",
+        "6",
+        "5"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "nvp",
+      "additionalIndependentSource": "dox",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "nauseas_vomitos_gestacao",
+      "factId": "safety",
+      "factSha256": "9b2b9ca1103629bba8ff5df15c893269678b81cf8c61549c1f185ec40b5a7cf8",
+      "sourceIds": [
+        "nvp",
+        "dox",
+        "anc",
+        "metpreg",
+        "met"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "nvp",
+      "additionalIndependentSource": "dox",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "nauseas_vomitos_gestacao",
+      "factId": "disposition",
+      "factSha256": "66c2f9afe1b110df92fd7eb63df00da7325c1ecf9c70d818fe11e802f03c35ad",
+      "sourceIds": [
+        "nvp",
+        "dox",
+        "anc",
+        "metpreg",
+        "met"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "nvp",
+      "additionalIndependentSource": "dox",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hiperemese_gravidica",
+      "factId": "concept",
+      "factSha256": "bcda4652471d113ad5961cfa1cf08a96f84e462b71e066dbd972927e264b6785",
+      "sourceIds": [
+        "nvp",
+        "hg",
+        "metpreg",
+        "met"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "nvp",
+      "additionalIndependentSource": "hg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hiperemese_gravidica",
+      "factId": "reasoning",
+      "factSha256": "b7fd21bf0e07a99544aa9a1c53f94fd74faae7741a1b94b176dbabb28b6c62ce",
+      "sourceIds": [
+        "nvp",
+        "hg",
+        "metpreg",
+        "met"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "nvp",
+      "additionalIndependentSource": "hg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hiperemese_gravidica",
+      "factId": "diagnosis",
+      "factSha256": "42275a9e5671f806effc93f081670be42aa79ec957897975954aa2f0ef7b84f3",
+      "sourceIds": [
+        "nvp",
+        "hg",
+        "metpreg",
+        "met"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "nvp",
+      "additionalIndependentSource": "hg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hiperemese_gravidica",
+      "factId": "treatment",
+      "factSha256": "45141e4b5020fef82cb254bf382df14551453cad0b48ce10db48551f1e5fbad7",
+      "sourceIds": [
+        "nvp",
+        "hg",
+        "metpreg",
+        "met"
+      ],
+      "numericClaims": [
+        "1",
+        "0,9",
+        "2",
+        "10",
+        "3",
+        "6",
+        "5",
+        "100",
+        "3"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "nvp",
+      "additionalIndependentSource": "hg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hiperemese_gravidica",
+      "factId": "safety",
+      "factSha256": "0e820917274ab4c892230073d9c6de55b287223087b916b15d8ef1d1f8a2d949",
+      "sourceIds": [
+        "nvp",
+        "hg",
+        "metpreg",
+        "met"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "nvp",
+      "additionalIndependentSource": "hg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hiperemese_gravidica",
+      "factId": "disposition",
+      "factSha256": "b04eaa77930ac9d83322438edfebe43724a7e99faa5dc3fe2477480cc09afb29",
+      "sourceIds": [
+        "nvp",
+        "hg",
+        "metpreg",
+        "met"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "nvp",
+      "additionalIndependentSource": "hg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "anemia_ferropriva",
+      "factId": "concept",
+      "factSha256": "e2ef0c57f3610a220d4d6573093e19552537ebd26ed6cbef7f941bc46cf015f6",
+      "sourceIds": [
+        "hb",
+        "fe",
+        "fet",
+        "feacog",
+        "febsh"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hb",
+      "additionalIndependentSource": "fe",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "anemia_ferropriva",
+      "factId": "reasoning",
+      "factSha256": "64471e0747fabda82c5aaa310f226111b367acf7f7293f3d9a06d6523fac0a81",
+      "sourceIds": [
+        "hb",
+        "fe",
+        "fet",
+        "feacog",
+        "febsh"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hb",
+      "additionalIndependentSource": "fe",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "anemia_ferropriva",
+      "factId": "diagnosis",
+      "factSha256": "5df86e75536d7182f50838a617a36afb8b8ed256e317f856653bbe6ebbe96e32",
+      "sourceIds": [
+        "hb",
+        "fe",
+        "fet",
+        "feacog",
+        "febsh"
+      ],
+      "numericClaims": [
+        "2024",
+        "11",
+        "10,5"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hb",
+      "additionalIndependentSource": "fe",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "anemia_ferropriva",
+      "factId": "treatment",
+      "factSha256": "fb816fb2ed60cc4b2308f6fda3706dffd0033e6d81227613ce4c55e3a9aa107c",
+      "sourceIds": [
+        "hb",
+        "fe",
+        "fet",
+        "feacog",
+        "febsh"
+      ],
+      "numericClaims": [
+        "1",
+        "120",
+        "400",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hb",
+      "additionalIndependentSource": "fe",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "anemia_ferropriva",
+      "factId": "safety",
+      "factSha256": "8fa3fd12c66c14335d9b5246304dcc65d1be74f21ba1293dac0b32cb78c3c438",
+      "sourceIds": [
+        "hb",
+        "fe",
+        "fet",
+        "feacog",
+        "febsh"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hb",
+      "additionalIndependentSource": "fe",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "anemia_ferropriva",
+      "factId": "disposition",
+      "factSha256": "382c2f19e7d27c36a06a86a833b4e8bee726c4a54d334323c6064eee28af0ad2",
+      "sourceIds": [
+        "hb",
+        "fe",
+        "fet",
+        "feacog",
+        "febsh"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hb",
+      "additionalIndependentSource": "fe",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_gestacional",
+      "factId": "concept",
+      "factSha256": "c1e5afdb7de4f3c7ddb590e27311141b18ad447585db6f441af89ce594839d4f",
+      "sourceIds": [
+        "dmd",
+        "dm",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dmd",
+      "additionalIndependentSource": "dm",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_gestacional",
+      "factId": "reasoning",
+      "factSha256": "dccc37b03c21131adf6694b8073fd0410684716528fc159eaa4a0a38447f14b6",
+      "sourceIds": [
+        "dmd",
+        "dm",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dmd",
+      "additionalIndependentSource": "dm",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_gestacional",
+      "factId": "diagnosis",
+      "factSha256": "f034c9a60ca5005b7aca14ff182825f3df70e24f14f43d506c2369a85cc60932",
+      "sourceIds": [
+        "dmd",
+        "dm",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [
+        "75",
+        "24",
+        "28",
+        "92",
+        "1",
+        "180",
+        "2",
+        "153",
+        "1"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dmd",
+      "additionalIndependentSource": "dm",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_gestacional",
+      "factId": "treatment",
+      "factSha256": "dcec1450cf670715b6ddbd4d96535177e0774fa1040137bd9647cd2f506565ae",
+      "sourceIds": [
+        "dmd",
+        "dm",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [
+        "1",
+        "2",
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dmd",
+      "additionalIndependentSource": "dm",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_gestacional",
+      "factId": "safety",
+      "factSha256": "344fc53cb76983e82397840b355ce1b9d338f0b783f0f9e3b6b86af3e9f40268",
+      "sourceIds": [
+        "dmd",
+        "dm",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [
+        "95",
+        "140",
+        "1",
+        "120",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dmd",
+      "additionalIndependentSource": "dm",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_gestacional",
+      "factId": "disposition",
+      "factSha256": "d3a4e8552a8ec3fdedc137cd86765c63796e7ea717465dee2bed3088bc5254f5",
+      "sourceIds": [
+        "dmd",
+        "dm",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [
+        "75",
+        "4",
+        "12"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dmd",
+      "additionalIndependentSource": "dm",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_mellitus_tipo1",
+      "factId": "concept",
+      "factSha256": "9c113276e838e5c9805d919d84854f0e97c6d0cc89e92ea436830148aab4ad1a",
+      "sourceIds": [
+        "dm",
+        "dmn",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dm",
+      "additionalIndependentSource": "dmn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_mellitus_tipo1",
+      "factId": "reasoning",
+      "factSha256": "98e50ae58696829a2e01b5fc6183542bcab3d915a03512a19595581fb0854147",
+      "sourceIds": [
+        "dm",
+        "dmn",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dm",
+      "additionalIndependentSource": "dmn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_mellitus_tipo1",
+      "factId": "diagnosis",
+      "factSha256": "3ddca53867f81c0ddaf00658ff774a9247f8e8763803374e7351b256b0188de2",
+      "sourceIds": [
+        "dm",
+        "dmn",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dm",
+      "additionalIndependentSource": "dmn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_mellitus_tipo1",
+      "factId": "treatment",
+      "factSha256": "8bc5bfaeefe2817cc6f7ed0309fc2043bbffbe63bcdd526e39bd66e1c94db4f0",
+      "sourceIds": [
+        "dm",
+        "dmn",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [
+        "1",
+        "2",
+        "1"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dm",
+      "additionalIndependentSource": "dmn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_mellitus_tipo1",
+      "factId": "safety",
+      "factSha256": "e79c45cf7206b0b622e1a8171062aa67c8715f054fa24b04544698b5bfcb6ffc",
+      "sourceIds": [
+        "dm",
+        "dmn",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [
+        "95",
+        "140",
+        "1",
+        "120",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dm",
+      "additionalIndependentSource": "dmn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_mellitus_tipo1",
+      "factId": "disposition",
+      "factSha256": "6f3fbc8f3f4b84974863e326ae0cf50b3fab30d24df18f8567056e1552ce4e59",
+      "sourceIds": [
+        "dm",
+        "dmn",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dm",
+      "additionalIndependentSource": "dmn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_mellitus_tipo2",
+      "factId": "concept",
+      "factSha256": "f25ee63b27af3212565b7e7624a5a197ac709aaada70ea3fed7dbc689bbdcd26",
+      "sourceIds": [
+        "dm",
+        "dmn",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dm",
+      "additionalIndependentSource": "dmn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_mellitus_tipo2",
+      "factId": "reasoning",
+      "factSha256": "4880b2d14501b36445c571fdca38cca19fac7081ae65e11316a5eea62f1f04a0",
+      "sourceIds": [
+        "dm",
+        "dmn",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dm",
+      "additionalIndependentSource": "dmn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_mellitus_tipo2",
+      "factId": "diagnosis",
+      "factSha256": "07e3d9447280ab5a5486db28b44ab4930c8d2fe2efd8c1f0dec346af2b093a16",
+      "sourceIds": [
+        "dm",
+        "dmn",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dm",
+      "additionalIndependentSource": "dmn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_mellitus_tipo2",
+      "factId": "treatment",
+      "factSha256": "019a3403a21ec3c9019e16a650d95c8fd60f5c33828aeb94ea1d82486e9ba824",
+      "sourceIds": [
+        "dm",
+        "dmn",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dm",
+      "additionalIndependentSource": "dmn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_mellitus_tipo2",
+      "factId": "safety",
+      "factSha256": "59bf68a6f9395cf924cc840cadeb46a816dbb14ebe5af159f4e4b14d1127882f",
+      "sourceIds": [
+        "dm",
+        "dmn",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [
+        "95",
+        "140",
+        "1",
+        "120",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dm",
+      "additionalIndependentSource": "dmn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diabetes_mellitus_tipo2",
+      "factId": "disposition",
+      "factSha256": "ed8980fcc41d7478bfdaa0004611d9735f7219abb097e52a34cb3d60de210c0e",
+      "sourceIds": [
+        "dm",
+        "dmn",
+        "dmuk",
+        "dmvis"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "dm",
+      "additionalIndependentSource": "dmn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertensao_gestacional",
+      "factId": "concept",
+      "factSha256": "1b9c155769bc09dcc45fbcc962abbcb16ad06bb74db70ec4f86f16f613998d04",
+      "sourceIds": [
+        "ht",
+        "lab",
+        "htnw"
+      ],
+      "numericClaims": [
+        "20"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "lab",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertensao_gestacional",
+      "factId": "reasoning",
+      "factSha256": "4541a311a37876863955bba2d06bdddf7866ac7eb250a5ef9a28390686dfefda",
+      "sourceIds": [
+        "ht",
+        "lab",
+        "htnw"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "lab",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertensao_gestacional",
+      "factId": "diagnosis",
+      "factSha256": "f5e593f0dd5f53a9ebcb5e27b1efdca56dcfbc0059b7c211ce6a08dbfe37f4d5",
+      "sourceIds": [
+        "ht",
+        "lab",
+        "htnw"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "lab",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertensao_gestacional",
+      "factId": "treatment",
+      "factSha256": "12e3423ce73c1e2fde752be0fea543d5f90a54afb4923c8a370bdae0c33f9b5b",
+      "sourceIds": [
+        "ht",
+        "lab",
+        "htnw"
+      ],
+      "numericClaims": [
+        "1",
+        "2026",
+        "100",
+        "200",
+        "3",
+        "2",
+        "10",
+        "20",
+        "2",
+        "160",
+        "110",
+        "135",
+        "85"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "lab",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertensao_gestacional",
+      "factId": "safety",
+      "factSha256": "540e8ced943bebe90dc71d690a5e66c8f47268ca2b5501d20ed44a28d3b0be57",
+      "sourceIds": [
+        "ht",
+        "lab",
+        "htnw"
+      ],
+      "numericClaims": [
+        "160",
+        "110"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "lab",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertensao_gestacional",
+      "factId": "disposition",
+      "factSha256": "32ae27422c5f18521e00abd4bb7ef9dfef9953345712e676713d4f29a436f607",
+      "sourceIds": [
+        "ht",
+        "lab",
+        "htnw"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "lab",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertensao_arterial",
+      "factId": "concept",
+      "factSha256": "b3e44e167e88410b7b46fdbb3a15a195eb6417d3cef170b40e911049b67016eb",
+      "sourceIds": [
+        "ht",
+        "lab",
+        "htnw"
+      ],
+      "numericClaims": [
+        "20"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "lab",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertensao_arterial",
+      "factId": "reasoning",
+      "factSha256": "7707a78941c08eeee3495bf9584f6f171daab98c4268fb0c53770218dc41221a",
+      "sourceIds": [
+        "ht",
+        "lab",
+        "htnw"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "lab",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertensao_arterial",
+      "factId": "diagnosis",
+      "factSha256": "35821de6f6ff9bae4908ccfe86fdffd5dba9009ce536312d1fc17dc2619202ad",
+      "sourceIds": [
+        "ht",
+        "lab",
+        "htnw"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "lab",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertensao_arterial",
+      "factId": "treatment",
+      "factSha256": "12e3423ce73c1e2fde752be0fea543d5f90a54afb4923c8a370bdae0c33f9b5b",
+      "sourceIds": [
+        "ht",
+        "lab",
+        "htnw"
+      ],
+      "numericClaims": [
+        "1",
+        "2026",
+        "100",
+        "200",
+        "3",
+        "2",
+        "10",
+        "20",
+        "2",
+        "160",
+        "110",
+        "135",
+        "85"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "lab",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertensao_arterial",
+      "factId": "safety",
+      "factSha256": "dc12312fc8a4b500bd392745dccc9b72f2be840eb12a13bdb151de8c758c5104",
+      "sourceIds": [
+        "ht",
+        "lab",
+        "htnw"
+      ],
+      "numericClaims": [
+        "75",
+        "150",
+        "1",
+        "12"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "lab",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertensao_arterial",
+      "factId": "disposition",
+      "factSha256": "c45ce67e568d2954c106ec7bc59176205aaf341445453683b996fe7e871f49fe",
+      "sourceIds": [
+        "ht",
+        "lab",
+        "htnw"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "lab",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pre_eclampsia",
+      "factId": "concept",
+      "factSha256": "ff927e82e31d5a8a30c0754044441f3dee50bad1a2aa2195adff725fd467b95c",
+      "sourceIds": [
+        "ht",
+        "mg",
+        "htnw"
+      ],
+      "numericClaims": [
+        "20"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "mg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pre_eclampsia",
+      "factId": "reasoning",
+      "factSha256": "a2a31dba00e02defc79e5304657e2297303ef60ec58863f8af44aed9cd6ff729",
+      "sourceIds": [
+        "ht",
+        "mg",
+        "htnw"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "mg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pre_eclampsia",
+      "factId": "diagnosis",
+      "factSha256": "ab5cb2d27367ede9c2df29388c1f5d253f00679e5d6d48d8cd05f8dac0bd24d1",
+      "sourceIds": [
+        "ht",
+        "mg",
+        "htnw"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "mg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pre_eclampsia",
+      "factId": "treatment",
+      "factSha256": "3bc2529d10a016f85d7ad2dfd295623b6dedb3d8eb82f3cbaa6e2ae0a8cec5c7",
+      "sourceIds": [
+        "ht",
+        "mg",
+        "htnw"
+      ],
+      "numericClaims": [
+        "1",
+        "2026",
+        "100",
+        "200",
+        "3",
+        "2",
+        "10",
+        "20",
+        "2",
+        "160",
+        "110",
+        "135",
+        "85",
+        "1",
+        "2",
+        "4",
+        "5",
+        "15",
+        "1",
+        "24"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "mg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pre_eclampsia",
+      "factId": "safety",
+      "factSha256": "934559754ce4e31c99597807ffac13ac6e624befad6278948c909fa37525bb47",
+      "sourceIds": [
+        "ht",
+        "mg",
+        "htnw"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "mg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pre_eclampsia",
+      "factId": "disposition",
+      "factSha256": "1b65967af1c126f0ff2e4ea598133876726afcb8715b8b06182accc1b68cbbb6",
+      "sourceIds": [
+        "ht",
+        "mg",
+        "htnw"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ht",
+      "additionalIndependentSource": "mg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipotireoidismo",
+      "factId": "concept",
+      "factSha256": "a028b2263a951202868e78fcabaf2fab7ca3131adb8803106754019b3afcf0c4",
+      "sourceIds": [
+        "thy",
+        "hypo"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "thy",
+      "additionalIndependentSource": "hypo",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipotireoidismo",
+      "factId": "reasoning",
+      "factSha256": "17d696547637343d77af9bde4986e3e52405e9431a456948676c75520c54fd5c",
+      "sourceIds": [
+        "thy",
+        "hypo"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "thy",
+      "additionalIndependentSource": "hypo",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipotireoidismo",
+      "factId": "diagnosis",
+      "factSha256": "56733c0a03cbc3c1188f4db084362d23e43dd6dc10ed8abcc5078ddce39a070d",
+      "sourceIds": [
+        "thy",
+        "hypo"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "thy",
+      "additionalIndependentSource": "hypo",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipotireoidismo",
+      "factId": "treatment",
+      "factSha256": "a782bc986bf13da9782c86ff0fa0b48f92469f06b352aca14597dc10d48af702",
+      "sourceIds": [
+        "thy",
+        "hypo"
+      ],
+      "numericClaims": [
+        "20",
+        "30",
+        "4",
+        "4"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "thy",
+      "additionalIndependentSource": "hypo",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipotireoidismo",
+      "factId": "safety",
+      "factSha256": "28990118e4ff2e0450bdb30af5b3ec40a4066da126415e4e83035d1efc0e0d98",
+      "sourceIds": [
+        "thy",
+        "hypo"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "thy",
+      "additionalIndependentSource": "hypo",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipotireoidismo",
+      "factId": "disposition",
+      "factSha256": "169b7001b3bdcc75218a35e66d2ec8c6f92d493e75eec7a36f382ffb1ed2ee8b",
+      "sourceIds": [
+        "thy",
+        "hypo"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "thy",
+      "additionalIndependentSource": "hypo",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertireoidismo",
+      "factId": "concept",
+      "factSha256": "9924357bb40eb7d92f7d600f574726143f5de2cffb4bb00fd49f07d057981f75",
+      "sourceIds": [
+        "thy",
+        "hyper"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "thy",
+      "additionalIndependentSource": "hyper",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertireoidismo",
+      "factId": "reasoning",
+      "factSha256": "c98b4dddf8c70c514514b78b1ac181bae114d11d560cb0cd9525719355c18ea6",
+      "sourceIds": [
+        "thy",
+        "hyper"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "thy",
+      "additionalIndependentSource": "hyper",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertireoidismo",
+      "factId": "diagnosis",
+      "factSha256": "f55cb552f914d3f185cb88b6f5b7b0fc2075cd10f1ef62cb7f5a97166248fcb5",
+      "sourceIds": [
+        "thy",
+        "hyper"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "thy",
+      "additionalIndependentSource": "hyper",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertireoidismo",
+      "factId": "treatment",
+      "factSha256": "21f21e04c760f59a17dd9b50eafaefc397484c58f384248621ca1cda765785c9",
+      "sourceIds": [
+        "thy",
+        "hyper"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "thy",
+      "additionalIndependentSource": "hyper",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertireoidismo",
+      "factId": "safety",
+      "factSha256": "5da76197575ceee1f349cb930c8fa3f179b5b55129c19c3afdff2bde62ed0f84",
+      "sourceIds": [
+        "thy",
+        "hyper"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "thy",
+      "additionalIndependentSource": "hyper",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hipertireoidismo",
+      "factId": "disposition",
+      "factSha256": "bb278f08559ac6ef225e6b8b1cb9249f2adf9764b6906ff320511453790ce12e",
+      "sourceIds": [
+        "thy",
+        "hyper"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "thy",
+      "additionalIndependentSource": "hyper",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "obesidade",
+      "factId": "concept",
+      "factSha256": "bd6d46378e74e2cb71181a161cb970e0aaaffe0183f52531acbe2aba682b0874",
+      "sourceIds": [
+        "ob",
+        "obdrug"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ob",
+      "additionalIndependentSource": "obdrug",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "obesidade",
+      "factId": "reasoning",
+      "factSha256": "97baabab7480acd1b0ec086248fcffef0ac60db8cc4b4c027987d71477757fff",
+      "sourceIds": [
+        "ob",
+        "obdrug"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ob",
+      "additionalIndependentSource": "obdrug",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "obesidade",
+      "factId": "diagnosis",
+      "factSha256": "90eb496cd29a8319b7c28b772598da8e2911b6c52557352747e5b623f59d58e4",
+      "sourceIds": [
+        "ob",
+        "obdrug"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ob",
+      "additionalIndependentSource": "obdrug",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "obesidade",
+      "factId": "treatment",
+      "factSha256": "8721c8f5fbf3697b37c621aa9e542fb9d09b1b9bf239fbc6a08a7db3c5a70db8",
+      "sourceIds": [
+        "ob",
+        "obdrug"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ob",
+      "additionalIndependentSource": "obdrug",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "obesidade",
+      "factId": "safety",
+      "factSha256": "bf0f405a343a3b5d6dc2e87c322b4ff0a6d21cabc241f4d56cd236bfc31a8ea3",
+      "sourceIds": [
+        "ob",
+        "obdrug"
+      ],
+      "numericClaims": [
+        "1"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ob",
+      "additionalIndependentSource": "obdrug",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "obesidade",
+      "factId": "disposition",
+      "factSha256": "97d2eb39a404ffc0441bad3b92215a4f88e309f83437f42e4b8ede230cba8956",
+      "sourceIds": [
+        "ob",
+        "obdrug"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ob",
+      "additionalIndependentSource": "obdrug",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "bacteriuria_assintomatica",
+      "factId": "concept",
+      "factSha256": "af6f70bb6744c3ac9e5731e956aa77a6be71d769d98b21dc88575bbc32345e0b",
+      "sourceIds": [
+        "uti",
+        "cyst"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "cyst",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "bacteriuria_assintomatica",
+      "factId": "reasoning",
+      "factSha256": "3c968a0cdad0df2cc27b1d20e4523d7043397a12107a175007d97657b9ed4413",
+      "sourceIds": [
+        "uti",
+        "cyst"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "cyst",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "bacteriuria_assintomatica",
+      "factId": "diagnosis",
+      "factSha256": "6db4153fc99524855c6676c0949ee9cfd9fd5e6b8d22324b7e3c8d6fe36455a9",
+      "sourceIds": [
+        "uti",
+        "cyst"
+      ],
+      "numericClaims": [
+        "100.000"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "cyst",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "bacteriuria_assintomatica",
+      "factId": "treatment",
+      "factSha256": "8d5268c708569297cd0c51c9c7dfdf10cda3006052f5f55aa85191a9af034aa8",
+      "sourceIds": [
+        "uti",
+        "cyst"
+      ],
+      "numericClaims": [
+        "1",
+        "100",
+        "12",
+        "7",
+        "45",
+        "6",
+        "2",
+        "500",
+        "12",
+        "7",
+        "500",
+        "8",
+        "7"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "cyst",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "bacteriuria_assintomatica",
+      "factId": "safety",
+      "factSha256": "d60b4557d9a14a170fe64978324c0357448b049e23b9790b42e2c2dc4cbb3659",
+      "sourceIds": [
+        "uti",
+        "cyst"
+      ],
+      "numericClaims": [
+        "6"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "cyst",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "bacteriuria_assintomatica",
+      "factId": "disposition",
+      "factSha256": "134d5c0361b6e12b19659f15d62562a207d3e82b7c3b1d8fac425688336383f0",
+      "sourceIds": [
+        "uti",
+        "cyst"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "cyst",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "caso_cistite_aguda",
+      "factId": "concept",
+      "factSha256": "2f6158c1a81ea7c4a596796bcbe26a8fd71ab41f5f202c5277f6ad4de4cfab31",
+      "sourceIds": [
+        "uti",
+        "cyst"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "cyst",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "caso_cistite_aguda",
+      "factId": "reasoning",
+      "factSha256": "f80669e386742c9c8419deb0604174259b718f2aac08bbe9d9fb60aff1877af7",
+      "sourceIds": [
+        "uti",
+        "cyst"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "cyst",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "caso_cistite_aguda",
+      "factId": "diagnosis",
+      "factSha256": "22dd732f15e471df500f9a3a264bdf63020f89e9a4d6735e540814d6ecac49be",
+      "sourceIds": [
+        "uti",
+        "cyst"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "cyst",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "caso_cistite_aguda",
+      "factId": "treatment",
+      "factSha256": "8d5268c708569297cd0c51c9c7dfdf10cda3006052f5f55aa85191a9af034aa8",
+      "sourceIds": [
+        "uti",
+        "cyst"
+      ],
+      "numericClaims": [
+        "1",
+        "100",
+        "12",
+        "7",
+        "45",
+        "6",
+        "2",
+        "500",
+        "12",
+        "7",
+        "500",
+        "8",
+        "7"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "cyst",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "caso_cistite_aguda",
+      "factId": "safety",
+      "factSha256": "15847c47cc755d931b85da1465e2060927b53532034888c43383f7a04d27d478",
+      "sourceIds": [
+        "uti",
+        "cyst"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "cyst",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "caso_cistite_aguda",
+      "factId": "disposition",
+      "factSha256": "6d6d91cab7415c240322f2049ed494d151898c66e496c96e8b7e241347734c90",
+      "sourceIds": [
+        "uti",
+        "cyst"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "cyst",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pielonefrite_aguda",
+      "factId": "concept",
+      "factSha256": "5db1233f1f9d8d9dd39d9a4171c048e07c6644e0548009931e3741b62acb8614",
+      "sourceIds": [
+        "uti",
+        "pyelo"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "pyelo",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pielonefrite_aguda",
+      "factId": "reasoning",
+      "factSha256": "13cac21081c0134a627c70c0214aafe55a7b0368bc99ed3f1ff0455706d2d0ab",
+      "sourceIds": [
+        "uti",
+        "pyelo"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "pyelo",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pielonefrite_aguda",
+      "factId": "diagnosis",
+      "factSha256": "3a31804ca5fa27011ee4f6d6536bfb22f01272ea2480d1a0664d6ce728ca7152",
+      "sourceIds": [
+        "uti",
+        "pyelo"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "pyelo",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pielonefrite_aguda",
+      "factId": "treatment",
+      "factSha256": "dad548862e0015f5bd0acbbb6e7ed96e0719f5667b645d5b60c8790d911aaa0e",
+      "sourceIds": [
+        "uti",
+        "pyelo"
+      ],
+      "numericClaims": [
+        "1",
+        "750",
+        "1,5",
+        "8",
+        "2",
+        "500",
+        "8",
+        "48",
+        "14",
+        "14",
+        "7",
+        "10"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "pyelo",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pielonefrite_aguda",
+      "factId": "safety",
+      "factSha256": "0f0edfb6b58f85108f9ada9ff47d07e54a29a85aec68286d8385cff4d5bd1d77",
+      "sourceIds": [
+        "uti",
+        "pyelo"
+      ],
+      "numericClaims": [
+        "48",
+        "14",
+        "7",
+        "10"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "pyelo",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pielonefrite_aguda",
+      "factId": "disposition",
+      "factSha256": "79186f7eb92351353b2d14bc715386c428ae81f47b1a8030b5a1a27c4acb1be6",
+      "sourceIds": [
+        "uti",
+        "pyelo"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "uti",
+      "additionalIndependentSource": "pyelo",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "candidiase_vulvovaginal",
+      "factId": "concept",
+      "factSha256": "ec19bf9b2673aedd09abe379a13ea3830b1f9cb1474ba0f9aae9c4194499c0fc",
+      "sourceIds": [
+        "cand"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "cand",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "candidiase_vulvovaginal",
+      "factId": "reasoning",
+      "factSha256": "f87392b9f2389692bb3529cade695b4cfa2ee6d66a75bf1cf03b6c4b73f963af",
+      "sourceIds": [
+        "cand"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "cand",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "candidiase_vulvovaginal",
+      "factId": "diagnosis",
+      "factSha256": "957023f7beaf64438ee7d40d70f085d8bb7ed1eeab59f1bfcd350837904a6a5e",
+      "sourceIds": [
+        "cand"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "cand",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "candidiase_vulvovaginal",
+      "factId": "treatment",
+      "factSha256": "d3a5199a867a12feb7304a9c38aa58ef205436b763be36cdd217931d9b258282",
+      "sourceIds": [
+        "cand"
+      ],
+      "numericClaims": [
+        "1",
+        "2",
+        "5",
+        "1",
+        "7",
+        "2",
+        "1",
+        "5",
+        "1",
+        "7",
+        "7"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "cand",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "candidiase_vulvovaginal",
+      "factId": "safety",
+      "factSha256": "140bf984becc7acad8ad22b3819d85030a569c92969a53c00becb5b367579d3d",
+      "sourceIds": [
+        "cand"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "cand",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "candidiase_vulvovaginal",
+      "factId": "disposition",
+      "factSha256": "ebd1594b3cb68ae5f7d1b29f28b430ca556b60cbd0fbabbf0b281cda030e94bf",
+      "sourceIds": [
+        "cand"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "cand",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "vaginose_bacteriana",
+      "factId": "concept",
+      "factSha256": "4fd78cf701f0326a53c4131a2418d5cbae9b7f8509cae9a0a74c13dfe4d1333e",
+      "sourceIds": [
+        "bv"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "bv",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "vaginose_bacteriana",
+      "factId": "reasoning",
+      "factSha256": "9ad4c856ed712a6cf420f53ee7bf82b929d83d4bef84e6fe22fe0b3a5d643e07",
+      "sourceIds": [
+        "bv"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "bv",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "vaginose_bacteriana",
+      "factId": "diagnosis",
+      "factSha256": "b043102f1ae6823fbb02212b8d33a419405d90bd19defbc90d051d3f1b62f8db",
+      "sourceIds": [
+        "bv"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "bv",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "vaginose_bacteriana",
+      "factId": "treatment",
+      "factSha256": "b851f0a32020ae8e4e4ba64fd9fc4e2b7ff676147fada7abab0f769ee12deddb",
+      "sourceIds": [
+        "bv"
+      ],
+      "numericClaims": [
+        "1",
+        "500",
+        "12",
+        "7",
+        "2",
+        "2",
+        "5",
+        "7",
+        "0,75",
+        "5",
+        "1",
+        "5"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "bv",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "vaginose_bacteriana",
+      "factId": "safety",
+      "factSha256": "3569dffbf9a12d6aa3b96b15a7a1f6c78ec6e39f7e7fe29c5c73bbb1a47ef1d7",
+      "sourceIds": [
+        "bv"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "bv",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "vaginose_bacteriana",
+      "factId": "disposition",
+      "factSha256": "ed891b4f54bf366618b34b0a6035295c48ee2e811a6a3b0a72534e46784d5394",
+      "sourceIds": [
+        "bv"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "bv",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "tricomoniase",
+      "factId": "concept",
+      "factSha256": "80d6a2a268c80621dbf710c496b25a294cc81d82905b412755726d4afa8e417b",
+      "sourceIds": [
+        "trich"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "trich",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "tricomoniase",
+      "factId": "reasoning",
+      "factSha256": "c52a65566d38124f99e94463397f147b98fce5e03d9566a78e6ecf01a0c6c469",
+      "sourceIds": [
+        "trich"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "trich",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "tricomoniase",
+      "factId": "diagnosis",
+      "factSha256": "8f9daa73b837aa6af353bee5e77085dd5e58048043c126cf70ba8a2aaebaf201",
+      "sourceIds": [
+        "trich"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "trich",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "tricomoniase",
+      "factId": "treatment",
+      "factSha256": "43e63cc3e359d90d4b319963ee64c34a325a5444df01463122fc03df91399b37",
+      "sourceIds": [
+        "trich"
+      ],
+      "numericClaims": [
+        "500",
+        "12",
+        "7",
+        "3"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "trich",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "tricomoniase",
+      "factId": "safety",
+      "factSha256": "70a8a3bd7e5d53530a96911c7f4ba0178b6b3afd37002879488223171a164582",
+      "sourceIds": [
+        "trich"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "trich",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "tricomoniase",
+      "factId": "disposition",
+      "factSha256": "24bcf44bba2c6c12f9f4ebfe34ae9fda25a4439e72492c160d2c86c8b4d08cdc",
+      "sourceIds": [
+        "trich"
+      ],
+      "numericClaims": [
+        "3"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "trich",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "sifilis",
+      "factId": "concept",
+      "factSha256": "35364bb0dd8ad825158289b67688a9b58650526c4ea5c47bb5d5087923c963e5",
+      "sourceIds": [
+        "syph",
+        "syphl"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "syph",
+      "additionalIndependentSource": "syphl",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "sifilis",
+      "factId": "reasoning",
+      "factSha256": "628586d937d38350aa871994c9c2aebfe9a206d889e4c87aaf9d687a527c5032",
+      "sourceIds": [
+        "syph",
+        "syphl"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "syph",
+      "additionalIndependentSource": "syphl",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "sifilis",
+      "factId": "diagnosis",
+      "factSha256": "d0c4438286f76c60e88de7df5d65cddcaa98ddb1f6f4e7a20ef2349fba0e9a58",
+      "sourceIds": [
+        "syph",
+        "syphl"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "syph",
+      "additionalIndependentSource": "syphl",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "sifilis",
+      "factId": "treatment",
+      "factSha256": "b224a317d31e19cae3fa9c53734e1aae29195677ca4161f1e327c9865382aba6",
+      "sourceIds": [
+        "syph",
+        "syphl"
+      ],
+      "numericClaims": [
+        "1",
+        "2,4",
+        "1",
+        "2,4",
+        "1",
+        "3",
+        "9",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "syph",
+      "additionalIndependentSource": "syphl",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "sifilis",
+      "factId": "safety",
+      "factSha256": "e7038a93c8197e947c7754b6024036f39499ea7a37f06970594dcf4d5b4fa5ab",
+      "sourceIds": [
+        "syph",
+        "syphl"
+      ],
+      "numericClaims": [
+        "9"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "syph",
+      "additionalIndependentSource": "syphl",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "sifilis",
+      "factId": "disposition",
+      "factSha256": "fb2f4be2b8294ae24afa43fcaeb99cac486b6a829847793d202469be09e3e18d",
+      "sourceIds": [
+        "syph",
+        "syphl"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "syph",
+      "additionalIndependentSource": "syphl",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "infeccao_hiv",
+      "factId": "concept",
+      "factSha256": "d0cb782a0be63e0923f4228325719cb8dfd973dc097c16a77b2715a1f0369d1c",
+      "sourceIds": [
+        "hiv",
+        "hivc",
+        "hivi",
+        "hivbic"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hiv",
+      "additionalIndependentSource": "hivc",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "infeccao_hiv",
+      "factId": "reasoning",
+      "factSha256": "990a54c25c3edbdc6129205055502b791819228f2d36f511fd0d6296a795473c",
+      "sourceIds": [
+        "hiv",
+        "hivc",
+        "hivi",
+        "hivbic"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hiv",
+      "additionalIndependentSource": "hivc",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "infeccao_hiv",
+      "factId": "diagnosis",
+      "factSha256": "09982059da9067ad28583fbb3bee2cabc3a5d1833c4d166d888a4d5a7609d8e8",
+      "sourceIds": [
+        "hiv",
+        "hivc",
+        "hivi",
+        "hivbic"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hiv",
+      "additionalIndependentSource": "hivc",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "infeccao_hiv",
+      "factId": "treatment",
+      "factSha256": "d59dbddc939a4db50acaa7c283b0ec16712323077d70d944507011e9bedd0482",
+      "sourceIds": [
+        "hiv",
+        "hivc",
+        "hivi",
+        "hivbic"
+      ],
+      "numericClaims": [
+        "1",
+        "50",
+        "200",
+        "25",
+        "1",
+        "1",
+        "2026",
+        "2",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hiv",
+      "additionalIndependentSource": "hivc",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "infeccao_hiv",
+      "factId": "safety",
+      "factSha256": "5ac2031681d40c41078aa5d3d977addd9168e1412a179682e82508e362f53d55",
+      "sourceIds": [
+        "hiv",
+        "hivc",
+        "hivi",
+        "hivbic"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hiv",
+      "additionalIndependentSource": "hivc",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "infeccao_hiv",
+      "factId": "disposition",
+      "factSha256": "401918ba2cb2df685155052f76f9ef0116563e777ceb0e12759c816ce10bf31e",
+      "sourceIds": [
+        "hiv",
+        "hivc",
+        "hivi",
+        "hivbic"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hiv",
+      "additionalIndependentSource": "hivc",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hepatite_b_cronica",
+      "factId": "concept",
+      "factSha256": "fa32bd80efd5298a9c942c45e8da728c5784c8b76afe3b1026662d7afee94847",
+      "sourceIds": [
+        "hbv",
+        "hbvs",
+        "hbvsmfm"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hbv",
+      "additionalIndependentSource": "hbvs",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hepatite_b_cronica",
+      "factId": "reasoning",
+      "factSha256": "aa392e715d86e082df568714b4a49b41e3a8e368a1e6803be73991d36a943242",
+      "sourceIds": [
+        "hbv",
+        "hbvs",
+        "hbvsmfm"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hbv",
+      "additionalIndependentSource": "hbvs",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hepatite_b_cronica",
+      "factId": "diagnosis",
+      "factSha256": "4b50b41d8c656893ed305dd1ade58a2510f69c1d690f0b703cd9a5517549df97",
+      "sourceIds": [
+        "hbv",
+        "hbvs",
+        "hbvsmfm"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hbv",
+      "additionalIndependentSource": "hbvs",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hepatite_b_cronica",
+      "factId": "treatment",
+      "factSha256": "ae5fc316e2ab65197026f194f733c7a96dd7a269338777600fcfda6f0b3e44f9",
+      "sourceIds": [
+        "hbv",
+        "hbvs",
+        "hbvsmfm"
+      ],
+      "numericClaims": [
+        "1",
+        "300",
+        "1",
+        "2",
+        "25",
+        "1",
+        "69",
+        "28",
+        "32",
+        "200.000",
+        "12"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hbv",
+      "additionalIndependentSource": "hbvs",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hepatite_b_cronica",
+      "factId": "safety",
+      "factSha256": "f28b46ec037de2c01afc4594ed0370a135fc7717bb7b39d5b4b3339b6f8b1577",
+      "sourceIds": [
+        "hbv",
+        "hbvs",
+        "hbvsmfm"
+      ],
+      "numericClaims": [
+        "12"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hbv",
+      "additionalIndependentSource": "hbvs",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "hepatite_b_cronica",
+      "factId": "disposition",
+      "factSha256": "98d792def48e8a9a822117129994b4f63e0a86f9659be7231ca4a5f6e9340e9e",
+      "sourceIds": [
+        "hbv",
+        "hbvs",
+        "hbvsmfm"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hbv",
+      "additionalIndependentSource": "hbvs",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "herpes_genital",
+      "factId": "concept",
+      "factSha256": "18dea1255ba90403b63d205770729a8f82931c7f588e1fda0fc799f2652e76a5",
+      "sourceIds": [
+        "herp"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "herp",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "herpes_genital",
+      "factId": "reasoning",
+      "factSha256": "d64bbde7872b37ce7cd53fff4a8e5d6219cebdf585e16e3620418c79f951e910",
+      "sourceIds": [
+        "herp"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "herp",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "herpes_genital",
+      "factId": "diagnosis",
+      "factSha256": "44b0cccc05ad524cf2f4f64d9a027dc8e5883d1f58eb82d3aaa415479ec86af7",
+      "sourceIds": [
+        "herp"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "herp",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "herpes_genital",
+      "factId": "treatment",
+      "factSha256": "bb5c90fc3e4a4a7da2f12776694fa63f99301f110186c3ac4e30f968620414a9",
+      "sourceIds": [
+        "herp"
+      ],
+      "numericClaims": [
+        "1",
+        "400",
+        "8",
+        "7",
+        "10",
+        "2",
+        "1",
+        "12",
+        "7",
+        "10",
+        "36",
+        "400",
+        "8",
+        "500",
+        "12"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "herp",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "herpes_genital",
+      "factId": "safety",
+      "factSha256": "6c2ad0bc339b2acb90eaa64434b9fdb649de70a7b60fd3ee2668c810e9ee36ce",
+      "sourceIds": [
+        "herp"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "herp",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "herpes_genital",
+      "factId": "disposition",
+      "factSha256": "f94cbbceffb75c5ff3bfac1b269db0d4b2f21a0ddefc1ddc849dbd9bfd03c441",
+      "sourceIds": [
+        "herp"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "herp",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "infeccao_chlamydia_trachomatis",
+      "factId": "concept",
+      "factSha256": "249b5b7bd3779c0dc04b04fe44c34a49ccd6b46aacf9bce195a7109cfc159eec",
+      "sourceIds": [
+        "chlam"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "chlam",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "infeccao_chlamydia_trachomatis",
+      "factId": "reasoning",
+      "factSha256": "fc2400d86464ca15bca71b9053996d4eed1f9ac22397fc27dcdc431812b55bbf",
+      "sourceIds": [
+        "chlam"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "chlam",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "infeccao_chlamydia_trachomatis",
+      "factId": "diagnosis",
+      "factSha256": "678f3357afa853c304dc4dab01b89fbb8b17fd037fc9f4f5e8d13ae8fc8f6218",
+      "sourceIds": [
+        "chlam"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "chlam",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "infeccao_chlamydia_trachomatis",
+      "factId": "treatment",
+      "factSha256": "28fc6a7ea339be098c2c4983609484c2d51949a2536c84103756d72a9d38cb0a",
+      "sourceIds": [
+        "chlam"
+      ],
+      "numericClaims": [
+        "1",
+        "1",
+        "2",
+        "500",
+        "8",
+        "7",
+        "4",
+        "3"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "chlam",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "infeccao_chlamydia_trachomatis",
+      "factId": "safety",
+      "factSha256": "72cb7b3e9c307817f53b4d21cd19791ba160d668cfee938bbfbbdf8e8845e06c",
+      "sourceIds": [
+        "chlam"
+      ],
+      "numericClaims": [
+        "7"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "chlam",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "infeccao_chlamydia_trachomatis",
+      "factId": "disposition",
+      "factSha256": "434598e94f149fc9351f7e6a7c4afcc551067146f0917e82cf269e47a55bbe1c",
+      "sourceIds": [
+        "chlam"
+      ],
+      "numericClaims": [
+        "4",
+        "3"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "chlam",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "infeccao_gonococica",
+      "factId": "concept",
+      "factSha256": "5e76899cc5410c2c0b3557166acbf6f550bc9322969e32b25c7d82d5cacd73f8",
+      "sourceIds": [
+        "gono",
+        "gonod"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "gono",
+      "additionalIndependentSource": "gonod",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "infeccao_gonococica",
+      "factId": "reasoning",
+      "factSha256": "37776cb4d056f61cc03cce9457dbb6e24a20ca7611c2db4de4e949268804b8d1",
+      "sourceIds": [
+        "gono",
+        "gonod"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "gono",
+      "additionalIndependentSource": "gonod",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "infeccao_gonococica",
+      "factId": "diagnosis",
+      "factSha256": "8583ae8a8e4e77bb52b263746c4cae2d584dd666b90720a036f02ae483f729df",
+      "sourceIds": [
+        "gono",
+        "gonod"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "gono",
+      "additionalIndependentSource": "gonod",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "infeccao_gonococica",
+      "factId": "treatment",
+      "factSha256": "74f2c9a330ed87da2dc2c9a052547947ea8d1e79504c0b7f51ea084726714315",
+      "sourceIds": [
+        "gono",
+        "gonod"
+      ],
+      "numericClaims": [
+        "500",
+        "150",
+        "1",
+        "150",
+        "1",
+        "7",
+        "14",
+        "3"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "gono",
+      "additionalIndependentSource": "gonod",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "infeccao_gonococica",
+      "factId": "safety",
+      "factSha256": "e3d54eeea2584ba307c803613a58f1604a84188ddbe2eb96367b84de30b3fe01",
+      "sourceIds": [
+        "gono",
+        "gonod"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "gono",
+      "additionalIndependentSource": "gonod",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "infeccao_gonococica",
+      "factId": "disposition",
+      "factSha256": "c7417bbfd5396deb456e22e61dede5fb89ba8536ae54b53446995d5c7a22293b",
+      "sourceIds": [
+        "gono",
+        "gonod"
+      ],
+      "numericClaims": [
+        "7",
+        "7",
+        "14",
+        "3"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "gono",
+      "additionalIndependentSource": "gonod",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "gripe_influenza_010",
+      "factId": "concept",
+      "factSha256": "b644e0da5b12bfbd6b3795b4eb684d7059f10463e9ae5507803fb672597bc215",
+      "sourceIds": [
+        "flu",
+        "flud"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "flu",
+      "additionalIndependentSource": "flud",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "gripe_influenza_010",
+      "factId": "reasoning",
+      "factSha256": "fd2fbe04df3b7afd738be3caf0e7239400eea556110953b849530aa12a4ebe69",
+      "sourceIds": [
+        "flu",
+        "flud"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "flu",
+      "additionalIndependentSource": "flud",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "gripe_influenza_010",
+      "factId": "diagnosis",
+      "factSha256": "4364d4d98d74e04a2a986ae27682a98027fe477d166c86f1112753c61150cb37",
+      "sourceIds": [
+        "flu",
+        "flud"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "flu",
+      "additionalIndependentSource": "flud",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "gripe_influenza_010",
+      "factId": "treatment",
+      "factSha256": "d1366ecf7b168afbc2fdd3c4b8cb88b6f0ad463b2d1c532b7582f83facaf0243",
+      "sourceIds": [
+        "flu",
+        "flud"
+      ],
+      "numericClaims": [
+        "1",
+        "75",
+        "12",
+        "5",
+        "48",
+        "2",
+        "10",
+        "12",
+        "5"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "flu",
+      "additionalIndependentSource": "flud",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "gripe_influenza_010",
+      "factId": "safety",
+      "factSha256": "77a2adff785992ba9b7404f612736c701bd7537908754fa7d9c4218208ba2a32",
+      "sourceIds": [
+        "flu",
+        "flud"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "flu",
+      "additionalIndependentSource": "flud",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "gripe_influenza_010",
+      "factId": "disposition",
+      "factSha256": "4deb25ee0ba44185867c2da7c42cf6d85984334a15ab035401f65470f96ef154",
+      "sourceIds": [
+        "flu",
+        "flud"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "flu",
+      "additionalIndependentSource": "flud",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "covid19",
+      "factId": "concept",
+      "factSha256": "c3a72e7f193749193cfb976eacbe88da085888727a3ea49ccd70dae8b9492d7c",
+      "sourceIds": [
+        "cov",
+        "pax",
+        "covout",
+        "rem"
+      ],
+      "numericClaims": [
+        "19"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "cov",
+      "additionalIndependentSource": "pax",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "covid19",
+      "factId": "reasoning",
+      "factSha256": "939f9eed617982feafb7e3ec14b68402c0f3120cffb14c3463e979590ed3d55f",
+      "sourceIds": [
+        "cov",
+        "pax",
+        "covout",
+        "rem"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "cov",
+      "additionalIndependentSource": "pax",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "covid19",
+      "factId": "diagnosis",
+      "factSha256": "04d4412ef31decebe6a8612d1c199e5413d793374d958124c622161fea5a6bca",
+      "sourceIds": [
+        "cov",
+        "pax",
+        "covout",
+        "rem"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "cov",
+      "additionalIndependentSource": "pax",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "covid19",
+      "factId": "treatment",
+      "factSha256": "0331b4be036a97ffd6bc472f567a718cdead7c9bc0a9a2210f4806f56a2fddeb",
+      "sourceIds": [
+        "cov",
+        "pax",
+        "covout",
+        "rem"
+      ],
+      "numericClaims": [
+        "1",
+        "300",
+        "100",
+        "12",
+        "5",
+        "5",
+        "60",
+        "2",
+        "40",
+        "7",
+        "200",
+        "100",
+        "1",
+        "30",
+        "120"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "cov",
+      "additionalIndependentSource": "pax",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "covid19",
+      "factId": "safety",
+      "factSha256": "88e8baad004cba9734ee50231a4e1ea500f7b822c714f41482baea065ace610b",
+      "sourceIds": [
+        "cov",
+        "pax",
+        "covout",
+        "rem"
+      ],
+      "numericClaims": [
+        "3"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "cov",
+      "additionalIndependentSource": "pax",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "covid19",
+      "factId": "disposition",
+      "factSha256": "eb999c962cc2523d70b46139f48c613ff6b6ee2c3de153f8101cd946c70aab74",
+      "sourceIds": [
+        "cov",
+        "pax",
+        "covout",
+        "rem"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "cov",
+      "additionalIndependentSource": "pax",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "asma_grave",
+      "factId": "concept",
+      "factSha256": "5cc7e8f78f3588a007dfe4881d66e1ac4332fbdf1453a92666f7c65258172f2e",
+      "sourceIds": [
+        "asth",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "asth",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "asma_grave",
+      "factId": "reasoning",
+      "factSha256": "210572b6d38f5adacfc7ff613a9272d966db676bf59636cd737ef85628763192",
+      "sourceIds": [
+        "asth",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "asth",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "asma_grave",
+      "factId": "diagnosis",
+      "factSha256": "36eebce87b04a82e741cb1ac21ea6a21df364995b7f2cf39329ed08a2176b988",
+      "sourceIds": [
+        "asth",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "asth",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "asma_grave",
+      "factId": "treatment",
+      "factSha256": "b667196b0f590a74fa2f5f6dac04fa036bd2b8d9eb7e52a11949ec613833d358",
+      "sourceIds": [
+        "asth",
+        "pain"
+      ],
+      "numericClaims": [
+        "40",
+        "50",
+        "5",
+        "7"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "asth",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "asma_grave",
+      "factId": "safety",
+      "factSha256": "96c04cd0053d250bd36775910fd20da90335787b00dc6ca7111ee19b48fcb944",
+      "sourceIds": [
+        "asth",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "asth",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "asma_grave",
+      "factId": "disposition",
+      "factSha256": "3278c60fa4f004a4440ba9c6b5c7d72e98f93e3a1e985dec0b634f07885a0be3",
+      "sourceIds": [
+        "asth",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "asth",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pneumonia_grave",
+      "factId": "concept",
+      "factSha256": "f970cf9d7042dfaed5ce87105d5c15545329cf944302b01cd1cfacd0761343b1",
+      "sourceIds": [
+        "pneu",
+        "pneud"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pneu",
+      "additionalIndependentSource": "pneud",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pneumonia_grave",
+      "factId": "reasoning",
+      "factSha256": "690786ca9255ac97459b3b18e857359404e78ada79f585934db82783a59863c2",
+      "sourceIds": [
+        "pneu",
+        "pneud"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pneu",
+      "additionalIndependentSource": "pneud",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pneumonia_grave",
+      "factId": "diagnosis",
+      "factSha256": "f86a96603b24780942e5d904986585483a88095859adb6ae7fb3fe37b9da365f",
+      "sourceIds": [
+        "pneu",
+        "pneud"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pneu",
+      "additionalIndependentSource": "pneud",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pneumonia_grave",
+      "factId": "treatment",
+      "factSha256": "b76cd152961e12422c395994a1b1511abe8f25238379e986b25c6824839993fc",
+      "sourceIds": [
+        "pneu",
+        "pneud"
+      ],
+      "numericClaims": [
+        "1",
+        "1,2",
+        "8",
+        "500",
+        "6",
+        "5",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pneu",
+      "additionalIndependentSource": "pneud",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pneumonia_grave",
+      "factId": "safety",
+      "factSha256": "f7ee9bc0fc32239450996c960dd014af9f7e26ff8dae2e5118eab27f04d3bbe1",
+      "sourceIds": [
+        "pneu",
+        "pneud"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pneu",
+      "additionalIndependentSource": "pneud",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "pneumonia_grave",
+      "factId": "disposition",
+      "factSha256": "f3830aee568b40bc998d8f24839ec38dc63bdac73860040bf3625096dcd5ca55",
+      "sourceIds": [
+        "pneu",
+        "pneud"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pneu",
+      "additionalIndependentSource": "pneud",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "doenca_refluxo_gastroesofagico",
+      "factId": "concept",
+      "factSha256": "5b31d460697742875ea2336c2fb897b2d3036c95125c042b4f6404a4da3843eb",
+      "sourceIds": [
+        "anc",
+        "refluxpreg",
+        "omep"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "anc",
+      "additionalIndependentSource": "refluxpreg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "doenca_refluxo_gastroesofagico",
+      "factId": "reasoning",
+      "factSha256": "f7d5b1129477f7e8a088f1f3d3a46f5b9b3df3ecf4612c17fbbbfd4df273d656",
+      "sourceIds": [
+        "anc",
+        "refluxpreg",
+        "omep"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "anc",
+      "additionalIndependentSource": "refluxpreg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "doenca_refluxo_gastroesofagico",
+      "factId": "diagnosis",
+      "factSha256": "2f8958e22515a79d994095e6f260aeb8bd518cd60d27f4936cb2be5cc387f8f7",
+      "sourceIds": [
+        "anc",
+        "refluxpreg",
+        "omep"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "anc",
+      "additionalIndependentSource": "refluxpreg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "doenca_refluxo_gastroesofagico",
+      "factId": "treatment",
+      "factSha256": "5714c2415086f36d5aab74acbfa9470468e916b7ecc28fcb2c5500d139962fe8",
+      "sourceIds": [
+        "anc",
+        "refluxpreg",
+        "omep"
+      ],
+      "numericClaims": [
+        "1",
+        "2",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "anc",
+      "additionalIndependentSource": "refluxpreg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "doenca_refluxo_gastroesofagico",
+      "factId": "safety",
+      "factSha256": "b2c3659d15893794d0ee0781eabe18b7cc675d6bdaa2ea8b749bfe7f95fb24c2",
+      "sourceIds": [
+        "anc",
+        "refluxpreg",
+        "omep"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "anc",
+      "additionalIndependentSource": "refluxpreg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "doenca_refluxo_gastroesofagico",
+      "factId": "disposition",
+      "factSha256": "7f85a846d50000d29172c8678d735c81c05000764ce0a1a20ef9591d550c8040",
+      "sourceIds": [
+        "anc",
+        "refluxpreg",
+        "omep"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "anc",
+      "additionalIndependentSource": "refluxpreg",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "constipacao_funcional",
+      "factId": "concept",
+      "factSha256": "fdcd6a22990099a12416956ac344b22741d6e20f39447b2028f0b14020cbcb8d",
+      "sourceIds": [
+        "const",
+        "anc"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "const",
+      "additionalIndependentSource": "anc",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "constipacao_funcional",
+      "factId": "reasoning",
+      "factSha256": "c051515184bb462acd32dbaf81b81d6193d7f5aeca3d9502eb053c93b8337749",
+      "sourceIds": [
+        "const",
+        "anc"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "const",
+      "additionalIndependentSource": "anc",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "constipacao_funcional",
+      "factId": "diagnosis",
+      "factSha256": "6b567b1334c03a80755af45b4d1a3a769d2c044b9a5bcaa5fd7db87ddc546599",
+      "sourceIds": [
+        "const",
+        "anc"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "const",
+      "additionalIndependentSource": "anc",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "constipacao_funcional",
+      "factId": "treatment",
+      "factSha256": "cd95fd5713649d5bf6b674f573eec841d09c62c92a6bc491721aa27e553fd53f",
+      "sourceIds": [
+        "const",
+        "anc"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "const",
+      "additionalIndependentSource": "anc",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "constipacao_funcional",
+      "factId": "safety",
+      "factSha256": "6105c3d960f72c87b0780e4eb83747bdadba8fac7e953df40db7c78e464f0172",
+      "sourceIds": [
+        "const",
+        "anc"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "const",
+      "additionalIndependentSource": "anc",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "constipacao_funcional",
+      "factId": "disposition",
+      "factSha256": "6411ed1da28dd412bafcc627253340cef4321f261170642cf0407481309de348",
+      "sourceIds": [
+        "const",
+        "anc"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "const",
+      "additionalIndependentSource": "anc",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "doenca_hemorroidaria",
+      "factId": "concept",
+      "factSha256": "92f88bb2ed0d3cee25515c7ec14d3f8f6ab49e8ec839393521b44496ff866b57",
+      "sourceIds": [
+        "hem",
+        "const"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hem",
+      "additionalIndependentSource": "const",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "doenca_hemorroidaria",
+      "factId": "reasoning",
+      "factSha256": "5c6d5d265e1b552ca703aa39ff1017af9fdee97b039297cab5176245d632191a",
+      "sourceIds": [
+        "hem",
+        "const"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hem",
+      "additionalIndependentSource": "const",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "doenca_hemorroidaria",
+      "factId": "diagnosis",
+      "factSha256": "4217f6e348b16600524c66730803ce5b3aceb6155f6c118889c3a718962c9dbb",
+      "sourceIds": [
+        "hem",
+        "const"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hem",
+      "additionalIndependentSource": "const",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "doenca_hemorroidaria",
+      "factId": "treatment",
+      "factSha256": "3318c5c65fc0bc6640a3908c31b9595c2c0e3d871c1dd16ce040c8395c7d90be",
+      "sourceIds": [
+        "hem",
+        "const"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hem",
+      "additionalIndependentSource": "const",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "doenca_hemorroidaria",
+      "factId": "safety",
+      "factSha256": "78216bcd648502ac121cebfe520b2bf6e4394dd855e08721602eb2b1947c8607",
+      "sourceIds": [
+        "hem",
+        "const"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hem",
+      "additionalIndependentSource": "const",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "doenca_hemorroidaria",
+      "factId": "disposition",
+      "factSha256": "06fca00744bd9057e5fc4a958cf2c2f82efafa6547b3f56d8182dc0f228e91f0",
+      "sourceIds": [
+        "hem",
+        "const"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "hem",
+      "additionalIndependentSource": "const",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "fissura_anal",
+      "factId": "concept",
+      "factSha256": "20eda666ca06a46628d229d579f33109d2d9278353204e23a3c3b71c148bda91",
+      "sourceIds": [
+        "fiss",
+        "const",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "fiss",
+      "additionalIndependentSource": "const",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "fissura_anal",
+      "factId": "reasoning",
+      "factSha256": "1b7c86c60b34ef1fa8ec7f1ef3ed71e8d76f36d50e0f36dc9114e28558c0855f",
+      "sourceIds": [
+        "fiss",
+        "const",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "fiss",
+      "additionalIndependentSource": "const",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "fissura_anal",
+      "factId": "diagnosis",
+      "factSha256": "43e27992bae2f4386d14a111f13138ef37edd5c8da978b5b43bedcb7432c9852",
+      "sourceIds": [
+        "fiss",
+        "const",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "fiss",
+      "additionalIndependentSource": "const",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "fissura_anal",
+      "factId": "treatment",
+      "factSha256": "5c9bc7f0b41825478f67482c61bba800f6d125e68defdc5a9cc3c84631dbe837",
+      "sourceIds": [
+        "fiss",
+        "const",
+        "pain"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "fiss",
+      "additionalIndependentSource": "const",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "fissura_anal",
+      "factId": "safety",
+      "factSha256": "a6d60ff06b2a77db4e46cf5db82cdcd6177d9820d27c94dba3ac4fe07cc06b26",
+      "sourceIds": [
+        "fiss",
+        "const",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "fiss",
+      "additionalIndependentSource": "const",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "fissura_anal",
+      "factId": "disposition",
+      "factSha256": "978bbf4eb7b62960be6ea2b3cb55f7370b1c7b63aca7f29cbadcb5074e83cfc9",
+      "sourceIds": [
+        "fiss",
+        "const",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "fiss",
+      "additionalIndependentSource": "const",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diarrea_aguda_009",
+      "factId": "concept",
+      "factSha256": "6483173c50d7c75c7615e546a22aab077325a86a14c7251e808c3fed166af9ac",
+      "sourceIds": [
+        "diarr",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "diarr",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diarrea_aguda_009",
+      "factId": "reasoning",
+      "factSha256": "7e59cdf22d882aeff20173662039806c5f656ef71d77aea2895351cae897005a",
+      "sourceIds": [
+        "diarr",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "diarr",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diarrea_aguda_009",
+      "factId": "diagnosis",
+      "factSha256": "69a6bf746d072537f09ae59d9ccb1a97e608f74127c78b1981bc918537263a64",
+      "sourceIds": [
+        "diarr",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "diarr",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diarrea_aguda_009",
+      "factId": "treatment",
+      "factSha256": "64fa8d517c9aadd651ea7221b9622ac30cd72ca29e074aad463f767a6f05ffd0",
+      "sourceIds": [
+        "diarr",
+        "pain"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "diarr",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diarrea_aguda_009",
+      "factId": "safety",
+      "factSha256": "2106919d994940a723f205829e6129c0631a07066451320fb2a6f768e03ead45",
+      "sourceIds": [
+        "diarr",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "diarr",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "diarrea_aguda_009",
+      "factId": "disposition",
+      "factSha256": "126a328f39927409bff6f107fadc493f9c3bc5f6c6e213a7b8de56b1ab897308",
+      "sourceIds": [
+        "diarr",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "diarr",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colelitiase_colica_biliar",
+      "factId": "concept",
+      "factSha256": "2fe9e2ae9916367278e11dd0e98cd68e2a3d71e53b840a493d516169ee3cc286",
+      "sourceIds": [
+        "surg",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "surg",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colelitiase_colica_biliar",
+      "factId": "reasoning",
+      "factSha256": "7308e5cb834fac544e08ddf2d7e34e0d24361c0922903345336b40ea68a428f8",
+      "sourceIds": [
+        "surg",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "surg",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colelitiase_colica_biliar",
+      "factId": "diagnosis",
+      "factSha256": "9df2d65d08c1e7df8fbd912f115818081c3274a0ffa1afc65797bb5804849580",
+      "sourceIds": [
+        "surg",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "surg",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colelitiase_colica_biliar",
+      "factId": "treatment",
+      "factSha256": "70f11e3f785a5478d9c2075b3cda92f1c63c8b6ed6701228e4bbdc63e723aa16",
+      "sourceIds": [
+        "surg",
+        "pain"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "surg",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colelitiase_colica_biliar",
+      "factId": "safety",
+      "factSha256": "2806a1a1bf8196cbfebdca68b463d1f0aee94cbaf9595f5411f7d11ca7e5a353",
+      "sourceIds": [
+        "surg",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "surg",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colelitiase_colica_biliar",
+      "factId": "disposition",
+      "factSha256": "b6fe21716eb324981d8271081602889ca34656a6d8d4ac9e44db4e739b293f27",
+      "sourceIds": [
+        "surg",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "surg",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colecistite_aguda",
+      "factId": "concept",
+      "factSha256": "13fe9225003b058a5e7a1a858be5bcdc7e52afa27a99da6204f010ed5585e172",
+      "sourceIds": [
+        "surg",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "surg",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colecistite_aguda",
+      "factId": "reasoning",
+      "factSha256": "a32124f351550a53a7b63d04f9c7eb7c87860688a75da1c49394e3d88d7f55a5",
+      "sourceIds": [
+        "surg",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "surg",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colecistite_aguda",
+      "factId": "diagnosis",
+      "factSha256": "c624dd1b4c785a8d6cb60eaf213f0759d3b8baa6c91041d4b2ba4fdecc5a7efa",
+      "sourceIds": [
+        "surg",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "surg",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colecistite_aguda",
+      "factId": "treatment",
+      "factSha256": "b7381960323c06b4f1cc9b1b3d60b7241ddc5e24c18f30ed53109de3afa27675",
+      "sourceIds": [
+        "surg",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "surg",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colecistite_aguda",
+      "factId": "safety",
+      "factSha256": "57b184131e072f166ede9afb06178d0e8e1a512ae3ce262897abe15b4f7fbf73",
+      "sourceIds": [
+        "surg",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "surg",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colecistite_aguda",
+      "factId": "disposition",
+      "factSha256": "00ed51274a8046b7712f99c97a4d4c385bc877726cb4b56dfe1b17291ad84967",
+      "sourceIds": [
+        "surg",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "surg",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colica_nefretica",
+      "factId": "concept",
+      "factSha256": "ba223a13ce5707154b3aa9d0c49e08f7402da102760d205d313c62c8c4cf74c9",
+      "sourceIds": [
+        "stone",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "stone",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colica_nefretica",
+      "factId": "reasoning",
+      "factSha256": "15bbb0a50ca534086d1c696682f8b4141d080467fc5600ec971bf2ca779a9abd",
+      "sourceIds": [
+        "stone",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "stone",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colica_nefretica",
+      "factId": "diagnosis",
+      "factSha256": "50c7e59de0a677ae76b523a501c213e96865f774a75a002880e0ca85410c1ba8",
+      "sourceIds": [
+        "stone",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "stone",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colica_nefretica",
+      "factId": "treatment",
+      "factSha256": "4d1aab3876aecd4348bb911c3019741f8e7f1a8cfb36e83018714c735fb55fa0",
+      "sourceIds": [
+        "stone",
+        "pain"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "stone",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colica_nefretica",
+      "factId": "safety",
+      "factSha256": "f39a580b2be21208e4d02e5300db5a254153997497c5c55b678c844c1f95854f",
+      "sourceIds": [
+        "stone",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "stone",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colica_nefretica",
+      "factId": "disposition",
+      "factSha256": "0bf872ff6ad1fd88622908b19ed2b59e6b29bab7fcb13c7fae9cb5d69d821153",
+      "sourceIds": [
+        "stone",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "stone",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "lombalgia_mecanica",
+      "factId": "concept",
+      "factSha256": "757fc9699a668de790b2d38af7035e0a4cd8c316f1a2dac0a3f70cc85305b2b4",
+      "sourceIds": [
+        "back",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "back",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "lombalgia_mecanica",
+      "factId": "reasoning",
+      "factSha256": "18b9f152b81c4cc0ad7c5e2e6d2aba57af50671eb9180bcb9d6e730c6463a305",
+      "sourceIds": [
+        "back",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "back",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "lombalgia_mecanica",
+      "factId": "diagnosis",
+      "factSha256": "f09d8f2c4feb096d995b8d97476600bc1196fd635f714543d6b7a9370ccec210",
+      "sourceIds": [
+        "back",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "back",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "lombalgia_mecanica",
+      "factId": "treatment",
+      "factSha256": "406bf20da9475c373aa3ae441133c12add7cdc9d8e29943df7b4dcf293ae85bc",
+      "sourceIds": [
+        "back",
+        "pain"
+      ],
+      "numericClaims": [
+        "1",
+        "2",
+        "500",
+        "1",
+        "4",
+        "4",
+        "4",
+        "24",
+        "50",
+        "20"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "back",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "lombalgia_mecanica",
+      "factId": "safety",
+      "factSha256": "9c55308e19b287bdd3916783ef61392618beedfee9fc788fc97a17fa9efc5b6e",
+      "sourceIds": [
+        "back",
+        "pain"
+      ],
+      "numericClaims": [
+        "20"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "back",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "lombalgia_mecanica",
+      "factId": "disposition",
+      "factSha256": "9b6e3f8d25837b9bdef2f6accbbbd255382088456a8f0d4f3aacf99493d4323d",
+      "sourceIds": [
+        "back",
+        "pain"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "back",
+      "additionalIndependentSource": "pain",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "dor_cintura_pelvica_gestacao",
+      "factId": "concept",
+      "factSha256": "633533de5837e1136bc396590f337774b87fc899fb5e79480749c1765e511c8b",
+      "sourceIds": [
+        "pgp",
+        "pgpr",
+        "anc"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pgp",
+      "additionalIndependentSource": "pgpr",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "dor_cintura_pelvica_gestacao",
+      "factId": "reasoning",
+      "factSha256": "009f2c297f059e112f0b946e9e686b3f4dad32ead24c521af0f138e2db2f8092",
+      "sourceIds": [
+        "pgp",
+        "pgpr",
+        "anc"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pgp",
+      "additionalIndependentSource": "pgpr",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "dor_cintura_pelvica_gestacao",
+      "factId": "diagnosis",
+      "factSha256": "599c3a88412f3c57e160072770d3e92cd47dc91d26a41334e094bec4f0a7ac07",
+      "sourceIds": [
+        "pgp",
+        "pgpr",
+        "anc"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pgp",
+      "additionalIndependentSource": "pgpr",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "dor_cintura_pelvica_gestacao",
+      "factId": "treatment",
+      "factSha256": "bed671aae666ec919609cf3affb160c8922000e97f112c668fc4c2a376665fb4",
+      "sourceIds": [
+        "pgp",
+        "pgpr",
+        "anc"
+      ],
+      "numericClaims": [
+        "1",
+        "2",
+        "500",
+        "1",
+        "4",
+        "4",
+        "4",
+        "24",
+        "50"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pgp",
+      "additionalIndependentSource": "pgpr",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "dor_cintura_pelvica_gestacao",
+      "factId": "safety",
+      "factSha256": "06eba63990a4494a8b428a1006fa0621f03e178dddadda49f647f9623c00b922",
+      "sourceIds": [
+        "pgp",
+        "pgpr",
+        "anc"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pgp",
+      "additionalIndependentSource": "pgpr",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "dor_cintura_pelvica_gestacao",
+      "factId": "disposition",
+      "factSha256": "e77272a1ee8f002907a11da482d2c1166aaea04498d15f657dc383a53f9ce6cd",
+      "sourceIds": [
+        "pgp",
+        "pgpr",
+        "anc"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pgp",
+      "additionalIndependentSource": "pgpr",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "sindrome_tunel_carpo",
+      "factId": "concept",
+      "factSha256": "5080ffa413323676f279bbc0f14a15a2e4a30b603dc924cb9d3cd88caa3b66eb",
+      "sourceIds": [
+        "carp",
+        "carpn",
+        "hand",
+        "handpreg"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "carp",
+      "additionalIndependentSource": "carpn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "sindrome_tunel_carpo",
+      "factId": "reasoning",
+      "factSha256": "938470dd41cb983b0384e0aa19a23a1090bbf286a081dc046de946c7092ea52a",
+      "sourceIds": [
+        "carp",
+        "carpn",
+        "hand",
+        "handpreg"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "carp",
+      "additionalIndependentSource": "carpn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "sindrome_tunel_carpo",
+      "factId": "diagnosis",
+      "factSha256": "4c98d53dc81c5e9fcf41a3eb3162538925972bd8fae9a214ad51bd1e38e6770b",
+      "sourceIds": [
+        "carp",
+        "carpn",
+        "hand",
+        "handpreg"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "carp",
+      "additionalIndependentSource": "carpn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "sindrome_tunel_carpo",
+      "factId": "treatment",
+      "factSha256": "c113447ef8618bc9ab933bfc354e4cb12df2b588a035c924a0ac6267480f5d29",
+      "sourceIds": [
+        "carp",
+        "carpn",
+        "hand",
+        "handpreg"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "carp",
+      "additionalIndependentSource": "carpn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "sindrome_tunel_carpo",
+      "factId": "safety",
+      "factSha256": "bf036ac643fb409ace935ed9c1ac2c3598da7176d707116d821f31d03a579472",
+      "sourceIds": [
+        "carp",
+        "carpn",
+        "hand",
+        "handpreg"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "carp",
+      "additionalIndependentSource": "carpn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "sindrome_tunel_carpo",
+      "factId": "disposition",
+      "factSha256": "0a576c234c37c7e50d0ae2527e65bf294d9bedf77dd65f63174199fce146523f",
+      "sourceIds": [
+        "carp",
+        "carpn",
+        "hand",
+        "handpreg"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "carp",
+      "additionalIndependentSource": "carpn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "varizes_membros_inferiores",
+      "factId": "concept",
+      "factSha256": "7501de8c3649b20d4c7fc3d64beee0eaa1e071e19deb08011383445bc2044691",
+      "sourceIds": [
+        "vein",
+        "veinn"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "vein",
+      "additionalIndependentSource": "veinn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "varizes_membros_inferiores",
+      "factId": "reasoning",
+      "factSha256": "2a24ae92273a65d3237942562809d5c4df50157d310ffe68e327e532eb89a515",
+      "sourceIds": [
+        "vein",
+        "veinn"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "vein",
+      "additionalIndependentSource": "veinn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "varizes_membros_inferiores",
+      "factId": "diagnosis",
+      "factSha256": "744253c18ecc6abb731ff28276cdab53407fae99a57237a971f71678a85f1964",
+      "sourceIds": [
+        "vein",
+        "veinn"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "vein",
+      "additionalIndependentSource": "veinn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "varizes_membros_inferiores",
+      "factId": "treatment",
+      "factSha256": "3215524d15999b95cd3a5e38fca073fcd1087b2f90a2f809beb54c6d707f4d84",
+      "sourceIds": [
+        "vein",
+        "veinn"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "vein",
+      "additionalIndependentSource": "veinn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "varizes_membros_inferiores",
+      "factId": "safety",
+      "factSha256": "efed28738a07f7769ce3f0913903b3016edbe6d0066e402a354d25ab7abfb733",
+      "sourceIds": [
+        "vein",
+        "veinn"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "vein",
+      "additionalIndependentSource": "veinn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "varizes_membros_inferiores",
+      "factId": "disposition",
+      "factSha256": "92beb1f0f3dd59de8dccff39e9f2475050fbaeb0370ec275faf3f307b3940045",
+      "sourceIds": [
+        "vein",
+        "veinn"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "vein",
+      "additionalIndependentSource": "veinn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "dermatite_atopica",
+      "factId": "concept",
+      "factSha256": "b14d8e3158decb0a53eb1f115cd9b9865ed12560dc89800eb093ba0ace1022c0",
+      "sourceIds": [
+        "ecz",
+        "eczn",
+        "hydskin"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ecz",
+      "additionalIndependentSource": "eczn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "dermatite_atopica",
+      "factId": "reasoning",
+      "factSha256": "eae2110409a1cd301ed60a816c0d707d8a4db822cc5a9835f8b2e778db90555f",
+      "sourceIds": [
+        "ecz",
+        "eczn",
+        "hydskin"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ecz",
+      "additionalIndependentSource": "eczn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "dermatite_atopica",
+      "factId": "diagnosis",
+      "factSha256": "9b15a09fd8529b1b5c1acdecd13163886fc7a7a044c7e1a797aa1fca3e55c6b1",
+      "sourceIds": [
+        "ecz",
+        "eczn",
+        "hydskin"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ecz",
+      "additionalIndependentSource": "eczn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "dermatite_atopica",
+      "factId": "treatment",
+      "factSha256": "57222a18d5a266003e227e08dfef8d9af2c3dc4f91bbdbcf0cf10e5782b2c8d5",
+      "sourceIds": [
+        "ecz",
+        "eczn",
+        "hydskin"
+      ],
+      "numericClaims": [
+        "1",
+        "2",
+        "1",
+        "2",
+        "7"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ecz",
+      "additionalIndependentSource": "eczn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "dermatite_atopica",
+      "factId": "safety",
+      "factSha256": "384693311b73670f48f82665424857be10d1d1169f34dc5ac94a98f27d43d460",
+      "sourceIds": [
+        "ecz",
+        "eczn",
+        "hydskin"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ecz",
+      "additionalIndependentSource": "eczn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "dermatite_atopica",
+      "factId": "disposition",
+      "factSha256": "3bf7b50ad1a106392fc3ee406faae1a20c6fd1bc1c1e747e1e34cfa62152fea9",
+      "sourceIds": [
+        "ecz",
+        "eczn",
+        "hydskin"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ecz",
+      "additionalIndependentSource": "eczn",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colestase_intra_hepatica_gestacao",
+      "factId": "concept",
+      "factSha256": "49f47069c329a27044f6dc4b1ffce11dbacc7a6b1ac8fb638f66925e34a0b1b2",
+      "sourceIds": [
+        "icp",
+        "icpp",
+        "icpsmfm"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "icp",
+      "additionalIndependentSource": "icpp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colestase_intra_hepatica_gestacao",
+      "factId": "reasoning",
+      "factSha256": "77c22fde198cbb436b23f393113dd8d755318ff05d1fedf0547d48004d3948c5",
+      "sourceIds": [
+        "icp",
+        "icpp",
+        "icpsmfm"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "icp",
+      "additionalIndependentSource": "icpp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colestase_intra_hepatica_gestacao",
+      "factId": "diagnosis",
+      "factSha256": "b4c9e599ba1ca0aa64cc4151bd7631cfef3a55c7526862fc0d329eda5cb42a74",
+      "sourceIds": [
+        "icp",
+        "icpp",
+        "icpsmfm"
+      ],
+      "numericClaims": [
+        "19",
+        "39",
+        "40",
+        "99",
+        "100"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "icp",
+      "additionalIndependentSource": "icpp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colestase_intra_hepatica_gestacao",
+      "factId": "treatment",
+      "factSha256": "c48bf04b8c4acf8dcf790905837d95370f508947c877b541a5ea677502b1a0e8",
+      "sourceIds": [
+        "icp",
+        "icpp",
+        "icpsmfm"
+      ],
+      "numericClaims": [
+        "1",
+        "10",
+        "15",
+        "2",
+        "3",
+        "2",
+        "40",
+        "38",
+        "39",
+        "35",
+        "36",
+        "100"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "icp",
+      "additionalIndependentSource": "icpp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colestase_intra_hepatica_gestacao",
+      "factId": "safety",
+      "factSha256": "b4ec97830e4a86a56a0b82d39875ae8cf3d9f4865eb6310f3b9f368c10f0727c",
+      "sourceIds": [
+        "icp",
+        "icpp",
+        "icpsmfm"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "icp",
+      "additionalIndependentSource": "icpp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "colestase_intra_hepatica_gestacao",
+      "factId": "disposition",
+      "factSha256": "ff68337c4c580f2eb124387b7b27156b9b5ee1538895f7a888c8b33b29afb052",
+      "sourceIds": [
+        "icp",
+        "icpp",
+        "icpsmfm"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "icp",
+      "additionalIndependentSource": "icpp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "psiqui_depressao_maior",
+      "factId": "concept",
+      "factSha256": "7ceae3baf9b971216cc0485291745d7250cd6a6043d44ff82448c1b8c9f59524",
+      "sourceIds": [
+        "psy",
+        "psyp"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "psy",
+      "additionalIndependentSource": "psyp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "psiqui_depressao_maior",
+      "factId": "reasoning",
+      "factSha256": "d55fd364584e9f2d7745f1bf77adfcffc9aff2fb966ca533a2190b1c93689d6e",
+      "sourceIds": [
+        "psy",
+        "psyp"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "psy",
+      "additionalIndependentSource": "psyp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "psiqui_depressao_maior",
+      "factId": "diagnosis",
+      "factSha256": "b62833089e5303f0a70665125e289eb81432ef304e69c84db7e45939853f1003",
+      "sourceIds": [
+        "psy",
+        "psyp"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "psy",
+      "additionalIndependentSource": "psyp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "psiqui_depressao_maior",
+      "factId": "treatment",
+      "factSha256": "afea2bda42b36375ed54bebf9459f8019c534ccbf89c6260220aab60b693170c",
+      "sourceIds": [
+        "psy",
+        "psyp"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "psy",
+      "additionalIndependentSource": "psyp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "psiqui_depressao_maior",
+      "factId": "safety",
+      "factSha256": "a405138ed1984f47c6c86350643ea1ff77eca05fba15430fd22872fc217d6d53",
+      "sourceIds": [
+        "psy",
+        "psyp"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "psy",
+      "additionalIndependentSource": "psyp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "psiqui_depressao_maior",
+      "factId": "disposition",
+      "factSha256": "a578aa9b4dc34ae25da022f1ead6bc158de945394d9e17e57bac5d524273afc7",
+      "sourceIds": [
+        "psy",
+        "psyp"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "psy",
+      "additionalIndependentSource": "psyp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "psiqui_ansiedade_generalizada",
+      "factId": "concept",
+      "factSha256": "918f5180371ede50cfaed13739a20ddc77375e2d2a09ff263fce3185ef4a4f4c",
+      "sourceIds": [
+        "psy",
+        "psyp",
+        "anx"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "psy",
+      "additionalIndependentSource": "psyp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "psiqui_ansiedade_generalizada",
+      "factId": "reasoning",
+      "factSha256": "0f5fbfb330a7f490f56fdf0d7d19c45d12f476e305a3d606366e9a7ec90cfb5d",
+      "sourceIds": [
+        "psy",
+        "psyp",
+        "anx"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "psy",
+      "additionalIndependentSource": "psyp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "psiqui_ansiedade_generalizada",
+      "factId": "diagnosis",
+      "factSha256": "bb8a776148524db3323fcc2cdf17b74628e62cad376415d5ae7db76b35ffdb50",
+      "sourceIds": [
+        "psy",
+        "psyp",
+        "anx"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "psy",
+      "additionalIndependentSource": "psyp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "psiqui_ansiedade_generalizada",
+      "factId": "treatment",
+      "factSha256": "844eeb04ae5f72543ff0c2f9214360252952ac811a6142905b96d4fe069831ab",
+      "sourceIds": [
+        "psy",
+        "psyp",
+        "anx"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "psy",
+      "additionalIndependentSource": "psyp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "psiqui_ansiedade_generalizada",
+      "factId": "safety",
+      "factSha256": "11ae1f022448c9f8f537cf3916767a35c3371b3300b4b583ad1ecbcbb8e1b688",
+      "sourceIds": [
+        "psy",
+        "psyp",
+        "anx"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "psy",
+      "additionalIndependentSource": "psyp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "psiqui_ansiedade_generalizada",
+      "factId": "disposition",
+      "factSha256": "f01d1036c53b07cc09334b2d27c06a110176fe78f63b0941f53ea4c48722b25f",
+      "sourceIds": [
+        "psy",
+        "psyp",
+        "anx"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "psy",
+      "additionalIndependentSource": "psyp",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "caso_enxaqueca_aura",
+      "factId": "concept",
+      "factSha256": "53ac2ccd6746c74c7b95fcd0917b37ff04e78d3d4fdd5b13f5ef141cb373dce6",
+      "sourceIds": [
+        "mig",
+        "mign",
+        "para",
+        "sum",
+        "sumob"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "mig",
+      "additionalIndependentSource": "mign",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "caso_enxaqueca_aura",
+      "factId": "reasoning",
+      "factSha256": "090b4931672571f13cfd9f835b099268383443747f949c5fde8e94f371755a71",
+      "sourceIds": [
+        "mig",
+        "mign",
+        "para",
+        "sum",
+        "sumob"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "mig",
+      "additionalIndependentSource": "mign",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "caso_enxaqueca_aura",
+      "factId": "diagnosis",
+      "factSha256": "35670b6dd6292cc9fdaeb9c58cdd571e9952644701617f5910ce4216c3099938",
+      "sourceIds": [
+        "mig",
+        "mign",
+        "para",
+        "sum",
+        "sumob"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "mig",
+      "additionalIndependentSource": "mign",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "caso_enxaqueca_aura",
+      "factId": "treatment",
+      "factSha256": "15145650e070cbc6b091207b6c135b5cd1f490c95c28dc6a580eaf2e52225dbb",
+      "sourceIds": [
+        "mig",
+        "mign",
+        "para",
+        "sum",
+        "sumob"
+      ],
+      "numericClaims": [
+        "1",
+        "500",
+        "1",
+        "4",
+        "4",
+        "4",
+        "24",
+        "50",
+        "2",
+        "50"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "mig",
+      "additionalIndependentSource": "mign",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "caso_enxaqueca_aura",
+      "factId": "safety",
+      "factSha256": "3de00f1d02b3aa8c4575d26f41e43bfd3a07d390e3a90cd2d2cd87493131f994",
+      "sourceIds": [
+        "mig",
+        "mign",
+        "para",
+        "sum",
+        "sumob"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "mig",
+      "additionalIndependentSource": "mign",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "caso_enxaqueca_aura",
+      "factId": "disposition",
+      "factSha256": "f92ad28d9ae6518eec60f07f43443232914c2e8dbaa1d52cdb89df886de879dc",
+      "sourceIds": [
+        "mig",
+        "mign",
+        "para",
+        "sum",
+        "sumob"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "mig",
+      "additionalIndependentSource": "mign",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "ameaca_abortamento",
+      "factId": "concept",
+      "factSha256": "727f32060d361d15fd36d4e2f41f42735d3035ddabf70620ffccee13d4067594",
+      "sourceIds": [
+        "loss",
+        "lossd"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "loss",
+      "additionalIndependentSource": "lossd",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "ameaca_abortamento",
+      "factId": "reasoning",
+      "factSha256": "8298c72d01c697c44cb709a68d3d83ca7e3acb4f5aec24ee2f6cc182b42c68c4",
+      "sourceIds": [
+        "loss",
+        "lossd"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "loss",
+      "additionalIndependentSource": "lossd",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "ameaca_abortamento",
+      "factId": "diagnosis",
+      "factSha256": "c480e366dadf01d79b4f12a68e8e3f2916170f9552da1002c6c92e6023449c76",
+      "sourceIds": [
+        "loss",
+        "lossd"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "loss",
+      "additionalIndependentSource": "lossd",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "ameaca_abortamento",
+      "factId": "treatment",
+      "factSha256": "35d393c91bb531eb70a4a36db9e9861ba31390a326114dd3a75a9b0293ad6221",
+      "sourceIds": [
+        "loss",
+        "lossd"
+      ],
+      "numericClaims": [
+        "1",
+        "400",
+        "12",
+        "16",
+        "2",
+        "14"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "loss",
+      "additionalIndependentSource": "lossd",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "ameaca_abortamento",
+      "factId": "safety",
+      "factSha256": "4c6edf8336c78517891a769e3d4777dd6472b00b233d8115824ec8db77059151",
+      "sourceIds": [
+        "loss",
+        "lossd"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "loss",
+      "additionalIndependentSource": "lossd",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "ameaca_abortamento",
+      "factId": "disposition",
+      "factSha256": "96e1421b46274e99246633761d12e9c5972ebe7bc00ef39a83fbaed6e5d11e44",
+      "sourceIds": [
+        "loss",
+        "lossd"
+      ],
+      "numericClaims": [
+        "14"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "loss",
+      "additionalIndependentSource": "lossd",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "abortamento_espontaneo",
+      "factId": "concept",
+      "factSha256": "ecfa12955a2e1fa3d05ca4048ccc8bb309e1bb1ebb7baeb2046191d58f630f9a",
+      "sourceIds": [
+        "loss",
+        "lossd"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "loss",
+      "additionalIndependentSource": "lossd",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "abortamento_espontaneo",
+      "factId": "reasoning",
+      "factSha256": "279acd3e97b1258930027e0d903711700b0ef1e6b2ea710c57e6ef5fc3c4511c",
+      "sourceIds": [
+        "loss",
+        "lossd"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "loss",
+      "additionalIndependentSource": "lossd",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "abortamento_espontaneo",
+      "factId": "diagnosis",
+      "factSha256": "45607c77d9b2ae3d4c2234bed52945a758469b543d6d6811ae8029b8d13e8b7c",
+      "sourceIds": [
+        "loss",
+        "lossd"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "loss",
+      "additionalIndependentSource": "lossd",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "abortamento_espontaneo",
+      "factId": "treatment",
+      "factSha256": "809343accde445cd47c771f99dc2e7c02ef825f0be6cf6185cbc36a37a8324c9",
+      "sourceIds": [
+        "loss",
+        "lossd"
+      ],
+      "numericClaims": [
+        "1",
+        "7",
+        "14",
+        "2",
+        "200",
+        "48",
+        "800",
+        "600",
+        "800",
+        "3",
+        "3"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "loss",
+      "additionalIndependentSource": "lossd",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "abortamento_espontaneo",
+      "factId": "safety",
+      "factSha256": "1867de633f98afb84a77677a5a22ee9bf0da79d45cb505d2cd57c8b683defdf7",
+      "sourceIds": [
+        "loss",
+        "lossd"
+      ],
+      "numericClaims": [
+        "600"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "loss",
+      "additionalIndependentSource": "lossd",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "abortamento_espontaneo",
+      "factId": "disposition",
+      "factSha256": "9a8e6763f2c06d5d33109afecf316ca2154fc5037c4a708397ab1db9c9b4453b",
+      "sourceIds": [
+        "loss",
+        "lossd"
+      ],
+      "numericClaims": [
+        "3"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "loss",
+      "additionalIndependentSource": "lossd",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "obstetr_gravidez_ectopica_rota",
+      "factId": "concept",
+      "factSha256": "a9b06188aff671c76fd0e5dd4de16108e917c1d2bed380fe78ece13f8a52e9cb",
+      "sourceIds": [
+        "lossd"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "lossd",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "obstetr_gravidez_ectopica_rota",
+      "factId": "reasoning",
+      "factSha256": "be43d9121cb9b3b150073ea28f689645985d1e4cf89615d291c9683c41c1fa5f",
+      "sourceIds": [
+        "lossd"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "lossd",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "obstetr_gravidez_ectopica_rota",
+      "factId": "diagnosis",
+      "factSha256": "abcabda5777d760207e34dcf7a1017c5b7ce0ebb93ab43d3e32ed71570f57484",
+      "sourceIds": [
+        "lossd"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "lossd",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "obstetr_gravidez_ectopica_rota",
+      "factId": "treatment",
+      "factSha256": "efdc96b760d62f6849edf5ee616258d82dadf95b4f2f2ad491203b99e9cd5895",
+      "sourceIds": [
+        "lossd"
+      ],
+      "numericClaims": [
+        "1",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "lossd",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "obstetr_gravidez_ectopica_rota",
+      "factId": "safety",
+      "factSha256": "b666565907fda49a8a5658d6c8a960e6593b4de509b8c6f9dc0bcfc896623b57",
+      "sourceIds": [
+        "lossd"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "lossd",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "obstetr_gravidez_ectopica_rota",
+      "factId": "disposition",
+      "factSha256": "fe483c22b4608e295129cae5be2aa1382628844660cdf04cf384e1b9ee123671",
+      "sourceIds": [
+        "lossd"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "lossd",
+      "additionalIndependentSource": null,
+      "singleDominantGuidelineDocumented": true
+    },
+    {
+      "ownerId": "trabalho_parto_prematuro",
+      "factId": "concept",
+      "factSha256": "29ace37856d299ce6e39f07d061546adf8928b84f4c5b8db62de0e5890c59a47",
+      "sourceIds": [
+        "ptl",
+        "ster"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ptl",
+      "additionalIndependentSource": "ster",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "trabalho_parto_prematuro",
+      "factId": "reasoning",
+      "factSha256": "f7000121d33b61880633fdeba9a9fa82fd5e2b917a67dec4e044ca1d7cae53d1",
+      "sourceIds": [
+        "ptl",
+        "ster"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ptl",
+      "additionalIndependentSource": "ster",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "trabalho_parto_prematuro",
+      "factId": "diagnosis",
+      "factSha256": "0b06a0292af05c80cad6b04f52afbde4f4ac035d9358f362f642e0e0bca32ed2",
+      "sourceIds": [
+        "ptl",
+        "ster"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ptl",
+      "additionalIndependentSource": "ster",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "trabalho_parto_prematuro",
+      "factId": "treatment",
+      "factSha256": "7768ccc20188795c1cc5f2a50400045fdb3e114537b39f519a8fbe411a771590",
+      "sourceIds": [
+        "ptl",
+        "ster"
+      ],
+      "numericClaims": [
+        "1",
+        "12",
+        "2",
+        "24",
+        "2",
+        "6",
+        "4",
+        "12",
+        "24",
+        "33",
+        "6",
+        "4",
+        "15",
+        "1",
+        "24"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ptl",
+      "additionalIndependentSource": "ster",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "trabalho_parto_prematuro",
+      "factId": "safety",
+      "factSha256": "354b18540ba313bd72d0542d2d3a5b51db063f69612801e698778d709767e524",
+      "sourceIds": [
+        "ptl",
+        "ster"
+      ],
+      "numericClaims": [
+        "24",
+        "29",
+        "6",
+        "30",
+        "33",
+        "6",
+        "24",
+        "4",
+        "15",
+        "1",
+        "24"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ptl",
+      "additionalIndependentSource": "ster",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "trabalho_parto_prematuro",
+      "factId": "disposition",
+      "factSha256": "93edb5b7ca778ad00a0fda82f8e1e2bd2b312d3ed29b4c4059a86f15d5051596",
+      "sourceIds": [
+        "ptl",
+        "ster"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "ptl",
+      "additionalIndependentSource": "ster",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "rotura_prematura_pre_termo_membranas",
+      "factId": "concept",
+      "factSha256": "f2dc78930dc26dd8e3dc0bf21195d22b5fd09e8b523e6bc8e4da1550792d46f0",
+      "sourceIds": [
+        "pprom",
+        "ptl",
+        "ster"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pprom",
+      "additionalIndependentSource": "ptl",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "rotura_prematura_pre_termo_membranas",
+      "factId": "reasoning",
+      "factSha256": "8e5812abe738e2dfd14a2753565d0937643d5908442d0e89365e40147e89c420",
+      "sourceIds": [
+        "pprom",
+        "ptl",
+        "ster"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pprom",
+      "additionalIndependentSource": "ptl",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "rotura_prematura_pre_termo_membranas",
+      "factId": "diagnosis",
+      "factSha256": "9c158aa78456c6194db6af105c1a984ece6e4606c3ebd7d7b09f24bbd9720ce9",
+      "sourceIds": [
+        "pprom",
+        "ptl",
+        "ster"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pprom",
+      "additionalIndependentSource": "ptl",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "rotura_prematura_pre_termo_membranas",
+      "factId": "treatment",
+      "factSha256": "bba8dbb51f572d8ad79ef039b1a45272cfeecb1d683c98e6de8fc9d35d432335",
+      "sourceIds": [
+        "pprom",
+        "ptl",
+        "ster"
+      ],
+      "numericClaims": [
+        "1",
+        "250",
+        "6",
+        "10",
+        "2"
+      ],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pprom",
+      "additionalIndependentSource": "ptl",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "rotura_prematura_pre_termo_membranas",
+      "factId": "safety",
+      "factSha256": "6e6f79547e31f9d457bcdc6a16174348557665963d6a0a35b954e229ad30d5b9",
+      "sourceIds": [
+        "pprom",
+        "ptl",
+        "ster"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pprom",
+      "additionalIndependentSource": "ptl",
+      "singleDominantGuidelineDocumented": false
+    },
+    {
+      "ownerId": "rotura_prematura_pre_termo_membranas",
+      "factId": "disposition",
+      "factSha256": "6f7decd225a5e92899e2a08b3bdf80e88915990ca09042cbc4e067638d501b7d",
+      "sourceIds": [
+        "pprom",
+        "ptl",
+        "ster"
+      ],
+      "numericClaims": [],
+      "verification": "CHECKED_AGAINST_LISTED_OFFICIAL_SOURCES",
+      "scope": "Pregnant adults; no pediatric or lactation dose extrapolation",
+      "dominantSource": "pprom",
+      "additionalIndependentSource": "ptl",
+      "singleDominantGuidelineDocumented": false
+    }
+  ],
+  "excludedEvidence": "Consultation drafts are excluded. NICE 2026 anti-D exact recommendations not transcribed from non-primary mirrors; local current protocol explicitly required."
+}

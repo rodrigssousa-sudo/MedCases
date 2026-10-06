@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "covid19",
+  "titles": {
+    "pt": "COVID-19 — gestação",
+    "es": "COVID-19 — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "DRUG_ALTERNATIVES",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "COVID-19 na gestação exige avaliar risco de progressão e janela de tratamento; a gravidez não justifica negar terapia eficaz.",
+      "es": "COVID-19 durante el embarazo exige evaluar riesgo de progresión y ventana de tratamiento; el embarazo no justifica negar terapia eficaz."
+    },
+    {
+      "id": "reasoning",
+      "pt": "A gestação aumenta risco de doença grave. Considerar comorbidades, vacinação, sintomas e disponibilidade regional de antivirais.",
+      "es": "El embarazo aumenta el riesgo de enfermedad grave. Considerar comorbilidades, vacunación, síntomas y disponibilidad regional de antivirales."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Confirmar infecção por teste apropriado; verificar oxigenação, função renal/hepática e lista completa de medicamentos antes de antiviral.",
+      "es": "Confirmar infección mediante prueba apropiada; verificar oxigenación, función renal/hepática y lista completa de medicamentos antes del antiviral."
+    },
+    {
+      "id": "treatment",
+      "pt": "Opção 1 — se elegível para tratamento ambulatorial de alto risco, nirmatrelvir 300 mg mais ritonavir 100 mg por via oral a cada 12 horas durante 5 dias, iniciar dentro de 5 dias dos sintomas, quando filtração estimada ≥60 mL por minuto. Outras funções renais exigem apresentação/esquema específicos da bula atual; revisão de todas as interações é obrigatória.\nOpção 2 — remdesivir intravenoso em adultas com peso ≥40 kg, iniciar dentro de 7 dias dos sintomas: 200 mg no primeiro dia e 100 mg no segundo e terceiro dias, 1 administração por dia, com infusão durante 30–120 minutos, em serviço habilitado. Avaliar função hepática e reações à infusão; insuficiência renal não é contraindicação automática na bula vigente. Escolher conforme janela, interações e acesso. Hipoxemia exige avaliação hospitalar e outro plano; molnupiravir não é alternativa gestacional de rotina.",
+      "es": "Opción 1 — si es elegible para tratamiento ambulatorio de alto riesgo, nirmatrelvir 300 mg más ritonavir 100 mg por vía oral cada 12 horas durante 5 días, iniciar dentro de 5 días de síntomas, cuando filtración estimada ≥60 mL por minuto. Otras funciones renales exigen presentación/esquema específicos del prospecto actual; revisar todas las interacciones es obligatorio.\nOpción 2 — remdesivir intravenoso en adultas con peso ≥40 kg, iniciar dentro de 7 días de síntomas: 200 mg el primer día y 100 mg el segundo y tercer días, 1 administración por día, con infusión durante 30–120 minutos, en servicio habilitado. Evaluar función hepática y reacciones a infusión; insuficiencia renal no es contraindicación automática según prospecto vigente. Elegir según ventana, interacciones y acceso. Hipoxemia exige evaluación hospitalaria y otro plan; molnupiravir no es alternativa gestacional rutinaria."
+    },
+    {
+      "id": "safety",
+      "pt": "Interações por CYP3A podem impedir esse esquema. Insuficiência renal requer esquema específico da bula atual; não afirmar contraindicação absoluta em toda doença renal grave. Evitar uso na insuficiência hepática grave e não usar molnupiravir como alternativa habitual na gestação.",
+      "es": "Las interacciones por CYP3A pueden impedir este esquema. La insuficiencia renal requiere esquema específico de la ficha actual; no afirmar contraindicación absoluta en toda enfermedad renal grave. Evitar uso en insuficiencia hepática grave y no usar molnupiravir como alternativa habitual en el embarazo."
+    },
+    {
+      "id": "disposition",
+      "pt": "Hipoxemia, dor torácica, confusão ou piora clínica exigem hospital e avaliação obstétrica. Alta apenas com estabilidade e plano de reavaliação, sem corticoide sistêmico de rotina para doença sem necessidade de oxigênio.",
+      "es": "Hipoxemia, dolor torácico, confusión o empeoramiento requieren hospital y evaluación obstétrica. Alta solamente con estabilidad y plan de reevaluación, sin corticoide sistémico rutinario para enfermedad sin necesidad de oxígeno."
+    }
+  ],
+  "references": [
+    {
+      "id": "cov",
+      "title": "CDC — COVID-19 e populações especiais",
+      "url": "https://www.cdc.gov/covid/hcp/clinical-care/considerations-special-groups.html",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "pax",
+      "title": "FDA — nirmatrelvir/ritonavir, bula revisada 2025",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/217188s010lbl.pdf",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "covout",
+      "title": "CDC — tratamento ambulatorial de COVID-19",
+      "url": "https://www.cdc.gov/covid/hcp/clinical-care/outpatient-treatment.html",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "rem",
+      "title": "Gilead — remdesivir, prescrição oficial vigente",
+      "url": "https://www.gilead.com/-/media/files/pdfs/medicines/covid-19/veklury/veklury_pi.pdf",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 26,
+    "owner": "covid19",
+    "title": {
+      "pt": "COVID-19 — gestação",
+      "es": "COVID-19 — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "covid19",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "3e779530181a24f0933ed4c25b587fe10d75f2603f403b45ab88ae245ccda6c5"
+}

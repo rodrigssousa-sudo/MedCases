@@ -1,0 +1,173 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Lombalgia mecânica — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Dor lombar associada a movimento e carga, sem sinais de causa infecciosa, neurológica grave ou obstétrica.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Dor lombar associada a movimento e carga, sem sinais de causa infecciosa, neurológica grave ou obstétrica."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Examinar mobilidade, força, sensibilidade e sintomas urinários/obstétricos.",
+            "Febre, déficit progressivo, anestesia perineal ou retenção urinária exige urgência."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opção 1 — manter atividade tolerada, ergonomia, exercícios adaptados e fisioterapia; evitar repouso prolongado.",
+            "Opção 2 — analgesia quando necessária: Paracetamol 500 mg–1 g por via oral se necessário, intervalo mínimo de 4 horas, máximo 4 administrações e 4 g em 24 horas em adulto sem fatores de risco; peso inferior a 50 kg, hepatopatia, desnutrição ou outras vulnerabilidades exigem limite individual menor.",
+            "Conferir outros produtos com paracetamol e usar pelo menor tempo necessário.",
+            "Anti-inflamatório não é uma alternativa gestacional automática, sobretudo a partir de 20 semanas.",
+            "Déficit neurológico, retenção urinária, febre ou trauma exige investigação."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Não recomendar repouso prolongado nem anti-inflamatórios por automedicação; há risco renal fetal e de baixo líquido amniótico a partir de 20 semanas com uso prolongado."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Alta se sem sinais de alarme e com mobilidade funcional.",
+            "Reavaliar persistência, dor noturna importante, sintomas sistêmicos ou surgimento de contrações."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Mudança de carga e postura pode contribuir.",
+            "Diagnóstico mecânico exige reconhecer causas perigosas e não se baseia apenas em estar grávida."
+          ]
+        }
+      ],
+      "references": [
+        "[back] NHS — lombalgia na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/back-pain/",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Lumbalgia mecánica — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "Dolor lumbar asociado con movimiento y carga, sin signos de causa infecciosa, neurológica grave u obstétrica.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Dolor lumbar asociado con movimiento y carga, sin signos de causa infecciosa, neurológica grave u obstétrica."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Examinar movilidad, fuerza, sensibilidad y síntomas urinarios/obstétricos.",
+            "Fiebre, déficit progresivo, anestesia perineal o retención urinaria exige urgencias."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Opción 1 — mantener actividad tolerada, ergonomía, ejercicios adaptados y fisioterapia; evitar reposo prolongado.",
+            "Opción 2 — analgesia cuando sea necesaria: Paracetamol 500 mg–1 g por vía oral si es necesario, intervalo mínimo de 4 horas, máximo 4 administraciones y 4 g en 24 horas en adulto sin factores de riesgo; peso inferior a 50 kg, hepatopatía, desnutrición u otras vulnerabilidades exigen límite individual menor.",
+            "Verificar otros productos con paracetamol y usar durante el menor tiempo necesario.",
+            "Antiinflamatorio no es alternativa gestacional automática, especialmente desde 20 semanas.",
+            "Déficit neurológico, retención urinaria, fiebre o trauma exige investigación."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "No recomendar reposo prolongado ni antiinflamatorios por automedicación; existe riesgo renal fetal y de bajo líquido amniótico desde las 20 semanas con uso prolongado."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Alta sin signos de alarma y con movilidad funcional.",
+            "Reevaluar persistencia, dolor nocturno importante, síntomas sistémicos o aparición de contracciones."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pueden contribuir cambios de carga y postura.",
+            "El diagnóstico mecánico exige reconocer causas peligrosas y no se basa solamente en estar embarazada."
+          ]
+        }
+      ],
+      "references": [
+        "[back] NHS — lombalgia na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/back-pain/",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    }
+  }
+}

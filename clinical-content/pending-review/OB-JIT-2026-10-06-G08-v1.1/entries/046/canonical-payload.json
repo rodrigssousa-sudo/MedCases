@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "ameaca_abortamento",
+  "titles": {
+    "pt": "Ameaça de abortamento",
+    "es": "Amenaza de aborto"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "ELIGIBILITY_DEPENDENT_PATHWAYS",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Sangramento no início da gravidez intrauterina potencialmente viável, sem confirmação de perda; excluir ectópica e hemorragia importante.",
+      "es": "Sangrado al inicio del embarazo intrauterino potencialmente viable, sin confirmación de pérdida; excluir ectópico y hemorragia importante."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Sangramento não comprova inviabilidade. O tratamento depende de localização, viabilidade e história de perda anterior.",
+      "es": "El sangrado no demuestra inviabilidad. El tratamiento depende de localización, viabilidad e historia de pérdida anterior."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar estabilidade, dor, sangramento e ultrassom transvaginal quando indicado. Gravidez de localização desconhecida exige seguimento até esclarecimento, sem rotular como aborto completo.",
+      "es": "Evaluar estabilidad, dolor, sangrado y ecografía transvaginal cuando corresponda. El embarazo de localización desconocida exige seguimiento hasta aclaración, sin rotular como aborto completo."
+    },
+    {
+      "id": "treatment",
+      "pt": "Via 1 — gravidez intrauterina viável, sangramento e abortamento anterior: progesterona micronizada 400 mg por via vaginal a cada 12 horas; se batimento fetal confirmado, continuar até 16 semanas completas, conforme NICE.\nVia 2 — sem abortamento anterior e com viabilidade confirmada: acompanhamento e orientações de retorno, sem progesterona automática. Se sangramento parar, seguir pré-natal; se piorar ou persistir além de 14 dias, reavaliar. Não são terapias equivalentes para a mesma população: história de perda define indicação. Não tratar localização desconhecida como ameaça simples; excluir ectópica. Repouso absoluto não deve substituir diagnóstico e seguimento.",
+      "es": "Vía 1 — embarazo intrauterino viable, sangrado y aborto previo: progesterona micronizada 400 mg por vía vaginal cada 12 horas; si se confirma latido fetal, continuar hasta 16 semanas completas, según NICE.\nVía 2 — sin aborto previo y con viabilidad confirmada: seguimiento e indicaciones de retorno, sin progesterona automática. Si sangrado cesa, seguir control prenatal; si empeora o persiste más allá de 14 días, reevaluar. No son terapias equivalentes para la misma población: historia de pérdida define indicación. No tratar localización desconocida como amenaza simple; excluir ectópico. Reposo absoluto no debe sustituir diagnóstico y seguimiento."
+    },
+    {
+      "id": "safety",
+      "pt": "Não indicar esse esquema para toda grávida com sangramento, nem antes de excluir localização ectópica. Avaliar RhD e profilaxia conforme diretriz vigente, idade gestacional e procedimento; não copiar regra antiga universal.",
+      "es": "No indicar este esquema para toda embarazada con sangrado, ni antes de excluir localización ectópica. Evaluar RhD y profilaxis según guía vigente, edad gestacional y procedimiento; no copiar una regla antigua universal."
+    },
+    {
+      "id": "disposition",
+      "pt": "Instabilidade, síncope, dor intensa ou sangramento importante exige urgência. Se estável, plano de reavaliação e retorno; sangramento persistente além de 14 dias ou agravamento exige nova avaliação.",
+      "es": "Inestabilidad, síncope, dolor intenso o sangrado importante exige urgencias. Si está estable, plan de reevaluación y retorno; sangrado persistente más allá de 14 días o empeoramiento exige nueva evaluación."
+    }
+  ],
+  "references": [
+    {
+      "id": "loss",
+      "title": "NICE NG126 — manejo de abortamento, atualizado junho 2026",
+      "url": "https://www.nice.org.uk/guidance/ng126/chapter/management-of-miscarriage",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "lossd",
+      "title": "NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda",
+      "url": "https://www.nice.org.uk/guidance/ng126",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 46,
+    "owner": "ameaca_abortamento",
+    "title": {
+      "pt": "Ameaça de abortamento",
+      "es": "Amenaza de aborto"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "ameaca_abortamento",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [
+      "abortamento_espontaneo"
+    ],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "383488cff8e01b9312357f529232d6304ee5566285655cf7da98daa90c55bfda"
+}

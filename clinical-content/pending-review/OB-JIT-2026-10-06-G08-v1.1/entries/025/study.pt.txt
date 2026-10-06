@@ -1,0 +1,34 @@
+# Influenza — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Influenza suspeita ou confirmada na grávida tem maior risco de complicações; tratar prontamente, mesmo sem confirmação laboratorial.
+
+## Fisiopatologia e raciocínio
+
+Risco aumentado também ocorre no pós-parto recente. Benefício do antiviral é maior quando precoce, mas doença grave pode justificar início tardio.
+
+## Diagnóstico, exames e diferenciais
+
+Avaliar início, febre, sinais respiratórios, oxigenação, hidratação e diagnósticos alternativos. Não esperar teste para tratar uma suspeita convincente em gestante.
+
+## Tratamento e doses
+
+Opção 1 — oseltamivir 75 mg por via oral a cada 12 horas durante 5 dias, com função renal adequada; ajustar à função renal. Iniciar prontamente em suspeita, em qualquer trimestre, sem esperar confirmação nem negar tratamento após 48 horas.
+Opção 2 — zanamivir inalatório 10 mg a cada 12 horas durante 5 dias pode ser considerado se oseltamivir for inadequado e quadro permitir via inalatória; é menos preferido na gestação, não usar em asma/doença de vias aéreas pelo risco de broncoespasmo. Pneumonia, hipoxemia ou incapacidade de hidratar exige hospital; doença grave pode requerer tratamento mais longo individualizado. Baloxavir não é recomendado na gestação.
+
+## Segurança e monitorização
+
+Não recomendar baloxavir de rotina na gravidez. Casos hospitalizados ou complicados podem exigir duração individualizada; não prolongar automaticamente tratamento de quadro simples.
+
+## Escalonamento, alta e seguimento
+
+Dispneia, hipoxemia, instabilidade ou incapacidade de ingerir líquidos exigem hospital. Alta com retorno por piora, prevenção e vacinação indicada no pré-natal.
+
+## Referências
+
+[flu] CDC — influenza em gestantes, atualização dezembro 2025 — https://www.cdc.gov/flu/hcp/antivirals/treatment_obstetric.html
+
+[flud] CDC — antivirais para influenza, resumo clínico — https://www.cdc.gov/flu/hcp/antivirals/summary-clinicians.html

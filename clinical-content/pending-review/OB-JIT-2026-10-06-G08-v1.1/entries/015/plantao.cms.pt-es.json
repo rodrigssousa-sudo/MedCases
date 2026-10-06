@@ -1,0 +1,179 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Pielonefrite aguda — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Infecção renal na gravidez, geralmente com febre, dor em flanco e evidência urinária de infecção.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infecção renal na gravidez, geralmente com febre, dor em flanco e evidência urinária de infecção."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Avaliar sinais vitais, perfusão, diurese, urina e cultura, hemograma e função renal.",
+            "Buscar obstrução por ultrassom quando indicada; avaliação fetal conforme idade gestacional."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Via 1 — tratamento inicial hospitalar com antibiótico intravenoso de penetração renal; exemplo NICE para gestantes: cefuroxima 750 mg–1,5 g intravenosos a cada 8 horas, ajustada à gravidade, função renal e cultura.",
+            "Avaliar sepse, obstrução e necessidade de suporte; colher cultura sem retardar tratamento.",
+            "Via 2 — após melhora, estabilidade e tolerância oral, transição para antibiótico oral sensível; exemplo cefalexina 500 mg por via oral a cada 8 horas, ajustada ao quadro e antibiograma.",
+            "É etapa sequencial, não alternativa ambulatorial equivalente para gestante instável.",
+            "Revisar necessidade intravenosa em 48 horas.",
+            "Este pacote adota ACOG: completar 14 dias TOTAIS de tratamento, contando ambas as vias; não somar 14 dias após a fase intravenosa.",
+            "NICE utiliza 7–10 dias em determinados esquemas: não misturar durações.",
+            "Nitrofurantoína e fosfomicina não tratam parênquima renal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Reavaliar terapia intravenosa em 48 horas.",
+            "Neste pacote, adota-se duração total de 14 dias da ACOG, incluindo fase oral, explicitamente distinta dos 7–10 dias previstos em NICE para alguns esquemas."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Sepse, hipoxemia, oligúria ou obstrução requerem escalonamento imediato.",
+            "Alta após melhora clínica e tolerância oral, com antibiótico direcionado e plano de seguimento."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Pode provocar sepse, lesão renal e parto prematuro; distinguir cólica renal e obstrução infectada."
+          ]
+        }
+      ],
+      "references": [
+        "[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals",
+        "[pyelo] NICE NG111 — antibióticos para pielonefrite — https://www.nice.org.uk/guidance/NG111/chapter/recommendations"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Pielonefritis aguda — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "Infección renal durante el embarazo, generalmente con fiebre, dolor en flanco y evidencia urinaria de infección.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Infección renal durante el embarazo, generalmente con fiebre, dolor en flanco y evidencia urinaria de infección."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Evaluar signos vitales, perfusión, diuresis, orina y cultivo, hemograma y función renal.",
+            "Buscar obstrucción por ecografía cuando corresponda; evaluación fetal según edad gestacional."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Vía 1 — tratamiento inicial hospitalario con antibiótico intravenoso de penetración renal; ejemplo NICE para embarazadas: cefuroxima 750 mg–1,5 g intravenosos cada 8 horas, ajustada a gravedad, función renal y cultivo.",
+            "Evaluar sepsis, obstrucción y necesidad de soporte; obtener cultivo sin demorar tratamiento.",
+            "Vía 2 — tras mejoría, estabilidad y tolerancia oral, transición a antibiótico oral sensible; ejemplo cefalexina 500 mg por vía oral cada 8 horas, ajustada al cuadro y antibiograma.",
+            "Es una etapa secuencial, no alternativa ambulatoria equivalente para embarazada inestable.",
+            "Revisar necesidad intravenosa a las 48 horas.",
+            "Este paquete adopta ACOG: completar 14 días TOTALES de tratamiento, contando ambas vías; no añadir 14 días después de la fase intravenosa.",
+            "NICE utiliza 7–10 días en determinados esquemas: no mezclar duraciones.",
+            "Nitrofurantoína y fosfomicina no tratan parénquima renal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Reevaluar tratamiento intravenoso a las 48 horas.",
+            "En este paquete se adopta duración total de 14 días de ACOG, incluida fase oral, explícitamente distinta de los 7–10 días previstos por NICE para algunos esquemas."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Sepsis, hipoxemia, oliguria u obstrucción requieren escalamiento inmediato.",
+            "Alta tras mejoría clínica y tolerancia oral, con antibiótico dirigido y plan de seguimiento."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Puede provocar sepsis, lesión renal y parto prematuro; distinguir cólico renal y obstrucción infectada."
+          ]
+        }
+      ],
+      "references": [
+        "[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals",
+        "[pyelo] NICE NG111 — antibióticos para pielonefrite — https://www.nice.org.uk/guidance/NG111/chapter/recommendations"
+      ]
+    }
+  }
+}

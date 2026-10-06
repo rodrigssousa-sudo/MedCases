@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "hepatite_b_cronica",
+  "titles": {
+    "pt": "Hepatite B crônica — gestação",
+    "es": "Hepatitis B crónica — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "NEW_OWNER_CANDIDATE",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "GUIDELINE_DEPENDENT_DRUG_ALTERNATIVES",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Infecção crônica pelo vírus da hepatite B na grávida; é distinta do owner de hepatite B aguda.",
+      "es": "Infección crónica por virus de hepatitis B en la embarazada; es distinta del owner de hepatitis B aguda."
+    },
+    {
+      "id": "reasoning",
+      "pt": "A carga viral materna condiciona risco de transmissão; profilaxia perinatal não substitui avaliação da doença hepática materna.",
+      "es": "La carga viral materna condiciona riesgo de transmisión; la profilaxis perinatal no sustituye la evaluación de enfermedad hepática materna."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar HBsAg, carga viral, antígeno e, transaminases, função renal e indicação de tratamento materno. Distinguir infecção aguda, crônica e reativação.",
+      "es": "Evaluar HBsAg, carga viral, antígeno e, transaminasas, función renal e indicación de tratamiento materno. Distinguir infección aguda, crónica y reactivación."
+    },
+    {
+      "id": "treatment",
+      "pt": "Opção 1 — tenofovir disoproxil fumarato 300 mg por via oral 1 vez por dia para prevenção de transmissão em alta carga viral, com avaliação renal.\nOpção 2 — tenofovir alafenamida 25 mg por via oral 1 vez por dia é alternativa na recomendação SMFM 69; considerar evidência, disponibilidade e indicação individual. SMFM indica início entre 28–32 semanas quando carga viral >200.000 unidades internacionais/mL; OMS privilegia tenofovir disoproxil e estratégia com início preferencial no segundo trimestre. Documentar a diretriz adotada, sem misturar critérios. Não iniciar automaticamente em toda portadora. Antiviral não substitui vacina e imunoglobulina do recém-nascido dentro de 12 horas; planejar término e vigilância de exacerbação hepática após suspensão.",
+      "es": "Opción 1 — tenofovir disoproxilo fumarato 300 mg por vía oral 1 vez por día para prevenir transmisión con alta carga viral, con evaluación renal.\nOpción 2 — tenofovir alafenamida 25 mg por vía oral 1 vez por día es alternativa en recomendación SMFM 69; considerar evidencia, disponibilidad e indicación individual. SMFM indica inicio entre 28–32 semanas cuando carga viral >200.000 unidades internacionales/mL; OMS prioriza tenofovir disoproxilo y estrategia con inicio preferente en segundo trimestre. Documentar la guía adoptada, sin mezclar criterios. No iniciar automáticamente en toda portadora. Antiviral no sustituye vacuna e inmunoglobulina del recién nacido dentro de 12 horas; planificar finalización y vigilancia de exacerbación hepática tras suspensión."
+    },
+    {
+      "id": "safety",
+      "pt": "Ajustar à função renal e planejar vigilância após eventual suspensão. Recém-nascido exposto deve receber vacina e imunoglobulina específica dentro de 12 horas, conforme SMFM.",
+      "es": "Ajustar a función renal y planificar vigilancia tras eventual suspensión. El recién nacido expuesto debe recibir vacuna e inmunoglobulina específica dentro de 12 horas, según SMFM."
+    },
+    {
+      "id": "disposition",
+      "pt": "Coordenar hepatologia, obstetrícia e pediatria. Não indicar cesariana apenas por hepatite B; aleitamento pode ocorrer com imunoprofilaxia neonatal apropriada. Icterícia grave, coagulopatia ou encefalopatia exigem hospital.",
+      "es": "Coordinar hepatología, obstetricia y pediatría. No indicar cesárea solamente por hepatitis B; puede amamantarse con inmunoprofilaxis neonatal apropiada. Ictericia grave, coagulopatía o encefalopatía requieren hospital."
+    }
+  ],
+  "references": [
+    {
+      "id": "hbv",
+      "title": "OMS — hepatite B crônica, prevenção da transmissão materna, 2024",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK615006/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "hbvs",
+      "title": "SMFM Consult 69 — hepatite B na gravidez, 2024",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38141870/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "hbvsmfm",
+      "title": "SMFM Consult 69 — opções de tenofovir na gravidez",
+      "url": "https://publications.smfm.org/publications/553-society-for-maternal-fetal-medicine-consult-series-69/",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 21,
+    "owner": "hepatite_b_cronica",
+    "title": {
+      "pt": "Hepatite B crônica — gestação",
+      "es": "Hepatitis B crónica — embarazo"
+    },
+    "action": "NEW_CONDITION_DRAFT",
+    "ownerExistsRemotely": false,
+    "nativeExists": false,
+    "cmsDocumentId": "hepatite_b_cronica",
+    "cmsAction": "CREATE_DRAFT",
+    "preserveExistingGeneralContent": false,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [
+      "hepatitis_b_aguda_detallada_2026"
+    ],
+    "scopeResolution": "Distinct clinical scope; no equivalent canonical disease owner found in live inventory. Proposed ID, not activated."
+  },
+  "clinicalPayloadSha256": "6c0c9ce2162b699fc7b8cc86bf8051970ebd0c3ddbfcefe84c82bd5d47274adf"
+}

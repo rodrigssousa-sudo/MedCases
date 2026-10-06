@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Gravidez ectópica rota ou suspeita de ruptura",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "Gravidez extrauterina com hemorragia ou suspeita de ruptura; manter o escopo cirúrgico do owner existente.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Gravidez extrauterina com hemorragia ou suspeita de ruptura; manter o escopo cirúrgico do owner existente."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Ruptura pode causar hemoperitônio e choque mesmo antes de diagnóstico formal. Ausência de fatores de risco não exclui ectópica."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dor abdominal, síncope, dor no ombro, sangramento e instabilidade exigem suspeita. Avaliar perfusão, acessos, hemograma, tipagem e reserva de sangue; ultrassom se não atrasar intervenção."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Tratamento obrigatório — ressuscitação e controle cirúrgico urgente da hemorragia; acionar obstetrícia/cirurgia, acessos venosos, tipagem/reserva de sangue e suporte transfusional quando necessário. Não esperar exames seriados para intervir se ruptura/choque.\nAbordagem 1 — laparoscopia quando condição e recursos permitirem. Abordagem 2 — laparotomia se quadro/complexidade exigir controle rápido ou laparoscopia inviável, decidida pela equipe. São acessos cirúrgicos, não alternativas para evitar cirurgia. Metotrexato e observação não tratam ectópica rota. Procedimento tubário e seguimento dependem dos achados e risco de tecido persistente."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Metotrexato e manejo expectante não são tratamento de ectópica rota. Não reutilizar protocolo de ectópica estável neste owner; profilaxia RhD conforme diretriz atual e contexto."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Internação e vigilância pós-operatória, com seguimento definido pelo procedimento e risco de tecido persistente. Apoio emocional e orientação para avaliação precoce em futura gravidez."
+        }
+      ],
+      "references": [
+        "[lossd] NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda — https://www.nice.org.uk/guidance/ng126"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Embarazo ectópico roto o sospecha de rotura",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "Embarazo extrauterino con hemorragia o sospecha de rotura; mantener el alcance quirúrgico del owner existente.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Embarazo extrauterino con hemorragia o sospecha de rotura; mantener el alcance quirúrgico del owner existente."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La rotura puede causar hemoperitoneo y shock incluso antes del diagnóstico formal. La ausencia de factores de riesgo no excluye ectópico."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Dolor abdominal, síncope, dolor de hombro, sangrado e inestabilidad exigen sospecha. Evaluar perfusión, accesos, hemograma, grupo y reserva de sangre; ecografía si no demora intervención."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Tratamiento obligatorio — reanimación y control quirúrgico urgente de hemorragia; activar obstetricia/cirugía, accesos venosos, grupo/reserva de sangre y soporte transfusional cuando sea necesario. No esperar estudios seriados para intervenir ante rotura/shock.\nAbordaje 1 — laparoscopia cuando condición y recursos lo permitan. Abordaje 2 — laparotomía si cuadro/complejidad exige control rápido o laparoscopia es inviable, decidida por el equipo. Son accesos quirúrgicos, no alternativas para evitar cirugía. Metotrexato y observación no tratan ectópico roto. Procedimiento tubario y seguimiento dependen de hallazgos y riesgo de tejido persistente."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "Metotrexato y manejo expectante no son tratamiento de ectópico roto. No reutilizar protocolo de ectópico estable en este owner; profilaxis RhD según guía actual y contexto."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Internación y vigilancia posoperatoria, con seguimiento definido por procedimiento y riesgo de tejido persistente. Apoyo emocional y orientación para evaluación temprana en un futuro embarazo."
+        }
+      ],
+      "references": [
+        "[lossd] NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda — https://www.nice.org.uk/guidance/ng126"
+      ]
+    }
+  }
+}

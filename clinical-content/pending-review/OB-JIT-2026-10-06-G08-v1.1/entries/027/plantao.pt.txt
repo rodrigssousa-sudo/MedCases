@@ -1,0 +1,43 @@
+# Crise grave de asma — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Exacerbação grave de asma na grávida; preservar owner de gravidade, sem transformá-lo em asma leve.
+
+## Diagnóstico, exames e diferenciais
+
+- Avaliar fala, esforço respiratório, consciência, ausculta, saturação e fluxo expiratório quando possível, sem atrasar tratamento.
+- Excluir embolia, pneumonia e edema pulmonar.
+
+## Tratamento e doses
+
+- Via de crise — tratar rapidamente exacerbação com salbutamol inalatório, oxigênio quando necessário e corticoide sistêmico precoce; em adulto com via oral viável, prednisolona 40–50 mg por dia durante 5–7 dias.
+- A dose do broncodilatador depende de dispositivo, concentração e gravidade: confirmar prescrição e técnica; não converter gotas em jatos.
+- Crise grave exige hospital, doses repetidas guiadas por resposta e consideração de ipratrópio/adjuvantes e ventilação.
+- Via de controle — manter tratamento contendo corticoide inalatório e revisar adesão/técnica, exposição e plano de ação.
+- Especialista pode otimizar combinação e tratamento adicional conforme fenótipo e segurança gestacional.
+- Esta via não substitui resgate de crise; não suspender controlador por gravidez.
+- Ausência de resposta, exaustão ou queda de oxigenação exige escalonamento imediato, não troca ambulatorial por uma segunda medicação.
+
+## Segurança e monitorização
+
+- Não retardar terapia necessária por gravidez.
+- Vigiar resposta, frequência cardíaca, potássio em uso intensivo e bem-estar fetal; manter tratamento contendo corticoide inalatório.
+
+## Escalonamento, alta e seguimento
+
+- Exaustão, tórax silencioso, alteração de consciência ou hipoxemia persistente exigem terapia intensiva.
+- Crise grave requer hospital; saída apenas após resposta sustentada e plano de controlador, técnica e retorno.
+
+## Fisiopatologia e raciocínio
+
+- Broncoconstrição e inflamação prejudicam oxigenação materna e fetal.
+- Suspender controlador por medo de medicamentos aumenta risco.
+
+## Referências
+
+[asth] GINA — estratégia global, final 2026 — https://ginasthma.org/wp-content/uploads/2026/05/GINA-2026-Strategy-Report-WMS.pdf
+
+[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/

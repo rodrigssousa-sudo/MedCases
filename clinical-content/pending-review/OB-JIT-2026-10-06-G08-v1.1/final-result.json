@@ -1,0 +1,15 @@
+{
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "conditions": 50,
+  "treatmentUpdates": 50,
+  "preparedProjections": 200,
+  "GUIDES_ADMIN": "DRAFT_UPDATED",
+  "ADMIN_READBACK": "PASS",
+  "HUMAN_APPROVAL": "PENDING",
+  "RUNTIME_PUBLICATION": "NOT_EXECUTED",
+  "APP_BUILD": "NOT_EXECUTED",
+  "APP_CODE_MUTATED": false,
+  "PREEXISTING_FILES_PRESERVED": 17,
+  "reviewHtmlSha256": "6acf945de0aab422693c6e54ddf464dfeac938ccfcd512b31501e5d3932a97df",
+  "manifestSha256": "ba264a4c44cca237eaa1caf3958e40e17cd37b0701079b64695d9f1f871e0eab"
+}

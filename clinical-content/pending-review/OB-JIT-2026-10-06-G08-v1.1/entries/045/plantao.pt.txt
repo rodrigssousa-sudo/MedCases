@@ -1,0 +1,47 @@
+# Enxaqueca com aura — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Enxaqueca com aura conhecida na grávida; nova manifestação neurológica exige excluir causas secundárias antes de atribuí-la à aura.
+
+## Diagnóstico, exames e diferenciais
+
+- Verificar pressão, exame neurológico, início súbito, febre, visão e sintomas de pré-eclâmpsia.
+- Déficit focal ou dor explosiva requer investigação urgente.
+
+## Tratamento e doses
+
+- Opção 1 — medidas de repouso em ambiente tranquilo, hidratação e paracetamol: Paracetamol 500 mg–1 g por via oral se necessário, intervalo mínimo de 4 horas, máximo 4 administrações e 4 g em 24 horas em adulto sem fatores de risco; peso inferior a 50 kg, hepatopatia, desnutrição ou outras vulnerabilidades exigem limite individual menor.
+- Conferir outros produtos com paracetamol e usar pelo menor tempo necessário.
+- Opção 2 — se crise persistir após confirmar diagnóstico e excluir causas secundárias, sumatriptana 50 mg por via oral pode ser considerada por médico após discussão de risco/benefício gestacional; conferir bula e contraindicações cardiovasculares antes de prescrever.
+- Não usar para aura isolada nem cefaleia nova sem investigação.
+- Limitar uso frequente para evitar cefaleia por uso excessivo; ergotamínicos não são alternativa na gestação.
+
+## Segurança e monitorização
+
+- Baixo peso, hepatopatia, desnutrição ou doença renal podem exigir redução/ajuste.
+- Evitar duplicar produtos com paracetamol; terapias específicas de enxaqueca na gestação exigem avaliação individual.
+
+## Escalonamento, alta e seguimento
+
+- Alta apenas se padrão conhecido, exame adequado e melhora, com retorno por mudança do quadro.
+- Suspeita de pré-eclâmpsia, trombose venosa cerebral, hemorragia ou meningite exige hospital.
+
+## Fisiopatologia e raciocínio
+
+- O padrão pode mudar durante a gravidez.
+- Cefaleia nova ou diferente, especialmente com hipertensão, não deve receber diagnóstico automático de enxaqueca.
+
+## Referências
+
+[mig] ACOG — cefaleias e gravidez — https://www.acog.org/womens-health/faqs/headaches-and-pregnancy
+
+[mign] NHS — cefaleias na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/headaches/
+
+[para] NHS — paracetamol em adultos e gravidez — https://www.nhs.uk/medicines/paracetamol-for-adults/
+
+[sum] NHS — sumatriptana, segurança e avaliação na gestação, setembro 2026 — https://www.nhs.uk/medicines/sumatriptan/
+
+[sumob] NHS Buckinghamshire/Oxfordshire/Berkshire — enxaqueca na gravidez, protocolo 2018 (apoio posológico; segurança confrontada com NHS 2026) — https://www.bucksoxonberksw.icb.nhs.uk/media/5082/migraine-in-pregnancy-and-breastfeeding-guidelines.pdf

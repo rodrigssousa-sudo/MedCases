@@ -1,0 +1,36 @@
+# Refluxo gastroesofágico — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Pirose e regurgitação durante a gravidez, sem sinais de alarme, podem representar refluxo gastroesofágico.
+
+## Fisiopatologia e raciocínio
+
+Relaxamento do esfíncter e mudanças mecânicas favorecem refluxo. Dor epigástrica intensa não deve ser automaticamente atribuída à azia.
+
+## Diagnóstico, exames e diferenciais
+
+Avaliar padrão pós-prandial, posição, disfagia, perda de peso, hematêmese e medicamentos. Dor torácica ou epigástrica com hipertensão exige diferencial cardiovascular ou pré-eclâmpsia.
+
+## Tratamento e doses
+
+Opção 1 — medidas alimentares/posturais e antiácido ou alginato apropriado à gestação, conforme composição e dose do produto; refeições menores e evitar deitar após comer. Separar antiácido de ferro/ácido fólico por pelo menos 2 horas.
+Opção 2 — se persistente apesar dessas medidas, supressão ácida prescrita, preferencialmente omeprazol pelo maior conhecimento de segurança gestacional; selecionar dose conforme intensidade, indicação e produto, com reavaliação da necessidade. Não prolongar automedicação sem avaliação. Disfagia, sangramento, perda ponderal ou dor intensa exige investigação, não apenas acrescentar medicamento.
+
+## Segurança e monitorização
+
+Conferir sódio, composição e interações com suplementos; não inventar dose em mL sem concentração. Persistência exige revisão e escolha individual de supressão ácida.
+
+## Escalonamento, alta e seguimento
+
+Seguimento ambulatorial se típico e estável. Disfagia progressiva, sangramento, vômitos persistentes ou instabilidade exigem investigação; alta com orientações e retorno por sinais de alarme.
+
+## Referências
+
+[anc] NICE NG201 — cuidado pré-natal — https://www.nice.org.uk/guidance/ng201/chapter/Recommendations
+
+[refluxpreg] NHS — refluxo na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/indigestion-and-heartburn/
+
+[omep] NHS — omeprazol e gravidez — https://www.nhs.uk/medicines/omeprazole/

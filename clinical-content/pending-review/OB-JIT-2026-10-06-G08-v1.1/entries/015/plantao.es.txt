@@ -1,0 +1,43 @@
+# Pielonefritis aguda — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Infección renal durante el embarazo, generalmente con fiebre, dolor en flanco y evidencia urinaria de infección.
+
+## Diagnóstico, estudios y diferenciales
+
+- Evaluar signos vitales, perfusión, diuresis, orina y cultivo, hemograma y función renal.
+- Buscar obstrucción por ecografía cuando corresponda; evaluación fetal según edad gestacional.
+
+## Tratamiento y dosis
+
+- Vía 1 — tratamiento inicial hospitalario con antibiótico intravenoso de penetración renal; ejemplo NICE para embarazadas: cefuroxima 750 mg–1,5 g intravenosos cada 8 horas, ajustada a gravedad, función renal y cultivo.
+- Evaluar sepsis, obstrucción y necesidad de soporte; obtener cultivo sin demorar tratamiento.
+- Vía 2 — tras mejoría, estabilidad y tolerancia oral, transición a antibiótico oral sensible; ejemplo cefalexina 500 mg por vía oral cada 8 horas, ajustada al cuadro y antibiograma.
+- Es una etapa secuencial, no alternativa ambulatoria equivalente para embarazada inestable.
+- Revisar necesidad intravenosa a las 48 horas.
+- Este paquete adopta ACOG: completar 14 días TOTALES de tratamiento, contando ambas vías; no añadir 14 días después de la fase intravenosa.
+- NICE utiliza 7–10 días en determinados esquemas: no mezclar duraciones.
+- Nitrofurantoína y fosfomicina no tratan parénquima renal.
+
+## Seguridad y monitoreo
+
+- Reevaluar tratamiento intravenoso a las 48 horas.
+- En este paquete se adopta duración total de 14 días de ACOG, incluida fase oral, explícitamente distinta de los 7–10 días previstos por NICE para algunos esquemas.
+
+## Escalamiento, alta y seguimiento
+
+- Sepsis, hipoxemia, oliguria u obstrucción requieren escalamiento inmediato.
+- Alta tras mejoría clínica y tolerancia oral, con antibiótico dirigido y plan de seguimiento.
+
+## Fisiopatología y razonamiento
+
+- Puede provocar sepsis, lesión renal y parto prematuro; distinguir cólico renal y obstrucción infectada.
+
+## Referencias
+
+[uti] ACOG — infecções urinárias na gravidez, consenso 2023 — https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/08/urinary-tract-infections-in-pregnant-individuals
+
+[pyelo] NICE NG111 — antibióticos para pielonefrite — https://www.nice.org.uk/guidance/NG111/chapter/recommendations

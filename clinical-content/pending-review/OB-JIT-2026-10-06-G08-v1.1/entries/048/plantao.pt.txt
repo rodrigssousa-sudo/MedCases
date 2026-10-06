@@ -1,0 +1,41 @@
+# Gravidez ectópica rota ou suspeita de ruptura
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Gravidez extrauterina com hemorragia ou suspeita de ruptura; manter o escopo cirúrgico do owner existente.
+
+## Diagnóstico, exames e diferenciais
+
+- Dor abdominal, síncope, dor no ombro, sangramento e instabilidade exigem suspeita.
+- Avaliar perfusão, acessos, hemograma, tipagem e reserva de sangue; ultrassom se não atrasar intervenção.
+
+## Tratamento e doses
+
+- Tratamento obrigatório — ressuscitação e controle cirúrgico urgente da hemorragia; acionar obstetrícia/cirurgia, acessos venosos, tipagem/reserva de sangue e suporte transfusional quando necessário.
+- Não esperar exames seriados para intervir se ruptura/choque.
+- Abordagem 1 — laparoscopia quando condição e recursos permitirem.
+- Abordagem 2 — laparotomia se quadro/complexidade exigir controle rápido ou laparoscopia inviável, decidida pela equipe.
+- São acessos cirúrgicos, não alternativas para evitar cirurgia.
+- Metotrexato e observação não tratam ectópica rota.
+- Procedimento tubário e seguimento dependem dos achados e risco de tecido persistente.
+
+## Segurança e monitorização
+
+- Metotrexato e manejo expectante não são tratamento de ectópica rota.
+- Não reutilizar protocolo de ectópica estável neste owner; profilaxia RhD conforme diretriz atual e contexto.
+
+## Escalonamento, alta e seguimento
+
+- Internação e vigilância pós-operatória, com seguimento definido pelo procedimento e risco de tecido persistente.
+- Apoio emocional e orientação para avaliação precoce em futura gravidez.
+
+## Fisiopatologia e raciocínio
+
+- Ruptura pode causar hemoperitônio e choque mesmo antes de diagnóstico formal.
+- Ausência de fatores de risco não exclui ectópica.
+
+## Referências
+
+[lossd] NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda — https://www.nice.org.uk/guidance/ng126

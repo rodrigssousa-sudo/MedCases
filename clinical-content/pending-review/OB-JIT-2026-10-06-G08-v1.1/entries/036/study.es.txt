@@ -1,0 +1,34 @@
+# Cólico renal — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+Dolor por cálculo urinario durante el embarazo; diferenciar de dilatación fisiológica y obstrucción infectada.
+
+## Fisiopatología y razonamiento
+
+La hidronefrosis gestacional puede dificultar interpretación. La infección asociada a obstrucción es una emergencia urológica.
+
+## Diagnóstico, estudios y diferenciales
+
+Evaluar dolor, temperatura, orina/cultivo, función renal y diuresis. EAU: ecografía primero, resonancia como segunda opción y tomografía de baja dosis como último recurso cuando sea necesaria.
+
+## Tratamiento y dosis
+
+Vía 1 — cálculo no complicado: hidratación según necesidad, analgesia gestacional y observación con imágenes/seguimiento; evitar hidratación forzada y no iniciar expulsivo como tamsulosina automáticamente en embarazo.
+Vía 2 — dolor refractario, obstrucción persistente o deterioro exige urología: ureteroscopia en casos seleccionados; en obstrucción infectada, drenaje urgente por catéter ureteral o nefrostomía MÁS antibiótico, sin esperar expulsión. Las dos formas de drenaje dependen de anatomía, disponibilidad y estabilidad. Litotricia por ondas de choque está contraindicada. Fiebre/anuria/riñón único o insuficiencia renal cambia prioridad a intervención.
+
+## Seguridad y monitoreo
+
+La litotricia extracorpórea está contraindicada durante el embarazo. No iniciar terapia expulsiva rutinaria sin evidencia y orientación específica para embarazadas.
+
+## Escalamiento, alta y seguimiento
+
+Internar ante sepsis, dolor/vómitos refractarios, deterioro renal o complicación obstétrica. Alta solamente si está estable, con control del dolor, seguimiento urológico y retorno por fiebre u oliguria.
+
+## Referencias
+
+[stone] EAU — urolitíase, final 2026 — https://uroweb.org/guidelines/urolithiasis/chapter/guidelines
+
+[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/

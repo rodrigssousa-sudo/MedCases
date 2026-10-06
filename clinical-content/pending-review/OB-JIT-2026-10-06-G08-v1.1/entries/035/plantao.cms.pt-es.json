@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Colecistite aguda — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Plantão",
+      "summary": "Inflamação aguda da vesícula, geralmente por obstrução calculosa, com dor persistente e sinais inflamatórios.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Inflamação aguda da vesícula, geralmente por obstrução calculosa, com dor persistente e sinais inflamatórios."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Ultrassom inicial e laboratório dirigido; avaliar febre, defesa, icterícia, perfusão e causas obstétricas de dor abdominal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Tratamento preferido — avaliação hospitalar, hidratação, analgesia e antibiótico apropriado à gestação conforme gravidade, alergias e flora local, associados a colecistectomia laparoscópica quando indicada; SAGES favorece cirurgia sobre tratamento não operatório na colecistite aguda.",
+            "Conduta alternativa temporária — se impossibilidade cirúrgica imediata ou risco excepcional, tratamento hospitalar não operatório e eventual drenagem decidida pela equipe, com plano de controle definitivo.",
+            "Não é alternativa equivalente de rotina, pois persistem riscos de recorrência e complicação.",
+            "Não adiar cirurgia necessária apenas pelo trimestre; dose/intervalo do antibiótico devem corresponder ao protocolo escolhido, não à lista de fármacos de infecção urinária."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Esquema antibiótico depende de gravidade, resistência, alergias e função renal; não há dose universal neste suplemento.",
+            "Coordenar obstetrícia, cirurgia e anestesia."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Sepse ou peritonite exige escalonamento e controle do foco.",
+            "Alta após tratamento e estabilidade, com avaliação obstétrica e seguimento pós-operatório quando aplicável."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Não é cólica simples.",
+            "Atraso no tratamento pode favorecer necrose, perfuração e sepse materna."
+          ]
+        }
+      ],
+      "references": [
+        "[surg] SAGES — laparoscopia na gravidez, final 2024 — https://www.sages.org/publications/guidelines/guidelines-for-the-use-of-laparoscopy-during-pregnancy/",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Colecistitis aguda — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Guardia",
+      "summary": "Inflamación aguda de vesícula, generalmente por obstrucción calculosa, con dolor persistente y signos inflamatorios.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Inflamación aguda de vesícula, generalmente por obstrucción calculosa, con dolor persistente y signos inflamatorios."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Ecografía inicial y laboratorio dirigido; evaluar fiebre, defensa, ictericia, perfusión y causas obstétricas de dolor abdominal."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Tratamiento preferido — evaluación hospitalaria, hidratación, analgesia y antibiótico apropiado al embarazo según gravedad, alergias y flora local, asociados a colecistectomía laparoscópica cuando esté indicada; SAGES favorece cirugía sobre tratamiento no operatorio en colecistitis aguda.",
+            "Conducta alternativa temporal — ante imposibilidad quirúrgica inmediata o riesgo excepcional, tratamiento hospitalario no operatorio y eventual drenaje decidido por el equipo, con plan de control definitivo.",
+            "No es alternativa equivalente rutinaria, pues persisten riesgos de recurrencia y complicación.",
+            "No demorar cirugía necesaria solamente por trimestre; dosis/intervalo del antibiótico deben corresponder al protocolo elegido, no a la lista de fármacos de infección urinaria."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "El esquema antibiótico depende de gravedad, resistencia, alergias y función renal; no existe dosis universal en este suplemento.",
+            "Coordinar obstetricia, cirugía y anestesia."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "Sepsis o peritonitis exige escalamiento y control del foco.",
+            "Alta después de tratamiento y estabilidad, con evaluación obstétrica y seguimiento posoperatorio cuando corresponda."
+          ]
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "bullets",
+          "items": [
+            "No es un cólico simple.",
+            "La demora del tratamiento puede favorecer necrosis, perforación y sepsis materna."
+          ]
+        }
+      ],
+      "references": [
+        "[surg] SAGES — laparoscopia na gravidez, final 2024 — https://www.sages.org/publications/guidelines/guidelines-for-the-use-of-laparoscopy-during-pregnancy/",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    }
+  }
+}

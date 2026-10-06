@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Doença hemorroidária — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "Hemorroidas sintomáticas na gravidez causam prurido, desconforto, prolapso ou sangramento vivo.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Hemorroidas sintomáticas na gravidez causam prurido, desconforto, prolapso ou sangramento vivo."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Pressão venosa aumentada e constipação favorecem sintomas. Sangramento não deve ser atribuído à doença sem avaliação."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Inspeção dirigida, caracterização da dor e sangramento. Dor intensa focal sugere trombose ou fissura; febre ou coleção sugere abscesso."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opção 1 — corrigir constipação, aumentar fibras/líquidos, evitar esforço e tempo prolongado no vaso, higiene suave e compressa fria para desconforto.\nOpção 2 — se sintomas persistirem, tratamento tópico local selecionado por profissional após verificar ingredientes e compatibilidade gestacional; anestésico/corticoide não trata a causa e deve ter curso curto conforme produto. Não usar supositórios ou combinações desconhecidas automaticamente. Sangramento significativo, massa muito dolorosa ou suspeita de trombose/abscesso exige exame e eventual abordagem especializada; cirurgia não é alternativa rotineira na gestação."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Não assumir que todo creme combinado é apropriado. Constipação deve ser tratada de forma coordenada; evitar uso prolongado não supervisionado de tópicos."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alta se estável, com controle dos sintomas e seguimento. Hemorragia importante, anemia sintomática, febre ou dor refratária exige avaliação presencial e eventual especialista."
+        }
+      ],
+      "references": [
+        "[hem] NHS — hemorroidas na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/piles/",
+        "[const] NHS SPS — constipação na gestação — https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Enfermedad hemorroidal — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "Las hemorroides sintomáticas durante el embarazo causan prurito, molestias, prolapso o sangrado rojo.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Las hemorroides sintomáticas durante el embarazo causan prurito, molestias, prolapso o sangrado rojo."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "La presión venosa aumentada y constipación favorecen síntomas. El sangrado no debe atribuirse a esta enfermedad sin evaluación."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Inspección dirigida, caracterización de dolor y sangrado. El dolor intenso focal sugiere trombosis o fisura; fiebre o colección sugieren absceso."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opción 1 — corregir constipación, aumentar fibra/líquidos, evitar esfuerzo y tiempo prolongado en el inodoro, higiene suave y compresa fría para molestias.\nOpción 2 — si persisten síntomas, tratamiento tópico local seleccionado por profesional tras verificar ingredientes y compatibilidad gestacional; anestésico/corticoide no trata la causa y debe tener curso corto según producto. No usar supositorios ni combinaciones desconocidas automáticamente. Sangrado significativo, masa muy dolorosa o sospecha de trombosis/absceso exige examen y eventual abordaje especializado; cirugía no es alternativa rutinaria en embarazo."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "No asumir que toda crema combinada es adecuada. Tratar constipación de forma coordinada; evitar uso prolongado de tópicos sin supervisión."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alta si está estable, con control de síntomas y seguimiento. Hemorragia importante, anemia sintomática, fiebre o dolor refractario requieren evaluación presencial y eventual especialista."
+        }
+      ],
+      "references": [
+        "[hem] NHS — hemorroidas na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/piles/",
+        "[const] NHS SPS — constipação na gestação — https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/"
+      ]
+    }
+  }
+}

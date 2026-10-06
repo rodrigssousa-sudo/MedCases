@@ -1,0 +1,135 @@
+{
+  "version": 1,
+  "isPublished": false,
+  "status": "draft",
+  "localizations": {
+    "pt": {
+      "language": "pt",
+      "title": "Diarreia aguda infecciosa — gestação",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudo",
+      "summary": "Diarreia de provável causa infecciosa na gestante; preservar owner geral já existente, sem criar gastroenterite gestacional duplicada.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui."
+        },
+        {
+          "type": "heading",
+          "title": "Conceito e reconhecimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Diarreia de provável causa infecciosa na gestante; preservar owner geral já existente, sem criar gastroenterite gestacional duplicada."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatologia e raciocínio"
+        },
+        {
+          "type": "paragraph",
+          "text": "Perdas de água e eletrólitos podem comprometer perfusão; gravidez não indica antibiótico automaticamente."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, exames e diferenciais"
+        },
+        {
+          "type": "paragraph",
+          "text": "Avaliar exposição, duração, sangue, febre, diurese e sinais obstétricos. Testes fecais são dirigidos por gravidade, surto, imunossupressão e suspeita etiológica."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamento e doses"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opção 1 — solução de reidratação oral de composição padronizada, em volumes frequentes conforme perdas e tolerância, mantendo alimentação; não substituir por bebida muito açucarada.\nOpção 2 — solução isotônica intravenosa em serviço de saúde se choque, desidratação grave ou falha da via oral; volume e velocidade guiados por perfusão, diurese e comorbidades, evitando sobrecarga. Antibiótico só quando etiologia/gravidade justificar e com escolha gestacional; não tratar toda diarreia com antibiótico. Suspeita de STEC requer evitar antibióticos e antiperistálticos; sangue, febre importante ou oligúria exige investigação e retorno urgente."
+        },
+        {
+          "type": "heading",
+          "title": "Segurança e monitorização"
+        },
+        {
+          "type": "paragraph",
+          "text": "Diarreia sanguinolenta pode exigir pesquisa de toxina Shiga; não iniciar antibiótico indiscriminado nem antiperistáltico diante de infecção invasiva suspeita."
+        },
+        {
+          "type": "heading",
+          "title": "Escalonamento, alta e seguimento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alta com ingestão e perfusão recuperadas. Febre persistente, oligúria, sangue, dor focal, contrações ou redução de movimentos fetais exigem reavaliação/hospital conforme gravidade."
+        }
+      ],
+      "references": [
+        "[diarr] IDSA — diarreia infecciosa, guideline final vigente de 2017 — https://www.idsociety.org/practice-guideline/infectious-diarrhea",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    },
+    "es": {
+      "language": "es",
+      "title": "Diarrea aguda infecciosa — embarazo",
+      "subtitle": "OB-JIT-2026-10-06-G08-v1.1 · Estudio",
+      "summary": "Diarrea de probable causa infecciosa en la embarazada; preservar el owner general existente, sin crear gastroenteritis gestacional duplicada.",
+      "bodyBlocks": [
+        {
+          "type": "warning",
+          "text": "Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí."
+        },
+        {
+          "type": "heading",
+          "title": "Concepto y reconocimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Diarrea de probable causa infecciosa en la embarazada; preservar el owner general existente, sin crear gastroenteritis gestacional duplicada."
+        },
+        {
+          "type": "heading",
+          "title": "Fisiopatología y razonamiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Las pérdidas de agua y electrolitos pueden comprometer perfusión; el embarazo no indica antibiótico automáticamente."
+        },
+        {
+          "type": "heading",
+          "title": "Diagnóstico, estudios y diferenciales"
+        },
+        {
+          "type": "paragraph",
+          "text": "Evaluar exposición, duración, sangre, fiebre, diuresis y signos obstétricos. Las pruebas fecales se dirigen por gravedad, brote, inmunosupresión y sospecha etiológica."
+        },
+        {
+          "type": "heading",
+          "title": "Tratamiento y dosis"
+        },
+        {
+          "type": "paragraph",
+          "text": "Opción 1 — solución de rehidratación oral de composición estandarizada, en volúmenes frecuentes según pérdidas y tolerancia, manteniendo alimentación; no sustituir por bebida muy azucarada.\nOpción 2 — solución isotónica intravenosa en servicio de salud ante shock, deshidratación grave o falla de vía oral; volumen y velocidad guiados por perfusión, diuresis y comorbilidades, evitando sobrecarga. Antibiótico solamente cuando etiología/gravedad lo justifique y con elección gestacional; no tratar toda diarrea con antibiótico. Sospecha de STEC exige evitar antibióticos y antiperistálticos; sangre, fiebre importante u oliguria exige investigación y retorno urgente."
+        },
+        {
+          "type": "heading",
+          "title": "Seguridad y monitoreo"
+        },
+        {
+          "type": "paragraph",
+          "text": "La diarrea sanguinolenta puede exigir búsqueda de toxina Shiga; no iniciar antibiótico indiscriminado ni antiperistáltico ante sospecha de infección invasiva."
+        },
+        {
+          "type": "heading",
+          "title": "Escalamiento, alta y seguimiento"
+        },
+        {
+          "type": "paragraph",
+          "text": "Alta con ingesta y perfusión recuperadas. Fiebre persistente, oliguria, sangre, dolor focal, contracciones o disminución de movimientos fetales exigen reevaluación/hospital según gravedad."
+        }
+      ],
+      "references": [
+        "[diarr] IDSA — diarreia infecciosa, guideline final vigente de 2017 — https://www.idsociety.org/practice-guideline/infectious-diarrhea",
+        "[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/"
+      ]
+    }
+  }
+}

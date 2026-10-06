@@ -1,0 +1,85 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "herpes_genital",
+  "titles": {
+    "pt": "Herpes genital — gestação",
+    "es": "Herpes genital — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "DRUG_ALTERNATIVES",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Infecção genital pelo herpes simples, primeiro episódio ou recorrência; risco neonatal depende do contexto da aquisição e parto.",
+      "es": "Infección genital por herpes simple, primer episodio o recurrencia; el riesgo neonatal depende del contexto de adquisición y parto."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Infecção próxima ao parto merece avaliação especializada rápida. História de herpes não implica cesariana em toda gravidez.",
+      "es": "La infección cercana al parto merece evaluación especializada rápida. Tener antecedentes de herpes no implica cesárea en todo embarazo."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Pesquisar lesões, dor e pródromo; confirmar por teste da lesão quando indicado. Avaliar disúria grave, retenção, disseminação ou sintomas neurológicos.",
+      "es": "Buscar lesiones, dolor y pródromo; confirmar mediante prueba de lesión cuando corresponda. Evaluar disuria grave, retención, diseminación o síntomas neurológicos."
+    },
+    {
+      "id": "treatment",
+      "pt": "Opção 1 — primeiro episódio: aciclovir 400 mg por via oral a cada 8 horas durante 7–10 dias.\nOpção 2 — valaciclovir 1 g por via oral a cada 12 horas durante 7–10 dias; ajustar ambos à função renal. Prolongar se cicatrização incompleta. Para supressão de herpes recorrente a partir de 36 semanas, usar aciclovir 400 mg oral a cada 8 horas OU valaciclovir 500 mg oral a cada 12 horas até o parto; não confundir dose de tratamento inicial com supressão. Lesões ou pródromos no trabalho de parto demandam avaliação para cesárea; doença disseminada exige aciclovir intravenoso hospitalar.",
+      "es": "Opción 1 — primer episodio: aciclovir 400 mg por vía oral cada 8 horas durante 7–10 días.\nOpción 2 — valaciclovir 1 g por vía oral cada 12 horas durante 7–10 días; ajustar ambos a función renal. Prolongar si cicatrización incompleta. Para supresión de herpes recurrente desde 36 semanas, usar aciclovir 400 mg oral cada 8 horas O valaciclovir 500 mg oral cada 12 horas hasta el parto; no confundir dosis de tratamiento inicial con supresión. Lesiones o pródromos durante trabajo de parto requieren evaluación para cesárea; enfermedad diseminada exige aciclovir intravenoso hospitalario."
+    },
+    {
+      "id": "safety",
+      "pt": "Ajustar à função renal. Doença disseminada, encefalite ou hepatite herpética exige terapia intravenosa e internação, não o esquema oral simples.",
+      "es": "Ajustar a función renal. Enfermedad diseminada, encefalitis o hepatitis herpética exige tratamiento intravenoso e internación, no el esquema oral simple."
+    },
+    {
+      "id": "disposition",
+      "pt": "Lesões genitais ou pródromo no trabalho de parto indicam avaliação para cesariana. Orientar risco de aquisição tardia, parceria e seguimento; supressão não elimina completamente transmissão neonatal.",
+      "es": "Lesiones genitales o pródromo durante el trabajo de parto indican evaluación para cesárea. Orientar sobre adquisición tardía, pareja y seguimiento; la supresión no elimina completamente transmisión neonatal."
+    }
+  ],
+  "references": [
+    {
+      "id": "herp",
+      "title": "CDC — herpes genital, STI Guidelines 2021",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 22,
+    "owner": "herpes_genital",
+    "title": {
+      "pt": "Herpes genital — gestação",
+      "es": "Herpes genital — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "herpes_genital",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "6f56d0adcd04eb6cc03d6578fa2a3d6c07ced66637eaad3318c246fa906d44fd"
+}

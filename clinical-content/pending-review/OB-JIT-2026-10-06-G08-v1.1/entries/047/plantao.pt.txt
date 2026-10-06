@@ -1,0 +1,45 @@
+# Abortamento espontâneo precoce não séptico
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Perda gestacional precoce confirmada, sem sepse; distinguir retido, incompleto e completo.
+- Este esquema não é protocolo para perdas gestacionais tardias.
+
+## Diagnóstico, exames e diferenciais
+
+- Avaliar estabilidade, sangramento, dor, ultrassom e possibilidade de ectópica.
+- Febre, secreção fétida ou instabilidade mudam para emergência infecciosa/hemorrágica.
+
+## Tratamento e doses
+
+- Opção 1 — manejo expectante durante 7–14 dias se estável, perda precoce confirmada e sem risco importante de hemorragia/infecção, com preferência informada e acesso a retorno.
+- Opção 2 — manejo medicamentoso: no retido, mifepristona 200 mg oral em dose única e, 48 horas depois, misoprostol 800 microgramas vaginal, oral ou sublingual, salvo expulsão prévia.
+- No incompleto, misoprostol 600 microgramas vaginal, oral ou sublingual em dose única; 800 microgramas é alternativa para alinhar protocolos, não uma dose adicional automática.
+- Não adicionar mifepristona no incompleto.
+- Opção 3 — aspiração uterina/procedimento cirúrgico conforme preferência, contraindicação/falha das outras vias ou necessidade clínica.
+- Hemorragia, instabilidade ou infecção exige hospital e intervenção apropriada.
+- Oferecer analgesia/antiemético e apoio; teste de gravidez em 3 semanas e retorno se positivo ou sintomas persistentes.
+
+## Segurança e monitorização
+
+- No incompleto, NICE recomenda misoprostol 600 microgramas por via vaginal, oral ou sublingual, em dose única; não adicionar mifepristona automaticamente.
+- Procedimentos e medicamentos exigem serviço habilitado e regras regionais; profilaxia RhD deve seguir atualização vigente.
+
+## Escalonamento, alta e seguimento
+
+- Hemorragia, sepse ou instabilidade requer hospital.
+- Após manejo medicamentoso, teste de gravidez em 3 semanas; positivo, dor, febre ou sangramento persistente exigem reavaliação.
+- Oferecer apoio emocional.
+
+## Fisiopatologia e raciocínio
+
+- Diagnóstico incorreto pode interromper uma gravidez viável.
+- Confirmar critérios e repetir avaliação quando houver dúvida; não usar hCG isoladamente para declarar perda.
+
+## Referências
+
+[loss] NICE NG126 — manejo de abortamento, atualizado junho 2026 — https://www.nice.org.uk/guidance/ng126/chapter/management-of-miscarriage
+
+[lossd] NICE NG126 — diagnóstico e manejo inicial de gravidez ectópica e perda — https://www.nice.org.uk/guidance/ng126

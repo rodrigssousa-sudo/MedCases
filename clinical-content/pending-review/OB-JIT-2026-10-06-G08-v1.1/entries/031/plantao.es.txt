@@ -1,0 +1,40 @@
+# Enfermedad hemorroidal — embarazo
+
+Contexto: embarazo. Este complemento no transforma esquemas generales en recomendaciones para embarazadas. Aplicar las restricciones gestacionales explicitadas aquí.
+
+## Concepto y reconocimiento
+
+- Las hemorroides sintomáticas durante el embarazo causan prurito, molestias, prolapso o sangrado rojo.
+
+## Diagnóstico, estudios y diferenciales
+
+- Inspección dirigida, caracterización de dolor y sangrado.
+- El dolor intenso focal sugiere trombosis o fisura; fiebre o colección sugieren absceso.
+
+## Tratamiento y dosis
+
+- Opción 1 — corregir constipación, aumentar fibra/líquidos, evitar esfuerzo y tiempo prolongado en el inodoro, higiene suave y compresa fría para molestias.
+- Opción 2 — si persisten síntomas, tratamiento tópico local seleccionado por profesional tras verificar ingredientes y compatibilidad gestacional; anestésico/corticoide no trata la causa y debe tener curso corto según producto.
+- No usar supositorios ni combinaciones desconocidas automáticamente.
+- Sangrado significativo, masa muy dolorosa o sospecha de trombosis/absceso exige examen y eventual abordaje especializado; cirugía no es alternativa rutinaria en embarazo.
+
+## Seguridad y monitoreo
+
+- No asumir que toda crema combinada es adecuada.
+- Tratar constipación de forma coordinada; evitar uso prolongado de tópicos sin supervisión.
+
+## Escalamiento, alta y seguimiento
+
+- Alta si está estable, con control de síntomas y seguimiento.
+- Hemorragia importante, anemia sintomática, fiebre o dolor refractario requieren evaluación presencial y eventual especialista.
+
+## Fisiopatología y razonamiento
+
+- La presión venosa aumentada y constipación favorecen síntomas.
+- El sangrado no debe atribuirse a esta enfermedad sin evaluación.
+
+## Referencias
+
+[hem] NHS — hemorroidas na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/piles/
+
+[const] NHS SPS — constipação na gestação — https://www.sps.nhs.uk/articles/constipation-treatment-during-pregnancy/

@@ -1,0 +1,43 @@
+# Dermatite atópica — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Dermatose inflamatória pruriginosa com barreira cutânea comprometida; pode piorar ou melhorar na gravidez.
+
+## Diagnóstico, exames e diferenciais
+
+- Examinar distribuição, extensão, sono e sinais de infecção.
+- Prurido palmar/plantar intenso, sobretudo noturno, merece avaliação obstétrica e hepática.
+
+## Tratamento e doses
+
+- Opção 1 — emoliente frequente e cuidados de barreira, evitar irritantes e escolher veículo apropriado à pele; manter também durante controle da crise.
+- Opção 2 — para inflamação ativa leve, corticoide tópico de baixa potência, como hidrocortisona, em camada fina 1–2 vezes por dia por curso curto, geralmente até 7 dias antes de reavaliar.
+- Selecionar concentração, local e área tratada; não aplicar indiscriminadamente em face, dobras, grandes áreas ou sob oclusão.
+- Quadros moderados/graves exigem dermatologia para potência/terapia adicional compatível com gestação, não aumento livre de corticoide.
+- Infecção ou suspeita de eczema herpético exige abordagem urgente.
+
+## Segurança e monitorização
+
+- Evitar aplicação extensa ou prolongada não supervisionada e revisar tratamentos sistêmicos prévios.
+- Lesões dolorosas vesiculares disseminadas podem representar eczema herpético.
+
+## Escalonamento, alta e seguimento
+
+- Alta se controlável e sem infecção grave, com seguimento.
+- Febre, rápida piora, lesões herpéticas ou grande comprometimento exigem avaliação especializada urgente.
+
+## Fisiopatologia e raciocínio
+
+- Inflamação e ressecamento favorecem escoriações e infecção secundária.
+- Prurido sem lesão primária exige considerar colestase.
+
+## Referências
+
+[ecz] UKTIS/BUMPS — corticosteroides tópicos na gravidez — https://www.medicinesinpregnancy.org/leaflets-a-z/corticosteroids---topical/
+
+[eczn] NHS — eczema atópico, revisão 2024 — https://www.nhs.uk/conditions/atopic-eczema/
+
+[hydskin] NHS — hidrocortisona tópica, frequência e gestação — https://www.nhs.uk/medicines/hydrocortisone-for-skin/

@@ -1,0 +1,106 @@
+{
+  "schemaVersion": "medcases_pregnancy_supplement_v1",
+  "version": "OB-JIT-2026-10-06-G08-v1.1",
+  "ownerId": "diabetes_mellitus_tipo2",
+  "titles": {
+    "pt": "Diabetes mellitus tipo 2 — gestação",
+    "es": "Diabetes mellitus tipo 2 — embarazo"
+  },
+  "context": {
+    "population": "Pregnant adults",
+    "ageScope": "Adult; adolescent dosing not assumed",
+    "operation": "ADD_GESTATIONAL_CONTEXT_PRESERVE_GENERAL_CONTENT",
+    "notForLactationExtrapolation": true
+  },
+  "treatmentSelection": {
+    "classification": "GUIDELINE_DEPENDENT_ALTERNATIVES",
+    "twoEquivalentDrugsRequired": false,
+    "conditionalAndComplementaryRolesExplicit": true
+  },
+  "facts": [
+    {
+      "id": "concept",
+      "pt": "Diabetes tipo 2 preexistente ou manifesto na gestação; não reclassificar automaticamente como diabetes gestacional.",
+      "es": "Diabetes tipo 2 previa o manifiesta durante el embarazo; no reclasificar automáticamente como diabetes gestacional."
+    },
+    {
+      "id": "reasoning",
+      "pt": "Hiperglicemia no período de organogênese aumenta risco fetal; obesidade, hipertensão e doença renal podem acrescentar risco.",
+      "es": "La hiperglucemia durante la organogénesis aumenta el riesgo fetal; obesidad, hipertensión y enfermedad renal pueden añadir riesgo."
+    },
+    {
+      "id": "diagnosis",
+      "pt": "Avaliar controle glicêmico, função renal, retina, pressão e medicamentos usados antes da concepção. Diferenciar diabetes manifesto de hiperglicemia exclusivamente gestacional.",
+      "es": "Evaluar control glucémico, función renal, retina, presión y medicamentos usados antes de la concepción. Diferenciar diabetes manifiesta de hiperglucemia exclusivamente gestacional."
+    },
+    {
+      "id": "treatment",
+      "pt": "Opção 1 — insulina subcutânea, preferida pela ADA na gestação, com esquema e titulação conforme glicemia de jejum/pós-refeições, ingestão e risco de hipoglicemia; manter orientação nutricional e monitorização.\nOpção 2 — metformina como alternativa/adjuvante em situações selecionadas segundo NICE, se benefício superar riscos e após decisão compartilhada; atravessa a placenta e não é primeira linha pela ADA. Rever função renal, tolerância e necessidade de acrescentar insulina. Não manter automaticamente outros antidiabéticos de uso geral sem avaliar segurança gestacional. Evitar suspensão abrupta de tratamento eficaz sem esquema substituto.",
+      "es": "Opción 1 — insulina subcutánea, preferida por ADA en embarazo, con esquema y titulación según glucemia en ayunas/después de comer, ingesta y riesgo de hipoglucemia; mantener orientación nutricional y monitoreo.\nOpción 2 — metformina como alternativa/adyuvante en situaciones seleccionadas según NICE, si el beneficio supera riesgos y tras decisión compartida; atraviesa la placenta y no es primera línea según ADA. Revisar función renal, tolerancia y necesidad de añadir insulina. No mantener automáticamente otros antidiabéticos de uso general sin evaluar seguridad gestacional. Evitar suspender bruscamente un tratamiento eficaz sin esquema sustituto."
+    },
+    {
+      "id": "safety",
+      "pt": "A revisão de fármacos deve assegurar alternativa e controle, evitando suspensão desassistida. Monitorar hipoglicemia, ganho ponderal e complicações maternas. Metas ADA, se alcançáveis sem hipoglicemia: jejum abaixo de 95 mg/dL; após refeição, abaixo de 140 mg/dL em 1 hora ou 120 mg/dL em 2 horas; individualizar.",
+      "es": "La revisión de fármacos debe asegurar alternativa y control, evitando suspensión sin asistencia. Vigilar hipoglucemia, aumento de peso y complicaciones maternas. Metas ADA, si se alcanzan sin hipoglucemia: ayuno inferior a 95 mg/dL; después de comer, inferior a 140 mg/dL a 1 hora o 120 mg/dL a 2 horas; individualizar."
+    },
+    {
+      "id": "disposition",
+      "pt": "Manter equipe obstétrica/endócrina e plano pós-parto. Descompensação, cetose ou sinais de pré-eclâmpsia exigem avaliação urgente; alta com plano de glicemias e tratamento compreensível.",
+      "es": "Mantener equipo obstétrico/endocrinológico y plan posparto. Descompensación, cetosis o signos de preeclampsia requieren evaluación urgente; alta con plan comprensible de glucemias y tratamiento."
+    }
+  ],
+  "references": [
+    {
+      "id": "dm",
+      "title": "ADA — Management of Diabetes in Pregnancy, Standards 2026",
+      "url": "https://diabetesjournals.org/care/article/49/Supplement_1/S321/163918/15-Management-of-Diabetes-in-Pregnancy-Standards",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "dmn",
+      "title": "NIDDK — diabetes e gravidez",
+      "url": "https://www.niddk.nih.gov/health-information/diabetes/diabetes-pregnancy",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE"
+    },
+    {
+      "id": "dmuk",
+      "title": "NICE NG3 — diabetes e gravidez",
+      "url": "https://www.nice.org.uk/guidance/NG3/chapter/recommendations",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    },
+    {
+      "id": "dmvis",
+      "title": "ADA — monitorização da glicose na gravidez, apoio aos critérios vigentes",
+      "url": "https://diabetes.org/sites/default/files/2024-10/Glucose-Monitoring-During-Pregnancy-patient-FINAL.pdf",
+      "verifiedOn": "2026-10-06",
+      "authorityStatus": "AUTHORITATIVE_FINAL_OR_OFFICIAL_CLINICAL_GUIDANCE"
+    }
+  ],
+  "review": {
+    "reviewDate": "2026-10-06",
+    "medicalReviewer": null,
+    "humanApproval": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "identityBinding": {
+    "rank": 6,
+    "owner": "diabetes_mellitus_tipo2",
+    "title": {
+      "pt": "Diabetes mellitus tipo 2 — gestação",
+      "es": "Diabetes mellitus tipo 2 — embarazo"
+    },
+    "action": "UPDATE_EXISTING_PREGNANCY_SUPPLEMENT",
+    "ownerExistsRemotely": true,
+    "nativeExists": true,
+    "cmsDocumentId": "diabetes_mellitus_tipo2",
+    "cmsAction": "UPDATE_DRAFT",
+    "preserveExistingGeneralContent": true,
+    "caseOwnerPreserved": false,
+    "relatedNonEquivalentIds": [],
+    "scopeResolution": "Existing ID preserved; no gestational alias owner."
+  },
+  "clinicalPayloadSha256": "8811b25598c10ec4df40377ea803921d7e1d96c80a20dfb32ce21414c4f2b682"
+}

@@ -1,0 +1,46 @@
+# Hiperêmese gravídica
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+- Síndrome de vômitos incapacitantes na gravidez, com ingestão insuficiente e repercussão clínica; não é apenas náusea habitual.
+
+## Diagnóstico, exames e diferenciais
+
+- Avaliar peso, sinais vitais, eletrólitos, função renal e causas alternativas.
+- Dor, febre, sangramento e alteração neurológica exigem investigação dirigida.
+
+## Tratamento e doses
+
+- Via 1 — ambulatório intensivo ou unidade de dia se estável: reidratação com solução salina 0,9%, correção de potássio orientada por eletrólitos e antiemético de primeira linha; trocar a via quando não retiver comprimidos.
+- Monitorar balanço hídrico, peso, eletrólitos e função renal.
+- Via 2 — internação se não conseguir manter líquidos/medicamentos, houver desidratação importante, distúrbio eletrolítico ou falha ambulatorial: hidratação intravenosa e combinação individualizada de antieméticos de classes diferentes.
+- Metoclopramida é segunda linha; por via oral, 10 mg até 3 vezes por dia, intervalo mínimo de 6 horas, máximo 5 dias; a via parenteral exige prescrição hospitalar e controle de efeitos extrapiramidais.
+- Administrar tiamina 100 mg por via oral 3 vezes por dia a internadas com vômitos ou ingestão muito reduzida, antes de glicose intravenosa/nutrição parenteral; se via oral inviável, reposição intravenosa conforme formulação hospitalar.
+- Corticoide e suporte nutricional são resgate especializado após falha das medidas usuais, não segunda opção rotineira.
+
+## Segurança e monitorização
+
+- Antieméticos podem ser combinados conforme resposta; vigiar efeitos extrapiramidais e risco de QT quando aplicável.
+- Reavaliar eletrólitos durante hidratação e evitar realimentação abrupta em desnutrição.
+
+## Escalonamento, alta e seguimento
+
+- Internar se intolerância persistente, desidratação, distúrbio eletrolítico ou comorbidade descompensada.
+- Alta após recuperação da ingestão, com plano de antiemético e seguimento obstétrico.
+
+## Fisiopatologia e raciocínio
+
+- Desidratação, alterações eletrolíticas e deficiência de tiamina podem ocorrer.
+- A cetonúria isolada não mede gravidade nem deve impedir tratamento.
+
+## Referências
+
+[nvp] RCOG Green-top 69 — náuseas, vômitos e hiperêmese; final 2024 — https://www.rcog.org.uk/guidance/browse-all-guidance/green-top-guidelines/the-management-of-nausea-and-vomiting-of-pregnancy-and-hyperemesis-gravidarum-green-top-guideline-no-69/
+
+[hg] RCOG 69 — publicação normativa, 2024 — https://pubmed.ncbi.nlm.nih.gov/38311315/
+
+[metpreg] NHS Somerset — medicamentos na gravidez, metoclopramida como segunda linha — https://nhssomerset.nhs.uk/prescribing-and-medicines-management/prescribing-guidelines-by-clinical-area/medicines-in-pregnancy-children-and-lactation/medicines-used-in-pregnancy/
+
+[met] NHS — metoclopramida: dose, intervalo e duração — https://www.nhs.uk/medicines/metoclopramide/

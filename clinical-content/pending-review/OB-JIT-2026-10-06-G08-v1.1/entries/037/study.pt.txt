@@ -1,0 +1,34 @@
+# Lombalgia mecânica — gestação
+
+Contexto: gestação. Este complemento não transforma esquemas gerais em recomendações para grávidas. Aplicar as restrições gestacionais explicitadas aqui.
+
+## Conceito e reconhecimento
+
+Dor lombar associada a movimento e carga, sem sinais de causa infecciosa, neurológica grave ou obstétrica.
+
+## Fisiopatologia e raciocínio
+
+Mudança de carga e postura pode contribuir. Diagnóstico mecânico exige reconhecer causas perigosas e não se baseia apenas em estar grávida.
+
+## Diagnóstico, exames e diferenciais
+
+Examinar mobilidade, força, sensibilidade e sintomas urinários/obstétricos. Febre, déficit progressivo, anestesia perineal ou retenção urinária exige urgência.
+
+## Tratamento e doses
+
+Opção 1 — manter atividade tolerada, ergonomia, exercícios adaptados e fisioterapia; evitar repouso prolongado.
+Opção 2 — analgesia quando necessária: Paracetamol 500 mg–1 g por via oral se necessário, intervalo mínimo de 4 horas, máximo 4 administrações e 4 g em 24 horas em adulto sem fatores de risco; peso inferior a 50 kg, hepatopatia, desnutrição ou outras vulnerabilidades exigem limite individual menor. Conferir outros produtos com paracetamol e usar pelo menor tempo necessário. Anti-inflamatório não é uma alternativa gestacional automática, sobretudo a partir de 20 semanas. Déficit neurológico, retenção urinária, febre ou trauma exige investigação.
+
+## Segurança e monitorização
+
+Não recomendar repouso prolongado nem anti-inflamatórios por automedicação; há risco renal fetal e de baixo líquido amniótico a partir de 20 semanas com uso prolongado.
+
+## Escalonamento, alta e seguimento
+
+Alta se sem sinais de alarme e com mobilidade funcional. Reavaliar persistência, dor noturna importante, sintomas sistêmicos ou surgimento de contrações.
+
+## Referências
+
+[back] NHS — lombalgia na gravidez — https://www.nhs.uk/pregnancy/common-symptoms/back-pain/
+
+[pain] NHS SPS — tratamento da dor na gravidez — https://sps.nhs.uk/articles/pain-treatment-during-pregnancy/
