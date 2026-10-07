@@ -1,0 +1,96 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Criptorquidia",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "c8db380029dd0f800c3db343072c4dd4c83d2d854d7c4a71400a0ea4a1961ddf",
+  "ownerCandidate": "criptorquidia",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_037_f01",
+    "b02_037_f02",
+    "b02_037_f03",
+    "b02_037_f04",
+    "b02_037_f05",
+    "b02_037_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Un testículo fuera del escroto debe diferenciarse de retráctil o ascendente; su persistencia aumenta riesgos futuros."
+      ],
+      "factIds": [
+        "b02_037_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examinar posición y palpabilidad en ambiente adecuado; bilateralidad y genitales atípicos requieren evaluación prioritaria. No demorar derivación esperando estudios indiscriminados."
+      ],
+      "factIds": [
+        "b02_037_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Dolor agudo inguinal/abdominal, vómitos o masa dolorosa exige descartar torsión/herniación. Recién nacido con ambos no palpables y genitales atípicos necesita evaluación endocrina/urológica urgente."
+      ],
+      "factIds": [
+        "b02_037_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección si persiste: derivación y orquidopexia a edad apropiada, generalmente alrededor de 1 año según evaluación. La observación inicial permite descenso espontáneo temprano; no sustituye cirugía tardía. El tratamiento hormonal no es alternativa rutinaria."
+      ],
+      "factIds": [
+        "b02_037_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No presentar dos fármacos como opciones curativas. Un testículo retráctil requiere seguimiento por ascenso; genitales atípicos necesitan abordaje especializado."
+      ],
+      "factIds": [
+        "b02_037_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Documentar posición y derivación; seguir resultado quirúrgico y riesgos residuales. Indicar consulta urgente por dolor aun antes de la cirugía prevista."
+      ],
+      "factIds": [
+        "b02_037_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_87",
+      "title": "Criptorquidia",
+      "url": "https://www.nhs.uk/conditions/undescended-testicles/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 12 June 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_87.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Síndrome hemolítico urémico",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "f6849dd3c84a7e12e661a7c6a2bb5c7307356c9312d4bdd0083ab243e45be73f",
+  "ownerCandidate": "sindrome_hemolitico_uremica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_032_f01",
+    "b02_032_f02",
+    "b02_032_f03",
+    "b02_032_f04",
+    "b02_032_f05",
+    "b02_032_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Internar y consultar nefrología/hematología. Controlar diuresis, presión, volemia, potasio y neurología; administrar líquidos según fase/volemia, evitando expansión indiscriminada con oliguria."
+      ],
+      "factIds": [
+        "b02_032_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Hemograma/plaquetas, frotis, marcadores de hemólisis, creatinina, electrolitos y orina; buscar toxina Shiga en heces cuando corresponda. Considerar ADAMTS13, coagulación y complemento según diferencial sin demorar cuidados urgentes."
+      ],
+      "factIds": [
+        "b02_032_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "STEC-SHU: primera estrategia es soporte, control de complicaciones y diálisis/transfusión cuando corresponde; no usar antibióticos/antimotilidad rutinariamente en STEC. SHU mediado por complemento: bloqueo de C5 con eculizumab o ravulizumab por especialista; no sustituyen el soporte de STEC en todos los casos."
+      ],
+      "factIds": [
+        "b02_032_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Anti-C5 exige esquema por peso/producto, protección meningocócica y prevención infecciosa. No hay dosis universal intercambiable entre eculizumab/ravulizumab. Inicio urgente antes de inmunidad vacunal requiere profilaxis antibiótica según protocolo; IPNA 2026 es orientación pediátrica, no dosis adulta universal."
+      ],
+      "factIds": [
+        "b02_032_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Alta solo tras estabilización con seguimiento renal/hematológico. Vigilar hipertensión, proteinuria, función renal y recaída; enseñar alarmas de oliguria, edema, sangrado y alteración neurológica."
+      ],
+      "factIds": [
+        "b02_032_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Microangiopatía trombótica con hemólisis, trombocitopenia y lesión renal; separar SHU por STEC de enfermedad mediada por complemento y otras microangiopatías."
+      ],
+      "factIds": [
+        "b02_032_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_82",
+      "title": "Síndrome hemolítico-urêmica",
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/children/hemolytic-uremic-syndrome",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed June 2015",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_82.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "hus_cdc",
+      "title": "CDC — tratamento de E. coli e prevenção de SHU",
+      "url": "https://cdc.gov/ecoli/treatment/index.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC 2024: não usar antibióticos ou antidiarreicos na infecção por STEC; conteúdo oficial verificado pela ferramenta web.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "hus_ipna",
+      "title": "IPNA — aHUS e TMA secundária pediátrica, 2026",
+      "url": "https://link.springer.com/article/10.1007/s00467-026-07537-7",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published: 23 September 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/hus_ipna.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

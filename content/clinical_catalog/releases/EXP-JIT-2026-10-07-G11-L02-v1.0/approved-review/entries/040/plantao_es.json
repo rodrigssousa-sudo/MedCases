@@ -1,0 +1,102 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Tortícolis muscular congénita",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "363d461d11cf3686e1a35bc2a3ce9ae0a55e4ddbca79877c43fbe62a970eb096",
+  "ownerCandidate": "torcicolo_muscular_congenito",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_040_f01",
+    "b02_040_f02",
+    "b02_040_f03",
+    "b02_040_f04",
+    "b02_040_f05",
+    "b02_040_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Tortícolis adquirida con fiebre, trauma o déficit es otra situación y puede ser urgente. Orientar alimentación, estímulos visuales y posición segura."
+      ],
+      "factIds": [
+        "b02_040_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar movilidad cervical, músculo, cráneo, ojos, neurología y caderas. La presentación típica no exige imagen cervical rutinaria; investigar hallazgos atípicos y displasia de cadera según protocolo."
+      ],
+      "factIds": [
+        "b02_040_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección: fisioterapia temprana y ejercicios suaves enseñados al cuidador; combinar movilidad pasiva/activa, movimiento simétrico y adaptación ambiental. Refractario: ortopedia; los procedimientos son raros e individualizados. No hay dos fármacos de primera línea."
+      ],
+      "factIds": [
+        "b02_040_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No manipular forzadamente el cuello. Prono solo despierto/supervisado; dormir en supino. Analgésico no sustituye revisar la causa si ejercicios producen dolor importante."
+      ],
+      "factIds": [
+        "b02_040_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Revisar en aproximadamente 4 semanas; sin mejoría, limitación importante o asimetría progresiva requiere ajustar/derivar. Alta por movilidad, postura y desarrollo adecuados, no solo por edad."
+      ],
+      "factIds": [
+        "b02_040_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "El acortamiento esternocleidomastoideo produce inclinación de cabeza y rotación opuesta; inicio tardío/agudo sugiere otra causa."
+      ],
+      "factIds": [
+        "b02_040_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_90",
+      "title": "Torcicolo muscular congênito",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Congenital_Torticollis/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated Nov 20 2018.",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_90.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "tortic_apta",
+      "title": "APTA — torticolo muscular congênito, guideline 2024",
+      "url": "https://www.apta.org/patient-care/evidence-based-practice-resources/cpgs/physical-therapy-management-of-congenital-muscular-torticollis-a-2018-evidence-based-clinical-practice-guideline-from-the-apta-academy-of-pediatric-physical-therapy-cpg",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLIC_SUMMARY_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/tortic_apta.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

@@ -1,0 +1,201 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Espondilolistese",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "e57df617e0366f0a094d54d329542598024d082a98cce2624874ffc3fcfb91c5",
+  "ownerCandidate": "espondilolistese",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_024_f01",
+    "b02_024_f02",
+    "b02_024_f03",
+    "b02_024_f04",
+    "b02_024_f05",
+    "b02_024_f06",
+    "b02_024_adult_ibu"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Deslizamento vertebral pode ser ístmico, degenerativo ou de outra origem; gravidade radiológica e sintomas não são equivalentes."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Correlação entre sintomas, estabilidade e imagem orienta intervenção. Analgesia alivia sintomas, mas não reposiciona vértebra; a presença de déficit progressivo muda prioridade."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar dor, marcha, força, reflexos e sintomas radiculares. Radiografia caracteriza alinhamento; ressonância se compressão neural/sintomas persistentes mudarem conduta. Diferenciar lombalgia inespecífica e estenose associada."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Retenção urinária, anestesia em sela, déficit progressivo ou suspeita infecciosa/oncológica exige urgência. Sem alarmes, manter atividade adaptada e evitar repouso prolongado."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira escolha em quadro estável: fisioterapia, modificação de carga e tratamento conservador. Anti-inflamatório como ibuprofeno pode aliviar dor por período curto se seguro; não é tratamento do deslizamento. Cirurgia/descompressão com ou sem fusão é alternativa para déficit, instabilidade ou falha conservadora selecionada."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Referência adulta curta: ibuprofeno 200–400 mg por via oral até 3 vezes ao dia, intervalo de pelo menos 4 horas e máximo de 1.200 mg em 24 horas nesse regime. Usar menor dose por menor tempo, com avaliação de contraindicações e gastroproteção quando indicada; não representa prescrição crônica."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não prescrever automaticamente gabapentinoide, corticoide oral ou benzodiazepínico para ciática. Paracetamol isolado não é opção de rotina para lombalgia segundo NICE; NSAID exige avaliação renal, gastrointestinal e cardiovascular. Crianças/adolescentes seguem critérios próprios."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Acompanhar função, neurologia e tolerância; encaminhar sintomas persistentes ou instabilidade. Alta com plano e retorno imediato por alteração esfíncteriana/neurológica."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_74",
+      "title": "Espondilolistese",
+      "url": "https://www.nhs.uk/conditions/spondylolisthesis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 17 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_74.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ng59",
+      "title": "NICE NG59 — lombalgia e ciática, recomendações",
+      "url": "https://www.nice.org.uk/guidance/NG59/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2016,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Não oferecer gabapentinoides/corticoide oral/benzodiazepínico para ciática nem epidural rotineira na claudicação por estenose central.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Deslizamento vertebral pode ser ístmico, degenerativo ou de outra origem; gravidade radiológica e sintomas não são equivalentes."
+      ],
+      "factIds": [
+        "b02_024_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Correlação entre sintomas, estabilidade e imagem orienta intervenção. Analgesia alivia sintomas, mas não reposiciona vértebra; a presença de déficit progressivo muda prioridade."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar dor, marcha, força, reflexos e sintomas radiculares. Radiografia caracteriza alinhamento; ressonância se compressão neural/sintomas persistentes mudarem conduta. Diferenciar lombalgia inespecífica e estenose associada."
+      ],
+      "factIds": [
+        "b02_024_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Retenção urinária, anestesia em sela, déficit progressivo ou suspeita infecciosa/oncológica exige urgência. Sem alarmes, manter atividade adaptada e evitar repouso prolongado."
+      ],
+      "factIds": [
+        "b02_024_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha em quadro estável: fisioterapia, modificação de carga e tratamento conservador. Anti-inflamatório como ibuprofeno pode aliviar dor por período curto se seguro; não é tratamento do deslizamento. Cirurgia/descompressão com ou sem fusão é alternativa para déficit, instabilidade ou falha conservadora selecionada."
+      ],
+      "factIds": [
+        "b02_024_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Referência adulta curta: ibuprofeno 200–400 mg por via oral até 3 vezes ao dia, intervalo de pelo menos 4 horas e máximo de 1.200 mg em 24 horas nesse regime. Usar menor dose por menor tempo, com avaliação de contraindicações e gastroproteção quando indicada; não representa prescrição crônica."
+      ],
+      "factIds": [
+        "b02_024_adult_ibu"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não prescrever automaticamente gabapentinoide, corticoide oral ou benzodiazepínico para ciática. Paracetamol isolado não é opção de rotina para lombalgia segundo NICE; NSAID exige avaliação renal, gastrointestinal e cardiovascular. Crianças/adolescentes seguem critérios próprios."
+      ],
+      "factIds": [
+        "b02_024_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Acompanhar função, neurologia e tolerância; encaminhar sintomas persistentes ou instabilidade. Alta com plano e retorno imediato por alteração esfíncteriana/neurológica."
+      ],
+      "factIds": [
+        "b02_024_f06"
+      ]
+    }
+  ],
+  "markdown": "# Espondilolistese\n\n## Conceito e mecanismo\n\nDeslizamento vertebral pode ser ístmico, degenerativo ou de outra origem; gravidade radiológica e sintomas não são equivalentes.\n\n## Raciocínio e escolha terapêutica\n\nCorrelação entre sintomas, estabilidade e imagem orienta intervenção. Analgesia alivia sintomas, mas não reposiciona vértebra; a presença de déficit progressivo muda prioridade.\n\n## Diagnóstico e diferenciais\n\nAvaliar dor, marcha, força, reflexos e sintomas radiculares. Radiografia caracteriza alinhamento; ressonância se compressão neural/sintomas persistentes mudarem conduta. Diferenciar lombalgia inespecífica e estenose associada.\n\n## Abordagem inicial e urgências\n\nRetenção urinária, anestesia em sela, déficit progressivo ou suspeita infecciosa/oncológica exige urgência. Sem alarmes, manter atividade adaptada e evitar repouso prolongado.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira escolha em quadro estável: fisioterapia, modificação de carga e tratamento conservador. Anti-inflamatório como ibuprofeno pode aliviar dor por período curto se seguro; não é tratamento do deslizamento. Cirurgia/descompressão com ou sem fusão é alternativa para déficit, instabilidade ou falha conservadora selecionada.\n\n## Fármacos, doses e intervalos\n\nReferência adulta curta: ibuprofeno 200–400 mg por via oral até 3 vezes ao dia, intervalo de pelo menos 4 horas e máximo de 1.200 mg em 24 horas nesse regime. Usar menor dose por menor tempo, com avaliação de contraindicações e gastroproteção quando indicada; não representa prescrição crônica.\n\n## Segurança e monitorização\n\nNão prescrever automaticamente gabapentinoide, corticoide oral ou benzodiazepínico para ciática. Paracetamol isolado não é opção de rotina para lombalgia segundo NICE; NSAID exige avaliação renal, gastrointestinal e cardiovascular. Crianças/adolescentes seguem critérios próprios.\n\n## Reavaliação, internação e alta\n\nAcompanhar função, neurologia e tolerância; encaminhar sintomas persistentes ou instabilidade. Alta com plano e retorno imediato por alteração esfíncteriana/neurológica.\n\n## Referências\n\n1. [Espondilolistese](https://www.nhs.uk/conditions/spondylolisthesis/)\n2. [NICE NG59 — lombalgia e ciática, recomendações](https://www.nice.org.uk/guidance/NG59/chapter/recommendations)\n3. [NHS — ibuprofeno adulto](https://www.nhs.uk/medicines/ibuprofen-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "75d14cd3e3b48b11b497509f41c9c3b89e4cbd8a90a84b862a0af6cb9e910093",
+  "approvedReviewProjectionFileSha256": "90bdd202ed48978bac2331f96ad4ed46974148687eadf98d0d3224b2a993dfb7"
+}

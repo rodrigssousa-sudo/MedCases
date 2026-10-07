@@ -1,0 +1,186 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação deste lote. Guia permanece DRAFT no Admin após futura publicação coordenada dos modos.",
+  "canonical_payload_sha256": "f6849dd3c84a7e12e661a7c6a2bb5c7307356c9312d4bdd0083ab243e45be73f",
+  "owner_candidate": "sindrome_hemolitico_uremica",
+  "pt": {
+    "title": "Síndrome hemolítico-urêmica",
+    "subtitle": "Revisão clínica — primeira escolha e alternativas",
+    "summary": "Microangiopatia trombótica com hemólise, plaquetopenia e lesão renal; separar SHU por STEC de doença mediada por complemento e outras microangiopatias.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Microangiopatia trombótica com hemólise, plaquetopenia e lesão renal; separar SHU por STEC de doença mediada por complemento e outras microangiopatias."
+        ],
+        "factIds": [
+          "b02_032_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "A mesma tríade laboratorial pode resultar de toxina Shiga, complemento ou outra microangiopatia. A terapêutica causal depende dessa distinção; a necessidade de suporte renal permanece comum."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Hemograma/plaquetas, esfregaço, marcadores de hemólise, creatinina, eletrólitos e urina; pesquisa de toxina Shiga nas fezes quando aplicável. Considerar ADAMTS13, coagulação e complemento conforme diferencial, sem atrasar cuidado urgente."
+        ],
+        "factIds": [
+          "b02_032_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Internar e consultar nefrologia/hematologia. Monitorar diurese, pressão, volemia, potássio e neurologia; administrar fluidos conforme fase/volemia, evitando expansão indiscriminada após oligúria."
+        ],
+        "factIds": [
+          "b02_032_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "STEC-SHU: primeira estratégia é suporte, controle de complicações e diálise/transfusão quando indicadas; não usar antibiótico/antimotilidade rotineiramente para STEC. SHU mediada por complemento: bloqueio de C5 com eculizumabe ou ravulizumabe por especialista; não são alternativas ao suporte de STEC em todos os casos."
+        ],
+        "factIds": [
+          "b02_032_f04"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Anti-C5 exige esquema por peso/produto, proteção meningocócica e prevenção infecciosa. Não há dose universal intercambiável entre eculizumabe/ravulizumabe. Urgência antes da imunidade vacinal requer profilaxia antibiótica conforme protocolo; IPNA 2026 é orientação pediátrica, não dose adulta universal."
+        ],
+        "factIds": [
+          "b02_032_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Alta somente após estabilização com seguimento renal/hematológico. Monitorar hipertensão, proteinúria, função renal e recidiva; familiares devem reconhecer oligúria, edema, sangramento e alteração neurológica."
+        ],
+        "factIds": [
+          "b02_032_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Síndrome hemolítico urémico",
+    "subtitle": "Revisión clínica — primera elección y alternativas",
+    "summary": "Microangiopatía trombótica con hemólisis, trombocitopenia y lesión renal; separar SHU por STEC de enfermedad mediada por complemento y otras microangiopatías.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Microangiopatía trombótica con hemólisis, trombocitopenia y lesión renal; separar SHU por STEC de enfermedad mediada por complemento y otras microangiopatías."
+        ],
+        "factIds": [
+          "b02_032_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "La misma tríada puede deberse a toxina Shiga, complemento u otra microangiopatía. El tratamiento causal depende de distinguirlas; soporte renal sigue siendo común."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Hemograma/plaquetas, frotis, marcadores de hemólisis, creatinina, electrolitos y orina; buscar toxina Shiga en heces cuando corresponda. Considerar ADAMTS13, coagulación y complemento según diferencial sin demorar cuidados urgentes."
+        ],
+        "factIds": [
+          "b02_032_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Internar y consultar nefrología/hematología. Controlar diuresis, presión, volemia, potasio y neurología; administrar líquidos según fase/volemia, evitando expansión indiscriminada con oliguria."
+        ],
+        "factIds": [
+          "b02_032_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "STEC-SHU: primera estrategia es soporte, control de complicaciones y diálisis/transfusión cuando corresponde; no usar antibióticos/antimotilidad rutinariamente en STEC. SHU mediado por complemento: bloqueo de C5 con eculizumab o ravulizumab por especialista; no sustituyen el soporte de STEC en todos los casos."
+        ],
+        "factIds": [
+          "b02_032_f04"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Anti-C5 exige esquema por peso/producto, protección meningocócica y prevención infecciosa. No hay dosis universal intercambiable entre eculizumab/ravulizumab. Inicio urgente antes de inmunidad vacunal requiere profilaxis antibiótica según protocolo; IPNA 2026 es orientación pediátrica, no dosis adulta universal."
+        ],
+        "factIds": [
+          "b02_032_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Alta solo tras estabilización con seguimiento renal/hematológico. Vigilar hipertensión, proteinuria, función renal y recaída; enseñar alarmas de oliguria, edema, sangrado y alteración neurológica."
+        ],
+        "factIds": [
+          "b02_032_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_82",
+      "title": "Síndrome hemolítico-urêmica",
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/children/hemolytic-uremic-syndrome",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed June 2015",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_82.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "hus_cdc",
+      "title": "CDC — tratamento de E. coli e prevenção de SHU",
+      "url": "https://cdc.gov/ecoli/treatment/index.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC 2024: não usar antibióticos ou antidiarreicos na infecção por STEC; conteúdo oficial verificado pela ferramenta web.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "hus_ipna",
+      "title": "IPNA — aHUS e TMA secundária pediátrica, 2026",
+      "url": "https://link.springer.com/article/10.1007/s00467-026-07537-7",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published: 23 September 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/hus_ipna.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

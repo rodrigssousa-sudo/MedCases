@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Acantose nigricante",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "1ee182e413093db512be8b257b39d691075cabe0e2a7dc66805665feb3ce4860",
+  "ownerCandidate": "acantose_nigricante",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_003_f01",
+    "b02_003_f02",
+    "b02_003_f03",
+    "b02_003_f04",
+    "b02_003_f05",
+    "b02_003_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Placas espessadas de aspecto aveludado em dobras, frequentemente associadas à resistência insulínica; não representam sujeira ou infecção por definição."
+      ],
+      "factIds": [
+        "b02_003_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Tratar resistência insulínica comprovada é diferente de tratar aparência cutânea. O aspecto da placa pode levantar uma hipótese, mas não determina sozinho diagnóstico de diabetes ou indicação de metformina."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar distribuição, início e medicamentos; investigar risco de diabetes e causas hormonais conforme contexto. Início abrupto/extenso, mucosas acometidas ou perda de peso inexplicada exige pesquisar doença subjacente, inclusive neoplasia."
+      ],
+      "factIds": [
+        "b02_003_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Em Plantão, reconhecer e encaminhar para avaliação metabólica; tratar urgência glicêmica se presente. Não iniciar antibiótico ou antifúngico apenas pelo aspecto escuro."
+      ],
+      "factIds": [
+        "b02_003_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha: tratar a causa, com plano de peso/atividade e manejo de diabetes ou endocrinopatia comprovada. Alternativa complementar para incômodo cosmético: dermatologia pode selecionar retinoide tópico ou procedimento; não substitui investigação."
+      ],
+      "factIds": [
+        "b02_003_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Metformina não é prescrição automática para qualquer acantose; exige indicação metabólica e avaliação renal. Retinoides podem irritar e exigem precaução na gestação. Não há duas opções farmacológicas universais validadas para a placa."
+      ],
+      "factIds": [
+        "b02_003_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar causa, controle metabólico e evolução das lesões. Encaminhar apresentação atípica ou progressiva; não prometer desaparecimento completo com tratamento estético."
+      ],
+      "factIds": [
+        "b02_003_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_53",
+      "title": "Acantose nigricante",
+      "url": "https://www.nhs.uk/conditions/acanthosis-nigricans/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 04 July 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_53.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "acan_aad",
+      "title": "AAD — diagnóstico e manejo de acantose nigricante",
+      "url": "https://www.aad.org/public/diseases/a-z/acanthosis-nigricans-treatment",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/acan_aad.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

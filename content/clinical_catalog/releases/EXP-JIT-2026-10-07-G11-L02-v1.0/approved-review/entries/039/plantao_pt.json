@@ -1,0 +1,89 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Plagiocefalia posicional",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "94d95ff618fc0b27632b3279047e37ef535262461b264f6375b769a6a3f39a6a",
+  "ownerCandidate": "plagiocefalia_posicional",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_039_f01",
+    "b02_039_f02",
+    "b02_039_f03",
+    "b02_039_f04",
+    "b02_039_f05",
+    "b02_039_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Manter sono supino seguro. Variar posição ao carregar/alimentar e oferecer tempo de barriga para baixo somente acordado e supervisionado."
+      ],
+      "factIds": [
+        "b02_039_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar formato, suturas, crescimento cefálico e mobilidade cervical; assimetria atípica/progressiva ou suspeita de sutura fechada exige especialista. Não usar imagem indiscriminada."
+      ],
+      "factIds": [
+        "b02_039_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha: reposicionamento durante vigília e orientação. Fisioterapia é alternativa/complemento se torcicolo ou preferência persistente. Capacete não é indicação rotineira; evidência e critérios variam, exigindo avaliação especializada em casos selecionados."
+      ],
+      "factIds": [
+        "b02_039_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não recomendar dormir em prono, travesseiro posicionador ou peso sobre a cabeça. Não há fármaco para corrigir formato craniano."
+      ],
+      "factIds": [
+        "b02_039_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Acompanhar crescimento, desenvolvimento e simetria; encaminhar piora, falta de evolução ou suspeita de craniossinostose."
+      ],
+      "factIds": [
+        "b02_039_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Assimetria craniana por pressão posicional, frequentemente associada a preferência postural/torcicolo; diferenciar craniossinostose."
+      ],
+      "factIds": [
+        "b02_039_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_89",
+      "title": "Plagiocefalia posicional",
+      "url": "https://www.nhs.uk/conditions/flat-head-syndrome-plagiocephaly-brachycephaly/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 16 January 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_89.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

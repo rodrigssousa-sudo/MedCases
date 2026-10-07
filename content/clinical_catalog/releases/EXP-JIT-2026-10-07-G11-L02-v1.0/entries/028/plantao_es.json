@@ -1,0 +1,212 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Escoliosis",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "529f75528739f5d8452adfba123785bc5889a2806766cfcd8ae8144e6dff32d5",
+  "ownerCandidate": "escoliose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_028_f01",
+    "b02_028_f02",
+    "b02_028_f03",
+    "b02_028_f04",
+    "b02_028_f05",
+    "b02_028_f06",
+    "b02_028_adult_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Déficit neurológico, alteración esfinteriana o dificultad respiratoria relevante exige urgencia. Apoyar imagen corporal y actividad segura."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar asimetría, flexión anterior, neurología y madurez; radiografías de pie cuantifican curva si corresponde. Dolor importante, progresión atípica o déficit exige descartar causa secundaria."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Niño en crecimiento: observación para curvas leves; corsé ante riesgo de progresión seleccionado; cirugía ante deformidad grave/progresiva. Adulto: ejercicio/fisioterapia y analgesia sintomática; ibuprofeno si es seguro, paracetamol en plan individual. Los fármacos no corrigen la curva."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No sustituir evaluación de progresión por analgésicos. Corsé y cirugía tienen criterios especializados; no indicar grados/horas universales sin población específica."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguimiento ortopédico durante crecimiento y según síntomas en adultos; revisar función, curva y neurología. Consultar ante cambios nuevos."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Deformidad con curvatura lateral y rotación vertebral; manejo depende de crecimiento, progresión y función, no solo dolor."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_78",
+      "title": "Escoliose",
+      "url": "https://www.nhs.uk/conditions/scoliosis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 12 April 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_78.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "scol_child",
+      "title": "NHS — escoliose infantil, tratamento",
+      "url": "https://www.nhs.uk/conditions/scoliosis/treatment-in-children/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 12 April 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/scol_child.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "scol_adult",
+      "title": "NHS — escoliose adulta, tratamento",
+      "url": "https://www.nhs.uk/conditions/scoliosis/treatment-in-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 12 April 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/scol_adult.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Déficit neurológico, alteración esfinteriana o dificultad respiratoria relevante exige urgencia. Apoyar imagen corporal y actividad segura."
+      ],
+      "factIds": [
+        "b02_028_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar asimetría, flexión anterior, neurología y madurez; radiografías de pie cuantifican curva si corresponde. Dolor importante, progresión atípica o déficit exige descartar causa secundaria."
+      ],
+      "factIds": [
+        "b02_028_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Niño en crecimiento: observación para curvas leves; corsé ante riesgo de progresión seleccionado; cirugía ante deformidad grave/progresiva. Adulto: ejercicio/fisioterapia y analgesia sintomática; ibuprofeno si es seguro, paracetamol en plan individual. Los fármacos no corrigen la curva."
+      ],
+      "factIds": [
+        "b02_028_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b02_028_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No sustituir evaluación de progresión por analgésicos. Corsé y cirugía tienen criterios especializados; no indicar grados/horas universales sin población específica."
+      ],
+      "factIds": [
+        "b02_028_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguimiento ortopédico durante crecimiento y según síntomas en adultos; revisar función, curva y neurología. Consultar ante cambios nuevos."
+      ],
+      "factIds": [
+        "b02_028_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Deformidad con curvatura lateral y rotación vertebral; manejo depende de crecimiento, progresión y función, no solo dolor."
+      ],
+      "factIds": [
+        "b02_028_f01"
+      ]
+    }
+  ],
+  "markdown": "# Escoliosis\n\n## Abordaje inicial y urgencias\n\nDéficit neurológico, alteración esfinteriana o dificultad respiratoria relevante exige urgencia. Apoyar imagen corporal y actividad segura.\n\n## Diagnóstico y diferenciales\n\nEvaluar asimetría, flexión anterior, neurología y madurez; radiografías de pie cuantifican curva si corresponde. Dolor importante, progresión atípica o déficit exige descartar causa secundaria.\n\n## Tratamiento: primera elección y alternativas\n\nNiño en crecimiento: observación para curvas leves; corsé ante riesgo de progresión seleccionado; cirugía ante deformidad grave/progresiva. Adulto: ejercicio/fisioterapia y analgesia sintomática; ibuprofeno si es seguro, paracetamol en plan individual. Los fármacos no corrigen la curva.\n\n## Fármacos, dosis e intervalos\n\nAnalgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.\n\n## Seguridad y monitorización\n\nNo sustituir evaluación de progresión por analgésicos. Corsé y cirugía tienen criterios especializados; no indicar grados/horas universales sin población específica.\n\n## Reevaluación, internación y alta\n\nSeguimiento ortopédico durante crecimiento y según síntomas en adultos; revisar función, curva y neurología. Consultar ante cambios nuevos.\n\n## Reconocimiento rápido\n\nDeformidad con curvatura lateral y rotación vertebral; manejo depende de crecimiento, progresión y función, no solo dolor.\n\n## Referencias\n\n1. [Escoliose](https://www.nhs.uk/conditions/scoliosis/)\n2. [NHS — escoliose infantil, tratamento](https://www.nhs.uk/conditions/scoliosis/treatment-in-children/)\n3. [NHS — escoliose adulta, tratamento](https://www.nhs.uk/conditions/scoliosis/treatment-in-adults/)\n4. [NHS — paracetamol adulto](https://www.nhs.uk/medicines/paracetamol-for-adults/)\n5. [NHS — ibuprofeno adulto](https://www.nhs.uk/medicines/ibuprofen-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "5827aff85dd21254e7dda31d566cb35afced60983e92178b2ab8e752f02aebc7",
+  "approvedReviewProjectionFileSha256": "7b551223d3abb5b24868081a23a406625a877102f9721cfddd12900901183890"
+}

@@ -1,0 +1,186 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Hemangioma infantil",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "ad948552e78760e31402d50c054077a1bf4101c1320f83f6838d02727b87329e",
+  "ownerCandidate": "hemangioma_infantil",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_043_f01",
+    "b02_043_f02",
+    "b02_043_f03",
+    "b02_043_f04",
+    "b02_043_f05",
+    "b02_043_f06",
+    "b02_043_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Estridor, comprometimento visual, sangramento relevante ou dificuldade alimentar: urgência. Lesão pequena sem risco pode ser observada com documentação da evolução."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examinar localização, extensão, ulceração e lesões múltiplas. Hemangioma periocular, de via aérea ou segmentar de alto risco requer avaliação precoce; imagem somente por indicação."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira escolha quando tratamento sistêmico indicado: propranolol por equipe experiente. Alternativa para lesão pequena, fina e superficial selecionada: timolol tópico off-label, não equivalente para lesão profunda/ameaçadora. Contraindicação ou falha do propranolol: especialista pode considerar corticosteroide ou procedimento conforme caso."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Exemplo de produto, não intercambiável sem conferir concentração: HEMANGEOL, cloridrato de propranolol 4,28 mg/mL. Início autorizado na bula entre 5 semanas e 5 meses de idade: 0,15 mL/kg por dose oral 2 vezes ao dia, separadas por pelo menos 9 horas; após 1 semana, 0,3 mL/kg por dose 2 vezes ao dia; após 2 semanas, 0,4 mL/kg por dose 2 vezes ao dia, mantendo por 6 meses conforme equipe. Reajustar por peso; não converter diretamente para outra solução ou expressão em propranolol base."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dar durante/logo após alimentação; omitir se não se alimentar ou estiver vomitando. Monitorar frequência/pressão por 2 horas após início e aumento. Excluir contraindicações, como bradicardia, hipotensão, broncoespasmo e prematuridade incompatível com bula. Timolol também pode ser absorvido e causar efeitos sistêmicos."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Acompanhar resposta, crescimento, alimentação e tolerância. Plano especializado para suspensão, recidiva e sequelas; não iniciar beta-bloqueador empiricamente para toda lesão vascular."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tumor vascular benigno com fase proliferativa inicial e involução posterior; localização/tamanho podem ameaçar função, causar ulceração ou indicar síndrome associada."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_93",
+      "title": "Hemangioma infantil",
+      "url": "https://www.nhs.uk/conditions/birthmarks/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 28 April 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_93.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "heman_aap",
+      "title": "AAP — guideline de hemangioma infantil 2019",
+      "url": "https://publications.aap.org/pediatrics/article/143/1/e20183475/37268/Clinical-Practice-Guideline-for-the-Management-of",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2019,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "AAP 2019, recomendações finais: propranolol sistêmico primeira linha; timolol selecionado em lesão fina superficial; corticosteroide se falha/contraindicação.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "hem_label",
+      "title": "DailyMed — HEMANGEOL, bula julho de 2026",
+      "url": "https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4f8341ee-dac6-1ca9-e063-6394a90ac960",
+      "authorityStatus": "REGULATORY_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/hem_label.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Estridor, comprometimento visual, sangramento relevante ou dificuldade alimentar: urgência. Lesão pequena sem risco pode ser observada com documentação da evolução."
+      ],
+      "factIds": [
+        "b02_043_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar localização, extensão, ulceração e lesões múltiplas. Hemangioma periocular, de via aérea ou segmentar de alto risco requer avaliação precoce; imagem somente por indicação."
+      ],
+      "factIds": [
+        "b02_043_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha quando tratamento sistêmico indicado: propranolol por equipe experiente. Alternativa para lesão pequena, fina e superficial selecionada: timolol tópico off-label, não equivalente para lesão profunda/ameaçadora. Contraindicação ou falha do propranolol: especialista pode considerar corticosteroide ou procedimento conforme caso."
+      ],
+      "factIds": [
+        "b02_043_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Exemplo de produto, não intercambiável sem conferir concentração: HEMANGEOL, cloridrato de propranolol 4,28 mg/mL. Início autorizado na bula entre 5 semanas e 5 meses de idade: 0,15 mL/kg por dose oral 2 vezes ao dia, separadas por pelo menos 9 horas; após 1 semana, 0,3 mL/kg por dose 2 vezes ao dia; após 2 semanas, 0,4 mL/kg por dose 2 vezes ao dia, mantendo por 6 meses conforme equipe. Reajustar por peso; não converter diretamente para outra solução ou expressão em propranolol base."
+      ],
+      "factIds": [
+        "b02_043_f05"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Dar durante/logo após alimentação; omitir se não se alimentar ou estiver vomitando. Monitorar frequência/pressão por 2 horas após início e aumento. Excluir contraindicações, como bradicardia, hipotensão, broncoespasmo e prematuridade incompatível com bula. Timolol também pode ser absorvido e causar efeitos sistêmicos."
+      ],
+      "factIds": [
+        "b02_043_f06"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Acompanhar resposta, crescimento, alimentação e tolerância. Plano especializado para suspensão, recidiva e sequelas; não iniciar beta-bloqueador empiricamente para toda lesão vascular."
+      ],
+      "factIds": [
+        "b02_043_f07"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Tumor vascular benigno com fase proliferativa inicial e involução posterior; localização/tamanho podem ameaçar função, causar ulceração ou indicar síndrome associada."
+      ],
+      "factIds": [
+        "b02_043_f01"
+      ]
+    }
+  ],
+  "markdown": "# Hemangioma infantil\n\n## Abordagem inicial e urgências\n\nEstridor, comprometimento visual, sangramento relevante ou dificuldade alimentar: urgência. Lesão pequena sem risco pode ser observada com documentação da evolução.\n\n## Diagnóstico e diferenciais\n\nExaminar localização, extensão, ulceração e lesões múltiplas. Hemangioma periocular, de via aérea ou segmentar de alto risco requer avaliação precoce; imagem somente por indicação.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira escolha quando tratamento sistêmico indicado: propranolol por equipe experiente. Alternativa para lesão pequena, fina e superficial selecionada: timolol tópico off-label, não equivalente para lesão profunda/ameaçadora. Contraindicação ou falha do propranolol: especialista pode considerar corticosteroide ou procedimento conforme caso.\n\n## Fármacos, doses e intervalos\n\nExemplo de produto, não intercambiável sem conferir concentração: HEMANGEOL, cloridrato de propranolol 4,28 mg/mL. Início autorizado na bula entre 5 semanas e 5 meses de idade: 0,15 mL/kg por dose oral 2 vezes ao dia, separadas por pelo menos 9 horas; após 1 semana, 0,3 mL/kg por dose 2 vezes ao dia; após 2 semanas, 0,4 mL/kg por dose 2 vezes ao dia, mantendo por 6 meses conforme equipe. Reajustar por peso; não converter diretamente para outra solução ou expressão em propranolol base.\n\n## Segurança e monitorização\n\nDar durante/logo após alimentação; omitir se não se alimentar ou estiver vomitando. Monitorar frequência/pressão por 2 horas após início e aumento. Excluir contraindicações, como bradicardia, hipotensão, broncoespasmo e prematuridade incompatível com bula. Timolol também pode ser absorvido e causar efeitos sistêmicos.\n\n## Reavaliação, internação e alta\n\nAcompanhar resposta, crescimento, alimentação e tolerância. Plano especializado para suspensão, recidiva e sequelas; não iniciar beta-bloqueador empiricamente para toda lesão vascular.\n\n## Reconhecimento rápido\n\nTumor vascular benigno com fase proliferativa inicial e involução posterior; localização/tamanho podem ameaçar função, causar ulceração ou indicar síndrome associada.\n\n## Referências\n\n1. [Hemangioma infantil](https://www.nhs.uk/conditions/birthmarks/)\n2. [AAP — guideline de hemangioma infantil 2019](https://publications.aap.org/pediatrics/article/143/1/e20183475/37268/Clinical-Practice-Guideline-for-the-Management-of)\n3. [DailyMed — HEMANGEOL, bula julho de 2026](https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4f8341ee-dac6-1ca9-e063-6394a90ac960)",
+  "approvedReviewCanonicalFileSha256": "ad560caf2f3b5fc33dcf954dbdc63cc8757e9abbce0827f579acb9be55a273e3",
+  "approvedReviewProjectionFileSha256": "19bbc95ae0837889e7655097223f5ce41e28df7960e026690a67de276b427e22"
+}

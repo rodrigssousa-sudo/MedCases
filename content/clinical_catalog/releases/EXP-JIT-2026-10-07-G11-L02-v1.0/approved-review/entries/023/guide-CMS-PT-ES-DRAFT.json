@@ -1,0 +1,204 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação deste lote. Guia permanece DRAFT no Admin após futura publicação coordenada dos modos.",
+  "canonical_payload_sha256": "3ca3f3bbf7bd85f955814de26e81a25c82ced5fe320607f10a5a39792289948b",
+  "owner_candidate": "dedo_em_botoeira",
+  "pt": {
+    "title": "Dedo em botoeira",
+    "subtitle": "Revisão clínica — primeira escolha e alternativas",
+    "summary": "Lesão da banda central extensora pode causar flexão da articulação proximal e hiperextensão distal, aparecendo progressivamente.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Lesão da banda central extensora pode causar flexão da articulação proximal e hiperextensão distal, aparecendo progressivamente."
+        ],
+        "factIds": [
+          "b02_023_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Pesquisar trauma dorsal da articulação interfalângica proximal, extensão e teste específico por examinador capacitado. Radiografia exclui avulsão/luxação; distinguir dedo em martelo."
+        ],
+        "factIds": [
+          "b02_023_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Imobilizar articulação proximal em extensão e encaminhar precocemente; lesão aberta demanda avaliação cirúrgica urgente."
+        ],
+        "factIds": [
+          "b02_023_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Primeira escolha em lesão fechada recente selecionada: tala proximal contínua e exercício distal orientado. Alternativa para lesão aberta, fratura desviada ou deformidade refratária: reparo/reconstrução. Paracetamol ou ibuprofeno para dor conforme risco."
+        ],
+        "factIds": [
+          "b02_023_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz."
+        ],
+        "factIds": [
+          "b02_023_adult_doses"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Não aplicar a tala apenas na ponta como no dedo em martelo. Não forçar deformidade rígida crônica; precisa de plano especializado."
+        ],
+        "factIds": [
+          "b02_023_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Controle com terapia da mão para ajuste, pele e amplitude; aderência à proteção previne deformidade persistente."
+        ],
+        "factIds": [
+          "b02_023_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Deformidad en ojal",
+    "subtitle": "Revisión clínica — primera elección y alternativas",
+    "summary": "La lesión de la bandeleta central extensora puede causar flexión proximal e hiperextensión distal de aparición progresiva.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "La lesión de la bandeleta central extensora puede causar flexión proximal e hiperextensión distal de aparición progresiva."
+        ],
+        "factIds": [
+          "b02_023_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Buscar traumatismo dorsal de la articulación interfalángica proximal, extensión y prueba específica por examinador capacitado. Radiografía descarta avulsión/luxación; distinguir del dedo en martillo."
+        ],
+        "factIds": [
+          "b02_023_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Inmovilizar articulación proximal en extensión y derivar temprano; una lesión abierta exige evaluación quirúrgica urgente."
+        ],
+        "factIds": [
+          "b02_023_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Primera elección en lesión cerrada reciente seleccionada: férula proximal continua y ejercicio distal dirigido. Alternativa ante lesión abierta, fractura desplazada o deformidad refractaria: reparación/reconstrucción. Paracetamol o ibuprofeno según riesgo."
+        ],
+        "factIds": [
+          "b02_023_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+        ],
+        "factIds": [
+          "b02_023_adult_doses"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "No aplicar la férula solo en la punta como en dedo en martillo. No forzar una deformidad crónica rígida; requiere plan especializado."
+        ],
+        "factIds": [
+          "b02_023_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Seguimiento con terapia de mano para ajuste, piel y movilidad; adherir a la protección previene deformidad persistente."
+        ],
+        "factIds": [
+          "b02_023_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_73",
+      "title": "Dedo em botoeira",
+      "url": "https://www.orthoinfo.org/diseases--conditions/boutonniere-deformity",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_73.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

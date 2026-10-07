@@ -1,0 +1,199 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Doença arterial periférica crônica",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "af89119abd5d5b4be41c63ed6141c7de95fef5e1ab9db96606a3b978efdb99a0",
+  "ownerCandidate": "doenca_arterial_periferica_cronica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_047_f01",
+    "b02_047_f02",
+    "b02_047_f03",
+    "b02_047_f04",
+    "b02_047_f05",
+    "b02_047_f06",
+    "b02_047_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor súbita, palidez, ausência de pulso, extremidade fria ou déficit: emergência vascular. Dor em repouso, úlcera não cicatrizante ou gangrena exige avaliação prioritária para ameaça crônica ao membro."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examinar pulsos, pele/pés e feridas; índice tornozelo-braquial e avaliação vascular conforme suspeita. Diabetes/doença renal podem tornar artérias incompressíveis e exigir outros testes."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Base de primeira escolha: cessar tabagismo, exercício estruturado, estatina de alta intensidade e controle de risco. PAD sintomática: antiplquetário único, como clopidogrel ou aspirina, conforme perfil. Em risco isquêmico favorável e baixo risco hemorrágico, rivaroxabana em dose vascular com aspirina é opção selecionada, sobretudo após revascularização."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Regime selecionado do resumo oficial ACC/AHA 2024: rivaroxabana 2,5 mg oral a cada 12 horas MAIS aspirina 81 mg oral uma vez ao dia. Não é dose para TVP/TEP ou fibrilação atrial. Conferir função renal/hepática, interações e sangramento antes de iniciar; não adicionar clopidogrel automaticamente."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Cilostazol pode melhorar claudicação em selecionados, mas é contraindicado na insuficiência cardíaca e não substitui prevenção vascular; dose exige produto/protocolo próprio. Revascularização se ameaça ao membro ou limitação persistente apesar de tratamento adequado."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Acompanhar marcha, sintomas, pés/feridas e adesão; prevenir trauma nos pés. Retorno urgente por mudança súbita, dor de repouso progressiva ou infecção."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Aterosclerose arterial de membros pode causar claudicação e ameaçar integridade do membro; distinguir da isquemia aguda e dor neurogênica."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_97",
+      "title": "Doença arterial periférica crônica",
+      "url": "https://medlineplus.gov/peripheralarterialdisease.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated September 23, 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_97.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "pad_acc2024",
+      "title": "ACC/AHA — guideline arterial periférica 2024",
+      "url": "https://www.acc.org/Guidelines/Guidelines/2024/05/14/11/09/2024-Lower-Extremity-Peripheral-Artery-Disease",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/pad_acc2024.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "pad_acc_summary",
+      "title": "ACC — resumo oficial guideline PAD 2024",
+      "url": "https://www.acc.org/about-acc/press-releases/2024/05/21/16/00/early-diagnosis-treatment-of-peripheral-artery-disease-essential-to-improve-outcomes-reduce-amputation-risk",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published the PAD National Action Plan, which is endorsed by the American College of Cardiology, that outlines six strategic goal",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/pad_acc_summary.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "pad_acc_anti",
+      "title": "ACC — antitrombóticos em PAD, declaração 2024",
+      "url": "https://www.acc.org/latest-in-cardiology/ten-points-to-remember/2024/08/27/15/49/antithrombotic-strategies-for",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/pad_acc_anti.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Dor súbita, palidez, ausência de pulso, extremidade fria ou déficit: emergência vascular. Dor em repouso, úlcera não cicatrizante ou gangrena exige avaliação prioritária para ameaça crônica ao membro."
+      ],
+      "factIds": [
+        "b02_047_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar pulsos, pele/pés e feridas; índice tornozelo-braquial e avaliação vascular conforme suspeita. Diabetes/doença renal podem tornar artérias incompressíveis e exigir outros testes."
+      ],
+      "factIds": [
+        "b02_047_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Base de primeira escolha: cessar tabagismo, exercício estruturado, estatina de alta intensidade e controle de risco. PAD sintomática: antiplquetário único, como clopidogrel ou aspirina, conforme perfil. Em risco isquêmico favorável e baixo risco hemorrágico, rivaroxabana em dose vascular com aspirina é opção selecionada, sobretudo após revascularização."
+      ],
+      "factIds": [
+        "b02_047_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Regime selecionado do resumo oficial ACC/AHA 2024: rivaroxabana 2,5 mg oral a cada 12 horas MAIS aspirina 81 mg oral uma vez ao dia. Não é dose para TVP/TEP ou fibrilação atrial. Conferir função renal/hepática, interações e sangramento antes de iniciar; não adicionar clopidogrel automaticamente."
+      ],
+      "factIds": [
+        "b02_047_f05"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Cilostazol pode melhorar claudicação em selecionados, mas é contraindicado na insuficiência cardíaca e não substitui prevenção vascular; dose exige produto/protocolo próprio. Revascularização se ameaça ao membro ou limitação persistente apesar de tratamento adequado."
+      ],
+      "factIds": [
+        "b02_047_f06"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Acompanhar marcha, sintomas, pés/feridas e adesão; prevenir trauma nos pés. Retorno urgente por mudança súbita, dor de repouso progressiva ou infecção."
+      ],
+      "factIds": [
+        "b02_047_f07"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Aterosclerose arterial de membros pode causar claudicação e ameaçar integridade do membro; distinguir da isquemia aguda e dor neurogênica."
+      ],
+      "factIds": [
+        "b02_047_f01"
+      ]
+    }
+  ],
+  "markdown": "# Doença arterial periférica crônica\n\n## Abordagem inicial e urgências\n\nDor súbita, palidez, ausência de pulso, extremidade fria ou déficit: emergência vascular. Dor em repouso, úlcera não cicatrizante ou gangrena exige avaliação prioritária para ameaça crônica ao membro.\n\n## Diagnóstico e diferenciais\n\nExaminar pulsos, pele/pés e feridas; índice tornozelo-braquial e avaliação vascular conforme suspeita. Diabetes/doença renal podem tornar artérias incompressíveis e exigir outros testes.\n\n## Tratamento: primeira escolha e alternativas\n\nBase de primeira escolha: cessar tabagismo, exercício estruturado, estatina de alta intensidade e controle de risco. PAD sintomática: antiplquetário único, como clopidogrel ou aspirina, conforme perfil. Em risco isquêmico favorável e baixo risco hemorrágico, rivaroxabana em dose vascular com aspirina é opção selecionada, sobretudo após revascularização.\n\n## Fármacos, doses e intervalos\n\nRegime selecionado do resumo oficial ACC/AHA 2024: rivaroxabana 2,5 mg oral a cada 12 horas MAIS aspirina 81 mg oral uma vez ao dia. Não é dose para TVP/TEP ou fibrilação atrial. Conferir função renal/hepática, interações e sangramento antes de iniciar; não adicionar clopidogrel automaticamente.\n\n## Segurança e monitorização\n\nCilostazol pode melhorar claudicação em selecionados, mas é contraindicado na insuficiência cardíaca e não substitui prevenção vascular; dose exige produto/protocolo próprio. Revascularização se ameaça ao membro ou limitação persistente apesar de tratamento adequado.\n\n## Reavaliação, internação e alta\n\nAcompanhar marcha, sintomas, pés/feridas e adesão; prevenir trauma nos pés. Retorno urgente por mudança súbita, dor de repouso progressiva ou infecção.\n\n## Reconhecimento rápido\n\nAterosclerose arterial de membros pode causar claudicação e ameaçar integridade do membro; distinguir da isquemia aguda e dor neurogênica.\n\n## Referências\n\n1. [Doença arterial periférica crônica](https://medlineplus.gov/peripheralarterialdisease.html)\n2. [ACC/AHA — guideline arterial periférica 2024](https://www.acc.org/Guidelines/Guidelines/2024/05/14/11/09/2024-Lower-Extremity-Peripheral-Artery-Disease)\n3. [ACC — resumo oficial guideline PAD 2024](https://www.acc.org/about-acc/press-releases/2024/05/21/16/00/early-diagnosis-treatment-of-peripheral-artery-disease-essential-to-improve-outcomes-reduce-amputation-risk)\n4. [ACC — antitrombóticos em PAD, declaração 2024](https://www.acc.org/latest-in-cardiology/ten-points-to-remember/2024/08/27/15/49/antithrombotic-strategies-for)",
+  "approvedReviewCanonicalFileSha256": "e6537b6fdc8d6d31bb4b5585ba273b4758914750a827b8156af085f4a1a53023",
+  "approvedReviewProjectionFileSha256": "b483078ecf8d274897bf9689a18157e558a7c083ce320248c5a266fa1e0fab66"
+}

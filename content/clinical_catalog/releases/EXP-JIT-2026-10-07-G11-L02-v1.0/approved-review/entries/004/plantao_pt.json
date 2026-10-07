@@ -1,0 +1,125 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Celulite pré-septal",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "8c76bc5848f80a53bcf8fce0670c39d8c9cbadcb7e99670e24f944e3a008003a",
+  "ownerCandidate": "celulite_pre_septal",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_004_f01",
+    "b02_004_f02",
+    "b02_004_f03",
+    "b02_004_f04",
+    "b02_004_f05",
+    "b02_004_f06",
+    "b02_004_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Sepse, progressão rápida ou suspeita orbital: internar e consultar oftalmologia/otorrino urgentemente. Manejo oral somente após confirmação de quadro leve, sem sinais orbitais e com retorno garantido."
+      ],
+      "factIds": [
+        "b02_004_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar acuidade, pupilas, motilidade, proptose, dor ao mover olhos, febre e fonte cutânea/sinusal. Restrição dolorosa, diplopia, baixa visual, proptose ou exame impossível requer avaliação hospitalar e imagem conforme especialista."
+      ],
+      "factIds": [
+        "b02_004_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Adulto leve: primeira opção do protocolo consultado, amoxicilina/clavulanato 500/125 mg por via oral a cada 8 horas por 7 dias. Em alergia à penicilina, alternativa desse protocolo: doxiciclina 100 mg a cada 12 horas MAIS metronidazol 400 mg a cada 8 horas por 7 dias; não extrapolar para crianças/gestantes e confirmar susceptibilidade local."
+      ],
+      "factIds": [
+        "b02_004_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Criança leve, segundo RCH: cefalexina 20 mg/kg por dose oral a cada 8 horas, máximo 750 mg por dose, por 7–10 dias. Se MRSA suspeito e susceptibilidade compatível: clindamicina 15 mg/kg por dose a cada 8 horas, máximo 600 mg por dose. Moderada/grave: cefazolina 50 mg/kg por dose intravenosa a cada 8 horas, máximo 2 g; alternativa ceftriaxona 50 mg/kg intravenosa uma vez ao dia, máximo 2 g, com transição oral conforme melhora."
+      ],
+      "factIds": [
+        "b02_004_f05"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Ajustar função renal, alergias e epidemiologia. Clindamicina tem risco de colite por C. difficile. Lactentes/neonatos e vacinação Hib incompleta exigem avaliação específica; não usar esquema leve se houver comprometimento orbital."
+      ],
+      "factIds": [
+        "b02_004_f06"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar em 24 horas; piora ou ausência de melhora em 24–48 horas exige reclassificar e considerar internação. Alta somente se tolerar via oral e houver exame ocular seguro e acompanhamento."
+      ],
+      "factIds": [
+        "b02_004_f07"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Infecção de pálpebra/tecidos anteriores ao septo orbital; preservar visão e motilidade é característica esperada. Celulite orbital é emergência distinta."
+      ],
+      "factIds": [
+        "b02_004_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_54",
+      "title": "Celulite pré-septal",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Periorbital_and_orbital_cellulitis/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated December, 2021",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_54.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "presept_adult",
+      "title": "NHS Forth Valley — celulite pré-septal/orbital adulta",
+      "url": "https://rightdecisions.scot.nhs.uk/media/2128/orbital-cellulitis-protocol.pdf",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2019,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Review Date  06/11/2021 ",
+      "scope": "Forth Valley versão 1.1 de 2019, revisão prevista 2021. Usado para rastrear dose; não apresentado como guideline atualizado em 2026. Princípio terapêutico conferido com handbook NHS 2024.",
+      "sourceEvidenceRecord": "evidence/presept_adult.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "presept_2024",
+      "title": "NHS Dumfries & Galloway — Eye antimicrobial handbook, reviewed July 2024",
+      "url": "https://www.rightdecisions.scot.nhs.uk/nhs-dumfries-galloway-antimicrobial-handbook/primary-care/eye/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NHS Dumfries & Galloway, revisão 31/07/2024: co-amoxiclav; em alergia/MRSA, doxiciclina mais metronidazol. Dose numérica rastreada ao protocolo Forth Valley 2019; necessidade de adaptação local explicitada.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

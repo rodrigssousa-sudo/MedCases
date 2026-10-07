@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação deste lote. Guia permanece DRAFT no Admin após futura publicação coordenada dos modos.",
+  "canonical_payload_sha256": "7e930081916128534160ed3a7fb3369b2fa47d91188a854039ee58a26eb8c68f",
+  "owner_candidate": "anquiloglossia",
+  "pt": {
+    "title": "Anquiloglossia",
+    "subtitle": "Revisão clínica — primeira escolha e alternativas",
+    "summary": "Frênulo lingual pode restringir função; aparência isolada não define necessidade de frenotomia. Priorizar dificuldade funcional real de amamentação.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Frênulo lingual pode restringir função; aparência isolada não define necessidade de frenotomia. Priorizar dificuldade funcional real de amamentação."
+        ],
+        "factIds": [
+          "b02_041_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "A intervenção deve responder a limitação funcional persistente. Apoio de lactação pode resolver problemas atribuídos ao frênulo e evita cirurgia guiada apenas por aparência."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Avaliar pega, transferência de leite, dor materna, crescimento e outras causas. Exame funcional com equipe de lactação/pediatria; não usar rótulo de frênulo posterior como indicação cirúrgica isolada."
+        ],
+        "factIds": [
+          "b02_041_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Desidratação ou ganho ponderal inadequado demanda corrigir alimentação e avaliar prontamente. Apoiar lactação antes de atribuir todos os sintomas ao frênulo."
+        ],
+        "factIds": [
+          "b02_041_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Primeira escolha: suporte de lactação e ajuste de alimentação. Alternativa após persistência de restrição sintomática apesar de suporte: frenotomia por profissional treinado, com decisão compartilhada. Não há fármaco que libere o frênulo."
+        ],
+        "factIds": [
+          "b02_041_f04"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Discutir sangramento, dor e benefício esperado; verificar medidas de segurança neonatal antes do procedimento. Laser não tem superioridade estabelecida sobre técnica convencional; não recomendar alongamento forçado da ferida como rotina."
+        ],
+        "factIds": [
+          "b02_041_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Reavaliar alimentação e peso após intervenção ou manejo conservador; ausência de resposta exige procurar outras causas, não repetir procedimento automaticamente."
+        ],
+        "factIds": [
+          "b02_041_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Anquiloglosia",
+    "subtitle": "Revisión clínica — primera elección y alternativas",
+    "summary": "El frenillo puede restringir función; su aspecto aislado no determina frenotomía. Priorizar dificultad funcional real de lactancia.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "El frenillo puede restringir función; su aspecto aislado no determina frenotomía. Priorizar dificultad funcional real de lactancia."
+        ],
+        "factIds": [
+          "b02_041_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "La intervención debe responder a limitación funcional persistente. Apoyo de lactancia puede resolver dificultades atribuidas al frenillo y evita cirugía guiada solo por apariencia."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Evaluar agarre, transferencia de leche, dolor materno, crecimiento y otras causas. Examen funcional con lactancia/pediatría; no usar etiqueta de frenillo posterior como indicación quirúrgica aislada."
+        ],
+        "factIds": [
+          "b02_041_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Deshidratación o crecimiento insuficiente requiere corregir alimentación y evaluar pronto. Apoyar lactancia antes de atribuir todos los síntomas al frenillo."
+        ],
+        "factIds": [
+          "b02_041_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Primera elección: apoyo de lactancia y ajuste de alimentación. Alternativa si persiste restricción sintomática pese al apoyo: frenotomía por profesional capacitado con decisión compartida. Ningún fármaco libera el frenillo."
+        ],
+        "factIds": [
+          "b02_041_f04"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Explicar sangrado, dolor y beneficio esperado; verificar seguridad neonatal antes del procedimiento. No está establecida superioridad del láser; no recomendar estiramiento forzado de la herida rutinariamente."
+        ],
+        "factIds": [
+          "b02_041_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Reevaluar alimentación y peso tras procedimiento o manejo conservador; sin respuesta, buscar otras causas y no repetir automáticamente la intervención."
+        ],
+        "factIds": [
+          "b02_041_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_91",
+      "title": "Anquiloglossia",
+      "url": "https://www.nhs.uk/conditions/tongue-tie/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 20 March 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_91.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "tongue_aap",
+      "title": "AAP — anquiloglossia, relatório clínico 2024",
+      "url": "https://publications.aap.org/pediatrics/article/154/2/e2024067605/198022/Identification-and-Management-of-Ankyloglossia-and?autologincheck=redirected",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "AAP 2024, relatório de anquiloglossia: suporte de lactação, frenotomia funcional selecionada, sem superioridade do laser e sem alongamento pós-procedimento rotineiro.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

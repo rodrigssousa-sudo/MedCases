@@ -1,0 +1,142 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Displasia do desenvolvimento do quadril",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "aab698f0c9d1d6825cf7e8bc9b9024d5e0412921649e5fc626d71d8634c662fd",
+  "ownerCandidate": "displasia_do_desenvolvimento_do_quadril",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_036_f01",
+    "b02_036_f02",
+    "b02_036_f03",
+    "b02_036_f04",
+    "b02_036_f05",
+    "b02_036_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Encaminhar cedo à ortopedia pediátrica; febre e quadril doloroso agudo requerem excluir artrite séptica, não atribuir à displasia."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examinar quadris por profissional treinado, fatores de risco e abdução; ultrassom no lactente e radiografia conforme idade/ossificação. Não confirmar apenas por estalo benigno."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira abordagem em lactente elegível: órtese, frequentemente arnês de Pavlik, aplicada/ajustada por equipe. Falha ou diagnóstico tardio: órtese alternativa, redução fechada/gesso ou cirurgia conforme idade/anatomia. Não há fármaco que corrija a instabilidade."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não ajustar arnês em casa sem orientação; vigiar pele/perfusão e evitar posições forçadas. Enfaixamento com pernas rigidamente estendidas/aduzidas é inadequado."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliações e imagens seriadas para confirmar redução/desenvolvimento; duração da órtese individual, sem promessa de esquema único."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Instabilidade/displasia do quadril no desenvolvimento pode ser silenciosa e prejudicar marcha e articulação futura."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_86",
+      "title": "Displasia do desenvolvimento do quadril",
+      "url": "https://www.nhs.uk/conditions/developmental-dysplasia-of-the-hip/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 11 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_86.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Encaminhar cedo à ortopedia pediátrica; febre e quadril doloroso agudo requerem excluir artrite séptica, não atribuir à displasia."
+      ],
+      "factIds": [
+        "b02_036_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar quadris por profissional treinado, fatores de risco e abdução; ultrassom no lactente e radiografia conforme idade/ossificação. Não confirmar apenas por estalo benigno."
+      ],
+      "factIds": [
+        "b02_036_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira abordagem em lactente elegível: órtese, frequentemente arnês de Pavlik, aplicada/ajustada por equipe. Falha ou diagnóstico tardio: órtese alternativa, redução fechada/gesso ou cirurgia conforme idade/anatomia. Não há fármaco que corrija a instabilidade."
+      ],
+      "factIds": [
+        "b02_036_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não ajustar arnês em casa sem orientação; vigiar pele/perfusão e evitar posições forçadas. Enfaixamento com pernas rigidamente estendidas/aduzidas é inadequado."
+      ],
+      "factIds": [
+        "b02_036_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Avaliações e imagens seriadas para confirmar redução/desenvolvimento; duração da órtese individual, sem promessa de esquema único."
+      ],
+      "factIds": [
+        "b02_036_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Instabilidade/displasia do quadril no desenvolvimento pode ser silenciosa e prejudicar marcha e articulação futura."
+      ],
+      "factIds": [
+        "b02_036_f01"
+      ]
+    }
+  ],
+  "markdown": "# Displasia do desenvolvimento do quadril\n\n## Abordagem inicial e urgências\n\nEncaminhar cedo à ortopedia pediátrica; febre e quadril doloroso agudo requerem excluir artrite séptica, não atribuir à displasia.\n\n## Diagnóstico e diferenciais\n\nExaminar quadris por profissional treinado, fatores de risco e abdução; ultrassom no lactente e radiografia conforme idade/ossificação. Não confirmar apenas por estalo benigno.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira abordagem em lactente elegível: órtese, frequentemente arnês de Pavlik, aplicada/ajustada por equipe. Falha ou diagnóstico tardio: órtese alternativa, redução fechada/gesso ou cirurgia conforme idade/anatomia. Não há fármaco que corrija a instabilidade.\n\n## Segurança e monitorização\n\nNão ajustar arnês em casa sem orientação; vigiar pele/perfusão e evitar posições forçadas. Enfaixamento com pernas rigidamente estendidas/aduzidas é inadequado.\n\n## Reavaliação, internação e alta\n\nAvaliações e imagens seriadas para confirmar redução/desenvolvimento; duração da órtese individual, sem promessa de esquema único.\n\n## Reconhecimento rápido\n\nInstabilidade/displasia do quadril no desenvolvimento pode ser silenciosa e prejudicar marcha e articulação futura.\n\n## Referências\n\n1. [Displasia do desenvolvimento do quadril](https://www.nhs.uk/conditions/developmental-dysplasia-of-the-hip/)",
+  "approvedReviewCanonicalFileSha256": "ed52aa87a95fab777b09b4f078820dab42d25776ec07f7bf0e8915ba9a76c39c",
+  "approvedReviewProjectionFileSha256": "32ffd88c96d7ae81b26ab0b9be1163bdd6a15b5b74b0a2bb8e1d0adb5841f349"
+}

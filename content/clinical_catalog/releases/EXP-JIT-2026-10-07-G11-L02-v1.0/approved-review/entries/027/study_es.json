@@ -1,0 +1,158 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Síndrome de dolor regional complejo",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "f9f7901c414089c57c9415baeb7938f723c4b7166267ffe6931fd713798c92b1",
+  "ownerCandidate": "sindrome_dolorosa_regional_complexa",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_027_f01",
+    "b02_027_f02",
+    "b02_027_f03",
+    "b02_027_f04",
+    "b02_027_f05",
+    "b02_027_f06",
+    "b02_027_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Dolor regional desproporcionado tras lesión puede acompañarse de alodinia, edema y cambios vasomotores/sudomotores y motores. No es un diagnóstico automático de dolor postraumático."
+      ],
+      "factIds": [
+        "b02_027_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "La pérdida funcional puede perpetuar dolor y sensibilización. Rehabilitación gradual es tratamiento activo; fármacos complementarios necesitan metas/revisión, no escalada ilimitada."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar patrón clínico y criterios diagnósticos por especialista; descartar infección, isquemia, trombosis y compresión neural. Ningún análisis aislado lo confirma."
+      ],
+      "factIds": [
+        "b02_027_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Descartar urgencias y facilitar derivación temprana; inmovilización prolongada puede empeorar función. Rehabilitación gradual, desensibilización y apoyo psicológico son la base."
+      ],
+      "factIds": [
+        "b02_027_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera estrategia: plan multidisciplinario funcional; analgesia neuropática es complemento individualizado. Opción inicial seleccionada: amitriptilina; alternativa: gabapentina. Pregabalina o nortriptilina son otras elecciones especializadas, sin superioridad universal demostrada para SDRC; el uso puede ser fuera de indicación según país."
+      ],
+      "factIds": [
+        "b02_027_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Adulto: amitriptilina puede iniciarse en 10 mg oral al acostarse, con titulación supervisada; límite habitual en dolor: 75 mg al día. Gabapentina empieza baja y se titula; rango usual adulto de mantenimiento para dolor neuropático: 900–3.600 mg al día dividido en 3 tomas, con reducción según función renal. El rango no es una dosis inicial."
+      ],
+      "factIds": [
+        "b02_027_f05"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Revisar sedación/caídas, riesgo suicida, arritmia/QT y efectos anticolinérgicos de amitriptilina. Gabapentinoides pueden causar dependencia y depresión respiratoria, sobre todo con opioides; no combinar ni retirar bruscamente sin plan. No prometer curación farmacológica."
+      ],
+      "factIds": [
+        "b02_027_f06"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Revisar función, tolerancia y objetivos; procedimientos/neuromodulación solo en refractarios evaluados. No atribuir automáticamente nuevas urgencias al síndrome."
+      ],
+      "factIds": [
+        "b02_027_f07"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_77",
+      "title": "Síndrome dolorosa regional complexa",
+      "url": "https://www.nhs.uk/conditions/complex-regional-pain-syndrome/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 October 2022",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_77.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "crps_nhs",
+      "title": "NHS — tratamento da síndrome dolorosa regional complexa",
+      "url": "https://www.nhs.uk/conditions/complex-regional-pain-syndrome/treatment/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 October 2022",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/crps_nhs.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "cg173",
+      "title": "NICE CG173 — dor neuropática, escolhas iniciais",
+      "url": "https://www.nice.org.uk/guidance/cg173/chapter/Recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2013,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Escolhas de dor neuropática, não protocolo específico de SDRC nem aprovação regulatória desse uso.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ami_nhs",
+      "title": "NHS — amitriptilina na dor, doses",
+      "url": "https://www.nhs.uk/medicines/amitriptyline-for-pain/how-and-when-to-take-amitriptyline-for-pain-and-migraine/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 14 August 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ami_nhs.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "gab_nhs",
+      "title": "NHS — gabapentina, doses e titulação",
+      "url": "https://www.nhs.uk/medicines/gabapentin/how-and-when-to-take-gabapentin/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 19 February 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/gab_nhs.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

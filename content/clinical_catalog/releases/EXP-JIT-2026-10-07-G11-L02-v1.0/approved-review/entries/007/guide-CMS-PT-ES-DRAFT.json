@@ -1,0 +1,264 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação deste lote. Guia permanece DRAFT no Admin após futura publicação coordenada dos modos.",
+  "canonical_payload_sha256": "e9d14cec10ad923da6a7eb03419878b5c393d2dad76bec1e3914044a4b65f559",
+  "owner_candidate": "fratura_do_umero_proximal",
+  "pt": {
+    "title": "Fratura do úmero proximal",
+    "subtitle": "Revisão clínica — primeira escolha e alternativas",
+    "summary": "Fratura próxima ao ombro; fragilidade óssea, lesão do manguito e maturidade esquelética mudam a conduta.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Fratura próxima ao ombro; fragilidade óssea, lesão do manguito e maturidade esquelética mudam a conduta."
+        ],
+        "factIds": [
+          "b02_007_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "Localização, desvio, estabilidade e estado dos tecidos moles orientam tratamento. Capacidade de remodelação infantil não permite aplicar os mesmos limites ao adulto; alívio da dor não demonstra estabilidade nem exclui lesão neurovascular."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Radiografias do ombro em projeções adequadas; avaliar nervo axilar, perfusão e luxação associada."
+        ],
+        "factIds": [
+          "b02_007_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Controlar dor, proteger com imobilização adequada e registrar exame neurovascular antes/depois. Exposição, pele ameaçada, isquemia, dor desproporcional ou déficit progressivo: ortopedia urgente; fratura exposta segue protocolo de antibiótico/tétano e cirurgia."
+        ],
+        "factIds": [
+          "b02_007_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Primeira escolha em adulto com fratura de baixa energia não complicada: manejo não cirúrgico com tipoia e reabilitação orientada. Cirurgia se exposição, pele ameaçada, lesão vascular, fratura-luxação ou divisão da cabeça. Crianças têm grande capacidade de remodelação; limites pediátricos não se aplicam ao adulto."
+        ],
+        "factIds": [
+          "b02_007_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+          "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL.",
+          "Resgate hospitalar pediátrico, idade de pelo menos 12 meses e sem acesso intravenoso, por equipe capacitada: fentanila intranasal 1,5 microgramas/kg por dose. Máximo inicial 100 microgramas com solução nasal 300 microgramas/mL; com apresentação 50 microgramas/mL, máximo usual 75 microgramas pela limitação de volume. Confirmar produto, concentração, peso apropriado e atomizador. Monitorar respiração, sedação, pressão e frequência, com recursos de ventilação/naloxona; reavaliar antes de nova dose. Não é receita domiciliar, não aplicar a lactentes menores de 12 meses ou com consciência alterada."
+        ],
+        "factIds": [
+          "b02_007_adult_doses",
+          "b02_007_ped_doses",
+          "b02_007_ped_fent"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Analgesia: paracetamol para dor leve; ibuprofeno é alternativa/adjuvante quando seguro, evitando idosos frágeis, doença renal, desidratação, sangramento e gestação de risco. Dor intensa requer analgesia titulada em ambiente monitorizado; não mascarar síndrome compartimental. Não extrapolar doses adultas para crianças."
+        ],
+        "factIds": [
+          "b02_007_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Destino conforme estabilidade, tecidos moles, lesões associadas, dor e apoio domiciliar. Alta somente com plano ortopédico, restrição de carga/movimento definida e retorno por dor crescente, dormência, extremidade fria ou compressão da tala. Reabilitação e controle radiográfico individualizados; não fixar duração única de gesso para todos."
+        ],
+        "factIds": [
+          "b02_007_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Fractura del húmero proximal",
+    "subtitle": "Revisión clínica — primera elección y alternativas",
+    "summary": "Fractura próxima al hombro; fragilidad ósea, manguito rotador y madurez esquelética modifican el manejo.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Fractura próxima al hombro; fragilidad ósea, manguito rotador y madurez esquelética modifican el manejo."
+        ],
+        "factIds": [
+          "b02_007_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Localización, desplazamiento, estabilidad y partes blandas orientan tratamiento. Remodelación infantil no permite usar iguales límites en adultos; mejoría del dolor no demuestra estabilidad ni excluye lesión neurovascular."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Radiografías del hombro en proyecciones adecuadas; evaluar nervio axilar, perfusión y luxación asociada."
+        ],
+        "factIds": [
+          "b02_007_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Controlar dolor, inmovilizar adecuadamente y documentar examen neurovascular antes/después. Exposición, piel amenazada, isquemia, dolor desproporcionado o déficit progresivo: ortopedia urgente; fractura abierta sigue protocolo de antibiótico/tétanos y cirugía."
+        ],
+        "factIds": [
+          "b02_007_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Primera elección en adulto con fractura de baja energía no complicada: tratamiento conservador con cabestrillo y rehabilitación dirigida. Cirugía ante exposición, piel amenazada, lesión vascular, fractura-luxación o división de la cabeza. Los niños remodelan más; sus límites no se aplican al adulto."
+        ],
+        "factIds": [
+          "b02_007_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.",
+          "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL.",
+          "Rescate hospitalario pediátrico, edad de al menos 12 meses y sin acceso intravenoso, por equipo capacitado: fentanilo intranasal 1,5 microgramos/kg por dosis. Máximo inicial 100 microgramos con solución nasal de 300 microgramos/mL; con presentación de 50 microgramos/mL, máximo usual 75 microgramos por límite de volumen. Confirmar producto, concentración, peso apropiado y atomizador. Vigilar respiración, sedación, presión y frecuencia, con recursos de ventilación/naloxona; reevaluar antes de repetir. No es receta domiciliaria; no aplicar a menores de 12 meses ni con conciencia alterada."
+        ],
+        "factIds": [
+          "b02_007_adult_doses",
+          "b02_007_ped_doses",
+          "b02_007_ped_fent"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Analgesia: paracetamol para dolor leve; ibuprofeno es alternativa/adyuvante si es seguro, evitando mayores frágiles, enfermedad renal, deshidratación, sangrado y embarazo de riesgo. Dolor intenso requiere analgesia titulada en ambiente monitorizado; no ocultar síndrome compartimental. No extrapolar dosis adultas a niños."
+        ],
+        "factIds": [
+          "b02_007_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Destino según estabilidad, partes blandas, lesiones asociadas, dolor y apoyo domiciliario. Alta solo con plan ortopédico, restricción de carga/movimiento definida y consulta por dolor creciente, entumecimiento, extremidad fría o compresión de férula. Rehabilitación y controles radiográficos individualizados; no fijar una duración única de yeso para todos."
+        ],
+        "factIds": [
+          "b02_007_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_57",
+      "title": "Fratura do úmero proximal",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/fractures/Proximal_humeral_fractures_Emergency_Department/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_57.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ng38",
+      "title": "NICE NG38 — fraturas não complexas",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2016,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Recomendações oficiais: analgesia estratificada, evitar NSAID em idosos frágeis, fratura proximal humeral adulta não complicada conservadora.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "shoulder_adult",
+      "title": "AAOS — trauma do ombro adulto",
+      "url": "https://www.orthoinfo.org/en/diseases--conditions/shoulder-trauma-fractures-and-dislocations/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/shoulder_adult.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — dor aguda pediátrica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_fent",
+      "title": "RCH — fentanila intranasal pediátrica, protocolo hospitalar",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/intranasal_fentanyl/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_fent.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

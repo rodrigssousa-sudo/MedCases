@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "dedo_em_martelo",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Dedo em martelo",
+    "es": "Dedo en martillo"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Localização anatômica e manejo próprios; não equivale às fraturas previamente cadastradas.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b02_022_f01",
+      "section": "concept",
+      "pt": "Lesão do tendão extensor na articulação interfalângica distal provoca incapacidade de extensão ativa; pode haver fragmento ósseo.",
+      "es": "La lesión extensora en la articulación interfalángica distal impide extensión activa; puede haber fragmento óseo.",
+      "sources": [
+        "topic_72"
+      ]
+    },
+    {
+      "id": "b02_022_f02",
+      "section": "diagnosis",
+      "pt": "Examinar extensão ativa, pele/unha e radiografar para avulsão/subluxação. Em crianças, lesão de unha e fise pode ser fratura de Seymour exposta, não simples dedo em martelo.",
+      "es": "Evaluar extensión activa, piel/uña y radiografiar por avulsión/subluxación. En niños, lesión ungueal y fisaria puede ser fractura abierta de Seymour, no simple dedo en martillo.",
+      "sources": [
+        "topic_72"
+      ]
+    },
+    {
+      "id": "b02_022_f03",
+      "section": "initial",
+      "pt": "Proteger a articulação distal em extensão sem hiperextensão forçada e consultar mão/ortopedia. Ferida aberta ou subluxação exige avaliação urgente.",
+      "es": "Proteger articulación distal en extensión sin hiperextensión forzada y consultar mano/ortopedia. Herida abierta o subluxación exige evaluación urgente.",
+      "sources": [
+        "topic_72"
+      ]
+    },
+    {
+      "id": "b02_022_f04",
+      "section": "options",
+      "pt": "Primeira escolha em lesão fechada estável: tala distal contínua, habitualmente por 6–8 semanas, deixando articulação proximal livre; manter extensão ao higienizar. Alternativa em instabilidade/lesão aberta: cirurgia selecionada. Paracetamol ou ibuprofeno apenas para dor.",
+      "es": "Primera elección en lesión cerrada estable: férula distal continua, habitualmente durante 6–8 semanas, dejando libre la articulación proximal; mantener extensión al limpiar. Alternativa ante inestabilidad/lesión abierta: cirugía seleccionada. Paracetamol o ibuprofeno solo para dolor.",
+      "sources": [
+        "topic_72"
+      ]
+    },
+    {
+      "id": "b02_022_f05",
+      "section": "safety",
+      "pt": "Flexionar a ponta durante o período contínuo pode interromper cicatrização e exigir reinício do esquema. Vigiar lesão de pele; não apertar tala excessivamente.",
+      "es": "Flexionar la punta durante el período continuo puede interrumpir cicatrización y exigir reiniciar el esquema. Vigilar piel; no ajustar excesivamente la férula.",
+      "sources": [
+        "topic_72"
+      ]
+    },
+    {
+      "id": "b02_022_f06",
+      "section": "followup",
+      "pt": "Rever integridade da pele, extensão e adesão; proteção adicional e retirada progressiva conforme equipe. Explicar possibilidade de discreto déficit residual.",
+      "es": "Revisar piel, extensión y adherencia; protección adicional y retirada progresiva según equipo. Explicar posible déficit residual leve.",
+      "sources": [
+        "topic_72"
+      ]
+    },
+    {
+      "id": "b02_022_adult_doses",
+      "section": "doses",
+      "sources": [
+        "para",
+        "ibu"
+      ],
+      "pt": "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+      "es": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta.",
+      "es": "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta.",
+      "sources": [
+        "topic_72"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_72",
+      "title": "Dedo em martelo",
+      "url": "https://www.nhs.uk/conditions/mallet-finger/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 02 August 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_72.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

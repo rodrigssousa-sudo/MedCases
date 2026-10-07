@@ -1,0 +1,125 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Estenose lombar degenerativa",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "9d3cdd780ca5d4afd24bffc81b30ee9839ce8d36a3804f299af51bfd52bd013e",
+  "ownerCandidate": "estenose_lombar_degenerativa",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_025_f01",
+    "b02_025_f02",
+    "b02_025_f03",
+    "b02_025_f04",
+    "b02_025_f05",
+    "b02_025_f06",
+    "b02_025_adult_ibu"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Cauda equina ou déficit progressivo: atendimento urgente. Sem alarmes, favorecer atividade tolerada e reabilitação, considerando risco de quedas."
+      ],
+      "factIds": [
+        "b02_025_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar padrão de marcha, neurologia e pulsos para diferenciar claudicação vascular. Ressonância deve correlacionar com sintomas; achado incidental não determina cirurgia."
+      ],
+      "factIds": [
+        "b02_025_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira abordagem: exercícios/fisioterapia e modificação funcional. Analgesia individualizada; ibuprofeno curto somente se benefício/risco favorável. Alternativa para limitação relevante persistente com correlação clínica: descompressão cirúrgica; fusão não é automática."
+      ],
+      "factIds": [
+        "b02_025_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Referência adulta curta: ibuprofeno 200–400 mg por via oral até 3 vezes ao dia, intervalo de pelo menos 4 horas e máximo de 1.200 mg em 24 horas nesse regime. Usar menor dose por menor tempo, com avaliação de contraindicações e gastroproteção quando indicada; não representa prescrição crônica."
+      ],
+      "factIds": [
+        "b02_025_adult_ibu"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não oferecer injeção epidural como rotina para claudicação neurogênica por estenose central. Não generalizar gabapentina/pregabalina para toda dor radicular; idosos, anticoagulação e função renal restringem opções."
+      ],
+      "factIds": [
+        "b02_025_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar distância de marcha, função e neurologia. Encaminhar perda funcional apesar de tratamento; retornar imediatamente por retenção urinária, anestesia em sela ou fraqueza nova."
+      ],
+      "factIds": [
+        "b02_025_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Estreitamento degenerativo do canal pode causar claudicação neurogênica, com piora ao ficar em pé/caminhar e alívio ao sentar/fletir."
+      ],
+      "factIds": [
+        "b02_025_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_75",
+      "title": "Estenose lombar degenerativa",
+      "url": "https://www.orthoinfo.org/diseases--conditions/lumbar-spinal-stenosis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_75.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ng59",
+      "title": "NICE NG59 — lombalgia e ciática, recomendações",
+      "url": "https://www.nice.org.uk/guidance/NG59/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2016,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Não oferecer gabapentinoides/corticoide oral/benzodiazepínico para ciática nem epidural rotineira na claudicação por estenose central.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

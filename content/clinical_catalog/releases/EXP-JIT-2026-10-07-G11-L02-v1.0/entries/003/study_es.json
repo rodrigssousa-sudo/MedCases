@@ -1,0 +1,170 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Acantosis nigricans",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "3c7cd13ce6706ab79f7d02455b68b41763eb7a1720387d117f0da22e50ad1101",
+  "ownerCandidate": "acantose_nigricante",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_003_f01",
+    "b02_003_f02",
+    "b02_003_f03",
+    "b02_003_f04",
+    "b02_003_f05",
+    "b02_003_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Placas engrosadas de aspecto aterciopelado en pliegues, frecuentemente asociadas a resistencia a la insulina; no significan suciedad ni infección por definición."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tratar resistencia insulínica confirmada difiere de tratar apariencia cutánea. La placa sugiere una hipótesis, pero no establece por sí sola diabetes ni indicación de metformina."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examinar distribución, comienzo y medicamentos; investigar riesgo de diabetes y causas hormonales según contexto. Inicio brusco/extenso, afectación mucosa o pérdida de peso inexplicada exige buscar enfermedad subyacente, incluida neoplasia."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "En guardia, reconocer y derivar para evaluación metabólica; tratar una urgencia glucémica si existe. No iniciar antibiótico o antifúngico solo por el aspecto oscuro."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primera elección: tratar la causa con plan de peso/actividad y manejo de diabetes o endocrinopatía confirmada. Complemento para molestias cosméticas: dermatología puede seleccionar retinoide tópico o procedimiento; no sustituye la evaluación."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Metformina no es una prescripción automática para toda acantosis; requiere indicación metabólica y evaluación renal. Los retinoides pueden irritar y requieren precaución en embarazo. No hay dos opciones farmacológicas universales validadas para la placa."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar causa, control metabólico y evolución. Derivar presentaciones atípicas o progresivas; no prometer desaparición completa con tratamiento estético."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_53",
+      "title": "Acantose nigricante",
+      "url": "https://www.nhs.uk/conditions/acanthosis-nigricans/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 04 July 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_53.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "acan_aad",
+      "title": "AAD — diagnóstico e manejo de acantose nigricante",
+      "url": "https://www.aad.org/public/diseases/a-z/acanthosis-nigricans-treatment",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/acan_aad.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Placas engrosadas de aspecto aterciopelado en pliegues, frecuentemente asociadas a resistencia a la insulina; no significan suciedad ni infección por definición."
+      ],
+      "factIds": [
+        "b02_003_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Tratar resistencia insulínica confirmada difiere de tratar apariencia cutánea. La placa sugiere una hipótesis, pero no establece por sí sola diabetes ni indicación de metformina."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examinar distribución, comienzo y medicamentos; investigar riesgo de diabetes y causas hormonales según contexto. Inicio brusco/extenso, afectación mucosa o pérdida de peso inexplicada exige buscar enfermedad subyacente, incluida neoplasia."
+      ],
+      "factIds": [
+        "b02_003_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "En guardia, reconocer y derivar para evaluación metabólica; tratar una urgencia glucémica si existe. No iniciar antibiótico o antifúngico solo por el aspecto oscuro."
+      ],
+      "factIds": [
+        "b02_003_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección: tratar la causa con plan de peso/actividad y manejo de diabetes o endocrinopatía confirmada. Complemento para molestias cosméticas: dermatología puede seleccionar retinoide tópico o procedimiento; no sustituye la evaluación."
+      ],
+      "factIds": [
+        "b02_003_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Metformina no es una prescripción automática para toda acantosis; requiere indicación metabólica y evaluación renal. Los retinoides pueden irritar y requieren precaución en embarazo. No hay dos opciones farmacológicas universales validadas para la placa."
+      ],
+      "factIds": [
+        "b02_003_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar causa, control metabólico y evolución. Derivar presentaciones atípicas o progresivas; no prometer desaparición completa con tratamiento estético."
+      ],
+      "factIds": [
+        "b02_003_f06"
+      ]
+    }
+  ],
+  "markdown": "# Acantosis nigricans\n\n## Concepto y mecanismo\n\nPlacas engrosadas de aspecto aterciopelado en pliegues, frecuentemente asociadas a resistencia a la insulina; no significan suciedad ni infección por definición.\n\n## Razonamiento y elección terapéutica\n\nTratar resistencia insulínica confirmada difiere de tratar apariencia cutánea. La placa sugiere una hipótesis, pero no establece por sí sola diabetes ni indicación de metformina.\n\n## Diagnóstico y diferenciales\n\nExaminar distribución, comienzo y medicamentos; investigar riesgo de diabetes y causas hormonales según contexto. Inicio brusco/extenso, afectación mucosa o pérdida de peso inexplicada exige buscar enfermedad subyacente, incluida neoplasia.\n\n## Abordaje inicial y urgencias\n\nEn guardia, reconocer y derivar para evaluación metabólica; tratar una urgencia glucémica si existe. No iniciar antibiótico o antifúngico solo por el aspecto oscuro.\n\n## Tratamiento: primera elección y alternativas\n\nPrimera elección: tratar la causa con plan de peso/actividad y manejo de diabetes o endocrinopatía confirmada. Complemento para molestias cosméticas: dermatología puede seleccionar retinoide tópico o procedimiento; no sustituye la evaluación.\n\n## Seguridad y monitorización\n\nMetformina no es una prescripción automática para toda acantosis; requiere indicación metabólica y evaluación renal. Los retinoides pueden irritar y requieren precaución en embarazo. No hay dos opciones farmacológicas universales validadas para la placa.\n\n## Reevaluación, internación y alta\n\nReevaluar causa, control metabólico y evolución. Derivar presentaciones atípicas o progresivas; no prometer desaparición completa con tratamiento estético.\n\n## Referencias\n\n1. [Acantose nigricante](https://www.nhs.uk/conditions/acanthosis-nigricans/)\n2. [AAD — diagnóstico e manejo de acantose nigricante](https://www.aad.org/public/diseases/a-z/acanthosis-nigricans-treatment)",
+  "approvedReviewCanonicalFileSha256": "1ee182e413093db512be8b257b39d691075cabe0e2a7dc66805665feb3ce4860",
+  "approvedReviewProjectionFileSha256": "29526950b886eb9fca11bccf68ee410dfb5077897bec7a3243439bd679c48957"
+}

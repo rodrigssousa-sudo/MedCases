@@ -1,0 +1,221 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Pé plano sintomático",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "6c318371ad701c4796ea85370431111e4972415075f8226ab351caf8e7fd4446",
+  "ownerCandidate": "pe_plano_sintomatico",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_029_f01",
+    "b02_029_f02",
+    "b02_029_f03",
+    "b02_029_f04",
+    "b02_029_f05",
+    "b02_029_f06",
+    "b02_029_adult_doses",
+    "b02_029_ped_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Redução do arco pode ser flexível e fisiológica na infância ou associada a disfunção tendínea/doença estrutural. Pé plano assintomático não exige medicamento."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar dor, rigidez, simetria e elevação na ponta dos pés; rigidez, início unilateral ou alteração neurológica requer investigação. Imagem se achados mudarem conduta."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Trauma, febre, incapacidade de apoio ou déficit neurovascular não devem ser atribuídos ao pé plano. Ajustar carga e calçado."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira escolha sintomática: calçado adequado, exercícios/alongamento e fisioterapia. Palmilha/órtese pode aliviar dor, sem prometer criar arco definitivo. Paracetamol ou ibuprofeno curto se apropriado; cirurgia apenas em deformidade refratária/estrutural selecionada."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz."
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não usar doses adultas em crianças. Evitar correção agressiva de pé flexível sem sintomas; medicação é alívio, não correção estrutural."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reavaliar dor e marcha; encaminhar pé rígido, progressivo, assimétrico ou incapacitante. Alta apenas após excluir urgência."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_79",
+      "title": "Pé plano sintomático",
+      "url": "https://www.nhs.uk/conditions/flat-feet/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 June 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_79.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — dor aguda pediátrica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Redução do arco pode ser flexível e fisiológica na infância ou associada a disfunção tendínea/doença estrutural. Pé plano assintomático não exige medicamento."
+      ],
+      "factIds": [
+        "b02_029_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar dor, rigidez, simetria e elevação na ponta dos pés; rigidez, início unilateral ou alteração neurológica requer investigação. Imagem se achados mudarem conduta."
+      ],
+      "factIds": [
+        "b02_029_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Trauma, febre, incapacidade de apoio ou déficit neurovascular não devem ser atribuídos ao pé plano. Ajustar carga e calçado."
+      ],
+      "factIds": [
+        "b02_029_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha sintomática: calçado adequado, exercícios/alongamento e fisioterapia. Palmilha/órtese pode aliviar dor, sem prometer criar arco definitivo. Paracetamol ou ibuprofeno curto se apropriado; cirurgia apenas em deformidade refratária/estrutural selecionada."
+      ],
+      "factIds": [
+        "b02_029_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+        "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+      ],
+      "factIds": [
+        "b02_029_adult_doses",
+        "b02_029_ped_doses"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não usar doses adultas em crianças. Evitar correção agressiva de pé flexível sem sintomas; medicação é alívio, não correção estrutural."
+      ],
+      "factIds": [
+        "b02_029_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar dor e marcha; encaminhar pé rígido, progressivo, assimétrico ou incapacitante. Alta apenas após excluir urgência."
+      ],
+      "factIds": [
+        "b02_029_f06"
+      ]
+    }
+  ],
+  "markdown": "# Pé plano sintomático\n\n## Conceito e mecanismo\n\nRedução do arco pode ser flexível e fisiológica na infância ou associada a disfunção tendínea/doença estrutural. Pé plano assintomático não exige medicamento.\n\n## Raciocínio e escolha terapêutica\n\nPrimeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta.\n\n## Diagnóstico e diferenciais\n\nAvaliar dor, rigidez, simetria e elevação na ponta dos pés; rigidez, início unilateral ou alteração neurológica requer investigação. Imagem se achados mudarem conduta.\n\n## Abordagem inicial e urgências\n\nTrauma, febre, incapacidade de apoio ou déficit neurovascular não devem ser atribuídos ao pé plano. Ajustar carga e calçado.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira escolha sintomática: calçado adequado, exercícios/alongamento e fisioterapia. Palmilha/órtese pode aliviar dor, sem prometer criar arco definitivo. Paracetamol ou ibuprofeno curto se apropriado; cirurgia apenas em deformidade refratária/estrutural selecionada.\n\n## Fármacos, doses e intervalos\n\nAnalgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.\n\nAnalgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL.\n\n## Segurança e monitorização\n\nNão usar doses adultas em crianças. Evitar correção agressiva de pé flexível sem sintomas; medicação é alívio, não correção estrutural.\n\n## Reavaliação, internação e alta\n\nReavaliar dor e marcha; encaminhar pé rígido, progressivo, assimétrico ou incapacitante. Alta apenas após excluir urgência.\n\n## Referências\n\n1. [Pé plano sintomático](https://www.nhs.uk/conditions/flat-feet/)\n2. [NHS — paracetamol adulto](https://www.nhs.uk/medicines/paracetamol-for-adults/)\n3. [NHS — ibuprofeno adulto](https://www.nhs.uk/medicines/ibuprofen-for-adults/)\n4. [RCH — dor aguda pediátrica](https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/)",
+  "approvedReviewCanonicalFileSha256": "910d113c0754e212479411c1f02c52e9338f044dd5dfdf0e7228ce1e8d58fe28",
+  "approvedReviewProjectionFileSha256": "35152645ff13ec05f635a02e05fc0e73a3e1991852dec254541d940fda0c6faf"
+}

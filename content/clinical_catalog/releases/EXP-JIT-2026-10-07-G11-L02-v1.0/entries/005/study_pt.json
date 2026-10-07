@@ -1,0 +1,214 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Ceratite infecciosa e úlcera de córnea",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "98878f12588ebd5d5f78c57d67130c676a99cf65aa1e40235127141e07f8a282",
+  "ownerCandidate": "ceratite_infecciosa_e_ulcera_de_cornea",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_005_f01",
+    "b02_005_f02",
+    "b02_005_f03",
+    "b02_005_f04",
+    "b02_005_f05",
+    "b02_005_f06",
+    "b02_005_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Infecção corneana pode ulcerar e comprometer rapidamente visão; lentes de contato e trauma são fatores relevantes. Abrasão sem infecção e ceratite herpética têm manejo próprio."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Concentração alta no local e aplicação frequente permitem tratar córnea infectada; um colírio para conjuntivite não reproduz necessariamente esse regime. Etiologia e gravidade determinam monoterapia ou colírios fortificados."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar acuidade antes do tratamento, lâmpada de fenda/fluoresceína, tamanho/localização do infiltrado e reação anterior. Úlcera central, grande ou grave demanda cultura/raspado quando indicado, sem atraso indevido do tratamento."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor, fotofobia, infiltrado ou perda visual: oftalmologia no mesmo dia. Retirar lentes; não ocluir nem fornecer anestésico tópico para uso domiciliar. Suspeita de perfuração demanda proteção sem pressão e urgência cirúrgica."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira estratégia para úlcera bacteriana selecionada: fluoroquinolona oftálmica sob supervisão. Alternativa em lesão ameaçadora à visão: antibióticos fortificados guiados por cultura, como vancomicina e tobramicina, preparados por serviço especializado. Suspeita de fungo/Acanthamoeba exige terapêutica específica, não simples troca de antibacteriano."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Exemplo de bula para úlcera corneana: ciprofloxacino oftálmico 0,3%, 2 gotas no olho afetado a cada 15 minutos nas primeiras 6 horas; depois a cada 30 minutos no restante do primeiro dia. No segundo dia, 2 gotas a cada 1 hora; do terceiro ao décimo quarto dia, 2 gotas a cada 4 horas. Ajuste e extensão somente por oftalmologia conforme resposta; o esquema de conjuntivite é diferente."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Colírios fortificados não têm preparo domiciliar. Corticosteroide somente após decisão especializada e controle da infecção; evitar empiricamente, sobretudo se fungo possível. Verificar formulação oftálmica, idade, alergia e resistência; solução otológica não é substituta."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Controle oftalmológico próximo, geralmente diário na fase inicial. Internar se gravidade, dificuldade de aplicações frequentes ou risco de perda de seguimento; suspender lentes até liberação."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_55",
+      "title": "Ceratite infecciosa e úlcera de córnea",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/microbialkeratitis_bacterial_fungal",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_55.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "keratitis_ppp",
+      "title": "AAO — Bacterial Keratitis Preferred Practice Pattern 2024",
+      "url": "https://www.aaojournal.org/article/S0161-6420%2824%2900007-1/fulltext",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLICATION_IDENTIFIED_WITH_PUBLIC_PROTOCOL_CROSSCHECK",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Publicação final AAO 2024 identificada. Conteúdo clínico deste candidato apoiado pelas recomendações públicas AAO EyeWiki/College e bula de ciprofloxacino; não alegar leitura integral de seção restrita.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "keratitis_aao",
+      "title": "AAO EyeWiki — Bacterial Keratitis, apoio clínico",
+      "url": "https://eyewiki.aao.org/Bacterial_Keratitis",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/keratitis_aao.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "cipo_label",
+      "title": "DailyMed — ciprofloxacino oftálmico 0,3%, úlcera corneana",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=b7910edd-2037-40a8-b24b-6fd4752f9ef0&type=display",
+      "authorityStatus": "REGULATORY_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/cipo_label.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Infecção corneana pode ulcerar e comprometer rapidamente visão; lentes de contato e trauma são fatores relevantes. Abrasão sem infecção e ceratite herpética têm manejo próprio."
+      ],
+      "factIds": [
+        "b02_005_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Concentração alta no local e aplicação frequente permitem tratar córnea infectada; um colírio para conjuntivite não reproduz necessariamente esse regime. Etiologia e gravidade determinam monoterapia ou colírios fortificados."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar acuidade antes do tratamento, lâmpada de fenda/fluoresceína, tamanho/localização do infiltrado e reação anterior. Úlcera central, grande ou grave demanda cultura/raspado quando indicado, sem atraso indevido do tratamento."
+      ],
+      "factIds": [
+        "b02_005_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Dor, fotofobia, infiltrado ou perda visual: oftalmologia no mesmo dia. Retirar lentes; não ocluir nem fornecer anestésico tópico para uso domiciliar. Suspeita de perfuração demanda proteção sem pressão e urgência cirúrgica."
+      ],
+      "factIds": [
+        "b02_005_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira estratégia para úlcera bacteriana selecionada: fluoroquinolona oftálmica sob supervisão. Alternativa em lesão ameaçadora à visão: antibióticos fortificados guiados por cultura, como vancomicina e tobramicina, preparados por serviço especializado. Suspeita de fungo/Acanthamoeba exige terapêutica específica, não simples troca de antibacteriano."
+      ],
+      "factIds": [
+        "b02_005_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Exemplo de bula para úlcera corneana: ciprofloxacino oftálmico 0,3%, 2 gotas no olho afetado a cada 15 minutos nas primeiras 6 horas; depois a cada 30 minutos no restante do primeiro dia. No segundo dia, 2 gotas a cada 1 hora; do terceiro ao décimo quarto dia, 2 gotas a cada 4 horas. Ajuste e extensão somente por oftalmologia conforme resposta; o esquema de conjuntivite é diferente."
+      ],
+      "factIds": [
+        "b02_005_f05"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Colírios fortificados não têm preparo domiciliar. Corticosteroide somente após decisão especializada e controle da infecção; evitar empiricamente, sobretudo se fungo possível. Verificar formulação oftálmica, idade, alergia e resistência; solução otológica não é substituta."
+      ],
+      "factIds": [
+        "b02_005_f06"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Controle oftalmológico próximo, geralmente diário na fase inicial. Internar se gravidade, dificuldade de aplicações frequentes ou risco de perda de seguimento; suspender lentes até liberação."
+      ],
+      "factIds": [
+        "b02_005_f07"
+      ]
+    }
+  ],
+  "markdown": "# Ceratite infecciosa e úlcera de córnea\n\n## Conceito e mecanismo\n\nInfecção corneana pode ulcerar e comprometer rapidamente visão; lentes de contato e trauma são fatores relevantes. Abrasão sem infecção e ceratite herpética têm manejo próprio.\n\n## Raciocínio e escolha terapêutica\n\nConcentração alta no local e aplicação frequente permitem tratar córnea infectada; um colírio para conjuntivite não reproduz necessariamente esse regime. Etiologia e gravidade determinam monoterapia ou colírios fortificados.\n\n## Diagnóstico e diferenciais\n\nAvaliar acuidade antes do tratamento, lâmpada de fenda/fluoresceína, tamanho/localização do infiltrado e reação anterior. Úlcera central, grande ou grave demanda cultura/raspado quando indicado, sem atraso indevido do tratamento.\n\n## Abordagem inicial e urgências\n\nDor, fotofobia, infiltrado ou perda visual: oftalmologia no mesmo dia. Retirar lentes; não ocluir nem fornecer anestésico tópico para uso domiciliar. Suspeita de perfuração demanda proteção sem pressão e urgência cirúrgica.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira estratégia para úlcera bacteriana selecionada: fluoroquinolona oftálmica sob supervisão. Alternativa em lesão ameaçadora à visão: antibióticos fortificados guiados por cultura, como vancomicina e tobramicina, preparados por serviço especializado. Suspeita de fungo/Acanthamoeba exige terapêutica específica, não simples troca de antibacteriano.\n\n## Fármacos, doses e intervalos\n\nExemplo de bula para úlcera corneana: ciprofloxacino oftálmico 0,3%, 2 gotas no olho afetado a cada 15 minutos nas primeiras 6 horas; depois a cada 30 minutos no restante do primeiro dia. No segundo dia, 2 gotas a cada 1 hora; do terceiro ao décimo quarto dia, 2 gotas a cada 4 horas. Ajuste e extensão somente por oftalmologia conforme resposta; o esquema de conjuntivite é diferente.\n\n## Segurança e monitorização\n\nColírios fortificados não têm preparo domiciliar. Corticosteroide somente após decisão especializada e controle da infecção; evitar empiricamente, sobretudo se fungo possível. Verificar formulação oftálmica, idade, alergia e resistência; solução otológica não é substituta.\n\n## Reavaliação, internação e alta\n\nControle oftalmológico próximo, geralmente diário na fase inicial. Internar se gravidade, dificuldade de aplicações frequentes ou risco de perda de seguimento; suspender lentes até liberação.\n\n## Referências\n\n1. [Ceratite infecciosa e úlcera de córnea](https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/microbialkeratitis_bacterial_fungal)\n2. [AAO — Bacterial Keratitis Preferred Practice Pattern 2024](https://www.aaojournal.org/article/S0161-6420%2824%2900007-1/fulltext)\n3. [AAO EyeWiki — Bacterial Keratitis, apoio clínico](https://eyewiki.aao.org/Bacterial_Keratitis)\n4. [DailyMed — ciprofloxacino oftálmico 0,3%, úlcera corneana](https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=b7910edd-2037-40a8-b24b-6fd4752f9ef0&type=display)",
+  "approvedReviewCanonicalFileSha256": "3bd0816c666b266f17d9d82ce87125699387d740a8bef6a9c3ad3bf025907928",
+  "approvedReviewProjectionFileSha256": "6043a8c76590d8b92ddef3338a66995fc7c2ce2ffaa5d83181f211cc613e2252"
+}

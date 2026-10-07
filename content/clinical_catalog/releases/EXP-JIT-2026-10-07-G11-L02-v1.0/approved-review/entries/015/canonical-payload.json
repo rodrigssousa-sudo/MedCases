@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "fratura_distal_do_femur",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Fratura distal do fêmur",
+    "es": "Fractura distal del fémur"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Fêmur distal, distinto de fêmur proximal ou diáfise do fêmur.",
+  "relatedExistingOwners": [],
+  "optionRelation": "STABILITY_DEPENDENT_CONSERVATIVE_OR_PROCEDURAL",
+  "facts": [
+    {
+      "id": "b02_015_f01",
+      "section": "concept",
+      "pt": "Fratura próxima ao joelho pode ser articular, osteoporótica ou periprotética; riscos variam por mecanismo.",
+      "es": "Fractura próxima a la rodilla que puede ser articular, osteoporótica o periprotésica; los riesgos dependen del mecanismo.",
+      "sources": [
+        "topic_65",
+        "ng37"
+      ]
+    },
+    {
+      "id": "b02_015_f02",
+      "section": "diagnosis",
+      "pt": "Radiografar fêmur/joelho e avaliar extensão articular por tomografia quando indicada. Investigar lesão vascular, prótese e lesões associadas.",
+      "es": "Radiografiar fémur/rodilla y evaluar extensión articular con tomografía cuando corresponda. Investigar lesión vascular, prótesis y otras lesiones.",
+      "sources": [
+        "topic_65",
+        "ng37"
+      ]
+    },
+    {
+      "id": "b02_015_f03",
+      "section": "initial",
+      "pt": "Controlar dor, proteger com imobilização adequada e registrar exame neurovascular antes/depois. Exposição, pele ameaçada, isquemia, dor desproporcional ou déficit progressivo: ortopedia urgente; fratura exposta segue protocolo de antibiótico/tétano e cirurgia.",
+      "es": "Controlar dolor, inmovilizar adecuadamente y documentar examen neurovascular antes/después. Exposición, piel amenazada, isquemia, dolor desproporcionado o déficit progresivo: ortopedia urgente; fractura abierta sigue protocolo de antibiótico/tétanos y cirugía.",
+      "sources": [
+        "topic_65",
+        "ng37"
+      ]
+    },
+    {
+      "id": "b02_015_f04",
+      "section": "options",
+      "pt": "Pouco desvio e estabilidade, ou risco cirúrgico proibitivo: manejo conservador selecionado. Maioria das instáveis/desviadas requer fixação; artroplastia/reconstrução em perfis específicos. Internar lesão aguda relevante para analgesia, estabilização e avaliação.",
+      "es": "Poco desplazamiento y estabilidad, o riesgo quirúrgico prohibitivo: manejo conservador seleccionado. La mayoría de las inestables/desplazadas requiere fijación; artroplastia/reconstrucción en perfiles específicos. Internar lesiones agudas relevantes para analgesia, estabilización y evaluación.",
+      "sources": [
+        "topic_65",
+        "ng37"
+      ]
+    },
+    {
+      "id": "b02_015_f05",
+      "section": "safety",
+      "pt": "Analgesia: paracetamol para dor leve; ibuprofeno é alternativa/adjuvante quando seguro, evitando idosos frágeis, doença renal, desidratação, sangramento e gestação de risco. Dor intensa requer analgesia titulada em ambiente monitorizado; não mascarar síndrome compartimental. Não extrapolar doses adultas para crianças.",
+      "es": "Analgesia: paracetamol para dolor leve; ibuprofeno es alternativa/adyuvante si es seguro, evitando mayores frágiles, enfermedad renal, deshidratación, sangrado y embarazo de riesgo. Dolor intenso requiere analgesia titulada en ambiente monitorizado; no ocultar síndrome compartimental. No extrapolar dosis adultas a niños.",
+      "sources": [
+        "topic_65",
+        "ng37"
+      ]
+    },
+    {
+      "id": "b02_015_f06",
+      "section": "followup",
+      "pt": "Destino conforme estabilidade, tecidos moles, lesões associadas, dor e apoio domiciliar. Alta somente com plano ortopédico, restrição de carga/movimento definida e retorno por dor crescente, dormência, extremidade fria ou compressão da tala. Reabilitação e controle radiográfico individualizados; não fixar duração única de gesso para todos.",
+      "es": "Destino según estabilidad, partes blandas, lesiones asociadas, dolor y apoyo domiciliario. Alta solo con plan ortopédico, restricción de carga/movimiento definida y consulta por dolor creciente, entumecimiento, extremidad fría o compresión de férula. Rehabilitación y controles radiográficos individualizados; no fijar una duración única de yeso para todos.",
+      "sources": [
+        "topic_65",
+        "ng37"
+      ]
+    },
+    {
+      "id": "b02_015_adult_doses",
+      "section": "doses",
+      "sources": [
+        "para",
+        "ibu"
+      ],
+      "pt": "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+      "es": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Localização, desvio, estabilidade e estado dos tecidos moles orientam tratamento. Capacidade de remodelação infantil não permite aplicar os mesmos limites ao adulto; alívio da dor não demonstra estabilidade nem exclui lesão neurovascular.",
+      "es": "Localización, desplazamiento, estabilidad y partes blandas orientan tratamiento. Remodelación infantil no permite usar iguales límites en adultos; mejoría del dolor no demuestra estabilidad ni excluye lesión neurovascular.",
+      "sources": [
+        "topic_65",
+        "ng37"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_65",
+      "title": "Fratura distal do fêmur",
+      "url": "https://www.orthoinfo.org/diseases--conditions/distal-femur-thighbone-fractures-of-the-knee?webid=2FDEE455",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_65.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ng37",
+      "title": "NICE NG37 — fraturas complexas",
+      "url": "https://www.nice.org.uk/guidance/ng37/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2016,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Escopo de fraturas complexas, exposição, avaliação neurovascular e necessidade de equipe especializada.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

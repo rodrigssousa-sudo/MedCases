@@ -1,0 +1,173 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Doença de Sever",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "9af9c65acb26272d87db24def20070ae3745312abdab6108f0301a1204cbd8b8",
+  "ownerCandidate": "doenca_de_sever",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_034_f01",
+    "b02_034_f02",
+    "b02_034_f03",
+    "b02_034_f04",
+    "b02_034_f05",
+    "b02_034_f06",
+    "b02_034_ped_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Excluir urgências antes de atribuir dor ao crescimento; analgesia não autoriza esforço doloroso."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor no calcanhar ao correr/saltar; febre, trauma importante, dor noturna ou recusa de apoio exige excluir fratura/infecção."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira escolha: reduzir atividade dolorosa, alongar panturrilha e adequar calçado. Talonete pode aliviar carga; paracetamol ou ibuprofeno curto para dor. Imobilização temporária é opção selecionada em dor intensa, sem cirurgia rotineira."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Usar doses pediátricas por peso e evitar NSAID em desidratação, doença renal ou sangramento. Não infiltrar corticoide na apófise/tendão empiricamente."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Rever dor, marcha e retorno progressivo ao esporte; persistência, alteração do padrão ou sinais sistêmicos exige reavaliar diagnóstico."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Apofisite do calcâneo em criança em crescimento, relacionada a carga e tração do tendão de Aquiles."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_84",
+      "title": "Doença de Sever",
+      "url": "https://www.orthoinfo.org/es/diseases--conditions/severs-disease/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_84.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — dor aguda pediátrica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Excluir urgências antes de atribuir dor ao crescimento; analgesia não autoriza esforço doloroso."
+      ],
+      "factIds": [
+        "b02_034_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Dor no calcanhar ao correr/saltar; febre, trauma importante, dor noturna ou recusa de apoio exige excluir fratura/infecção."
+      ],
+      "factIds": [
+        "b02_034_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha: reduzir atividade dolorosa, alongar panturrilha e adequar calçado. Talonete pode aliviar carga; paracetamol ou ibuprofeno curto para dor. Imobilização temporária é opção selecionada em dor intensa, sem cirurgia rotineira."
+      ],
+      "factIds": [
+        "b02_034_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+      ],
+      "factIds": [
+        "b02_034_ped_doses"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Usar doses pediátricas por peso e evitar NSAID em desidratação, doença renal ou sangramento. Não infiltrar corticoide na apófise/tendão empiricamente."
+      ],
+      "factIds": [
+        "b02_034_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Rever dor, marcha e retorno progressivo ao esporte; persistência, alteração do padrão ou sinais sistêmicos exige reavaliar diagnóstico."
+      ],
+      "factIds": [
+        "b02_034_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Apofisite do calcâneo em criança em crescimento, relacionada a carga e tração do tendão de Aquiles."
+      ],
+      "factIds": [
+        "b02_034_f01"
+      ]
+    }
+  ],
+  "markdown": "# Doença de Sever\n\n## Abordagem inicial e urgências\n\nExcluir urgências antes de atribuir dor ao crescimento; analgesia não autoriza esforço doloroso.\n\n## Diagnóstico e diferenciais\n\nDor no calcanhar ao correr/saltar; febre, trauma importante, dor noturna ou recusa de apoio exige excluir fratura/infecção.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira escolha: reduzir atividade dolorosa, alongar panturrilha e adequar calçado. Talonete pode aliviar carga; paracetamol ou ibuprofeno curto para dor. Imobilização temporária é opção selecionada em dor intensa, sem cirurgia rotineira.\n\n## Fármacos, doses e intervalos\n\nAnalgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL.\n\n## Segurança e monitorização\n\nUsar doses pediátricas por peso e evitar NSAID em desidratação, doença renal ou sangramento. Não infiltrar corticoide na apófise/tendão empiricamente.\n\n## Reavaliação, internação e alta\n\nRever dor, marcha e retorno progressivo ao esporte; persistência, alteração do padrão ou sinais sistêmicos exige reavaliar diagnóstico.\n\n## Reconhecimento rápido\n\nApofisite do calcâneo em criança em crescimento, relacionada a carga e tração do tendão de Aquiles.\n\n## Referências\n\n1. [Doença de Sever](https://www.orthoinfo.org/es/diseases--conditions/severs-disease/)\n2. [RCH — dor aguda pediátrica](https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/)",
+  "approvedReviewCanonicalFileSha256": "2f8d988e0d4a74ab2c936c640e79abdfbe34ebf507b8d471520d9d5875f93b0b",
+  "approvedReviewProjectionFileSha256": "038c9a63a4a0fb7a6dd57c26d31212d0319e80a730067b1377566d846137dce3"
+}

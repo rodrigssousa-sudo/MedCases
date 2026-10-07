@@ -1,0 +1,217 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação deste lote. Guia permanece DRAFT no Admin após futura publicação coordenada dos modos.",
+  "canonical_payload_sha256": "0b80dbb980a58c738e930c6dd4240c57be77ff7069652aaee48b49448f26d508",
+  "owner_candidate": "sindrome_de_wolff_parkinson_white",
+  "pt": {
+    "title": "Síndrome de Wolff-Parkinson-White",
+    "subtitle": "Revisão clínica — primeira escolha e alternativas",
+    "summary": "Via acessória permite pré-excitação e taquiarritmia; padrão de ECG assintomático não equivale automaticamente a síndrome sintomática. FA pré-excitada pode degenerar em fibrilação ventricular.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Via acessória permite pré-excitação e taquiarritmia; padrão de ECG assintomático não equivale automaticamente a síndrome sintomática. FA pré-excitada pode degenerar em fibrilação ventricular."
+        ],
+        "factIds": [
+          "b02_046_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "Bloquear apenas o nó AV na FA pré-excitada pode favorecer condução rápida pela via acessória. O mesmo paciente pode ter AVRT regular tratável com adenosina; identificar o ritmo é essencial."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "ECG basal pode mostrar PR curto/onda delta; identificar ritmo atual, regularidade e largura do QRS. Palpitação com síncope ou ritmo largo irregular exige abordagem urgente."
+        ],
+        "factIds": [
+          "b02_046_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Instável: cardioversão elétrica conforme ritmo; sem pulso, PCR. Preparar monitor/choque e especialista. Não usar tratamento de TSV regular em FA pré-excitada irregular."
+        ],
+        "factIds": [
+          "b02_046_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "AVRT ortodrômica regular e estreita estável: manobra vagal; adenosina monitorizada se indicada. FA pré-excitada estável: procainamida ou ibutilida por equipe experiente, ou cardioversão quando apropriada. Ablação da via é tratamento definitivo preferido para síndrome sintomática elegível."
+        ],
+        "factIds": [
+          "b02_046_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Somente para AVRT ortodrômica adulta regular/estreita apropriada: adenosina 6 mg intravenosa rápida seguida de flush salino; segunda dose 12 mg se necessário, com monitor e recurso de reanimação. Este regime não deve ser usado em FA pré-excitada. Infusões para FA pré-excitada seguem protocolo especializado e monitorização de QRS/QT."
+        ],
+        "factIds": [
+          "b02_046_f05"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Na FA pré-excitada evitar adenosina, digoxina, beta-bloqueadores, diltiazem/verapamil e amiodarona intravenosa. Ibutilida/procainamida exigem excluir contraindicações e risco de proarritmia; não combinar empiricamente."
+        ],
+        "factIds": [
+          "b02_046_f06"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Encaminhar à eletrofisiologia para estratificação/ablação; assintomáticos também precisam de decisão individual por risco e atividade. Alta apenas após estabilidade e plano seguro."
+        ],
+        "factIds": [
+          "b02_046_f07"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Síndrome de Wolff-Parkinson-White",
+    "subtitle": "Revisión clínica — primera elección y alternativas",
+    "summary": "Una vía accesoria permite preexcitación y taquiarritmia; patrón ECG asintomático no equivale automáticamente a síndrome sintomático. FA preexcitada puede degenerar en fibrilación ventricular.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Una vía accesoria permite preexcitación y taquiarritmia; patrón ECG asintomático no equivale automáticamente a síndrome sintomático. FA preexcitada puede degenerar en fibrilación ventricular."
+        ],
+        "factIds": [
+          "b02_046_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Bloquear solo el nodo AV en FA preexcitada puede favorecer conducción rápida por la vía accesoria. El mismo paciente puede tener AVRT regular tratable con adenosina; identificar ritmo es esencial."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "ECG basal puede mostrar PR corto/onda delta; identificar ritmo actual, regularidad y ancho de QRS. Palpitación con síncope o ritmo ancho irregular exige urgencia."
+        ],
+        "factIds": [
+          "b02_046_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Inestable: cardioversión eléctrica según ritmo; sin pulso, reanimación. Preparar monitor/choque y especialista. No aplicar tratamiento de TSV regular a FA preexcitada irregular."
+        ],
+        "factIds": [
+          "b02_046_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "AVRT ortodrómica regular/estrecha estable: maniobra vagal; adenosina monitorizada si corresponde. FA preexcitada estable: procainamida o ibutilida por equipo experimentado, o cardioversión cuando corresponda. Ablación de vía es tratamiento definitivo preferido en síndrome sintomático elegible."
+        ],
+        "factIds": [
+          "b02_046_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Solo en AVRT ortodrómica adulta regular/estrecha apropiada: adenosina 6 mg intravenosa rápida seguida de lavado salino; segunda dosis 12 mg si se necesita, con monitor y recursos de reanimación. No usar este esquema en FA preexcitada. Las infusiones para FA preexcitada siguen protocolo especializado y vigilancia de QRS/QT."
+        ],
+        "factIds": [
+          "b02_046_f05"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "En FA preexcitada evitar adenosina, digoxina, beta-bloqueadores, diltiazem/verapamilo y amiodarona intravenosa. Ibutilida/procainamida exigen excluir contraindicaciones/proarritmia; no combinar empíricamente."
+        ],
+        "factIds": [
+          "b02_046_f06"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Derivar a electrofisiología para estratificación/ablación; asintomáticos requieren decisión individual por riesgo/actividad. Alta solo tras estabilidad y plan seguro."
+        ],
+        "factIds": [
+          "b02_046_f07"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_96",
+      "title": "Síndrome de Wolff-Parkinson-White",
+      "url": "https://www.nhs.uk/conditions/wolff-parkinson-white-syndrome/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 03 October 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_96.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "wpw_jacc",
+      "title": "ACC/AHA/HRS — recomendações de AVRT/FA pré-excitada, 2015",
+      "url": "https://www.jacc.org/doi/10.1016/j.jacc.2015.09.019",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2015,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "ACC/AHA/HRS 2015: manobras/adenosina em AVRT ortodrômica; procainamida ou ibutilida na FA pré-excitada estável; cardioversão em instabilidade; bloqueadores nodais/amiodarona IV prejudiciais. Conferido também AHA 2025.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "aha2025",
+      "title": "AHA — Adult Advanced Life Support 2025",
+      "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "AHA final 2025, seção 18.2/tabela 2: diltiazem 0,25 mg/kg em 2 minutos, 5–10 mg por hora; metoprolol 2,5–5 mg em 2 minutos até 3 doses; evitar bloqueio nodal/amiodarona IV em pré-excitação.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "aha_algo",
+      "title": "AHA — algoritmo de taquiarritmia adulta com pulso, 2025",
+      "url": "https://www.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Algorithms/Algorithm-ACLS-Tachycardia-250514.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_PDF_TEXT_AND_VISUAL_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

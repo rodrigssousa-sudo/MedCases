@@ -1,0 +1,170 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Cólica do lactente",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "8b395f45bc1227610d2e094c5402ef7cef95803589a54eab59e9fc0f27baae01",
+  "ownerCandidate": "colica_do_lactente",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_001_f01",
+    "b02_001_f02",
+    "b02_001_f03",
+    "b02_001_f04",
+    "b02_001_f05",
+    "b02_001_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Choro recorrente e difícil de consolar em lactente saudável, sem causa identificável após avaliação; tende a melhorar nos primeiros meses. Não atribuir qualquer choro a gases."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "A prioridade é reconhecer doença e apoiar o vínculo cuidador–bebê: o padrão de choro não comprova doença intestinal. Acrescentar medicamentos sem diagnóstico pode expor um lactente saudável a risco."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar curva de peso, mamadas, vômitos, fezes, diurese, temperatura, exame completo e bem-estar dos cuidadores. Diferenciais: fome, infecção, lesão, hérnia, alergia alimentar e outras causas orgânicas."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Febre, prostração, vômito verde, sangue nas fezes, desidratação, distensão ou ganho de peso inadequado exigem investigação. Avaliar exaustão dos cuidadores e risco de violência; nunca sacudir o bebê."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira escolha: apoio aos cuidadores e avaliação da técnica de alimentação, mantendo aleitamento. Complementar com colo, embalo suave e medidas de conforto; para dormir, posição supina em superfície segura."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não há dois fármacos de rotina recomendados para cólica inespecífica. Evitar anticolinérgicos, supressores de ácido e trocas de fórmula sem indicação. Probióticos têm evidência específica por cepa/população e não são alternativa universal."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alta se exame, hidratação e crescimento forem tranquilizadores e houver apoio/retorno acessível. Reavaliar persistência, alteração do padrão ou sinais de alarme; alergia comprovada segue manejo próprio."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_51",
+      "title": "Cólica do lactente",
+      "url": "https://www.nhs.uk/conditions/colic/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 26 April 2022",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_51.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "colic_rch",
+      "title": "RCH — lactente choroso, avaliação clínica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Unsettled_or_crying_babies/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/colic_rch.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Choro recorrente e difícil de consolar em lactente saudável, sem causa identificável após avaliação; tende a melhorar nos primeiros meses. Não atribuir qualquer choro a gases."
+      ],
+      "factIds": [
+        "b02_001_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A prioridade é reconhecer doença e apoiar o vínculo cuidador–bebê: o padrão de choro não comprova doença intestinal. Acrescentar medicamentos sem diagnóstico pode expor um lactente saudável a risco."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar curva de peso, mamadas, vômitos, fezes, diurese, temperatura, exame completo e bem-estar dos cuidadores. Diferenciais: fome, infecção, lesão, hérnia, alergia alimentar e outras causas orgânicas."
+      ],
+      "factIds": [
+        "b02_001_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Febre, prostração, vômito verde, sangue nas fezes, desidratação, distensão ou ganho de peso inadequado exigem investigação. Avaliar exaustão dos cuidadores e risco de violência; nunca sacudir o bebê."
+      ],
+      "factIds": [
+        "b02_001_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha: apoio aos cuidadores e avaliação da técnica de alimentação, mantendo aleitamento. Complementar com colo, embalo suave e medidas de conforto; para dormir, posição supina em superfície segura."
+      ],
+      "factIds": [
+        "b02_001_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não há dois fármacos de rotina recomendados para cólica inespecífica. Evitar anticolinérgicos, supressores de ácido e trocas de fórmula sem indicação. Probióticos têm evidência específica por cepa/população e não são alternativa universal."
+      ],
+      "factIds": [
+        "b02_001_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Alta se exame, hidratação e crescimento forem tranquilizadores e houver apoio/retorno acessível. Reavaliar persistência, alteração do padrão ou sinais de alarme; alergia comprovada segue manejo próprio."
+      ],
+      "factIds": [
+        "b02_001_f06"
+      ]
+    }
+  ],
+  "markdown": "# Cólica do lactente\n\n## Conceito e mecanismo\n\nChoro recorrente e difícil de consolar em lactente saudável, sem causa identificável após avaliação; tende a melhorar nos primeiros meses. Não atribuir qualquer choro a gases.\n\n## Raciocínio e escolha terapêutica\n\nA prioridade é reconhecer doença e apoiar o vínculo cuidador–bebê: o padrão de choro não comprova doença intestinal. Acrescentar medicamentos sem diagnóstico pode expor um lactente saudável a risco.\n\n## Diagnóstico e diferenciais\n\nAvaliar curva de peso, mamadas, vômitos, fezes, diurese, temperatura, exame completo e bem-estar dos cuidadores. Diferenciais: fome, infecção, lesão, hérnia, alergia alimentar e outras causas orgânicas.\n\n## Abordagem inicial e urgências\n\nFebre, prostração, vômito verde, sangue nas fezes, desidratação, distensão ou ganho de peso inadequado exigem investigação. Avaliar exaustão dos cuidadores e risco de violência; nunca sacudir o bebê.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira escolha: apoio aos cuidadores e avaliação da técnica de alimentação, mantendo aleitamento. Complementar com colo, embalo suave e medidas de conforto; para dormir, posição supina em superfície segura.\n\n## Segurança e monitorização\n\nNão há dois fármacos de rotina recomendados para cólica inespecífica. Evitar anticolinérgicos, supressores de ácido e trocas de fórmula sem indicação. Probióticos têm evidência específica por cepa/população e não são alternativa universal.\n\n## Reavaliação, internação e alta\n\nAlta se exame, hidratação e crescimento forem tranquilizadores e houver apoio/retorno acessível. Reavaliar persistência, alteração do padrão ou sinais de alarme; alergia comprovada segue manejo próprio.\n\n## Referências\n\n1. [Cólica do lactente](https://www.nhs.uk/conditions/colic/)\n2. [RCH — lactente choroso, avaliação clínica](https://www.rch.org.au/clinicalguide/guideline_index/Unsettled_or_crying_babies/)",
+  "approvedReviewCanonicalFileSha256": "40cf2f5c310bb18a06e8e07367fc18c6cdafe3a41666faf48406e3b57c35127b",
+  "approvedReviewProjectionFileSha256": "0c403df37ca388d5134d7a54ec47c4b7f515b5dbe79555a14d29371ad691a3fc"
+}

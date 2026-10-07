@@ -1,0 +1,167 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "pe_plano_sintomatico",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Pé plano sintomático",
+    "es": "Pie plano sintomático"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Condição com identidade e escopo próprios; nenhum ID/título/alias PT/ES equivalente identificado no baseline verificado.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b02_029_f01",
+      "section": "concept",
+      "pt": "Redução do arco pode ser flexível e fisiológica na infância ou associada a disfunção tendínea/doença estrutural. Pé plano assintomático não exige medicamento.",
+      "es": "La reducción del arco puede ser flexible y fisiológica en niños o asociada a disfunción tendinosa/enfermedad estructural. El pie plano asintomático no requiere fármacos.",
+      "sources": [
+        "topic_79"
+      ]
+    },
+    {
+      "id": "b02_029_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar dor, rigidez, simetria e elevação na ponta dos pés; rigidez, início unilateral ou alteração neurológica requer investigação. Imagem se achados mudarem conduta.",
+      "es": "Evaluar dolor, rigidez, simetría y elevación de talones; rigidez, comienzo unilateral o alteración neurológica exige evaluación. Imágenes si cambian el manejo.",
+      "sources": [
+        "topic_79"
+      ]
+    },
+    {
+      "id": "b02_029_f03",
+      "section": "initial",
+      "pt": "Trauma, febre, incapacidade de apoio ou déficit neurovascular não devem ser atribuídos ao pé plano. Ajustar carga e calçado.",
+      "es": "Traumatismo, fiebre, imposibilidad de apoyo o déficit neurovascular no deben atribuirse al pie plano. Adaptar carga y calzado.",
+      "sources": [
+        "topic_79"
+      ]
+    },
+    {
+      "id": "b02_029_f04",
+      "section": "options",
+      "pt": "Primeira escolha sintomática: calçado adequado, exercícios/alongamento e fisioterapia. Palmilha/órtese pode aliviar dor, sem prometer criar arco definitivo. Paracetamol ou ibuprofeno curto se apropriado; cirurgia apenas em deformidade refratária/estrutural selecionada.",
+      "es": "Primera elección sintomática: calzado adecuado, ejercicios/estiramiento y fisioterapia. Plantilla/ortesis puede aliviar dolor sin prometer crear un arco definitivo. Paracetamol o ibuprofeno breve si corresponde; cirugía solo en deformidad refractaria/estructural seleccionada.",
+      "sources": [
+        "topic_79"
+      ]
+    },
+    {
+      "id": "b02_029_f05",
+      "section": "safety",
+      "pt": "Não usar doses adultas em crianças. Evitar correção agressiva de pé flexível sem sintomas; medicação é alívio, não correção estrutural.",
+      "es": "No usar dosis adultas en niños. Evitar corregir agresivamente un pie flexible asintomático; el fármaco alivia, no corrige estructura.",
+      "sources": [
+        "topic_79"
+      ]
+    },
+    {
+      "id": "b02_029_f06",
+      "section": "followup",
+      "pt": "Reavaliar dor e marcha; encaminhar pé rígido, progressivo, assimétrico ou incapacitante. Alta apenas após excluir urgência.",
+      "es": "Reevaluar dolor y marcha; derivar pie rígido, progresivo, asimétrico o incapacitante. Alta solo tras descartar urgencia.",
+      "sources": [
+        "topic_79"
+      ]
+    },
+    {
+      "id": "b02_029_adult_doses",
+      "section": "doses",
+      "sources": [
+        "para",
+        "ibu"
+      ],
+      "pt": "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+      "es": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    },
+    {
+      "id": "b02_029_ped_doses",
+      "section": "doses",
+      "sources": [
+        "rch_pain"
+      ],
+      "pt": "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL.",
+      "es": "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta.",
+      "es": "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta.",
+      "sources": [
+        "topic_79"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_79",
+      "title": "Pé plano sintomático",
+      "url": "https://www.nhs.uk/conditions/flat-feet/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 June 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_79.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — dor aguda pediátrica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

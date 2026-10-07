@@ -1,0 +1,418 @@
+{
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "humanApproval": "PASS",
+  "clinicalApproval": "PASS",
+  "clinicalAuditRequiredAgain": false,
+  "approvalText": "APROVADO EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewer": "Owner — aprovação explícita no chat",
+  "approvedAt": "2026-10-07T22:35:58.299670+00:00",
+  "approvedCanonicalHashes": {
+    "colica_do_lactente": "8b395f45bc1227610d2e094c5402ef7cef95803589a54eab59e9fc0f27baae01",
+    "apneia_obstrutiva_do_sono": "d4e324b5c7950b4f62ec2739c2a76594fbd74d8d78e5d4fd72c21c812b00cfc1",
+    "acantose_nigricante": "3c7cd13ce6706ab79f7d02455b68b41763eb7a1720387d117f0da22e50ad1101",
+    "celulite_pre_septal": "89212a696b0c40637d8bc02703f9fc504abd85f6c6d36568e2c65d5e6007c92f",
+    "ceratite_infecciosa_e_ulcera_de_cornea": "98878f12588ebd5d5f78c57d67130c676a99cf65aa1e40235127141e07f8a282",
+    "sialadenite": "ff54ea5a4ff4450eb8dab636ceae0e9d2b0d7fb099d1125408cf35dfb1a70f96",
+    "fratura_do_umero_proximal": "2782b64e88b219de3772e09bd853bd69a36de3b91fbb2c573db67c5b315d1178",
+    "fratura_da_diafise_do_umero": "eed217b7a889791c2833ad5202212dd6979f3e540f156cb166bfb9b41287afa8",
+    "fratura_da_cabeca_do_radio": "ed8bea20b7e1753fdec1970d7527033116a4c8210917d6006b85459efac99725",
+    "fratura_do_olecrano": "6ba5cc6969bbbbb6cf7bdf84c7b67f8c0c1bc19b41303fa797b85d959e3b30d4",
+    "fratura_diafisaria_dos_ossos_do_antebraco": "45e07d5e34f5b92364778cc432af5ea87d4f3a9658c4885c7524ba457c2a9d66",
+    "fratura_do_plato_tibial": "0319eea0cdca520a3c5485348d274d43bfe524d27e18c93f84973730ac9fb738",
+    "fratura_da_diafise_da_tibia": "f8761f26381e3bb189ee372fd354fdd5ec4f214ae95e2bf6bce6f1b8bc23c5f6",
+    "fratura_do_pilao_tibial": "4648e6fe4f200037be5f1e1c2643307900502cba7f31beb3416b2d50b7a6b064",
+    "fratura_distal_do_femur": "5fcabba1ca078ff4733bd9fd8b5dc71d27ffd5f20d4717dc787150517f2f6eec",
+    "fratura_de_patela": "2319fc5fc1ffdc3d2098c15de7f7efba67fbced8431db1b756df85d5a23f56ad",
+    "fratura_de_calcaneo": "f78246505df25c4c05b7127acf194896d5308a7449194ae9b84aa68e1a753303",
+    "fratura_do_talus": "c62dea485ced6a3a401002e45eda6e8b7667b69e93627cfe61b81ca0a04e03e5",
+    "lesao_de_lisfranc": "ae145d05f2e099b81dcbcb3b4ae99bc0519a11d77b3c8cdda445c73339aa4bb4",
+    "lesao_do_ligamento_cruzado_posterior": "1fb4bbe07a5162a16dcd3c96543910c948bed3f51099b2c81eaa7bb6d4bbc6c6",
+    "lesao_do_ligamento_colateral_ulnar_do_polegar": "71640221b949b210ffcbbc326458bbd638e0e7069fc51f8d5ee4129c6bbf0ec9",
+    "dedo_em_martelo": "1fe00393eb88404f079287e890a3fea6abf4d8e7a5b7aba567e45be6a2c31908",
+    "dedo_em_botoeira": "9e3d66e259a973e7706f126671f9e073fae0b6d21b901b5f0ec932036c7520c8",
+    "espondilolistese": "e57df617e0366f0a094d54d329542598024d082a98cce2624874ffc3fcfb91c5",
+    "estenose_lombar_degenerativa": "b3a6be885185baf23422e95bd3a4bf26501e00ed1a2541ee5fe2c1524cbc6948",
+    "coccigodinia": "d03d82ab1c7b13af6d93f046408df1836634aa5a0d3d973943888ba8a7c6d9bb",
+    "sindrome_dolorosa_regional_complexa": "d57c4599448c94312b7242a37d4fb11b04136f362ef3571ea9abc25340d19dbc",
+    "escoliose": "529f75528739f5d8452adfba123785bc5889a2806766cfcd8ae8144e6dff32d5",
+    "pe_plano_sintomatico": "6c318371ad701c4796ea85370431111e4972415075f8226ab351caf8e7fd4446",
+    "evento_breve_resolvido_inexplicado_no_lactente_brue": "db48d00808d9448313d4398a077149967378e295520ed0757ad5a08ab78c4182",
+    "vasculite_por_iga": "a41a2bbf7d891216aab73adde44b913c3919f4590121d722d32230f0d7b39362",
+    "sindrome_hemolitico_uremica": "9f90e625db8426ffc2c55c86facf07fdd9171cd6f20f02e9b667308ec10fede2",
+    "doenca_de_osgood_schlatter": "e43bc6f0afea2348fd46452694c48935f04588ba5829adc2cba5e498a76550a2",
+    "doenca_de_sever": "9af9c65acb26272d87db24def20070ae3745312abdab6108f0301a1204cbd8b8",
+    "epifisiolise_proximal_do_femur": "b55c5a47dc2c892eadf40a06fb95f62ed0de59d98937c64edd83cef84e41ba59",
+    "displasia_do_desenvolvimento_do_quadril": "aab698f0c9d1d6825cf7e8bc9b9024d5e0412921649e5fc626d71d8634c662fd",
+    "criptorquidia": "cf3c2790ff1032bba3ea82659b8450bf33e402e89beb6cea8f75e41124f7128a",
+    "aderencia_dos_pequenos_labios": "f2a96a873f4ae3a8fb773dc58c15a4ec13d02f6cdefb8e20cb4749d263ad4ea1",
+    "plagiocefalia_posicional": "c6fbe228e6a9a002544a07ec4e2ccc8821a53739d04ce68db1c42b096f53a0cb",
+    "torcicolo_muscular_congenito": "eb82b29487a593f5146e334ffe2bfa9000e08f459c8effd64316eae1baafade3",
+    "anquiloglossia": "a0b81266591cb9444886c5c4794741613d9dcb252dff1fb326f94ec208bba43b",
+    "obstrucao_congenita_do_ducto_nasolacrimal": "e9b8a059fbe032db9d587148d3faf7b704da21875fb4510addb23573dec45cb3",
+    "hemangioma_infantil": "ad948552e78760e31402d50c054077a1bf4101c1320f83f6838d02727b87329e",
+    "flutter_atrial": "a34f90b43f378f6d2ba634e90b04abc71d971b806c3d4d48ff3a5891e2c64a6f",
+    "taquicardia_ventricular": "264ee738e3e55ea457d8bd6a7eb1c20d715e0b38e592c4ec7d44c45cd0bdc667",
+    "sindrome_de_wolff_parkinson_white": "67babd4d7fa8af4f5a41fa4a1f6be80f9693b840ec086d0e96215211a545825a",
+    "doenca_arterial_periferica_cronica": "af89119abd5d5b4be41c63ed6141c7de95fef5e1ab9db96606a3b978efdb99a0",
+    "tromboflebite_superficial": "f9e1ab53703167da2682cae977dc2b76d829c90d92013339034c3c4cd7d9abda",
+    "doenca_coronariana_cronica_com_angina_estavel": "3ece41ec0e96fcec0a98dd0b38dece7bfc951714a1d9ca50f3fb105d19edb2f0",
+    "estenose_aortica": "7b4ffe8a5ba8064136fe772031495c51b7f682d0598c82eaab59be115c79e618"
+  },
+  "approvedCanonicalFileHashes": {
+    "colica_do_lactente": "40cf2f5c310bb18a06e8e07367fc18c6cdafe3a41666faf48406e3b57c35127b",
+    "apneia_obstrutiva_do_sono": "962845976c040f52aa12721122439a95a7885e02975eaef0130aa4328e7c06c9",
+    "acantose_nigricante": "1ee182e413093db512be8b257b39d691075cabe0e2a7dc66805665feb3ce4860",
+    "celulite_pre_septal": "8c76bc5848f80a53bcf8fce0670c39d8c9cbadcb7e99670e24f944e3a008003a",
+    "ceratite_infecciosa_e_ulcera_de_cornea": "3bd0816c666b266f17d9d82ce87125699387d740a8bef6a9c3ad3bf025907928",
+    "sialadenite": "5c4c24e47b717dacfcf30c441fe836e8fffd2e509085129ca40103e7b3415dac",
+    "fratura_do_umero_proximal": "e9d14cec10ad923da6a7eb03419878b5c393d2dad76bec1e3914044a4b65f559",
+    "fratura_da_diafise_do_umero": "a7c6dd9dae1d4501497e7e894fe91544eb173a746b2245985bdc79f397ef1342",
+    "fratura_da_cabeca_do_radio": "612acef1ab7a29100335b829e5ca201de5698508eb09be76a684bb99f0a21e97",
+    "fratura_do_olecrano": "058dc246f129d027f96c497d2dd9f832960b029c61f981b1fbcff5d7e6daa4f8",
+    "fratura_diafisaria_dos_ossos_do_antebraco": "fa1c019fc776af10ffb3c9d93aa315db9deb752748496c7f8251b745f947d016",
+    "fratura_do_plato_tibial": "7670474cb602a5c2e9b88ee0894973712b509770c642dc250f1e5a2a1fe69c9a",
+    "fratura_da_diafise_da_tibia": "4ef2c9ce158655f773a5aa92b75b613d619235889a894e50af5e1cea98a19867",
+    "fratura_do_pilao_tibial": "08ad5ab280523b621052079cfae9fc9019c87351672cc288825d32a44b3df769",
+    "fratura_distal_do_femur": "8cc44dde652851c3666b3465e9ad37f0a2810373f669d0a8700ec15120d78b15",
+    "fratura_de_patela": "90e8437ccbc4c0e0b37689ae2a0ed36a000ea1e3e428e5d3e42a1167669ff4f7",
+    "fratura_de_calcaneo": "81f695b7fa2a6d308df5ac1ed6610f6220068212070830fe21f4d6993978f32e",
+    "fratura_do_talus": "4397988f94fc694a605a2faff8167fa9ae02db7f1adb0eac801109c8535c559a",
+    "lesao_de_lisfranc": "6fa37ad792921c68ac7f14bec5a8ea1e05699b8c0b94dbc49054c0692a645d2a",
+    "lesao_do_ligamento_cruzado_posterior": "67f4f8187ed654ff98f6a892b0baf9490bb19392c801ea76dfaa5aa5713def8f",
+    "lesao_do_ligamento_colateral_ulnar_do_polegar": "74e18e0af77a5579cc22113454f2dc93279a97b2a28ac7e5ec665f781c7642a8",
+    "dedo_em_martelo": "3c19a29f3a7ab4c56770c4220ae7243d6e1dac1fc9c7c9c29ff8106c7da493f0",
+    "dedo_em_botoeira": "3ca3f3bbf7bd85f955814de26e81a25c82ced5fe320607f10a5a39792289948b",
+    "espondilolistese": "75d14cd3e3b48b11b497509f41c9c3b89e4cbd8a90a84b862a0af6cb9e910093",
+    "estenose_lombar_degenerativa": "9d3cdd780ca5d4afd24bffc81b30ee9839ce8d36a3804f299af51bfd52bd013e",
+    "coccigodinia": "51e5eacc5f20f80dbea2861a2d2571155f0e5ad91eb8277c0255a0b81ed24271",
+    "sindrome_dolorosa_regional_complexa": "f9f7901c414089c57c9415baeb7938f723c4b7166267ffe6931fd713798c92b1",
+    "escoliose": "5827aff85dd21254e7dda31d566cb35afced60983e92178b2ab8e752f02aebc7",
+    "pe_plano_sintomatico": "910d113c0754e212479411c1f02c52e9338f044dd5dfdf0e7228ce1e8d58fe28",
+    "evento_breve_resolvido_inexplicado_no_lactente_brue": "e91db393aa3d8eb7686915eb648db22f55199484a1348084e0249ce980acd0f3",
+    "vasculite_por_iga": "3cd79668ebc5e5aa7d9c85f8d8f10f2499f79b7bbb2ba4fe3528c5245cedf1ee",
+    "sindrome_hemolitico_uremica": "f6849dd3c84a7e12e661a7c6a2bb5c7307356c9312d4bdd0083ab243e45be73f",
+    "doenca_de_osgood_schlatter": "30925e6d234d66a00155f853fe6b8553bf94fe2381dd4b1308c161127ae00dbb",
+    "doenca_de_sever": "2f8d988e0d4a74ab2c936c640e79abdfbe34ebf507b8d471520d9d5875f93b0b",
+    "epifisiolise_proximal_do_femur": "4405d07317fc4a7298c524b474b17cbebf108992e861e45f197def87134eed92",
+    "displasia_do_desenvolvimento_do_quadril": "ed52aa87a95fab777b09b4f078820dab42d25776ec07f7bf0e8915ba9a76c39c",
+    "criptorquidia": "c8db380029dd0f800c3db343072c4dd4c83d2d854d7c4a71400a0ea4a1961ddf",
+    "aderencia_dos_pequenos_labios": "63070fc63b38f6afbe5d0ebfe32a19ad1c437070fd872c10ff787dbed6778589",
+    "plagiocefalia_posicional": "94d95ff618fc0b27632b3279047e37ef535262461b264f6375b769a6a3f39a6a",
+    "torcicolo_muscular_congenito": "363d461d11cf3686e1a35bc2a3ce9ae0a55e4ddbca79877c43fbe62a970eb096",
+    "anquiloglossia": "7e930081916128534160ed3a7fb3369b2fa47d91188a854039ee58a26eb8c68f",
+    "obstrucao_congenita_do_ducto_nasolacrimal": "b8d9d0b19397f272fb7c4a68139c4ebb57d909875db7561ebfb85c200e76691f",
+    "hemangioma_infantil": "ad560caf2f3b5fc33dcf954dbdc63cc8757e9abbce0827f579acb9be55a273e3",
+    "flutter_atrial": "815d44e5f80b115ce83bf3d67e62b2d7ef49a112473e51b26fddd43c49f6452e",
+    "taquicardia_ventricular": "29061c3e23c4f62e6cf25f4e8f868d54f31cb998e7255d0032927e866f30d3e7",
+    "sindrome_de_wolff_parkinson_white": "0b80dbb980a58c738e930c6dd4240c57be77ff7069652aaee48b49448f26d508",
+    "doenca_arterial_periferica_cronica": "e6537b6fdc8d6d31bb4b5585ba273b4758914750a827b8156af085f4a1a53023",
+    "tromboflebite_superficial": "2a9fd34c546eb9247f22ce948137f63b7f20070bb934bc3e2b056f12dfeb7575",
+    "doenca_coronariana_cronica_com_angina_estavel": "d8e5258237216861064218bc007aff31607aacc13659b2cb71b0f89b6509fc3e",
+    "estenose_aortica": "24198319a19cda03e4f96bc4bbc837d0f28b5b48813b9aad99c9520697b7c6e5"
+  },
+  "approvedOriginalProjectionFileHashes": {
+    "colica_do_lactente": {
+      "study_pt": "0c403df37ca388d5134d7a54ec47c4b7f515b5dbe79555a14d29371ad691a3fc",
+      "study_es": "f0be08dda938944b698b04af2574c928d5d86b64a2fe32b1f879ef0ab0363f8a",
+      "plantao_pt": "210018a4e01fe7d1f97259f250626dde26e5e500b144cf1e3777992ebb7ffbd7",
+      "plantao_es": "043a24a533cdd2cf362bdb08dcd970e3dd895708d7dfb44fd929709e673e54fa"
+    },
+    "apneia_obstrutiva_do_sono": {
+      "study_pt": "91e8f0acd3e6c289ef4ca59b34d826c1ad9b0d7088efed9693ad315ecbd012ab",
+      "study_es": "d1ce46705033c578a2d251d237132bf65cc5f33607972514bbfdea8bec712f69",
+      "plantao_pt": "c52ad3b71ba493e82bd124e2035e253886fb7862697217e60543d3cbe774ac36",
+      "plantao_es": "c0e15f24b101c144aedb5cf36d11292084d0e148ff9417c63b73f1f709a04218"
+    },
+    "acantose_nigricante": {
+      "study_pt": "839a0811fb8c110b909be1966d08f0251acaa2fea7f7d94bc3c4fcb5e07178ce",
+      "study_es": "29526950b886eb9fca11bccf68ee410dfb5077897bec7a3243439bd679c48957",
+      "plantao_pt": "f2d3e6ab6914f5c9226588bbf4f6a909296dfe827950a38ae2be3b2ab9a52fd5",
+      "plantao_es": "7dc888f1c5bade82e52834bc36a1e31d4ce75ba74e90d224b8593ed7341862cd"
+    },
+    "celulite_pre_septal": {
+      "study_pt": "f793b5181a1597807e76b0c101f4e938a538634e7b8c0d4ea018d997dfa9f384",
+      "study_es": "5cea171d9aa01ecb1b16a3f2878010e772d9e593be8f480585c70795489b0d88",
+      "plantao_pt": "193625c0fa8ead9135ba217d19eb4c56c588f0a3c1deb80fd7546776dc4f059b",
+      "plantao_es": "ae88485efdee8a61fea07301d49db4c9b7f8283da420a455c15628c595233f0d"
+    },
+    "ceratite_infecciosa_e_ulcera_de_cornea": {
+      "study_pt": "6043a8c76590d8b92ddef3338a66995fc7c2ce2ffaa5d83181f211cc613e2252",
+      "study_es": "53b9594b311a69b9c43dbdb73b23e792bf970c6fb3485593be93fcd1638bc69f",
+      "plantao_pt": "907d044b85f71741bf4e5e197d63971ff23a4e36659a168dbdc8550a3ff6f496",
+      "plantao_es": "8b6c77808ce2a7774d7b564d38f6a1541b1b40bd6697ab33f184367bb8ff9c04"
+    },
+    "sialadenite": {
+      "study_pt": "9afc07c9deec0282067663ef302e1abdfdcaafee9f50a9520df5089b4ef3973a",
+      "study_es": "8d46d06919e3d3fc6cfc8b81000d5c9d89a193a8de698f9f7b434ef61a864342",
+      "plantao_pt": "4e0648795bb6ce7abc8cae8e7969e840000b62c93bb54587286a5d87f186038f",
+      "plantao_es": "3d5a809a14e51aaa544a0ada4e69720d3d8700bf992d423bc2bcc48de0ceafda"
+    },
+    "fratura_do_umero_proximal": {
+      "study_pt": "e1cd2f6d6624e3edc469c988bfd09ac059e5612f306b2ae5f6c783246025bd4b",
+      "study_es": "6797d7ef5a1283d936fc09dca6afa35f151ba36336bd93b69d44238dc624e4c8",
+      "plantao_pt": "8a816f5b05e269502fa8469366c15a53b42f4f962b84fb4a30deb8878a6b637c",
+      "plantao_es": "456836f2ce82739f156ea3f1b6c5aad51959c05386dc929b9861e3b2000a40ab"
+    },
+    "fratura_da_diafise_do_umero": {
+      "study_pt": "b24816550b1ef6f8acecdc6a11b426994f12469eb644153f260fac10fe3c8dfc",
+      "study_es": "f936dc0bba01552c50ee84a86d94426855d93bcabca40810eb00ee4bde56ba2c",
+      "plantao_pt": "1d21fe19fcdd4e63a7792f1b735d322b939d8431f04a039726b3250e5b86e125",
+      "plantao_es": "0dc289ac068bc941959f436f3a22f28b077b33b180428ac6859d0edfaa9d2894"
+    },
+    "fratura_da_cabeca_do_radio": {
+      "study_pt": "fc32840654bdab719bf4981be5508e5e3d8fa8c7e1aa2a092d5754c11e398651",
+      "study_es": "2dc469ceac17d2fd0b9324e69a34468d32a3492dad9cb2a6666c27d2a7d2f168",
+      "plantao_pt": "f1eb35001294d5f3582dfba793620ceecc6cbc91f1ff1556ffc972ca3af1ea0f",
+      "plantao_es": "e8a55192c920f54d136a21bcb1f4fde95aba51ca37f3ab62587743dbf89c1277"
+    },
+    "fratura_do_olecrano": {
+      "study_pt": "a6a17c4889fe01e5bea356e3a0bee2a7a835028f6fa4af126adb9b229b62a75b",
+      "study_es": "102d6c698297208fdb22e6d9cbaab82a692394660e57716884a697a84a9c6c94",
+      "plantao_pt": "950621d5d2ba324a2b8595838899835f0484e1fe7d6667ab9e0ed30b516ae8d1",
+      "plantao_es": "54f34452883ee549a4a47496fef5e1d03c1a7ebd3736dc98bfc6d48801efbb15"
+    },
+    "fratura_diafisaria_dos_ossos_do_antebraco": {
+      "study_pt": "108e5790b34ed7e443cb018c4b8997b12a2967133941ba89cb99b1b76df9d450",
+      "study_es": "e41b19209a86d4059aeff7642f7537ebade388c8041c7146c09201902e3b3e22",
+      "plantao_pt": "ede7ad90b552b469b22d4809db55850ea7aa0ea35574d712c1f46723aa5a9df9",
+      "plantao_es": "c360496318bc83daa55ddf0b8514bc9bb6ca19bbbefc551788ea70afd9c73184"
+    },
+    "fratura_do_plato_tibial": {
+      "study_pt": "c43387e49fb2eda2e345fb782a564247deaf2c69581ad37d380ec9336d3e4226",
+      "study_es": "d0405a1a364344062fe998f637a5b41e3f45a8f4970e6a30d13b1fe1f8b71988",
+      "plantao_pt": "0bdb0b1ff78f2b75bc00217faf40f51f1c49764c2ecf7851685221c504d0e8d7",
+      "plantao_es": "15ee97278d65e4ab1a233aef162322ba899bd21370b841f33ff02a11c78a0209"
+    },
+    "fratura_da_diafise_da_tibia": {
+      "study_pt": "51a59e75b3b106eb0ecd8b9012e6110f8241a83fadee00585bb065932e8f9c81",
+      "study_es": "f182a47f5d3a738905fc8a9b1b294ad1df83bb8759ae553f21666a02c855f2e7",
+      "plantao_pt": "19a5cb5afba8cdf07001b2eaa8959d7f0845219968adce52dd0c7e2ad23ead99",
+      "plantao_es": "9bddaa419cfdead07d0708776ab6ad336cc231248806c56cb1f08aa8cc18fe3b"
+    },
+    "fratura_do_pilao_tibial": {
+      "study_pt": "e1e23235a8a478f5e4f452b58631ab4416d39c694246d4792d6209a605457105",
+      "study_es": "3d4039cdc0fdef96a961664d3ccf5db4e567a946fdfd6da317bfc32ba4ec1eb1",
+      "plantao_pt": "021778d292f13ba57e236f0d796c5f9000b80b55ce132f5b5b49f4c320c1deed",
+      "plantao_es": "65288e32c003152491fb2b0b7a5052fd77ce37274cf13c847ba24587fe333b43"
+    },
+    "fratura_distal_do_femur": {
+      "study_pt": "862fc06cfd8d9662296739df5cad8f9c7a2ccf164007b83b6bd4b40f27f19e2a",
+      "study_es": "55efcaba9575f1cf4fab7e73fca2206358765cea76e848542f30163d07bb1954",
+      "plantao_pt": "7eaefdd04b2f532f11834ea473c352d54e4bb8a550d96dd78c1e8d9f25db63b7",
+      "plantao_es": "e18ab46f326467e238f372f65afa3b6b4dca5d88eaa73fde51d2b539fce729ca"
+    },
+    "fratura_de_patela": {
+      "study_pt": "ebcffd21b9523254cf65ae75b8f0106452df190427e25e8d9903dc52cd242460",
+      "study_es": "5cfcc7b6b85b3594d25e6f5e2ec22485e71c84246f152d2ee677398feee9f60c",
+      "plantao_pt": "c6328d1537d5d90100cdcad4f141e4ad8fbf8df9041a5c8382452b708ef8590d",
+      "plantao_es": "678d334a18c52f32202669e162bf7a4e37ca1c11773be6fa365b7a8613bbb012"
+    },
+    "fratura_de_calcaneo": {
+      "study_pt": "c24ee9dba2f3bde3e9a2b4eca0c83b83d6e8e66ad3c8d8cfe9334467afc2e16f",
+      "study_es": "4c5ffc47a67e7ee5fcaccbaaf3d62f65d7e671a578d83b979488345ded3dead3",
+      "plantao_pt": "934f2897f51512f0894eb5e4551f709b262ec472f776f3359d015475fce747af",
+      "plantao_es": "3f69a7114ae6ac3423b1f873b62e82f527555718cd45ce2236f9785e6f80914c"
+    },
+    "fratura_do_talus": {
+      "study_pt": "46877aeef841f60a98f0662f396fccb002d38817f08265a5afd855c31c0d5421",
+      "study_es": "cb644a711a487dea939de4b79ff3562c66294bb1507e713c5b13aec391276c3f",
+      "plantao_pt": "e6b3414a5f4b571c7495ff1f30132a5edeed262e28498eda1b74ab7b1df7998d",
+      "plantao_es": "e2a3fb07b0bc0e9f8531cc355e828f97bb27f440ab777b94d86d216e4c9534df"
+    },
+    "lesao_de_lisfranc": {
+      "study_pt": "07ec297ac2d234a482a1bf8df69a85bae77e6471f2aa42951eed908cb3ce9ddb",
+      "study_es": "f296931a9a29bdb7b4e172672ec9bc033d3dc7f5c5c62b7f4188c1e606284559",
+      "plantao_pt": "5d819ee3ac0168451834e372163d795cee133a50042573e3167888dda31d257b",
+      "plantao_es": "988f017106f866ec31f817457c2e0834700a6f2deee788ac9bb7c1243eb9a903"
+    },
+    "lesao_do_ligamento_cruzado_posterior": {
+      "study_pt": "a695c79f3b679050ef165e1d6804f591bb4d4da79efd62db6a0531d0efe96fd2",
+      "study_es": "313ef61a71c5430f12376071895f8ddb699c72dded4c2471db13dfb328e0c8bd",
+      "plantao_pt": "3b39ac5e0fc8c5a200d6ee1f3ef7e88b2aab8fe0ffa8fda43851370d5892eaa7",
+      "plantao_es": "a7e01831088668adb24b0de4756683cc63aa8bdd8f9a4ca3e5f6ae5e6991f4e5"
+    },
+    "lesao_do_ligamento_colateral_ulnar_do_polegar": {
+      "study_pt": "678d6b346001bcddadeb1358d0ad282fc1e7b55c2d54d6d4866a1f865d2f4af8",
+      "study_es": "3dfb793b9daab292c91ef00457159f864fb883f9ad85e96dff6b5d0ebd68abaf",
+      "plantao_pt": "92a66872b5f9aa38c1ada4c29be84b9299c3db39fd1aa4c048ae541676253b0c",
+      "plantao_es": "d29f595e6c44656938a95985ed6c101774dabf701428426805f27e3eb45eea5a"
+    },
+    "dedo_em_martelo": {
+      "study_pt": "71c1023afbd9d35bf5f84c439f0d83926fa0bf39c16f39f8c3f5773ab9116405",
+      "study_es": "3f62743b538202bb90746e39acfef032c453bc12ea1b921e17faf94fbd800223",
+      "plantao_pt": "f573a862b9f4dcb2175c140d6286259a1d4af843d0791c7250135a113aaa271e",
+      "plantao_es": "07fa02c5bfd0a5e47b1a2794e8283568174fca97cbdd32860a669b43a4cd7269"
+    },
+    "dedo_em_botoeira": {
+      "study_pt": "bf29d7cb26291d24c1e5be509d4703e1ac66438475f3081a7c8edd53fdf5d6a8",
+      "study_es": "c42a51e7641b9ea7ca6105bfa0da84a1e36195fc2883a2760fddb3595048d336",
+      "plantao_pt": "2feb5aedfc6070ca649e011d2c469c1d5c59d25907c98a7da4061b6273d207ac",
+      "plantao_es": "a8116f13b48c5048139889202d03008f469f916962e84821301f59ffd81eb0cc"
+    },
+    "espondilolistese": {
+      "study_pt": "90bdd202ed48978bac2331f96ad4ed46974148687eadf98d0d3224b2a993dfb7",
+      "study_es": "df8013fb335ef6389b3c8af5638917c9216242a9529510bc9eb71735bd66f485",
+      "plantao_pt": "29b2ca8706b2cb314a804766828b5606ce5807af9e923025b368dc5d533679cb",
+      "plantao_es": "edbb74bcde6c17f5da36ec2379cb594ff9ad3879518b76399fee47ea7fe6dd5d"
+    },
+    "estenose_lombar_degenerativa": {
+      "study_pt": "bf7d20da04431cc5a1973ca8811dc0d2235db0b66dbcd67f314799d373a9a6cf",
+      "study_es": "5c162049de41429616936f41fb697b7eae8ad2a3bf7d81537f886eeb0b2a8de0",
+      "plantao_pt": "8c898f094d9900236a070dc950cccd564d228436b59b1899f994803137c2c222",
+      "plantao_es": "7793bf50a6d349b92c36a57393cc9e7b3e79baef79a23b275d25c86dd80f3121"
+    },
+    "coccigodinia": {
+      "study_pt": "38835390c5888fb104fd369ed3ad1d61120c748eba83bacbabd574ebb94ac474",
+      "study_es": "941c38e17e82066e8388eceae830b0f37b0789c53fc2c0805e8d5246b8b878d0",
+      "plantao_pt": "12c93e298b8fb6d437f1f5808e873240e8ceefa1775adb2430691f7286ae62b4",
+      "plantao_es": "1cd94839120596351ae9b606c537b8cdb8ddee74bbaaccb9ea69cbc532042639"
+    },
+    "sindrome_dolorosa_regional_complexa": {
+      "study_pt": "467830c52787b2600d7329311daf281edcafbcbc60b8c4178122cf3ce0878f07",
+      "study_es": "a47017aafbeb0f74dc381c37b9bff8dbe645d096469f9d8305b23129fc2a2f9e",
+      "plantao_pt": "a87b92890bfaf958b54f59c5952ab86e266179993da8a914cd5240bee5b55a04",
+      "plantao_es": "eb7bc8377083f7da01da002a049253ed895b24b53eadd0318cb6d95369dce2b4"
+    },
+    "escoliose": {
+      "study_pt": "1770f736b502ef50cd2d9992a64e360ae57158636a10398fb931829ec1ece42c",
+      "study_es": "64ee12186cff14fe548bae67f1c5e645b749239e2ffefc74abbfa1d7d26cb11c",
+      "plantao_pt": "bc0eb6a63a70803175e4fc52b0ba0531bf9c0e62fc2c6a80dec3421e45c306a1",
+      "plantao_es": "7b551223d3abb5b24868081a23a406625a877102f9721cfddd12900901183890"
+    },
+    "pe_plano_sintomatico": {
+      "study_pt": "35152645ff13ec05f635a02e05fc0e73a3e1991852dec254541d940fda0c6faf",
+      "study_es": "8f6634dbe5cbb2d29a8271a6af9c700fa7ca2c559dc3639453871d69045ddd86",
+      "plantao_pt": "cdbb921455fb14edbbb601eb7f2536b1e8a0e725669218f2cd6566695666d5fb",
+      "plantao_es": "c1b9847381789653553d1d946ec08d20574ef69cdd9634037907e1ea79097b80"
+    },
+    "evento_breve_resolvido_inexplicado_no_lactente_brue": {
+      "study_pt": "2d879e49bed34c9582af6396cf903d3d81d0e870104987dc396203a8bf6e45c0",
+      "study_es": "4d7c10c3c7f397159aa4da17c8d30e4a60a0c9cfa59d25bc46c8b8f1eeecdcf4",
+      "plantao_pt": "08f17e768ab2bf30ba697a8998bcfe0026f5940993d1203957b5d326bcd9bbc9",
+      "plantao_es": "5021be048dadd848cdd7cccd2c214d9fc6567fd169ecdf32d9c069ff7691c7f9"
+    },
+    "vasculite_por_iga": {
+      "study_pt": "65a8e07e67b476911f2fb97b42a9b20e51aa2ca2aecbc547bba3d575b4c4808d",
+      "study_es": "53a930107d2ab77bc1f649cfa149346529f90ee91965188793b7826883471a0e",
+      "plantao_pt": "1bb7b0b29aaa54f08ac70b6e4b2a15f449140bbf30b0b33177a373ecf974cf4a",
+      "plantao_es": "f26ea99793e23b0214e8a99a421c5e65d9bf68f52df43e93b35bc08ad9d1ff15"
+    },
+    "sindrome_hemolitico_uremica": {
+      "study_pt": "42bea0c8544e4bff6a6b112533a009912e02c58f663660fd98c116cb4397159a",
+      "study_es": "da259ee0d32e51ef426bffecf763f751cdaa3a0af03093a7c8f1edaa9c985f1d",
+      "plantao_pt": "720ea1def0d41630ac70f5fb3d59d251aa7131a30751d112b3d93150fd0184dc",
+      "plantao_es": "b0a6a8834cf68cb3906aa701dd384b4761e7500f4b91a26c03d136660924a836"
+    },
+    "doenca_de_osgood_schlatter": {
+      "study_pt": "6e359c69360cd3c41cbd3a0a39e0fca4b9d39a5f51bee2d8d50f425a546d6938",
+      "study_es": "88ea9653ec947d9fba1be15124914017d6fea5a9fc2ec3d7d4d6b88094bf716f",
+      "plantao_pt": "9ab2550867cf24c5cd4aed1a2d611dcf17c9eb22c999b4303aec4c7cffbe7e95",
+      "plantao_es": "956a5ccf8fe375aabb57abe70267532d6816cd0884431ee8a48315567b3f35d9"
+    },
+    "doenca_de_sever": {
+      "study_pt": "95a67d1048dac92f964ca26c1746c0b0670525e906d3850e77303d32be03a237",
+      "study_es": "cdb174646c383081955a890cfc09a5384683e8b61383f6afd56d1cbf0c3bd4bc",
+      "plantao_pt": "038c9a63a4a0fb7a6dd57c26d31212d0319e80a730067b1377566d846137dce3",
+      "plantao_es": "64ecc22ade3bdfb78b75c41872dd69ca009a8545706963151cd8cf3266953d25"
+    },
+    "epifisiolise_proximal_do_femur": {
+      "study_pt": "a7d0e0d671a2ca1739d5bc6811ba285bdf65af5a3540e2c68f35a928bd7d9292",
+      "study_es": "b448a969a56bde09694b1a6a274a3a84735568a2176124d12afd3d412b29348d",
+      "plantao_pt": "cae03855cd6e5b50ec8d44c97522dbff0d7ebdeb4792a7d33f17b4cc64e3bda2",
+      "plantao_es": "c51fd295f9edcc89cd5c70fd2dc4f76b25162b5a137c0966fa9260f0a3331f92"
+    },
+    "displasia_do_desenvolvimento_do_quadril": {
+      "study_pt": "69574d06d6d77197532548cfe42b5c810115d389f92e6ece38c7ef6020080f6e",
+      "study_es": "b1fbcd992be932a45981782f66bd70f0ec77ddd5158f78ffb957923fa259db49",
+      "plantao_pt": "32ffd88c96d7ae81b26ab0b9be1163bdd6a15b5b74b0a2bb8e1d0adb5841f349",
+      "plantao_es": "e0e5107651fe5f9cd44711e711593c8f8526aee1f60f5441efeb2b53c109c06a"
+    },
+    "criptorquidia": {
+      "study_pt": "04bca929d288218fd7c7778e0ed3cdf9bf2fe6ce4e8a07f6f2c48334976ad0a5",
+      "study_es": "ccf3c35d64a39d240e47b335c236bad88c0acd632a284f9b77ff26d18291a9a7",
+      "plantao_pt": "208a7702d07c2b60a2b8c920b033a538859b88aba8d0e476603140bbee47b4e4",
+      "plantao_es": "e6fcd790fb5662b3f6e3b9d261b262c22a664a5e4c2df342905a7b9ca42c5a27"
+    },
+    "aderencia_dos_pequenos_labios": {
+      "study_pt": "72c1440a2141222c0bd1ebb195df3e5a2c9609edc2f3cef78d0e6258cb4c3d1c",
+      "study_es": "38274ecf0a8d65e0ac74a290f68cece66b2fe003e19f404d67201b34d99f42e9",
+      "plantao_pt": "be7310d6c2334fbcf97340796be9e937ebce9f3b73c819ba7a1c98fe61fb2205",
+      "plantao_es": "2c51320183977a7674355634fea04ef703ecf6da6ff1dcd67146664f80b33ffc"
+    },
+    "plagiocefalia_posicional": {
+      "study_pt": "a12bd911a8bf7b309a16c0bd4480756804ddaaed820bcabf36c8d60e7e275b7d",
+      "study_es": "58e340a1568e3564a306f2f88acdcab52018bce73df30c9813140f9149418d85",
+      "plantao_pt": "ed8b23a89cd03c83dd08598973ec98fa82d6d2779a9d2ff0d4d349ee185cee07",
+      "plantao_es": "d217b2b35a5f3a860755b70f9de77c50c325d2978d3ebd42622b16ff749192f0"
+    },
+    "torcicolo_muscular_congenito": {
+      "study_pt": "a5b1f8e00e6856c2ad73bd1f5118f05a43d8cd969604bfe72e3bd4080c497e1d",
+      "study_es": "bd9fb1c0fa8186be1422c6ff8894f8888e9a0038f839c49c4c5e1c6623dc9845",
+      "plantao_pt": "1ebb638021ff4a9f634f5b33f88bb76f599155785d96797e5102f1fba7b9ab23",
+      "plantao_es": "c5c094e9bc6bcd7f207c4039dcf01c295dda5bc0d77ba56e1d3f64cf91888aef"
+    },
+    "anquiloglossia": {
+      "study_pt": "1cc2ca1958977ccb4b2b8b01e351ff8892a324df135753d4dda134eaf324e8b4",
+      "study_es": "2210084e19f39eeca90a3b8bbc4e2b056fb7d3d16d895cfd8cfec9ec28a730c3",
+      "plantao_pt": "2345f1d20fdd9066681cc4683890e4330573c59093b5ef03df6221f4a9b26f61",
+      "plantao_es": "9435bf3af17cc744c32f78a3fc7c11074b4f313fccad4d9e1fc079ebfb229f75"
+    },
+    "obstrucao_congenita_do_ducto_nasolacrimal": {
+      "study_pt": "09c813976f36f3fc32e593496efeac6cf5f677398e49e631fae2a23ff3a9ccdd",
+      "study_es": "274b79747eefba72155c917959b6193df9cc59c5c4726b4567d5c428dd3cc94e",
+      "plantao_pt": "1e8b3a9fad9c66e30f05c183f4a3b652d9935d877918739c682083bbf9009240",
+      "plantao_es": "0959e852808d9c3e520dbb3e5adc8102169bf7a316c3dc1b85ba334f82577a0c"
+    },
+    "hemangioma_infantil": {
+      "study_pt": "9e09acc6797b48bbbb563e52b1341bf0567f04aa11f6927faf8511051b3e03a8",
+      "study_es": "e3faa6ce3dfd1d5b66571f1df2cda1421817dbc6a98fe5810a72772a2a1b0660",
+      "plantao_pt": "19bbc95ae0837889e7655097223f5ce41e28df7960e026690a67de276b427e22",
+      "plantao_es": "cb3c79621a398cdbceb4e0ca5bad746b18b78a98fb85a1d08db784983b592878"
+    },
+    "flutter_atrial": {
+      "study_pt": "45fccbeca472f4e8b6e74adf0a8596e452372b76de49631d7e59315a1f1a12c6",
+      "study_es": "b719515fa3cb9f456ef36671b2d1a8d174e72935b92d6287155fe05ad90fe07a",
+      "plantao_pt": "cb53f282f32f713ab252975612e7b0fb8f187359444ddb40ce609abe6a2fb20b",
+      "plantao_es": "5752c4e99d35d117717916b73add278f9863560a8a4c623713af358fef626ad1"
+    },
+    "taquicardia_ventricular": {
+      "study_pt": "5de551145e77e89682869106e7b937b676dfd36231e4529a52eaf67cd245e683",
+      "study_es": "a8c3fbd4945e910f0deb17a1f24f72ace231c714b378e4115b4def83ac752b4c",
+      "plantao_pt": "08c30aa511858d0894f4c0ba2949d87f6ec18b9c1241344aef29048d2f170902",
+      "plantao_es": "63bd84bed44ae34d93618b65be2087c0b91af7b6d0e15c632da69fd3204786fc"
+    },
+    "sindrome_de_wolff_parkinson_white": {
+      "study_pt": "f108f98d3c2c34613b4afbc402654b387c7b52b7c8abcc90fe2c7a3b87fae4d9",
+      "study_es": "565a7e321d994c4c0c0def1197ed5091a32b8f8752b841690db87d133bf7b653",
+      "plantao_pt": "0215c1e2852240c446b77fd49fcbe9cedd7c5c4e37e6ffc7f17676f434952da9",
+      "plantao_es": "0f9700bf924c1bf67f6fa1609cab2c3b863c5e4a3fe5ecb409755272aa825d5a"
+    },
+    "doenca_arterial_periferica_cronica": {
+      "study_pt": "8743f86b33d60e637e557afe2928666a0c84a26beed2d15aa6c5a2119048418a",
+      "study_es": "240c4ef3b26345b9d25daa55de3e8b6ee6c315a50a838b889fa37d60db46a6eb",
+      "plantao_pt": "b483078ecf8d274897bf9689a18157e558a7c083ce320248c5a266fa1e0fab66",
+      "plantao_es": "13a606360d24ad9ea2395ef60b7c0d637fba3045b39a8964630b9e50a5e79fc4"
+    },
+    "tromboflebite_superficial": {
+      "study_pt": "34db22a0273a798c91ba9b1666797de1c2572903e626a209aa8fb631aaef79da",
+      "study_es": "2ad7cef50bef98f202b2271eb2ac5835fe5d782ba855da39411c869071fb0a48",
+      "plantao_pt": "642abfb78b0a7b3195ff75397650b54b86032352c75077812b7f7a06abbaf42c",
+      "plantao_es": "4b96dcce0ead1e08d640f69f36e89ba339f16561e558b8c42d43b480af8c0ed9"
+    },
+    "doenca_coronariana_cronica_com_angina_estavel": {
+      "study_pt": "ef5456c6b86cc9c583aa36ad6c4de6e0654ecb1ea31be6ae1553d379bafbff7f",
+      "study_es": "b927c050705ef20f27a3c746153e0d85e3dfef702875ec927b6ddc8712488af9",
+      "plantao_pt": "bddfd20501f702ba0d26aee5f6c163187aaec578fd07d3c7ca04bc74c6d8a708",
+      "plantao_es": "acd5a470cdfee5fca4c9cb8a755419ad844713440185248de45f10bc998d233d"
+    },
+    "estenose_aortica": {
+      "study_pt": "e3ec64f67901e002b0971513f61e58253dd35c6da7483a14eb0588d0809fc36b",
+      "study_es": "14bea85e1b3e1c024bdaff6ff5acab3c112a0d3338f35dcc3fbf56265804c2b4",
+      "plantao_pt": "dedb8064566d48e8866e3d18480e8dc6641f47fadd182d2f9b61f48347bc43a4",
+      "plantao_es": "597c55ca1878072bbbba32eae702c2994ccce6425bc15176bb90c014aab8946c"
+    }
+  },
+  "approvedReviewManifestFileSha256": "a175db658d199e3d3e1ebfc7216e774e1f1abdb727fff172dfcc76c6423100a9",
+  "approvedReviewHtmlFileSha256": "d32c32b31f905b734970ce431ba2a625f9c738b75d54ae0c09709e022baf07ac",
+  "projectionAdapter": "Representação markdown/flat blocks, mesmos textos clínicos aprovados; payload canônico preservado byte a byte."
+}

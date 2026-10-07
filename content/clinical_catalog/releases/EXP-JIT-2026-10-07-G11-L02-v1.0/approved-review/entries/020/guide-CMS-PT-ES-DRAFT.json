@@ -1,0 +1,204 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação deste lote. Guia permanece DRAFT no Admin após futura publicação coordenada dos modos.",
+  "canonical_payload_sha256": "67f4f8187ed654ff98f6a892b0baf9490bb19392c801ea76dfaa5aa5713def8f",
+  "owner_candidate": "lesao_do_ligamento_cruzado_posterior",
+  "pt": {
+    "title": "Lesão do ligamento cruzado posterior",
+    "subtitle": "Revisão clínica — primeira escolha e alternativas",
+    "summary": "Trauma sobre tíbia proximal com joelho fletido pode romper o LCP, isolado ou em lesão multiligamentar.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Trauma sobre tíbia proximal com joelho fletido pode romper o LCP, isolado ou em lesão multiligamentar."
+        ],
+        "factIds": [
+          "b02_020_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Examinar gaveta posterior/queda posterior, estabilidade e neurovascular; radiografia exclui avulsão, ressonância caracteriza ligamentos. Luxação reduzida espontaneamente ainda pode lesar artéria poplítea."
+        ],
+        "factIds": [
+          "b02_020_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Instabilidade importante, perfusão alterada ou suspeita de luxação: urgência ortopédica/vascular. Proteção, restrição de esforço, gelo protegido e analgesia."
+        ],
+        "factIds": [
+          "b02_020_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Primeira escolha para lesão isolada selecionada: órtese e reabilitação com fortalecimento orientado. Reconstrução cirúrgica se lesões associadas ou instabilidade sintomática persistente; analgesia com paracetamol ou ibuprofeno conforme risco."
+        ],
+        "factIds": [
+          "b02_020_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz."
+        ],
+        "factIds": [
+          "b02_020_adult_doses"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Não liberar esporte pelo alívio da dor. Não iniciar anti-inflamatório em desidratação, risco renal/hemorrágico ou gestação sem avaliação; não associar diferentes anti-inflamatórios."
+        ],
+        "factIds": [
+          "b02_020_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Reavaliar derrame, estabilidade e função; retorno esportivo por critérios funcionais. Déficit neurovascular ou piora rápida exige retorno imediato."
+        ],
+        "factIds": [
+          "b02_020_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Lesión del ligamento cruzado posterior",
+    "subtitle": "Revisión clínica — primera elección y alternativas",
+    "summary": "Un golpe sobre tibia proximal con rodilla flexionada puede romper el LCP, aislado o como lesión multiligamentaria.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Un golpe sobre tibia proximal con rodilla flexionada puede romper el LCP, aislado o como lesión multiligamentaria."
+        ],
+        "factIds": [
+          "b02_020_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Evaluar cajón posterior/caída posterior, estabilidad y examen neurovascular; radiografía descarta avulsión y resonancia caracteriza ligamentos. Una luxación reducida espontáneamente aún puede lesionar arteria poplítea."
+        ],
+        "factIds": [
+          "b02_020_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Inestabilidad importante, perfusión alterada o sospecha de luxación: urgencia ortopédica/vascular. Protección, restricción de esfuerzo, frío protegido y analgesia."
+        ],
+        "factIds": [
+          "b02_020_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Primera elección en lesión aislada seleccionada: ortesis y rehabilitación con fortalecimiento dirigido. Reconstrucción ante lesiones asociadas o inestabilidad sintomática persistente; paracetamol o ibuprofeno según riesgo."
+        ],
+        "factIds": [
+          "b02_020_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+        ],
+        "factIds": [
+          "b02_020_adult_doses"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "No autorizar deporte solo por mejoría del dolor. Evitar antiinflamatorios ante deshidratación, riesgo renal/hemorrágico o embarazo sin evaluación; no combinar distintos antiinflamatorios."
+        ],
+        "factIds": [
+          "b02_020_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Reevaluar derrame, estabilidad y función; retorno deportivo por criterios funcionales. Déficit neurovascular o empeoramiento rápido exige consulta inmediata."
+        ],
+        "factIds": [
+          "b02_020_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_70",
+      "title": "Lesão do ligamento cruzado posterior",
+      "url": "https://www.orthoinfo.org/diseases--conditions/posterior-cruciate-ligament-injuries/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_70.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

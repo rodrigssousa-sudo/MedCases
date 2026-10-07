@@ -1,0 +1,181 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Sialadenitis",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "ff54ea5a4ff4450eb8dab636ceae0e9d2b0d7fb099d1125408cf35dfb1a70f96",
+  "ownerCandidate": "sialadenite",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_006_f01",
+    "b02_006_f02",
+    "b02_006_f03",
+    "b02_006_f04",
+    "b02_006_f05",
+    "b02_006_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Disfagia, amenaza a vía aérea, sepsis o extensión cervical: hospital, ORL/cirugía y drenaje cuando corresponda. Hidratar, compresas tibias, masaje suave y estímulo salival si son seguros."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examinar conducto, pus, dentición, hidratación y masa focal. Ecografía si se sospecha cálculo/absceso; una masa persistente exige investigar neoplasia."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Adulto con infección bacteriana no grave: amoxicilina/clavulanato 500/125 mg oral cada 8 horas durante 7 días es una opción del NHS GGC. Otro protocolo prioriza flucloxacilina 500 mg oral cada 6 horas durante 5 días para parotitis estafilocócica; añadir metronidazol 400 mg cada 8 horas solo ante sospecha anaerobia/mala dentición. Elegir por foco, microbiología y protocolo local; no combinar regímenes sin indicación."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alergia/MRSA en adulto: el protocolo Grampian admite doxiciclina 200 mg oral una vez al día durante 5 días, con cobertura anaerobia si corresponde. Embarazo y pediatría requieren alternativa propia. Ajustar beta-lactámico a función renal; la obstrucción persistente exige retirar el cálculo, no prolongar antibióticos."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Revisar respuesta temprana e investigar absceso ante empeoramiento/fallo. Alta si vía aérea segura, ingesta posible y seguimiento garantizado. Nódulo persistente o recurrencia requiere especialista."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Inflamación salival por obstrucción, infección u otras causas; el antibiótico requiere evidencia de infección bacteriana. Dolor con las comidas sugiere cálculo."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_56",
+      "title": "Sialadenite",
+      "url": "https://www.medlineplus.gov/ency/article/001041.htm",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Review Date 7/28/2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_56.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "sial_gcc",
+      "title": "NHS GGC — glândulas salivares, revisão maio de 2025",
+      "url": "https://www.rightdecisions.scot.nhs.uk/ggc-primary-care/ear-nose-and-throat-ent/ear-nose-and-throat-ent-referral-guidance/throat-conditions/neck-lump/salivary-gland-pathology-sialadenitis-stones-cancer/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "review date:",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/sial_gcc.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "sial_fv",
+      "title": "NHS Forth Valley — parotite/sialadenite, opções antimicrobianas",
+      "url": "https://www.rightdecisions.scot.nhs.uk/antimicrobial-prescribing-nhs-forth-valley/acute-hospital-guidance/oral-maxillofacial/parotitis-sialadenitis/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/sial_fv.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "sial_gr",
+      "title": "NHS Grampian — parotite bacteriana adulta",
+      "url": "https://www.rightdecisions.scot.nhs.uk/nhs-grampian-orkney-shetland/hospital-guidance-for-adults/ear-nose-and-oropharynx/parotitis-bacterial/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/sial_gr.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Disfagia, amenaza a vía aérea, sepsis o extensión cervical: hospital, ORL/cirugía y drenaje cuando corresponda. Hidratar, compresas tibias, masaje suave y estímulo salival si son seguros."
+      ],
+      "factIds": [
+        "b02_006_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examinar conducto, pus, dentición, hidratación y masa focal. Ecografía si se sospecha cálculo/absceso; una masa persistente exige investigar neoplasia."
+      ],
+      "factIds": [
+        "b02_006_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Adulto con infección bacteriana no grave: amoxicilina/clavulanato 500/125 mg oral cada 8 horas durante 7 días es una opción del NHS GGC. Otro protocolo prioriza flucloxacilina 500 mg oral cada 6 horas durante 5 días para parotitis estafilocócica; añadir metronidazol 400 mg cada 8 horas solo ante sospecha anaerobia/mala dentición. Elegir por foco, microbiología y protocolo local; no combinar regímenes sin indicación."
+      ],
+      "factIds": [
+        "b02_006_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Alergia/MRSA en adulto: el protocolo Grampian admite doxiciclina 200 mg oral una vez al día durante 5 días, con cobertura anaerobia si corresponde. Embarazo y pediatría requieren alternativa propia. Ajustar beta-lactámico a función renal; la obstrucción persistente exige retirar el cálculo, no prolongar antibióticos."
+      ],
+      "factIds": [
+        "b02_006_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Revisar respuesta temprana e investigar absceso ante empeoramiento/fallo. Alta si vía aérea segura, ingesta posible y seguimiento garantizado. Nódulo persistente o recurrencia requiere especialista."
+      ],
+      "factIds": [
+        "b02_006_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Inflamación salival por obstrucción, infección u otras causas; el antibiótico requiere evidencia de infección bacteriana. Dolor con las comidas sugiere cálculo."
+      ],
+      "factIds": [
+        "b02_006_f01"
+      ]
+    }
+  ],
+  "markdown": "# Sialadenitis\n\n## Abordaje inicial y urgencias\n\nDisfagia, amenaza a vía aérea, sepsis o extensión cervical: hospital, ORL/cirugía y drenaje cuando corresponda. Hidratar, compresas tibias, masaje suave y estímulo salival si son seguros.\n\n## Diagnóstico y diferenciales\n\nExaminar conducto, pus, dentición, hidratación y masa focal. Ecografía si se sospecha cálculo/absceso; una masa persistente exige investigar neoplasia.\n\n## Tratamiento: primera elección y alternativas\n\nAdulto con infección bacteriana no grave: amoxicilina/clavulanato 500/125 mg oral cada 8 horas durante 7 días es una opción del NHS GGC. Otro protocolo prioriza flucloxacilina 500 mg oral cada 6 horas durante 5 días para parotitis estafilocócica; añadir metronidazol 400 mg cada 8 horas solo ante sospecha anaerobia/mala dentición. Elegir por foco, microbiología y protocolo local; no combinar regímenes sin indicación.\n\n## Seguridad y monitorización\n\nAlergia/MRSA en adulto: el protocolo Grampian admite doxiciclina 200 mg oral una vez al día durante 5 días, con cobertura anaerobia si corresponde. Embarazo y pediatría requieren alternativa propia. Ajustar beta-lactámico a función renal; la obstrucción persistente exige retirar el cálculo, no prolongar antibióticos.\n\n## Reevaluación, internación y alta\n\nRevisar respuesta temprana e investigar absceso ante empeoramiento/fallo. Alta si vía aérea segura, ingesta posible y seguimiento garantizado. Nódulo persistente o recurrencia requiere especialista.\n\n## Reconocimiento rápido\n\nInflamación salival por obstrucción, infección u otras causas; el antibiótico requiere evidencia de infección bacteriana. Dolor con las comidas sugiere cálculo.\n\n## Referencias\n\n1. [Sialadenite](https://www.medlineplus.gov/ency/article/001041.htm)\n2. [NHS GGC — glândulas salivares, revisão maio de 2025](https://www.rightdecisions.scot.nhs.uk/ggc-primary-care/ear-nose-and-throat-ent/ear-nose-and-throat-ent-referral-guidance/throat-conditions/neck-lump/salivary-gland-pathology-sialadenitis-stones-cancer/)\n3. [NHS Forth Valley — parotite/sialadenite, opções antimicrobianas](https://www.rightdecisions.scot.nhs.uk/antimicrobial-prescribing-nhs-forth-valley/acute-hospital-guidance/oral-maxillofacial/parotitis-sialadenitis/)\n4. [NHS Grampian — parotite bacteriana adulta](https://www.rightdecisions.scot.nhs.uk/nhs-grampian-orkney-shetland/hospital-guidance-for-adults/ear-nose-and-oropharynx/parotitis-bacterial/)",
+  "approvedReviewCanonicalFileSha256": "5c4c24e47b717dacfcf30c441fe836e8fffd2e509085129ca40103e7b3415dac",
+  "approvedReviewProjectionFileSha256": "3d5a809a14e51aaa544a0ada4e69720d3d8700bf992d423bc2bcc48de0ceafda"
+}

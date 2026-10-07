@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação deste lote. Guia permanece DRAFT no Admin após futura publicação coordenada dos modos.",
+  "canonical_payload_sha256": "ed52aa87a95fab777b09b4f078820dab42d25776ec07f7bf0e8915ba9a76c39c",
+  "owner_candidate": "displasia_do_desenvolvimento_do_quadril",
+  "pt": {
+    "title": "Displasia do desenvolvimento do quadril",
+    "subtitle": "Revisão clínica — primeira escolha e alternativas",
+    "summary": "Instabilidade/displasia do quadril no desenvolvimento pode ser silenciosa e prejudicar marcha e articulação futura.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Instabilidade/displasia do quadril no desenvolvimento pode ser silenciosa e prejudicar marcha e articulação futura."
+        ],
+        "factIds": [
+          "b02_036_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Examinar quadris por profissional treinado, fatores de risco e abdução; ultrassom no lactente e radiografia conforme idade/ossificação. Não confirmar apenas por estalo benigno."
+        ],
+        "factIds": [
+          "b02_036_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Encaminhar cedo à ortopedia pediátrica; febre e quadril doloroso agudo requerem excluir artrite séptica, não atribuir à displasia."
+        ],
+        "factIds": [
+          "b02_036_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Primeira abordagem em lactente elegível: órtese, frequentemente arnês de Pavlik, aplicada/ajustada por equipe. Falha ou diagnóstico tardio: órtese alternativa, redução fechada/gesso ou cirurgia conforme idade/anatomia. Não há fármaco que corrija a instabilidade."
+        ],
+        "factIds": [
+          "b02_036_f04"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Não ajustar arnês em casa sem orientação; vigiar pele/perfusão e evitar posições forçadas. Enfaixamento com pernas rigidamente estendidas/aduzidas é inadequado."
+        ],
+        "factIds": [
+          "b02_036_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Avaliações e imagens seriadas para confirmar redução/desenvolvimento; duração da órtese individual, sem promessa de esquema único."
+        ],
+        "factIds": [
+          "b02_036_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Displasia del desarrollo de la cadera",
+    "subtitle": "Revisión clínica — primera elección y alternativas",
+    "summary": "La inestabilidad/displasia del desarrollo de cadera puede ser silenciosa y afectar marcha y articulación futura.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "La inestabilidad/displasia del desarrollo de cadera puede ser silenciosa y afectar marcha y articulación futura."
+        ],
+        "factIds": [
+          "b02_036_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Examinar caderas por profesional capacitado, factores de riesgo y abducción; ecografía en lactante y radiografía según edad/osificación. Un chasquido benigno aislado no confirma el diagnóstico."
+        ],
+        "factIds": [
+          "b02_036_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Derivar temprano a ortopedia pediátrica; fiebre y cadera agudamente dolorosa exige descartar artritis séptica, no atribuirla a displasia."
+        ],
+        "factIds": [
+          "b02_036_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Primera estrategia en lactante elegible: ortesis, frecuentemente arnés de Pavlik, aplicado/ajustado por equipo. Fallo o diagnóstico tardío: otra ortesis, reducción cerrada/yeso o cirugía según edad/anatomía. Ningún fármaco corrige la inestabilidad."
+        ],
+        "factIds": [
+          "b02_036_f04"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "No ajustar arnés en casa sin instrucciones; vigilar piel/perfusión y evitar posiciones forzadas. No envolver piernas rígidamente extendidas/aducidas."
+        ],
+        "factIds": [
+          "b02_036_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Evaluaciones e imágenes seriadas para confirmar reducción/desarrollo; duración individualizada de ortesis, sin prometer un esquema único."
+        ],
+        "factIds": [
+          "b02_036_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_86",
+      "title": "Displasia do desenvolvimento do quadril",
+      "url": "https://www.nhs.uk/conditions/developmental-dysplasia-of-the-hip/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 11 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_86.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

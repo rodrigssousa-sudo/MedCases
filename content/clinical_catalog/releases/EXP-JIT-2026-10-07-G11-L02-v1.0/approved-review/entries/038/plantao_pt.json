@@ -1,0 +1,89 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Aderência dos pequenos lábios",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "63070fc63b38f6afbe5d0ebfe32a19ad1c437070fd872c10ff787dbed6778589",
+  "ownerCandidate": "aderencia_dos_pequenos_labios",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_038_f01",
+    "b02_038_f02",
+    "b02_038_f03",
+    "b02_038_f04",
+    "b02_038_f05",
+    "b02_038_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Retenção urinária, dor importante ou infecção sistêmica requer avaliação urgente. Não tentar separar à força no consultório sem indicação/anestesia apropriada."
+      ],
+      "factIds": [
+        "b02_038_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Inspeção respeitosa e consentida identifica aderência; avaliar retenção de urina, gotejamento, irritação e infecção urinária. Diferenciar malformação ou lesão dermatológica."
+      ],
+      "factIds": [
+        "b02_038_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha se assintomática: observação, higiene suave e proteção contra irritantes. Se sintomática: estrogênio tópico selecionado por pediatria/ginecologia, com produto e duração definidos. Separação por especialista é alternativa rara quando falha ou obstrução importante."
+      ],
+      "factIds": [
+        "b02_038_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não indicar estrogênio em toda aderência nem dose universal de diferentes cremes. Vigiar efeitos locais/hormonais transitórios; emoliente após tratamento pode reduzir irritação. Recidiva é possível."
+      ],
+      "factIds": [
+        "b02_038_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Acompanhar sintomas urinários e resolução; orientar retorno por obstrução, dor, febre ou sangramento."
+      ],
+      "factIds": [
+        "b02_038_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Aderência pré-puberal relacionada a baixos estrogênios e irritação pode ser assintomática; não implica prejuízo de fertilidade por definição."
+      ],
+      "factIds": [
+        "b02_038_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_88",
+      "title": "Aderência dos pequenos lábios",
+      "url": "https://www.nhs.uk/conditions/labial-fusion/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 08 February 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_88.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

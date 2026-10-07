@@ -1,0 +1,125 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Espondilolistesis",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "75d14cd3e3b48b11b497509f41c9c3b89e4cbd8a90a84b862a0af6cb9e910093",
+  "ownerCandidate": "espondilolistese",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_024_f01",
+    "b02_024_f02",
+    "b02_024_f03",
+    "b02_024_f04",
+    "b02_024_f05",
+    "b02_024_f06",
+    "b02_024_adult_ibu"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Retención urinaria, anestesia en silla de montar, déficit progresivo o sospecha infecciosa/oncológica exige urgencia. Sin alarmas, mantener actividad adaptada y evitar reposo prolongado."
+      ],
+      "factIds": [
+        "b02_024_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar dolor, marcha, fuerza, reflejos y síntomas radiculares. Radiografía caracteriza alineación; resonancia si compresión neural/síntomas persistentes cambian el manejo. Diferenciar lumbalgia inespecífica y estenosis asociada."
+      ],
+      "factIds": [
+        "b02_024_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección en cuadro estable: fisioterapia, modificación de carga y manejo conservador. Ibuprofeno puede aliviar dolor brevemente si es seguro; no corrige el deslizamiento. Descompresión con o sin fusión es alternativa ante déficit, inestabilidad o fallo conservador seleccionado."
+      ],
+      "factIds": [
+        "b02_024_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Referencia adulta breve: ibuprofeno 200–400 mg por vía oral hasta 3 veces al día, intervalo de al menos 4 horas y máximo de 1.200 mg en 24 horas en este esquema. Menor dosis/tiempo con evaluación de contraindicaciones y gastroprotección cuando indicada; no es prescripción crónica."
+      ],
+      "factIds": [
+        "b02_024_adult_ibu"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No prescribir automáticamente gabapentinoide, corticoide oral o benzodiacepina para ciática. Paracetamol aislado no es opción rutinaria para lumbalgia según NICE; el antiinflamatorio requiere evaluación renal, digestiva y cardiovascular. Niños/adolescentes necesitan criterios propios."
+      ],
+      "factIds": [
+        "b02_024_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Controlar función, neurología y tolerancia; derivar persistencia o inestabilidad. Alta con plan y consulta inmediata ante alteraciones esfinterianas/neurológicas."
+      ],
+      "factIds": [
+        "b02_024_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "El deslizamiento vertebral puede ser ístmico, degenerativo u otra causa; gravedad radiológica y síntomas no son equivalentes."
+      ],
+      "factIds": [
+        "b02_024_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_74",
+      "title": "Espondilolistese",
+      "url": "https://www.nhs.uk/conditions/spondylolisthesis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 17 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_74.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ng59",
+      "title": "NICE NG59 — lombalgia e ciática, recomendações",
+      "url": "https://www.nice.org.uk/guidance/NG59/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2016,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Não oferecer gabapentinoides/corticoide oral/benzodiazepínico para ciática nem epidural rotineira na claudicação por estenose central.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

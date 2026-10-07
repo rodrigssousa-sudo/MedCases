@@ -1,0 +1,209 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "fratura_diafisaria_dos_ossos_do_antebraco",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Fratura diafisária dos ossos do antebraço",
+    "es": "Fractura diafisaria de radio y cúbito"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Diáfise de rádio/ulna, distinta de rádio distal/escafoide/metacarpo.",
+  "relatedExistingOwners": [],
+  "optionRelation": "STABILITY_DEPENDENT_CONSERVATIVE_OR_PROCEDURAL",
+  "facts": [
+    {
+      "id": "b02_011_f01",
+      "section": "concept",
+      "pt": "Fratura de ambos os ossos altera rotação do antebraço; lesões de Monteggia/Galeazzi exigem reconhecer articulação associada.",
+      "es": "La fractura de ambos huesos altera la rotación del antebrazo; en Monteggia/Galeazzi hay que reconocer la lesión articular asociada.",
+      "sources": [
+        "topic_61",
+        "forearm_adult"
+      ]
+    },
+    {
+      "id": "b02_011_f02",
+      "section": "diagnosis",
+      "pt": "Radiografar antebraço incluindo punho/cotovelo; verificar alinhamento, cabeça radial e articulação radioulnar distal, além de exame neurovascular.",
+      "es": "Radiografiar antebrazo incluyendo muñeca/codo; revisar alineación, cabeza radial y articulación radiocubital distal, además del examen neurovascular.",
+      "sources": [
+        "topic_61",
+        "forearm_adult"
+      ]
+    },
+    {
+      "id": "b02_011_f03",
+      "section": "initial",
+      "pt": "Controlar dor, proteger com imobilização adequada e registrar exame neurovascular antes/depois. Exposição, pele ameaçada, isquemia, dor desproporcional ou déficit progressivo: ortopedia urgente; fratura exposta segue protocolo de antibiótico/tétano e cirurgia.",
+      "es": "Controlar dolor, inmovilizar adecuadamente y documentar examen neurovascular antes/después. Exposición, piel amenazada, isquemia, dolor desproporcionado o déficit progresivo: ortopedia urgente; fractura abierta sigue protocolo de antibiótico/tétanos y cirugía.",
+      "sources": [
+        "topic_61",
+        "forearm_adult"
+      ]
+    },
+    {
+      "id": "b02_011_f04",
+      "section": "options",
+      "pt": "Criança com alinhamento aceitável: redução fechada quando indicada e gesso por equipe capacitada. Adulto com ambos os ossos desviados frequentemente precisa de fixação; fratura isolada estável pode ser conservadora. Não extrapolar tolerância de angulação pediátrica.",
+      "es": "Niño con alineación aceptable: reducción cerrada cuando corresponda y yeso por personal capacitado. Adulto con ambos huesos desplazados suele necesitar fijación; una lesión aislada estable puede ser conservadora. No extrapolar tolerancia angular pediátrica.",
+      "sources": [
+        "topic_61",
+        "forearm_adult"
+      ]
+    },
+    {
+      "id": "b02_011_f05",
+      "section": "safety",
+      "pt": "Analgesia: paracetamol para dor leve; ibuprofeno é alternativa/adjuvante quando seguro, evitando idosos frágeis, doença renal, desidratação, sangramento e gestação de risco. Dor intensa requer analgesia titulada em ambiente monitorizado; não mascarar síndrome compartimental. Não extrapolar doses adultas para crianças.",
+      "es": "Analgesia: paracetamol para dolor leve; ibuprofeno es alternativa/adyuvante si es seguro, evitando mayores frágiles, enfermedad renal, deshidratación, sangrado y embarazo de riesgo. Dolor intenso requiere analgesia titulada en ambiente monitorizado; no ocultar síndrome compartimental. No extrapolar dosis adultas a niños.",
+      "sources": [
+        "topic_61",
+        "forearm_adult"
+      ]
+    },
+    {
+      "id": "b02_011_f06",
+      "section": "followup",
+      "pt": "Destino conforme estabilidade, tecidos moles, lesões associadas, dor e apoio domiciliar. Alta somente com plano ortopédico, restrição de carga/movimento definida e retorno por dor crescente, dormência, extremidade fria ou compressão da tala. Reabilitação e controle radiográfico individualizados; não fixar duração única de gesso para todos.",
+      "es": "Destino según estabilidad, partes blandas, lesiones asociadas, dolor y apoyo domiciliario. Alta solo con plan ortopédico, restricción de carga/movimiento definida y consulta por dolor creciente, entumecimiento, extremidad fría o compresión de férula. Rehabilitación y controles radiográficos individualizados; no fijar una duración única de yeso para todos.",
+      "sources": [
+        "topic_61",
+        "forearm_adult"
+      ]
+    },
+    {
+      "id": "b02_011_adult_doses",
+      "section": "doses",
+      "sources": [
+        "para",
+        "ibu"
+      ],
+      "pt": "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+      "es": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    },
+    {
+      "id": "b02_011_ped_doses",
+      "section": "doses",
+      "sources": [
+        "rch_pain"
+      ],
+      "pt": "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL.",
+      "es": "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+    },
+    {
+      "section": "doses",
+      "sources": [
+        "rch_fent"
+      ],
+      "pt": "Resgate hospitalar pediátrico, idade de pelo menos 12 meses e sem acesso intravenoso, por equipe capacitada: fentanila intranasal 1,5 microgramas/kg por dose. Máximo inicial 100 microgramas com solução nasal 300 microgramas/mL; com apresentação 50 microgramas/mL, máximo usual 75 microgramas pela limitação de volume. Confirmar produto, concentração, peso apropriado e atomizador. Monitorar respiração, sedação, pressão e frequência, com recursos de ventilação/naloxona; reavaliar antes de nova dose. Não é receita domiciliar, não aplicar a lactentes menores de 12 meses ou com consciência alterada.",
+      "es": "Rescate hospitalario pediátrico, edad de al menos 12 meses y sin acceso intravenoso, por equipo capacitado: fentanilo intranasal 1,5 microgramos/kg por dosis. Máximo inicial 100 microgramos con solución nasal de 300 microgramos/mL; con presentación de 50 microgramos/mL, máximo usual 75 microgramos por límite de volumen. Confirmar producto, concentración, peso apropiado y atomizador. Vigilar respiración, sedación, presión y frecuencia, con recursos de ventilación/naloxona; reevaluar antes de repetir. No es receta domiciliaria; no aplicar a menores de 12 meses ni con conciencia alterada.",
+      "id": "b02_011_ped_fent"
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Localização, desvio, estabilidade e estado dos tecidos moles orientam tratamento. Capacidade de remodelação infantil não permite aplicar os mesmos limites ao adulto; alívio da dor não demonstra estabilidade nem exclui lesão neurovascular.",
+      "es": "Localización, desplazamiento, estabilidad y partes blandas orientan tratamiento. Remodelación infantil no permite usar iguales límites en adultos; mejoría del dolor no demuestra estabilidad ni excluye lesión neurovascular.",
+      "sources": [
+        "topic_61",
+        "forearm_adult"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_61",
+      "title": "Fratura diafisária dos ossos do antebraço",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/fractures/Radialulna_shaft_diaphysis_fractures_Emergency_Department/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_61.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "forearm_adult",
+      "title": "AAOS — fraturas do antebraço adulto",
+      "url": "https://www.orthoinfo.org/diseases--conditions/adult-forearm-fractures/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/forearm_adult.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — dor aguda pediátrica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_fent",
+      "title": "RCH — fentanila intranasal pediátrica, protocolo hospitalar",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/intranasal_fentanyl/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_fent.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

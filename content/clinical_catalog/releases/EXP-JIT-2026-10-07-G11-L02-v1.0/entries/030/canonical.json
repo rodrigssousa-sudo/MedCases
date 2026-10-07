@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "evento_breve_resolvido_inexplicado_no_lactente_brue",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Evento breve resolvido inexplicado no lactente (BRUE)",
+    "es": "Evento breve resuelto inexplicado del lactante (BRUE)"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "BRUE é evento resolvido sem explicação; não equivale a apneia persistente ou convulsão.",
+  "relatedExistingOwners": [],
+  "optionRelation": "RISK_STRATIFIED_NO_ROUTINE_DRUG",
+  "facts": [
+    {
+      "id": "b02_030_f01",
+      "section": "concept",
+      "pt": "Evento breve, resolvido e inexplicado após história/exame em menor de 1 ano, com alteração de cor, respiração, tônus ou responsividade. Sintoma ainda presente ou causa identificada não é BRUE.",
+      "es": "Evento breve, resuelto e inexplicado tras historia/examen en menor de 1 año, con cambio de color, respiración, tono o respuesta. Síntoma persistente o causa identificada no es BRUE.",
+      "sources": [
+        "topic_80",
+        "brue_aap"
+      ]
+    },
+    {
+      "id": "b02_030_f02",
+      "section": "diagnosis",
+      "pt": "Menor risco exige TODOS: idade acima de 60 dias; nascimento com pelo menos 32 semanas e idade pós-menstrual de pelo menos 45 semanas; primeiro evento, duração menor de 1 minuto, sem reanimação por profissional treinado e sem achados preocupantes. Fora desses critérios, avaliação de maior risco.",
+      "es": "Menor riesgo requiere TODOS: edad mayor de 60 días; nacimiento con al menos 32 semanas y edad posmenstrual de al menos 45 semanas; primer evento, duración menor de 1 minuto, sin reanimación por profesional capacitado ni hallazgos preocupantes. Si no cumple, evaluar mayor riesgo.",
+      "sources": [
+        "topic_80",
+        "brue_aap"
+      ]
+    },
+    {
+      "id": "b02_030_f03",
+      "section": "initial",
+      "pt": "Avaliar ABC, relato do observador, alimentação, infecção, trauma/violência, medicamentos e exame completo. Apneia persistente, febre, hipóxia ou instabilidade exige tratar causa e internar.",
+      "es": "Evaluar ABC, relato del observador, alimentación, infección, trauma/violencia, fármacos y examen completo. Apnea persistente, fiebre, hipoxia o inestabilidad exige tratar causa e internar.",
+      "sources": [
+        "topic_80",
+        "brue_aap"
+      ]
+    },
+    {
+      "id": "b02_030_f04",
+      "section": "options",
+      "pt": "Primeira escolha no menor risco: orientação, decisão compartilhada e observação conforme contexto; evitar exames extensos rotineiros. Maior risco: investigação direcionada e consulta pediátrica, podendo internar para monitorização. Não há tratamento farmacológico empírico de BRUE.",
+      "es": "Primera elección en menor riesgo: educación, decisión compartida y observación según contexto; evitar estudios amplios rutinarios. Mayor riesgo: investigación dirigida y consulta pediátrica, con posible internación para monitorización. No hay tratamiento farmacológico empírico de BRUE.",
+      "sources": [
+        "topic_80",
+        "brue_aap"
+      ]
+    },
+    {
+      "id": "b02_030_f05",
+      "section": "safety",
+      "pt": "Não prescrever supressor de ácido ou anticonvulsivante sem diagnóstico. Não rotular engasgo explicável, convulsão ou infecção como BRUE para reduzir investigação.",
+      "es": "No prescribir supresor de ácido o anticonvulsivo sin diagnóstico. No etiquetar atragantamiento explicable, convulsión o infección como BRUE para reducir evaluación.",
+      "sources": [
+        "topic_80",
+        "brue_aap"
+      ]
+    },
+    {
+      "id": "b02_030_f06",
+      "section": "followup",
+      "pt": "Alta de menor risco com cuidador capaz, acesso à reavaliação, instruções de retorno e recursos de reanimação de lactentes. Recorrência, alteração do estado geral ou respiração exige retorno imediato.",
+      "es": "Alta de menor riesgo con cuidador capaz, acceso a reevaluación, alarmas y recursos de reanimación infantil. Recurrencia o cambio del estado general/respiración requiere consulta inmediata.",
+      "sources": [
+        "topic_80",
+        "brue_aap"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "BRUE é uma descrição após exclusão de explicação imediata, não diagnóstico etiológico. Estratificar risco evita tanto exames indiscriminados quanto falsa tranquilização de um lactente instável.",
+      "es": "BRUE describe un evento tras excluir explicación inmediata; no es diagnóstico etiológico. Estratificar evita estudios indiscriminados y falsa tranquilidad ante inestabilidad.",
+      "sources": [
+        "topic_80",
+        "brue_aap"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_80",
+      "title": "Evento breve resolvido inexplicado no lactente (BRUE)",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Brief_resolved_unexplained_event_(BRUE)/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated January 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_80.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "brue_aap",
+      "title": "AAP — BRUE e lactentes de menor risco 2016",
+      "url": "https://publications.aap.org/pediatrics/article/137/5/e20160590/52195/Brief-Resolved-Unexplained-Events-Formerly-Apparent",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLICATION_IDENTIFIED_WITH_PUBLIC_PROTOCOL_CROSSCHECK",
+      "publicationYear": 2016,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "AAP 2016 identificado como documento fundador de menor risco; critérios e recomendações aplicados foram lidos integralmente no protocolo público RCH atual.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

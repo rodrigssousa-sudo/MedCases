@@ -1,0 +1,138 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Lesão de Lisfranc",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "6fa37ad792921c68ac7f14bec5a8ea1e05699b8c0b94dbc49054c0692a645d2a",
+  "ownerCandidate": "lesao_de_lisfranc",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_019_f01",
+    "b02_019_f02",
+    "b02_019_f03",
+    "b02_019_f04",
+    "b02_019_f05",
+    "b02_019_f06",
+    "b02_019_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Controlar dor, proteger com imobilização adequada e registrar exame neurovascular antes/depois. Exposição, pele ameaçada, isquemia, dor desproporcional ou déficit progressivo: ortopedia urgente; fratura exposta segue protocolo de antibiótico/tétano e cirurgia."
+      ],
+      "factIds": [
+        "b02_019_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Pesquisar equimose plantar e dor no mediopé. Radiografias com carga apenas se toleradas/seguras; tomografia/ressonância conforme suspeita de lesão oculta ou instabilidade."
+      ],
+      "factIds": [
+        "b02_019_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Estável sem diástase: bota/gesso sem carga e controles. Instável/desviada: fixação ou artrodese selecionada. Suspeita persistente com radiografia normal ainda exige proteção e avaliação especializada."
+      ],
+      "factIds": [
+        "b02_019_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz."
+      ],
+      "factIds": [
+        "b02_019_adult_doses"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Analgesia: paracetamol para dor leve; ibuprofeno é alternativa/adjuvante quando seguro, evitando idosos frágeis, doença renal, desidratação, sangramento e gestação de risco. Dor intensa requer analgesia titulada em ambiente monitorizado; não mascarar síndrome compartimental. Não extrapolar doses adultas para crianças."
+      ],
+      "factIds": [
+        "b02_019_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Destino conforme estabilidade, tecidos moles, lesões associadas, dor e apoio domiciliar. Alta somente com plano ortopédico, restrição de carga/movimento definida e retorno por dor crescente, dormência, extremidade fria ou compressão da tala. Reabilitação e controle radiográfico individualizados; não fixar duração única de gesso para todos."
+      ],
+      "factIds": [
+        "b02_019_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Lesão tarsometatarsal pode ser ligamentar ou fratura-luxação e passar despercebida como entorse."
+      ],
+      "factIds": [
+        "b02_019_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_69",
+      "title": "Lesão de Lisfranc",
+      "url": "https://www.orthoinfo.org/diseases--conditions/lisfranc-midfoot-injury?cid=c080f67c-49c9-4ba7-afe5-8029ca3d9129",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_69.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ng38",
+      "title": "NICE NG38 — fraturas não complexas",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2016,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Recomendações oficiais: analgesia estratificada, evitar NSAID em idosos frágeis, fratura proximal humeral adulta não complicada conservadora.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

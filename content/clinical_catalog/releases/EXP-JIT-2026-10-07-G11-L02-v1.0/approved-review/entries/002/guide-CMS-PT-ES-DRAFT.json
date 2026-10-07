@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação deste lote. Guia permanece DRAFT no Admin após futura publicação coordenada dos modos.",
+  "canonical_payload_sha256": "962845976c040f52aa12721122439a95a7885e02975eaef0130aa4328e7c06c9",
+  "owner_candidate": "apneia_obstrutiva_do_sono",
+  "pt": {
+    "title": "Apneia obstrutiva do sono",
+    "subtitle": "Revisão clínica — primeira escolha e alternativas",
+    "summary": "Colapso recorrente da via aérea superior durante o sono causa dessaturação e fragmentação do sono; ronco isolado não confirma apneia.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Colapso recorrente da via aérea superior durante o sono causa dessaturação e fragmentação do sono; ronco isolado não confirma apneia."
+        ],
+        "factIds": [
+          "b02_002_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "CPAP atua mantendo a via aérea aberta; o dispositivo mandibular modifica a anatomia durante o sono. Eles são alternativas por elegibilidade, e oxigênio isolado não elimina obstrução."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Pesquisar apneias testemunhadas, sono não reparador, sonolência, obesidade e comorbidades. Confirmar por estudo de sono e graduar gravidade; questionário de sonolência não substitui teste. Crianças precisam de avaliação própria."
+        ],
+        "factIds": [
+          "b02_002_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "No Plantão, separar apneia crônica de insuficiência respiratória aguda, intoxicação e hipoventilação. Sonolência compromete direção; orientar suspensão de dirigir quando não houver vigilância segura."
+        ],
+        "factIds": [
+          "b02_002_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Primeira escolha em adultos sintomáticos elegíveis: CPAP associado a medidas de peso/sono e redução de álcool. Alternativa se CPAP recusado ou intolerável: dispositivo de avanço mandibular personalizado, após avaliação dentária. Terapia posicional somente em apneia posicional selecionada, não como substituto eficaz para doença grave."
+        ],
+        "factIds": [
+          "b02_002_f04"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Não há sedativo ou medicamento que substitua correção da obstrução. Cirurgia é opção anatômica selecionada; tratar rinite quando presente. Em obesidade com hipercapnia, investigar hipoventilação antes de escolher suporte."
+        ],
+        "factIds": [
+          "b02_002_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Rever adaptação, máscara, adesão e dados de eficácia; consulta inicial do CPAP em até 1 mês, depois individualizar. Oxigênio isolado não trata o colapso da via aérea."
+        ],
+        "factIds": [
+          "b02_002_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Apnea obstructiva del sueño",
+    "subtitle": "Revisión clínica — primera elección y alternativas",
+    "summary": "El colapso recurrente de la vía aérea superior durante el sueño causa desaturación y fragmentación del sueño; el ronquido aislado no confirma apnea.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "El colapso recurrente de la vía aérea superior durante el sueño causa desaturación y fragmentación del sueño; el ronquido aislado no confirma apnea."
+        ],
+        "factIds": [
+          "b02_002_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "CPAP mantiene abierta la vía aérea; el dispositivo mandibular modifica su anatomía al dormir. Son alternativas según elegibilidad; oxígeno aislado no elimina obstrucción."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Buscar apneas observadas, sueño no reparador, somnolencia, obesidad y comorbilidades. Confirmar con estudio de sueño y graduar gravedad; el cuestionario no sustituye la prueba. Los niños requieren evaluación específica."
+        ],
+        "factIds": [
+          "b02_002_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "En guardia, diferenciar apnea crónica de insuficiencia respiratoria aguda, intoxicación e hipoventilación. La somnolencia afecta la conducción; evitar conducir si no hay vigilancia segura."
+        ],
+        "factIds": [
+          "b02_002_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Primera elección en adultos sintomáticos elegibles: CPAP más medidas de peso/sueño y reducción de alcohol. Alternativa ante rechazo/intolerancia: dispositivo de avance mandibular personalizado tras evaluación dental. Terapia posicional solo en casos seleccionados, no como sustituto eficaz en enfermedad grave."
+        ],
+        "factIds": [
+          "b02_002_f04"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Ningún sedante o fármaco sustituye la corrección de la obstrucción. La cirugía es una opción anatómica seleccionada; tratar rinitis cuando exista. Ante obesidad e hipercapnia, investigar hipoventilación antes de elegir soporte."
+        ],
+        "factIds": [
+          "b02_002_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Revisar adaptación, mascarilla, adherencia y eficacia; consulta inicial de CPAP dentro de 1 mes y después individualizar. El oxígeno aislado no trata el colapso de la vía aérea."
+        ],
+        "factIds": [
+          "b02_002_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_52",
+      "title": "Apneia obstrutiva do sono",
+      "url": "https://www.nhs.uk/conditions/sleep-apnoea/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 11 May 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_52.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ng202",
+      "title": "NICE NG202 — apneia obstrutiva em maiores de 16 anos",
+      "url": "https://www.nice.org.uk/guidance/ng202/chapter/1-obstructive-sleep-apnoeahypopnoea-syndrome",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Recomendações de CPAP, dispositivo mandibular e seguimento consultadas na busca oficial NICE; adultos maiores de 16 anos.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

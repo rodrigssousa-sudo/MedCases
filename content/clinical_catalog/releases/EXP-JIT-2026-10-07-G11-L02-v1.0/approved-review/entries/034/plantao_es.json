@@ -1,0 +1,112 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Enfermedad de Sever",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "2f8d988e0d4a74ab2c936c640e79abdfbe34ebf507b8d471520d9d5875f93b0b",
+  "ownerCandidate": "doenca_de_sever",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_034_f01",
+    "b02_034_f02",
+    "b02_034_f03",
+    "b02_034_f04",
+    "b02_034_f05",
+    "b02_034_f06",
+    "b02_034_ped_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Descartar urgencias antes de atribuir dolor al crecimiento; la analgesia no autoriza esfuerzo doloroso."
+      ],
+      "factIds": [
+        "b02_034_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Dolor de talón al correr/saltar; fiebre, trauma importante, dolor nocturno o rechazo de apoyo exige descartar fractura/infección."
+      ],
+      "factIds": [
+        "b02_034_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección: reducir actividad dolorosa, estirar pantorrilla y adaptar calzado. Talonera puede reducir carga; paracetamol o ibuprofeno breve para dolor. Inmovilización temporal en dolor intenso seleccionado, sin cirugía rutinaria."
+      ],
+      "factIds": [
+        "b02_034_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+      ],
+      "factIds": [
+        "b02_034_ped_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Usar dosis pediátricas por peso y evitar antiinflamatorios ante deshidratación, enfermedad renal o sangrado. No infiltrar empíricamente corticoide en apófisis/tendón."
+      ],
+      "factIds": [
+        "b02_034_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Revisar dolor, marcha y retorno gradual al deporte; persistencia, cambio de patrón o síntomas sistémicos exige reevaluar diagnóstico."
+      ],
+      "factIds": [
+        "b02_034_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Apofisitis calcánea en niño en crecimiento relacionada a carga y tracción del tendón de Aquiles."
+      ],
+      "factIds": [
+        "b02_034_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_84",
+      "title": "Doença de Sever",
+      "url": "https://www.orthoinfo.org/es/diseases--conditions/severs-disease/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_84.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — dor aguda pediátrica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

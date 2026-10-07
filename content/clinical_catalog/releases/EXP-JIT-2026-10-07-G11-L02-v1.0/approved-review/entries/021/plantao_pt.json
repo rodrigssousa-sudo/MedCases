@@ -1,0 +1,125 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Lesão do ligamento colateral ulnar do polegar",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "74e18e0af77a5579cc22113454f2dc93279a97b2a28ac7e5ec665f781c7642a8",
+  "ownerCandidate": "lesao_do_ligamento_colateral_ulnar_do_polegar",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_021_f01",
+    "b02_021_f02",
+    "b02_021_f03",
+    "b02_021_f04",
+    "b02_021_f05",
+    "b02_021_f06",
+    "b02_021_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Imobilizar em tala que proteja o polegar e encaminhar. Ferida, déficit neurovascular ou fratura instável exige urgência."
+      ],
+      "factIds": [
+        "b02_021_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar articulação metacarpofalângica e pinça; radiografia identifica avulsão. Teste de estabilidade por profissional, evitando manipulação excessiva; ultrassom/ressonância se dúvida relevante."
+      ],
+      "factIds": [
+        "b02_021_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Parcial estável: tala e reabilitação orientada. Completa/instável ou Stener: avaliação para reparo cirúrgico. Paracetamol é opção para dor leve; ibuprofeno pode ser alternativa curta se seguro."
+      ],
+      "factIds": [
+        "b02_021_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz."
+      ],
+      "factIds": [
+        "b02_021_adult_doses"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Analgesia não substitui estabilidade. Evitar testes repetidos pelo paciente e retorno precoce a atividades de pinça; duração da tala depende da lesão."
+      ],
+      "factIds": [
+        "b02_021_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Seguimento com cirurgia da mão/ortopedia para prevenir instabilidade crônica e perda de força. Reavaliar pele e ajuste da tala."
+      ],
+      "factIds": [
+        "b02_021_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Lesão por abdução do polegar pode causar instabilidade da pinça; ruptura completa com lesão de Stener não cicatriza como entorse leve."
+      ],
+      "factIds": [
+        "b02_021_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_71",
+      "title": "Lesão do ligamento colateral ulnar do polegar",
+      "url": "https://www.orthoinfo.org/diseases--conditions/sprained-thumb",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_71.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

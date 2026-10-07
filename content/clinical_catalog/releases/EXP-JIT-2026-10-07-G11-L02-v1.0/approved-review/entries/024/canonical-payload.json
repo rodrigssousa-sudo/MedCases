@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "espondilolistese",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Espondilolistese",
+    "es": "Espondilolistesis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Condição com identidade e escopo próprios; nenhum ID/título/alias PT/ES equivalente identificado no baseline verificado.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b02_024_f01",
+      "section": "concept",
+      "pt": "Deslizamento vertebral pode ser ístmico, degenerativo ou de outra origem; gravidade radiológica e sintomas não são equivalentes.",
+      "es": "El deslizamiento vertebral puede ser ístmico, degenerativo u otra causa; gravedad radiológica y síntomas no son equivalentes.",
+      "sources": [
+        "topic_74",
+        "ng59"
+      ]
+    },
+    {
+      "id": "b02_024_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar dor, marcha, força, reflexos e sintomas radiculares. Radiografia caracteriza alinhamento; ressonância se compressão neural/sintomas persistentes mudarem conduta. Diferenciar lombalgia inespecífica e estenose associada.",
+      "es": "Evaluar dolor, marcha, fuerza, reflejos y síntomas radiculares. Radiografía caracteriza alineación; resonancia si compresión neural/síntomas persistentes cambian el manejo. Diferenciar lumbalgia inespecífica y estenosis asociada.",
+      "sources": [
+        "topic_74",
+        "ng59"
+      ]
+    },
+    {
+      "id": "b02_024_f03",
+      "section": "initial",
+      "pt": "Retenção urinária, anestesia em sela, déficit progressivo ou suspeita infecciosa/oncológica exige urgência. Sem alarmes, manter atividade adaptada e evitar repouso prolongado.",
+      "es": "Retención urinaria, anestesia en silla de montar, déficit progresivo o sospecha infecciosa/oncológica exige urgencia. Sin alarmas, mantener actividad adaptada y evitar reposo prolongado.",
+      "sources": [
+        "topic_74",
+        "ng59"
+      ]
+    },
+    {
+      "id": "b02_024_f04",
+      "section": "options",
+      "pt": "Primeira escolha em quadro estável: fisioterapia, modificação de carga e tratamento conservador. Anti-inflamatório como ibuprofeno pode aliviar dor por período curto se seguro; não é tratamento do deslizamento. Cirurgia/descompressão com ou sem fusão é alternativa para déficit, instabilidade ou falha conservadora selecionada.",
+      "es": "Primera elección en cuadro estable: fisioterapia, modificación de carga y manejo conservador. Ibuprofeno puede aliviar dolor brevemente si es seguro; no corrige el deslizamiento. Descompresión con o sin fusión es alternativa ante déficit, inestabilidad o fallo conservador seleccionado.",
+      "sources": [
+        "topic_74",
+        "ng59"
+      ]
+    },
+    {
+      "id": "b02_024_f05",
+      "section": "safety",
+      "pt": "Não prescrever automaticamente gabapentinoide, corticoide oral ou benzodiazepínico para ciática. Paracetamol isolado não é opção de rotina para lombalgia segundo NICE; NSAID exige avaliação renal, gastrointestinal e cardiovascular. Crianças/adolescentes seguem critérios próprios.",
+      "es": "No prescribir automáticamente gabapentinoide, corticoide oral o benzodiacepina para ciática. Paracetamol aislado no es opción rutinaria para lumbalgia según NICE; el antiinflamatorio requiere evaluación renal, digestiva y cardiovascular. Niños/adolescentes necesitan criterios propios.",
+      "sources": [
+        "topic_74",
+        "ng59"
+      ]
+    },
+    {
+      "id": "b02_024_f06",
+      "section": "followup",
+      "pt": "Acompanhar função, neurologia e tolerância; encaminhar sintomas persistentes ou instabilidade. Alta com plano e retorno imediato por alteração esfíncteriana/neurológica.",
+      "es": "Controlar función, neurología y tolerancia; derivar persistencia o inestabilidad. Alta con plan y consulta inmediata ante alteraciones esfinterianas/neurológicas.",
+      "sources": [
+        "topic_74",
+        "ng59"
+      ]
+    },
+    {
+      "id": "b02_024_adult_ibu",
+      "section": "doses",
+      "sources": [
+        "ibu",
+        "ng59"
+      ],
+      "pt": "Referência adulta curta: ibuprofeno 200–400 mg por via oral até 3 vezes ao dia, intervalo de pelo menos 4 horas e máximo de 1.200 mg em 24 horas nesse regime. Usar menor dose por menor tempo, com avaliação de contraindicações e gastroproteção quando indicada; não representa prescrição crônica.",
+      "es": "Referencia adulta breve: ibuprofeno 200–400 mg por vía oral hasta 3 veces al día, intervalo de al menos 4 horas y máximo de 1.200 mg en 24 horas en este esquema. Menor dosis/tiempo con evaluación de contraindicaciones y gastroprotección cuando indicada; no es prescripción crónica."
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Correlação entre sintomas, estabilidade e imagem orienta intervenção. Analgesia alivia sintomas, mas não reposiciona vértebra; a presença de déficit progressivo muda prioridade.",
+      "es": "Correlación de síntomas, estabilidad e imagen orienta intervención. Analgesia alivia pero no reposiciona vértebra; déficit progresivo cambia prioridad.",
+      "sources": [
+        "topic_74",
+        "ng59"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_74",
+      "title": "Espondilolistese",
+      "url": "https://www.nhs.uk/conditions/spondylolisthesis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 17 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_74.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ng59",
+      "title": "NICE NG59 — lombalgia e ciática, recomendações",
+      "url": "https://www.nice.org.uk/guidance/NG59/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2016,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Não oferecer gabapentinoides/corticoide oral/benzodiazepínico para ciática nem epidural rotineira na claudicação por estenose central.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

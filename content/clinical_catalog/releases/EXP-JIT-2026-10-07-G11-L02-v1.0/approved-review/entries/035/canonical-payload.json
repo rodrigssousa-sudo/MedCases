@@ -1,0 +1,153 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "epifisiolise_proximal_do_femur",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Epifisiólise proximal do fêmur",
+    "es": "Epifisiólisis proximal del fémur"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Condição com identidade e escopo próprios; nenhum ID/título/alias PT/ES equivalente identificado no baseline verificado.",
+  "relatedExistingOwners": [],
+  "optionRelation": "SURGICAL_DEFINITIVE_ANALGESIC_OPTIONS_ONLY",
+  "facts": [
+    {
+      "id": "b02_035_f01",
+      "section": "concept",
+      "pt": "Deslizamento da epífise femoral proximal em adolescente pode aparecer como dor no quadril, coxa ou joelho; atraso aumenta risco de necrose e deformidade.",
+      "es": "El deslizamiento epifisario femoral proximal en adolescentes puede manifestarse como dolor de cadera, muslo o rodilla; el retraso aumenta riesgo de necrosis y deformidad.",
+      "sources": [
+        "topic_85"
+      ]
+    },
+    {
+      "id": "b02_035_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar quadril em adolescente com dor no joelho/marcha alterada; rotação externa obrigatória na flexão é pista. Radiografar ambos quadris; suspeita instável requer projeção lateral segura, sem forçar posição de rã.",
+      "es": "Evaluar cadera ante dolor de rodilla/marcha alterada en adolescente; rotación externa obligatoria al flexionar es una pista. Radiografiar ambas caderas; sospecha inestable requiere lateral segura sin forzar posición de rana.",
+      "sources": [
+        "topic_85"
+      ]
+    },
+    {
+      "id": "b02_035_f03",
+      "section": "initial",
+      "pt": "Suspender apoio imediatamente, usar leito/cadeira de rodas e consultar ortopedia urgente. Não realizar redução/manipulação forçada no Plantão.",
+      "es": "Suspender apoyo inmediatamente, usar cama/silla de ruedas y consultar ortopedia urgente. No reducir/manipular forzadamente en guardia.",
+      "sources": [
+        "topic_85"
+      ]
+    },
+    {
+      "id": "b02_035_f04",
+      "section": "options",
+      "pt": "Tratamento definitivo é cirúrgico, geralmente estabilização; técnica depende da estabilidade e avaliação especializada. Analgesia inicial pode usar paracetamol ou ibuprofeno quando seguro, mas não substitui cirurgia. Não há alternativa medicamentosa curativa.",
+      "es": "El tratamiento definitivo es quirúrgico, generalmente estabilización; técnica según estabilidad y especialista. Paracetamol o ibuprofeno si son seguros para dolor inicial, sin sustituir cirugía. No existe alternativa farmacológica curativa.",
+      "sources": [
+        "topic_85"
+      ]
+    },
+    {
+      "id": "b02_035_f05",
+      "section": "safety",
+      "pt": "Internar toda epifisiólise confirmada/suspeita relevante; manter sem carga mesmo que consiga andar. Avaliar bilateralidade e investigação endócrina em apresentação atípica.",
+      "es": "Internar toda epifisiólisis confirmada/sospecha relevante; mantener descarga aunque pueda caminar. Evaluar bilateralidad y causas endocrinas en presentación atípica.",
+      "sources": [
+        "topic_85"
+      ]
+    },
+    {
+      "id": "b02_035_f06",
+      "section": "followup",
+      "pt": "Seguimento ortopédico para contralateral, necrose avascular, condrólise e função; retorno à atividade somente após liberação.",
+      "es": "Seguimiento ortopédico de lado contralateral, necrosis avascular, condrólisis y función; actividad solo tras autorización.",
+      "sources": [
+        "topic_85"
+      ]
+    },
+    {
+      "id": "b02_035_ped_doses",
+      "section": "doses",
+      "sources": [
+        "rch_pain"
+      ],
+      "pt": "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL.",
+      "es": "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+    },
+    {
+      "section": "doses",
+      "sources": [
+        "rch_fent"
+      ],
+      "pt": "Resgate hospitalar pediátrico, idade de pelo menos 12 meses e sem acesso intravenoso, por equipe capacitada: fentanila intranasal 1,5 microgramas/kg por dose. Máximo inicial 100 microgramas com solução nasal 300 microgramas/mL; com apresentação 50 microgramas/mL, máximo usual 75 microgramas pela limitação de volume. Confirmar produto, concentração, peso apropriado e atomizador. Monitorar respiração, sedação, pressão e frequência, com recursos de ventilação/naloxona; reavaliar antes de nova dose. Não é receita domiciliar, não aplicar a lactentes menores de 12 meses ou com consciência alterada.",
+      "es": "Rescate hospitalario pediátrico, edad de al menos 12 meses y sin acceso intravenoso, por equipo capacitado: fentanilo intranasal 1,5 microgramos/kg por dosis. Máximo inicial 100 microgramos con solución nasal de 300 microgramos/mL; con presentación de 50 microgramos/mL, máximo usual 75 microgramos por límite de volumen. Confirmar producto, concentración, peso apropiado y atomizador. Vigilar respiración, sedación, presión y frecuencia, con recursos de ventilación/naloxona; reevaluar antes de repetir. No es receta domiciliaria; no aplicar a menores de 12 meses ni con conciencia alterada.",
+      "id": "b02_035_ped_fent"
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Deslizamento epifisário pode provocar dor referida no joelho. Exame do quadril e suspensão de carga protegem a epífise enquanto se organiza tratamento cirúrgico.",
+      "es": "El deslizamiento puede provocar dolor referido en rodilla. Examinar cadera y suspender carga protege la epífisis mientras se organiza cirugía.",
+      "sources": [
+        "topic_85"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_85",
+      "title": "Epifisiólise proximal do fêmur",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/fractures/Slipped_upper_femoral_epiphysis_SUFE_-_Emergency_Department/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_85.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — dor aguda pediátrica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_fent",
+      "title": "RCH — fentanila intranasal pediátrica, protocolo hospitalar",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/intranasal_fentanyl/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_fent.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

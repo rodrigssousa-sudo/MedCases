@@ -1,0 +1,173 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Doença de Osgood-Schlatter",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "e43bc6f0afea2348fd46452694c48935f04588ba5829adc2cba5e498a76550a2",
+  "ownerCandidate": "doenca_de_osgood_schlatter",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_033_f01",
+    "b02_033_f02",
+    "b02_033_f03",
+    "b02_033_f04",
+    "b02_033_f05",
+    "b02_033_f06",
+    "b02_033_ped_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Excluir urgências antes de atribuir dor ao crescimento; analgesia não autoriza esforço doloroso."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor focal na tuberosidade com esforço; febre, incapacidade de apoio ou derrame importante exige excluir outra causa. Radiografia se atípico/trauma."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira escolha: adaptar atividade, alongamento/fortalecimento e gelo protegido. Paracetamol ou ibuprofeno curto para dor; sintomas limitantes podem exigir proteção temporária. Cirurgia raramente, após maturidade e refratariedade."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Usar doses pediátricas por peso e evitar NSAID em desidratação, doença renal ou sangramento. Não infiltrar corticoide na apófise/tendão empiricamente."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Rever dor, marcha e retorno progressivo ao esporte; persistência, alteração do padrão ou sinais sistêmicos exige reavaliar diagnóstico."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Apofisite da tuberosidade tibial durante crescimento, associada a tração repetida."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_83",
+      "title": "Doença de Osgood-Schlatter",
+      "url": "https://www.orthoinfo.org/diseases--conditions/osgood-schlatter-disease-knee-pain/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_83.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — dor aguda pediátrica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Excluir urgências antes de atribuir dor ao crescimento; analgesia não autoriza esforço doloroso."
+      ],
+      "factIds": [
+        "b02_033_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Dor focal na tuberosidade com esforço; febre, incapacidade de apoio ou derrame importante exige excluir outra causa. Radiografia se atípico/trauma."
+      ],
+      "factIds": [
+        "b02_033_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha: adaptar atividade, alongamento/fortalecimento e gelo protegido. Paracetamol ou ibuprofeno curto para dor; sintomas limitantes podem exigir proteção temporária. Cirurgia raramente, após maturidade e refratariedade."
+      ],
+      "factIds": [
+        "b02_033_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+      ],
+      "factIds": [
+        "b02_033_ped_doses"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Usar doses pediátricas por peso e evitar NSAID em desidratação, doença renal ou sangramento. Não infiltrar corticoide na apófise/tendão empiricamente."
+      ],
+      "factIds": [
+        "b02_033_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Rever dor, marcha e retorno progressivo ao esporte; persistência, alteração do padrão ou sinais sistêmicos exige reavaliar diagnóstico."
+      ],
+      "factIds": [
+        "b02_033_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Apofisite da tuberosidade tibial durante crescimento, associada a tração repetida."
+      ],
+      "factIds": [
+        "b02_033_f01"
+      ]
+    }
+  ],
+  "markdown": "# Doença de Osgood-Schlatter\n\n## Abordagem inicial e urgências\n\nExcluir urgências antes de atribuir dor ao crescimento; analgesia não autoriza esforço doloroso.\n\n## Diagnóstico e diferenciais\n\nDor focal na tuberosidade com esforço; febre, incapacidade de apoio ou derrame importante exige excluir outra causa. Radiografia se atípico/trauma.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira escolha: adaptar atividade, alongamento/fortalecimento e gelo protegido. Paracetamol ou ibuprofeno curto para dor; sintomas limitantes podem exigir proteção temporária. Cirurgia raramente, após maturidade e refratariedade.\n\n## Fármacos, doses e intervalos\n\nAnalgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL.\n\n## Segurança e monitorização\n\nUsar doses pediátricas por peso e evitar NSAID em desidratação, doença renal ou sangramento. Não infiltrar corticoide na apófise/tendão empiricamente.\n\n## Reavaliação, internação e alta\n\nRever dor, marcha e retorno progressivo ao esporte; persistência, alteração do padrão ou sinais sistêmicos exige reavaliar diagnóstico.\n\n## Reconhecimento rápido\n\nApofisite da tuberosidade tibial durante crescimento, associada a tração repetida.\n\n## Referências\n\n1. [Doença de Osgood-Schlatter](https://www.orthoinfo.org/diseases--conditions/osgood-schlatter-disease-knee-pain/)\n2. [RCH — dor aguda pediátrica](https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/)",
+  "approvedReviewCanonicalFileSha256": "30925e6d234d66a00155f853fe6b8553bf94fe2381dd4b1308c161127ae00dbb",
+  "approvedReviewProjectionFileSha256": "9ab2550867cf24c5cd4aed1a2d611dcf17c9eb22c999b4303aec4c7cffbe7e95"
+}

@@ -1,0 +1,204 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação deste lote. Guia permanece DRAFT no Admin após futura publicação coordenada dos modos.",
+  "canonical_payload_sha256": "815d44e5f80b115ce83bf3d67e62b2d7ef49a112473e51b26fddd43c49f6452e",
+  "owner_candidate": "flutter_atrial",
+  "pt": {
+    "title": "Flutter atrial",
+    "subtitle": "Revisão clínica — primeira escolha e alternativas",
+    "summary": "Macroreentrada atrial causa atividade atrial organizada e resposta ventricular variável; flutter não é fibrilação atrial, embora compartilhe riscos tromboembólicos.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Macroreentrada atrial causa atividade atrial organizada e resposta ventricular variável; flutter não é fibrilação atrial, embora compartilhe riscos tromboembólicos."
+        ],
+        "factIds": [
+          "b02_044_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "Controle de frequência, conversão e prevenção tromboembólica têm objetivos diferentes. Melhorar frequência não elimina risco de trombo, e cardioversão eletiva precisa considerar esse risco."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "ECG de 12 derivações e monitorização; pesquisar precipitantes, eletrólitos, doença cardíaca e pré-excitação. A condução 2:1 pode ocultar ondas de flutter."
+        ],
+        "factIds": [
+          "b02_044_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Instabilidade atribuída à arritmia: cardioversão sincronizada imediata, sedação se viável sem atrasar. Preparar acesso, monitor, pressão e oximetria; oxigênio apenas se hipóxia."
+        ],
+        "factIds": [
+          "b02_044_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Estável sem pré-excitação/insuficiência cardíaca descompensada: controlar frequência com diltiazem ou beta-bloqueador, escolhendo por pressão, função ventricular e contraindicações. Cardioversão/controle de ritmo e ablação do flutter típico são opções específicas; avaliar anticoagulação antes de cardioversão eletiva."
+        ],
+        "factIds": [
+          "b02_044_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Referência adulta AHA 2025 em ambiente monitorizado: diltiazem 0,25 mg/kg intravenoso em 2 minutos, seguido, se necessário e tolerado, por 5–10 mg por hora. Alternativa: metoprolol 2,5–5 mg intravenoso em 2 minutos, até 3 doses, reavaliando pressão/frequência antes de cada repetição. Não somar bloqueadores empiricamente."
+        ],
+        "factIds": [
+          "b02_044_f05"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Evitar diltiazem/verapamil em disfunção sistólica com descompensação; beta-bloqueador intravenoso também pode agravar descompensação. Se pré-excitação, não usar bloqueadores nodais nem amiodarona intravenosa. Anticoagulação depende de risco, duração/contexto e comorbidades, não aspirina como substituta automática."
+        ],
+        "factIds": [
+          "b02_044_f06"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Internar se instável, insuficiência cardíaca/isquemia ou controle inadequado; alta selecionada somente com frequência tolerada, avaliação tromboembólica e cardiologia. Planejar ablação quando pertinente."
+        ],
+        "factIds": [
+          "b02_044_f07"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Flutter auricular",
+    "subtitle": "Revisión clínica — primera elección y alternativas",
+    "summary": "La macrorreentrada auricular produce actividad organizada y respuesta ventricular variable; no es fibrilación auricular aunque comparte riesgo tromboembólico.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "La macrorreentrada auricular produce actividad organizada y respuesta ventricular variable; no es fibrilación auricular aunque comparte riesgo tromboembólico."
+        ],
+        "factIds": [
+          "b02_044_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Control de frecuencia, conversión y prevención tromboembólica tienen objetivos distintos. Mejorar frecuencia no elimina trombos; cardioversión electiva debe considerar riesgo."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "ECG de 12 derivaciones y monitorización; buscar desencadenantes, electrolitos, cardiopatía y preexcitación. La conducción 2:1 puede ocultar ondas de flutter."
+        ],
+        "factIds": [
+          "b02_044_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Inestabilidad atribuible a arritmia: cardioversión sincronizada inmediata, sedación si es posible sin demorar. Acceso, monitor, presión y oximetría; oxígeno si hay hipoxia."
+        ],
+        "factIds": [
+          "b02_044_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Estable sin preexcitación/insuficiencia cardíaca descompensada: controlar frecuencia con diltiazem o beta-bloqueador según presión, función ventricular y contraindicaciones. Cardioversión/control de ritmo y ablación de flutter típico son opciones específicas; evaluar anticoagulación antes de cardioversión electiva."
+        ],
+        "factIds": [
+          "b02_044_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Referencia adulta AHA 2025 en ambiente monitorizado: diltiazem 0,25 mg/kg intravenoso en 2 minutos, seguido si se necesita/tolera de 5–10 mg por hora. Alternativa: metoprolol 2,5–5 mg intravenoso en 2 minutos, hasta 3 dosis, reevaluando presión/frecuencia antes de repetir. No sumar bloqueadores empíricamente."
+        ],
+        "factIds": [
+          "b02_044_f05"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Evitar diltiazem/verapamilo ante disfunción sistólica descompensada; beta-bloqueador intravenoso también puede empeorarla. Con preexcitación, no usar bloqueadores nodales ni amiodarona intravenosa. Anticoagulación según riesgo, duración/contexto y comorbilidades, sin sustituir automáticamente por aspirina."
+        ],
+        "factIds": [
+          "b02_044_f06"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Internar ante inestabilidad, insuficiencia cardíaca/isquemia o control inadecuado; alta seleccionada solo con frecuencia tolerada, evaluación tromboembólica y cardiología. Planificar ablación cuando corresponda."
+        ],
+        "factIds": [
+          "b02_044_f07"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_94",
+      "title": "Flutter atrial",
+      "url": "https://www.medlineplus.gov/ency/article/000184.htm",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Review Date 1/1/2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_94.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "flutter_aha",
+      "title": "AHA — flutter atrial, revisão março de 2025",
+      "url": "https://www.heart.org/en/health-topics/atrial-fibrillation/what-is-atrial-fibrillation-afib-or-af/atrial-flutter",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "AHA 2025: avaliação de flutter/FA, estabilidade, controle ventricular, cardioversão e risco tromboembólico; não extrapolar para FA pré-excitada.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "aha2025",
+      "title": "AHA — Adult Advanced Life Support 2025",
+      "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "AHA final 2025, seção 18.2/tabela 2: diltiazem 0,25 mg/kg em 2 minutos, 5–10 mg por hora; metoprolol 2,5–5 mg em 2 minutos até 3 doses; evitar bloqueio nodal/amiodarona IV em pré-excitação.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

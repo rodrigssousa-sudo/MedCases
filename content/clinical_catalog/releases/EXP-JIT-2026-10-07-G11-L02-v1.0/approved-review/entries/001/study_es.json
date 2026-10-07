@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Cólico del lactante",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "40cf2f5c310bb18a06e8e07367fc18c6cdafe3a41666faf48406e3b57c35127b",
+  "ownerCandidate": "colica_do_lactente",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_001_f01",
+    "b02_001_f02",
+    "b02_001_f03",
+    "b02_001_f04",
+    "b02_001_f05",
+    "b02_001_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Llanto recurrente difícil de consolar en un lactante sano, sin causa identificable tras evaluación; suele mejorar en los primeros meses. No atribuir todo llanto a gases."
+      ],
+      "factIds": [
+        "b02_001_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "La prioridad es reconocer enfermedad y apoyar vínculo cuidador–bebé: el patrón de llanto no prueba enfermedad intestinal. Añadir fármacos sin diagnóstico expone a riesgo."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar crecimiento, tomas, vómitos, heces, diuresis, temperatura, examen completo y bienestar de los cuidadores. Diferenciales: hambre, infección, lesión, hernia, alergia alimentaria y otras causas orgánicas."
+      ],
+      "factIds": [
+        "b02_001_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Fiebre, decaimiento, vómito verde, sangre en heces, deshidratación, distensión o crecimiento insuficiente requieren evaluación. Valorar agotamiento del cuidador y riesgo de violencia; nunca sacudir al bebé."
+      ],
+      "factIds": [
+        "b02_001_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección: apoyo a cuidadores y revisión de la técnica de alimentación, manteniendo lactancia. Complementar con sostén, balanceo suave y consuelo; para dormir, posición supina en superficie segura."
+      ],
+      "factIds": [
+        "b02_001_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No hay dos fármacos rutinarios recomendados para el cólico inespecífico. Evitar anticolinérgicos, supresores de ácido y cambios de fórmula sin indicación. La evidencia de probióticos depende de cepa/población; no son una alternativa universal."
+      ],
+      "factIds": [
+        "b02_001_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Alta si examen, hidratación y crecimiento son tranquilizadores y hay apoyo/acceso a consulta. Reevaluar persistencia, cambio de patrón o alarmas; la alergia confirmada requiere su propio tratamiento."
+      ],
+      "factIds": [
+        "b02_001_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_51",
+      "title": "Cólica do lactente",
+      "url": "https://www.nhs.uk/conditions/colic/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 26 April 2022",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_51.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "colic_rch",
+      "title": "RCH — lactente choroso, avaliação clínica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Unsettled_or_crying_babies/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/colic_rch.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

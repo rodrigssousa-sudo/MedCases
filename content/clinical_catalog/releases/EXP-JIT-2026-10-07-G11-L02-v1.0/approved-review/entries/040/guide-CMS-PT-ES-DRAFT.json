@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação deste lote. Guia permanece DRAFT no Admin após futura publicação coordenada dos modos.",
+  "canonical_payload_sha256": "363d461d11cf3686e1a35bc2a3ce9ae0a55e4ddbca79877c43fbe62a970eb096",
+  "owner_candidate": "torcicolo_muscular_congenito",
+  "pt": {
+    "title": "Torcicolo muscular congênito",
+    "subtitle": "Revisão clínica — primeira escolha e alternativas",
+    "summary": "Encurtamento do esternocleidomastoideo produz inclinação da cabeça e rotação oposta; início tardio/agudo sugere outra causa.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Encurtamento do esternocleidomastoideo produz inclinação da cabeça e rotação oposta; início tardio/agudo sugere outra causa."
+        ],
+        "factIds": [
+          "b02_040_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Avaliar amplitude cervical, músculo, forma craniana, olhos, neurologia e quadris. Apresentação típica não exige imagem cervical rotineira; investigar achados atípicos e displasia do quadril conforme protocolo."
+        ],
+        "factIds": [
+          "b02_040_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Torcicolo adquirido com febre, trauma ou déficit é outra situação e pode ser urgente. Orientar alimentação, estímulos visuais e posicionamento seguro."
+        ],
+        "factIds": [
+          "b02_040_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Primeira escolha: fisioterapia precoce e exercícios suaves ensinados aos cuidadores; combinar amplitude passiva/ativa, movimento simétrico e adaptação ambiental. Refratário: avaliação ortopédica; procedimentos são raros e individualizados. Não há dois fármacos de primeira linha."
+        ],
+        "factIds": [
+          "b02_040_f04"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Não realizar manipulação cervical forçada. Prono apenas acordado/supervisionado; sono permanece supino. Analgésico não substitui revisão de causa se exercícios provocarem dor importante."
+        ],
+        "factIds": [
+          "b02_040_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Rever em cerca de 4 semanas; falta de melhora, limitação importante ou assimetria progressiva demanda ajuste do plano/encaminhamento. Alta por amplitude, postura e desenvolvimento adequados, não somente idade."
+        ],
+        "factIds": [
+          "b02_040_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Tortícolis muscular congénita",
+    "subtitle": "Revisión clínica — primera elección y alternativas",
+    "summary": "El acortamiento esternocleidomastoideo produce inclinación de cabeza y rotación opuesta; inicio tardío/agudo sugiere otra causa.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "El acortamiento esternocleidomastoideo produce inclinación de cabeza y rotación opuesta; inicio tardío/agudo sugiere otra causa."
+        ],
+        "factIds": [
+          "b02_040_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Evaluar movilidad cervical, músculo, cráneo, ojos, neurología y caderas. La presentación típica no exige imagen cervical rutinaria; investigar hallazgos atípicos y displasia de cadera según protocolo."
+        ],
+        "factIds": [
+          "b02_040_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Tortícolis adquirida con fiebre, trauma o déficit es otra situación y puede ser urgente. Orientar alimentación, estímulos visuales y posición segura."
+        ],
+        "factIds": [
+          "b02_040_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Primera elección: fisioterapia temprana y ejercicios suaves enseñados al cuidador; combinar movilidad pasiva/activa, movimiento simétrico y adaptación ambiental. Refractario: ortopedia; los procedimientos son raros e individualizados. No hay dos fármacos de primera línea."
+        ],
+        "factIds": [
+          "b02_040_f04"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "No manipular forzadamente el cuello. Prono solo despierto/supervisado; dormir en supino. Analgésico no sustituye revisar la causa si ejercicios producen dolor importante."
+        ],
+        "factIds": [
+          "b02_040_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Revisar en aproximadamente 4 semanas; sin mejoría, limitación importante o asimetría progresiva requiere ajustar/derivar. Alta por movilidad, postura y desarrollo adecuados, no solo por edad."
+        ],
+        "factIds": [
+          "b02_040_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_90",
+      "title": "Torcicolo muscular congênito",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Congenital_Torticollis/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated Nov 20 2018.",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_90.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "tortic_apta",
+      "title": "APTA — torticolo muscular congênito, guideline 2024",
+      "url": "https://www.apta.org/patient-care/evidence-based-practice-resources/cpgs/physical-therapy-management-of-congenital-muscular-torticollis-a-2018-evidence-based-clinical-practice-guideline-from-the-apta-academy-of-pediatric-physical-therapy-cpg",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLIC_SUMMARY_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/tortic_apta.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

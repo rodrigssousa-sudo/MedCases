@@ -1,0 +1,208 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Epifisiólisis proximal del fémur",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "b55c5a47dc2c892eadf40a06fb95f62ed0de59d98937c64edd83cef84e41ba59",
+  "ownerCandidate": "epifisiolise_proximal_do_femur",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_035_f01",
+    "b02_035_f02",
+    "b02_035_f03",
+    "b02_035_f04",
+    "b02_035_f05",
+    "b02_035_f06",
+    "b02_035_ped_doses",
+    "b02_035_ped_fent"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "El deslizamiento epifisario femoral proximal en adolescentes puede manifestarse como dolor de cadera, muslo o rodilla; el retraso aumenta riesgo de necrosis y deformidad."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "El deslizamiento puede provocar dolor referido en rodilla. Examinar cadera y suspender carga protege la epífisis mientras se organiza cirugía."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar cadera ante dolor de rodilla/marcha alterada en adolescente; rotación externa obligatoria al flexionar es una pista. Radiografiar ambas caderas; sospecha inestable requiere lateral segura sin forzar posición de rana."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Suspender apoyo inmediatamente, usar cama/silla de ruedas y consultar ortopedia urgente. No reducir/manipular forzadamente en guardia."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "El tratamiento definitivo es quirúrgico, generalmente estabilización; técnica según estabilidad y especialista. Paracetamol o ibuprofeno si son seguros para dolor inicial, sin sustituir cirugía. No existe alternativa farmacológica curativa."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+    },
+    {
+      "type": "paragraph",
+      "text": "Rescate hospitalario pediátrico, edad de al menos 12 meses y sin acceso intravenoso, por equipo capacitado: fentanilo intranasal 1,5 microgramos/kg por dosis. Máximo inicial 100 microgramos con solución nasal de 300 microgramos/mL; con presentación de 50 microgramos/mL, máximo usual 75 microgramos por límite de volumen. Confirmar producto, concentración, peso apropiado y atomizador. Vigilar respiración, sedación, presión y frecuencia, con recursos de ventilación/naloxona; reevaluar antes de repetir. No es receta domiciliaria; no aplicar a menores de 12 meses ni con conciencia alterada."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Internar toda epifisiólisis confirmada/sospecha relevante; mantener descarga aunque pueda caminar. Evaluar bilateralidad y causas endocrinas en presentación atípica."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguimiento ortopédico de lado contralateral, necrosis avascular, condrólisis y función; actividad solo tras autorización."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_85",
+      "title": "Epifisiólise proximal do fêmur",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/fractures/Slipped_upper_femoral_epiphysis_SUFE_-_Emergency_Department/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_85.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — dor aguda pediátrica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_fent",
+      "title": "RCH — fentanila intranasal pediátrica, protocolo hospitalar",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/intranasal_fentanyl/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_fent.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "El deslizamiento epifisario femoral proximal en adolescentes puede manifestarse como dolor de cadera, muslo o rodilla; el retraso aumenta riesgo de necrosis y deformidad."
+      ],
+      "factIds": [
+        "b02_035_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "El deslizamiento puede provocar dolor referido en rodilla. Examinar cadera y suspender carga protege la epífisis mientras se organiza cirugía."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar cadera ante dolor de rodilla/marcha alterada en adolescente; rotación externa obligatoria al flexionar es una pista. Radiografiar ambas caderas; sospecha inestable requiere lateral segura sin forzar posición de rana."
+      ],
+      "factIds": [
+        "b02_035_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Suspender apoyo inmediatamente, usar cama/silla de ruedas y consultar ortopedia urgente. No reducir/manipular forzadamente en guardia."
+      ],
+      "factIds": [
+        "b02_035_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "El tratamiento definitivo es quirúrgico, generalmente estabilización; técnica según estabilidad y especialista. Paracetamol o ibuprofeno si son seguros para dolor inicial, sin sustituir cirugía. No existe alternativa farmacológica curativa."
+      ],
+      "factIds": [
+        "b02_035_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL.",
+        "Rescate hospitalario pediátrico, edad de al menos 12 meses y sin acceso intravenoso, por equipo capacitado: fentanilo intranasal 1,5 microgramos/kg por dosis. Máximo inicial 100 microgramos con solución nasal de 300 microgramos/mL; con presentación de 50 microgramos/mL, máximo usual 75 microgramos por límite de volumen. Confirmar producto, concentración, peso apropiado y atomizador. Vigilar respiración, sedación, presión y frecuencia, con recursos de ventilación/naloxona; reevaluar antes de repetir. No es receta domiciliaria; no aplicar a menores de 12 meses ni con conciencia alterada."
+      ],
+      "factIds": [
+        "b02_035_ped_doses",
+        "b02_035_ped_fent"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Internar toda epifisiólisis confirmada/sospecha relevante; mantener descarga aunque pueda caminar. Evaluar bilateralidad y causas endocrinas en presentación atípica."
+      ],
+      "factIds": [
+        "b02_035_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguimiento ortopédico de lado contralateral, necrosis avascular, condrólisis y función; actividad solo tras autorización."
+      ],
+      "factIds": [
+        "b02_035_f06"
+      ]
+    }
+  ],
+  "markdown": "# Epifisiólisis proximal del fémur\n\n## Concepto y mecanismo\n\nEl deslizamiento epifisario femoral proximal en adolescentes puede manifestarse como dolor de cadera, muslo o rodilla; el retraso aumenta riesgo de necrosis y deformidad.\n\n## Razonamiento y elección terapéutica\n\nEl deslizamiento puede provocar dolor referido en rodilla. Examinar cadera y suspender carga protege la epífisis mientras se organiza cirugía.\n\n## Diagnóstico y diferenciales\n\nEvaluar cadera ante dolor de rodilla/marcha alterada en adolescente; rotación externa obligatoria al flexionar es una pista. Radiografiar ambas caderas; sospecha inestable requiere lateral segura sin forzar posición de rana.\n\n## Abordaje inicial y urgencias\n\nSuspender apoyo inmediatamente, usar cama/silla de ruedas y consultar ortopedia urgente. No reducir/manipular forzadamente en guardia.\n\n## Tratamiento: primera elección y alternativas\n\nEl tratamiento definitivo es quirúrgico, generalmente estabilización; técnica según estabilidad y especialista. Paracetamol o ibuprofeno si son seguros para dolor inicial, sin sustituir cirugía. No existe alternativa farmacológica curativa.\n\n## Fármacos, dosis e intervalos\n\nAnalgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL.\n\nRescate hospitalario pediátrico, edad de al menos 12 meses y sin acceso intravenoso, por equipo capacitado: fentanilo intranasal 1,5 microgramos/kg por dosis. Máximo inicial 100 microgramos con solución nasal de 300 microgramos/mL; con presentación de 50 microgramos/mL, máximo usual 75 microgramos por límite de volumen. Confirmar producto, concentración, peso apropiado y atomizador. Vigilar respiración, sedación, presión y frecuencia, con recursos de ventilación/naloxona; reevaluar antes de repetir. No es receta domiciliaria; no aplicar a menores de 12 meses ni con conciencia alterada.\n\n## Seguridad y monitorización\n\nInternar toda epifisiólisis confirmada/sospecha relevante; mantener descarga aunque pueda caminar. Evaluar bilateralidad y causas endocrinas en presentación atípica.\n\n## Reevaluación, internación y alta\n\nSeguimiento ortopédico de lado contralateral, necrosis avascular, condrólisis y función; actividad solo tras autorización.\n\n## Referencias\n\n1. [Epifisiólise proximal do fêmur](https://www.rch.org.au/clinicalguide/guideline_index/fractures/Slipped_upper_femoral_epiphysis_SUFE_-_Emergency_Department/)\n2. [RCH — dor aguda pediátrica](https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/)\n3. [RCH — fentanila intranasal pediátrica, protocolo hospitalar](https://www.rch.org.au/clinicalguide/guideline_index/intranasal_fentanyl/)",
+  "approvedReviewCanonicalFileSha256": "4405d07317fc4a7298c524b474b17cbebf108992e861e45f197def87134eed92",
+  "approvedReviewProjectionFileSha256": "b448a969a56bde09694b1a6a274a3a84735568a2176124d12afd3d412b29348d"
+}

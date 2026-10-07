@@ -1,0 +1,170 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Tromboflebitis superficial",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "f9e1ab53703167da2682cae977dc2b76d829c90d92013339034c3c4cd7d9abda",
+  "ownerCandidate": "tromboflebite_superficial",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_048_f01",
+    "b02_048_f02",
+    "b02_048_f03",
+    "b02_048_f04",
+    "b02_048_f05",
+    "b02_048_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "La trombosis superficial inflamada causa cordón doloroso; puede coexistir con TVP/TEP. La vena femoral superficial, pese al nombre, pertenece al sistema profundo."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Extensión y proximidad al sistema profundo determinan riesgo. Un cordón doloroso puede necesitar medidas locales, dosis profiláctica o anticoagulación terapéutica."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ecografía compresiva en la mayoría para medir extensión/distancia de unión profunda y excluir TVP. Buscar síntomas de TEP, cáncer, embarazo y antecedentes trombóticos."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "TVP asociada o trombo hasta 3 cm de unión safenofemoral/safenopoplítea: anticoagulación terapéutica según TVP, generalmente 3 meses, no dosis profiláctica inferior. Sospecha de TEP exige evaluación urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Aislada de al menos 5 cm y más de 3 cm de la unión: fondaparinux 2,5 mg subcutáneo una vez al día durante 45 días. Alternativa seleccionada: rivaroxabán 10 mg oral una vez al día durante 45 días verificando autorización local; heparina de bajo peso es otra opción. Menor extensión/bajo riesgo: compresas, elevación y antiinflamatorio si es seguro con vigilancia."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar sangrado y función renal; no combinar anticoagulantes. Embarazo requiere heparina según protocolo obstétrico, no DOAC. No usar antibiótico sin infección. La flebitis por catéter periférico generalmente no requiere anticoagulación."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sin anticoagular y si hay riesgo/necesidad de vigilar extensión, reevaluar y considerar ecografía en 7–10 días; imagen no determina por sí sola duración. Consultar por disnea, dolor torácico o más edema."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_98",
+      "title": "Tromboflebite superficial",
+      "url": "https://www.nhs.uk/conditions/phlebitis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 11 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_98.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "svt_canada",
+      "title": "Thrombosis Canada — trombose venosa superficial",
+      "url": "https://thrombosiscanada.ca/clinical_guides/pdfs/90_30.pdf",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2023,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/svt_canada.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "La trombosis superficial inflamada causa cordón doloroso; puede coexistir con TVP/TEP. La vena femoral superficial, pese al nombre, pertenece al sistema profundo."
+      ],
+      "factIds": [
+        "b02_048_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Extensión y proximidad al sistema profundo determinan riesgo. Un cordón doloroso puede necesitar medidas locales, dosis profiláctica o anticoagulación terapéutica."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Ecografía compresiva en la mayoría para medir extensión/distancia de unión profunda y excluir TVP. Buscar síntomas de TEP, cáncer, embarazo y antecedentes trombóticos."
+      ],
+      "factIds": [
+        "b02_048_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "TVP asociada o trombo hasta 3 cm de unión safenofemoral/safenopoplítea: anticoagulación terapéutica según TVP, generalmente 3 meses, no dosis profiláctica inferior. Sospecha de TEP exige evaluación urgente."
+      ],
+      "factIds": [
+        "b02_048_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Aislada de al menos 5 cm y más de 3 cm de la unión: fondaparinux 2,5 mg subcutáneo una vez al día durante 45 días. Alternativa seleccionada: rivaroxabán 10 mg oral una vez al día durante 45 días verificando autorización local; heparina de bajo peso es otra opción. Menor extensión/bajo riesgo: compresas, elevación y antiinflamatorio si es seguro con vigilancia."
+      ],
+      "factIds": [
+        "b02_048_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Evaluar sangrado y función renal; no combinar anticoagulantes. Embarazo requiere heparina según protocolo obstétrico, no DOAC. No usar antibiótico sin infección. La flebitis por catéter periférico generalmente no requiere anticoagulación."
+      ],
+      "factIds": [
+        "b02_048_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Sin anticoagular y si hay riesgo/necesidad de vigilar extensión, reevaluar y considerar ecografía en 7–10 días; imagen no determina por sí sola duración. Consultar por disnea, dolor torácico o más edema."
+      ],
+      "factIds": [
+        "b02_048_f06"
+      ]
+    }
+  ],
+  "markdown": "# Tromboflebitis superficial\n\n## Concepto y mecanismo\n\nLa trombosis superficial inflamada causa cordón doloroso; puede coexistir con TVP/TEP. La vena femoral superficial, pese al nombre, pertenece al sistema profundo.\n\n## Razonamiento y elección terapéutica\n\nExtensión y proximidad al sistema profundo determinan riesgo. Un cordón doloroso puede necesitar medidas locales, dosis profiláctica o anticoagulación terapéutica.\n\n## Diagnóstico y diferenciales\n\nEcografía compresiva en la mayoría para medir extensión/distancia de unión profunda y excluir TVP. Buscar síntomas de TEP, cáncer, embarazo y antecedentes trombóticos.\n\n## Abordaje inicial y urgencias\n\nTVP asociada o trombo hasta 3 cm de unión safenofemoral/safenopoplítea: anticoagulación terapéutica según TVP, generalmente 3 meses, no dosis profiláctica inferior. Sospecha de TEP exige evaluación urgente.\n\n## Tratamiento: primera elección y alternativas\n\nAislada de al menos 5 cm y más de 3 cm de la unión: fondaparinux 2,5 mg subcutáneo una vez al día durante 45 días. Alternativa seleccionada: rivaroxabán 10 mg oral una vez al día durante 45 días verificando autorización local; heparina de bajo peso es otra opción. Menor extensión/bajo riesgo: compresas, elevación y antiinflamatorio si es seguro con vigilancia.\n\n## Seguridad y monitorización\n\nEvaluar sangrado y función renal; no combinar anticoagulantes. Embarazo requiere heparina según protocolo obstétrico, no DOAC. No usar antibiótico sin infección. La flebitis por catéter periférico generalmente no requiere anticoagulación.\n\n## Reevaluación, internación y alta\n\nSin anticoagular y si hay riesgo/necesidad de vigilar extensión, reevaluar y considerar ecografía en 7–10 días; imagen no determina por sí sola duración. Consultar por disnea, dolor torácico o más edema.\n\n## Referencias\n\n1. [Tromboflebite superficial](https://www.nhs.uk/conditions/phlebitis/)\n2. [Thrombosis Canada — trombose venosa superficial](https://thrombosiscanada.ca/clinical_guides/pdfs/90_30.pdf)",
+  "approvedReviewCanonicalFileSha256": "2a9fd34c546eb9247f22ce948137f63b7f20070bb934bc3e2b056f12dfeb7575",
+  "approvedReviewProjectionFileSha256": "2ad7cef50bef98f202b2271eb2ac5835fe5d782ba855da39411c869071fb0a48"
+}

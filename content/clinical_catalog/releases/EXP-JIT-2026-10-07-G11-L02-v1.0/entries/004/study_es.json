@@ -1,0 +1,201 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Celulitis preseptal",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "89212a696b0c40637d8bc02703f9fc504abd85f6c6d36568e2c65d5e6007c92f",
+  "ownerCandidate": "celulite_pre_septal",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_004_f01",
+    "b02_004_f02",
+    "b02_004_f03",
+    "b02_004_f04",
+    "b02_004_f05",
+    "b02_004_f06",
+    "b02_004_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Infección del párpado/tejidos anteriores al tabique orbitario; se espera conservación de visión y motilidad. La celulitis orbitaria es una emergencia diferente."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "El tabique diferencia infección superficial de orbitaria, pero el examen puede ser limitado. Ante duda, proteger visión; MRSA y origen sinusal cambian cobertura, sin justificar combinar todos los antibióticos."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examinar agudeza, pupilas, motilidad, proptosis, dolor al mover ojos, fiebre y origen cutáneo/sinusal. Restricción dolorosa, diplopía, disminución visual, proptosis o examen imposible exige evaluación hospitalaria e imágenes según especialista."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sepsis, progresión rápida o sospecha orbitaria: internar y consultar oftalmología/ORL urgentemente. Tratamiento oral solo si es leve, sin signos orbitarios y con seguimiento garantizado."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Adulto leve: primera opción del protocolo consultado, amoxicilina/clavulanato 500/125 mg por vía oral cada 8 horas durante 7 días. En alergia a penicilina, alternativa del mismo protocolo: doxiciclina 100 mg cada 12 horas MÁS metronidazol 400 mg cada 8 horas durante 7 días; no extrapolar a niños/embarazadas y confirmar susceptibilidad local."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Niño leve, según RCH: cefalexina 20 mg/kg por dosis oral cada 8 horas, máximo 750 mg por dosis, durante 7–10 días. Ante sospecha de MRSA y susceptibilidad compatible: clindamicina 15 mg/kg por dosis cada 8 horas, máximo 600 mg por dosis. Moderada/grave: cefazolina 50 mg/kg por dosis intravenosa cada 8 horas, máximo 2 g; alternativa ceftriaxona 50 mg/kg intravenosa una vez al día, máximo 2 g, con transición oral según mejoría."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ajustar a función renal, alergias y epidemiología. Clindamicina puede causar colitis por C. difficile. Lactantes/neonatos y vacunación Hib incompleta requieren evaluación específica; no usar el esquema leve si hay afectación orbitaria."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar en 24 horas; empeoramiento o falta de mejoría en 24–48 horas exige reclasificar y considerar internación. Alta solo si tolera vía oral, el examen ocular es seguro y hay seguimiento."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_54",
+      "title": "Celulite pré-septal",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Periorbital_and_orbital_cellulitis/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated December, 2021",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_54.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "presept_adult",
+      "title": "NHS Forth Valley — celulite pré-septal/orbital adulta",
+      "url": "https://rightdecisions.scot.nhs.uk/media/2128/orbital-cellulitis-protocol.pdf",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2019,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Review Date  06/11/2021 ",
+      "scope": "Forth Valley versão 1.1 de 2019, revisão prevista 2021. Usado para rastrear dose; não apresentado como guideline atualizado em 2026. Princípio terapêutico conferido com handbook NHS 2024.",
+      "sourceEvidenceRecord": "evidence/presept_adult.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "presept_2024",
+      "title": "NHS Dumfries & Galloway — Eye antimicrobial handbook, reviewed July 2024",
+      "url": "https://www.rightdecisions.scot.nhs.uk/nhs-dumfries-galloway-antimicrobial-handbook/primary-care/eye/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NHS Dumfries & Galloway, revisão 31/07/2024: co-amoxiclav; em alergia/MRSA, doxiciclina mais metronidazol. Dose numérica rastreada ao protocolo Forth Valley 2019; necessidade de adaptação local explicitada.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Infección del párpado/tejidos anteriores al tabique orbitario; se espera conservación de visión y motilidad. La celulitis orbitaria es una emergencia diferente."
+      ],
+      "factIds": [
+        "b02_004_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "El tabique diferencia infección superficial de orbitaria, pero el examen puede ser limitado. Ante duda, proteger visión; MRSA y origen sinusal cambian cobertura, sin justificar combinar todos los antibióticos."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examinar agudeza, pupilas, motilidad, proptosis, dolor al mover ojos, fiebre y origen cutáneo/sinusal. Restricción dolorosa, diplopía, disminución visual, proptosis o examen imposible exige evaluación hospitalaria e imágenes según especialista."
+      ],
+      "factIds": [
+        "b02_004_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Sepsis, progresión rápida o sospecha orbitaria: internar y consultar oftalmología/ORL urgentemente. Tratamiento oral solo si es leve, sin signos orbitarios y con seguimiento garantizado."
+      ],
+      "factIds": [
+        "b02_004_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Adulto leve: primera opción del protocolo consultado, amoxicilina/clavulanato 500/125 mg por vía oral cada 8 horas durante 7 días. En alergia a penicilina, alternativa del mismo protocolo: doxiciclina 100 mg cada 12 horas MÁS metronidazol 400 mg cada 8 horas durante 7 días; no extrapolar a niños/embarazadas y confirmar susceptibilidad local."
+      ],
+      "factIds": [
+        "b02_004_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Niño leve, según RCH: cefalexina 20 mg/kg por dosis oral cada 8 horas, máximo 750 mg por dosis, durante 7–10 días. Ante sospecha de MRSA y susceptibilidad compatible: clindamicina 15 mg/kg por dosis cada 8 horas, máximo 600 mg por dosis. Moderada/grave: cefazolina 50 mg/kg por dosis intravenosa cada 8 horas, máximo 2 g; alternativa ceftriaxona 50 mg/kg intravenosa una vez al día, máximo 2 g, con transición oral según mejoría."
+      ],
+      "factIds": [
+        "b02_004_f05"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Ajustar a función renal, alergias y epidemiología. Clindamicina puede causar colitis por C. difficile. Lactantes/neonatos y vacunación Hib incompleta requieren evaluación específica; no usar el esquema leve si hay afectación orbitaria."
+      ],
+      "factIds": [
+        "b02_004_f06"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar en 24 horas; empeoramiento o falta de mejoría en 24–48 horas exige reclasificar y considerar internación. Alta solo si tolera vía oral, el examen ocular es seguro y hay seguimiento."
+      ],
+      "factIds": [
+        "b02_004_f07"
+      ]
+    }
+  ],
+  "markdown": "# Celulitis preseptal\n\n## Concepto y mecanismo\n\nInfección del párpado/tejidos anteriores al tabique orbitario; se espera conservación de visión y motilidad. La celulitis orbitaria es una emergencia diferente.\n\n## Razonamiento y elección terapéutica\n\nEl tabique diferencia infección superficial de orbitaria, pero el examen puede ser limitado. Ante duda, proteger visión; MRSA y origen sinusal cambian cobertura, sin justificar combinar todos los antibióticos.\n\n## Diagnóstico y diferenciales\n\nExaminar agudeza, pupilas, motilidad, proptosis, dolor al mover ojos, fiebre y origen cutáneo/sinusal. Restricción dolorosa, diplopía, disminución visual, proptosis o examen imposible exige evaluación hospitalaria e imágenes según especialista.\n\n## Abordaje inicial y urgencias\n\nSepsis, progresión rápida o sospecha orbitaria: internar y consultar oftalmología/ORL urgentemente. Tratamiento oral solo si es leve, sin signos orbitarios y con seguimiento garantizado.\n\n## Tratamiento: primera elección y alternativas\n\nAdulto leve: primera opción del protocolo consultado, amoxicilina/clavulanato 500/125 mg por vía oral cada 8 horas durante 7 días. En alergia a penicilina, alternativa del mismo protocolo: doxiciclina 100 mg cada 12 horas MÁS metronidazol 400 mg cada 8 horas durante 7 días; no extrapolar a niños/embarazadas y confirmar susceptibilidad local.\n\n## Fármacos, dosis e intervalos\n\nNiño leve, según RCH: cefalexina 20 mg/kg por dosis oral cada 8 horas, máximo 750 mg por dosis, durante 7–10 días. Ante sospecha de MRSA y susceptibilidad compatible: clindamicina 15 mg/kg por dosis cada 8 horas, máximo 600 mg por dosis. Moderada/grave: cefazolina 50 mg/kg por dosis intravenosa cada 8 horas, máximo 2 g; alternativa ceftriaxona 50 mg/kg intravenosa una vez al día, máximo 2 g, con transición oral según mejoría.\n\n## Seguridad y monitorización\n\nAjustar a función renal, alergias y epidemiología. Clindamicina puede causar colitis por C. difficile. Lactantes/neonatos y vacunación Hib incompleta requieren evaluación específica; no usar el esquema leve si hay afectación orbitaria.\n\n## Reevaluación, internación y alta\n\nReevaluar en 24 horas; empeoramiento o falta de mejoría en 24–48 horas exige reclasificar y considerar internación. Alta solo si tolera vía oral, el examen ocular es seguro y hay seguimiento.\n\n## Referencias\n\n1. [Celulite pré-septal](https://www.rch.org.au/clinicalguide/guideline_index/Periorbital_and_orbital_cellulitis/)\n2. [NHS Forth Valley — celulite pré-septal/orbital adulta](https://rightdecisions.scot.nhs.uk/media/2128/orbital-cellulitis-protocol.pdf)\n3. [NHS Dumfries & Galloway — Eye antimicrobial handbook, reviewed July 2024](https://www.rightdecisions.scot.nhs.uk/nhs-dumfries-galloway-antimicrobial-handbook/primary-care/eye/)",
+  "approvedReviewCanonicalFileSha256": "8c76bc5848f80a53bcf8fce0670c39d8c9cbadcb7e99670e24f944e3a008003a",
+  "approvedReviewProjectionFileSha256": "5cea171d9aa01ecb1b16a3f2878010e772d9e593be8f480585c70795489b0d88"
+}

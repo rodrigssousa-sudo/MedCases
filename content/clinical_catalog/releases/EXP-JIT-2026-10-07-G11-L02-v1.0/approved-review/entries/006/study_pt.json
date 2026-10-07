@@ -1,0 +1,135 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Sialadenite",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "5c4c24e47b717dacfcf30c441fe836e8fffd2e509085129ca40103e7b3415dac",
+  "ownerCandidate": "sialadenite",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_006_f01",
+    "b02_006_f02",
+    "b02_006_f03",
+    "b02_006_f04",
+    "b02_006_f05",
+    "b02_006_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Inflamação de glândula salivar por obstrução, infecção ou outras causas; antibiótico depende de evidência de infecção bacteriana. Dor relacionada à refeição sugere cálculo."
+      ],
+      "factIds": [
+        "b02_006_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Estase salivar e obstrução favorecem infecção. O tratamento combina restaurar drenagem/hidratação e antimicrobiano quando indicado; abscesso ou cálculo persistente não se resolve apenas prolongando antibiótico."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar ducto, secreção purulenta, dentes, hidratação e massa focal. Ultrassom se cálculo/abscesso provável; massa persistente exige investigação de neoplasia."
+      ],
+      "factIds": [
+        "b02_006_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Disfagia, ameaça à via aérea, sepse ou extensão cervical: hospital, otorrino/cirurgia e drenagem quando indicada. Hidratar, compressas mornas, massagem suave e estímulo salivar se seguros."
+      ],
+      "factIds": [
+        "b02_006_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Adulto com infecção bacteriana não grave: amoxicilina/clavulanato 500/125 mg oral a cada 8 horas por 7 dias é opção do NHS GGC. Outro protocolo prioriza flucloxacilina 500 mg oral a cada 6 horas por 5 dias para parotite estafilocócica; incluir metronidazol 400 mg a cada 8 horas somente se suspeita anaeróbia/má dentição. Escolher conforme foco, microbiologia e protocolo local, não combinar regimes sem indicação."
+      ],
+      "factIds": [
+        "b02_006_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Alergia/MRSA em adulto: protocolo Grampian admite doxiciclina 200 mg oral uma vez ao dia por 5 dias, com cobertura anaeróbia se indicada. Gestação e pediatria precisam de alternativa própria. Ajustar função renal no beta-lactâmico; obstrução persistente exige remoção do cálculo, não antibiótico prolongado."
+      ],
+      "factIds": [
+        "b02_006_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Rever resposta precocemente e investigar abscesso se piora/falha. Alta se via aérea segura, ingestão possível e retorno garantido. Nódulo persistente ou sintomas recorrentes requerem especialista."
+      ],
+      "factIds": [
+        "b02_006_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_56",
+      "title": "Sialadenite",
+      "url": "https://www.medlineplus.gov/ency/article/001041.htm",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Review Date 7/28/2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_56.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "sial_gcc",
+      "title": "NHS GGC — glândulas salivares, revisão maio de 2025",
+      "url": "https://www.rightdecisions.scot.nhs.uk/ggc-primary-care/ear-nose-and-throat-ent/ear-nose-and-throat-ent-referral-guidance/throat-conditions/neck-lump/salivary-gland-pathology-sialadenitis-stones-cancer/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "review date:",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/sial_gcc.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "sial_fv",
+      "title": "NHS Forth Valley — parotite/sialadenite, opções antimicrobianas",
+      "url": "https://www.rightdecisions.scot.nhs.uk/antimicrobial-prescribing-nhs-forth-valley/acute-hospital-guidance/oral-maxillofacial/parotitis-sialadenitis/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/sial_fv.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "sial_gr",
+      "title": "NHS Grampian — parotite bacteriana adulta",
+      "url": "https://www.rightdecisions.scot.nhs.uk/nhs-grampian-orkney-shetland/hospital-guidance-for-adults/ear-nose-and-oropharynx/parotitis-bacterial/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/sial_gr.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "torcicolo_muscular_congenito",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Torcicolo muscular congênito",
+    "es": "Tortícolis muscular congénita"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Condição com identidade e escopo próprios; nenhum ID/título/alias PT/ES equivalente identificado no baseline verificado.",
+  "relatedExistingOwners": [],
+  "optionRelation": "PHYSIOTHERAPY_FIRST_NO_ROUTINE_DRUG",
+  "facts": [
+    {
+      "id": "b02_040_f01",
+      "section": "concept",
+      "pt": "Encurtamento do esternocleidomastoideo produz inclinação da cabeça e rotação oposta; início tardio/agudo sugere outra causa.",
+      "es": "El acortamiento esternocleidomastoideo produce inclinación de cabeza y rotación opuesta; inicio tardío/agudo sugiere otra causa.",
+      "sources": [
+        "topic_90",
+        "tortic_apta"
+      ]
+    },
+    {
+      "id": "b02_040_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar amplitude cervical, músculo, forma craniana, olhos, neurologia e quadris. Apresentação típica não exige imagem cervical rotineira; investigar achados atípicos e displasia do quadril conforme protocolo.",
+      "es": "Evaluar movilidad cervical, músculo, cráneo, ojos, neurología y caderas. La presentación típica no exige imagen cervical rutinaria; investigar hallazgos atípicos y displasia de cadera según protocolo.",
+      "sources": [
+        "topic_90",
+        "tortic_apta"
+      ]
+    },
+    {
+      "id": "b02_040_f03",
+      "section": "initial",
+      "pt": "Torcicolo adquirido com febre, trauma ou déficit é outra situação e pode ser urgente. Orientar alimentação, estímulos visuais e posicionamento seguro.",
+      "es": "Tortícolis adquirida con fiebre, trauma o déficit es otra situación y puede ser urgente. Orientar alimentación, estímulos visuales y posición segura.",
+      "sources": [
+        "topic_90",
+        "tortic_apta"
+      ]
+    },
+    {
+      "id": "b02_040_f04",
+      "section": "options",
+      "pt": "Primeira escolha: fisioterapia precoce e exercícios suaves ensinados aos cuidadores; combinar amplitude passiva/ativa, movimento simétrico e adaptação ambiental. Refratário: avaliação ortopédica; procedimentos são raros e individualizados. Não há dois fármacos de primeira linha.",
+      "es": "Primera elección: fisioterapia temprana y ejercicios suaves enseñados al cuidador; combinar movilidad pasiva/activa, movimiento simétrico y adaptación ambiental. Refractario: ortopedia; los procedimientos son raros e individualizados. No hay dos fármacos de primera línea.",
+      "sources": [
+        "topic_90",
+        "tortic_apta"
+      ]
+    },
+    {
+      "id": "b02_040_f05",
+      "section": "safety",
+      "pt": "Não realizar manipulação cervical forçada. Prono apenas acordado/supervisionado; sono permanece supino. Analgésico não substitui revisão de causa se exercícios provocarem dor importante.",
+      "es": "No manipular forzadamente el cuello. Prono solo despierto/supervisado; dormir en supino. Analgésico no sustituye revisar la causa si ejercicios producen dolor importante.",
+      "sources": [
+        "topic_90",
+        "tortic_apta"
+      ]
+    },
+    {
+      "id": "b02_040_f06",
+      "section": "followup",
+      "pt": "Rever em cerca de 4 semanas; falta de melhora, limitação importante ou assimetria progressiva demanda ajuste do plano/encaminhamento. Alta por amplitude, postura e desenvolvimento adequados, não somente idade.",
+      "es": "Revisar en aproximadamente 4 semanas; sin mejoría, limitación importante o asimetría progresiva requiere ajustar/derivar. Alta por movilidad, postura y desarrollo adecuados, no solo por edad.",
+      "sources": [
+        "topic_90",
+        "tortic_apta"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta.",
+      "es": "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta.",
+      "sources": [
+        "topic_90",
+        "tortic_apta"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_90",
+      "title": "Torcicolo muscular congênito",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Congenital_Torticollis/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated Nov 20 2018.",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_90.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "tortic_apta",
+      "title": "APTA — torticolo muscular congênito, guideline 2024",
+      "url": "https://www.apta.org/patient-care/evidence-based-practice-resources/cpgs/physical-therapy-management-of-congenital-muscular-torticollis-a-2018-evidence-based-clinical-practice-guideline-from-the-apta-academy-of-pediatric-physical-therapy-cpg",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLIC_SUMMARY_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/tortic_apta.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

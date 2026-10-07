@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "ceratite_infecciosa_e_ulcera_de_cornea",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Ceratite infecciosa e úlcera de córnea",
+    "es": "Queratitis infecciosa y úlcera corneal"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Infecção/ulceração corneana não equivale a abrasão não infectada ou trauma ocular.",
+  "relatedExistingOwners": [
+    "abrasao_corneana",
+    "conjuntivite_infecciosa"
+  ],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b02_005_f01",
+      "section": "concept",
+      "pt": "Infecção corneana pode ulcerar e comprometer rapidamente visão; lentes de contato e trauma são fatores relevantes. Abrasão sem infecção e ceratite herpética têm manejo próprio.",
+      "es": "La infección corneal puede ulcerar y comprometer rápidamente la visión; lentes de contacto y traumatismo son factores relevantes. La abrasión sin infección y la queratitis herpética requieren manejo propio.",
+      "sources": [
+        "topic_55",
+        "keratitis_ppp",
+        "keratitis_aao",
+        "cipo_label"
+      ]
+    },
+    {
+      "id": "b02_005_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar acuidade antes do tratamento, lâmpada de fenda/fluoresceína, tamanho/localização do infiltrado e reação anterior. Úlcera central, grande ou grave demanda cultura/raspado quando indicado, sem atraso indevido do tratamento.",
+      "es": "Evaluar agudeza antes de tratar, lámpara de hendidura/fluoresceína, tamaño/localización del infiltrado y reacción anterior. Una úlcera central, grande o grave requiere cultivo/raspado cuando corresponda, sin demorar indebidamente el tratamiento.",
+      "sources": [
+        "topic_55",
+        "keratitis_ppp",
+        "keratitis_aao",
+        "cipo_label"
+      ]
+    },
+    {
+      "id": "b02_005_f03",
+      "section": "initial",
+      "pt": "Dor, fotofobia, infiltrado ou perda visual: oftalmologia no mesmo dia. Retirar lentes; não ocluir nem fornecer anestésico tópico para uso domiciliar. Suspeita de perfuração demanda proteção sem pressão e urgência cirúrgica.",
+      "es": "Dolor, fotofobia, infiltrado o pérdida visual: oftalmología el mismo día. Retirar lentes; no ocluir ni entregar anestésico tópico para uso domiciliario. Sospecha de perforación exige protección sin presión y urgencia quirúrgica.",
+      "sources": [
+        "topic_55",
+        "keratitis_ppp",
+        "keratitis_aao",
+        "cipo_label"
+      ]
+    },
+    {
+      "id": "b02_005_f04",
+      "section": "options",
+      "pt": "Primeira estratégia para úlcera bacteriana selecionada: fluoroquinolona oftálmica sob supervisão. Alternativa em lesão ameaçadora à visão: antibióticos fortificados guiados por cultura, como vancomicina e tobramicina, preparados por serviço especializado. Suspeita de fungo/Acanthamoeba exige terapêutica específica, não simples troca de antibacteriano.",
+      "es": "Primera estrategia para úlcera bacteriana seleccionada: fluoroquinolona oftálmica supervisada. Alternativa ante amenaza visual: antibióticos fortificados guiados por cultivo, como vancomicina y tobramicina, preparados por servicio especializado. Sospecha de hongo/Acanthamoeba exige tratamiento específico, no un simple cambio de antibacteriano.",
+      "sources": [
+        "topic_55",
+        "keratitis_ppp",
+        "keratitis_aao",
+        "cipo_label"
+      ]
+    },
+    {
+      "id": "b02_005_f05",
+      "section": "doses",
+      "pt": "Exemplo de bula para úlcera corneana: ciprofloxacino oftálmico 0,3%, 2 gotas no olho afetado a cada 15 minutos nas primeiras 6 horas; depois a cada 30 minutos no restante do primeiro dia. No segundo dia, 2 gotas a cada 1 hora; do terceiro ao décimo quarto dia, 2 gotas a cada 4 horas. Ajuste e extensão somente por oftalmologia conforme resposta; o esquema de conjuntivite é diferente.",
+      "es": "Ejemplo de ficha para úlcera corneal: ciprofloxacino oftálmico 0,3%, 2 gotas en el ojo afectado cada 15 minutos durante las primeras 6 horas; después cada 30 minutos durante el resto del primer día. Segundo día: 2 gotas cada 1 hora; del tercer al decimocuarto día: 2 gotas cada 4 horas. Ajuste/extensión solo por oftalmología según respuesta; el esquema de conjuntivitis es diferente.",
+      "sources": [
+        "cipo_label"
+      ]
+    },
+    {
+      "id": "b02_005_f06",
+      "section": "safety",
+      "pt": "Colírios fortificados não têm preparo domiciliar. Corticosteroide somente após decisão especializada e controle da infecção; evitar empiricamente, sobretudo se fungo possível. Verificar formulação oftálmica, idade, alergia e resistência; solução otológica não é substituta.",
+      "es": "Los colirios fortificados no se preparan en casa. Corticoide solo tras decisión especializada y control infeccioso; evitarlo empíricamente, sobre todo si puede haber hongos. Verificar formulación oftálmica, edad, alergia y resistencia; la solución ótica no la sustituye.",
+      "sources": [
+        "topic_55",
+        "keratitis_ppp",
+        "keratitis_aao",
+        "cipo_label"
+      ]
+    },
+    {
+      "id": "b02_005_f07",
+      "section": "followup",
+      "pt": "Controle oftalmológico próximo, geralmente diário na fase inicial. Internar se gravidade, dificuldade de aplicações frequentes ou risco de perda de seguimento; suspender lentes até liberação.",
+      "es": "Control oftalmológico estrecho, generalmente diario al comienzo. Internar ante gravedad, imposibilidad de aplicaciones frecuentes o riesgo de perder seguimiento; no usar lentes hasta autorización.",
+      "sources": [
+        "topic_55",
+        "keratitis_ppp",
+        "keratitis_aao",
+        "cipo_label"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Concentração alta no local e aplicação frequente permitem tratar córnea infectada; um colírio para conjuntivite não reproduz necessariamente esse regime. Etiologia e gravidade determinam monoterapia ou colírios fortificados.",
+      "es": "Alta concentración local y aplicación frecuente permiten tratar córnea infectada; un colirio para conjuntivitis no reproduce necesariamente ese esquema. Etiología y gravedad determinan monoterapia o fortificados.",
+      "sources": [
+        "topic_55",
+        "keratitis_ppp",
+        "keratitis_aao",
+        "cipo_label"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_55",
+      "title": "Ceratite infecciosa e úlcera de córnea",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/microbialkeratitis_bacterial_fungal",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_55.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "keratitis_ppp",
+      "title": "AAO — Bacterial Keratitis Preferred Practice Pattern 2024",
+      "url": "https://www.aaojournal.org/article/S0161-6420%2824%2900007-1/fulltext",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLICATION_IDENTIFIED_WITH_PUBLIC_PROTOCOL_CROSSCHECK",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Publicação final AAO 2024 identificada. Conteúdo clínico deste candidato apoiado pelas recomendações públicas AAO EyeWiki/College e bula de ciprofloxacino; não alegar leitura integral de seção restrita.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "keratitis_aao",
+      "title": "AAO EyeWiki — Bacterial Keratitis, apoio clínico",
+      "url": "https://eyewiki.aao.org/Bacterial_Keratitis",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/keratitis_aao.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "cipo_label",
+      "title": "DailyMed — ciprofloxacino oftálmico 0,3%, úlcera corneana",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=b7910edd-2037-40a8-b24b-6fd4752f9ef0&type=display",
+      "authorityStatus": "REGULATORY_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/cipo_label.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

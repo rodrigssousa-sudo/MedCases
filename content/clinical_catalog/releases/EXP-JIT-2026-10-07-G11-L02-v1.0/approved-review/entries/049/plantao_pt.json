@@ -1,0 +1,161 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Doença coronariana crônica com angina estável",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "d8e5258237216861064218bc007aff31607aacc13659b2cb71b0f89b6509fc3e",
+  "ownerCandidate": "doenca_coronariana_cronica_com_angina_estavel",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_049_f01",
+    "b02_049_f02",
+    "b02_049_f03",
+    "b02_049_f04",
+    "b02_049_f05",
+    "b02_049_f06",
+    "b02_049_f07",
+    "b02_049_f08"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Dor prolongada, instabilidade, dispneia nova ou refratariedade: emergência, não apenas aumentar antianginoso. Estável: orientar resgate e plano de prevenção cardiovascular."
+      ],
+      "factIds": [
+        "b02_049_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Caracterizar dor, risco e exame; avaliação eletrocardiográfica e investigação coronária conforme probabilidade/contexto. Troponina/algoritmo agudo quando quadro não claramente estável."
+      ],
+      "factIds": [
+        "b02_049_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira linha antianginosa: beta-bloqueador OU bloqueador de cálcio conforme frequência, pressão, função ventricular e preferência. Exemplos: metoprolol ou amlodipina. Se inadequado/intolerado, trocar ou combinar beta-bloqueador com diidropiridínico; nitrato prolongado, ranolazina ou outras opções são linhas selecionadas. Associar prevenção, como estatina e antitrombótico indicado."
+      ],
+      "factIds": [
+        "b02_049_f04"
+      ]
+    },
+    {
+      "heading": "Tratamento complementar e resgate",
+      "paragraphs": [
+        "Resgate prescrito: nitroglicerina/trinitrato de glicerila sublingual, 1–2 pulverizações do produto indicado ou 1 comprimido conforme força verificada. Sentar; repetir após 5 minutos se persistir. Persistência 5 minutos após a segunda dose, piora ou mal-estar exige emergência; sintomas suspeitos de infarto não devem aguardar esse limite para pedir ajuda."
+      ],
+      "factIds": [
+        "b02_049_f06"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Exemplos adultos: amlodipina oral 5 mg uma vez ao dia, podendo aumentar a 10 mg ao dia conforme resposta; tartarato de metoprolol tem dose inicial de bula para angina de 100 mg ao dia divididos em 2 tomadas, isto é, 50 mg a cada 12 horas, com individualização e titulação supervisionada. Não intercambiar diretamente com formulação de liberação prolongada."
+      ],
+      "factIds": [
+        "b02_049_f05"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Nitrato é contraindicado com uso recente de inibidor PDE5 e pode causar hipotensão; checar produto e intervalo seguro. Evitar beta-bloqueador em bradicardia/bloqueio relevante ou descompensação. Não combinar empiricamente beta-bloqueador com verapamil/diltiazem. Medicação de manutenção não deve ser interrompida abruptamente."
+      ],
+      "factIds": [
+        "b02_049_f07"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Rever sintomas/efeitos em 2–4 semanas após ajuste e avaliar necessidade de revascularização se limitação apesar de tratamento adequado. Alta somente se excluída urgência e houver plano claro."
+      ],
+      "factIds": [
+        "b02_049_f08"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Isquemia relacionada a esforço pode produzir dor previsível aliviada por repouso/nitrato; dor nova, em repouso ou mudança de padrão exige excluir síndrome coronariana aguda."
+      ],
+      "factIds": [
+        "b02_049_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_99",
+      "title": "Doença coronariana crônica com angina estável",
+      "url": "https://www.nhs.uk/conditions/angina/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 18 March 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_99.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "cg126",
+      "title": "NICE CG126 — angina estável",
+      "url": "https://www.nice.org.uk/guidance/CG126/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2011,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Primeira linha beta-bloqueador ou bloqueador de cálcio, combinação com diidropiridínico, seguimento 2–4 semanas; nitrato de resgate.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "gt_nhs",
+      "title": "NHS — uso de trinitrato de glicerila",
+      "url": "https://www.nhs.uk/medicines/glyceryl-trinitrate-gtn/how-and-when-to-take-glyceryl-trinitrate-gtn/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 12 April 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/gt_nhs.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "aml_nhs",
+      "title": "NHS — dose de amlodipina",
+      "url": "https://www.nhs.uk/medicines/amlodipine/how-and-when-to-take-amlodipine/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 9 June 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/aml_nhs.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "metop_label",
+      "title": "DailyMed — tartarato de metoprolol, bula fevereiro de 2026",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=028b6e4a-1597-4d21-89d0-0bbbad21efa8",
+      "authorityStatus": "REGULATORY_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/metop_label.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

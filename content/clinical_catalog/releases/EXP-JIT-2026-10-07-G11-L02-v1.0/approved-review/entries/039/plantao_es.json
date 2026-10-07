@@ -1,0 +1,89 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Plagiocefalia posicional",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "94d95ff618fc0b27632b3279047e37ef535262461b264f6375b769a6a3f39a6a",
+  "ownerCandidate": "plagiocefalia_posicional",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_039_f01",
+    "b02_039_f02",
+    "b02_039_f03",
+    "b02_039_f04",
+    "b02_039_f05",
+    "b02_039_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Mantener sueño supino seguro. Variar posición al cargar/alimentar y ofrecer tiempo boca abajo solo despierto y supervisado."
+      ],
+      "factIds": [
+        "b02_039_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar forma, suturas, crecimiento cefálico y movilidad cervical; asimetría atípica/progresiva o sospecha de sutura cerrada exige especialista. No usar imágenes indiscriminadamente."
+      ],
+      "factIds": [
+        "b02_039_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección: reposicionamiento durante vigilia y educación. Fisioterapia complementa si hay tortícolis o preferencia persistente. Casco no es indicación rutinaria; evidencia/criterios varían y requieren especialista en casos seleccionados."
+      ],
+      "factIds": [
+        "b02_039_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No recomendar dormir boca abajo, almohada posicionadora ni peso sobre la cabeza. Ningún fármaco corrige la forma craneal."
+      ],
+      "factIds": [
+        "b02_039_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Controlar crecimiento, desarrollo y simetría; derivar empeoramiento, falta de evolución o sospecha de craneosinostosis."
+      ],
+      "factIds": [
+        "b02_039_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Asimetría craneal por presión posicional, frecuentemente asociada a preferencia postural/tortícolis; diferenciar craneosinostosis."
+      ],
+      "factIds": [
+        "b02_039_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_89",
+      "title": "Plagiocefalia posicional",
+      "url": "https://www.nhs.uk/conditions/flat-head-syndrome-plagiocephaly-brachycephaly/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 16 January 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_89.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

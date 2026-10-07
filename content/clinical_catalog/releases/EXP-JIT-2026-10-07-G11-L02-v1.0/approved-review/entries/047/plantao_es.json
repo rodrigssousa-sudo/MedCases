@@ -1,0 +1,138 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Enfermedad arterial periférica crónica",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "e6537b6fdc8d6d31bb4b5585ba273b4758914750a827b8156af085f4a1a53023",
+  "ownerCandidate": "doenca_arterial_periferica_cronica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_047_f01",
+    "b02_047_f02",
+    "b02_047_f03",
+    "b02_047_f04",
+    "b02_047_f05",
+    "b02_047_f06",
+    "b02_047_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Dolor súbito, palidez, ausencia de pulso, frialdad o déficit: emergencia vascular. Dolor en reposo, úlcera que no cicatriza o gangrena exige evaluación prioritaria por amenaza crónica al miembro."
+      ],
+      "factIds": [
+        "b02_047_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examinar pulsos, piel/pies y heridas; índice tobillo-brazo y evaluación vascular según sospecha. Diabetes/enfermedad renal pueden hacer arterias incomprensibles y requerir otros estudios."
+      ],
+      "factIds": [
+        "b02_047_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Base de primera elección: dejar tabaco, ejercicio estructurado, estatina de alta intensidad y control de riesgo. PAD sintomática: antiagregante único como clopidogrel o aspirina según perfil. Con balance isquémico favorable y bajo riesgo hemorrágico, rivaroxabán en dosis vascular más aspirina es opción seleccionada, sobre todo tras revascularización."
+      ],
+      "factIds": [
+        "b02_047_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Esquema seleccionado del resumen oficial ACC/AHA 2024: rivaroxabán 2,5 mg oral cada 12 horas MÁS aspirina 81 mg oral una vez al día. No es dosis para TVP/TEP ni fibrilación auricular. Revisar función renal/hepática, interacciones y sangrado; no añadir automáticamente clopidogrel."
+      ],
+      "factIds": [
+        "b02_047_f05"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Cilostazol puede mejorar claudicación seleccionada, pero está contraindicado en insuficiencia cardíaca y no sustituye prevención vascular; dosis según producto/protocolo. Revascularizar si amenaza al miembro o limitación persistente pese a tratamiento adecuado."
+      ],
+      "factIds": [
+        "b02_047_f06"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguir marcha, síntomas, pies/heridas y adherencia; prevenir traumatismo del pie. Urgencia por cambio súbito, dolor de reposo progresivo o infección."
+      ],
+      "factIds": [
+        "b02_047_f07"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "La aterosclerosis arterial de extremidades puede causar claudicación y amenazar el miembro; diferenciar de isquemia aguda y dolor neurógeno."
+      ],
+      "factIds": [
+        "b02_047_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_97",
+      "title": "Doença arterial periférica crônica",
+      "url": "https://medlineplus.gov/peripheralarterialdisease.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated September 23, 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_97.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "pad_acc2024",
+      "title": "ACC/AHA — guideline arterial periférica 2024",
+      "url": "https://www.acc.org/Guidelines/Guidelines/2024/05/14/11/09/2024-Lower-Extremity-Peripheral-Artery-Disease",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/pad_acc2024.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "pad_acc_summary",
+      "title": "ACC — resumo oficial guideline PAD 2024",
+      "url": "https://www.acc.org/about-acc/press-releases/2024/05/21/16/00/early-diagnosis-treatment-of-peripheral-artery-disease-essential-to-improve-outcomes-reduce-amputation-risk",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published the PAD National Action Plan, which is endorsed by the American College of Cardiology, that outlines six strategic goal",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/pad_acc_summary.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "pad_acc_anti",
+      "title": "ACC — antitrombóticos em PAD, declaração 2024",
+      "url": "https://www.acc.org/latest-in-cardiology/ten-points-to-remember/2024/08/27/15/49/antithrombotic-strategies-for",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/pad_acc_anti.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

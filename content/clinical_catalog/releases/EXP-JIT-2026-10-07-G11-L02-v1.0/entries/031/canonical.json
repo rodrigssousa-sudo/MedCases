@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "vasculite_por_iga",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Vasculite por IgA",
+    "es": "Vasculitis por IgA"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Vasculite por IgA, distinta de púrpura por trombocitopenia/coagulopatia.",
+  "relatedExistingOwners": [
+    "hemat_pti_sangramento_grave"
+  ],
+  "optionRelation": "SEVERITY_DEPENDENT_NO_STEROID_NEPHRITIS_PREVENTION",
+  "facts": [
+    {
+      "id": "b02_031_f01",
+      "section": "concept",
+      "pt": "Vasculite sistêmica, frequentemente pediátrica, com púrpura palpável, artralgia, dor abdominal e possível nefrite. Acometimento renal pode ser silencioso.",
+      "es": "Vasculitis sistémica, frecuentemente pediátrica, con púrpura palpable, artralgia, dolor abdominal y posible nefritis. El compromiso renal puede ser silencioso.",
+      "sources": [
+        "topic_81",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b02_031_f02",
+      "section": "diagnosis",
+      "pt": "Medir pressão e examinar urina em toda suspeita; quantificar proteinúria e função renal se alterados. Considerar sepse/meningococcemia, trombocitopenia e outras vasculites no padrão atípico.",
+      "es": "Medir presión y analizar orina en toda sospecha; cuantificar proteinuria y función renal si están alteradas. Considerar sepsis/meningococemia, trombocitopenia y otras vasculitis ante patrón atípico.",
+      "sources": [
+        "topic_81",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b02_031_f03",
+      "section": "initial",
+      "pt": "Dor abdominal intensa, sangramento, vômito persistente, alteração neurológica/respiratória, hipertensão ou lesão renal demanda hospital. Excluir invaginação e torção testicular quando aplicável.",
+      "es": "Dolor abdominal intenso, sangrado, vómitos persistentes, alteración neurológica/respiratoria, hipertensión o lesión renal exige hospital. Descartar invaginación y torsión testicular cuando corresponda.",
+      "sources": [
+        "topic_81",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b02_031_f04",
+      "section": "options",
+      "pt": "Dor leve: paracetamol é opção inicial; ibuprofeno curto se não houver sangramento gastrointestinal ou lesão renal. Alternativa anti-inflamatória pediátrica do protocolo: naproxeno 10 mg/kg por dose oral a cada 12 horas, máximo 500 mg por dose; escolher um NSAID, não associar.",
+      "es": "Dolor leve: paracetamol es opción inicial; ibuprofeno breve si no hay sangrado digestivo ni lesión renal. Alternativa pediátrica del protocolo: naproxeno 10 mg/kg por dosis oral cada 12 horas, máximo 500 mg por dosis; elegir un antiinflamatorio, no combinarlos.",
+      "sources": [
+        "topic_81",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b02_031_f05",
+      "section": "doses",
+      "pt": "Dor abdominal/articular moderada a grave selecionada, após excluir complicação cirúrgica: prednisolona oral 1–2 mg/kg ao dia, máximo 60 mg ao dia, enquanto sintomas persistirem, com reavaliação e retirada orientada. Reduz sintomas, mas não previne nefrite; acometimento renal importante exige nefrologia e regime próprio.",
+      "es": "Dolor abdominal/articular moderado-grave seleccionado, tras descartar complicación quirúrgica: prednisolona oral 1–2 mg/kg al día, máximo 60 mg al día, mientras persistan síntomas, con reevaluación y retirada dirigida. Reduce síntomas pero no previene nefritis; afectación renal importante exige nefrología y esquema propio.",
+      "sources": [
+        "topic_81",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b02_031_f06",
+      "section": "safety",
+      "pt": "Não aplicar regime sintomático pediátrico como tratamento de nefrite adulta. Monitorar pressão, urina, diurese, dor e sangramento; ajustar analgésicos por função renal.",
+      "es": "No aplicar el régimen sintomático pediátrico al tratamiento de nefritis adulta. Controlar presión, orina, diuresis, dolor y sangrado; ajustar analgésicos a función renal.",
+      "sources": [
+        "topic_81",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b02_031_f07",
+      "section": "followup",
+      "pt": "Se urina inicial normal ou apenas hematúria microscópica: controle de pressão/urina semanal no primeiro mês, a cada 2 semanas nas semanas 5–12 e aos 6 e 12 meses, segundo RCH; intensificar se alteração. Alta somente com plano de seguimento renal.",
+      "es": "Si orina inicial normal o solo hematuria microscópica: presión/orina semanal el primer mes, cada 2 semanas en semanas 5–12 y a los 6 y 12 meses según RCH; intensificar si cambia. Alta solo con plan de seguimiento renal.",
+      "sources": [
+        "topic_81",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b02_031_ped_doses",
+      "section": "doses",
+      "sources": [
+        "rch_pain"
+      ],
+      "pt": "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL.",
+      "es": "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "O alívio de dor com corticosteroide não demonstra proteção renal. Por isso pressão e urina continuam necessárias mesmo com melhora da púrpura e sintomas.",
+      "es": "Mejorar dolor con corticoide no demuestra protección renal. Por eso presión/orina siguen siendo necesarias aunque mejoren púrpura y síntomas.",
+      "sources": [
+        "topic_81",
+        "rch_pain"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_81",
+      "title": "Vasculite por IgA",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/HenochSchonlein_Purpura/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Updated January 2021",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_81.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — dor aguda pediátrica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

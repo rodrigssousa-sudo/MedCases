@@ -1,0 +1,191 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação deste lote. Guia permanece DRAFT no Admin após futura publicação coordenada dos modos.",
+  "canonical_payload_sha256": "2f8d988e0d4a74ab2c936c640e79abdfbe34ebf507b8d471520d9d5875f93b0b",
+  "owner_candidate": "doenca_de_sever",
+  "pt": {
+    "title": "Doença de Sever",
+    "subtitle": "Revisão clínica — primeira escolha e alternativas",
+    "summary": "Apofisite do calcâneo em criança em crescimento, relacionada a carga e tração do tendão de Aquiles.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Apofisite do calcâneo em criança em crescimento, relacionada a carga e tração do tendão de Aquiles."
+        ],
+        "factIds": [
+          "b02_034_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Dor no calcanhar ao correr/saltar; febre, trauma importante, dor noturna ou recusa de apoio exige excluir fratura/infecção."
+        ],
+        "factIds": [
+          "b02_034_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Excluir urgências antes de atribuir dor ao crescimento; analgesia não autoriza esforço doloroso."
+        ],
+        "factIds": [
+          "b02_034_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Primeira escolha: reduzir atividade dolorosa, alongar panturrilha e adequar calçado. Talonete pode aliviar carga; paracetamol ou ibuprofeno curto para dor. Imobilização temporária é opção selecionada em dor intensa, sem cirurgia rotineira."
+        ],
+        "factIds": [
+          "b02_034_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+        ],
+        "factIds": [
+          "b02_034_ped_doses"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Usar doses pediátricas por peso e evitar NSAID em desidratação, doença renal ou sangramento. Não infiltrar corticoide na apófise/tendão empiricamente."
+        ],
+        "factIds": [
+          "b02_034_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Rever dor, marcha e retorno progressivo ao esporte; persistência, alteração do padrão ou sinais sistêmicos exige reavaliar diagnóstico."
+        ],
+        "factIds": [
+          "b02_034_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Enfermedad de Sever",
+    "subtitle": "Revisión clínica — primera elección y alternativas",
+    "summary": "Apofisitis calcánea en niño en crecimiento relacionada a carga y tracción del tendón de Aquiles.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Apofisitis calcánea en niño en crecimiento relacionada a carga y tracción del tendón de Aquiles."
+        ],
+        "factIds": [
+          "b02_034_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Dolor de talón al correr/saltar; fiebre, trauma importante, dolor nocturno o rechazo de apoyo exige descartar fractura/infección."
+        ],
+        "factIds": [
+          "b02_034_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Descartar urgencias antes de atribuir dolor al crecimiento; la analgesia no autoriza esfuerzo doloroso."
+        ],
+        "factIds": [
+          "b02_034_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Primera elección: reducir actividad dolorosa, estirar pantorrilla y adaptar calzado. Talonera puede reducir carga; paracetamol o ibuprofeno breve para dolor. Inmovilización temporal en dolor intenso seleccionado, sin cirugía rutinaria."
+        ],
+        "factIds": [
+          "b02_034_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+        ],
+        "factIds": [
+          "b02_034_ped_doses"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Usar dosis pediátricas por peso y evitar antiinflamatorios ante deshidratación, enfermedad renal o sangrado. No infiltrar empíricamente corticoide en apófisis/tendón."
+        ],
+        "factIds": [
+          "b02_034_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Revisar dolor, marcha y retorno gradual al deporte; persistencia, cambio de patrón o síntomas sistémicos exige reevaluar diagnóstico."
+        ],
+        "factIds": [
+          "b02_034_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_84",
+      "title": "Doença de Sever",
+      "url": "https://www.orthoinfo.org/es/diseases--conditions/severs-disease/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_84.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — dor aguda pediátrica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Síndrome dolorosa regional complexa",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "d57c4599448c94312b7242a37d4fb11b04136f362ef3571ea9abc25340d19dbc",
+  "ownerCandidate": "sindrome_dolorosa_regional_complexa",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_027_f01",
+    "b02_027_f02",
+    "b02_027_f03",
+    "b02_027_f04",
+    "b02_027_f05",
+    "b02_027_f06",
+    "b02_027_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Excluir urgências e facilitar encaminhamento precoce; imobilização prolongada pode agravar função. Reabilitação graduada, dessensibilização e apoio psicológico são base."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar padrão clínico e critérios diagnósticos por especialista; excluir infecção, isquemia, trombose e compressão neural. Não há exame laboratorial isolado confirmatório."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira estratégia: plano multidisciplinar funcional; analgesia neuropática é adjuvante individualizado. Opção farmacológica inicial selecionada: amitriptilina; alternativa: gabapentina. Pregabalina ou nortriptilina são outras escolhas especializadas, sem superioridade universal comprovada para SDRC; uso pode ser off-label conforme país."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Adulto: amitriptilina pode iniciar em 10 mg oral ao deitar, com titulação supervisionada; limite usual na dor é 75 mg ao dia. Gabapentina inicia em dose baixa com titulação; faixa usual adulta de manutenção para dor neuropática é 900–3.600 mg ao dia divididos em 3 tomadas, com redução obrigatória conforme função renal. A faixa não é dose de início."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Rever sedação/quedas, risco suicida, arritmia/QT e efeitos anticolinérgicos da amitriptilina. Gabapentinoides podem causar dependência e depressão respiratória, sobretudo com opioides; não associar ou retirar abruptamente sem plano. Não prometer cura farmacológica."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Rever função, tolerância e metas; procedimentos/neuromodulação somente em casos refratários avaliados. Urgências novas não devem ser atribuídas automaticamente à síndrome."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor regional desproporcional após lesão pode acompanhar alodinia, edema, alterações vasomotoras/sudomotoras e motoras. Não é diagnóstico automático de dor pós-trauma."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_77",
+      "title": "Síndrome dolorosa regional complexa",
+      "url": "https://www.nhs.uk/conditions/complex-regional-pain-syndrome/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 October 2022",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_77.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "crps_nhs",
+      "title": "NHS — tratamento da síndrome dolorosa regional complexa",
+      "url": "https://www.nhs.uk/conditions/complex-regional-pain-syndrome/treatment/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 October 2022",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/crps_nhs.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "cg173",
+      "title": "NICE CG173 — dor neuropática, escolhas iniciais",
+      "url": "https://www.nice.org.uk/guidance/cg173/chapter/Recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2013,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Escolhas de dor neuropática, não protocolo específico de SDRC nem aprovação regulatória desse uso.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ami_nhs",
+      "title": "NHS — amitriptilina na dor, doses",
+      "url": "https://www.nhs.uk/medicines/amitriptyline-for-pain/how-and-when-to-take-amitriptyline-for-pain-and-migraine/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 14 August 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ami_nhs.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "gab_nhs",
+      "title": "NHS — gabapentina, doses e titulação",
+      "url": "https://www.nhs.uk/medicines/gabapentin/how-and-when-to-take-gabapentin/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 19 February 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/gab_nhs.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Excluir urgências e facilitar encaminhamento precoce; imobilização prolongada pode agravar função. Reabilitação graduada, dessensibilização e apoio psicológico são base."
+      ],
+      "factIds": [
+        "b02_027_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar padrão clínico e critérios diagnósticos por especialista; excluir infecção, isquemia, trombose e compressão neural. Não há exame laboratorial isolado confirmatório."
+      ],
+      "factIds": [
+        "b02_027_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira estratégia: plano multidisciplinar funcional; analgesia neuropática é adjuvante individualizado. Opção farmacológica inicial selecionada: amitriptilina; alternativa: gabapentina. Pregabalina ou nortriptilina são outras escolhas especializadas, sem superioridade universal comprovada para SDRC; uso pode ser off-label conforme país."
+      ],
+      "factIds": [
+        "b02_027_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Adulto: amitriptilina pode iniciar em 10 mg oral ao deitar, com titulação supervisionada; limite usual na dor é 75 mg ao dia. Gabapentina inicia em dose baixa com titulação; faixa usual adulta de manutenção para dor neuropática é 900–3.600 mg ao dia divididos em 3 tomadas, com redução obrigatória conforme função renal. A faixa não é dose de início."
+      ],
+      "factIds": [
+        "b02_027_f05"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Rever sedação/quedas, risco suicida, arritmia/QT e efeitos anticolinérgicos da amitriptilina. Gabapentinoides podem causar dependência e depressão respiratória, sobretudo com opioides; não associar ou retirar abruptamente sem plano. Não prometer cura farmacológica."
+      ],
+      "factIds": [
+        "b02_027_f06"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Rever função, tolerância e metas; procedimentos/neuromodulação somente em casos refratários avaliados. Urgências novas não devem ser atribuídas automaticamente à síndrome."
+      ],
+      "factIds": [
+        "b02_027_f07"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Dor regional desproporcional após lesão pode acompanhar alodinia, edema, alterações vasomotoras/sudomotoras e motoras. Não é diagnóstico automático de dor pós-trauma."
+      ],
+      "factIds": [
+        "b02_027_f01"
+      ]
+    }
+  ],
+  "markdown": "# Síndrome dolorosa regional complexa\n\n## Abordagem inicial e urgências\n\nExcluir urgências e facilitar encaminhamento precoce; imobilização prolongada pode agravar função. Reabilitação graduada, dessensibilização e apoio psicológico são base.\n\n## Diagnóstico e diferenciais\n\nAvaliar padrão clínico e critérios diagnósticos por especialista; excluir infecção, isquemia, trombose e compressão neural. Não há exame laboratorial isolado confirmatório.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira estratégia: plano multidisciplinar funcional; analgesia neuropática é adjuvante individualizado. Opção farmacológica inicial selecionada: amitriptilina; alternativa: gabapentina. Pregabalina ou nortriptilina são outras escolhas especializadas, sem superioridade universal comprovada para SDRC; uso pode ser off-label conforme país.\n\n## Fármacos, doses e intervalos\n\nAdulto: amitriptilina pode iniciar em 10 mg oral ao deitar, com titulação supervisionada; limite usual na dor é 75 mg ao dia. Gabapentina inicia em dose baixa com titulação; faixa usual adulta de manutenção para dor neuropática é 900–3.600 mg ao dia divididos em 3 tomadas, com redução obrigatória conforme função renal. A faixa não é dose de início.\n\n## Segurança e monitorização\n\nRever sedação/quedas, risco suicida, arritmia/QT e efeitos anticolinérgicos da amitriptilina. Gabapentinoides podem causar dependência e depressão respiratória, sobretudo com opioides; não associar ou retirar abruptamente sem plano. Não prometer cura farmacológica.\n\n## Reavaliação, internação e alta\n\nRever função, tolerância e metas; procedimentos/neuromodulação somente em casos refratários avaliados. Urgências novas não devem ser atribuídas automaticamente à síndrome.\n\n## Reconhecimento rápido\n\nDor regional desproporcional após lesão pode acompanhar alodinia, edema, alterações vasomotoras/sudomotoras e motoras. Não é diagnóstico automático de dor pós-trauma.\n\n## Referências\n\n1. [Síndrome dolorosa regional complexa](https://www.nhs.uk/conditions/complex-regional-pain-syndrome/)\n2. [NHS — tratamento da síndrome dolorosa regional complexa](https://www.nhs.uk/conditions/complex-regional-pain-syndrome/treatment/)\n3. [NICE CG173 — dor neuropática, escolhas iniciais](https://www.nice.org.uk/guidance/cg173/chapter/Recommendations)\n4. [NHS — amitriptilina na dor, doses](https://www.nhs.uk/medicines/amitriptyline-for-pain/how-and-when-to-take-amitriptyline-for-pain-and-migraine/)\n5. [NHS — gabapentina, doses e titulação](https://www.nhs.uk/medicines/gabapentin/how-and-when-to-take-gabapentin/)",
+  "approvedReviewCanonicalFileSha256": "f9f7901c414089c57c9415baeb7938f723c4b7166267ffe6931fd713798c92b1",
+  "approvedReviewProjectionFileSha256": "a87b92890bfaf958b54f59c5952ab86e266179993da8a914cd5240bee5b55a04"
+}

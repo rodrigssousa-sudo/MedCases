@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "estenose_lombar_degenerativa",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Estenose lombar degenerativa",
+    "es": "Estenosis lumbar degenerativa"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Condição com identidade e escopo próprios; nenhum ID/título/alias PT/ES equivalente identificado no baseline verificado.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b02_025_f01",
+      "section": "concept",
+      "pt": "Estreitamento degenerativo do canal pode causar claudicação neurogênica, com piora ao ficar em pé/caminhar e alívio ao sentar/fletir.",
+      "es": "El estrechamiento degenerativo del canal puede causar claudicación neurógena, que empeora de pie/al caminar y mejora al sentarse/flexionar.",
+      "sources": [
+        "topic_75",
+        "ng59"
+      ]
+    },
+    {
+      "id": "b02_025_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar padrão de marcha, neurologia e pulsos para diferenciar claudicação vascular. Ressonância deve correlacionar com sintomas; achado incidental não determina cirurgia.",
+      "es": "Evaluar marcha, neurología y pulsos para diferenciar claudicación vascular. La resonancia debe correlacionarse con síntomas; un hallazgo incidental no determina cirugía.",
+      "sources": [
+        "topic_75",
+        "ng59"
+      ]
+    },
+    {
+      "id": "b02_025_f03",
+      "section": "initial",
+      "pt": "Cauda equina ou déficit progressivo: atendimento urgente. Sem alarmes, favorecer atividade tolerada e reabilitação, considerando risco de quedas.",
+      "es": "Cauda equina o déficit progresivo: urgencia. Sin alarmas, favorecer actividad tolerada y rehabilitación considerando riesgo de caídas.",
+      "sources": [
+        "topic_75",
+        "ng59"
+      ]
+    },
+    {
+      "id": "b02_025_f04",
+      "section": "options",
+      "pt": "Primeira abordagem: exercícios/fisioterapia e modificação funcional. Analgesia individualizada; ibuprofeno curto somente se benefício/risco favorável. Alternativa para limitação relevante persistente com correlação clínica: descompressão cirúrgica; fusão não é automática.",
+      "es": "Primera estrategia: ejercicios/fisioterapia y adaptación funcional. Analgesia individualizada; ibuprofeno breve solo con balance favorable. Alternativa ante limitación persistente relevante y correlación clínica: descompresión quirúrgica; la fusión no es automática.",
+      "sources": [
+        "topic_75",
+        "ng59"
+      ]
+    },
+    {
+      "id": "b02_025_f05",
+      "section": "safety",
+      "pt": "Não oferecer injeção epidural como rotina para claudicação neurogênica por estenose central. Não generalizar gabapentina/pregabalina para toda dor radicular; idosos, anticoagulação e função renal restringem opções.",
+      "es": "No ofrecer inyección epidural rutinaria para claudicación neurógena por estenosis central. No generalizar gabapentina/pregabalina para todo dolor radicular; edad, anticoagulación y función renal restringen opciones.",
+      "sources": [
+        "topic_75",
+        "ng59"
+      ]
+    },
+    {
+      "id": "b02_025_f06",
+      "section": "followup",
+      "pt": "Reavaliar distância de marcha, função e neurologia. Encaminhar perda funcional apesar de tratamento; retornar imediatamente por retenção urinária, anestesia em sela ou fraqueza nova.",
+      "es": "Reevaluar distancia caminada, función y neurología. Derivar pérdida funcional pese al tratamiento; consulta inmediata por retención urinaria, anestesia en silla de montar o debilidad nueva.",
+      "sources": [
+        "topic_75",
+        "ng59"
+      ]
+    },
+    {
+      "id": "b02_025_adult_ibu",
+      "section": "doses",
+      "sources": [
+        "ibu",
+        "ng59"
+      ],
+      "pt": "Referência adulta curta: ibuprofeno 200–400 mg por via oral até 3 vezes ao dia, intervalo de pelo menos 4 horas e máximo de 1.200 mg em 24 horas nesse regime. Usar menor dose por menor tempo, com avaliação de contraindicações e gastroproteção quando indicada; não representa prescrição crônica.",
+      "es": "Referencia adulta breve: ibuprofeno 200–400 mg por vía oral hasta 3 veces al día, intervalo de al menos 4 horas y máximo de 1.200 mg en 24 horas en este esquema. Menor dosis/tiempo con evaluación de contraindicaciones y gastroprotección cuando indicada; no es prescripción crónica."
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Claudicação neurogênica relaciona-se à postura e pode coexistir com doença arterial. Tratar imagem isolada pode levar a intervenção sem benefício; examinar pulsos e neurologia mantém o raciocínio aberto.",
+      "es": "Claudicación neurógena depende de postura y puede coexistir con enfermedad arterial. Tratar imagen aislada puede no aportar beneficio; examinar pulsos/neurología mantiene abierto el razonamiento.",
+      "sources": [
+        "topic_75",
+        "ng59"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_75",
+      "title": "Estenose lombar degenerativa",
+      "url": "https://www.orthoinfo.org/diseases--conditions/lumbar-spinal-stenosis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_75.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ng59",
+      "title": "NICE NG59 — lombalgia e ciática, recomendações",
+      "url": "https://www.nice.org.uk/guidance/NG59/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2016,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Não oferecer gabapentinoides/corticoide oral/benzodiazepínico para ciática nem epidural rotineira na claudicação por estenose central.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

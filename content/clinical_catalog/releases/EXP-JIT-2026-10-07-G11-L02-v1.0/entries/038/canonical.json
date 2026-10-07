@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "aderencia_dos_pequenos_labios",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Aderência dos pequenos lábios",
+    "es": "Adherencia de labios menores"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Condição com identidade e escopo próprios; nenhum ID/título/alias PT/ES equivalente identificado no baseline verificado.",
+  "relatedExistingOwners": [],
+  "optionRelation": "OBSERVATION_FIRST_SYMPTOM_DEPENDENT_HORMONE",
+  "facts": [
+    {
+      "id": "b02_038_f01",
+      "section": "concept",
+      "pt": "Aderência pré-puberal relacionada a baixos estrogênios e irritação pode ser assintomática; não implica prejuízo de fertilidade por definição.",
+      "es": "La adherencia prepuberal relacionada con estrógenos bajos e irritación puede ser asintomática; no implica por definición daño a fertilidad.",
+      "sources": [
+        "topic_88"
+      ]
+    },
+    {
+      "id": "b02_038_f02",
+      "section": "diagnosis",
+      "pt": "Inspeção respeitosa e consentida identifica aderência; avaliar retenção de urina, gotejamento, irritação e infecção urinária. Diferenciar malformação ou lesão dermatológica.",
+      "es": "Inspección respetuosa y consentida identifica adherencia; evaluar retención, goteo, irritación e infección urinaria. Diferenciar malformación o lesión dermatológica.",
+      "sources": [
+        "topic_88"
+      ]
+    },
+    {
+      "id": "b02_038_f03",
+      "section": "initial",
+      "pt": "Retenção urinária, dor importante ou infecção sistêmica requer avaliação urgente. Não tentar separar à força no consultório sem indicação/anestesia apropriada.",
+      "es": "Retención urinaria, dolor importante o infección sistémica exige urgencia. No separar forzadamente sin indicación/anestesia apropiada.",
+      "sources": [
+        "topic_88"
+      ]
+    },
+    {
+      "id": "b02_038_f04",
+      "section": "options",
+      "pt": "Primeira escolha se assintomática: observação, higiene suave e proteção contra irritantes. Se sintomática: estrogênio tópico selecionado por pediatria/ginecologia, com produto e duração definidos. Separação por especialista é alternativa rara quando falha ou obstrução importante.",
+      "es": "Primera elección si es asintomática: observación, higiene suave y evitar irritantes. Si produce síntomas: estrógeno tópico seleccionado por pediatría/ginecología con producto/duración definidos. Separación especializada es alternativa infrecuente ante fallo u obstrucción importante.",
+      "sources": [
+        "topic_88"
+      ]
+    },
+    {
+      "id": "b02_038_f05",
+      "section": "safety",
+      "pt": "Não indicar estrogênio em toda aderência nem dose universal de diferentes cremes. Vigiar efeitos locais/hormonais transitórios; emoliente após tratamento pode reduzir irritação. Recidiva é possível.",
+      "es": "No indicar estrógeno para toda adherencia ni una dosis universal entre cremas. Vigilar efectos locales/hormonales transitorios; emoliente posterior puede reducir irritación. Puede recurrir.",
+      "sources": [
+        "topic_88"
+      ]
+    },
+    {
+      "id": "b02_038_f06",
+      "section": "followup",
+      "pt": "Acompanhar sintomas urinários e resolução; orientar retorno por obstrução, dor, febre ou sangramento.",
+      "es": "Seguir síntomas urinarios y resolución; indicar consulta por obstrucción, dolor, fiebre o sangrado.",
+      "sources": [
+        "topic_88"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta.",
+      "es": "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta.",
+      "sources": [
+        "topic_88"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_88",
+      "title": "Aderência dos pequenos lábios",
+      "url": "https://www.nhs.uk/conditions/labial-fusion/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 08 February 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_88.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

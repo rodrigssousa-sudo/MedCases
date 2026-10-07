@@ -1,0 +1,195 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Vasculite por IgA",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "a41a2bbf7d891216aab73adde44b913c3919f4590121d722d32230f0d7b39362",
+  "ownerCandidate": "vasculite_por_iga",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_031_f01",
+    "b02_031_f02",
+    "b02_031_f03",
+    "b02_031_f04",
+    "b02_031_f05",
+    "b02_031_f06",
+    "b02_031_f07",
+    "b02_031_ped_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vasculite sistêmica, frequentemente pediátrica, com púrpura palpável, artralgia, dor abdominal e possível nefrite. Acometimento renal pode ser silencioso."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "O alívio de dor com corticosteroide não demonstra proteção renal. Por isso pressão e urina continuam necessárias mesmo com melhora da púrpura e sintomas."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Medir pressão e examinar urina em toda suspeita; quantificar proteinúria e função renal se alterados. Considerar sepse/meningococcemia, trombocitopenia e outras vasculites no padrão atípico."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor abdominal intensa, sangramento, vômito persistente, alteração neurológica/respiratória, hipertensão ou lesão renal demanda hospital. Excluir invaginação e torção testicular quando aplicável."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor leve: paracetamol é opção inicial; ibuprofeno curto se não houver sangramento gastrointestinal ou lesão renal. Alternativa anti-inflamatória pediátrica do protocolo: naproxeno 10 mg/kg por dose oral a cada 12 horas, máximo 500 mg por dose; escolher um NSAID, não associar."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor abdominal/articular moderada a grave selecionada, após excluir complicação cirúrgica: prednisolona oral 1–2 mg/kg ao dia, máximo 60 mg ao dia, enquanto sintomas persistirem, com reavaliação e retirada orientada. Reduz sintomas, mas não previne nefrite; acometimento renal importante exige nefrologia e regime próprio."
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não aplicar regime sintomático pediátrico como tratamento de nefrite adulta. Monitorar pressão, urina, diurese, dor e sangramento; ajustar analgésicos por função renal."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Se urina inicial normal ou apenas hematúria microscópica: controle de pressão/urina semanal no primeiro mês, a cada 2 semanas nas semanas 5–12 e aos 6 e 12 meses, segundo RCH; intensificar se alteração. Alta somente com plano de seguimento renal."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_81",
+      "title": "Vasculite por IgA",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/HenochSchonlein_Purpura/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Updated January 2021",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_81.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — dor aguda pediátrica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Vasculite sistêmica, frequentemente pediátrica, com púrpura palpável, artralgia, dor abdominal e possível nefrite. Acometimento renal pode ser silencioso."
+      ],
+      "factIds": [
+        "b02_031_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "O alívio de dor com corticosteroide não demonstra proteção renal. Por isso pressão e urina continuam necessárias mesmo com melhora da púrpura e sintomas."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Medir pressão e examinar urina em toda suspeita; quantificar proteinúria e função renal se alterados. Considerar sepse/meningococcemia, trombocitopenia e outras vasculites no padrão atípico."
+      ],
+      "factIds": [
+        "b02_031_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Dor abdominal intensa, sangramento, vômito persistente, alteração neurológica/respiratória, hipertensão ou lesão renal demanda hospital. Excluir invaginação e torção testicular quando aplicável."
+      ],
+      "factIds": [
+        "b02_031_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Dor leve: paracetamol é opção inicial; ibuprofeno curto se não houver sangramento gastrointestinal ou lesão renal. Alternativa anti-inflamatória pediátrica do protocolo: naproxeno 10 mg/kg por dose oral a cada 12 horas, máximo 500 mg por dose; escolher um NSAID, não associar."
+      ],
+      "factIds": [
+        "b02_031_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Dor abdominal/articular moderada a grave selecionada, após excluir complicação cirúrgica: prednisolona oral 1–2 mg/kg ao dia, máximo 60 mg ao dia, enquanto sintomas persistirem, com reavaliação e retirada orientada. Reduz sintomas, mas não previne nefrite; acometimento renal importante exige nefrologia e regime próprio.",
+        "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+      ],
+      "factIds": [
+        "b02_031_f05",
+        "b02_031_ped_doses"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não aplicar regime sintomático pediátrico como tratamento de nefrite adulta. Monitorar pressão, urina, diurese, dor e sangramento; ajustar analgésicos por função renal."
+      ],
+      "factIds": [
+        "b02_031_f06"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Se urina inicial normal ou apenas hematúria microscópica: controle de pressão/urina semanal no primeiro mês, a cada 2 semanas nas semanas 5–12 e aos 6 e 12 meses, segundo RCH; intensificar se alteração. Alta somente com plano de seguimento renal."
+      ],
+      "factIds": [
+        "b02_031_f07"
+      ]
+    }
+  ],
+  "markdown": "# Vasculite por IgA\n\n## Conceito e mecanismo\n\nVasculite sistêmica, frequentemente pediátrica, com púrpura palpável, artralgia, dor abdominal e possível nefrite. Acometimento renal pode ser silencioso.\n\n## Raciocínio e escolha terapêutica\n\nO alívio de dor com corticosteroide não demonstra proteção renal. Por isso pressão e urina continuam necessárias mesmo com melhora da púrpura e sintomas.\n\n## Diagnóstico e diferenciais\n\nMedir pressão e examinar urina em toda suspeita; quantificar proteinúria e função renal se alterados. Considerar sepse/meningococcemia, trombocitopenia e outras vasculites no padrão atípico.\n\n## Abordagem inicial e urgências\n\nDor abdominal intensa, sangramento, vômito persistente, alteração neurológica/respiratória, hipertensão ou lesão renal demanda hospital. Excluir invaginação e torção testicular quando aplicável.\n\n## Tratamento: primeira escolha e alternativas\n\nDor leve: paracetamol é opção inicial; ibuprofeno curto se não houver sangramento gastrointestinal ou lesão renal. Alternativa anti-inflamatória pediátrica do protocolo: naproxeno 10 mg/kg por dose oral a cada 12 horas, máximo 500 mg por dose; escolher um NSAID, não associar.\n\n## Fármacos, doses e intervalos\n\nDor abdominal/articular moderada a grave selecionada, após excluir complicação cirúrgica: prednisolona oral 1–2 mg/kg ao dia, máximo 60 mg ao dia, enquanto sintomas persistirem, com reavaliação e retirada orientada. Reduz sintomas, mas não previne nefrite; acometimento renal importante exige nefrologia e regime próprio.\n\nAnalgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL.\n\n## Segurança e monitorização\n\nNão aplicar regime sintomático pediátrico como tratamento de nefrite adulta. Monitorar pressão, urina, diurese, dor e sangramento; ajustar analgésicos por função renal.\n\n## Reavaliação, internação e alta\n\nSe urina inicial normal ou apenas hematúria microscópica: controle de pressão/urina semanal no primeiro mês, a cada 2 semanas nas semanas 5–12 e aos 6 e 12 meses, segundo RCH; intensificar se alteração. Alta somente com plano de seguimento renal.\n\n## Referências\n\n1. [Vasculite por IgA](https://www.rch.org.au/clinicalguide/guideline_index/HenochSchonlein_Purpura/)\n2. [RCH — dor aguda pediátrica](https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/)",
+  "approvedReviewCanonicalFileSha256": "3cd79668ebc5e5aa7d9c85f8d8f10f2499f79b7bbb2ba4fe3528c5245cedf1ee",
+  "approvedReviewProjectionFileSha256": "65a8e07e67b476911f2fb97b42a9b20e51aa2ca2aecbc547bba3d575b4c4808d"
+}

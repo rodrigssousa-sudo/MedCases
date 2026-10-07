@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "escoliose",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Escoliose",
+    "es": "Escoliosis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Condição com identidade e escopo próprios; nenhum ID/título/alias PT/ES equivalente identificado no baseline verificado.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b02_028_f01",
+      "section": "concept",
+      "pt": "Deformidade com curvatura lateral e rotação vertebral; conduta depende de crescimento, progressão e função, não apenas dor.",
+      "es": "Deformidad con curvatura lateral y rotación vertebral; manejo depende de crecimiento, progresión y función, no solo dolor.",
+      "sources": [
+        "topic_78",
+        "scol_child",
+        "scol_adult"
+      ]
+    },
+    {
+      "id": "b02_028_f02",
+      "section": "diagnosis",
+      "pt": "Examinar assimetria, teste de flexão anterior, neurologia e maturidade; radiografias em pé quantificam curva quando indicadas. Dor importante, progressão atípica ou déficit exige excluir causa secundária.",
+      "es": "Evaluar asimetría, flexión anterior, neurología y madurez; radiografías de pie cuantifican curva si corresponde. Dolor importante, progresión atípica o déficit exige descartar causa secundaria.",
+      "sources": [
+        "topic_78",
+        "scol_child",
+        "scol_adult"
+      ]
+    },
+    {
+      "id": "b02_028_f03",
+      "section": "initial",
+      "pt": "Déficit neurológico, alteração esfíncteriana ou dificuldade respiratória relevante exige avaliação urgente. Apoiar imagem corporal e atividade segura.",
+      "es": "Déficit neurológico, alteración esfinteriana o dificultad respiratoria relevante exige urgencia. Apoyar imagen corporal y actividad segura.",
+      "sources": [
+        "topic_78",
+        "scol_child",
+        "scol_adult"
+      ]
+    },
+    {
+      "id": "b02_028_f04",
+      "section": "options",
+      "pt": "Criança em crescimento: observação para curvas leves; colete para risco de progressão selecionado; cirurgia para deformidade grave/progressiva. Adulto: exercício/fisioterapia e analgesia para sintomas; ibuprofeno se seguro, paracetamol em plano individual. Medicação não corrige curva.",
+      "es": "Niño en crecimiento: observación para curvas leves; corsé ante riesgo de progresión seleccionado; cirugía ante deformidad grave/progresiva. Adulto: ejercicio/fisioterapia y analgesia sintomática; ibuprofeno si es seguro, paracetamol en plan individual. Los fármacos no corrigen la curva.",
+      "sources": [
+        "topic_78",
+        "scol_child",
+        "scol_adult"
+      ]
+    },
+    {
+      "id": "b02_028_f05",
+      "section": "safety",
+      "pt": "Não substituir avaliação de progressão por analgésicos. Colete e cirurgia têm critérios especializados; evitar indicar graus/horas universais sem população específica.",
+      "es": "No sustituir evaluación de progresión por analgésicos. Corsé y cirugía tienen criterios especializados; no indicar grados/horas universales sin población específica.",
+      "sources": [
+        "topic_78",
+        "scol_child",
+        "scol_adult"
+      ]
+    },
+    {
+      "id": "b02_028_f06",
+      "section": "followup",
+      "pt": "Controle ortopédico durante crescimento e conforme sintomas no adulto; reavaliar função, curva e neurologia. Alteração nova exige retorno.",
+      "es": "Seguimiento ortopédico durante crecimiento y según síntomas en adultos; revisar función, curva y neurología. Consultar ante cambios nuevos.",
+      "sources": [
+        "topic_78",
+        "scol_child",
+        "scol_adult"
+      ]
+    },
+    {
+      "id": "b02_028_adult_doses",
+      "section": "doses",
+      "sources": [
+        "para",
+        "ibu"
+      ],
+      "pt": "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+      "es": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta.",
+      "es": "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta.",
+      "sources": [
+        "topic_78",
+        "scol_child",
+        "scol_adult"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_78",
+      "title": "Escoliose",
+      "url": "https://www.nhs.uk/conditions/scoliosis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 12 April 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_78.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "scol_child",
+      "title": "NHS — escoliose infantil, tratamento",
+      "url": "https://www.nhs.uk/conditions/scoliosis/treatment-in-children/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 12 April 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/scol_child.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "scol_adult",
+      "title": "NHS — escoliose adulta, tratamento",
+      "url": "https://www.nhs.uk/conditions/scoliosis/treatment-in-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 12 April 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/scol_adult.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

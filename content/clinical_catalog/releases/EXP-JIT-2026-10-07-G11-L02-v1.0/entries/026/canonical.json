@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "coccigodinia",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Coccigodinia",
+    "es": "Coccigodinia"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Condição com identidade e escopo próprios; nenhum ID/título/alias PT/ES equivalente identificado no baseline verificado.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b02_026_f01",
+      "section": "concept",
+      "pt": "Dor localizada no cóccix, frequentemente mecânica após trauma ou pressão repetida; causas infecciosas/neoplásicas são diferenciais em quadro atípico.",
+      "es": "Dolor localizado en cóccix, a menudo mecánico tras trauma o presión repetida; infección/neoplasia son diferenciales ante un cuadro atípico.",
+      "sources": [
+        "topic_76"
+      ]
+    },
+    {
+      "id": "b02_026_f02",
+      "section": "diagnosis",
+      "pt": "Examinar região, relação com sentar/levantar e sinais de doença pilonidal, abscesso ou dor referida. Imagem seletiva se trauma significativo, persistência ou red flags.",
+      "es": "Examinar región, relación con sentarse/levantarse y signos pilonidales, absceso o dolor referido. Imágenes selectivas ante trauma importante, persistencia o alarmas.",
+      "sources": [
+        "topic_76"
+      ]
+    },
+    {
+      "id": "b02_026_f03",
+      "section": "initial",
+      "pt": "Febre, massa, déficit neurológico, alteração esfíncteriana ou dor noturna progressiva exige investigação. Reduzir pressão local com apoio apropriado e evitar sentar prolongadamente.",
+      "es": "Fiebre, masa, déficit neurológico, alteración esfinteriana o dolor nocturno progresivo exige evaluación. Reducir presión con apoyo adecuado y evitar sentarse prolongadamente.",
+      "sources": [
+        "topic_76"
+      ]
+    },
+    {
+      "id": "b02_026_f04",
+      "section": "options",
+      "pt": "Primeira escolha: adaptação postural, almofada apropriada e fisioterapia. Ibuprofeno curto se seguro ou paracetamol quando apropriado para dor. Persistência: infiltração especializada pode ser considerada; cocciectomia é rara e reservada a casos refratários.",
+      "es": "Primera elección: adaptar postura, cojín apropiado y fisioterapia. Ibuprofeno breve si es seguro o paracetamol cuando sea apropiado. Persistencia: puede considerarse infiltración especializada; coccigectomía es infrecuente y para casos refractarios.",
+      "sources": [
+        "topic_76"
+      ]
+    },
+    {
+      "id": "b02_026_f05",
+      "section": "safety",
+      "pt": "Não infiltrar empiricamente infecção/massa. Rever riscos renal, gastrointestinal e gestacional antes de NSAID; não tratar apenas com opioide prolongado.",
+      "es": "No infiltrar empíricamente infección/masa. Revisar riesgos renal, digestivo y gestacional antes de antiinflamatorios; no limitar el manejo a opioides prolongados.",
+      "sources": [
+        "topic_76"
+      ]
+    },
+    {
+      "id": "b02_026_f06",
+      "section": "followup",
+      "pt": "Reavaliar resposta e função; persistência ou piora demanda revisão diagnóstica. Alta se sem alarmes, com controle de dor e retorno orientado.",
+      "es": "Reevaluar respuesta y función; persistencia o empeoramiento requiere revisar diagnóstico. Alta sin alarmas, con dolor controlado e indicaciones de consulta.",
+      "sources": [
+        "topic_76"
+      ]
+    },
+    {
+      "id": "b02_026_adult_doses",
+      "section": "doses",
+      "sources": [
+        "para",
+        "ibu"
+      ],
+      "pt": "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+      "es": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta.",
+      "es": "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta.",
+      "sources": [
+        "topic_76"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_76",
+      "title": "Coccigodinia",
+      "url": "https://www.nhs.uk/conditions/tailbone-coccyx-pain/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 20 November 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_76.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

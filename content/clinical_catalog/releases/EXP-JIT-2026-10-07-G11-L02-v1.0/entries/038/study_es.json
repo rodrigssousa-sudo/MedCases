@@ -1,0 +1,157 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Adherencia de labios menores",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "f2a96a873f4ae3a8fb773dc58c15a4ec13d02f6cdefb8e20cb4749d263ad4ea1",
+  "ownerCandidate": "aderencia_dos_pequenos_labios",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_038_f01",
+    "b02_038_f02",
+    "b02_038_f03",
+    "b02_038_f04",
+    "b02_038_f05",
+    "b02_038_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "La adherencia prepuberal relacionada con estrógenos bajos e irritación puede ser asintomática; no implica por definición daño a fertilidad."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Inspección respetuosa y consentida identifica adherencia; evaluar retención, goteo, irritación e infección urinaria. Diferenciar malformación o lesión dermatológica."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Retención urinaria, dolor importante o infección sistémica exige urgencia. No separar forzadamente sin indicación/anestesia apropiada."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primera elección si es asintomática: observación, higiene suave y evitar irritantes. Si produce síntomas: estrógeno tópico seleccionado por pediatría/ginecología con producto/duración definidos. Separación especializada es alternativa infrecuente ante fallo u obstrucción importante."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No indicar estrógeno para toda adherencia ni una dosis universal entre cremas. Vigilar efectos locales/hormonales transitorios; emoliente posterior puede reducir irritación. Puede recurrir."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguir síntomas urinarios y resolución; indicar consulta por obstrucción, dolor, fiebre o sangrado."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_88",
+      "title": "Aderência dos pequenos lábios",
+      "url": "https://www.nhs.uk/conditions/labial-fusion/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 08 February 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_88.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "La adherencia prepuberal relacionada con estrógenos bajos e irritación puede ser asintomática; no implica por definición daño a fertilidad."
+      ],
+      "factIds": [
+        "b02_038_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Inspección respetuosa y consentida identifica adherencia; evaluar retención, goteo, irritación e infección urinaria. Diferenciar malformación o lesión dermatológica."
+      ],
+      "factIds": [
+        "b02_038_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Retención urinaria, dolor importante o infección sistémica exige urgencia. No separar forzadamente sin indicación/anestesia apropiada."
+      ],
+      "factIds": [
+        "b02_038_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección si es asintomática: observación, higiene suave y evitar irritantes. Si produce síntomas: estrógeno tópico seleccionado por pediatría/ginecología con producto/duración definidos. Separación especializada es alternativa infrecuente ante fallo u obstrucción importante."
+      ],
+      "factIds": [
+        "b02_038_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No indicar estrógeno para toda adherencia ni una dosis universal entre cremas. Vigilar efectos locales/hormonales transitorios; emoliente posterior puede reducir irritación. Puede recurrir."
+      ],
+      "factIds": [
+        "b02_038_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguir síntomas urinarios y resolución; indicar consulta por obstrucción, dolor, fiebre o sangrado."
+      ],
+      "factIds": [
+        "b02_038_f06"
+      ]
+    }
+  ],
+  "markdown": "# Adherencia de labios menores\n\n## Concepto y mecanismo\n\nLa adherencia prepuberal relacionada con estrógenos bajos e irritación puede ser asintomática; no implica por definición daño a fertilidad.\n\n## Razonamiento y elección terapéutica\n\nPrimero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta.\n\n## Diagnóstico y diferenciales\n\nInspección respetuosa y consentida identifica adherencia; evaluar retención, goteo, irritación e infección urinaria. Diferenciar malformación o lesión dermatológica.\n\n## Abordaje inicial y urgencias\n\nRetención urinaria, dolor importante o infección sistémica exige urgencia. No separar forzadamente sin indicación/anestesia apropiada.\n\n## Tratamiento: primera elección y alternativas\n\nPrimera elección si es asintomática: observación, higiene suave y evitar irritantes. Si produce síntomas: estrógeno tópico seleccionado por pediatría/ginecología con producto/duración definidos. Separación especializada es alternativa infrecuente ante fallo u obstrucción importante.\n\n## Seguridad y monitorización\n\nNo indicar estrógeno para toda adherencia ni una dosis universal entre cremas. Vigilar efectos locales/hormonales transitorios; emoliente posterior puede reducir irritación. Puede recurrir.\n\n## Reevaluación, internación y alta\n\nSeguir síntomas urinarios y resolución; indicar consulta por obstrucción, dolor, fiebre o sangrado.\n\n## Referencias\n\n1. [Aderência dos pequenos lábios](https://www.nhs.uk/conditions/labial-fusion/)",
+  "approvedReviewCanonicalFileSha256": "63070fc63b38f6afbe5d0ebfe32a19ad1c437070fd872c10ff787dbed6778589",
+  "approvedReviewProjectionFileSha256": "38274ecf0a8d65e0ac74a290f68cece66b2fe003e19f404d67201b34d99f42e9"
+}

@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação deste lote. Guia permanece DRAFT no Admin após futura publicação coordenada dos modos.",
+  "canonical_payload_sha256": "94d95ff618fc0b27632b3279047e37ef535262461b264f6375b769a6a3f39a6a",
+  "owner_candidate": "plagiocefalia_posicional",
+  "pt": {
+    "title": "Plagiocefalia posicional",
+    "subtitle": "Revisão clínica — primeira escolha e alternativas",
+    "summary": "Assimetria craniana por pressão posicional, frequentemente associada a preferência postural/torcicolo; diferenciar craniossinostose.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Assimetria craniana por pressão posicional, frequentemente associada a preferência postural/torcicolo; diferenciar craniossinostose."
+        ],
+        "factIds": [
+          "b02_039_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Examinar formato, suturas, crescimento cefálico e mobilidade cervical; assimetria atípica/progressiva ou suspeita de sutura fechada exige especialista. Não usar imagem indiscriminada."
+        ],
+        "factIds": [
+          "b02_039_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Manter sono supino seguro. Variar posição ao carregar/alimentar e oferecer tempo de barriga para baixo somente acordado e supervisionado."
+        ],
+        "factIds": [
+          "b02_039_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Primeira escolha: reposicionamento durante vigília e orientação. Fisioterapia é alternativa/complemento se torcicolo ou preferência persistente. Capacete não é indicação rotineira; evidência e critérios variam, exigindo avaliação especializada em casos selecionados."
+        ],
+        "factIds": [
+          "b02_039_f04"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Não recomendar dormir em prono, travesseiro posicionador ou peso sobre a cabeça. Não há fármaco para corrigir formato craniano."
+        ],
+        "factIds": [
+          "b02_039_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Acompanhar crescimento, desenvolvimento e simetria; encaminhar piora, falta de evolução ou suspeita de craniossinostose."
+        ],
+        "factIds": [
+          "b02_039_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Plagiocefalia posicional",
+    "subtitle": "Revisión clínica — primera elección y alternativas",
+    "summary": "Asimetría craneal por presión posicional, frecuentemente asociada a preferencia postural/tortícolis; diferenciar craneosinostosis.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Asimetría craneal por presión posicional, frecuentemente asociada a preferencia postural/tortícolis; diferenciar craneosinostosis."
+        ],
+        "factIds": [
+          "b02_039_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Evaluar forma, suturas, crecimiento cefálico y movilidad cervical; asimetría atípica/progresiva o sospecha de sutura cerrada exige especialista. No usar imágenes indiscriminadamente."
+        ],
+        "factIds": [
+          "b02_039_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Mantener sueño supino seguro. Variar posición al cargar/alimentar y ofrecer tiempo boca abajo solo despierto y supervisado."
+        ],
+        "factIds": [
+          "b02_039_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Primera elección: reposicionamiento durante vigilia y educación. Fisioterapia complementa si hay tortícolis o preferencia persistente. Casco no es indicación rutinaria; evidencia/criterios varían y requieren especialista en casos seleccionados."
+        ],
+        "factIds": [
+          "b02_039_f04"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "No recomendar dormir boca abajo, almohada posicionadora ni peso sobre la cabeza. Ningún fármaco corrige la forma craneal."
+        ],
+        "factIds": [
+          "b02_039_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Controlar crecimiento, desarrollo y simetría; derivar empeoramiento, falta de evolución o sospecha de craneosinostosis."
+        ],
+        "factIds": [
+          "b02_039_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_89",
+      "title": "Plagiocefalia posicional",
+      "url": "https://www.nhs.uk/conditions/flat-head-syndrome-plagiocephaly-brachycephaly/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 16 January 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_89.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

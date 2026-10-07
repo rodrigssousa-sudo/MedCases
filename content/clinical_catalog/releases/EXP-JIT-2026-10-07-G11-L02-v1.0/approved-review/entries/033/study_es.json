@@ -1,0 +1,119 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Enfermedad de Osgood-Schlatter",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "30925e6d234d66a00155f853fe6b8553bf94fe2381dd4b1308c161127ae00dbb",
+  "ownerCandidate": "doenca_de_osgood_schlatter",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_033_f01",
+    "b02_033_f02",
+    "b02_033_f03",
+    "b02_033_f04",
+    "b02_033_f05",
+    "b02_033_f06",
+    "b02_033_ped_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Apofisitis de la tuberosidad tibial durante crecimiento por tracción repetida."
+      ],
+      "factIds": [
+        "b02_033_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Dolor focal en tuberosidad con esfuerzo; fiebre, imposibilidad de apoyo o derrame importante exige descartar otra causa. Radiografía si es atípico/traumático."
+      ],
+      "factIds": [
+        "b02_033_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Descartar urgencias antes de atribuir dolor al crecimiento; la analgesia no autoriza esfuerzo doloroso."
+      ],
+      "factIds": [
+        "b02_033_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección: adaptar actividad, estiramiento/fortalecimiento y frío protegido. Paracetamol o ibuprofeno breve para dolor; limitación importante puede exigir protección temporal. Cirugía infrecuente, tras madurez y refractariedad."
+      ],
+      "factIds": [
+        "b02_033_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+      ],
+      "factIds": [
+        "b02_033_ped_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Usar dosis pediátricas por peso y evitar antiinflamatorios ante deshidratación, enfermedad renal o sangrado. No infiltrar empíricamente corticoide en apófisis/tendón."
+      ],
+      "factIds": [
+        "b02_033_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Revisar dolor, marcha y retorno gradual al deporte; persistencia, cambio de patrón o síntomas sistémicos exige reevaluar diagnóstico."
+      ],
+      "factIds": [
+        "b02_033_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_83",
+      "title": "Doença de Osgood-Schlatter",
+      "url": "https://www.orthoinfo.org/diseases--conditions/osgood-schlatter-disease-knee-pain/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_83.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — dor aguda pediátrica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

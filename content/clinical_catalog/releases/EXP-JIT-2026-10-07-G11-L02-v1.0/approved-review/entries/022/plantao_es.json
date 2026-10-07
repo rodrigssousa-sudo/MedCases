@@ -1,0 +1,125 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Dedo en martillo",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "3c19a29f3a7ab4c56770c4220ae7243d6e1dac1fc9c7c9c29ff8106c7da493f0",
+  "ownerCandidate": "dedo_em_martelo",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_022_f01",
+    "b02_022_f02",
+    "b02_022_f03",
+    "b02_022_f04",
+    "b02_022_f05",
+    "b02_022_f06",
+    "b02_022_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Proteger articulación distal en extensión sin hiperextensión forzada y consultar mano/ortopedia. Herida abierta o subluxación exige evaluación urgente."
+      ],
+      "factIds": [
+        "b02_022_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar extensión activa, piel/uña y radiografiar por avulsión/subluxación. En niños, lesión ungueal y fisaria puede ser fractura abierta de Seymour, no simple dedo en martillo."
+      ],
+      "factIds": [
+        "b02_022_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección en lesión cerrada estable: férula distal continua, habitualmente durante 6–8 semanas, dejando libre la articulación proximal; mantener extensión al limpiar. Alternativa ante inestabilidad/lesión abierta: cirugía seleccionada. Paracetamol o ibuprofeno solo para dolor."
+      ],
+      "factIds": [
+        "b02_022_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b02_022_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Flexionar la punta durante el período continuo puede interrumpir cicatrización y exigir reiniciar el esquema. Vigilar piel; no ajustar excesivamente la férula."
+      ],
+      "factIds": [
+        "b02_022_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Revisar piel, extensión y adherencia; protección adicional y retirada progresiva según equipo. Explicar posible déficit residual leve."
+      ],
+      "factIds": [
+        "b02_022_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "La lesión extensora en la articulación interfalángica distal impide extensión activa; puede haber fragmento óseo."
+      ],
+      "factIds": [
+        "b02_022_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_72",
+      "title": "Dedo em martelo",
+      "url": "https://www.nhs.uk/conditions/mallet-finger/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 02 August 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_72.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

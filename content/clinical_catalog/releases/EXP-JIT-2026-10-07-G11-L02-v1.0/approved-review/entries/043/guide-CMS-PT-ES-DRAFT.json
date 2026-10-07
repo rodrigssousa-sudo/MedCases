@@ -1,0 +1,204 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação deste lote. Guia permanece DRAFT no Admin após futura publicação coordenada dos modos.",
+  "canonical_payload_sha256": "ad560caf2f3b5fc33dcf954dbdc63cc8757e9abbce0827f579acb9be55a273e3",
+  "owner_candidate": "hemangioma_infantil",
+  "pt": {
+    "title": "Hemangioma infantil",
+    "subtitle": "Revisão clínica — primeira escolha e alternativas",
+    "summary": "Tumor vascular benigno com fase proliferativa inicial e involução posterior; localização/tamanho podem ameaçar função, causar ulceração ou indicar síndrome associada.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Tumor vascular benigno com fase proliferativa inicial e involução posterior; localização/tamanho podem ameaçar função, causar ulceração ou indicar síndrome associada."
+        ],
+        "factIds": [
+          "b02_043_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "Uma lesão superficial pequena e uma lesão profunda/ameaçadora não compartilham o mesmo benefício–risco. Beta-bloqueio requer atenção à alimentação, pois pode mascarar sinais de hipoglicemia."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Examinar localização, extensão, ulceração e lesões múltiplas. Hemangioma periocular, de via aérea ou segmentar de alto risco requer avaliação precoce; imagem somente por indicação."
+        ],
+        "factIds": [
+          "b02_043_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Estridor, comprometimento visual, sangramento relevante ou dificuldade alimentar: urgência. Lesão pequena sem risco pode ser observada com documentação da evolução."
+        ],
+        "factIds": [
+          "b02_043_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Primeira escolha quando tratamento sistêmico indicado: propranolol por equipe experiente. Alternativa para lesão pequena, fina e superficial selecionada: timolol tópico off-label, não equivalente para lesão profunda/ameaçadora. Contraindicação ou falha do propranolol: especialista pode considerar corticosteroide ou procedimento conforme caso."
+        ],
+        "factIds": [
+          "b02_043_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Exemplo de produto, não intercambiável sem conferir concentração: HEMANGEOL, cloridrato de propranolol 4,28 mg/mL. Início autorizado na bula entre 5 semanas e 5 meses de idade: 0,15 mL/kg por dose oral 2 vezes ao dia, separadas por pelo menos 9 horas; após 1 semana, 0,3 mL/kg por dose 2 vezes ao dia; após 2 semanas, 0,4 mL/kg por dose 2 vezes ao dia, mantendo por 6 meses conforme equipe. Reajustar por peso; não converter diretamente para outra solução ou expressão em propranolol base."
+        ],
+        "factIds": [
+          "b02_043_f05"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Dar durante/logo após alimentação; omitir se não se alimentar ou estiver vomitando. Monitorar frequência/pressão por 2 horas após início e aumento. Excluir contraindicações, como bradicardia, hipotensão, broncoespasmo e prematuridade incompatível com bula. Timolol também pode ser absorvido e causar efeitos sistêmicos."
+        ],
+        "factIds": [
+          "b02_043_f06"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Acompanhar resposta, crescimento, alimentação e tolerância. Plano especializado para suspensão, recidiva e sequelas; não iniciar beta-bloqueador empiricamente para toda lesão vascular."
+        ],
+        "factIds": [
+          "b02_043_f07"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Hemangioma infantil",
+    "subtitle": "Revisión clínica — primera elección y alternativas",
+    "summary": "Tumor vascular benigno con proliferación inicial e involución posterior; localización/tamaño pueden amenazar función, ulcerarse o señalar síndrome asociada.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Tumor vascular benigno con proliferación inicial e involución posterior; localización/tamaño pueden amenazar función, ulcerarse o señalar síndrome asociada."
+        ],
+        "factIds": [
+          "b02_043_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Una lesión superficial pequeña y una profunda/amenazante no tienen el mismo balance. Beta-bloqueo exige atender a alimentación porque puede ocultar signos de hipoglucemia."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Evaluar localización, extensión, ulceración y lesiones múltiples. Periocular, de vía aérea o segmentario de alto riesgo requiere evaluación temprana; imágenes solo indicadas."
+        ],
+        "factIds": [
+          "b02_043_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Estridor, compromiso visual, sangrado importante o dificultad alimentaria: urgencia. Una lesión pequeña sin riesgo puede observarse documentando evolución."
+        ],
+        "factIds": [
+          "b02_043_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Primera elección si se indica tratamiento sistémico: propranolol por equipo experimentado. Alternativa para lesión pequeña, fina y superficial seleccionada: timolol tópico fuera de indicación, no equivalente para lesiones profundas/amenazantes. Ante contraindicación/fallo: especialista puede considerar corticoide o procedimiento."
+        ],
+        "factIds": [
+          "b02_043_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Ejemplo de producto, no intercambiable sin confirmar concentración: HEMANGEOL, clorhidrato de propranolol 4,28 mg/mL. Inicio autorizado en ficha entre 5 semanas y 5 meses: 0,15 mL/kg por dosis oral 2 veces al día, separadas por al menos 9 horas; después de 1 semana, 0,3 mL/kg por dosis 2 veces al día; después de 2 semanas, 0,4 mL/kg por dosis 2 veces al día durante 6 meses según equipo. Reajustar por peso; no convertir directamente a otra solución ni a expresión en propranolol base."
+        ],
+        "factIds": [
+          "b02_043_f05"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Dar durante/inmediatamente después de alimentarse; omitir si no come o vomita. Vigilar frecuencia/presión durante 2 horas tras inicio/aumento. Excluir contraindicaciones como bradicardia, hipotensión, broncoespasmo y prematuridad incompatible con ficha. Timolol también se absorbe y puede causar efectos sistémicos."
+        ],
+        "factIds": [
+          "b02_043_f06"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Seguir respuesta, crecimiento, alimentación y tolerancia. Plan especializado para retirada, recaída y secuelas; no iniciar beta-bloqueador empírico ante toda lesión vascular."
+        ],
+        "factIds": [
+          "b02_043_f07"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_93",
+      "title": "Hemangioma infantil",
+      "url": "https://www.nhs.uk/conditions/birthmarks/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 28 April 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_93.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "heman_aap",
+      "title": "AAP — guideline de hemangioma infantil 2019",
+      "url": "https://publications.aap.org/pediatrics/article/143/1/e20183475/37268/Clinical-Practice-Guideline-for-the-Management-of",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2019,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "AAP 2019, recomendações finais: propranolol sistêmico primeira linha; timolol selecionado em lesão fina superficial; corticosteroide se falha/contraindicação.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "hem_label",
+      "title": "DailyMed — HEMANGEOL, bula julho de 2026",
+      "url": "https://www.dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4f8341ee-dac6-1ca9-e063-6394a90ac960",
+      "authorityStatus": "REGULATORY_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/hem_label.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

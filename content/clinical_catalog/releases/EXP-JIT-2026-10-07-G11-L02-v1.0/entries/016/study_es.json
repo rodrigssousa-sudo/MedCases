@@ -1,0 +1,214 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Fractura de rótula",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "2319fc5fc1ffdc3d2098c15de7f7efba67fbced8431db1b756df85d5a23f56ad",
+  "ownerCandidate": "fratura_de_patela",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_016_f01",
+    "b02_016_f02",
+    "b02_016_f03",
+    "b02_016_f04",
+    "b02_016_f05",
+    "b02_016_f06",
+    "b02_016_adult_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "La lesión rotuliana puede interrumpir el mecanismo extensor; conservar extensión activa es decisivo."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Localización, desplazamiento, estabilidad y partes blandas orientan tratamiento. Remodelación infantil no permite usar iguales límites en adultos; mejoría del dolor no demuestra estabilidad ni excluye lesión neurovascular."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Radiografías apropiadas; evaluar elevación activa de la pierna extendida, piel y congruencia articular."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Controlar dolor, inmovilizar adecuadamente y documentar examen neurovascular antes/después. Exposición, piel amenazada, isquemia, dolor desproporcionado o déficit progresivo: ortopedia urgente; fractura abierta sigue protocolo de antibiótico/tétanos y cirugía."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "No desplazada con mecanismo íntegro: ortesis/inmovilización en extensión y rehabilitación. Desplazamiento articular o fallo extensor: evaluar fijación/reconstrucción. La analgesia no autoriza flexión/carga sin indicación."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia: paracetamol para dolor leve; ibuprofeno es alternativa/adyuvante si es seguro, evitando mayores frágiles, enfermedad renal, deshidratación, sangrado y embarazo de riesgo. Dolor intenso requiere analgesia titulada en ambiente monitorizado; no ocultar síndrome compartimental. No extrapolar dosis adultas a niños."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Destino según estabilidad, partes blandas, lesiones asociadas, dolor y apoyo domiciliario. Alta solo con plan ortopédico, restricción de carga/movimiento definida y consulta por dolor creciente, entumecimiento, extremidad fría o compresión de férula. Rehabilitación y controles radiográficos individualizados; no fijar una duración única de yeso para todos."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_66",
+      "title": "Fratura de patela",
+      "url": "https://www.orthoinfo.org/diseases--conditions/patellar-kneecap-fractures?webid=24DCE756",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_66.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ng38",
+      "title": "NICE NG38 — fraturas não complexas",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2016,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Recomendações oficiais: analgesia estratificada, evitar NSAID em idosos frágeis, fratura proximal humeral adulta não complicada conservadora.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "La lesión rotuliana puede interrumpir el mecanismo extensor; conservar extensión activa es decisivo."
+      ],
+      "factIds": [
+        "b02_016_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Localización, desplazamiento, estabilidad y partes blandas orientan tratamiento. Remodelación infantil no permite usar iguales límites en adultos; mejoría del dolor no demuestra estabilidad ni excluye lesión neurovascular."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Radiografías apropiadas; evaluar elevación activa de la pierna extendida, piel y congruencia articular."
+      ],
+      "factIds": [
+        "b02_016_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Controlar dolor, inmovilizar adecuadamente y documentar examen neurovascular antes/después. Exposición, piel amenazada, isquemia, dolor desproporcionado o déficit progresivo: ortopedia urgente; fractura abierta sigue protocolo de antibiótico/tétanos y cirugía."
+      ],
+      "factIds": [
+        "b02_016_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "No desplazada con mecanismo íntegro: ortesis/inmovilización en extensión y rehabilitación. Desplazamiento articular o fallo extensor: evaluar fijación/reconstrucción. La analgesia no autoriza flexión/carga sin indicación."
+      ],
+      "factIds": [
+        "b02_016_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b02_016_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Analgesia: paracetamol para dolor leve; ibuprofeno es alternativa/adyuvante si es seguro, evitando mayores frágiles, enfermedad renal, deshidratación, sangrado y embarazo de riesgo. Dolor intenso requiere analgesia titulada en ambiente monitorizado; no ocultar síndrome compartimental. No extrapolar dosis adultas a niños."
+      ],
+      "factIds": [
+        "b02_016_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Destino según estabilidad, partes blandas, lesiones asociadas, dolor y apoyo domiciliario. Alta solo con plan ortopédico, restricción de carga/movimiento definida y consulta por dolor creciente, entumecimiento, extremidad fría o compresión de férula. Rehabilitación y controles radiográficos individualizados; no fijar una duración única de yeso para todos."
+      ],
+      "factIds": [
+        "b02_016_f06"
+      ]
+    }
+  ],
+  "markdown": "# Fractura de rótula\n\n## Concepto y mecanismo\n\nLa lesión rotuliana puede interrumpir el mecanismo extensor; conservar extensión activa es decisivo.\n\n## Razonamiento y elección terapéutica\n\nLocalización, desplazamiento, estabilidad y partes blandas orientan tratamiento. Remodelación infantil no permite usar iguales límites en adultos; mejoría del dolor no demuestra estabilidad ni excluye lesión neurovascular.\n\n## Diagnóstico y diferenciales\n\nRadiografías apropiadas; evaluar elevación activa de la pierna extendida, piel y congruencia articular.\n\n## Abordaje inicial y urgencias\n\nControlar dolor, inmovilizar adecuadamente y documentar examen neurovascular antes/después. Exposición, piel amenazada, isquemia, dolor desproporcionado o déficit progresivo: ortopedia urgente; fractura abierta sigue protocolo de antibiótico/tétanos y cirugía.\n\n## Tratamiento: primera elección y alternativas\n\nNo desplazada con mecanismo íntegro: ortesis/inmovilización en extensión y rehabilitación. Desplazamiento articular o fallo extensor: evaluar fijación/reconstrucción. La analgesia no autoriza flexión/carga sin indicación.\n\n## Fármacos, dosis e intervalos\n\nAnalgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.\n\n## Seguridad y monitorización\n\nAnalgesia: paracetamol para dolor leve; ibuprofeno es alternativa/adyuvante si es seguro, evitando mayores frágiles, enfermedad renal, deshidratación, sangrado y embarazo de riesgo. Dolor intenso requiere analgesia titulada en ambiente monitorizado; no ocultar síndrome compartimental. No extrapolar dosis adultas a niños.\n\n## Reevaluación, internación y alta\n\nDestino según estabilidad, partes blandas, lesiones asociadas, dolor y apoyo domiciliario. Alta solo con plan ortopédico, restricción de carga/movimiento definida y consulta por dolor creciente, entumecimiento, extremidad fría o compresión de férula. Rehabilitación y controles radiográficos individualizados; no fijar una duración única de yeso para todos.\n\n## Referencias\n\n1. [Fratura de patela](https://www.orthoinfo.org/diseases--conditions/patellar-kneecap-fractures?webid=24DCE756)\n2. [NICE NG38 — fraturas não complexas](https://www.nice.org.uk/guidance/ng38/chapter/recommendations)\n3. [NHS — paracetamol adulto](https://www.nhs.uk/medicines/paracetamol-for-adults/)\n4. [NHS — ibuprofeno adulto](https://www.nhs.uk/medicines/ibuprofen-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "90e8437ccbc4c0e0b37689ae2a0ed36a000ea1e3e428e5d3e42a1167669ff4f7",
+  "approvedReviewProjectionFileSha256": "5cfcc7b6b85b3594d25e6f5e2ec22485e71c84246f152d2ee677398feee9f60c"
+}

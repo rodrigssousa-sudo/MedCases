@@ -1,0 +1,115 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Estenosis aórtica",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "24198319a19cda03e4f96bc4bbc837d0f28b5b48813b9aad99c9520697b7c6e5",
+  "ownerCandidate": "estenose_aortica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_050_f01",
+    "b02_050_f02",
+    "b02_050_f03",
+    "b02_050_f04",
+    "b02_050_f05",
+    "b02_050_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Síncope, dolor torácico o edema pulmonar con sospecha de estenosis importante: hospital/cardiología. Tratar congestión/presión con cautela evitando hipotensión y reducción brusca de precarga."
+      ],
+      "factIds": [
+        "b02_050_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Ecocardiograma evalúa anatomía, gradientes, área, flujo y función ventricular. Discordancia/bajo flujo requiere especialista y otras pruebas, no clasificar por un número aislado."
+      ],
+      "factIds": [
+        "b02_050_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Tratamiento definitivo de enfermedad grave sintomática elegible es intervención valvular. SAVR quirúrgica o TAVI transcatéter elegida por equipo según anatomía, riesgo, expectativa de vida y preferencias; no hay una técnica inicial universal. Observación monitorizada si no hay indicación actual."
+      ],
+      "factIds": [
+        "b02_050_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Ningún fármaco revierte estenosis; no inventar dos alternativas farmacológicas curativas. Tratar comorbilidades individualmente; diurético/vasodilatador sin evaluación hemodinámica puede ser peligroso. Bicúspide, embarazo y edad joven exigen decisión específica."
+      ],
+      "factIds": [
+        "b02_050_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguimiento clínico/ecocardiográfico según gravedad; consulta inmediata por síntomas nuevos. No posponer intervención solo porque diurético alivió disnea."
+      ],
+      "factIds": [
+        "b02_050_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "La obstrucción valvular sobrecarga al ventrículo; disnea, angina o síncope en enfermedad grave señala riesgo. Diferenciar de estenosis sub/supravalvular y otras causas de soplo."
+      ],
+      "factIds": [
+        "b02_050_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_100",
+      "title": "Estenose aórtica",
+      "url": "https://www.nhs.uk/conditions/heart-valve-disease/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 22 January 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_100.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ng208",
+      "title": "NICE NG208 — valvopatias adultas",
+      "url": "https://www.nice.org.uk/guidance/ng208/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Investigação, monitorização e intervenção valvar; escolha individual de cirurgia/TAVI. Não extrapolar custo-efetividade inglesa como regra universal.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "esc_valve2025",
+      "title": "ESC/EACTS — valvopatias 2025",
+      "url": "https://www.escardio.org/Guidelines/Clinical-Practice-Guidelines/all-esc-practice-guidelines/valvular-heart-disease/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "OFFICIAL_PUBLICATION_METADATA_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/esc_valve2025.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

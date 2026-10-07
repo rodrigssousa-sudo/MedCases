@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Anquiloglosia",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "a0b81266591cb9444886c5c4794741613d9dcb252dff1fb326f94ec208bba43b",
+  "ownerCandidate": "anquiloglossia",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_041_f01",
+    "b02_041_f02",
+    "b02_041_f03",
+    "b02_041_f04",
+    "b02_041_f05",
+    "b02_041_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Deshidratación o crecimiento insuficiente requiere corregir alimentación y evaluar pronto. Apoyar lactancia antes de atribuir todos los síntomas al frenillo."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar agarre, transferencia de leche, dolor materno, crecimiento y otras causas. Examen funcional con lactancia/pediatría; no usar etiqueta de frenillo posterior como indicación quirúrgica aislada."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primera elección: apoyo de lactancia y ajuste de alimentación. Alternativa si persiste restricción sintomática pese al apoyo: frenotomía por profesional capacitado con decisión compartida. Ningún fármaco libera el frenillo."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Explicar sangrado, dolor y beneficio esperado; verificar seguridad neonatal antes del procedimiento. No está establecida superioridad del láser; no recomendar estiramiento forzado de la herida rutinariamente."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar alimentación y peso tras procedimiento o manejo conservador; sin respuesta, buscar otras causas y no repetir automáticamente la intervención."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "El frenillo puede restringir función; su aspecto aislado no determina frenotomía. Priorizar dificultad funcional real de lactancia."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_91",
+      "title": "Anquiloglossia",
+      "url": "https://www.nhs.uk/conditions/tongue-tie/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 20 March 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_91.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "tongue_aap",
+      "title": "AAP — anquiloglossia, relatório clínico 2024",
+      "url": "https://publications.aap.org/pediatrics/article/154/2/e2024067605/198022/Identification-and-Management-of-Ankyloglossia-and?autologincheck=redirected",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "AAP 2024, relatório de anquiloglossia: suporte de lactação, frenotomia funcional selecionada, sem superioridade do laser e sem alongamento pós-procedimento rotineiro.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Deshidratación o crecimiento insuficiente requiere corregir alimentación y evaluar pronto. Apoyar lactancia antes de atribuir todos los síntomas al frenillo."
+      ],
+      "factIds": [
+        "b02_041_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar agarre, transferencia de leche, dolor materno, crecimiento y otras causas. Examen funcional con lactancia/pediatría; no usar etiqueta de frenillo posterior como indicación quirúrgica aislada."
+      ],
+      "factIds": [
+        "b02_041_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección: apoyo de lactancia y ajuste de alimentación. Alternativa si persiste restricción sintomática pese al apoyo: frenotomía por profesional capacitado con decisión compartida. Ningún fármaco libera el frenillo."
+      ],
+      "factIds": [
+        "b02_041_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Explicar sangrado, dolor y beneficio esperado; verificar seguridad neonatal antes del procedimiento. No está establecida superioridad del láser; no recomendar estiramiento forzado de la herida rutinariamente."
+      ],
+      "factIds": [
+        "b02_041_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar alimentación y peso tras procedimiento o manejo conservador; sin respuesta, buscar otras causas y no repetir automáticamente la intervención."
+      ],
+      "factIds": [
+        "b02_041_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "El frenillo puede restringir función; su aspecto aislado no determina frenotomía. Priorizar dificultad funcional real de lactancia."
+      ],
+      "factIds": [
+        "b02_041_f01"
+      ]
+    }
+  ],
+  "markdown": "# Anquiloglosia\n\n## Abordaje inicial y urgencias\n\nDeshidratación o crecimiento insuficiente requiere corregir alimentación y evaluar pronto. Apoyar lactancia antes de atribuir todos los síntomas al frenillo.\n\n## Diagnóstico y diferenciales\n\nEvaluar agarre, transferencia de leche, dolor materno, crecimiento y otras causas. Examen funcional con lactancia/pediatría; no usar etiqueta de frenillo posterior como indicación quirúrgica aislada.\n\n## Tratamiento: primera elección y alternativas\n\nPrimera elección: apoyo de lactancia y ajuste de alimentación. Alternativa si persiste restricción sintomática pese al apoyo: frenotomía por profesional capacitado con decisión compartida. Ningún fármaco libera el frenillo.\n\n## Seguridad y monitorización\n\nExplicar sangrado, dolor y beneficio esperado; verificar seguridad neonatal antes del procedimiento. No está establecida superioridad del láser; no recomendar estiramiento forzado de la herida rutinariamente.\n\n## Reevaluación, internación y alta\n\nReevaluar alimentación y peso tras procedimiento o manejo conservador; sin respuesta, buscar otras causas y no repetir automáticamente la intervención.\n\n## Reconocimiento rápido\n\nEl frenillo puede restringir función; su aspecto aislado no determina frenotomía. Priorizar dificultad funcional real de lactancia.\n\n## Referencias\n\n1. [Anquiloglossia](https://www.nhs.uk/conditions/tongue-tie/)\n2. [AAP — anquiloglossia, relatório clínico 2024](https://publications.aap.org/pediatrics/article/154/2/e2024067605/198022/Identification-and-Management-of-Ankyloglossia-and?autologincheck=redirected)",
+  "approvedReviewCanonicalFileSha256": "7e930081916128534160ed3a7fb3369b2fa47d91188a854039ee58a26eb8c68f",
+  "approvedReviewProjectionFileSha256": "9435bf3af17cc744c32f78a3fc7c11074b4f313fccad4d9e1fc079ebfb229f75"
+}

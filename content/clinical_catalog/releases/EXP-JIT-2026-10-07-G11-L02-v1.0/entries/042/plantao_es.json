@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Obstrucción congénita del conducto nasolagrimal",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "e9b8a059fbe032db9d587148d3faf7b704da21875fb4510addb23573dec45cb3",
+  "ownerCandidate": "obstrucao_congenita_do_ducto_nasolacrimal",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_042_f01",
+    "b02_042_f02",
+    "b02_042_f03",
+    "b02_042_f04",
+    "b02_042_f05",
+    "b02_042_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Fiebre, celulitis periocular o masa dolorosa exige urgencia. Limpiar suavemente secreciones y enseñar masaje mediante demostración."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar ojo y saco lagrimal; fotofobia, córnea alterada o globo aumentado exige descartar glaucoma congénito. Dacriocistitis con tumefacción dolorosa/eritema es otra complicación."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primera elección no complicada: observación, higiene y masaje de Crigler enseñado. Antibiótico tópico solo por secreción importante/infección seleccionada; no abre el conducto ni debe ser continuo. Persistencia después de 12 meses o gravedad: sondaje, eventualmente intubación/dilatación especializada."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No tratar dacriocistitis aguda solo con gotas/masaje. No existe dosis universal de colirio para toda obstrucción; producto según edad y diagnóstico infeccioso."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguir evolución y visión; derivar persistencia o signos atípicos. Consulta inmediata por fiebre, dolor, más edema o fotofobia."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "La obstrucción del drenaje causa lagrimeo/secreción tempranos; la mayoría mejora espontáneamente el primer año."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_92",
+      "title": "Obstrução congênita do ducto nasolacrimal",
+      "url": "https://www.medlineplus.gov/ency/article/001016.htm",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Review Date 7/16/2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_92.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "nl_aapos",
+      "title": "AAPOS — obstrução nasolacrimal pediátrica",
+      "url": "https://www.aapos.org/glossary/nasolacrimal-duct-obstruction",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Updated By:",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/nl_aapos.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Fiebre, celulitis periocular o masa dolorosa exige urgencia. Limpiar suavemente secreciones y enseñar masaje mediante demostración."
+      ],
+      "factIds": [
+        "b02_042_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar ojo y saco lagrimal; fotofobia, córnea alterada o globo aumentado exige descartar glaucoma congénito. Dacriocistitis con tumefacción dolorosa/eritema es otra complicación."
+      ],
+      "factIds": [
+        "b02_042_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección no complicada: observación, higiene y masaje de Crigler enseñado. Antibiótico tópico solo por secreción importante/infección seleccionada; no abre el conducto ni debe ser continuo. Persistencia después de 12 meses o gravedad: sondaje, eventualmente intubación/dilatación especializada."
+      ],
+      "factIds": [
+        "b02_042_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No tratar dacriocistitis aguda solo con gotas/masaje. No existe dosis universal de colirio para toda obstrucción; producto según edad y diagnóstico infeccioso."
+      ],
+      "factIds": [
+        "b02_042_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguir evolución y visión; derivar persistencia o signos atípicos. Consulta inmediata por fiebre, dolor, más edema o fotofobia."
+      ],
+      "factIds": [
+        "b02_042_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "La obstrucción del drenaje causa lagrimeo/secreción tempranos; la mayoría mejora espontáneamente el primer año."
+      ],
+      "factIds": [
+        "b02_042_f01"
+      ]
+    }
+  ],
+  "markdown": "# Obstrucción congénita del conducto nasolagrimal\n\n## Abordaje inicial y urgencias\n\nFiebre, celulitis periocular o masa dolorosa exige urgencia. Limpiar suavemente secreciones y enseñar masaje mediante demostración.\n\n## Diagnóstico y diferenciales\n\nEvaluar ojo y saco lagrimal; fotofobia, córnea alterada o globo aumentado exige descartar glaucoma congénito. Dacriocistitis con tumefacción dolorosa/eritema es otra complicación.\n\n## Tratamiento: primera elección y alternativas\n\nPrimera elección no complicada: observación, higiene y masaje de Crigler enseñado. Antibiótico tópico solo por secreción importante/infección seleccionada; no abre el conducto ni debe ser continuo. Persistencia después de 12 meses o gravedad: sondaje, eventualmente intubación/dilatación especializada.\n\n## Seguridad y monitorización\n\nNo tratar dacriocistitis aguda solo con gotas/masaje. No existe dosis universal de colirio para toda obstrucción; producto según edad y diagnóstico infeccioso.\n\n## Reevaluación, internación y alta\n\nSeguir evolución y visión; derivar persistencia o signos atípicos. Consulta inmediata por fiebre, dolor, más edema o fotofobia.\n\n## Reconocimiento rápido\n\nLa obstrucción del drenaje causa lagrimeo/secreción tempranos; la mayoría mejora espontáneamente el primer año.\n\n## Referencias\n\n1. [Obstrução congênita do ducto nasolacrimal](https://www.medlineplus.gov/ency/article/001016.htm)\n2. [AAPOS — obstrução nasolacrimal pediátrica](https://www.aapos.org/glossary/nasolacrimal-duct-obstruction)",
+  "approvedReviewCanonicalFileSha256": "b8d9d0b19397f272fb7c4a68139c4ebb57d909875db7561ebfb85c200e76691f",
+  "approvedReviewProjectionFileSha256": "0959e852808d9c3e520dbb3e5adc8102169bf7a316c3dc1b85ba334f82577a0c"
+}

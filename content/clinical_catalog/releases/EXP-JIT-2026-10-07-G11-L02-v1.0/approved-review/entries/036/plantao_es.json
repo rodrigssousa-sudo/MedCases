@@ -1,0 +1,89 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Displasia del desarrollo de la cadera",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "ed52aa87a95fab777b09b4f078820dab42d25776ec07f7bf0e8915ba9a76c39c",
+  "ownerCandidate": "displasia_do_desenvolvimento_do_quadril",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_036_f01",
+    "b02_036_f02",
+    "b02_036_f03",
+    "b02_036_f04",
+    "b02_036_f05",
+    "b02_036_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Derivar temprano a ortopedia pediátrica; fiebre y cadera agudamente dolorosa exige descartar artritis séptica, no atribuirla a displasia."
+      ],
+      "factIds": [
+        "b02_036_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examinar caderas por profesional capacitado, factores de riesgo y abducción; ecografía en lactante y radiografía según edad/osificación. Un chasquido benigno aislado no confirma el diagnóstico."
+      ],
+      "factIds": [
+        "b02_036_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera estrategia en lactante elegible: ortesis, frecuentemente arnés de Pavlik, aplicado/ajustado por equipo. Fallo o diagnóstico tardío: otra ortesis, reducción cerrada/yeso o cirugía según edad/anatomía. Ningún fármaco corrige la inestabilidad."
+      ],
+      "factIds": [
+        "b02_036_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No ajustar arnés en casa sin instrucciones; vigilar piel/perfusión y evitar posiciones forzadas. No envolver piernas rígidamente extendidas/aducidas."
+      ],
+      "factIds": [
+        "b02_036_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Evaluaciones e imágenes seriadas para confirmar reducción/desarrollo; duración individualizada de ortesis, sin prometer un esquema único."
+      ],
+      "factIds": [
+        "b02_036_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "La inestabilidad/displasia del desarrollo de cadera puede ser silenciosa y afectar marcha y articulación futura."
+      ],
+      "factIds": [
+        "b02_036_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_86",
+      "title": "Displasia do desenvolvimento do quadril",
+      "url": "https://www.nhs.uk/conditions/developmental-dysplasia-of-the-hip/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 11 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_86.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

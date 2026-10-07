@@ -1,0 +1,132 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Dedo em martelo",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "3c19a29f3a7ab4c56770c4220ae7243d6e1dac1fc9c7c9c29ff8106c7da493f0",
+  "ownerCandidate": "dedo_em_martelo",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_022_f01",
+    "b02_022_f02",
+    "b02_022_f03",
+    "b02_022_f04",
+    "b02_022_f05",
+    "b02_022_f06",
+    "b02_022_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Lesão do tendão extensor na articulação interfalângica distal provoca incapacidade de extensão ativa; pode haver fragmento ósseo."
+      ],
+      "factIds": [
+        "b02_022_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar extensão ativa, pele/unha e radiografar para avulsão/subluxação. Em crianças, lesão de unha e fise pode ser fratura de Seymour exposta, não simples dedo em martelo."
+      ],
+      "factIds": [
+        "b02_022_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Proteger a articulação distal em extensão sem hiperextensão forçada e consultar mão/ortopedia. Ferida aberta ou subluxação exige avaliação urgente."
+      ],
+      "factIds": [
+        "b02_022_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha em lesão fechada estável: tala distal contínua, habitualmente por 6–8 semanas, deixando articulação proximal livre; manter extensão ao higienizar. Alternativa em instabilidade/lesão aberta: cirurgia selecionada. Paracetamol ou ibuprofeno apenas para dor."
+      ],
+      "factIds": [
+        "b02_022_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz."
+      ],
+      "factIds": [
+        "b02_022_adult_doses"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Flexionar a ponta durante o período contínuo pode interromper cicatrização e exigir reinício do esquema. Vigiar lesão de pele; não apertar tala excessivamente."
+      ],
+      "factIds": [
+        "b02_022_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Rever integridade da pele, extensão e adesão; proteção adicional e retirada progressiva conforme equipe. Explicar possibilidade de discreto déficit residual."
+      ],
+      "factIds": [
+        "b02_022_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_72",
+      "title": "Dedo em martelo",
+      "url": "https://www.nhs.uk/conditions/mallet-finger/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 02 August 2023",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_72.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

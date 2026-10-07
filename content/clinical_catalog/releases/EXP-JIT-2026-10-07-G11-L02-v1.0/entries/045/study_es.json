@@ -1,0 +1,188 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Taquicardia ventricular",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "264ee738e3e55ea457d8bd6a7eb1c20d715e0b38e592c4ec7d44c45cd0bdc667",
+  "ownerCandidate": "taquicardia_ventricular",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_045_f01",
+    "b02_045_f02",
+    "b02_045_f03",
+    "b02_045_f04",
+    "b02_045_f05",
+    "b02_045_f06",
+    "b02_045_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "La taquicardia ventricular puede ser monomórfica/polimórfica, con/sin pulso; diferenciarlas determina tratamiento y tipo de choque."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Morfología y pulso determinan sincronización. Un fármaco para monomórfica estable no debe demorar tratamiento eléctrico ante deterioro."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "ECG y evaluación de pulso/perfusión sin demora; taquicardia de complejo ancho incierta debe tratarse como ventricular. Buscar isquemia, potasio/magnesio, QT y fármacos."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sin pulso: protocolo de paro/desfibrilación. Con pulso e inestable: cardioversión sincronizada en monomórfica; polimórfica requiere choque no sincronizado. Usar energía recomendada por equipo/guía; sedación no debe demorar choque."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Monomórfica estable: elegir una infusión antiarrítmica y consulta especializada; procainamida o amiodarona son opciones AHA sin primera elección universal. Cardioversión ante fallo/contraindicación o deterioro. No aplicar el esquema de monomórfica a torsades."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Procainamida intravenosa: 20–50 mg por minuto hasta suprimir arritmia, hipotensión, QRS aumentado más de 50% o alcanzar 17 mg/kg; mantenimiento 1–4 mg por minuto. Evitar con QT prolongado o insuficiencia cardíaca. Alternativa: amiodarona 150 mg intravenosa en 10 minutos; repetir por recurrencia según protocolo y después 1 mg por minuto durante las primeras 6 horas."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "ECG/presión continuos, desfibrilador disponible y preparación según concentración/producto confirmado. No acumular antiarrítmicos. Adenosina solo en complejo ancho regular monomórfico seleccionado si es posible TSV; nunca en ritmo irregular/polimórfico. Dosis anteriores para adultos."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluación hospitalaria/cardiología para causa y prevención de muerte súbita; desfibrilador implantable/ablación según enfermedad y riesgo. No dar alta solo por conversión sin investigar."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_95",
+      "title": "Taquicardia ventricular",
+      "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "aha_algo",
+      "title": "AHA — algoritmo de taquiarritmia adulta com pulso, 2025",
+      "url": "https://www.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Algorithms/Algorithm-ACLS-Tachycardia-250514.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_PDF_TEXT_AND_VISUAL_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "La taquicardia ventricular puede ser monomórfica/polimórfica, con/sin pulso; diferenciarlas determina tratamiento y tipo de choque."
+      ],
+      "factIds": [
+        "b02_045_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Morfología y pulso determinan sincronización. Un fármaco para monomórfica estable no debe demorar tratamiento eléctrico ante deterioro."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "ECG y evaluación de pulso/perfusión sin demora; taquicardia de complejo ancho incierta debe tratarse como ventricular. Buscar isquemia, potasio/magnesio, QT y fármacos."
+      ],
+      "factIds": [
+        "b02_045_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Sin pulso: protocolo de paro/desfibrilación. Con pulso e inestable: cardioversión sincronizada en monomórfica; polimórfica requiere choque no sincronizado. Usar energía recomendada por equipo/guía; sedación no debe demorar choque."
+      ],
+      "factIds": [
+        "b02_045_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Monomórfica estable: elegir una infusión antiarrítmica y consulta especializada; procainamida o amiodarona son opciones AHA sin primera elección universal. Cardioversión ante fallo/contraindicación o deterioro. No aplicar el esquema de monomórfica a torsades."
+      ],
+      "factIds": [
+        "b02_045_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Procainamida intravenosa: 20–50 mg por minuto hasta suprimir arritmia, hipotensión, QRS aumentado más de 50% o alcanzar 17 mg/kg; mantenimiento 1–4 mg por minuto. Evitar con QT prolongado o insuficiencia cardíaca. Alternativa: amiodarona 150 mg intravenosa en 10 minutos; repetir por recurrencia según protocolo y después 1 mg por minuto durante las primeras 6 horas."
+      ],
+      "factIds": [
+        "b02_045_f05"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "ECG/presión continuos, desfibrilador disponible y preparación según concentración/producto confirmado. No acumular antiarrítmicos. Adenosina solo en complejo ancho regular monomórfico seleccionado si es posible TSV; nunca en ritmo irregular/polimórfico. Dosis anteriores para adultos."
+      ],
+      "factIds": [
+        "b02_045_f06"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Evaluación hospitalaria/cardiología para causa y prevención de muerte súbita; desfibrilador implantable/ablación según enfermedad y riesgo. No dar alta solo por conversión sin investigar."
+      ],
+      "factIds": [
+        "b02_045_f07"
+      ]
+    }
+  ],
+  "markdown": "# Taquicardia ventricular\n\n## Concepto y mecanismo\n\nLa taquicardia ventricular puede ser monomórfica/polimórfica, con/sin pulso; diferenciarlas determina tratamiento y tipo de choque.\n\n## Razonamiento y elección terapéutica\n\nMorfología y pulso determinan sincronización. Un fármaco para monomórfica estable no debe demorar tratamiento eléctrico ante deterioro.\n\n## Diagnóstico y diferenciales\n\nECG y evaluación de pulso/perfusión sin demora; taquicardia de complejo ancho incierta debe tratarse como ventricular. Buscar isquemia, potasio/magnesio, QT y fármacos.\n\n## Abordaje inicial y urgencias\n\nSin pulso: protocolo de paro/desfibrilación. Con pulso e inestable: cardioversión sincronizada en monomórfica; polimórfica requiere choque no sincronizado. Usar energía recomendada por equipo/guía; sedación no debe demorar choque.\n\n## Tratamiento: primera elección y alternativas\n\nMonomórfica estable: elegir una infusión antiarrítmica y consulta especializada; procainamida o amiodarona son opciones AHA sin primera elección universal. Cardioversión ante fallo/contraindicación o deterioro. No aplicar el esquema de monomórfica a torsades.\n\n## Fármacos, dosis e intervalos\n\nProcainamida intravenosa: 20–50 mg por minuto hasta suprimir arritmia, hipotensión, QRS aumentado más de 50% o alcanzar 17 mg/kg; mantenimiento 1–4 mg por minuto. Evitar con QT prolongado o insuficiencia cardíaca. Alternativa: amiodarona 150 mg intravenosa en 10 minutos; repetir por recurrencia según protocolo y después 1 mg por minuto durante las primeras 6 horas.\n\n## Seguridad y monitorización\n\nECG/presión continuos, desfibrilador disponible y preparación según concentración/producto confirmado. No acumular antiarrítmicos. Adenosina solo en complejo ancho regular monomórfico seleccionado si es posible TSV; nunca en ritmo irregular/polimórfico. Dosis anteriores para adultos.\n\n## Reevaluación, internación y alta\n\nEvaluación hospitalaria/cardiología para causa y prevención de muerte súbita; desfibrilador implantable/ablación según enfermedad y riesgo. No dar alta solo por conversión sin investigar.\n\n## Referencias\n\n1. [Taquicardia ventricular](https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-advanced-life-support)\n2. [AHA — algoritmo de taquiarritmia adulta com pulso, 2025](https://www.heart.org/-/media/CPR-Files/CPR-Guidelines-Files/2025-Algorithms/Algorithm-ACLS-Tachycardia-250514.pdf)",
+  "approvedReviewCanonicalFileSha256": "29061c3e23c4f62e6cf25f4e8f868d54f31cb998e7255d0032927e866f30d3e7",
+  "approvedReviewProjectionFileSha256": "a8c3fbd4945e910f0deb17a1f24f72ace231c714b378e4115b4def83ac752b4c"
+}

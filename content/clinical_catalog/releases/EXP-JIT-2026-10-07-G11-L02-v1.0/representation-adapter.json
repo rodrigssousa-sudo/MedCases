@@ -1,0 +1,14 @@
+{
+  "scope": "50 new owners only; all 717 baseline rows unchanged",
+  "format": "Schema 2 existing structured projection format, rendered text exactly equal to approved markdown",
+  "contentIndex": "Metadata reference instead of duplicated payload; runtime still resolves clinical_projection_registry",
+  "canonicalPayloadPreserved": true,
+  "approvedReviewBytesPreserved": true,
+  "referenceMetadata": "Only structural id added to runtime references; original fields and URL/order preserved",
+  "snapshotBytes": 67099035,
+  "clientLimitBytes": 67108864,
+  "clientBuild": 1717,
+  "schemaChanged": false,
+  "clientCodeChanged": false,
+  "note": "Less than 10 KB remains under the current client limit. A future expansion requires a separate technical size solution; do not publish an oversized snapshot."
+}

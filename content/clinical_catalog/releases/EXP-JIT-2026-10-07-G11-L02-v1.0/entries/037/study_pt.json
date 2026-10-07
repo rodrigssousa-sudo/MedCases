@@ -1,0 +1,157 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Criptorquidia",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "cf3c2790ff1032bba3ea82659b8450bf33e402e89beb6cea8f75e41124f7128a",
+  "ownerCandidate": "criptorquidia",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_037_f01",
+    "b02_037_f02",
+    "b02_037_f03",
+    "b02_037_f04",
+    "b02_037_f05",
+    "b02_037_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Testículo fora do escroto precisa ser distinguido de retrátil ou ascendente; persistência aumenta riscos futuros."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examinar posição e palpabilidade em ambiente adequado; bilateralidade e genitália atípica requerem investigação prioritária. Não atrasar encaminhamento aguardando exames indiscriminados."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor aguda em testículo inguinal/abdome, vômitos ou massa dolorosa exige excluir torção/herniamento. Recém-nascido com ambos não palpáveis e genitália atípica demanda avaliação endócrina/urológica urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira escolha para persistência: encaminhamento e orquidopexia na idade apropriada, geralmente em torno de 1 ano conforme avaliação. Observação inicial é para possível descida espontânea no início da vida, não substitui cirurgia tardia. Tratamento hormonal não é alternativa rotineira à correção indicada."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não apresentar dois fármacos como opções curativas. Testículo retrátil precisa de seguimento para ascensão; genitália atípica exige abordagem especializada."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Documentar posição e encaminhamento; acompanhar resultado cirúrgico e riscos residuais. Ensinar retorno urgente por dor, mesmo antes da cirurgia planejada."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_87",
+      "title": "Criptorquidia",
+      "url": "https://www.nhs.uk/conditions/undescended-testicles/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 12 June 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_87.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Testículo fora do escroto precisa ser distinguido de retrátil ou ascendente; persistência aumenta riscos futuros."
+      ],
+      "factIds": [
+        "b02_037_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar posição e palpabilidade em ambiente adequado; bilateralidade e genitália atípica requerem investigação prioritária. Não atrasar encaminhamento aguardando exames indiscriminados."
+      ],
+      "factIds": [
+        "b02_037_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Dor aguda em testículo inguinal/abdome, vômitos ou massa dolorosa exige excluir torção/herniamento. Recém-nascido com ambos não palpáveis e genitália atípica demanda avaliação endócrina/urológica urgente."
+      ],
+      "factIds": [
+        "b02_037_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha para persistência: encaminhamento e orquidopexia na idade apropriada, geralmente em torno de 1 ano conforme avaliação. Observação inicial é para possível descida espontânea no início da vida, não substitui cirurgia tardia. Tratamento hormonal não é alternativa rotineira à correção indicada."
+      ],
+      "factIds": [
+        "b02_037_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não apresentar dois fármacos como opções curativas. Testículo retrátil precisa de seguimento para ascensão; genitália atípica exige abordagem especializada."
+      ],
+      "factIds": [
+        "b02_037_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Documentar posição e encaminhamento; acompanhar resultado cirúrgico e riscos residuais. Ensinar retorno urgente por dor, mesmo antes da cirurgia planejada."
+      ],
+      "factIds": [
+        "b02_037_f06"
+      ]
+    }
+  ],
+  "markdown": "# Criptorquidia\n\n## Conceito e mecanismo\n\nTestículo fora do escroto precisa ser distinguido de retrátil ou ascendente; persistência aumenta riscos futuros.\n\n## Raciocínio e escolha terapêutica\n\nPrimeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta.\n\n## Diagnóstico e diferenciais\n\nExaminar posição e palpabilidade em ambiente adequado; bilateralidade e genitália atípica requerem investigação prioritária. Não atrasar encaminhamento aguardando exames indiscriminados.\n\n## Abordagem inicial e urgências\n\nDor aguda em testículo inguinal/abdome, vômitos ou massa dolorosa exige excluir torção/herniamento. Recém-nascido com ambos não palpáveis e genitália atípica demanda avaliação endócrina/urológica urgente.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira escolha para persistência: encaminhamento e orquidopexia na idade apropriada, geralmente em torno de 1 ano conforme avaliação. Observação inicial é para possível descida espontânea no início da vida, não substitui cirurgia tardia. Tratamento hormonal não é alternativa rotineira à correção indicada.\n\n## Segurança e monitorização\n\nNão apresentar dois fármacos como opções curativas. Testículo retrátil precisa de seguimento para ascensão; genitália atípica exige abordagem especializada.\n\n## Reavaliação, internação e alta\n\nDocumentar posição e encaminhamento; acompanhar resultado cirúrgico e riscos residuais. Ensinar retorno urgente por dor, mesmo antes da cirurgia planejada.\n\n## Referências\n\n1. [Criptorquidia](https://www.nhs.uk/conditions/undescended-testicles/)",
+  "approvedReviewCanonicalFileSha256": "c8db380029dd0f800c3db343072c4dd4c83d2d854d7c4a71400a0ea4a1961ddf",
+  "approvedReviewProjectionFileSha256": "04bca929d288218fd7c7778e0ed3cdf9bf2fe6ce4e8a07f6f2c48334976ad0a5"
+}

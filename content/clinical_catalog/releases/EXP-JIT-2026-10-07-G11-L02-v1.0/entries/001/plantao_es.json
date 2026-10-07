@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Cólico del lactante",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "8b395f45bc1227610d2e094c5402ef7cef95803589a54eab59e9fc0f27baae01",
+  "ownerCandidate": "colica_do_lactente",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_001_f01",
+    "b02_001_f02",
+    "b02_001_f03",
+    "b02_001_f04",
+    "b02_001_f05",
+    "b02_001_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Fiebre, decaimiento, vómito verde, sangre en heces, deshidratación, distensión o crecimiento insuficiente requieren evaluación. Valorar agotamiento del cuidador y riesgo de violencia; nunca sacudir al bebé."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar crecimiento, tomas, vómitos, heces, diuresis, temperatura, examen completo y bienestar de los cuidadores. Diferenciales: hambre, infección, lesión, hernia, alergia alimentaria y otras causas orgánicas."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primera elección: apoyo a cuidadores y revisión de la técnica de alimentación, manteniendo lactancia. Complementar con sostén, balanceo suave y consuelo; para dormir, posición supina en superficie segura."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No hay dos fármacos rutinarios recomendados para el cólico inespecífico. Evitar anticolinérgicos, supresores de ácido y cambios de fórmula sin indicación. La evidencia de probióticos depende de cepa/población; no son una alternativa universal."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alta si examen, hidratación y crecimiento son tranquilizadores y hay apoyo/acceso a consulta. Reevaluar persistencia, cambio de patrón o alarmas; la alergia confirmada requiere su propio tratamiento."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Llanto recurrente difícil de consolar en un lactante sano, sin causa identificable tras evaluación; suele mejorar en los primeros meses. No atribuir todo llanto a gases."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_51",
+      "title": "Cólica do lactente",
+      "url": "https://www.nhs.uk/conditions/colic/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 26 April 2022",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_51.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "colic_rch",
+      "title": "RCH — lactente choroso, avaliação clínica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Unsettled_or_crying_babies/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/colic_rch.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Fiebre, decaimiento, vómito verde, sangre en heces, deshidratación, distensión o crecimiento insuficiente requieren evaluación. Valorar agotamiento del cuidador y riesgo de violencia; nunca sacudir al bebé."
+      ],
+      "factIds": [
+        "b02_001_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar crecimiento, tomas, vómitos, heces, diuresis, temperatura, examen completo y bienestar de los cuidadores. Diferenciales: hambre, infección, lesión, hernia, alergia alimentaria y otras causas orgánicas."
+      ],
+      "factIds": [
+        "b02_001_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección: apoyo a cuidadores y revisión de la técnica de alimentación, manteniendo lactancia. Complementar con sostén, balanceo suave y consuelo; para dormir, posición supina en superficie segura."
+      ],
+      "factIds": [
+        "b02_001_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No hay dos fármacos rutinarios recomendados para el cólico inespecífico. Evitar anticolinérgicos, supresores de ácido y cambios de fórmula sin indicación. La evidencia de probióticos depende de cepa/población; no son una alternativa universal."
+      ],
+      "factIds": [
+        "b02_001_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Alta si examen, hidratación y crecimiento son tranquilizadores y hay apoyo/acceso a consulta. Reevaluar persistencia, cambio de patrón o alarmas; la alergia confirmada requiere su propio tratamiento."
+      ],
+      "factIds": [
+        "b02_001_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Llanto recurrente difícil de consolar en un lactante sano, sin causa identificable tras evaluación; suele mejorar en los primeros meses. No atribuir todo llanto a gases."
+      ],
+      "factIds": [
+        "b02_001_f01"
+      ]
+    }
+  ],
+  "markdown": "# Cólico del lactante\n\n## Abordaje inicial y urgencias\n\nFiebre, decaimiento, vómito verde, sangre en heces, deshidratación, distensión o crecimiento insuficiente requieren evaluación. Valorar agotamiento del cuidador y riesgo de violencia; nunca sacudir al bebé.\n\n## Diagnóstico y diferenciales\n\nEvaluar crecimiento, tomas, vómitos, heces, diuresis, temperatura, examen completo y bienestar de los cuidadores. Diferenciales: hambre, infección, lesión, hernia, alergia alimentaria y otras causas orgánicas.\n\n## Tratamiento: primera elección y alternativas\n\nPrimera elección: apoyo a cuidadores y revisión de la técnica de alimentación, manteniendo lactancia. Complementar con sostén, balanceo suave y consuelo; para dormir, posición supina en superficie segura.\n\n## Seguridad y monitorización\n\nNo hay dos fármacos rutinarios recomendados para el cólico inespecífico. Evitar anticolinérgicos, supresores de ácido y cambios de fórmula sin indicación. La evidencia de probióticos depende de cepa/población; no son una alternativa universal.\n\n## Reevaluación, internación y alta\n\nAlta si examen, hidratación y crecimiento son tranquilizadores y hay apoyo/acceso a consulta. Reevaluar persistencia, cambio de patrón o alarmas; la alergia confirmada requiere su propio tratamiento.\n\n## Reconocimiento rápido\n\nLlanto recurrente difícil de consolar en un lactante sano, sin causa identificable tras evaluación; suele mejorar en los primeros meses. No atribuir todo llanto a gases.\n\n## Referencias\n\n1. [Cólica do lactente](https://www.nhs.uk/conditions/colic/)\n2. [RCH — lactente choroso, avaliação clínica](https://www.rch.org.au/clinicalguide/guideline_index/Unsettled_or_crying_babies/)",
+  "approvedReviewCanonicalFileSha256": "40cf2f5c310bb18a06e8e07367fc18c6cdafe3a41666faf48406e3b57c35127b",
+  "approvedReviewProjectionFileSha256": "043a24a533cdd2cf362bdb08dcd970e3dd895708d7dfb44fd929709e673e54fa"
+}

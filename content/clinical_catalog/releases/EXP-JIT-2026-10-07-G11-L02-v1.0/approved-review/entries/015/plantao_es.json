@@ -1,0 +1,138 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Fractura distal del fémur",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "8cc44dde652851c3666b3465e9ad37f0a2810373f669d0a8700ec15120d78b15",
+  "ownerCandidate": "fratura_distal_do_femur",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_015_f01",
+    "b02_015_f02",
+    "b02_015_f03",
+    "b02_015_f04",
+    "b02_015_f05",
+    "b02_015_f06",
+    "b02_015_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Controlar dolor, inmovilizar adecuadamente y documentar examen neurovascular antes/después. Exposición, piel amenazada, isquemia, dolor desproporcionado o déficit progresivo: ortopedia urgente; fractura abierta sigue protocolo de antibiótico/tétanos y cirugía."
+      ],
+      "factIds": [
+        "b02_015_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Radiografiar fémur/rodilla y evaluar extensión articular con tomografía cuando corresponda. Investigar lesión vascular, prótesis y otras lesiones."
+      ],
+      "factIds": [
+        "b02_015_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Poco desplazamiento y estabilidad, o riesgo quirúrgico prohibitivo: manejo conservador seleccionado. La mayoría de las inestables/desplazadas requiere fijación; artroplastia/reconstrucción en perfiles específicos. Internar lesiones agudas relevantes para analgesia, estabilización y evaluación."
+      ],
+      "factIds": [
+        "b02_015_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b02_015_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Analgesia: paracetamol para dolor leve; ibuprofeno es alternativa/adyuvante si es seguro, evitando mayores frágiles, enfermedad renal, deshidratación, sangrado y embarazo de riesgo. Dolor intenso requiere analgesia titulada en ambiente monitorizado; no ocultar síndrome compartimental. No extrapolar dosis adultas a niños."
+      ],
+      "factIds": [
+        "b02_015_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Destino según estabilidad, partes blandas, lesiones asociadas, dolor y apoyo domiciliario. Alta solo con plan ortopédico, restricción de carga/movimiento definida y consulta por dolor creciente, entumecimiento, extremidad fría o compresión de férula. Rehabilitación y controles radiográficos individualizados; no fijar una duración única de yeso para todos."
+      ],
+      "factIds": [
+        "b02_015_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Fractura próxima a la rodilla que puede ser articular, osteoporótica o periprotésica; los riesgos dependen del mecanismo."
+      ],
+      "factIds": [
+        "b02_015_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_65",
+      "title": "Fratura distal do fêmur",
+      "url": "https://www.orthoinfo.org/diseases--conditions/distal-femur-thighbone-fractures-of-the-knee?webid=2FDEE455",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_65.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ng37",
+      "title": "NICE NG37 — fraturas complexas",
+      "url": "https://www.nice.org.uk/guidance/ng37/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": 2016,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Escopo de fraturas complexas, exposição, avaliação neurovascular e necessidade de equipe especializada.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

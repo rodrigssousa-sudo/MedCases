@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "doenca_de_sever",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Doença de Sever",
+    "es": "Enfermedad de Sever"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Condição com identidade e escopo próprios; nenhum ID/título/alias PT/ES equivalente identificado no baseline verificado.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b02_034_f01",
+      "section": "concept",
+      "pt": "Apofisite do calcâneo em criança em crescimento, relacionada a carga e tração do tendão de Aquiles.",
+      "es": "Apofisitis calcánea en niño en crecimiento relacionada a carga y tracción del tendón de Aquiles.",
+      "sources": [
+        "topic_84",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b02_034_f02",
+      "section": "diagnosis",
+      "pt": "Dor no calcanhar ao correr/saltar; febre, trauma importante, dor noturna ou recusa de apoio exige excluir fratura/infecção.",
+      "es": "Dolor de talón al correr/saltar; fiebre, trauma importante, dolor nocturno o rechazo de apoyo exige descartar fractura/infección.",
+      "sources": [
+        "topic_84",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b02_034_f03",
+      "section": "initial",
+      "pt": "Excluir urgências antes de atribuir dor ao crescimento; analgesia não autoriza esforço doloroso.",
+      "es": "Descartar urgencias antes de atribuir dolor al crecimiento; la analgesia no autoriza esfuerzo doloroso.",
+      "sources": [
+        "topic_84",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b02_034_f04",
+      "section": "options",
+      "pt": "Primeira escolha: reduzir atividade dolorosa, alongar panturrilha e adequar calçado. Talonete pode aliviar carga; paracetamol ou ibuprofeno curto para dor. Imobilização temporária é opção selecionada em dor intensa, sem cirurgia rotineira.",
+      "es": "Primera elección: reducir actividad dolorosa, estirar pantorrilla y adaptar calzado. Talonera puede reducir carga; paracetamol o ibuprofeno breve para dolor. Inmovilización temporal en dolor intenso seleccionado, sin cirugía rutinaria.",
+      "sources": [
+        "topic_84",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b02_034_f05",
+      "section": "safety",
+      "pt": "Usar doses pediátricas por peso e evitar NSAID em desidratação, doença renal ou sangramento. Não infiltrar corticoide na apófise/tendão empiricamente.",
+      "es": "Usar dosis pediátricas por peso y evitar antiinflamatorios ante deshidratación, enfermedad renal o sangrado. No infiltrar empíricamente corticoide en apófisis/tendón.",
+      "sources": [
+        "topic_84",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b02_034_f06",
+      "section": "followup",
+      "pt": "Rever dor, marcha e retorno progressivo ao esporte; persistência, alteração do padrão ou sinais sistêmicos exige reavaliar diagnóstico.",
+      "es": "Revisar dolor, marcha y retorno gradual al deporte; persistencia, cambio de patrón o síntomas sistémicos exige reevaluar diagnóstico.",
+      "sources": [
+        "topic_84",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b02_034_ped_doses",
+      "section": "doses",
+      "sources": [
+        "rch_pain"
+      ],
+      "pt": "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL.",
+      "es": "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta.",
+      "es": "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta.",
+      "sources": [
+        "topic_84",
+        "rch_pain"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_84",
+      "title": "Doença de Sever",
+      "url": "https://www.orthoinfo.org/es/diseases--conditions/severs-disease/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_84.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — dor aguda pediátrica",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

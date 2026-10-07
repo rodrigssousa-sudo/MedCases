@@ -1,0 +1,132 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Coccigodinia",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "51e5eacc5f20f80dbea2861a2d2571155f0e5ad91eb8277c0255a0b81ed24271",
+  "ownerCandidate": "coccigodinia",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_026_f01",
+    "b02_026_f02",
+    "b02_026_f03",
+    "b02_026_f04",
+    "b02_026_f05",
+    "b02_026_f06",
+    "b02_026_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Dolor localizado en cóccix, a menudo mecánico tras trauma o presión repetida; infección/neoplasia son diferenciales ante un cuadro atípico."
+      ],
+      "factIds": [
+        "b02_026_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examinar región, relación con sentarse/levantarse y signos pilonidales, absceso o dolor referido. Imágenes selectivas ante trauma importante, persistencia o alarmas."
+      ],
+      "factIds": [
+        "b02_026_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Fiebre, masa, déficit neurológico, alteración esfinteriana o dolor nocturno progresivo exige evaluación. Reducir presión con apoyo adecuado y evitar sentarse prolongadamente."
+      ],
+      "factIds": [
+        "b02_026_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección: adaptar postura, cojín apropiado y fisioterapia. Ibuprofeno breve si es seguro o paracetamol cuando sea apropiado. Persistencia: puede considerarse infiltración especializada; coccigectomía es infrecuente y para casos refractarios."
+      ],
+      "factIds": [
+        "b02_026_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b02_026_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No infiltrar empíricamente infección/masa. Revisar riesgos renal, digestivo y gestacional antes de antiinflamatorios; no limitar el manejo a opioides prolongados."
+      ],
+      "factIds": [
+        "b02_026_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar respuesta y función; persistencia o empeoramiento requiere revisar diagnóstico. Alta sin alarmas, con dolor controlado e indicaciones de consulta."
+      ],
+      "factIds": [
+        "b02_026_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_76",
+      "title": "Coccigodinia",
+      "url": "https://www.nhs.uk/conditions/tailbone-coccyx-pain/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 20 November 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_76.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

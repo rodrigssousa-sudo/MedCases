@@ -1,0 +1,102 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Evento breve resolvido inexplicado no lactente (BRUE)",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "e91db393aa3d8eb7686915eb648db22f55199484a1348084e0249ce980acd0f3",
+  "ownerCandidate": "evento_breve_resolvido_inexplicado_no_lactente_brue",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_030_f01",
+    "b02_030_f02",
+    "b02_030_f03",
+    "b02_030_f04",
+    "b02_030_f05",
+    "b02_030_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Avaliar ABC, relato do observador, alimentação, infecção, trauma/violência, medicamentos e exame completo. Apneia persistente, febre, hipóxia ou instabilidade exige tratar causa e internar."
+      ],
+      "factIds": [
+        "b02_030_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Menor risco exige TODOS: idade acima de 60 dias; nascimento com pelo menos 32 semanas e idade pós-menstrual de pelo menos 45 semanas; primeiro evento, duração menor de 1 minuto, sem reanimação por profissional treinado e sem achados preocupantes. Fora desses critérios, avaliação de maior risco."
+      ],
+      "factIds": [
+        "b02_030_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha no menor risco: orientação, decisão compartilhada e observação conforme contexto; evitar exames extensos rotineiros. Maior risco: investigação direcionada e consulta pediátrica, podendo internar para monitorização. Não há tratamento farmacológico empírico de BRUE."
+      ],
+      "factIds": [
+        "b02_030_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não prescrever supressor de ácido ou anticonvulsivante sem diagnóstico. Não rotular engasgo explicável, convulsão ou infecção como BRUE para reduzir investigação."
+      ],
+      "factIds": [
+        "b02_030_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Alta de menor risco com cuidador capaz, acesso à reavaliação, instruções de retorno e recursos de reanimação de lactentes. Recorrência, alteração do estado geral ou respiração exige retorno imediato."
+      ],
+      "factIds": [
+        "b02_030_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Evento breve, resolvido e inexplicado após história/exame em menor de 1 ano, com alteração de cor, respiração, tônus ou responsividade. Sintoma ainda presente ou causa identificada não é BRUE."
+      ],
+      "factIds": [
+        "b02_030_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_80",
+      "title": "Evento breve resolvido inexplicado no lactente (BRUE)",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Brief_resolved_unexplained_event_(BRUE)/",
+      "authorityStatus": "OFFICIAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated January 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_80.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "brue_aap",
+      "title": "AAP — BRUE e lactentes de menor risco 2016",
+      "url": "https://publications.aap.org/pediatrics/article/137/5/e20160590/52195/Brief-Resolved-Unexplained-Events-Formerly-Apparent",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLICATION_IDENTIFIED_WITH_PUBLIC_PROTOCOL_CROSSCHECK",
+      "publicationYear": 2016,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "AAP 2016 identificado como documento fundador de menor risco; critérios e recomendações aplicados foram lidos integralmente no protocolo público RCH atual.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

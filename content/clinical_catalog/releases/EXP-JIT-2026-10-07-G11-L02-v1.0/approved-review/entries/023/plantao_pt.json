@@ -1,0 +1,125 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Dedo em botoeira",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "3ca3f3bbf7bd85f955814de26e81a25c82ced5fe320607f10a5a39792289948b",
+  "ownerCandidate": "dedo_em_botoeira",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_023_f01",
+    "b02_023_f02",
+    "b02_023_f03",
+    "b02_023_f04",
+    "b02_023_f05",
+    "b02_023_f06",
+    "b02_023_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Imobilizar articulação proximal em extensão e encaminhar precocemente; lesão aberta demanda avaliação cirúrgica urgente."
+      ],
+      "factIds": [
+        "b02_023_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Pesquisar trauma dorsal da articulação interfalângica proximal, extensão e teste específico por examinador capacitado. Radiografia exclui avulsão/luxação; distinguir dedo em martelo."
+      ],
+      "factIds": [
+        "b02_023_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha em lesão fechada recente selecionada: tala proximal contínua e exercício distal orientado. Alternativa para lesão aberta, fratura desviada ou deformidade refratária: reparo/reconstrução. Paracetamol ou ibuprofeno para dor conforme risco."
+      ],
+      "factIds": [
+        "b02_023_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz."
+      ],
+      "factIds": [
+        "b02_023_adult_doses"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não aplicar a tala apenas na ponta como no dedo em martelo. Não forçar deformidade rígida crônica; precisa de plano especializado."
+      ],
+      "factIds": [
+        "b02_023_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Controle com terapia da mão para ajuste, pele e amplitude; aderência à proteção previne deformidade persistente."
+      ],
+      "factIds": [
+        "b02_023_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Lesão da banda central extensora pode causar flexão da articulação proximal e hiperextensão distal, aparecendo progressivamente."
+      ],
+      "factIds": [
+        "b02_023_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_73",
+      "title": "Dedo em botoeira",
+      "url": "https://www.orthoinfo.org/diseases--conditions/boutonniere-deformity",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_73.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}

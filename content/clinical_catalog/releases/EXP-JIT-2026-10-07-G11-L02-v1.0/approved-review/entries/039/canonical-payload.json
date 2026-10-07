@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "plagiocefalia_posicional",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Plagiocefalia posicional",
+    "es": "Plagiocefalia posicional"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Condição com identidade e escopo próprios; nenhum ID/título/alias PT/ES equivalente identificado no baseline verificado.",
+  "relatedExistingOwners": [],
+  "optionRelation": "POSITIONING_PHYSIOTHERAPY_NO_DRUG",
+  "facts": [
+    {
+      "id": "b02_039_f01",
+      "section": "concept",
+      "pt": "Assimetria craniana por pressão posicional, frequentemente associada a preferência postural/torcicolo; diferenciar craniossinostose.",
+      "es": "Asimetría craneal por presión posicional, frecuentemente asociada a preferencia postural/tortícolis; diferenciar craneosinostosis.",
+      "sources": [
+        "topic_89"
+      ]
+    },
+    {
+      "id": "b02_039_f02",
+      "section": "diagnosis",
+      "pt": "Examinar formato, suturas, crescimento cefálico e mobilidade cervical; assimetria atípica/progressiva ou suspeita de sutura fechada exige especialista. Não usar imagem indiscriminada.",
+      "es": "Evaluar forma, suturas, crecimiento cefálico y movilidad cervical; asimetría atípica/progresiva o sospecha de sutura cerrada exige especialista. No usar imágenes indiscriminadamente.",
+      "sources": [
+        "topic_89"
+      ]
+    },
+    {
+      "id": "b02_039_f03",
+      "section": "initial",
+      "pt": "Manter sono supino seguro. Variar posição ao carregar/alimentar e oferecer tempo de barriga para baixo somente acordado e supervisionado.",
+      "es": "Mantener sueño supino seguro. Variar posición al cargar/alimentar y ofrecer tiempo boca abajo solo despierto y supervisado.",
+      "sources": [
+        "topic_89"
+      ]
+    },
+    {
+      "id": "b02_039_f04",
+      "section": "options",
+      "pt": "Primeira escolha: reposicionamento durante vigília e orientação. Fisioterapia é alternativa/complemento se torcicolo ou preferência persistente. Capacete não é indicação rotineira; evidência e critérios variam, exigindo avaliação especializada em casos selecionados.",
+      "es": "Primera elección: reposicionamiento durante vigilia y educación. Fisioterapia complementa si hay tortícolis o preferencia persistente. Casco no es indicación rutinaria; evidencia/criterios varían y requieren especialista en casos seleccionados.",
+      "sources": [
+        "topic_89"
+      ]
+    },
+    {
+      "id": "b02_039_f05",
+      "section": "safety",
+      "pt": "Não recomendar dormir em prono, travesseiro posicionador ou peso sobre a cabeça. Não há fármaco para corrigir formato craniano.",
+      "es": "No recomendar dormir boca abajo, almohada posicionadora ni peso sobre la cabeza. Ningún fármaco corrige la forma craneal.",
+      "sources": [
+        "topic_89"
+      ]
+    },
+    {
+      "id": "b02_039_f06",
+      "section": "followup",
+      "pt": "Acompanhar crescimento, desenvolvimento e simetria; encaminhar piora, falta de evolução ou suspeita de craniossinostose.",
+      "es": "Controlar crecimiento, desarrollo y simetría; derivar empeoramiento, falta de evolución o sospecha de craneosinostosis.",
+      "sources": [
+        "topic_89"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta.",
+      "es": "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta.",
+      "sources": [
+        "topic_89"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_89",
+      "title": "Plagiocefalia posicional",
+      "url": "https://www.nhs.uk/conditions/flat-head-syndrome-plagiocephaly-brachycephaly/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 16 January 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_89.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

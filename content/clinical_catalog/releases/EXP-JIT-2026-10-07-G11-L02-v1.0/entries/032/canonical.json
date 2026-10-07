@@ -1,0 +1,151 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "sindrome_hemolitico_uremica",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Síndrome hemolítico-urêmica",
+    "es": "Síndrome hemolítico urémico"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Microangiopatia com lesão renal, distinta de reação hemolítica transfusional.",
+  "relatedExistingOwners": [
+    "hemat_ptt_microangiopatia"
+  ],
+  "optionRelation": "ETIOLOGY_SPECIFIC_NOT_INTERCHANGEABLE",
+  "facts": [
+    {
+      "id": "b02_032_f01",
+      "section": "concept",
+      "pt": "Microangiopatia trombótica com hemólise, plaquetopenia e lesão renal; separar SHU por STEC de doença mediada por complemento e outras microangiopatias.",
+      "es": "Microangiopatía trombótica con hemólisis, trombocitopenia y lesión renal; separar SHU por STEC de enfermedad mediada por complemento y otras microangiopatías.",
+      "sources": [
+        "topic_82",
+        "hus_cdc",
+        "hus_ipna"
+      ]
+    },
+    {
+      "id": "b02_032_f02",
+      "section": "diagnosis",
+      "pt": "Hemograma/plaquetas, esfregaço, marcadores de hemólise, creatinina, eletrólitos e urina; pesquisa de toxina Shiga nas fezes quando aplicável. Considerar ADAMTS13, coagulação e complemento conforme diferencial, sem atrasar cuidado urgente.",
+      "es": "Hemograma/plaquetas, frotis, marcadores de hemólisis, creatinina, electrolitos y orina; buscar toxina Shiga en heces cuando corresponda. Considerar ADAMTS13, coagulación y complemento según diferencial sin demorar cuidados urgentes.",
+      "sources": [
+        "topic_82",
+        "hus_cdc",
+        "hus_ipna"
+      ]
+    },
+    {
+      "id": "b02_032_f03",
+      "section": "initial",
+      "pt": "Internar e consultar nefrologia/hematologia. Monitorar diurese, pressão, volemia, potássio e neurologia; administrar fluidos conforme fase/volemia, evitando expansão indiscriminada após oligúria.",
+      "es": "Internar y consultar nefrología/hematología. Controlar diuresis, presión, volemia, potasio y neurología; administrar líquidos según fase/volemia, evitando expansión indiscriminada con oliguria.",
+      "sources": [
+        "topic_82",
+        "hus_cdc",
+        "hus_ipna"
+      ]
+    },
+    {
+      "id": "b02_032_f04",
+      "section": "options",
+      "pt": "STEC-SHU: primeira estratégia é suporte, controle de complicações e diálise/transfusão quando indicadas; não usar antibiótico/antimotilidade rotineiramente para STEC. SHU mediada por complemento: bloqueio de C5 com eculizumabe ou ravulizumabe por especialista; não são alternativas ao suporte de STEC em todos os casos.",
+      "es": "STEC-SHU: primera estrategia es soporte, control de complicaciones y diálisis/transfusión cuando corresponde; no usar antibióticos/antimotilidad rutinariamente en STEC. SHU mediado por complemento: bloqueo de C5 con eculizumab o ravulizumab por especialista; no sustituyen el soporte de STEC en todos los casos.",
+      "sources": [
+        "topic_82",
+        "hus_cdc",
+        "hus_ipna"
+      ]
+    },
+    {
+      "id": "b02_032_f05",
+      "section": "safety",
+      "pt": "Anti-C5 exige esquema por peso/produto, proteção meningocócica e prevenção infecciosa. Não há dose universal intercambiável entre eculizumabe/ravulizumabe. Urgência antes da imunidade vacinal requer profilaxia antibiótica conforme protocolo; IPNA 2026 é orientação pediátrica, não dose adulta universal.",
+      "es": "Anti-C5 exige esquema por peso/producto, protección meningocócica y prevención infecciosa. No hay dosis universal intercambiable entre eculizumab/ravulizumab. Inicio urgente antes de inmunidad vacunal requiere profilaxis antibiótica según protocolo; IPNA 2026 es orientación pediátrica, no dosis adulta universal.",
+      "sources": [
+        "topic_82",
+        "hus_cdc",
+        "hus_ipna"
+      ]
+    },
+    {
+      "id": "b02_032_f06",
+      "section": "followup",
+      "pt": "Alta somente após estabilização com seguimento renal/hematológico. Monitorar hipertensão, proteinúria, função renal e recidiva; familiares devem reconhecer oligúria, edema, sangramento e alteração neurológica.",
+      "es": "Alta solo tras estabilización con seguimiento renal/hematológico. Vigilar hipertensión, proteinuria, función renal y recaída; enseñar alarmas de oliguria, edema, sangrado y alteración neurológica.",
+      "sources": [
+        "topic_82",
+        "hus_cdc",
+        "hus_ipna"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A mesma tríade laboratorial pode resultar de toxina Shiga, complemento ou outra microangiopatia. A terapêutica causal depende dessa distinção; a necessidade de suporte renal permanece comum.",
+      "es": "La misma tríada puede deberse a toxina Shiga, complemento u otra microangiopatía. El tratamiento causal depende de distinguirlas; soporte renal sigue siendo común.",
+      "sources": [
+        "topic_82",
+        "hus_cdc",
+        "hus_ipna"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_82",
+      "title": "Síndrome hemolítico-urêmica",
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/children/hemolytic-uremic-syndrome",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed June 2015",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_82.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "hus_cdc",
+      "title": "CDC — tratamento de E. coli e prevenção de SHU",
+      "url": "https://cdc.gov/ecoli/treatment/index.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC 2024: não usar antibióticos ou antidiarreicos na infecção por STEC; conteúdo oficial verificado pela ferramenta web.",
+      "sourceEvidenceRecord": "web-verification-record.json",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "hus_ipna",
+      "title": "IPNA — aHUS e TMA secundária pediátrica, 2026",
+      "url": "https://link.springer.com/article/10.1007/s00467-026-07537-7",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published: 23 September 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/hus_ipna.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "lesao_do_ligamento_colateral_ulnar_do_polegar",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Lesão do ligamento colateral ulnar do polegar",
+    "es": "Lesión del ligamento colateral cubital del pulgar"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Localização anatômica e manejo próprios; não equivale às fraturas previamente cadastradas.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b02_021_f01",
+      "section": "concept",
+      "pt": "Lesão por abdução do polegar pode causar instabilidade da pinça; ruptura completa com lesão de Stener não cicatriza como entorse leve.",
+      "es": "La abducción traumática del pulgar puede causar inestabilidad de pinza; una rotura completa con lesión de Stener no cicatriza como esguince leve.",
+      "sources": [
+        "topic_71"
+      ]
+    },
+    {
+      "id": "b02_021_f02",
+      "section": "diagnosis",
+      "pt": "Examinar articulação metacarpofalângica e pinça; radiografia identifica avulsão. Teste de estabilidade por profissional, evitando manipulação excessiva; ultrassom/ressonância se dúvida relevante.",
+      "es": "Examinar articulación metacarpofalángica y pinza; radiografía identifica avulsión. Estabilidad evaluada por profesional sin manipulación excesiva; ecografía/resonancia si hay duda relevante.",
+      "sources": [
+        "topic_71"
+      ]
+    },
+    {
+      "id": "b02_021_f03",
+      "section": "initial",
+      "pt": "Imobilizar em tala que proteja o polegar e encaminhar. Ferida, déficit neurovascular ou fratura instável exige urgência.",
+      "es": "Inmovilizar con férula que proteja el pulgar y derivar. Herida, déficit neurovascular o fractura inestable exige urgencia.",
+      "sources": [
+        "topic_71"
+      ]
+    },
+    {
+      "id": "b02_021_f04",
+      "section": "options",
+      "pt": "Parcial estável: tala e reabilitação orientada. Completa/instável ou Stener: avaliação para reparo cirúrgico. Paracetamol é opção para dor leve; ibuprofeno pode ser alternativa curta se seguro.",
+      "es": "Parcial estable: férula y rehabilitación dirigida. Completa/inestable o Stener: evaluar reparación quirúrgica. Paracetamol para dolor leve; ibuprofeno puede ser alternativa breve si es seguro.",
+      "sources": [
+        "topic_71"
+      ]
+    },
+    {
+      "id": "b02_021_f05",
+      "section": "safety",
+      "pt": "Analgesia não substitui estabilidade. Evitar testes repetidos pelo paciente e retorno precoce a atividades de pinça; duração da tala depende da lesão.",
+      "es": "La analgesia no sustituye estabilidad. Evitar pruebas repetidas por el paciente y retorno precoz a actividades de pinza; duración de férula según lesión.",
+      "sources": [
+        "topic_71"
+      ]
+    },
+    {
+      "id": "b02_021_f06",
+      "section": "followup",
+      "pt": "Seguimento com cirurgia da mão/ortopedia para prevenir instabilidade crônica e perda de força. Reavaliar pele e ajuste da tala.",
+      "es": "Seguimiento con cirugía de mano/ortopedia para prevenir inestabilidad crónica y pérdida de fuerza. Revisar piel y ajuste de férula.",
+      "sources": [
+        "topic_71"
+      ]
+    },
+    {
+      "id": "b02_021_adult_doses",
+      "section": "doses",
+      "sources": [
+        "para",
+        "ibu"
+      ],
+      "pt": "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+      "es": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta.",
+      "es": "Primero definir función afectada, gravedad y necesidad de intervenir; las medidas de confort no sustituyen corrección estructural. Seleccionar cada alternativa por su indicación y reevaluar respuesta.",
+      "sources": [
+        "topic_71"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_71",
+      "title": "Lesão do ligamento colateral ulnar do polegar",
+      "url": "https://www.orthoinfo.org/diseases--conditions/sprained-thumb",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_71.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "para",
+      "title": "NHS — paracetamol adulto",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/para.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "ibu",
+      "title": "NHS — ibuprofeno adulto",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/ibu.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

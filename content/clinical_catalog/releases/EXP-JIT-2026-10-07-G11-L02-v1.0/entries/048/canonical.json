@@ -1,0 +1,126 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "tromboflebite_superficial",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Tromboflebite superficial",
+    "es": "Tromboflebitis superficial"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L01",
+  "identityDecision": "Trombose superficial, distinta de TVP e dermatite de estase.",
+  "relatedExistingOwners": [],
+  "optionRelation": "ANATOMIC_THRESHOLD_DEPENDENT",
+  "facts": [
+    {
+      "id": "b02_048_f01",
+      "section": "concept",
+      "pt": "Trombose superficial com inflamação causa cordão doloroso; pode coexistir com TVP/TEP. Veia femoral superficial é, apesar do nome, parte do sistema profundo.",
+      "es": "La trombosis superficial inflamada causa cordón doloroso; puede coexistir con TVP/TEP. La vena femoral superficial, pese al nombre, pertenece al sistema profundo.",
+      "sources": [
+        "topic_98",
+        "svt_canada"
+      ]
+    },
+    {
+      "id": "b02_048_f02",
+      "section": "diagnosis",
+      "pt": "Ultrassom compressivo na maioria dos casos para medir extensão, distância da junção profunda e excluir TVP. Pesquisar sintomas de TEP, câncer, gestação e história trombótica.",
+      "es": "Ecografía compresiva en la mayoría para medir extensión/distancia de unión profunda y excluir TVP. Buscar síntomas de TEP, cáncer, embarazo y antecedentes trombóticos.",
+      "sources": [
+        "topic_98",
+        "svt_canada"
+      ]
+    },
+    {
+      "id": "b02_048_f03",
+      "section": "initial",
+      "pt": "TVP associada ou trombo a até 3 cm da junção safenofemoral/safenopoplítea: anticoagulação terapêutica pelo regime de TVP, geralmente 3 meses, não dose profilática abaixo. TEP suspeito exige investigação urgente.",
+      "es": "TVP asociada o trombo hasta 3 cm de unión safenofemoral/safenopoplítea: anticoagulación terapéutica según TVP, generalmente 3 meses, no dosis profiláctica inferior. Sospecha de TEP exige evaluación urgente.",
+      "sources": [
+        "svt_canada"
+      ]
+    },
+    {
+      "id": "b02_048_f04",
+      "section": "options",
+      "pt": "Isolada com pelo menos 5 cm e mais de 3 cm da junção: fondaparinux 2,5 mg subcutâneo uma vez ao dia por 45 dias. Alternativa selecionada: rivaroxabana 10 mg oral uma vez ao dia por 45 dias, verificando indicação regulatória local; heparina de baixo peso é outra opção. Menor extensão/baixo risco: compressas, elevação e NSAID se seguro, com vigilância.",
+      "es": "Aislada de al menos 5 cm y más de 3 cm de la unión: fondaparinux 2,5 mg subcutáneo una vez al día durante 45 días. Alternativa seleccionada: rivaroxabán 10 mg oral una vez al día durante 45 días verificando autorización local; heparina de bajo peso es otra opción. Menor extensión/bajo riesgo: compresas, elevación y antiinflamatorio si es seguro con vigilancia.",
+      "sources": [
+        "svt_canada"
+      ]
+    },
+    {
+      "id": "b02_048_f05",
+      "section": "safety",
+      "pt": "Avaliar sangramento e função renal; não associar anticoagulantes. Gestação requer heparina por protocolo obstétrico, não DOAC. Não usar antibiótico sem infecção. Tromboflebite por cateter periférico geralmente não exige anticoagulação.",
+      "es": "Evaluar sangrado y función renal; no combinar anticoagulantes. Embarazo requiere heparina según protocolo obstétrico, no DOAC. No usar antibiótico sin infección. La flebitis por catéter periférico generalmente no requiere anticoagulación.",
+      "sources": [
+        "topic_98",
+        "svt_canada"
+      ]
+    },
+    {
+      "id": "b02_048_f06",
+      "section": "followup",
+      "pt": "Se não anticoagular e houver risco/necessidade de vigiar extensão, reavaliar e considerar ultrassom em 7–10 dias; imagem não define isoladamente duração de tratamento. Orientar retorno por dispneia, dor torácica ou progressão do edema.",
+      "es": "Sin anticoagular y si hay riesgo/necesidad de vigilar extensión, reevaluar y considerar ecografía en 7–10 días; imagen no determina por sí sola duración. Consultar por disnea, dolor torácico o más edema.",
+      "sources": [
+        "svt_canada"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Extensão e proximidade ao sistema profundo determinam risco. A mesma apresentação de cordão doloroso pode exigir apenas medidas locais, dose profilática ou anticoagulação terapêutica.",
+      "es": "Extensión y proximidad al sistema profundo determinan riesgo. Un cordón doloroso puede necesitar medidas locales, dosis profiláctica o anticoagulación terapéutica.",
+      "sources": [
+        "topic_98",
+        "svt_canada"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_98",
+      "title": "Tromboflebite superficial",
+      "url": "https://www.nhs.uk/conditions/phlebitis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 11 March 2026",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_98.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "svt_canada",
+      "title": "Thrombosis Canada — trombose venosa superficial",
+      "url": "https://thrombosiscanada.ca/clinical_guides/pdfs/90_30.pdf",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2023,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/svt_canada.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Esquemas especializados individualizados sem dose numérica universal não são prescrições executáveis. Disponibilidade/bula local deve ser conferida.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN"
+  }
+}

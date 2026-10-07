@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Obstrução congênita do ducto nasolacrimal",
+  "version": "EXP-JIT-2026-10-07-G11-L02-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "b8d9d0b19397f272fb7c4a68139c4ebb57d909875db7561ebfb85c200e76691f",
+  "ownerCandidate": "obstrucao_congenita_do_ducto_nasolacrimal",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b02_042_f01",
+    "b02_042_f02",
+    "b02_042_f03",
+    "b02_042_f04",
+    "b02_042_f05",
+    "b02_042_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Obstrução de drenagem causa lacrimejamento/secreção desde o início da vida; maioria melhora espontaneamente no primeiro ano."
+      ],
+      "factIds": [
+        "b02_042_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Primeiro definir função comprometida, gravidade e necessidade de intervenção; medidas de conforto não substituem correção de lesão estrutural. Selecionar cada alternativa pela indicação descrita e reavaliar resposta."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar olho e saco lacrimal; fotofobia, córnea alterada ou aumento do globo exige excluir glaucoma congênito. Dacriocistite com tumefação dolorosa/eritema é complicação distinta."
+      ],
+      "factIds": [
+        "b02_042_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Febre, celulite periocular ou massa dolorosa exige urgência. Limpar secreções suavemente e orientar massagem por técnica demonstrada."
+      ],
+      "factIds": [
+        "b02_042_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha não complicada: observação, higiene e massagem de Crigler ensinada. Antibiótico tópico somente para secreção importante/infecção selecionada, não abre ducto nem deve ser contínuo. Persistência após 12 meses ou gravidade: sondagem, eventualmente intubação/dilatação por especialista."
+      ],
+      "factIds": [
+        "b02_042_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não tratar dacriocistite aguda com apenas colírio/massagem. Não há dose universal de colírio para toda obstrução; produto depende de idade e diagnóstico infeccioso."
+      ],
+      "factIds": [
+        "b02_042_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Acompanhar evolução e visão; encaminhar persistência ou sinais atípicos. Retorno imediato por febre, dor, piora do edema ou fotofobia."
+      ],
+      "factIds": [
+        "b02_042_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_92",
+      "title": "Obstrução congênita do ducto nasolacrimal",
+      "url": "https://www.medlineplus.gov/ency/article/001016.htm",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Review Date 7/16/2024",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/topic_92.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    },
+    {
+      "key": "nl_aapos",
+      "title": "AAPOS — obstrução nasolacrimal pediátrica",
+      "url": "https://www.aapos.org/glossary/nasolacrimal-duct-obstruction",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Updated By:",
+      "scope": "Aplicar somente à população e formulação consultadas; informação pública não é prova de disponibilidade comercial em todos os países.",
+      "sourceEvidenceRecord": "evidence/nl_aapos.txt",
+      "recencyAssessment": "Ano de publicação distinto da data de consulta. Documentos antigos ainda disponíveis não são renomeados como atualização 2026; protocolos regionais não definem susceptibilidade local universal."
+    }
+  ]
+}
