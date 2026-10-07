@@ -1,0 +1,8 @@
+{
+  "activatedAt": "2026-10-07T17:12:18.604733+00:00",
+  "activeVersion": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "previousVersion": "MEDCASES-CLINICAL-S2-2026-10-07-G09",
+  "status": "ACTIVE",
+  "schemaVersion": 2,
+  "manifestSha256": "9c6255b98466bbf577846f717f102d1f7581f98006cf77155bf64a0e3f1afa93"
+}

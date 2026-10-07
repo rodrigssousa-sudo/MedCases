@@ -1,0 +1,1 @@
+{"ANALYZER_RELEVANT_SCOPE_GATE": "PASS", "command": "dart --suppress-analytics analyze canary.dart", "issues": 0, "mobileSourceChanged": false, "newMobileBuildRequired": false}
