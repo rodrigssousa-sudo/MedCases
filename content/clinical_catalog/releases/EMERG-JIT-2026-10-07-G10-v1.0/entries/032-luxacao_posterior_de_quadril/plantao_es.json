@@ -1,0 +1,105 @@
+{
+  "mode": "plantao",
+  "language": "es",
+  "owner": "luxacao_posterior_de_quadril",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "ae9c95663e1cd9fcb9fb6dd63c52f01d8f5914b14ec5ba1fe76d7ff9c1188a59",
+  "factIds": [
+    "32_02",
+    "32_03",
+    "32_04",
+    "32_01",
+    "32_05"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "32_02-heading",
+      "text": "Diagnóstico y estudios",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "32_02",
+      "text": "ABCDE, examen ciático y perfusión antes/después; radiografía confirma dirección y fractura. Tomografía después de reducción evalúa fragmento intraarticular/congruencia según traumatología."
+    },
+    {
+      "type": "heading",
+      "id": "32_03-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "32_03",
+      "text": "Reducción urgente bajo anestesia/sedación apropiada por equipo capacitado, sin fuerza excesiva. Cirugía si irreductible, no concéntrica o fragmento/fractura que lo exija. No demorar por consulta electiva."
+    },
+    {
+      "type": "heading",
+      "id": "32_04-heading",
+      "text": "Seguimiento y señales de alarma",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "32_04",
+      "text": "Internar/observar según lesiones y estabilidad. Apoyo y rehabilitación según patrón; seguir osteonecrosis, artritis y déficit ciático aun tras reducción satisfactoria."
+    },
+    {
+      "type": "heading",
+      "id": "32_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "32_01",
+      "text": "Trauma de alta energía desplaza cabeza femoral, con riesgo de lesión ciática, acetabular y osteonecrosis. Fractura-luxación cambia método de reducción."
+    },
+    {
+      "type": "heading",
+      "id": "32_05-heading",
+      "text": "Razonamiento clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "32_05",
+      "text": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "AAOS OrthoInfo — hip dislocation",
+      "url": "https://www.orthoinfo.org/diseases--conditions/hip-dislocation/",
+      "year": null,
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aaos_hip_disloc",
+      "organization_or_authors": "AAOS OrthoInfo",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AAOS OrthoInfo — hip dislocation"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "markdown": "# Luxación posterior de cadera\n\n## Diagnóstico y estudios\n\nABCDE, examen ciático y perfusión antes/después; radiografía confirma dirección y fractura. Tomografía después de reducción evalúa fragmento intraarticular/congruencia según traumatología.\n\n## Tratamiento y decisiones\n\nReducción urgente bajo anestesia/sedación apropiada por equipo capacitado, sin fuerza excesiva. Cirugía si irreductible, no concéntrica o fragmento/fractura que lo exija. No demorar por consulta electiva.\n\n## Seguimiento y señales de alarma\n\nInternar/observar según lesiones y estabilidad. Apoyo y rehabilitación según patrón; seguir osteonecrosis, artritis y déficit ciático aun tras reducción satisfactoria.\n\n## Definición y fisiopatología\n\nTrauma de alta energía desplaza cabeza femoral, con riesgo de lesión ciática, acetabular y osteonecrosis. Fractura-luxación cambia método de reducción.\n\n## Razonamiento clínico\n\nEvaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.\n\n## Referencias\n\n1. AAOS OrthoInfo — hip dislocation. https://www.orthoinfo.org/diseases--conditions/hip-dislocation/\n\n2. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n"
+}

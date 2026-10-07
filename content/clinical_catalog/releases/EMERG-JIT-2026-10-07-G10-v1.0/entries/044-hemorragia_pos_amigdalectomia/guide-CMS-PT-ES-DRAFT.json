@@ -1,0 +1,300 @@
+{
+  "schema_version": "1.1",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "status": "DRAFT_ADMIN",
+  "human_approved": false,
+  "human_approval_note": null,
+  "owner": "hemorragia_pos_amigdalectomia",
+  "canonicalPayloadSha256": "20107f79b2a5b206e682aa673998b9d30a6bef8556a1c8d8d72cd232b3788873",
+  "publicationAuthorized": false,
+  "reviewer": null,
+  "review_date": "2026-10-07",
+  "cover": null,
+  "references": [
+    {
+      "id": 1,
+      "title": "University of Iowa — Tonsillectomy bleed management",
+      "url": "https://iowaprotocols.medicine.uiowa.edu/protocols/tonsillectomy-bleed-management-includes-dosing-txa-tranexamic-acid",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Atualização de maio de 2025; hemostasia, ORL, via aérea e observação.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "tonsil",
+      "organization_or_authors": "University of Iowa",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "University of Iowa — Tonsillectomy bleed management"
+    },
+    {
+      "id": 2,
+      "title": "Perth Children’s Hospital — Post tonsillectomy haemorrhage",
+      "url": "https://www.pch.health.wa.gov.au/For-health-professionals/Emergency-Department-Guidelines/Post-tonsillectomy-haemorrhage",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Dose pediátrica de ácido tranexâmico; não torna nebulização ou dose pediátrica protocolo universal adulto.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "tonsil_peds",
+      "organization_or_authors": "Perth Children’s Hospital",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "Perth Children’s Hospital — Post tonsillectomy haemorrhage"
+    },
+    {
+      "id": 3,
+      "title": "PCH — Tranexamic acid paediatric medication monograph",
+      "url": "https://pch.health.wa.gov.au/~/media/Files/Hospitals/PCH/General-documents/Health-professionals/MedicationMonographs/Tranexamic-Acid.pdf",
+      "year": 2024,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Monografia pediátrica; indicação pós-amigdalectomia, administração em pelo menos 10 minutos, máximo 100 mg por minuto.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "txa_peds",
+      "organization_or_authors": "PCH",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "PCH — Tranexamic acid paediatric medication monograph"
+    }
+  ],
+  "pt": {
+    "title": "Hemorragia pós-amigdalectomia",
+    "subtitle": "Guia clínico — candidato para revisão",
+    "summary": "Pode ocorrer nas primeiras 24 horas ou depois, frequentemente ao desprender escara. Sangue deglutido pode ocultar volume; risco é aspiração, obstrução e choque.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "44_01-heading",
+        "text": "Definição e fisiopatologia",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "44_01",
+        "text": "Pode ocorrer nas primeiras 24 horas ou depois, frequentemente ao desprender escara. Sangue deglutido pode ocultar volume; risco é aspiração, obstrução e choque."
+      },
+      {
+        "type": "heading",
+        "id": "44_02-heading",
+        "text": "Abordagem inicial",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "44_02",
+        "text": "ORL/anestesia precoces, sentado inclinado para frente quando tolerado, sucção e jejum. Acesso IV, hemograma/coagulação e preparo de sangue; via aérea difícil exige equipe experiente. Não remover coágulo às cegas."
+      },
+      {
+        "type": "heading",
+        "id": "44_03-heading",
+        "text": "Tratamento e decisões",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "44_03",
+        "text": "Medidas temporárias e antifibrinolítico conforme protocolo podem controlar sangramento limitado. Sangramento persistente/recorrente, intenso ou instabilidade: hemostasia cirúrgica urgente. Nebulização não substitui controle definitivo e não deve atrasar cirurgia."
+      },
+      {
+        "type": "heading",
+        "id": "44_04-heading",
+        "text": "Medicamentos e doses",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "44_04",
+        "text": "Referência pediátrica Perth: ácido tranexâmico 15 mg/kg IV, máximo 1.000 mg, dose inicial. Preparação e velocidade seguem bula/protocolo de administração conferidos pela equipe; não usar bolus rápido nem extrapolar concentração ou esquema adulto. Avaliar função renal e contraindicações."
+      },
+      {
+        "type": "heading",
+        "id": "44_05-heading",
+        "text": "Internação, alta e escalonamento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "44_05",
+        "text": "Observação e destino definidos com ORL; Iowa usa mínimo de 3 horas desde último sangramento em selecionados estáveis, não garantia universal de alta. Retorno imediato por novo sangue; internação se risco, coágulo relevante ou suporte necessário."
+      },
+      {
+        "type": "heading",
+        "id": "44_06-heading",
+        "text": "Preparo e administração",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "44_06",
+        "text": "Monografia pediátrica PCH: apresentação 1 g em 10 mL, equivalente a 100 mg/mL. Administrar a dose IV em pelo menos 10 minutos, sem exceder 100 mg por minuto; pode ser diluída em volume adequado de solução compatível, como cloreto de sódio 0,9 %. Não misturar com hemocomponentes. Administração rápida pode causar hipotensão; vigiar pressão, convulsões e função renal. Não transformar dose inicial em esquema repetido sem decisão especializada."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "University of Iowa — Tonsillectomy bleed management",
+        "url": "https://iowaprotocols.medicine.uiowa.edu/protocols/tonsillectomy-bleed-management-includes-dosing-txa-tranexamic-acid",
+        "year": 2025,
+        "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+        "scope": "Atualização de maio de 2025; hemostasia, ORL, via aérea e observação.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "tonsil",
+        "organization_or_authors": "University of Iowa",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "University of Iowa — Tonsillectomy bleed management"
+      },
+      {
+        "id": 2,
+        "title": "Perth Children’s Hospital — Post tonsillectomy haemorrhage",
+        "url": "https://www.pch.health.wa.gov.au/For-health-professionals/Emergency-Department-Guidelines/Post-tonsillectomy-haemorrhage",
+        "year": null,
+        "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+        "scope": "Dose pediátrica de ácido tranexâmico; não torna nebulização ou dose pediátrica protocolo universal adulto.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "tonsil_peds",
+        "organization_or_authors": "Perth Children’s Hospital",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "Perth Children’s Hospital — Post tonsillectomy haemorrhage"
+      },
+      {
+        "id": 3,
+        "title": "PCH — Tranexamic acid paediatric medication monograph",
+        "url": "https://pch.health.wa.gov.au/~/media/Files/Hospitals/PCH/General-documents/Health-professionals/MedicationMonographs/Tranexamic-Acid.pdf",
+        "year": 2024,
+        "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+        "scope": "Monografia pediátrica; indicação pós-amigdalectomia, administração em pelo menos 10 minutos, máximo 100 mg por minuto.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "txa_peds",
+        "organization_or_authors": "PCH",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "PCH — Tranexamic acid paediatric medication monograph"
+      }
+    ]
+  },
+  "es": {
+    "title": "Hemorragia posamigdalectomía",
+    "subtitle": "Guía clínica — candidato para revisión",
+    "summary": "Puede ocurrir en primeras 24 horas o después, frecuentemente al desprender escara. Sangre deglutida puede ocultar volumen; riesgos son aspiración, obstrucción y shock.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "44_01-heading",
+        "text": "Definición y fisiopatología",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "44_01",
+        "text": "Puede ocurrir en primeras 24 horas o después, frecuentemente al desprender escara. Sangre deglutida puede ocultar volumen; riesgos son aspiración, obstrucción y shock."
+      },
+      {
+        "type": "heading",
+        "id": "44_02-heading",
+        "text": "Abordaje inicial",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "44_02",
+        "text": "ORL/anestesia temprano, sentado inclinado hacia adelante si tolera, succión y ayuno. Acceso IV, hemograma/coagulación y preparación de sangre; vía aérea difícil requiere equipo experto. No retirar coágulo a ciegas."
+      },
+      {
+        "type": "heading",
+        "id": "44_03-heading",
+        "text": "Tratamiento y decisiones",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "44_03",
+        "text": "Medidas temporales y antifibrinolítico según protocolo pueden controlar sangrado limitado. Persistente/recurrente, intenso o inestabilidad: hemostasia quirúrgica urgente. Nebulización no sustituye control definitivo ni debe demorar cirugía."
+      },
+      {
+        "type": "heading",
+        "id": "44_04-heading",
+        "text": "Medicamentos y dosis",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "44_04",
+        "text": "Referencia pediátrica Perth: ácido tranexámico 15 mg/kg IV, máximo 1.000 mg, dosis inicial. Preparación y velocidad según ficha/protocolo de administración verificados por equipo; no usar bolo rápido ni extrapolar concentración o pauta adulta. Evaluar función renal y contraindicaciones."
+      },
+      {
+        "type": "heading",
+        "id": "44_05-heading",
+        "text": "Internación, alta y escalamiento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "44_05",
+        "text": "Observación y destino con ORL; Iowa usa mínimo de 3 horas desde último sangrado en estables seleccionados, no garantía universal de alta. Retorno inmediato por nueva sangre; internación por riesgo, coágulo relevante o soporte necesario."
+      },
+      {
+        "type": "heading",
+        "id": "44_06-heading",
+        "text": "Preparación y administración",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "44_06",
+        "text": "Monografía pediátrica PCH: presentación 1 g en 10 mL, equivalente a 100 mg/mL. Administrar dosis IV en al menos 10 minutos, sin exceder 100 mg por minuto; puede diluirse en volumen apropiado de solución compatible como cloruro de sodio 0,9 %. No mezclar con hemoderivados. Administración rápida puede causar hipotensión; vigilar presión, convulsiones y función renal. No convertir dosis inicial en pauta repetida sin decisión especializada."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "University of Iowa — Tonsillectomy bleed management",
+        "url": "https://iowaprotocols.medicine.uiowa.edu/protocols/tonsillectomy-bleed-management-includes-dosing-txa-tranexamic-acid",
+        "year": 2025,
+        "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+        "scope": "Atualização de maio de 2025; hemostasia, ORL, via aérea e observação.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "tonsil",
+        "organization_or_authors": "University of Iowa",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "University of Iowa — Tonsillectomy bleed management"
+      },
+      {
+        "id": 2,
+        "title": "Perth Children’s Hospital — Post tonsillectomy haemorrhage",
+        "url": "https://www.pch.health.wa.gov.au/For-health-professionals/Emergency-Department-Guidelines/Post-tonsillectomy-haemorrhage",
+        "year": null,
+        "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+        "scope": "Dose pediátrica de ácido tranexâmico; não torna nebulização ou dose pediátrica protocolo universal adulto.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "tonsil_peds",
+        "organization_or_authors": "Perth Children’s Hospital",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "Perth Children’s Hospital — Post tonsillectomy haemorrhage"
+      },
+      {
+        "id": 3,
+        "title": "PCH — Tranexamic acid paediatric medication monograph",
+        "url": "https://pch.health.wa.gov.au/~/media/Files/Hospitals/PCH/General-documents/Health-professionals/MedicationMonographs/Tranexamic-Acid.pdf",
+        "year": 2024,
+        "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+        "scope": "Monografia pediátrica; indicação pós-amigdalectomia, administração em pelo menos 10 minutos, máximo 100 mg por minuto.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "txa_peds",
+        "organization_or_authors": "PCH",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "PCH — Tranexamic acid paediatric medication monograph"
+      }
+    ]
+  }
+}

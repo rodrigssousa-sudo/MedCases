@@ -1,0 +1,147 @@
+{
+  "mode": "study",
+  "language": "pt",
+  "owner": "pneumomediastino_espontaneo",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "91156ae0a9248d92162f87fa309a8394499c3a2211f492a421ebc830c8e6c311",
+  "factIds": [
+    "47_01",
+    "47_02",
+    "47_03",
+    "47_04",
+    "47_05",
+    "47_06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "47_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "47_01",
+      "text": "Ar mediastinal sem trauma/procedimento pode resultar de ruptura alveolar após tosse, esforço ou vômito. É diagnóstico que exige excluir causa secundária perigosa; não assumir benignidade pela idade."
+    },
+    {
+      "type": "heading",
+      "id": "47_02-heading",
+      "text": "Diagnóstico e exames",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "47_02",
+      "text": "Dor torácica/cervical, dispneia e enfisema subcutâneo; radiografia e tomografia se dúvida/complicação. Vômitos intensos, febre, toxicidade, derrame pleural ou instabilidade elevam suspeita de perfuração esofágica e exigem investigação especializada."
+    },
+    {
+      "type": "heading",
+      "id": "47_03-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "47_03",
+      "text": "Sem causa secundária/complicação e estável: analgesia, tratamento do precipitante e observação selecionada. Se perfuração, pneumotórax relevante ou deterioração: internação e intervenção específica. Não prescrever antibiótico, jejum prolongado ou oxigênio em alta concentração automaticamente ao primário de baixo risco."
+    },
+    {
+      "type": "heading",
+      "id": "47_04-heading",
+      "text": "Internação, alta e escalonamento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "47_04",
+      "text": "Evidência específica é predominantemente observacional, sem guideline dominante equivalente à do pneumotórax. Alta depende de exclusão de causa grave, estabilidade, dor controlada e retorno seguro; registrar limitação da evidência."
+    },
+    {
+      "type": "heading",
+      "id": "47_05-heading",
+      "text": "Medicamentos e doses",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "47_05",
+      "text": "Analgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa."
+    },
+    {
+      "type": "heading",
+      "id": "47_06-heading",
+      "text": "Alternativas e limites",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "47_06",
+      "text": "Alternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "Primary spontaneous pneumomediastinum: 237 cases",
+      "url": "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0289225",
+      "year": 2023,
+      "authorityStatus": "PRIMARY_OBSERVATIONAL_STUDY",
+      "scope": "Coorte retrospectiva; evidencia limitada, não guideline nem prova de segurança universal da alta.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "pnm",
+      "organization_or_authors": "Primary spontaneous pneumomediastinum: 237 cases",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "Primary spontaneous pneumomediastinum: 237 cases"
+    },
+    {
+      "id": 2,
+      "title": "WSES-AAST — Thoracic trauma guidelines",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12522690/",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Trauma torácico, contusão, parede torácica e lesões penetrantes; não diretriz de pneumomediastino espontâneo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "thorax",
+      "organization_or_authors": "WSES-AAST",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "WSES-AAST — Thoracic trauma guidelines"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 4,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "markdown": "# Pneumomediastino espontâneo\n\n## Definição e fisiopatologia\n\nAr mediastinal sem trauma/procedimento pode resultar de ruptura alveolar após tosse, esforço ou vômito. É diagnóstico que exige excluir causa secundária perigosa; não assumir benignidade pela idade.\n\n## Diagnóstico e exames\n\nDor torácica/cervical, dispneia e enfisema subcutâneo; radiografia e tomografia se dúvida/complicação. Vômitos intensos, febre, toxicidade, derrame pleural ou instabilidade elevam suspeita de perfuração esofágica e exigem investigação especializada.\n\n## Tratamento e decisões\n\nSem causa secundária/complicação e estável: analgesia, tratamento do precipitante e observação selecionada. Se perfuração, pneumotórax relevante ou deterioração: internação e intervenção específica. Não prescrever antibiótico, jejum prolongado ou oxigênio em alta concentração automaticamente ao primário de baixo risco.\n\n## Internação, alta e escalonamento\n\nEvidência específica é predominantemente observacional, sem guideline dominante equivalente à do pneumotórax. Alta depende de exclusão de causa grave, estabilidade, dor controlada e retorno seguro; registrar limitação da evidência.\n\n## Medicamentos e doses\n\nAnalgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa.\n\n## Alternativas e limites\n\nAlternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade.\n\n## Referências\n\n1. Primary spontaneous pneumomediastinum: 237 cases. 2023. https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0289225\n\n2. WSES-AAST — Thoracic trauma guidelines. 2025. https://pmc.ncbi.nlm.nih.gov/articles/PMC12522690/\n\n3. NHS — Paracetamol for adults. 2026. https://www.nhs.uk/medicines/paracetamol-for-adults/\n\n4. NHS — Ibuprofen for adults. 2025. https://www.nhs.uk/medicines/ibuprofen-for-adults/\n"
+}

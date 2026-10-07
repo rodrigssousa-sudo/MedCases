@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "pneumotorax_espontaneo_e_hipertensivo",
+  "title": {
+    "pt": "Pneumotórax espontâneo e hipertensivo",
+    "es": "Neumotórax espontáneo y a tensión"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "06_01",
+      "section": "concept",
+      "pt": "Ar pleural reduz expansão pulmonar; sob tensão compromete retorno venoso. Primário ocorre sem doença pulmonar conhecida, secundário tem maior risco pela reserva reduzida. Tensão é diagnóstico clínico no paciente instável.",
+      "es": "El aire pleural reduce expansión pulmonar; a tensión compromete retorno venoso. Primario ocurre sin enfermedad pulmonar conocida, secundario implica mayor riesgo por reserva reducida. La tensión es diagnóstico clínico en el inestable.",
+      "sources": [
+        "bts",
+        "ng39",
+        "thorax"
+      ]
+    },
+    {
+      "id": "06_02",
+      "section": "initial",
+      "pt": "Dispneia, dor pleurítica e redução unilateral de murmúrio; avaliar choque e insuficiência respiratória. Se tensão com instabilidade ou comprometimento respiratório grave, descompressão imediata por equipe habilitada e drenagem, sem esperar radiografia.",
+      "es": "Disnea, dolor pleurítico y disminución unilateral del murmullo; evaluar shock e insuficiencia respiratoria. Si tensión con inestabilidad o compromiso respiratorio grave, descompresión inmediata por equipo capacitado y drenaje, sin esperar radiografía.",
+      "sources": [
+        "bts",
+        "ng39",
+        "thorax"
+      ]
+    },
+    {
+      "id": "06_03",
+      "section": "diagnosis",
+      "pt": "No estável, radiografia ou ultrassom por operador treinado; tomografia se dúvida/complexidade. Diferenciais perigosos: TEP, síndrome coronariana, dissecção e contusão/hemotórax no trauma.",
+      "es": "En el estable, radiografía o ecografía por operador entrenado; tomografía si duda/complejidad. Diferenciales peligrosos: embolia pulmonar, síndrome coronario, disección y contusión/hemotórax en trauma.",
+      "sources": [
+        "bts",
+        "ng39",
+        "thorax"
+      ]
+    },
+    {
+      "id": "06_04",
+      "section": "treatment",
+      "pt": "Primário pouco sintomático e estável: pode haver manejo conservador com seguimento confiável. Alternativas conforme sintomas/risco/recursos: manejo ambulatorial com dispositivo, aspiração ou dreno. Secundário, hipóxia, bilateralidade ou instabilidade favorecem internação e intervenção.",
+      "es": "Primario con pocos síntomas y estable: puede tratarse de forma conservadora con seguimiento fiable. Alternativas según síntomas/riesgo/recursos: manejo ambulatorio con dispositivo, aspiración o drenaje. Secundario, hipoxia, bilateralidad o inestabilidad favorecen internación e intervención.",
+      "sources": [
+        "bts",
+        "ng39",
+        "thorax"
+      ]
+    },
+    {
+      "id": "06_05",
+      "section": "safety",
+      "pt": "Oxigênio para hipoxemia, com alvo individual na doença com retenção de dióxido de carbono. Monitorar esforço, saturação, pressão e fuga aérea. Persistência/recorrência pode exigir cirurgia/pleurodese; orientar retorno imediato, tabagismo e restrições de voo/mergulho.",
+      "es": "Oxígeno para hipoxemia, con objetivo individual en enfermedad con retención de dióxido de carbono. Monitorizar esfuerzo, saturación, presión y fuga aérea. Persistencia/recurrencia puede requerir cirugía/pleurodesis; explicar retorno inmediato, tabaquismo y restricciones de vuelo/buceo.",
+      "sources": [
+        "bts",
+        "ng39",
+        "thorax"
+      ]
+    },
+    {
+      "id": "06_06",
+      "section": "reasoning",
+      "pt": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.",
+      "es": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.",
+      "sources": [
+        "ng39"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "BTS — Guideline for pleural disease",
+      "url": "https://thorax.bmj.com/content/78/Suppl_3/s1",
+      "year": 2023,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Pneumotórax espontâneo adulto; seleção por sintomas, risco e recursos, não somente tamanho.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "bts",
+      "organization_or_authors": "BTS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "BTS — Guideline for pleural disease"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    },
+    {
+      "id": 3,
+      "title": "WSES-AAST — Thoracic trauma guidelines",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12522690/",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Trauma torácico, contusão, parede torácica e lesões penetrantes; não diretriz de pneumomediastino espontâneo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "thorax",
+      "organization_or_authors": "WSES-AAST",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "WSES-AAST — Thoracic trauma guidelines"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

@@ -1,0 +1,132 @@
+{
+  "mode": "study",
+  "language": "es",
+  "owner": "frostbite",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "1e8a9f47aa2b2abb4ebd110a5c2faf99b69015607ec2aba315809c9a5fe82ae3",
+  "factIds": [
+    "42_01",
+    "42_02",
+    "42_03",
+    "42_04",
+    "42_05",
+    "42_06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "42_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "42_01",
+      "text": "Cristales de hielo y lesión microvascular/isquemia causan daño; gravedad definitiva se estima mejor tras descongelación. Distinguir lesión por frío sin congelamiento e hipotermia sistémica."
+    },
+    {
+      "type": "heading",
+      "id": "42_02-heading",
+      "text": "Abordaje inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "42_02",
+      "text": "Tratar hipotermia/trauma, retirar adornos y proteger sin fricción. Recalentar en agua controlada a 37–39 °C hasta tejido blando, generalmente cerca de 30 minutos, solo si no existe riesgo de recongelación. Evitar calor directo y caminar sobre pie lesionado si es posible."
+    },
+    {
+      "type": "heading",
+      "id": "42_03-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "42_03",
+      "text": "Lesión superficial: protección, apósito y analgesia con seguimiento. Profunda/isquémica: centro especializado para evaluar temprano iloprost o trombólisis seleccionada; dependen de ventana, contraindicaciones y recursos, no prescripción empírica indiscriminada."
+    },
+    {
+      "type": "heading",
+      "id": "42_04-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "42_04",
+      "text": "Iloprost para congelamiento grave adulto según ficha Aurlumyn: iniciar 0,5 nanogramo/kg por minuto IV; aumentar 0,5 nanogramo/kg por minuto cada 30 minutos según tolerancia, máximo 2 nanogramos/kg por minuto; infusión 6 horas por día, hasta 8 días consecutivos. Bomba y preparación farmacéutica obligatorias; no confundir nanogramo con microgramo."
+    },
+    {
+      "type": "heading",
+      "id": "42_05-heading",
+      "text": "Seguridad y poblaciones especiales",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "42_05",
+      "text": "Corregir hipotensión antes de iloprost y vigilar signos vitales. Child-Pugh B/C: inicio de 0,25 nanogramo/kg por minuto. Función renal menor de 30 mL/min exige atención a tolerancia. Ficha indica no amamantar durante uso; embarazo/pediatría sin extrapolación. No amputar temprano solo por apariencia salvo indicación urgente como infección amenazante."
+    },
+    {
+      "type": "heading",
+      "id": "42_06-heading",
+      "text": "Preparación y administración",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "42_06",
+      "text": "Preparación Aurlumyn: retirar 1 mL de presentación de 100 microgramos/mL y añadir a bolsa de 100 mL de cloruro de sodio 0,9 %, según ficha. Concentración indicada: 1 microgramo/mL, equivalente a 1.000 nanogramos/mL. Calcular bomba por dosis en nanogramos/kg por minuto y peso; no administrar solución concentrada ni mezclar con otros fármacos."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "WMS — Prevention and treatment of frostbite: 2024 update",
+      "url": "https://journals.sagepub.com/doi/pdf/10.1177/10806032231222359",
+      "year": 2024,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "PDF integral disponível; banho a 37–39 °C, proteção e terapia especializada.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "frost",
+      "organization_or_authors": "WMS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "WMS — Prevention and treatment of frostbite: 2024 update"
+    },
+    {
+      "id": 2,
+      "title": "DailyMed — Aurlumyn/iloprost prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=34036fc0-6832-d066-e063-6394a90a18a4",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Rotulagem atual consultada; congelamento grave adulto, hipotensão, hepatopatia, doença renal e lactação.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "iloprost",
+      "organization_or_authors": "DailyMed",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "DailyMed — Aurlumyn/iloprost prescribing information"
+    },
+    {
+      "id": 3,
+      "title": "CDC — Clinical guidance for wound management to prevent tetanus",
+      "url": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Revisada em 08/09/2026; ferida, vacinação e imunoglobulina.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "tetanus",
+      "organization_or_authors": "CDC",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "CDC — Clinical guidance for wound management to prevent tetanus"
+    }
+  ],
+  "markdown": "# Lesión por congelamiento — frostbite\n\n## Definición y fisiopatología\n\nCristales de hielo y lesión microvascular/isquemia causan daño; gravedad definitiva se estima mejor tras descongelación. Distinguir lesión por frío sin congelamiento e hipotermia sistémica.\n\n## Abordaje inicial\n\nTratar hipotermia/trauma, retirar adornos y proteger sin fricción. Recalentar en agua controlada a 37–39 °C hasta tejido blando, generalmente cerca de 30 minutos, solo si no existe riesgo de recongelación. Evitar calor directo y caminar sobre pie lesionado si es posible.\n\n## Tratamiento y decisiones\n\nLesión superficial: protección, apósito y analgesia con seguimiento. Profunda/isquémica: centro especializado para evaluar temprano iloprost o trombólisis seleccionada; dependen de ventana, contraindicaciones y recursos, no prescripción empírica indiscriminada.\n\n## Medicamentos y dosis\n\nIloprost para congelamiento grave adulto según ficha Aurlumyn: iniciar 0,5 nanogramo/kg por minuto IV; aumentar 0,5 nanogramo/kg por minuto cada 30 minutos según tolerancia, máximo 2 nanogramos/kg por minuto; infusión 6 horas por día, hasta 8 días consecutivos. Bomba y preparación farmacéutica obligatorias; no confundir nanogramo con microgramo.\n\n## Seguridad y poblaciones especiales\n\nCorregir hipotensión antes de iloprost y vigilar signos vitales. Child-Pugh B/C: inicio de 0,25 nanogramo/kg por minuto. Función renal menor de 30 mL/min exige atención a tolerancia. Ficha indica no amamantar durante uso; embarazo/pediatría sin extrapolación. No amputar temprano solo por apariencia salvo indicación urgente como infección amenazante.\n\n## Preparación y administración\n\nPreparación Aurlumyn: retirar 1 mL de presentación de 100 microgramos/mL y añadir a bolsa de 100 mL de cloruro de sodio 0,9 %, según ficha. Concentración indicada: 1 microgramo/mL, equivalente a 1.000 nanogramos/mL. Calcular bomba por dosis en nanogramos/kg por minuto y peso; no administrar solución concentrada ni mezclar con otros fármacos.\n\n## Referencias\n\n1. WMS — Prevention and treatment of frostbite: 2024 update. 2024. https://journals.sagepub.com/doi/pdf/10.1177/10806032231222359\n\n2. DailyMed — Aurlumyn/iloprost prescribing information. 2026. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=34036fc0-6832-d066-e063-6394a90a18a4\n\n3. CDC — Clinical guidance for wound management to prevent tetanus. 2026. https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html\n"
+}

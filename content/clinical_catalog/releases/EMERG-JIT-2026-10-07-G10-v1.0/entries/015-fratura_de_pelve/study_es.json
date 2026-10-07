@@ -1,0 +1,105 @@
+{
+  "mode": "study",
+  "language": "es",
+  "owner": "fratura_de_pelve",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "28a48f28379552fb57a681850e3e8695675fb4b218b32badb630b7850fbca465",
+  "factIds": [
+    "15_01",
+    "15_02",
+    "15_03",
+    "15_04",
+    "15_05"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "15_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "15_01",
+      "text": "Lesión del anillo pélvico puede causar hemorragia retroperitoneal masiva; fractura de baja energía por fragilidad tiene otro perfil. La inestabilidad circulatoria pesa más que clasificación radiográfica aislada."
+    },
+    {
+      "type": "heading",
+      "id": "15_02-heading",
+      "text": "Abordaje inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "15_02",
+      "text": "ABCDE, acceso vascular, protocolo hemorrágico si corresponde y cinturón pélvico sobre trocánteres mayores ante sospecha de sangrado por trauma de alta energía. No repetir compresión manual de pelvis."
+    },
+    {
+      "type": "heading",
+      "id": "15_03-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "15_03",
+      "text": "Estable: tomografía y plan traumatológico, analgesia/movilización según estabilidad. Inestable: control de daños con packing preperitoneal/fijación y/o embolización según fuente y recurso; mantener reanimación simultánea."
+    },
+    {
+      "type": "heading",
+      "id": "15_04-heading",
+      "text": "Seguridad y poblaciones especiales",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "15_04",
+      "text": "Buscar lesión uretral/vesical, perineal y neurovascular; sangre en meato exige evaluar uretra antes de instrumentar. Internar lesión inestable o hemorrágica; retirar cinturón cuando sea seguro según plan especializado y vigilar piel."
+    },
+    {
+      "type": "heading",
+      "id": "15_05-heading",
+      "text": "Razonamiento clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "15_05",
+      "text": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG37 — Fractures: complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng37/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fratura exposta, pelve e tratamento ortoplástico.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng37",
+      "organization_or_authors": "NICE NG37",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG37 — Fractures: complex assessment and management"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "markdown": "# Fractura de pelvis\n\n## Definición y fisiopatología\n\nLesión del anillo pélvico puede causar hemorragia retroperitoneal masiva; fractura de baja energía por fragilidad tiene otro perfil. La inestabilidad circulatoria pesa más que clasificación radiográfica aislada.\n\n## Abordaje inicial\n\nABCDE, acceso vascular, protocolo hemorrágico si corresponde y cinturón pélvico sobre trocánteres mayores ante sospecha de sangrado por trauma de alta energía. No repetir compresión manual de pelvis.\n\n## Tratamiento y decisiones\n\nEstable: tomografía y plan traumatológico, analgesia/movilización según estabilidad. Inestable: control de daños con packing preperitoneal/fijación y/o embolización según fuente y recurso; mantener reanimación simultánea.\n\n## Seguridad y poblaciones especiales\n\nBuscar lesión uretral/vesical, perineal y neurovascular; sangre en meato exige evaluar uretra antes de instrumentar. Internar lesión inestable o hemorrágica; retirar cinturón cuando sea seguro según plan especializado y vigilar piel.\n\n## Razonamiento clínico\n\nEvaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.\n\n## Referencias\n\n1. NICE NG37 — Fractures: complex assessment and management. 2016. https://www.nice.org.uk/guidance/ng37/chapter/recommendations\n\n2. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n"
+}

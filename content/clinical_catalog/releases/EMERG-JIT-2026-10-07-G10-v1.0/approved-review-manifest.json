@@ -1,0 +1,1073 @@
+{
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "status": "WAITING_OWNER_APPROVAL",
+  "entries": [
+    {
+      "number": 1,
+      "owner": "entorse_de_tornozelo",
+      "title": {
+        "pt": "Entorse de tornozelo",
+        "es": "Esguince de tobillo"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "da67f35d89472d36e6d36f4c458c8a35b214aedb58dd97d6d1c66d92679e3c2f",
+      "factCount": 7,
+      "referenceCount": 5,
+      "folder": "entries/001-entorse_de_tornozelo",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 2,
+      "owner": "luxacao_anterior_de_ombro",
+      "title": {
+        "pt": "Luxação anterior do ombro",
+        "es": "Luxación anterior del hombro"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "dc8307234123e94f9bc584ebdc5d791c30e6ffd83235e79c2cf89c0e237c263b",
+      "factCount": 7,
+      "referenceCount": 4,
+      "folder": "entries/002-luxacao_anterior_de_ombro",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 3,
+      "owner": "fratura_de_femur_proximal_no_idoso",
+      "title": {
+        "pt": "Fratura proximal do fêmur no idoso",
+        "es": "Fractura proximal del fémur en personas mayores"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "08cbbfc4fef6811721344c43285107321a5f02a8e6e44371883af4e4412f7e11",
+      "factCount": 6,
+      "referenceCount": 3,
+      "folder": "entries/003-fratura_de_femur_proximal_no_idoso",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 4,
+      "owner": "fratura_distal_do_radio",
+      "title": {
+        "pt": "Fratura distal do rádio",
+        "es": "Fractura distal del radio"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "c8739d531717a3fb1bdb98eb852eb278787d18f955566e111a139185cc25661e",
+      "factCount": 7,
+      "referenceCount": 4,
+      "folder": "entries/004-fratura_distal_do_radio",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 5,
+      "owner": "traumatismo_cranioencefalico",
+      "title": {
+        "pt": "Traumatismo cranioencefálico",
+        "es": "Traumatismo craneoencefálico"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "cc48810451fdaf81b2ad02f92311e3d5e1666bc2ce423c67e249d89e83910ab6",
+      "factCount": 7,
+      "referenceCount": 3,
+      "folder": "entries/005-traumatismo_cranioencefalico",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 6,
+      "owner": "pneumotorax_espontaneo_e_hipertensivo",
+      "title": {
+        "pt": "Pneumotórax espontâneo e hipertensivo",
+        "es": "Neumotórax espontáneo y a tensión"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "eec36855eb86e4816b37726e21ecc6b20863a6a3e7e1c403d53843af023b4fad",
+      "factCount": 6,
+      "referenceCount": 3,
+      "folder": "entries/006-pneumotorax_espontaneo_e_hipertensivo",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 7,
+      "owner": "disseccao_aguda_de_aorta",
+      "title": {
+        "pt": "Dissecção aguda de aorta",
+        "es": "Disección aguda de aorta"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "c893b8c03178667777bfc6180daa7fcb5154f7990fb82a6db196e961fdd679d2",
+      "factCount": 6,
+      "referenceCount": 4,
+      "folder": "entries/007-disseccao_aguda_de_aorta",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 8,
+      "owner": "gangrena_de_fournier",
+      "title": {
+        "pt": "Gangrena de Fournier",
+        "es": "Gangrena de Fournier"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "3fab4a08279678688c5c40892081a19da4dab022ae1297f9f6825454e10a3270",
+      "factCount": 6,
+      "referenceCount": 4,
+      "folder": "entries/008-gangrena_de_fournier",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 9,
+      "owner": "lombalgia_mecanica",
+      "title": {
+        "pt": "Lombalgia aguda: investigação de sinais de alarme",
+        "es": "Lumbalgia aguda: evaluación de signos de alarma"
+      },
+      "operation": "ADDITIVE_CONTEXT_EXTENSION",
+      "canonicalPayloadSha256": "1aae7e8a45fe4137cbc025594a3825a008aa97791088504b22decec1821c51c8",
+      "factCount": 5,
+      "referenceCount": 3,
+      "folder": "entries/009-lombalgia_mecanica",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "BINDING_MERGE_REQUIRED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 10,
+      "owner": "mordeduras_de_caes_e_gatos",
+      "title": {
+        "pt": "Mordeduras de cães e gatos",
+        "es": "Mordeduras de perros y gatos"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "d8f221817bf87a8b6baafef9fc83091e504ec64647ce99954646f214d2364f3c",
+      "factCount": 7,
+      "referenceCount": 4,
+      "folder": "entries/010-mordeduras_de_caes_e_gatos",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 11,
+      "owner": "fratura_exposta",
+      "title": {
+        "pt": "Fratura exposta",
+        "es": "Fractura abierta"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "ea02e62461710096eefa261bdb5cca6d1aa638514f5a3c64c0a85e8565a09e27",
+      "factCount": 7,
+      "referenceCount": 5,
+      "folder": "entries/011-fratura_exposta",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 12,
+      "owner": "queimaduras_de_2_e_3_grau",
+      "title": {
+        "pt": "Queimaduras de espessura parcial e total",
+        "es": "Quemaduras de espesor parcial y total"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "c98e80d72b1c42f3f415741f012b1a873e1e04289f9dd1c61abd59fc879ce7cd",
+      "factCount": 6,
+      "referenceCount": 5,
+      "folder": "entries/012-queimaduras_de_2_e_3_grau",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 13,
+      "owner": "trauma_abdominal_fechado",
+      "title": {
+        "pt": "Trauma abdominal fechado",
+        "es": "Traumatismo abdominal cerrado"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "cd424818d7e21d0000973fa7bc13a41fb327be16d8ab0fc69d01dfb920bc1d07",
+      "factCount": 5,
+      "referenceCount": 2,
+      "folder": "entries/013-trauma_abdominal_fechado",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 14,
+      "owner": "torax_instavel_e_contusao_pulmonar",
+      "title": {
+        "pt": "Tórax instável e contusão pulmonar",
+        "es": "Tórax inestable y contusión pulmonar"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "bed289d50297a0b11a1f42e8402b0b860b3983cfdf27317c330702ccdebaf562",
+      "factCount": 5,
+      "referenceCount": 2,
+      "folder": "entries/014-torax_instavel_e_contusao_pulmonar",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 15,
+      "owner": "fratura_de_pelve",
+      "title": {
+        "pt": "Fratura de pelve",
+        "es": "Fractura de pelvis"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "28a48f28379552fb57a681850e3e8695675fb4b218b32badb630b7850fbca465",
+      "factCount": 5,
+      "referenceCount": 2,
+      "folder": "entries/015-fratura_de_pelve",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 16,
+      "owner": "traumatismo_raquimedular",
+      "title": {
+        "pt": "Traumatismo raquimedular",
+        "es": "Traumatismo raquimedular"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "844e916774f95bb67e40ab6dbcafa815a36861dc342f1dd79597fd89155c165e",
+      "factCount": 6,
+      "referenceCount": 2,
+      "folder": "entries/016-traumatismo_raquimedular",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 17,
+      "owner": "trauma_ocular_hifema_e_ruptura_de_globo_ocular",
+      "title": {
+        "pt": "Trauma ocular: hifema e ruptura de globo",
+        "es": "Trauma ocular: hifema y rotura de globo"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "7265a3596b6805542f1121d2c8a803011f3577c0ac8f933b3f3828fabf103507",
+      "factCount": 4,
+      "referenceCount": 2,
+      "folder": "entries/017-trauma_ocular_hifema_e_ruptura_de_globo_ocular",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 18,
+      "owner": "afogamento_e_submersao",
+      "title": {
+        "pt": "Afogamento e submersão",
+        "es": "Ahogamiento y sumersión"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "ac87751530891c5fc106c36c477a6f933fc53e8c596c3c1a687007bad0b3373b",
+      "factCount": 5,
+      "referenceCount": 3,
+      "folder": "entries/018-afogamento_e_submersao",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 19,
+      "owner": "trauma_cervical_penetrante",
+      "title": {
+        "pt": "Trauma cervical penetrante",
+        "es": "Traumatismo cervical penetrante"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "46585a7963b0c071d89264de9fe1e8af15a22cd7267a303af08462aaa954d652",
+      "factCount": 5,
+      "referenceCount": 2,
+      "folder": "entries/019-trauma_cervical_penetrante",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 20,
+      "owner": "trombose_venosa_profunda",
+      "title": {
+        "pt": "Trombose venosa profunda",
+        "es": "Trombosis venosa profunda"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "86ae0e16d92f1b3fc31e9e8daf755203e18381a98e2c1401c0977d5f75b697bd",
+      "factCount": 5,
+      "referenceCount": 3,
+      "folder": "entries/020-trombose_venosa_profunda",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 21,
+      "owner": "fratura_de_clavicula",
+      "title": {
+        "pt": "Fratura de clavícula",
+        "es": "Fractura de clavícula"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "a2919cff4b2171afb953738bfbde715393cfa216a5d4d232a0c199965166d0c0",
+      "factCount": 7,
+      "referenceCount": 4,
+      "folder": "entries/021-fratura_de_clavicula",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 22,
+      "owner": "fratura_de_escafoide",
+      "title": {
+        "pt": "Fratura de escafoide",
+        "es": "Fractura de escafoides"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "31e3fbd2162a15821494945822e57a0d17343398a32b277a7225cc71936bca43",
+      "factCount": 7,
+      "referenceCount": 4,
+      "folder": "entries/022-fratura_de_escafoide",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 23,
+      "owner": "luxacao_de_patela",
+      "title": {
+        "pt": "Luxação lateral de patela",
+        "es": "Luxación lateral de rótula"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "8ecad72fef9fd186fd1c7c5b5ec42f127ce6c728a3b02005cdd53325463aa69e",
+      "factCount": 7,
+      "referenceCount": 4,
+      "folder": "entries/023-luxacao_de_patela",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 24,
+      "owner": "ruptura_do_tendao_de_aquiles",
+      "title": {
+        "pt": "Ruptura do tendão de Aquiles",
+        "es": "Rotura del tendón de Aquiles"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "1c8abc2fe64c91dbf3a2e0ad2a860dc195f943028ab40d433ce9546d8e09a75e",
+      "factCount": 7,
+      "referenceCount": 4,
+      "folder": "entries/024-ruptura_do_tendao_de_aquiles",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 25,
+      "owner": "intoxicacao_por_anfetaminas_e_mdma",
+      "title": {
+        "pt": "Intoxicação por anfetaminas e MDMA",
+        "es": "Intoxicación por anfetaminas y MDMA"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "a53b1b5259f9d422ee1f807c771f839ccb7ac5730111d38129a93ca467dde414",
+      "factCount": 5,
+      "referenceCount": 3,
+      "folder": "entries/025-intoxicacao_por_anfetaminas_e_mdma",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 26,
+      "owner": "mordedura_humana_e_clenched_fist_injury",
+      "title": {
+        "pt": "Mordedura humana e lesão por soco nos dentes",
+        "es": "Mordedura humana y lesión por puño contra dientes"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "57185e7cb5afe1bea1124e43a8e7b31c14e006d89c6bd111339b9c5f6900002b",
+      "factCount": 7,
+      "referenceCount": 3,
+      "folder": "entries/026-mordedura_humana_e_clenched_fist_injury",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 27,
+      "owner": "choque_septico_pediatrico",
+      "title": {
+        "pt": "Choque séptico pediátrico",
+        "es": "Shock séptico pediátrico"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "80b967b6896b317753c8d4de8ab15c29ed68f5eabb30614a9e8390115b215ecb",
+      "factCount": 6,
+      "referenceCount": 3,
+      "folder": "entries/027-choque_septico_pediatrico",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 28,
+      "owner": "corpo_estranho_em_fossa_nasal_e_ouvido",
+      "title": {
+        "pt": "Corpo estranho em nariz e ouvido",
+        "es": "Cuerpo extraño en nariz y oído"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "ba92bcd2dbed7544f4bbaf928f0aba7033d0976932f9f8d1010a51998b9b62c0",
+      "factCount": 6,
+      "referenceCount": 3,
+      "folder": "entries/028-corpo_estranho_em_fossa_nasal_e_ouvido",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 29,
+      "owner": "ferimento_cortocontuso_e_laceracoes",
+      "title": {
+        "pt": "Ferimentos cortocontusos e lacerações",
+        "es": "Heridas cortocontusas y laceraciones"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "624d54cbed7bf150b7c04885c046fb9b918fa731b49476d825a59f50796def7f",
+      "factCount": 7,
+      "referenceCount": 5,
+      "folder": "entries/029-ferimento_cortocontuso_e_laceracoes",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 30,
+      "owner": "avulsao_dentaria_e_trauma_alveolo_dentario",
+      "title": {
+        "pt": "Avulsão dentária e trauma alveolodentário",
+        "es": "Avulsión dental y trauma alveolodentario"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "07154fcacde7e93b8f71a675da4c25f773be8dab1513b0e1c83a2a4154d9c2a5",
+      "factCount": 6,
+      "referenceCount": 4,
+      "folder": "entries/030-avulsao_dentaria_e_trauma_alveolo_dentario",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 31,
+      "owner": "luxacao_de_joelho",
+      "title": {
+        "pt": "Luxação tibiofemoral do joelho",
+        "es": "Luxación tibiofemoral de rodilla"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "13c2996c9e57181a89316b8dc40317779960fe994efee4f9a7b118b9daf7262b",
+      "factCount": 5,
+      "referenceCount": 3,
+      "folder": "entries/031-luxacao_de_joelho",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 32,
+      "owner": "luxacao_posterior_de_quadril",
+      "title": {
+        "pt": "Luxação posterior do quadril",
+        "es": "Luxación posterior de cadera"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "ae9c95663e1cd9fcb9fb6dd63c52f01d8f5914b14ec5ba1fe76d7ff9c1188a59",
+      "factCount": 5,
+      "referenceCount": 2,
+      "folder": "entries/032-luxacao_posterior_de_quadril",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 33,
+      "owner": "fratura_supracondilar_de_umero_na_crianca",
+      "title": {
+        "pt": "Fratura supracondiliana do úmero na criança",
+        "es": "Fractura supracondílea de húmero en niños"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "5013e806c13f7c89de32774f6858980536a8010175f26bb684719859508c4b19",
+      "factCount": 5,
+      "referenceCount": 2,
+      "folder": "entries/033-fratura_supracondilar_de_umero_na_crianca",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 34,
+      "owner": "fratura_diafisaria_de_femur",
+      "title": {
+        "pt": "Fratura diafisária do fêmur",
+        "es": "Fractura diafisaria del fémur"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "8250c1fe827e7cc1a0ed4831553ed012f7a3da4c113fde7980b1cc4a25feb747",
+      "factCount": 5,
+      "referenceCount": 3,
+      "folder": "entries/034-fratura_diafisaria_de_femur",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 35,
+      "owner": "fraturas_craniomaxilofaciais",
+      "title": {
+        "pt": "Fraturas craniomaxilofaciais",
+        "es": "Fracturas craneomaxilofaciales"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "4ee1aa836fe5ca3e972254d1b6c89fbf52be374fee9c12b525a57ab681b7c560",
+      "factCount": 5,
+      "referenceCount": 3,
+      "folder": "entries/035-fraturas_craniomaxilofaciais",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 36,
+      "owner": "trauma_esplenico_e_hepatico",
+      "title": {
+        "pt": "Trauma esplênico e hepático",
+        "es": "Traumatismo esplénico y hepático"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "1ebf50292a67b1ea940908f47a22e5273eaff195d8919a4c806ad4380aee7c92",
+      "factCount": 6,
+      "referenceCount": 3,
+      "folder": "entries/036-trauma_esplenico_e_hepatico",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 37,
+      "owner": "trauma_renal_e_trato_urinario_inferior",
+      "title": {
+        "pt": "Trauma renal, vesical e uretral",
+        "es": "Traumatismo renal, vesical y uretral"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "01b97a09793199bcd7a1746fd934e1f1867663998da4c37f2176f86543e7c863",
+      "factCount": 5,
+      "referenceCount": 2,
+      "folder": "entries/037-trauma_renal_e_trato_urinario_inferior",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 38,
+      "owner": "trauma_penetrante_no_torax",
+      "title": {
+        "pt": "Trauma penetrante do tórax",
+        "es": "Traumatismo penetrante de tórax"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "97351080963f301e297d833e090de2f07dce3246d378960a1991f044d4009f74",
+      "factCount": 5,
+      "referenceCount": 2,
+      "folder": "entries/038-trauma_penetrante_no_torax",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 39,
+      "owner": "fratura_de_costelas_isolada_ou_multipla",
+      "title": {
+        "pt": "Fraturas de costelas",
+        "es": "Fracturas costales"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "8810159cbe362389a64e4e24cf7cd4908e3d6851baccab62fa7e1bcd78ea298d",
+      "factCount": 6,
+      "referenceCount": 3,
+      "folder": "entries/039-fratura_de_costelas_isolada_ou_multipla",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 40,
+      "owner": "queimadura_eletrica",
+      "title": {
+        "pt": "Queimadura elétrica",
+        "es": "Quemadura eléctrica"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "c6c470c2c65d47cceb8d90fe2c6d13a8a215c0b7d3ec763b4b3e60e5f6d57ed4",
+      "factCount": 5,
+      "referenceCount": 4,
+      "folder": "entries/040-queimadura_eletrica",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 41,
+      "owner": "queimadura_quimica",
+      "title": {
+        "pt": "Queimadura química",
+        "es": "Quemadura química"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "8cd76687a94ad2dda6124d90f3066a46f6c356af4e59f401ac6fd652631c11ed",
+      "factCount": 5,
+      "referenceCount": 4,
+      "folder": "entries/041-queimadura_quimica",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 42,
+      "owner": "frostbite",
+      "title": {
+        "pt": "Congelamento tecidual — frostbite",
+        "es": "Lesión por congelamiento — frostbite"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "1e8a9f47aa2b2abb4ebd110a5c2faf99b69015607ec2aba315809c9a5fe82ae3",
+      "factCount": 6,
+      "referenceCount": 3,
+      "folder": "entries/042-frostbite",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 43,
+      "owner": "parafimose",
+      "title": {
+        "pt": "Parafimose",
+        "es": "Parafimosis"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "9566fbc0d13afb46b7e644d2bc2e61702f11ce62b0cf06ad3b1c8e29a6900689",
+      "factCount": 6,
+      "referenceCount": 3,
+      "folder": "entries/043-parafimose",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 44,
+      "owner": "hemorragia_pos_amigdalectomia",
+      "title": {
+        "pt": "Hemorragia pós-amigdalectomia",
+        "es": "Hemorragia posamigdalectomía"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "20107f79b2a5b206e682aa673998b9d30a6bef8556a1c8d8d72cd232b3788873",
+      "factCount": 6,
+      "referenceCount": 3,
+      "folder": "entries/044-hemorragia_pos_amigdalectomia",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 45,
+      "owner": "ruptura_de_aneurisma_de_aorta_abdominal",
+      "title": {
+        "pt": "Ruptura de aneurisma de aorta abdominal",
+        "es": "Rotura de aneurisma de aorta abdominal"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "b9790bc17785bcbf13ed3b2154bb7cd068ab75f19070c29f9acb01225d515f63",
+      "factCount": 5,
+      "referenceCount": 2,
+      "folder": "entries/045-ruptura_de_aneurisma_de_aorta_abdominal",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 46,
+      "owner": "acidente_laquetico",
+      "title": {
+        "pt": "Acidente laquético — Lachesis",
+        "es": "Envenenamiento por Lachesis"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "42610c53ec7efdc9f5437fe8391b4117bbdb65a158a022462639b86bf6724bad",
+      "factCount": 6,
+      "referenceCount": 2,
+      "folder": "entries/046-acidente_laquetico",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 47,
+      "owner": "pneumomediastino_espontaneo",
+      "title": {
+        "pt": "Pneumomediastino espontâneo",
+        "es": "Neumomediastino espontáneo"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "91156ae0a9248d92162f87fa309a8394499c3a2211f492a421ebc830c8e6c311",
+      "factCount": 6,
+      "referenceCount": 4,
+      "folder": "entries/047-pneumomediastino_espontaneo",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 48,
+      "owner": "lesao_aguda_de_ligamento_cruzado_anterior",
+      "title": {
+        "pt": "Lesão aguda do ligamento cruzado anterior",
+        "es": "Lesión aguda del ligamento cruzado anterior"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "ca91fbd97ba706e31d94a99b47d6c2fe1c670e27402b2d571347815cde627661",
+      "factCount": 7,
+      "referenceCount": 4,
+      "folder": "entries/048-lesao_aguda_de_ligamento_cruzado_anterior",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 49,
+      "owner": "ruptura_de_tendao_patelar_tendao_do_quadriceps",
+      "title": {
+        "pt": "Ruptura do tendão patelar ou do quadríceps",
+        "es": "Rotura del tendón rotuliano o del cuádriceps"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "320180088b9e5c29fa12f3f86cbd59feada208894f6ac6d434fdbe783caf6e57",
+      "factCount": 7,
+      "referenceCount": 5,
+      "folder": "entries/049-ruptura_de_tendao_patelar_tendao_do_quadriceps",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    },
+    {
+      "number": 50,
+      "owner": "fratura_de_tornozelo",
+      "title": {
+        "pt": "Fratura de tornozelo",
+        "es": "Fractura de tobillo"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "canonicalPayloadSha256": "108449a73e44ba20c54a797461388e5a4f06a80dda4230c40069023ea8dcd571",
+      "factCount": 7,
+      "referenceCount": 4,
+      "folder": "entries/050-fratura_de_tornozelo",
+      "status": "READY_FOR_OWNER_REVIEW",
+      "technicalPublicationStatus": "NOT_EXECUTED",
+      "projectionsPrepared": [
+        "study_pt",
+        "study_es",
+        "plantao_pt",
+        "plantao_es"
+      ]
+    }
+  ],
+  "total": 50,
+  "newOwnerCandidates": 49,
+  "additiveUpdates": 1,
+  "publicationExecuted": false,
+  "guidesStatus": "DRAFT_ADMIN_PREPARED_LOCALLY",
+  "activeVersionBaseline": {
+    "activeVersion": "MEDCASES-CLINICAL-S2-2026-10-07-G09",
+    "previousVersion": null,
+    "status": "ACTIVE",
+    "manifestSha256": "75b90f351756ac68d73ab1029227fd71c984eebbfd54d5ea26b6fb4e2637f693",
+    "schemaVersion": 2,
+    "activatedAt": "2026-10-07T12:50:55.599709+00:00"
+  },
+  "atomicPublicationRequirement": "FOUR_PROJECTIONS_TOGETHER_AFTER_APPROVAL_AND_TECHNICAL_GATES",
+  "clinicalApproval": "PENDING_HUMAN_REVIEW",
+  "timeUnits": "EXPLICIT_FULL_WORDS"
+}

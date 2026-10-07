@@ -1,0 +1,159 @@
+{
+  "mode": "plantao",
+  "language": "es",
+  "owner": "luxacao_de_patela",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "8ecad72fef9fd186fd1c7c5b5ec42f127ce6c728a3b02005cdd53325463aa69e",
+  "factIds": [
+    "23_02",
+    "23_03",
+    "23_05",
+    "23_06",
+    "23_04",
+    "23_01",
+    "23_07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "23_02-heading",
+      "text": "Abordaje inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "23_02",
+      "text": "Reducir sin demora con analgesia y maniobra suave por equipo capacitado; documentar examen neurovascular. Después, radiografías frontal, lateral y axial de rótula para lesión osteocondral."
+    },
+    {
+      "type": "heading",
+      "id": "23_03-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "23_03",
+      "text": "BOA 2024: no usar yeso ni aspirar hemartrosis rutinariamente; ortesis que permita flexión puede aliviar dolor y fomentar apoyo inmediato con muletas si precisa. Cirugía para fragmento relevante/lesión seleccionada, no automática tras primer episodio."
+    },
+    {
+      "type": "heading",
+      "id": "23_05-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "23_05",
+      "text": "Analgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal."
+    },
+    {
+      "type": "heading",
+      "id": "23_06-heading",
+      "text": "Alternativas y límites",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "23_06",
+      "text": "Alternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad."
+    },
+    {
+      "type": "heading",
+      "id": "23_04-heading",
+      "text": "Seguimiento y señales de alarma",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "23_04",
+      "text": "Consulta especializada hasta 2 semanas; resonancia si sospecha osteocondral/lesión asociada o recuperación inesperada. Rehabilitar cuádriceps y control del miembro; retorno por bloqueo, dolor creciente o recurrencia."
+    },
+    {
+      "type": "heading",
+      "id": "23_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "23_01",
+      "text": "Rótula sale lateralmente del surco y puede lesionar ligamento patelofemoral/osteocondral. Episodios previos cambian prevención y planificación; no es luxación tibiofemoral."
+    },
+    {
+      "type": "heading",
+      "id": "23_07-heading",
+      "text": "Razonamiento clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "23_07",
+      "text": "Interpretar mecanismo, integridad anatómica y estabilidad conjuntamente. Radiografía sin fractura visible no excluye lesión ligamentaria/tendinosa o fractura oculta. Documentar función y examen neurovascular antes y después de inmovilización/reducción; dolor progresivo o déficit nuevo cambia urgencia. Elección conservadora versus quirúrgica depende de estabilidad, lesiones asociadas y demanda funcional, no solo del nombre de lesión."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "BOASt — Assessment and management of first time lateral patellar dislocation",
+      "url": "https://www.boa.ac.uk/resource/boast-assessment-and-management-of-first-time-lateral-patellar-dislocation.html",
+      "year": 2024,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Todas as idades; dezembro de 2024. Preferida à imobilização rígida prolongada de protocolos antigos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "patella",
+      "organization_or_authors": "BOASt",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "BOASt — Assessment and management of first time lateral patellar dislocation"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG38 — Fractures: non-complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng38",
+      "organization_or_authors": "NICE NG38",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 4,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "markdown": "# Luxación lateral de rótula\n\n## Abordaje inicial\n\nReducir sin demora con analgesia y maniobra suave por equipo capacitado; documentar examen neurovascular. Después, radiografías frontal, lateral y axial de rótula para lesión osteocondral.\n\n## Tratamiento y decisiones\n\nBOA 2024: no usar yeso ni aspirar hemartrosis rutinariamente; ortesis que permita flexión puede aliviar dolor y fomentar apoyo inmediato con muletas si precisa. Cirugía para fragmento relevante/lesión seleccionada, no automática tras primer episodio.\n\n## Medicamentos y dosis\n\nAnalgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal.\n\n## Alternativas y límites\n\nAlternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad.\n\n## Seguimiento y señales de alarma\n\nConsulta especializada hasta 2 semanas; resonancia si sospecha osteocondral/lesión asociada o recuperación inesperada. Rehabilitar cuádriceps y control del miembro; retorno por bloqueo, dolor creciente o recurrencia.\n\n## Definición y fisiopatología\n\nRótula sale lateralmente del surco y puede lesionar ligamento patelofemoral/osteocondral. Episodios previos cambian prevención y planificación; no es luxación tibiofemoral.\n\n## Razonamiento clínico\n\nInterpretar mecanismo, integridad anatómica y estabilidad conjuntamente. Radiografía sin fractura visible no excluye lesión ligamentaria/tendinosa o fractura oculta. Documentar función y examen neurovascular antes y después de inmovilización/reducción; dolor progresivo o déficit nuevo cambia urgencia. Elección conservadora versus quirúrgica depende de estabilidad, lesiones asociadas y demanda funcional, no solo del nombre de lesión.\n\n## Referencias\n\n1. BOASt — Assessment and management of first time lateral patellar dislocation. 2024. https://www.boa.ac.uk/resource/boast-assessment-and-management-of-first-time-lateral-patellar-dislocation.html\n\n2. NICE NG38 — Fractures: non-complex assessment and management. 2016. https://www.nice.org.uk/guidance/ng38/chapter/recommendations\n\n3. NHS — Paracetamol for adults. 2026. https://www.nhs.uk/medicines/paracetamol-for-adults/\n\n4. NHS — Ibuprofen for adults. 2025. https://www.nhs.uk/medicines/ibuprofen-for-adults/\n"
+}

@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "fratura_de_pelve",
+  "title": {
+    "pt": "Fratura de pelve",
+    "es": "Fractura de pelvis"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "15_01",
+      "section": "concept",
+      "pt": "Lesão do anel pélvico pode produzir hemorragia retroperitoneal maciça; fratura de baixa energia por fragilidade tem outro perfil. Instabilidade circulatória pesa mais que classificação radiográfica isolada.",
+      "es": "Lesión del anillo pélvico puede causar hemorragia retroperitoneal masiva; fractura de baja energía por fragilidad tiene otro perfil. La inestabilidad circulatoria pesa más que clasificación radiográfica aislada.",
+      "sources": [
+        "ng37",
+        "ng39"
+      ]
+    },
+    {
+      "id": "15_02",
+      "section": "initial",
+      "pt": "ABCDE, acesso vascular, protocolo de hemorragia se necessário e estabilizador pélvico sobre grandes trocânteres na suspeita de sangramento por trauma de alta energia. Não repetir compressão manual da pelve.",
+      "es": "ABCDE, acceso vascular, protocolo hemorrágico si corresponde y cinturón pélvico sobre trocánteres mayores ante sospecha de sangrado por trauma de alta energía. No repetir compresión manual de pelvis.",
+      "sources": [
+        "ng37",
+        "ng39"
+      ]
+    },
+    {
+      "id": "15_03",
+      "section": "treatment",
+      "pt": "Estável: tomografia e plano ortopédico, analgesia/mobilização conforme estabilidade. Instável: controle de danos com tamponamento pré-peritoneal/fixação e/ou embolização conforme fonte e recurso; manter ressuscitação simultânea.",
+      "es": "Estable: tomografía y plan traumatológico, analgesia/movilización según estabilidad. Inestable: control de daños con packing preperitoneal/fijación y/o embolización según fuente y recurso; mantener reanimación simultánea.",
+      "sources": [
+        "ng37",
+        "ng39"
+      ]
+    },
+    {
+      "id": "15_04",
+      "section": "safety",
+      "pt": "Pesquisar lesão uretral/vesical, perineal e neurovascular; sangue no meato exige avaliar uretra antes de instrumentação. Internar lesão instável ou com hemorragia; retirar binder quando seguro conforme plano especializado e vigiar pele.",
+      "es": "Buscar lesión uretral/vesical, perineal y neurovascular; sangre en meato exige evaluar uretra antes de instrumentar. Internar lesión inestable o hemorrágica; retirar cinturón cuando sea seguro según plan especializado y vigilar piel.",
+      "sources": [
+        "ng37",
+        "ng39"
+      ]
+    },
+    {
+      "id": "15_05",
+      "section": "reasoning",
+      "pt": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.",
+      "es": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.",
+      "sources": [
+        "ng39"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG37 — Fractures: complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng37/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fratura exposta, pelve e tratamento ortoplástico.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng37",
+      "organization_or_authors": "NICE NG37",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG37 — Fractures: complex assessment and management"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "fratura_diafisaria_de_femur",
+  "title": {
+    "pt": "Fratura diafisária do fêmur",
+    "es": "Fractura diafisaria del fémur"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "34_01",
+      "section": "concept",
+      "pt": "Trauma de alta energia pode causar grande perda sanguínea e lesão associada; fratura exposta, vascular e síndrome compartimental mudam urgência. Não confundir com fratura proximal por fragilidade.",
+      "es": "Trauma de alta energía puede causar gran pérdida sanguínea y lesión asociada; fractura abierta, vascular y síndrome compartimental cambian urgencia. No confundir con fractura proximal por fragilidad.",
+      "sources": [
+        "aaos_shaft",
+        "ng37",
+        "ng39"
+      ]
+    },
+    {
+      "id": "34_02",
+      "section": "initial",
+      "pt": "ABCDE, hemorragia, exame neurovascular e estabilização. Radiografias incluem quadril e joelho; procurar fratura do colo associada. Tração/imobilização depende de ausência de contraindicação por lesão de pelve/joelho.",
+      "es": "ABCDE, hemorragia, examen neurovascular y estabilización. Radiografías incluyen cadera y rodilla; buscar fractura de cuello asociada. Tracción/inmovilización depende de ausencia de contraindicación por lesión pélvica/de rodilla.",
+      "sources": [
+        "aaos_shaft",
+        "ng37",
+        "ng39"
+      ]
+    },
+    {
+      "id": "34_03",
+      "section": "treatment",
+      "pt": "Adulto: fixação intramedular frequentemente definitiva. Politrauma instável/tecidos comprometidos: estabilização externa temporária e controle de danos. Exposta segue protocolo próprio de antibiótico e desbridamento.",
+      "es": "Adulto: fijación intramedular frecuentemente definitiva. Politrauma inestable/tejidos comprometidos: fijación externa temporal y control de daños. Abierta requiere protocolo propio de antibiótico y desbridamiento.",
+      "sources": [
+        "aaos_shaft",
+        "ng37",
+        "ng39"
+      ]
+    },
+    {
+      "id": "34_04",
+      "section": "disposition",
+      "pt": "Internar; monitorar anemia, perfusão, dor, compartimentos e complicação respiratória/embolia gordurosa. Prevenção tromboembólica e apoio/rehabilitação segundo sangramento e estabilidade; pediatria tem escolhas diferentes.",
+      "es": "Internar; vigilar anemia, perfusión, dolor, compartimentos y complicación respiratoria/embolia grasa. Prevención tromboembólica y apoyo/rehabilitación según sangrado y estabilidad; pediatría tiene opciones distintas.",
+      "sources": [
+        "aaos_shaft",
+        "ng37",
+        "ng39"
+      ]
+    },
+    {
+      "id": "34_05",
+      "section": "reasoning",
+      "pt": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.",
+      "es": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.",
+      "sources": [
+        "ng39"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "AAOS OrthoInfo — femur shaft fractures broken thighbone",
+      "url": "https://www.orthoinfo.org/diseases--conditions/femur-shaft-fractures-broken-thighbone/",
+      "year": null,
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aaos_shaft",
+      "organization_or_authors": "AAOS OrthoInfo",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AAOS OrthoInfo — femur shaft fractures broken thighbone"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG37 — Fractures: complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng37/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fratura exposta, pelve e tratamento ortoplástico.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng37",
+      "organization_or_authors": "NICE NG37",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG37 — Fractures: complex assessment and management"
+    },
+    {
+      "id": 3,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

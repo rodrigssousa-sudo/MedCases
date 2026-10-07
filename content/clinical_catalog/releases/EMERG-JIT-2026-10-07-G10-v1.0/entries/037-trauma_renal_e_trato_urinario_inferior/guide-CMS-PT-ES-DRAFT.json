@@ -1,0 +1,233 @@
+{
+  "schema_version": "1.1",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "status": "DRAFT_ADMIN",
+  "human_approved": false,
+  "human_approval_note": null,
+  "owner": "trauma_renal_e_trato_urinario_inferior",
+  "canonicalPayloadSha256": "01b97a09793199bcd7a1746fd934e1f1867663998da4c37f2176f86543e7c863",
+  "publicationAuthorized": false,
+  "reviewer": null,
+  "review_date": "2026-10-07",
+  "cover": null,
+  "references": [
+    {
+      "id": 1,
+      "title": "EAU — Urological trauma 2026",
+      "url": "https://uroweb.org/guidelines/urological-trauma/chapter/urogenital-trauma-guidelines",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Capítulo reestruturado em 2026; trauma renal, vesical e uretral.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "uro",
+      "organization_or_authors": "EAU",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "EAU — Urological trauma 2026"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "pt": {
+    "title": "Trauma renal, vesical e uretral",
+    "subtitle": "Guia clínico — candidato para revisão",
+    "summary": "Lesão renal pode envolver parênquima/vasos/sistema coletor; pelve pode lesar bexiga/uretra. Hematúria não mede gravidade e sua ausência não exclui lesão vascular.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "37_01-heading",
+        "text": "Definição e fisiopatologia",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "37_01",
+        "text": "Lesão renal pode envolver parênquima/vasos/sistema coletor; pelve pode lesar bexiga/uretra. Hematúria não mede gravidade e sua ausência não exclui lesão vascular."
+      },
+      {
+        "type": "heading",
+        "id": "37_02-heading",
+        "text": "Diagnóstico e exames",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "37_02",
+        "text": "ABCDE e urologia; tomografia contrastada com fase tardia quando suspeita renal/coletora. Suspeita vesical exige cistografia apropriada. Suspeita uretral: no homem, uretrografia retrógrada; na mulher, cistouretroscopia e vaginoscopia pela equipe. Evitar tentativas cegas repetidas de cateter."
+      },
+      {
+        "type": "heading",
+        "id": "37_03-heading",
+        "text": "Tratamento e decisões",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "37_03",
+        "text": "Renal estável: manejo não operatório, podendo incluir embolização/drenagem conforme achado. Instabilidade com sangramento persistente: intervenção urgente. Rotura vesical intraperitoneal geralmente requer reparo; extraperitoneal não complicada pode usar drenagem vesical especializada."
+      },
+      {
+        "type": "heading",
+        "id": "37_04-heading",
+        "text": "Seguimento e sinais de alarme",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "37_04",
+        "text": "Monitorar perfusão, hemoglobina, diurese e creatinina; função renal, infecção, extravasamento e estenose uretral exigem seguimento. Tipo/duração de drenagem e confirmação de cicatrização são definidos pela lesão, não um prazo único."
+      },
+      {
+        "type": "heading",
+        "id": "37_05-heading",
+        "text": "Raciocínio clínico",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "37_05",
+        "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "EAU — Urological trauma 2026",
+        "url": "https://uroweb.org/guidelines/urological-trauma/chapter/urogenital-trauma-guidelines",
+        "year": 2026,
+        "authorityStatus": "AUTHORITATIVE_FINAL",
+        "scope": "Capítulo reestruturado em 2026; trauma renal, vesical e uretral.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "uro",
+        "organization_or_authors": "EAU",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "EAU — Urological trauma 2026"
+      },
+      {
+        "id": 2,
+        "title": "NICE NG39 — Major trauma: assessment and initial management",
+        "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng39",
+        "organization_or_authors": "NICE NG39",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG39 — Major trauma: assessment and initial management"
+      }
+    ]
+  },
+  "es": {
+    "title": "Traumatismo renal, vesical y uretral",
+    "subtitle": "Guía clínica — candidato para revisión",
+    "summary": "Lesión renal puede afectar parénquima/vasos/sistema colector; pelvis puede lesionar vejiga/uretra. Hematuria no mide gravedad y ausencia no excluye lesión vascular.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "37_01-heading",
+        "text": "Definición y fisiopatología",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "37_01",
+        "text": "Lesión renal puede afectar parénquima/vasos/sistema colector; pelvis puede lesionar vejiga/uretra. Hematuria no mide gravedad y ausencia no excluye lesión vascular."
+      },
+      {
+        "type": "heading",
+        "id": "37_02-heading",
+        "text": "Diagnóstico y estudios",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "37_02",
+        "text": "ABCDE y urología; tomografía contrastada con fase tardía si sospecha renal/colectora. Sospecha vesical exige cistografía apropiada. Sospecha uretral: en hombre, uretrografía retrógrada; en mujer, cistouretroscopia y vaginoscopia por equipo. Evitar intentos ciegos repetidos de catéter."
+      },
+      {
+        "type": "heading",
+        "id": "37_03-heading",
+        "text": "Tratamiento y decisiones",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "37_03",
+        "text": "Renal estable: manejo no operatorio, pudiendo incluir embolización/drenaje según hallazgo. Inestabilidad con sangrado persistente: intervención urgente. Rotura vesical intraperitoneal generalmente requiere reparación; extraperitoneal no complicada puede usar drenaje vesical especializado."
+      },
+      {
+        "type": "heading",
+        "id": "37_04-heading",
+        "text": "Seguimiento y señales de alarma",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "37_04",
+        "text": "Vigilar perfusión, hemoglobina, diuresis y creatinina; función renal, infección, extravasación y estenosis uretral exigen seguimiento. Tipo/duración de drenaje y confirmación de cicatrización según lesión, no plazo único."
+      },
+      {
+        "type": "heading",
+        "id": "37_05-heading",
+        "text": "Razonamiento clínico",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "37_05",
+        "text": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "EAU — Urological trauma 2026",
+        "url": "https://uroweb.org/guidelines/urological-trauma/chapter/urogenital-trauma-guidelines",
+        "year": 2026,
+        "authorityStatus": "AUTHORITATIVE_FINAL",
+        "scope": "Capítulo reestruturado em 2026; trauma renal, vesical e uretral.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "uro",
+        "organization_or_authors": "EAU",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "EAU — Urological trauma 2026"
+      },
+      {
+        "id": 2,
+        "title": "NICE NG39 — Major trauma: assessment and initial management",
+        "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng39",
+        "organization_or_authors": "NICE NG39",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG39 — Major trauma: assessment and initial management"
+      }
+    ]
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "mode": "study",
+  "language": "pt",
+  "owner": "fraturas_craniomaxilofaciais",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "4ee1aa836fe5ca3e972254d1b6c89fbf52be374fee9c12b525a57ab681b7c560",
+  "factIds": [
+    "35_01",
+    "35_02",
+    "35_03",
+    "35_04",
+    "35_05"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "35_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "35_01",
+      "text": "Podem envolver mandíbula, maxila, zigoma e órbita, comprometendo oclusão, visão e via aérea. Gravidade depende também de cérebro/coluna e tecidos, não somente da classificação facial."
+    },
+    {
+      "type": "heading",
+      "id": "35_02-heading",
+      "text": "Abordagem inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "35_02",
+      "text": "ABCDE, controle de sangramento e via aérea por equipe experiente; avaliar visão, oclusão, mobilidade e déficit sensitivo. Perda visual/proptose dolorosa ou aprisionamento ocular exige especialista imediato."
+    },
+    {
+      "type": "heading",
+      "id": "35_03-heading",
+      "text": "Diagnóstico e exames",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "35_03",
+      "text": "Tomografia de face e investigação de TCE conforme indicação. Evitar instrumentação nasal se suspeita de base de crânio; não considerar radiografia simples suficiente em trauma complexo."
+    },
+    {
+      "type": "heading",
+      "id": "35_04-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "35_04",
+      "text": "Sem desvio/compromisso funcional: manejo conservador selecionado e seguimento. Instabilidade, maloclusão, comprometimento ocular ou fratura aberta: reparo especializado; antibiótico conforme comunicação/contaminação e protocolo, não para toda fratura fechada automaticamente."
+    },
+    {
+      "type": "heading",
+      "id": "35_05-heading",
+      "text": "Raciocínio clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "35_05",
+      "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "AO Surgery Reference — Midface trauma: general considerations",
+      "url": "https://surgeryreference.aofoundation.org/cmf/trauma/midface/further-reading/general-considerations",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_SPECIALIST_REFERENCE",
+      "scope": "Avaliação e prioridades de trauma facial; não extrapolar técnica operatória como instrução geral.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "face",
+      "organization_or_authors": "AO Surgery Reference",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AO Surgery Reference — Midface trauma: general considerations"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG232 — Head injury: assessment and early management",
+      "url": "https://www.nice.org.uk/guidance/ng232/chapter/recommendations",
+      "year": 2023,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Critérios adultos e pediátricos são diferentes; tabela de tomografia consultada.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "head",
+      "organization_or_authors": "NICE NG232",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG232 — Head injury: assessment and early management"
+    },
+    {
+      "id": 3,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "markdown": "# Fraturas craniomaxilofaciais\n\n## Definição e fisiopatologia\n\nPodem envolver mandíbula, maxila, zigoma e órbita, comprometendo oclusão, visão e via aérea. Gravidade depende também de cérebro/coluna e tecidos, não somente da classificação facial.\n\n## Abordagem inicial\n\nABCDE, controle de sangramento e via aérea por equipe experiente; avaliar visão, oclusão, mobilidade e déficit sensitivo. Perda visual/proptose dolorosa ou aprisionamento ocular exige especialista imediato.\n\n## Diagnóstico e exames\n\nTomografia de face e investigação de TCE conforme indicação. Evitar instrumentação nasal se suspeita de base de crânio; não considerar radiografia simples suficiente em trauma complexo.\n\n## Tratamento e decisões\n\nSem desvio/compromisso funcional: manejo conservador selecionado e seguimento. Instabilidade, maloclusão, comprometimento ocular ou fratura aberta: reparo especializado; antibiótico conforme comunicação/contaminação e protocolo, não para toda fratura fechada automaticamente.\n\n## Raciocínio clínico\n\nA avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.\n\n## Referências\n\n1. AO Surgery Reference — Midface trauma: general considerations. https://surgeryreference.aofoundation.org/cmf/trauma/midface/further-reading/general-considerations\n\n2. NICE NG232 — Head injury: assessment and early management. 2023. https://www.nice.org.uk/guidance/ng232/chapter/recommendations\n\n3. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n"
+}

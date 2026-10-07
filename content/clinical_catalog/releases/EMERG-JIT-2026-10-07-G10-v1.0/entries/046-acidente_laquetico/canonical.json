@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "acidente_laquetico",
+  "title": {
+    "pt": "Acidente laquético — Lachesis",
+    "es": "Envenenamiento por Lachesis"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "46_01",
+      "section": "concept",
+      "pt": "Veneno causa inflamação local, coagulopatia/hemorragia e manifestações vagais como vômitos, diarreia, bradicardia e hipotensão. Diferenciar acidente botrópico sem atrasar tratamento do envenenamento.",
+      "es": "Veneno causa inflamación local, coagulopatía/hemorragia y manifestaciones vagales como vómitos, diarrea, bradicardia e hipotensión. Diferenciar envenenamiento por Bothrops sin demorar tratamiento.",
+      "sources": [
+        "lachesis",
+        "sabl"
+      ]
+    },
+    {
+      "id": "46_02",
+      "section": "initial",
+      "pt": "ABCDE, repouso e acesso vascular; identificar síndrome e gravidade, medir edema e avaliar coagulação, hemograma, função renal e diurese. Não fazer torniquete, incisão, sucção ou aplicar substâncias na picada.",
+      "es": "ABCDE, reposo y acceso vascular; identificar síndrome y gravedad, medir edema y evaluar coagulación, hemograma, función renal y diuresis. No hacer torniquete, incisión, succión ni aplicar sustancias en mordedura.",
+      "sources": [
+        "lachesis",
+        "sabl"
+      ]
+    },
+    {
+      "id": "46_03",
+      "section": "medications",
+      "pt": "PCDT brasileiro 2026: soro antibotrópico e antilaquético (SABL), 10 frascos-ampolas no moderado sem manifestações vagais; 20 no grave com quadro local intenso, hemorragia intensa e/ou manifestações vagais. Via IV, quantidade indicada de uma só vez sob vigilância; não substituir automaticamente por soro sem cobertura laquética.",
+      "es": "PCDT brasileño 2026: antiveneno antibotrópico y antilaquético (SABL), 10 frascos-ampolla en moderado sin manifestaciones vagales; 20 en grave con lesión local intensa, hemorragia intensa y/o manifestaciones vagales. Vía IV, cantidad indicada de una vez bajo vigilancia; no sustituir automáticamente por antiveneno sin cobertura para Lachesis.",
+      "sources": [
+        "lachesis",
+        "sabl"
+      ]
+    },
+    {
+      "id": "46_04",
+      "section": "medications",
+      "pt": "Diluir em solução fisiológica ou glicose 5%, conforme apresentação/bula; PCDT orienta infusão de 8–12 mL por minuto, com cautela à sobrecarga. Confirmar volume total/velocidade com equipe, especialmente criança/insuficiência cardíaca. Número de frascos trata carga de veneno, não calcular redução por peso.",
+      "es": "Diluir en solución fisiológica o glucosa 5% según presentación/ficha; PCDT indica infusión de 8–12 mL por minuto, evitando sobrecarga. Confirmar volumen total/velocidad con equipo, especialmente niño/insuficiencia cardíaca. Número de frascos trata carga de veneno; no reducir por peso.",
+      "sources": [
+        "lachesis",
+        "sabl"
+      ]
+    },
+    {
+      "id": "46_05",
+      "section": "safety",
+      "pt": "Reação imediata: interromper temporariamente, tratar anafilaxia e retomar assim que controlada sob equipe. Não fazer teste de sensibilidade nem pré-medicação automática com anti-histamínico/corticoide. Alternativa quando soro indisponível é transferência urgente com suporte, não antiveneno não equivalente.",
+      "es": "Reacción inmediata: interrumpir temporalmente, tratar anafilaxia y retomar al controlarla bajo equipo. No hacer prueba de sensibilidad ni premedicación automática con antihistamínico/corticoide. Si antiveneno no disponible, traslado urgente con soporte, no antiveneno no equivalente.",
+      "sources": [
+        "lachesis",
+        "sabl"
+      ]
+    },
+    {
+      "id": "46_06",
+      "section": "disposition",
+      "pt": "Após soroterapia, observação de pelo menos 24 horas, até estabilidade e controle da coagulopatia/complicações. Monitorar coagulação, sangramento, função renal, edema e diurese; orientar retorno por manifestações tardias de doença do soro.",
+      "es": "Tras antiveneno, observar al menos 24 horas hasta estabilidad y control de coagulopatía/complicaciones. Vigilar coagulación, sangrado, función renal, edema y diuresis; explicar retorno por manifestaciones tardías de enfermedad del suero.",
+      "sources": [
+        "lachesis",
+        "sabl"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "Ministério da Saúde — PCDT dos acidentes ofídicos",
+      "url": "https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/animais-peconhentos/pcdt-dos-acidentes-ofidicos.pdf",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Documento final de 2026; quadros de dose, via/diluição/velocidade e monitorização. Não usar manual antigo em lugar deste PCDT.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "lachesis",
+      "organization_or_authors": "Ministério da Saúde",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "Ministério da Saúde — PCDT dos acidentes ofídicos"
+    },
+    {
+      "id": 2,
+      "title": "Instituto Butantan — Bula profissional do soro antibotrópico e antilaquético",
+      "url": "https://butantan.gov.br/assets/arquivos/soros-e-vacinas/2024/Bula%20Profissional%20da%20Sa%C3%BAde%20Soro%20Antibotr%C3%B3pico%20e%20Antilaqu%C3%A9tico.pdf",
+      "year": 2024,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Confirma apresentação e indicação; dose clínica e monitorização seguem PCDT 2026.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "sabl",
+      "organization_or_authors": "Instituto Butantan",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "Instituto Butantan — Bula profissional do soro antibotrópico e antilaquético"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

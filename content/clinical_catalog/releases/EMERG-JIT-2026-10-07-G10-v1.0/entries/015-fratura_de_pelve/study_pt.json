@@ -1,0 +1,105 @@
+{
+  "mode": "study",
+  "language": "pt",
+  "owner": "fratura_de_pelve",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "28a48f28379552fb57a681850e3e8695675fb4b218b32badb630b7850fbca465",
+  "factIds": [
+    "15_01",
+    "15_02",
+    "15_03",
+    "15_04",
+    "15_05"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "15_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "15_01",
+      "text": "Lesão do anel pélvico pode produzir hemorragia retroperitoneal maciça; fratura de baixa energia por fragilidade tem outro perfil. Instabilidade circulatória pesa mais que classificação radiográfica isolada."
+    },
+    {
+      "type": "heading",
+      "id": "15_02-heading",
+      "text": "Abordagem inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "15_02",
+      "text": "ABCDE, acesso vascular, protocolo de hemorragia se necessário e estabilizador pélvico sobre grandes trocânteres na suspeita de sangramento por trauma de alta energia. Não repetir compressão manual da pelve."
+    },
+    {
+      "type": "heading",
+      "id": "15_03-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "15_03",
+      "text": "Estável: tomografia e plano ortopédico, analgesia/mobilização conforme estabilidade. Instável: controle de danos com tamponamento pré-peritoneal/fixação e/ou embolização conforme fonte e recurso; manter ressuscitação simultânea."
+    },
+    {
+      "type": "heading",
+      "id": "15_04-heading",
+      "text": "Segurança e populações especiais",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "15_04",
+      "text": "Pesquisar lesão uretral/vesical, perineal e neurovascular; sangue no meato exige avaliar uretra antes de instrumentação. Internar lesão instável ou com hemorragia; retirar binder quando seguro conforme plano especializado e vigiar pele."
+    },
+    {
+      "type": "heading",
+      "id": "15_05-heading",
+      "text": "Raciocínio clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "15_05",
+      "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG37 — Fractures: complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng37/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fratura exposta, pelve e tratamento ortoplástico.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng37",
+      "organization_or_authors": "NICE NG37",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG37 — Fractures: complex assessment and management"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "markdown": "# Fratura de pelve\n\n## Definição e fisiopatologia\n\nLesão do anel pélvico pode produzir hemorragia retroperitoneal maciça; fratura de baixa energia por fragilidade tem outro perfil. Instabilidade circulatória pesa mais que classificação radiográfica isolada.\n\n## Abordagem inicial\n\nABCDE, acesso vascular, protocolo de hemorragia se necessário e estabilizador pélvico sobre grandes trocânteres na suspeita de sangramento por trauma de alta energia. Não repetir compressão manual da pelve.\n\n## Tratamento e decisões\n\nEstável: tomografia e plano ortopédico, analgesia/mobilização conforme estabilidade. Instável: controle de danos com tamponamento pré-peritoneal/fixação e/ou embolização conforme fonte e recurso; manter ressuscitação simultânea.\n\n## Segurança e populações especiais\n\nPesquisar lesão uretral/vesical, perineal e neurovascular; sangue no meato exige avaliar uretra antes de instrumentação. Internar lesão instável ou com hemorragia; retirar binder quando seguro conforme plano especializado e vigiar pele.\n\n## Raciocínio clínico\n\nA avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.\n\n## Referências\n\n1. NICE NG37 — Fractures: complex assessment and management. 2016. https://www.nice.org.uk/guidance/ng37/chapter/recommendations\n\n2. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n"
+}

@@ -1,0 +1,159 @@
+{
+  "mode": "study",
+  "language": "pt",
+  "owner": "mordeduras_de_caes_e_gatos",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "d8f221817bf87a8b6baafef9fc83091e504ec64647ce99954646f214d2364f3c",
+  "factIds": [
+    "10_01",
+    "10_02",
+    "10_03",
+    "10_04",
+    "10_05",
+    "10_06",
+    "10_07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "10_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "10_01",
+      "text": "Ferida contaminada por flora oral; punção de gato e lesão de mão podem inocular tendão/articulação. Diferenciar profilaxia de tratamento de infecção; suspeitar abscesso, tenossinovite e osteomielite."
+    },
+    {
+      "type": "heading",
+      "id": "10_02-heading",
+      "text": "Abordagem inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "10_02",
+      "text": "Irrigar/explorar com analgesia, retirar corpo estranho e avaliar estruturas profundas. Considerar imagem se osso, articulação ou corpo estranho; registrar animal, local, tempo e imunização. Avaliar raiva conforme vigilância local e tétano."
+    },
+    {
+      "type": "heading",
+      "id": "10_03-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "10_03",
+      "text": "Profilaxia para mordedura de gato com pele rompida e sangue; em cães, selecionar ferida profunda/contaminada, estruturas profundas, sítio de alto risco ou paciente vulnerável. Infecção exige antibiótico e avaliação de foco. Fechamento deve considerar sítio e risco, não suturar toda punção contaminada."
+    },
+    {
+      "type": "heading",
+      "id": "10_04-heading",
+      "text": "Internação, alta e escalonamento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "10_04",
+      "text": "Internar ou consultar cirurgia em sepse, acometimento profundo, incapacidade de tratamento oral ou falha clínica. Reavaliar em 24–48 horas se não melhora ou antes se piora; imunossupressão exige limiar baixo para escalonamento."
+    },
+    {
+      "type": "heading",
+      "id": "10_05-heading",
+      "text": "Medicamentos e doses",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "10_05",
+      "text": "Adulto com indicação de profilaxia ou infecção: amoxicilina/clavulanato 500/125 mg por via oral a cada 8 horas. Profilaxia: 3 dias; infecção: 5 dias, reavaliando extensão para 7 dias se dano tecidual importante ou acometimento profundo. Ajustar em disfunção renal e não tratar lesão tendínea/articular somente com antibiótico."
+    },
+    {
+      "type": "heading",
+      "id": "10_06-heading",
+      "text": "Alternativas e limites",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "10_06",
+      "text": "Alergia a penicilina, adulto não gestante: alternativa NICE é doxiciclina 200 mg no primeiro dia e depois 100 mg a cada 24 horas, associada a metronidazol 400 mg a cada 8 horas por via oral, pelo mesmo período indicado. Gestação, criança, doença sistêmica, ferida profunda ou incapacidade de via oral exigem seleção própria/especialista; não extrapolar esse esquema."
+    },
+    {
+      "type": "heading",
+      "id": "10_07-heading",
+      "text": "Medicamentos e doses",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "10_07",
+      "text": "Analgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG184 — Human and animal bites: antimicrobial prescribing",
+      "url": "https://www.nice.org.uk/guidance/ng184/chapter/Recommendations",
+      "year": 2020,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Critérios de profilaxia versus infecção, dose adulta, duração e alergia/gestação.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "bites",
+      "organization_or_authors": "NICE NG184",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG184 — Human and animal bites: antimicrobial prescribing"
+    },
+    {
+      "id": 2,
+      "title": "CDC — Clinical guidance for wound management to prevent tetanus",
+      "url": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Revisada em 08/09/2026; ferida, vacinação e imunoglobulina.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "tetanus",
+      "organization_or_authors": "CDC",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "CDC — Clinical guidance for wound management to prevent tetanus"
+    },
+    {
+      "id": 3,
+      "title": "CDC — Rabies post-exposure prophylaxis guidance",
+      "url": "https://www.cdc.gov/rabies/hcp/clinical-care/post-exposure-prophylaxis.html",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LIVING",
+      "scope": "Avaliação pós-exposição; aplicar também norma sanitária local e owner de raiva já existente.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "rabies",
+      "organization_or_authors": "CDC",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "CDC — Rabies post-exposure prophylaxis guidance"
+    },
+    {
+      "id": 4,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    }
+  ],
+  "markdown": "# Mordeduras de cães e gatos\n\n## Definição e fisiopatologia\n\nFerida contaminada por flora oral; punção de gato e lesão de mão podem inocular tendão/articulação. Diferenciar profilaxia de tratamento de infecção; suspeitar abscesso, tenossinovite e osteomielite.\n\n## Abordagem inicial\n\nIrrigar/explorar com analgesia, retirar corpo estranho e avaliar estruturas profundas. Considerar imagem se osso, articulação ou corpo estranho; registrar animal, local, tempo e imunização. Avaliar raiva conforme vigilância local e tétano.\n\n## Tratamento e decisões\n\nProfilaxia para mordedura de gato com pele rompida e sangue; em cães, selecionar ferida profunda/contaminada, estruturas profundas, sítio de alto risco ou paciente vulnerável. Infecção exige antibiótico e avaliação de foco. Fechamento deve considerar sítio e risco, não suturar toda punção contaminada.\n\n## Internação, alta e escalonamento\n\nInternar ou consultar cirurgia em sepse, acometimento profundo, incapacidade de tratamento oral ou falha clínica. Reavaliar em 24–48 horas se não melhora ou antes se piora; imunossupressão exige limiar baixo para escalonamento.\n\n## Medicamentos e doses\n\nAdulto com indicação de profilaxia ou infecção: amoxicilina/clavulanato 500/125 mg por via oral a cada 8 horas. Profilaxia: 3 dias; infecção: 5 dias, reavaliando extensão para 7 dias se dano tecidual importante ou acometimento profundo. Ajustar em disfunção renal e não tratar lesão tendínea/articular somente com antibiótico.\n\n## Alternativas e limites\n\nAlergia a penicilina, adulto não gestante: alternativa NICE é doxiciclina 200 mg no primeiro dia e depois 100 mg a cada 24 horas, associada a metronidazol 400 mg a cada 8 horas por via oral, pelo mesmo período indicado. Gestação, criança, doença sistêmica, ferida profunda ou incapacidade de via oral exigem seleção própria/especialista; não extrapolar esse esquema.\n\n## Medicamentos e doses\n\nAnalgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa.\n\n## Referências\n\n1. NICE NG184 — Human and animal bites: antimicrobial prescribing. 2020. https://www.nice.org.uk/guidance/ng184/chapter/Recommendations\n\n2. CDC — Clinical guidance for wound management to prevent tetanus. 2026. https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html\n\n3. CDC — Rabies post-exposure prophylaxis guidance. https://www.cdc.gov/rabies/hcp/clinical-care/post-exposure-prophylaxis.html\n\n4. NHS — Paracetamol for adults. 2026. https://www.nhs.uk/medicines/paracetamol-for-adults/\n"
+}

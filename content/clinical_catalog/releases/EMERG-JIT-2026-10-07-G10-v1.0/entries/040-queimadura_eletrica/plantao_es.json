@@ -1,0 +1,135 @@
+{
+  "mode": "plantao",
+  "language": "es",
+  "owner": "queimadura_eletrica",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "c6c470c2c65d47cceb8d90fe2c6d13a8a215c0b7d3ec763b4b3e60e5f6d57ed4",
+  "factIds": [
+    "40_02",
+    "40_03",
+    "40_04",
+    "40_01",
+    "40_05"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "40_02-heading",
+      "text": "Abordaje inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "40_02",
+      "text": "Desconectar fuente antes de contacto/rescate; ABCDE y reanimación cuando indicada. Evaluar entrada/salida, neurovascular, compartimentos y trauma asociado; ECG inicial y CK, electrolitos/función renal según riesgo."
+    },
+    {
+      "type": "heading",
+      "id": "40_03-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "40_03",
+      "text": "Lesión pequeña de bajo riesgo: cuidado local después de evaluación. Alta tensión, daño profundo o alteración sistémica: centro de quemados, reposición titulada y evaluación quirúrgica. Compartimento/isquemia exige intervención urgente; antibiótico no es automático."
+    },
+    {
+      "type": "heading",
+      "id": "40_04-heading",
+      "text": "Internación, alta y escalamiento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "40_04",
+      "text": "Monitorización cardíaca/internación por pérdida de conciencia, ECG anormal, síntomas cardíacos, alta tensión o lesión significativa. No imponer observación larga universal al bajo riesgo asintomático con evaluación normal; decisión según protocolo y circunstancias."
+    },
+    {
+      "type": "heading",
+      "id": "40_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "40_01",
+      "text": "Daño profundo, arritmia y trauma por caída pueden ser desproporcionados a pequeña lesión cutánea. Mecanismo, tensión, trayecto, tiempo y pérdida de conciencia orientan riesgo."
+    },
+    {
+      "type": "heading",
+      "id": "40_05-heading",
+      "text": "Razonamiento clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "40_05",
+      "text": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NSW ACI — Burn injury emergency department flow chart",
+      "url": "https://aci.health.nsw.gov.au/networks/burn-injury/resources/patient-management/ed-flow-chart",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Encaminhamento e manejo inicial de queimaduras.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "burn_nsw",
+      "organization_or_authors": "NSW ACI",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NSW ACI — Burn injury emergency department flow chart"
+    },
+    {
+      "id": 2,
+      "title": "RCH — Burns",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Burns/",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Queimadura pediátrica, elétrica/química e reposição; separar protocolo adulto.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "burn_peds",
+      "organization_or_authors": "RCH",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "RCH — Burns"
+    },
+    {
+      "id": 3,
+      "title": "AHA — Adult and pediatric special circumstances of resuscitation",
+      "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Afogamento, hipertermia e lesão elétrica. Diretriz de 2025 inclui atualização do afogamento de 2024.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aha",
+      "organization_or_authors": "AHA",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AHA — Adult and pediatric special circumstances of resuscitation"
+    },
+    {
+      "id": 4,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "markdown": "# Quemadura eléctrica\n\n## Abordaje inicial\n\nDesconectar fuente antes de contacto/rescate; ABCDE y reanimación cuando indicada. Evaluar entrada/salida, neurovascular, compartimentos y trauma asociado; ECG inicial y CK, electrolitos/función renal según riesgo.\n\n## Tratamiento y decisiones\n\nLesión pequeña de bajo riesgo: cuidado local después de evaluación. Alta tensión, daño profundo o alteración sistémica: centro de quemados, reposición titulada y evaluación quirúrgica. Compartimento/isquemia exige intervención urgente; antibiótico no es automático.\n\n## Internación, alta y escalamiento\n\nMonitorización cardíaca/internación por pérdida de conciencia, ECG anormal, síntomas cardíacos, alta tensión o lesión significativa. No imponer observación larga universal al bajo riesgo asintomático con evaluación normal; decisión según protocolo y circunstancias.\n\n## Definición y fisiopatología\n\nDaño profundo, arritmia y trauma por caída pueden ser desproporcionados a pequeña lesión cutánea. Mecanismo, tensión, trayecto, tiempo y pérdida de conciencia orientan riesgo.\n\n## Razonamiento clínico\n\nEvaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.\n\n## Referencias\n\n1. NSW ACI — Burn injury emergency department flow chart. 2025. https://aci.health.nsw.gov.au/networks/burn-injury/resources/patient-management/ed-flow-chart\n\n2. RCH — Burns. https://www.rch.org.au/clinicalguide/guideline_index/Burns/\n\n3. AHA — Adult and pediatric special circumstances of resuscitation. 2025. https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation\n\n4. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n"
+}

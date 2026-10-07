@@ -1,0 +1,159 @@
+{
+  "mode": "study",
+  "language": "pt",
+  "owner": "fratura_de_escafoide",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "31e3fbd2162a15821494945822e57a0d17343398a32b277a7225cc71936bca43",
+  "factIds": [
+    "22_01",
+    "22_02",
+    "22_03",
+    "22_04",
+    "22_05",
+    "22_06",
+    "22_07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "22_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "22_01",
+      "text": "Queda sobre mão pode produzir fratura oculta; irrigação do polo proximal aumenta risco de necrose/pseudartrose. Radiografia inicial normal não afasta suspeita."
+    },
+    {
+      "type": "heading",
+      "id": "22_02-heading",
+      "text": "Diagnóstico e exames",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "22_02",
+      "text": "Dor em tabaqueira e tubérculo do escafoide exige avaliação, radiografias específicas e considerar ressonância inicial conforme NG38. Enquanto diagnóstico não esclarecido, proteger/imobilizar e planejar revisão."
+    },
+    {
+      "type": "heading",
+      "id": "22_03-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "22_03",
+      "text": "Fratura estável sem desvio: imobilização e controle ortopédico. Desvio, polo proximal ou instabilidade pode exigir fixação. Evitar liberação para esporte/carga por radiografia inicial negativa."
+    },
+    {
+      "type": "heading",
+      "id": "22_04-heading",
+      "text": "Seguimento e sinais de alarme",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "22_04",
+      "text": "Monitorar dor, pele e estado neurovascular; confirmar consolidação antes de retirar proteção. Encaminhar não união ou dor persistente; não confundir com entorse simples do punho."
+    },
+    {
+      "type": "heading",
+      "id": "22_05-heading",
+      "text": "Medicamentos e doses",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "22_05",
+      "text": "Analgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa."
+    },
+    {
+      "type": "heading",
+      "id": "22_06-heading",
+      "text": "Alternativas e limites",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "22_06",
+      "text": "Alternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade."
+    },
+    {
+      "type": "heading",
+      "id": "22_07-heading",
+      "text": "Raciocínio clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "22_07",
+      "text": "Interpretar mecanismo, integridade anatômica e estabilidade em conjunto. Radiografia sem fratura evidente não exclui lesão ligamentar/tendínea ou fratura oculta. Documentar função e exame neurovascular antes e depois de imobilização/redução; piora progressiva da dor ou déficit novo muda a urgência. Escolha conservadora versus cirúrgica depende de estabilidade, lesões associadas e demanda funcional, não somente do nome da lesão."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "AAOS OrthoInfo — scaphoid fracture of the wrist",
+      "url": "https://www.orthoinfo.org/diseases--conditions/scaphoid-fracture-of-the-wrist/",
+      "year": null,
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aaos_scaphoid",
+      "organization_or_authors": "AAOS OrthoInfo",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AAOS OrthoInfo — scaphoid fracture of the wrist"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG38 — Fractures: non-complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng38",
+      "organization_or_authors": "NICE NG38",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 4,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "markdown": "# Fratura de escafoide\n\n## Definição e fisiopatologia\n\nQueda sobre mão pode produzir fratura oculta; irrigação do polo proximal aumenta risco de necrose/pseudartrose. Radiografia inicial normal não afasta suspeita.\n\n## Diagnóstico e exames\n\nDor em tabaqueira e tubérculo do escafoide exige avaliação, radiografias específicas e considerar ressonância inicial conforme NG38. Enquanto diagnóstico não esclarecido, proteger/imobilizar e planejar revisão.\n\n## Tratamento e decisões\n\nFratura estável sem desvio: imobilização e controle ortopédico. Desvio, polo proximal ou instabilidade pode exigir fixação. Evitar liberação para esporte/carga por radiografia inicial negativa.\n\n## Seguimento e sinais de alarme\n\nMonitorar dor, pele e estado neurovascular; confirmar consolidação antes de retirar proteção. Encaminhar não união ou dor persistente; não confundir com entorse simples do punho.\n\n## Medicamentos e doses\n\nAnalgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa.\n\n## Alternativas e limites\n\nAlternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade.\n\n## Raciocínio clínico\n\nInterpretar mecanismo, integridade anatômica e estabilidade em conjunto. Radiografia sem fratura evidente não exclui lesão ligamentar/tendínea ou fratura oculta. Documentar função e exame neurovascular antes e depois de imobilização/redução; piora progressiva da dor ou déficit novo muda a urgência. Escolha conservadora versus cirúrgica depende de estabilidade, lesões associadas e demanda funcional, não somente do nome da lesão.\n\n## Referências\n\n1. AAOS OrthoInfo — scaphoid fracture of the wrist. https://www.orthoinfo.org/diseases--conditions/scaphoid-fracture-of-the-wrist/\n\n2. NICE NG38 — Fractures: non-complex assessment and management. 2016. https://www.nice.org.uk/guidance/ng38/chapter/recommendations\n\n3. NHS — Paracetamol for adults. 2026. https://www.nhs.uk/medicines/paracetamol-for-adults/\n\n4. NHS — Ibuprofen for adults. 2025. https://www.nhs.uk/medicines/ibuprofen-for-adults/\n"
+}

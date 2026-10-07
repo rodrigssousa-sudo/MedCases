@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "queimadura_quimica",
+  "title": {
+    "pt": "Queimadura química",
+    "es": "Quemadura química"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "41_01",
+      "section": "concept",
+      "pt": "Ácidos, álcalis e outros agentes causam lesão conforme concentração, quantidade e contato; alcalinos podem penetrar profundamente. Algumas exposições têm toxicidade sistêmica específica.",
+      "es": "Ácidos, álcalis y otros agentes lesionan según concentración, cantidad y contacto; álcalis pueden penetrar profundamente. Algunas exposiciones tienen toxicidad sistémica específica.",
+      "sources": [
+        "burn_nsw",
+        "burn_peds",
+        "eye"
+      ]
+    },
+    {
+      "id": "41_02",
+      "section": "initial",
+      "pt": "Proteção da equipe, remover roupas/adornos e pó seco antes da lavagem. Irrigar prontamente com água, quando compatível com o produto, sem neutralização química improvisada; consultar toxicologia/ficha do agente nas exceções.",
+      "es": "Protección del equipo, retirar ropa/adornos y polvo seco antes del lavado. Irrigar pronto con agua si es compatible con producto, sin neutralización química improvisada; consultar toxicología/ficha del agente en excepciones.",
+      "sources": [
+        "burn_nsw",
+        "burn_peds",
+        "eye"
+      ]
+    },
+    {
+      "id": "41_03",
+      "section": "treatment",
+      "pt": "Pele: descontaminação, avaliação de profundidade, analgesia e curativo; lesão profunda pode exigir cirurgia. Olho: irrigação imediata, avaliar pH e remover partículas com técnica adequada, acionando oftalmologia; não esperar história completa para iniciar lavagem.",
+      "es": "Piel: descontaminación, evaluar profundidad, analgesia y apósito; lesión profunda puede requerir cirugía. Ojo: irrigación inmediata, evaluar pH y retirar partículas con técnica adecuada, activar oftalmología; no esperar historia completa para lavar.",
+      "sources": [
+        "burn_nsw",
+        "burn_peds",
+        "eye"
+      ]
+    },
+    {
+      "id": "41_04",
+      "section": "disposition",
+      "pt": "Encaminhar lesão ocular, face, extensão/profundidade relevantes, dor persistente ou toxicidade sistêmica. Tempo/volume de irrigação depende de produto e resposta, não valor único para todo agente; reavaliar progressão e prevenir hipotermia.",
+      "es": "Derivar lesión ocular, cara, extensión/profundidad relevantes, dolor persistente o toxicidad sistémica. Tiempo/volumen de irrigación depende de producto y respuesta, no cifra única para todo agente; reevaluar progresión y prevenir hipotermia.",
+      "sources": [
+        "burn_nsw",
+        "burn_peds",
+        "eye"
+      ]
+    },
+    {
+      "id": "41_05",
+      "section": "reasoning",
+      "pt": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.",
+      "es": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.",
+      "sources": [
+        "ng39"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NSW ACI — Burn injury emergency department flow chart",
+      "url": "https://aci.health.nsw.gov.au/networks/burn-injury/resources/patient-management/ed-flow-chart",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Encaminhamento e manejo inicial de queimaduras.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "burn_nsw",
+      "organization_or_authors": "NSW ACI",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NSW ACI — Burn injury emergency department flow chart"
+    },
+    {
+      "id": 2,
+      "title": "RCH — Burns",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Burns/",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Queimadura pediátrica, elétrica/química e reposição; separar protocolo adulto.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "burn_peds",
+      "organization_or_authors": "RCH",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "RCH — Burns"
+    },
+    {
+      "id": 3,
+      "title": "RCH — Acute eye injury",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_eye_injury/",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Pediatria, proteção do globo e irrigação imediata.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "eye",
+      "organization_or_authors": "RCH",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "RCH — Acute eye injury"
+    },
+    {
+      "id": 4,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

@@ -1,0 +1,120 @@
+{
+  "mode": "plantao",
+  "language": "pt",
+  "owner": "luxacao_de_joelho",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "13c2996c9e57181a89316b8dc40317779960fe994efee4f9a7b118b9daf7262b",
+  "factIds": [
+    "31_02",
+    "31_03",
+    "31_04",
+    "31_01",
+    "31_05"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "31_02-heading",
+      "text": "Abordagem inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "31_02",
+      "text": "Examinar/documentar perfusão e função nervosa; membro deformado sem pulso exige realinhamento/redução urgente e imobilização, repetindo exame. Acionar ortopedia e vascular sem esperar melhora espontânea."
+    },
+    {
+      "type": "heading",
+      "id": "31_03-heading",
+      "text": "Diagnóstico e exames",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "31_03",
+      "text": "Radiografias e avaliação vascular estruturada; suspeita arterial exige angiotomografia conforme BOA 2026. Exame seriado e vigilância compartimental continuam necessários após redução."
+    },
+    {
+      "type": "heading",
+      "id": "31_04-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "31_04",
+      "text": "Lesão vascular confirmada é emergência de revascularização; BOA 2026 orienta início em até 1 hora da chegada ao hospital. Estabilização temporária ou reparo ligamentar planejado depende de tecidos/vasos. Internar; não liberar apenas pela radiografia pós-redução normal."
+    },
+    {
+      "type": "heading",
+      "id": "31_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "31_01",
+      "text": "Lesão multiligamentar pode reduzir espontaneamente e ainda romper artéria poplítea. Pulso palpável isolado não exclui lesão vascular; diferenciar luxação de patela."
+    },
+    {
+      "type": "heading",
+      "id": "31_05-heading",
+      "text": "Raciocínio clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "31_05",
+      "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "BOASt — Diagnosis and management of arterial injuries associated with musculoskeletal trauma",
+      "url": "https://www.boa.ac.uk/resource/diagnosis-and-management-of-arterial-injuries-associated-with-musculoskeletal-trauma.html",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Junho de 2026; substitui padrão arquivado de 2020. Exclui fratura supracondiliana pediátrica.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "artery",
+      "organization_or_authors": "BOASt",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "BOASt — Diagnosis and management of arterial injuries associated with musculoskeletal trauma"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG38 — Fractures: non-complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng38",
+      "organization_or_authors": "NICE NG38",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+    },
+    {
+      "id": 3,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "markdown": "# Luxação tibiofemoral do joelho\n\n## Abordagem inicial\n\nExaminar/documentar perfusão e função nervosa; membro deformado sem pulso exige realinhamento/redução urgente e imobilização, repetindo exame. Acionar ortopedia e vascular sem esperar melhora espontânea.\n\n## Diagnóstico e exames\n\nRadiografias e avaliação vascular estruturada; suspeita arterial exige angiotomografia conforme BOA 2026. Exame seriado e vigilância compartimental continuam necessários após redução.\n\n## Tratamento e decisões\n\nLesão vascular confirmada é emergência de revascularização; BOA 2026 orienta início em até 1 hora da chegada ao hospital. Estabilização temporária ou reparo ligamentar planejado depende de tecidos/vasos. Internar; não liberar apenas pela radiografia pós-redução normal.\n\n## Definição e fisiopatologia\n\nLesão multiligamentar pode reduzir espontaneamente e ainda romper artéria poplítea. Pulso palpável isolado não exclui lesão vascular; diferenciar luxação de patela.\n\n## Raciocínio clínico\n\nA avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.\n\n## Referências\n\n1. BOASt — Diagnosis and management of arterial injuries associated with musculoskeletal trauma. 2026. https://www.boa.ac.uk/resource/diagnosis-and-management-of-arterial-injuries-associated-with-musculoskeletal-trauma.html\n\n2. NICE NG38 — Fractures: non-complex assessment and management. 2016. https://www.nice.org.uk/guidance/ng38/chapter/recommendations\n\n3. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n"
+}

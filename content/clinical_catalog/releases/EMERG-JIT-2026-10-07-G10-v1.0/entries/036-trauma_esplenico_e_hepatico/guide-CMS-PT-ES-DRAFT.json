@@ -1,0 +1,300 @@
+{
+  "schema_version": "1.1",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "status": "DRAFT_ADMIN",
+  "human_approved": false,
+  "human_approval_note": null,
+  "owner": "trauma_esplenico_e_hepatico",
+  "canonicalPayloadSha256": "1ebf50292a67b1ea940908f47a22e5273eaff195d8919a4c806ad4380aee7c92",
+  "publicationAuthorized": false,
+  "reviewer": null,
+  "review_date": "2026-10-07",
+  "cover": null,
+  "references": [
+    {
+      "id": 1,
+      "title": "WSES — Liver trauma guidelines",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7106618/",
+      "year": 2020,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Tratamento não operatório selecionado, cirurgia/embolização, estabilidade e infraestrutura.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "liver",
+      "organization_or_authors": "WSES",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "WSES — Liver trauma guidelines"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    },
+    {
+      "id": 3,
+      "title": "WSES — Follow-up strategies for patients with splenic trauma managed non-operatively",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9560023/",
+      "year": 2022,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Consenso de seguimento; manejo conservador somente com vigilância e acesso a intervenção.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "spleen",
+      "organization_or_authors": "WSES",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "WSES — Follow-up strategies for patients with splenic trauma managed non-operatively"
+    }
+  ],
+  "pt": {
+    "title": "Trauma esplênico e hepático",
+    "subtitle": "Guia clínico — candidato para revisão",
+    "summary": "Órgãos sólidos podem sangrar sem sinais peritoneais iniciais; estabilidade hemodinâmica e lesões associadas orientam decisão além do grau anatômico. Sangramento tardio permanece possível.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "36_01-heading",
+        "text": "Definição e fisiopatologia",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "36_01",
+        "text": "Órgãos sólidos podem sangrar sem sinais peritoneais iniciais; estabilidade hemodinâmica e lesões associadas orientam decisão além do grau anatômico. Sangramento tardio permanece possível."
+      },
+      {
+        "type": "heading",
+        "id": "36_02-heading",
+        "text": "Diagnóstico e exames",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "36_02",
+        "text": "ABCDE, hemograma seriado e tomografia com contraste no estável. FAST ajuda na triagem instável, mas não determina sozinho grau nem exclui lesão."
+      },
+      {
+        "type": "heading",
+        "id": "36_03-heading",
+        "text": "Tratamento e decisões",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "36_03",
+        "text": "Estável sem outra indicação cirúrgica: manejo não operatório em centro capaz de vigilância/cirurgia imediata. Alternativa: embolização em sangramento arterial selecionado; instabilidade não responsiva/peritonite: cirurgia. Blush infantil não é indicação automática idêntica à adulta."
+      },
+      {
+        "type": "heading",
+        "id": "36_04-heading",
+        "text": "Seguimento e sinais de alarme",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "36_04",
+        "text": "Internar e reavaliar dor, hemoglobina e perfusão; investigar piora, febre ou icterícia/coleção. Retorno à atividade conforme órgão/grau e plano especializado. Se esplenectomia, vacinação e prevenção de infecção são parte obrigatória do seguimento."
+      },
+      {
+        "type": "heading",
+        "id": "36_05-heading",
+        "text": "Monitorização",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "36_05",
+        "text": "Manejo conservador não significa ausência de tratamento: reavaliar sinais vitais, dor, hemoglobina e necessidade de transfusão. Imagem de controle e prevenção de trombose dependem do grau e estabilidade. Após esplenectomia, organizar vacinação e prevenção de infecção conforme protocolo; não extrapolar prazo de retorno esportivo de adulto para criança."
+      },
+      {
+        "type": "heading",
+        "id": "36_06-heading",
+        "text": "Raciocínio clínico",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "36_06",
+        "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "WSES — Liver trauma guidelines",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7106618/",
+        "year": 2020,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "Tratamento não operatório selecionado, cirurgia/embolização, estabilidade e infraestrutura.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "liver",
+        "organization_or_authors": "WSES",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "WSES — Liver trauma guidelines"
+      },
+      {
+        "id": 2,
+        "title": "NICE NG39 — Major trauma: assessment and initial management",
+        "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng39",
+        "organization_or_authors": "NICE NG39",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG39 — Major trauma: assessment and initial management"
+      },
+      {
+        "id": 3,
+        "title": "WSES — Follow-up strategies for patients with splenic trauma managed non-operatively",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9560023/",
+        "year": 2022,
+        "authorityStatus": "AUTHORITATIVE_FINAL",
+        "scope": "Consenso de seguimento; manejo conservador somente com vigilância e acesso a intervenção.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "spleen",
+        "organization_or_authors": "WSES",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "WSES — Follow-up strategies for patients with splenic trauma managed non-operatively"
+      }
+    ]
+  },
+  "es": {
+    "title": "Traumatismo esplénico y hepático",
+    "subtitle": "Guía clínica — candidato para revisión",
+    "summary": "Órganos sólidos pueden sangrar sin signos peritoneales iniciales; estabilidad hemodinámica y lesiones asociadas orientan decisión además del grado anatómico. Sangrado tardío sigue siendo posible.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "36_01-heading",
+        "text": "Definición y fisiopatología",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "36_01",
+        "text": "Órganos sólidos pueden sangrar sin signos peritoneales iniciales; estabilidad hemodinámica y lesiones asociadas orientan decisión además del grado anatómico. Sangrado tardío sigue siendo posible."
+      },
+      {
+        "type": "heading",
+        "id": "36_02-heading",
+        "text": "Diagnóstico y estudios",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "36_02",
+        "text": "ABCDE, hemograma seriado y tomografía contrastada en estable. FAST ayuda en triaje inestable, pero no determina solo grado ni excluye lesión."
+      },
+      {
+        "type": "heading",
+        "id": "36_03-heading",
+        "text": "Tratamiento y decisiones",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "36_03",
+        "text": "Estable sin otra indicación operatoria: manejo no operatorio en centro con vigilancia/cirugía inmediata. Alternativa: embolización por sangrado arterial seleccionado; inestabilidad no respondiente/peritonitis: cirugía. Blush infantil no implica indicación automática idéntica a la adulta."
+      },
+      {
+        "type": "heading",
+        "id": "36_04-heading",
+        "text": "Seguimiento y señales de alarma",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "36_04",
+        "text": "Internar y reevaluar dolor, hemoglobina y perfusión; estudiar empeoramiento, fiebre o ictericia/colección. Retorno a actividad según órgano/grado y plan especializado. Tras esplenectomía, vacunación y prevención de infección integran seguimiento obligatorio."
+      },
+      {
+        "type": "heading",
+        "id": "36_05-heading",
+        "text": "Monitorización",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "36_05",
+        "text": "Manejo conservador no significa ausencia de tratamiento: reevaluar signos vitales, dolor, hemoglobina y necesidad transfusional. Imagen de control y prevención de trombosis según grado y estabilidad. Tras esplenectomía, organizar vacunación y prevención de infección según protocolo; no extrapolar retorno deportivo adulto a niño."
+      },
+      {
+        "type": "heading",
+        "id": "36_06-heading",
+        "text": "Razonamiento clínico",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "36_06",
+        "text": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "WSES — Liver trauma guidelines",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7106618/",
+        "year": 2020,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "Tratamento não operatório selecionado, cirurgia/embolização, estabilidade e infraestrutura.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "liver",
+        "organization_or_authors": "WSES",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "WSES — Liver trauma guidelines"
+      },
+      {
+        "id": 2,
+        "title": "NICE NG39 — Major trauma: assessment and initial management",
+        "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng39",
+        "organization_or_authors": "NICE NG39",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG39 — Major trauma: assessment and initial management"
+      },
+      {
+        "id": 3,
+        "title": "WSES — Follow-up strategies for patients with splenic trauma managed non-operatively",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9560023/",
+        "year": 2022,
+        "authorityStatus": "AUTHORITATIVE_FINAL",
+        "scope": "Consenso de seguimento; manejo conservador somente com vigilância e acesso a intervenção.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "spleen",
+        "organization_or_authors": "WSES",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "WSES — Follow-up strategies for patients with splenic trauma managed non-operatively"
+      }
+    ]
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "fratura_de_tornozelo",
+  "title": {
+    "pt": "Fratura de tornozelo",
+    "es": "Fractura de tobillo"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "50_01",
+      "section": "concept",
+      "pt": "Padrão maleolar/sindesmótico compromete estabilidade da pinça. Danis-Weber descreve nível da fíbula, mas não determina sozinho estabilidade nem necessidade cirúrgica.",
+      "es": "Patrón maleolar/sindesmótico compromete estabilidad de mortaja. Danis-Weber describe nivel del peroné, pero no determina solo estabilidad ni necesidad quirúrgica.",
+      "sources": [
+        "ankle_fx",
+        "ng38"
+      ]
+    },
+    {
+      "id": "50_02",
+      "section": "diagnosis",
+      "pt": "Pele, perfusão/sensibilidade e radiografia em perfil/pinça; palpar fíbula proximal para Maisonneuve. Deformidade com pele/perfusão ameaçada exige redução urgente; repetir exame e imagem após redução.",
+      "es": "Piel, perfusión/sensibilidad y radiografía lateral/mortaja; palpar peroné proximal por Maisonneuve. Deformidad con piel/perfusión amenazada exige reducción urgente; repetir examen e imagen después.",
+      "sources": [
+        "ankle_fx",
+        "ng38"
+      ]
+    },
+    {
+      "id": "50_03",
+      "section": "treatment",
+      "pt": "Adulto com fratura estável: tala/órtese, analgesia e apoio conforme tolerado. Estabilidade incerta: revisão e imagem em até 2 semanas. Pinça instável: fixação precoce; tecidos muito comprometidos podem exigir estabilização temporária.",
+      "es": "Adulto con fractura estable: férula/ortesis, analgesia y apoyo tolerado. Estabilidad incierta: revisión e imagen hasta 2 semanas. Mortaja inestable: fijación temprana; tejidos muy comprometidos pueden exigir estabilización temporal.",
+      "sources": [
+        "ankle_fx",
+        "ng38"
+      ]
+    },
+    {
+      "id": "50_04",
+      "section": "followup",
+      "pt": "Avaliar risco tromboembólico e plano de apoio/rehabilitação. BOA citado exclui pilão, exposta e esqueleto imaturo, que precisam de módulos próprios. Retorno por dor crescente, edema, dedos frios ou perda sensitiva.",
+      "es": "Evaluar riesgo tromboembólico y plan de apoyo/rehabilitación. BOA citado excluye pilón, abierta y esqueleto inmaduro, que requieren módulos propios. Retorno por dolor creciente, edema, dedos fríos o pérdida sensitiva.",
+      "sources": [
+        "ankle_fx",
+        "ng38"
+      ]
+    },
+    {
+      "id": "50_05",
+      "section": "medications",
+      "pt": "Analgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa.",
+      "es": "Analgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal.",
+      "sources": [
+        "para"
+      ]
+    },
+    {
+      "id": "50_06",
+      "section": "alternatives",
+      "pt": "Alternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade.",
+      "es": "Alternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad.",
+      "sources": [
+        "ibu"
+      ]
+    },
+    {
+      "id": "50_07",
+      "section": "reasoning",
+      "pt": "Interpretar mecanismo, integridade anatômica e estabilidade em conjunto. Radiografia sem fratura evidente não exclui lesão ligamentar/tendínea ou fratura oculta. Documentar função e exame neurovascular antes e depois de imobilização/redução; piora progressiva da dor ou déficit novo muda a urgência. Escolha conservadora versus cirúrgica depende de estabilidade, lesões associadas e demanda funcional, não somente do nome da lesão.",
+      "es": "Interpretar mecanismo, integridad anatómica y estabilidad conjuntamente. Radiografía sin fractura visible no excluye lesión ligamentaria/tendinosa o fractura oculta. Documentar función y examen neurovascular antes y después de inmovilización/reducción; dolor progresivo o déficit nuevo cambia urgencia. Elección conservadora versus quirúrgica depende de estabilidad, lesiones asociadas y demanda funcional, no solo del nombre de lesión.",
+      "sources": [
+        "ankle_fx",
+        "ng38"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "BOASt — The management of ankle fractures",
+      "url": "https://www.boa.ac.uk/resource/boast-12-pdf.html",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas fechadas maleolares e sindesmóticas em pessoas com maturidade esquelética; exclui pilão, expostas e imaturas.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ankle_fx",
+      "organization_or_authors": "BOASt",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "BOASt — The management of ankle fractures"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG38 — Fractures: non-complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng38",
+      "organization_or_authors": "NICE NG38",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 4,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

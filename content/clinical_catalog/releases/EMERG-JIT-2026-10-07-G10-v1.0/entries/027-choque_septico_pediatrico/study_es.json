@@ -1,0 +1,132 @@
+{
+  "mode": "study",
+  "language": "es",
+  "owner": "choque_septico_pediatrico",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "80b967b6896b317753c8d4de8ab15c29ed68f5eabb30614a9e8390115b215ecb",
+  "factIds": [
+    "27_01",
+    "27_02",
+    "27_03",
+    "27_04",
+    "27_05",
+    "27_06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "27_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "27_01",
+      "text": "Sepsis es infección con disfunción orgánica; shock incluye disfunción cardiovascular y la hipotensión puede ser tardía. Fiebre aislada no significa sepsis. Este módulo no sustituye sepsis neonatal ya registrada."
+    },
+    {
+      "type": "heading",
+      "id": "27_02-heading",
+      "text": "Abordaje inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "27_02",
+      "text": "Activar pediatría/UCI, ABCDE, acceso IV o intraóseo, glucemia y monitorización continua. Cultivos antes del antibiótico si no demoran; shock: antimicrobiano idealmente en 1 hora según foco, edad, inmunidad y resistencia local."
+    },
+    {
+      "type": "heading",
+      "id": "27_03-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "27_03",
+      "text": "SSC 2026, con UCI disponible: cristaloide balanceado en bolos de 10–20 mL/kg, reevaluando tras cada uno; puede llegar a 40–60 mL/kg en primera hora, suspendiendo por congestión o shock resuelto. Sin UCI y sin hipotensión: no dar bolo rutinario. Sin UCI con hipotensión: hasta 40 mL/kg en primera hora, con reevaluación."
+    },
+    {
+      "type": "heading",
+      "id": "27_04-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "27_04",
+      "text": "Shock persistente/sobrecarga: iniciar temprano adrenalina O noradrenalina en infusión monitorizada; SSC 2026 no demuestra superioridad universal de una. Inicio de referencia de tabla Arkansas: 0,05 microgramo/kg por minuto, titular por perfusión/presión con UCI. Usar bomba y solución estandarizada verificada; no es bolo y no confundir microgramos con miligramos."
+    },
+    {
+      "type": "heading",
+      "id": "27_05-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "27_05",
+      "text": "Antibiótico empírico no debe tener pauta universal para todas las edades/focos. Elegir protocolo pediátrico para meningitis, neumonía, infección abdominal, neutropenia o acceso vascular; desescalar por microbiología y controlar foco. Cristaloide 0,9% es alternativa si balanceado no disponible o contexto específico favorece su uso."
+    },
+    {
+      "type": "heading",
+      "id": "27_06-heading",
+      "text": "Seguridad y poblaciones especiales",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "27_06",
+      "text": "Reevaluar conciencia, relleno capilar, presión para edad, diuresis, lactato, auscultación y hepatomegalia. Vigilar extravasación si vasoactivo periférico; no demorar inicio seguro esperando vía central. UCI/traslado por vasoactivo, disfunción orgánica o soporte creciente."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "SSC/SCCM — Sepsis and septic shock in children 2026",
+      "url": "https://www.sccm.org/clinical-resources/guidelines/guidelines/surviving-sepsis-campaign-international-guidelines-for-the-management-of-sepsis-and-septic-shock-in",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Substitui 2020. Diferencia disponibilidade de UTI e hipotensão; não estabelece superioridade de adrenalina ou noradrenalina inicial.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ssc",
+      "organization_or_authors": "SSC/SCCM",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "SSC/SCCM — Sepsis and septic shock in children 2026"
+    },
+    {
+      "id": 2,
+      "title": "CHOP — Sepsis clinical pathway",
+      "url": "https://www.chop.edu/clinical-pathway/sepsis-emergency-department-inpatient-picu-clinical-pathway",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Revisão abril de 2026 verificada no texto indexado; leitura direta eventualmente retorna 403.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "sepsis_chop",
+      "organization_or_authors": "CHOP",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "CHOP — Sepsis clinical pathway"
+    },
+    {
+      "id": 3,
+      "title": "Arkansas Children’s — Critical sepsis emergency department pathway",
+      "url": "https://www.archildrens.org/-/media/Files/for-healthcare-professionals/clinical-pathways/Critical-Sepsis-Emergency-Department-Clinical-Pathway.pdf?hash=4951411B0551BCBC7C33C0A8F5D8F050&rev=23fd83ba723c4f23baf43ac5bf4fa479",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Tabela pediátrica de doses lida; data de revisão não identificada no PDF. Usada somente para faixa de infusão, não para substituir SSC 2026.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "sepsis_dose",
+      "organization_or_authors": "Arkansas Children’s",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "Arkansas Children’s — Critical sepsis emergency department pathway"
+    }
+  ],
+  "markdown": "# Shock séptico pediátrico\n\n## Definición y fisiopatología\n\nSepsis es infección con disfunción orgánica; shock incluye disfunción cardiovascular y la hipotensión puede ser tardía. Fiebre aislada no significa sepsis. Este módulo no sustituye sepsis neonatal ya registrada.\n\n## Abordaje inicial\n\nActivar pediatría/UCI, ABCDE, acceso IV o intraóseo, glucemia y monitorización continua. Cultivos antes del antibiótico si no demoran; shock: antimicrobiano idealmente en 1 hora según foco, edad, inmunidad y resistencia local.\n\n## Medicamentos y dosis\n\nSSC 2026, con UCI disponible: cristaloide balanceado en bolos de 10–20 mL/kg, reevaluando tras cada uno; puede llegar a 40–60 mL/kg en primera hora, suspendiendo por congestión o shock resuelto. Sin UCI y sin hipotensión: no dar bolo rutinario. Sin UCI con hipotensión: hasta 40 mL/kg en primera hora, con reevaluación.\n\n## Medicamentos y dosis\n\nShock persistente/sobrecarga: iniciar temprano adrenalina O noradrenalina en infusión monitorizada; SSC 2026 no demuestra superioridad universal de una. Inicio de referencia de tabla Arkansas: 0,05 microgramo/kg por minuto, titular por perfusión/presión con UCI. Usar bomba y solución estandarizada verificada; no es bolo y no confundir microgramos con miligramos.\n\n## Tratamiento y decisiones\n\nAntibiótico empírico no debe tener pauta universal para todas las edades/focos. Elegir protocolo pediátrico para meningitis, neumonía, infección abdominal, neutropenia o acceso vascular; desescalar por microbiología y controlar foco. Cristaloide 0,9% es alternativa si balanceado no disponible o contexto específico favorece su uso.\n\n## Seguridad y poblaciones especiales\n\nReevaluar conciencia, relleno capilar, presión para edad, diuresis, lactato, auscultación y hepatomegalia. Vigilar extravasación si vasoactivo periférico; no demorar inicio seguro esperando vía central. UCI/traslado por vasoactivo, disfunción orgánica o soporte creciente.\n\n## Referencias\n\n1. SSC/SCCM — Sepsis and septic shock in children 2026. 2026. https://www.sccm.org/clinical-resources/guidelines/guidelines/surviving-sepsis-campaign-international-guidelines-for-the-management-of-sepsis-and-septic-shock-in\n\n2. CHOP — Sepsis clinical pathway. 2026. https://www.chop.edu/clinical-pathway/sepsis-emergency-department-inpatient-picu-clinical-pathway\n\n3. Arkansas Children’s — Critical sepsis emergency department pathway. https://www.archildrens.org/-/media/Files/for-healthcare-professionals/clinical-pathways/Critical-Sepsis-Emergency-Department-Clinical-Pathway.pdf?hash=4951411B0551BCBC7C33C0A8F5D8F050&rev=23fd83ba723c4f23baf43ac5bf4fa479\n"
+}

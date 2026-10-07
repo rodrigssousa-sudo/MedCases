@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "luxacao_de_joelho",
+  "title": {
+    "pt": "Luxação tibiofemoral do joelho",
+    "es": "Luxación tibiofemoral de rodilla"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "31_01",
+      "section": "concept",
+      "pt": "Lesão multiligamentar pode reduzir espontaneamente e ainda romper artéria poplítea. Pulso palpável isolado não exclui lesão vascular; diferenciar luxação de patela.",
+      "es": "Lesión multiligamentaria puede reducir espontáneamente y aun romper arteria poplítea. Pulso palpable aislado no excluye lesión vascular; distinguir luxación de rótula.",
+      "sources": [
+        "artery",
+        "ng38"
+      ]
+    },
+    {
+      "id": "31_02",
+      "section": "initial",
+      "pt": "Examinar/documentar perfusão e função nervosa; membro deformado sem pulso exige realinhamento/redução urgente e imobilização, repetindo exame. Acionar ortopedia e vascular sem esperar melhora espontânea.",
+      "es": "Examinar/documentar perfusión y función nerviosa; miembro deformado sin pulso exige realineación/reducción urgente e inmovilización, repitiendo examen. Activar traumatología y vascular sin esperar mejoría espontánea.",
+      "sources": [
+        "artery",
+        "ng38"
+      ]
+    },
+    {
+      "id": "31_03",
+      "section": "diagnosis",
+      "pt": "Radiografias e avaliação vascular estruturada; suspeita arterial exige angiotomografia conforme BOA 2026. Exame seriado e vigilância compartimental continuam necessários após redução.",
+      "es": "Radiografías y evaluación vascular estructurada; sospecha arterial exige angiotomografía según BOA 2026. Examen seriado y vigilancia compartimental siguen necesarios tras reducción.",
+      "sources": [
+        "artery",
+        "ng38"
+      ]
+    },
+    {
+      "id": "31_04",
+      "section": "treatment",
+      "pt": "Lesão vascular confirmada é emergência de revascularização; BOA 2026 orienta início em até 1 hora da chegada ao hospital. Estabilização temporária ou reparo ligamentar planejado depende de tecidos/vasos. Internar; não liberar apenas pela radiografia pós-redução normal.",
+      "es": "Lesión vascular confirmada es emergencia de revascularización; BOA 2026 indica inicio hasta 1 hora desde llegada al hospital. Estabilización temporal o reparación ligamentaria planificada según tejidos/vasos. Internar; no dar alta solamente por radiografía posreducción normal.",
+      "sources": [
+        "artery",
+        "ng38"
+      ]
+    },
+    {
+      "id": "31_05",
+      "section": "reasoning",
+      "pt": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.",
+      "es": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.",
+      "sources": [
+        "ng39"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "BOASt — Diagnosis and management of arterial injuries associated with musculoskeletal trauma",
+      "url": "https://www.boa.ac.uk/resource/diagnosis-and-management-of-arterial-injuries-associated-with-musculoskeletal-trauma.html",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Junho de 2026; substitui padrão arquivado de 2020. Exclui fratura supracondiliana pediátrica.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "artery",
+      "organization_or_authors": "BOASt",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "BOASt — Diagnosis and management of arterial injuries associated with musculoskeletal trauma"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG38 — Fractures: non-complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng38",
+      "organization_or_authors": "NICE NG38",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+    },
+    {
+      "id": 3,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

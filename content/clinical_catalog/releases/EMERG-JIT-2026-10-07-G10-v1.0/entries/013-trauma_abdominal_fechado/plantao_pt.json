@@ -1,0 +1,105 @@
+{
+  "mode": "plantao",
+  "language": "pt",
+  "owner": "trauma_abdominal_fechado",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "cd424818d7e21d0000973fa7bc13a41fb327be16d8ab0fc69d01dfb920bc1d07",
+  "factIds": [
+    "13_02",
+    "13_03",
+    "13_04",
+    "13_01",
+    "13_05"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "13_02-heading",
+      "text": "Diagnóstico e exames",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "13_02",
+      "text": "ABCDE, exame seriado, hemograma, lactato/gasometria e preparo de sangue conforme gravidade. Instabilidade: ultrassom à beira-leito quando ajuda sem atrasar controle hemorrágico. Estável: tomografia com contraste conforme mecanismo/exame."
+    },
+    {
+      "type": "heading",
+      "id": "13_03-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "13_03",
+      "text": "Instabilidade persistente, peritonite ou lesão com indicação operatória: cirurgia urgente. Estabilidade com lesão selecionada de órgão sólido: manejo não operatório monitorizado; sangramento arterial pode exigir embolização. Observação exige acesso imediato a cirurgia, sangue e reavaliação."
+    },
+    {
+      "type": "heading",
+      "id": "13_04-heading",
+      "text": "Internação, alta e escalonamento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "13_04",
+      "text": "Internar quando lesão, dor persistente ou avaliação inconclusiva. Dor crescente, distensão, vômitos, febre ou queda de hemoglobina exigem nova avaliação; não liberar somente por FAST normal."
+    },
+    {
+      "type": "heading",
+      "id": "13_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "13_01",
+      "text": "Impacto ou desaceleração pode lesar órgão sólido, víscera oca e vasos. Hemorragia e perfuração têm apresentações distintas; FAST negativo não exclui lesão intestinal ou retroperitoneal."
+    },
+    {
+      "type": "heading",
+      "id": "13_05-heading",
+      "text": "Raciocínio clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "13_05",
+      "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    },
+    {
+      "id": 2,
+      "title": "WSES — Liver trauma guidelines",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7106618/",
+      "year": 2020,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Tratamento não operatório selecionado, cirurgia/embolização, estabilidade e infraestrutura.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "liver",
+      "organization_or_authors": "WSES",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "WSES — Liver trauma guidelines"
+    }
+  ],
+  "markdown": "# Trauma abdominal fechado\n\n## Diagnóstico e exames\n\nABCDE, exame seriado, hemograma, lactato/gasometria e preparo de sangue conforme gravidade. Instabilidade: ultrassom à beira-leito quando ajuda sem atrasar controle hemorrágico. Estável: tomografia com contraste conforme mecanismo/exame.\n\n## Tratamento e decisões\n\nInstabilidade persistente, peritonite ou lesão com indicação operatória: cirurgia urgente. Estabilidade com lesão selecionada de órgão sólido: manejo não operatório monitorizado; sangramento arterial pode exigir embolização. Observação exige acesso imediato a cirurgia, sangue e reavaliação.\n\n## Internação, alta e escalonamento\n\nInternar quando lesão, dor persistente ou avaliação inconclusiva. Dor crescente, distensão, vômitos, febre ou queda de hemoglobina exigem nova avaliação; não liberar somente por FAST normal.\n\n## Definição e fisiopatologia\n\nImpacto ou desaceleração pode lesar órgão sólido, víscera oca e vasos. Hemorragia e perfuração têm apresentações distintas; FAST negativo não exclui lesão intestinal ou retroperitoneal.\n\n## Raciocínio clínico\n\nA avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.\n\n## Referências\n\n1. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n\n2. WSES — Liver trauma guidelines. 2020. https://pmc.ncbi.nlm.nih.gov/articles/PMC7106618/\n"
+}

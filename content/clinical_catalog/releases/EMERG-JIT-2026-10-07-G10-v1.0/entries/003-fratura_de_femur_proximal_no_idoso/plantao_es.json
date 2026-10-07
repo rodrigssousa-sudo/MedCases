@@ -1,0 +1,132 @@
+{
+  "mode": "plantao",
+  "language": "es",
+  "owner": "fratura_de_femur_proximal_no_idoso",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "08cbbfc4fef6811721344c43285107321a5f02a8e6e44371883af4e4412f7e11",
+  "factIds": [
+    "03_02",
+    "03_03",
+    "03_04",
+    "03_06",
+    "03_05",
+    "03_01"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "03_02-heading",
+      "text": "Diagnóstico y estudios",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "03_02",
+      "text": "Radiografía de pelvis/cadera. Si persiste sospecha, solicitar resonancia; tomografía si está contraindicada o no disponible en 24 horas. Valorar anemia, volumen, electrolitos, anticoagulación y estado cardiopulmonar."
+    },
+    {
+      "type": "heading",
+      "id": "03_03-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "03_03",
+      "text": "Internación con traumatología/geriatría. Cirugía el día de ingreso o siguiente, corrigiendo causas reversibles sin demoras evitables. Fijación o artroplastia según patrón; la fractura intracapsular desplazada generalmente requiere artroplastia."
+    },
+    {
+      "type": "heading",
+      "id": "03_04-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "03_04",
+      "text": "Paracetamol oral si es seguro; agregar opioide titulado si es insuficiente o bloqueo regional por equipo entrenado. Evitar antiinflamatorios en este contexto. El bloqueo no sustituye cirugía temprana."
+    },
+    {
+      "type": "heading",
+      "id": "03_06-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "03_06",
+      "text": "Analgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal."
+    },
+    {
+      "type": "heading",
+      "id": "03_05-heading",
+      "text": "Seguimiento y señales de alarma",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "03_05",
+      "text": "Prevenir delirium, lesiones por presión y tromboembolismo según riesgo hemorrágico. Movilización/rehabilitación temprana y prevención secundaria de caídas y osteoporosis; el alta exige plan funcional y apoyo."
+    },
+    {
+      "type": "heading",
+      "id": "03_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "03_01",
+      "text": "Fractura intracapsular o extracapsular, frecuentemente por fragilidad. Dolor inguinal e incapacidad para caminar pueden existir con radiografía inicial normal; demora, delirium e inmovilidad empeoran el pronóstico."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE CG124 — Hip fracture: management",
+      "url": "https://www.nice.org.uk/guidance/CG124/chapter/recommendations",
+      "year": 2023,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Atualização de 2023; idoso, fratura oculta, analgesia e cirurgia.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "hip",
+      "organization_or_authors": "NICE CG124",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE CG124 — Hip fracture: management"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG38 — Fractures: non-complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng38",
+      "organization_or_authors": "NICE NG38",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    }
+  ],
+  "markdown": "# Fractura proximal del fémur en personas mayores\n\n## Diagnóstico y estudios\n\nRadiografía de pelvis/cadera. Si persiste sospecha, solicitar resonancia; tomografía si está contraindicada o no disponible en 24 horas. Valorar anemia, volumen, electrolitos, anticoagulación y estado cardiopulmonar.\n\n## Tratamiento y decisiones\n\nInternación con traumatología/geriatría. Cirugía el día de ingreso o siguiente, corrigiendo causas reversibles sin demoras evitables. Fijación o artroplastia según patrón; la fractura intracapsular desplazada generalmente requiere artroplastia.\n\n## Medicamentos y dosis\n\nParacetamol oral si es seguro; agregar opioide titulado si es insuficiente o bloqueo regional por equipo entrenado. Evitar antiinflamatorios en este contexto. El bloqueo no sustituye cirugía temprana.\n\n## Medicamentos y dosis\n\nAnalgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal.\n\n## Seguimiento y señales de alarma\n\nPrevenir delirium, lesiones por presión y tromboembolismo según riesgo hemorrágico. Movilización/rehabilitación temprana y prevención secundaria de caídas y osteoporosis; el alta exige plan funcional y apoyo.\n\n## Definición y fisiopatología\n\nFractura intracapsular o extracapsular, frecuentemente por fragilidad. Dolor inguinal e incapacidad para caminar pueden existir con radiografía inicial normal; demora, delirium e inmovilidad empeoran el pronóstico.\n\n## Referencias\n\n1. NICE CG124 — Hip fracture: management. 2023. https://www.nice.org.uk/guidance/CG124/chapter/recommendations\n\n2. NICE NG38 — Fractures: non-complex assessment and management. 2016. https://www.nice.org.uk/guidance/ng38/chapter/recommendations\n\n3. NHS — Paracetamol for adults. 2026. https://www.nhs.uk/medicines/paracetamol-for-adults/\n"
+}

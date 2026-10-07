@@ -1,0 +1,159 @@
+{
+  "mode": "plantao",
+  "language": "pt",
+  "owner": "lesao_aguda_de_ligamento_cruzado_anterior",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "ca91fbd97ba706e31d94a99b47d6c2fe1c670e27402b2d571347815cde627661",
+  "factIds": [
+    "48_02",
+    "48_03",
+    "48_05",
+    "48_06",
+    "48_04",
+    "48_01",
+    "48_07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "48_02-heading",
+      "text": "Diagnóstico e exames",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "48_02",
+      "text": "História, exame ligamentar tolerado e neurovascular; excluir fratura conforme avaliação e radiografia. Ressonância esclarece lesões associadas; dor/edema podem limitar exame agudo e exigir reavaliação."
+    },
+    {
+      "type": "heading",
+      "id": "48_03-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "48_03",
+      "text": "Controlar dor/edema, recuperar mobilidade e iniciar reabilitação. Alternativas: manejo não operatório em selecionados ou reconstrução conforme instabilidade, atividade e lesões. Quando cirurgia indicada, AAOS 2022 favorece reconstrução precoce, pois risco meniscal/cartilaginoso aumenta após 3 meses."
+    },
+    {
+      "type": "heading",
+      "id": "48_05-heading",
+      "text": "Medicamentos e doses",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "48_05",
+      "text": "Analgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa."
+    },
+    {
+      "type": "heading",
+      "id": "48_06-heading",
+      "text": "Alternativas e limites",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "48_06",
+      "text": "Alternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade."
+    },
+    {
+      "type": "heading",
+      "id": "48_04-heading",
+      "text": "Seguimento e sinais de alarme",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "48_04",
+      "text": "Seguimento ortopédico e progressão por critérios funcionais; não liberar esporte só por ausência de dor. Joelho bloqueado, déficit neurovascular ou lesão múltipla exige urgência; criança precisa de planejamento que respeite fise."
+    },
+    {
+      "type": "heading",
+      "id": "48_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "48_01",
+      "text": "Lesão após pivô/desaceleração pode causar hemartrose rápida e instabilidade. Menisco/cartilagem associados e maturidade esquelética mudam planejamento; não confundir com luxação multiligamentar."
+    },
+    {
+      "type": "heading",
+      "id": "48_07-heading",
+      "text": "Raciocínio clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "48_07",
+      "text": "Interpretar mecanismo, integridade anatômica e estabilidade em conjunto. Radiografia sem fratura evidente não exclui lesão ligamentar/tendínea ou fratura oculta. Documentar função e exame neurovascular antes e depois de imobilização/redução; piora progressiva da dor ou déficit novo muda a urgência. Escolha conservadora versus cirúrgica depende de estabilidade, lesões associadas e demanda funcional, não somente do nome da lesão."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "AAOS — Management of anterior cruciate ligament injuries CPG",
+      "url": "https://www.aaos.org/aclcpg",
+      "year": 2022,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Substitui CPG de 2014; reconstrução precoce quando indicada, antes do aumento de lesão secundária após 3 meses.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "acl",
+      "organization_or_authors": "AAOS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AAOS — Management of anterior cruciate ligament injuries CPG"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG38 — Fractures: non-complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng38",
+      "organization_or_authors": "NICE NG38",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 4,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "markdown": "# Lesão aguda do ligamento cruzado anterior\n\n## Diagnóstico e exames\n\nHistória, exame ligamentar tolerado e neurovascular; excluir fratura conforme avaliação e radiografia. Ressonância esclarece lesões associadas; dor/edema podem limitar exame agudo e exigir reavaliação.\n\n## Tratamento e decisões\n\nControlar dor/edema, recuperar mobilidade e iniciar reabilitação. Alternativas: manejo não operatório em selecionados ou reconstrução conforme instabilidade, atividade e lesões. Quando cirurgia indicada, AAOS 2022 favorece reconstrução precoce, pois risco meniscal/cartilaginoso aumenta após 3 meses.\n\n## Medicamentos e doses\n\nAnalgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa.\n\n## Alternativas e limites\n\nAlternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade.\n\n## Seguimento e sinais de alarme\n\nSeguimento ortopédico e progressão por critérios funcionais; não liberar esporte só por ausência de dor. Joelho bloqueado, déficit neurovascular ou lesão múltipla exige urgência; criança precisa de planejamento que respeite fise.\n\n## Definição e fisiopatologia\n\nLesão após pivô/desaceleração pode causar hemartrose rápida e instabilidade. Menisco/cartilagem associados e maturidade esquelética mudam planejamento; não confundir com luxação multiligamentar.\n\n## Raciocínio clínico\n\nInterpretar mecanismo, integridade anatômica e estabilidade em conjunto. Radiografia sem fratura evidente não exclui lesão ligamentar/tendínea ou fratura oculta. Documentar função e exame neurovascular antes e depois de imobilização/redução; piora progressiva da dor ou déficit novo muda a urgência. Escolha conservadora versus cirúrgica depende de estabilidade, lesões associadas e demanda funcional, não somente do nome da lesão.\n\n## Referências\n\n1. AAOS — Management of anterior cruciate ligament injuries CPG. 2022. https://www.aaos.org/aclcpg\n\n2. NICE NG38 — Fractures: non-complex assessment and management. 2016. https://www.nice.org.uk/guidance/ng38/chapter/recommendations\n\n3. NHS — Paracetamol for adults. 2026. https://www.nhs.uk/medicines/paracetamol-for-adults/\n\n4. NHS — Ibuprofen for adults. 2025. https://www.nhs.uk/medicines/ibuprofen-for-adults/\n"
+}

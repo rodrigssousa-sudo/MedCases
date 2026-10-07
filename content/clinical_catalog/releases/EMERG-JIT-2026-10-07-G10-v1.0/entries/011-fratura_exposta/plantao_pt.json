@@ -1,0 +1,174 @@
+{
+  "mode": "plantao",
+  "language": "pt",
+  "owner": "fratura_exposta",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "ea02e62461710096eefa261bdb5cca6d1aa638514f5a3c64c0a85e8565a09e27",
+  "factIds": [
+    "11_02",
+    "11_04",
+    "11_03",
+    "11_06",
+    "11_05",
+    "11_01",
+    "11_07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "11_02-heading",
+      "text": "Abordagem inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "11_02",
+      "text": "Controlar hemorragia, documentar exame neurovascular, alinhar/imobilizar e cobrir com gaze umedecida em soro e camada oclusiva. Para ossos longos, retropé e mediopé, não irrigar no pronto-socorro antes da excisão da ferida. Não explorar repetidamente."
+    },
+    {
+      "type": "heading",
+      "id": "11_04-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "11_04",
+      "text": "Equipe ortoplástica: excisão imediata se contaminação intensa ou lesão vascular; até 12 horas em alta energia e 24 horas nas demais segundo NG37. Fixação/cobertura definitivas ou estabilização temporária são alternativas conforme tecidos e estado sistêmico."
+    },
+    {
+      "type": "heading",
+      "id": "11_03-heading",
+      "text": "Medicamentos e doses",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "11_03",
+      "text": "Antibiótico IV imediatamente, idealmente até 1 hora da lesão, sem atrasar transferência. Exemplo de protocolo NHS Lothian para adulto: cefuroxima 1,5 g IV inicial. Contaminação agrícola, aquática ou fecal e alergia mudam a cobertura; continuação e dose de administração seguem protocolo institucional e função renal."
+    },
+    {
+      "type": "heading",
+      "id": "11_06-heading",
+      "text": "Segurança e populações especiais",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "11_06",
+      "text": "Quando escolhida cefuroxima IV direta, a bula consultada orienta administração em 3–5 minutos após reconstituição específica da apresentação. Não assumir concentração a partir do volume nominal do diluente; considerar deslocamento de volume. Conferir alergia a betalactâmicos e ajuste renal para doses subsequentes."
+    },
+    {
+      "type": "heading",
+      "id": "11_05-heading",
+      "text": "Internação, alta e escalonamento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "11_05",
+      "text": "Internação/transferência urgente. Vigiar compartimento, perfusão, infecção, função renal e tétano; decisão de amputação é multidisciplinar e não depende somente de escore."
+    },
+    {
+      "type": "heading",
+      "id": "11_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "11_01",
+      "text": "Comunicação de fratura com meio externo, mesmo se ferida pequena ou distante. Classificação de Gustilo depende de energia, tecidos e contaminação, idealmente após exploração/desbridamento; não subestimar por tamanho da pele."
+    },
+    {
+      "type": "heading",
+      "id": "11_07-heading",
+      "text": "Raciocínio clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "11_07",
+      "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG37 — Fractures: complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng37/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fratura exposta, pelve e tratamento ortoplástico.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng37",
+      "organization_or_authors": "NICE NG37",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG37 — Fractures: complex assessment and management"
+    },
+    {
+      "id": 2,
+      "title": "NHS Lothian — Open fractures",
+      "url": "https://www.rightdecisions.scot.nhs.uk/south-east-scotland-major-trauma-guidelines/orthopaedicsplastics/open-fractures/",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Cefuroxima inicial e cirurgia; revisão de janeiro de 2025, validade até 2028. Não importar dose de TIG divergente da norma local.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "open_abx",
+      "organization_or_authors": "NHS Lothian",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS Lothian — Open fractures"
+    },
+    {
+      "id": 3,
+      "title": "CDC — Clinical guidance for wound management to prevent tetanus",
+      "url": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Revisada em 08/09/2026; ferida, vacinação e imunoglobulina.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "tetanus",
+      "organization_or_authors": "CDC",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "CDC — Clinical guidance for wound management to prevent tetanus"
+    },
+    {
+      "id": 4,
+      "title": "DailyMed — Cefuroxime for injection",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=19902965-d2d6-433f-982d-0095014df4e8",
+      "year": null,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Administração intravenosa direta em 3–5 minutos; reconstituição conforme apresentação.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "cef_label",
+      "organization_or_authors": "DailyMed",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "DailyMed — Cefuroxime for injection"
+    },
+    {
+      "id": 5,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "markdown": "# Fratura exposta\n\n## Abordagem inicial\n\nControlar hemorragia, documentar exame neurovascular, alinhar/imobilizar e cobrir com gaze umedecida em soro e camada oclusiva. Para ossos longos, retropé e mediopé, não irrigar no pronto-socorro antes da excisão da ferida. Não explorar repetidamente.\n\n## Tratamento e decisões\n\nEquipe ortoplástica: excisão imediata se contaminação intensa ou lesão vascular; até 12 horas em alta energia e 24 horas nas demais segundo NG37. Fixação/cobertura definitivas ou estabilização temporária são alternativas conforme tecidos e estado sistêmico.\n\n## Medicamentos e doses\n\nAntibiótico IV imediatamente, idealmente até 1 hora da lesão, sem atrasar transferência. Exemplo de protocolo NHS Lothian para adulto: cefuroxima 1,5 g IV inicial. Contaminação agrícola, aquática ou fecal e alergia mudam a cobertura; continuação e dose de administração seguem protocolo institucional e função renal.\n\n## Segurança e populações especiais\n\nQuando escolhida cefuroxima IV direta, a bula consultada orienta administração em 3–5 minutos após reconstituição específica da apresentação. Não assumir concentração a partir do volume nominal do diluente; considerar deslocamento de volume. Conferir alergia a betalactâmicos e ajuste renal para doses subsequentes.\n\n## Internação, alta e escalonamento\n\nInternação/transferência urgente. Vigiar compartimento, perfusão, infecção, função renal e tétano; decisão de amputação é multidisciplinar e não depende somente de escore.\n\n## Definição e fisiopatologia\n\nComunicação de fratura com meio externo, mesmo se ferida pequena ou distante. Classificação de Gustilo depende de energia, tecidos e contaminação, idealmente após exploração/desbridamento; não subestimar por tamanho da pele.\n\n## Raciocínio clínico\n\nA avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.\n\n## Referências\n\n1. NICE NG37 — Fractures: complex assessment and management. 2016. https://www.nice.org.uk/guidance/ng37/chapter/recommendations\n\n2. NHS Lothian — Open fractures. 2025. https://www.rightdecisions.scot.nhs.uk/south-east-scotland-major-trauma-guidelines/orthopaedicsplastics/open-fractures/\n\n3. CDC — Clinical guidance for wound management to prevent tetanus. 2026. https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html\n\n4. DailyMed — Cefuroxime for injection. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=19902965-d2d6-433f-982d-0095014df4e8\n\n5. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n"
+}

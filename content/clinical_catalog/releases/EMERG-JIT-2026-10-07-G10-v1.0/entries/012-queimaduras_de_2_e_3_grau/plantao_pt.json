@@ -1,0 +1,162 @@
+{
+  "mode": "plantao",
+  "language": "pt",
+  "owner": "queimaduras_de_2_e_3_grau",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "c98e80d72b1c42f3f415741f012b1a873e1e04289f9dd1c61abd59fc879ce7cd",
+  "factIds": [
+    "12_02",
+    "12_04",
+    "12_03",
+    "12_05",
+    "12_01",
+    "12_06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "12_02-heading",
+      "text": "Abordagem inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "12_02",
+      "text": "Interromper exposição, retirar adornos/roupa não aderida, resfriar local sem gelo e evitar hipotermia. ABCDE; suspeita de lesão inalatória exige avaliação precoce de via aérea, sem esperar edema obstrutivo. Cobrir com material limpo e acionar centro de queimados."
+    },
+    {
+      "type": "heading",
+      "id": "12_04-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "12_04",
+      "text": "Superficial parcial: curativo adequado e analgesia, com reavaliação da profundidade. Parcial profunda/total: avaliação para excisão e enxertia. Não usar antibiótico sistêmico profilático de rotina; infecção exige investigação e tratamento dirigido."
+    },
+    {
+      "type": "heading",
+      "id": "12_03-heading",
+      "text": "Medicamentos e doses",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "12_03",
+      "text": "Adulto com pelo menos 20% da superfície corporal queimada: ABA 2024 sugere iniciar cristalóide com estimativa de 2 mL × kg × percentual queimado para as primeiras 24 horas. É ponto de partida titulado à perfusão/diurese, contando desde a queimadura, não prescrição fixa. Não extrapolar fórmula adulta à criança."
+    },
+    {
+      "type": "heading",
+      "id": "12_05-heading",
+      "text": "Internação, alta e escalonamento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "12_05",
+      "text": "Internar/transferir por queimadura extensa/profunda, face/mãos/genitais/articulação importante, inalação, dor intratável ou vulnerabilidade. Monitorar balanço, eletrólitos, função renal, temperatura e perfusão de queimadura circunferencial; pediatria usa protocolo próprio e manutenção separada."
+    },
+    {
+      "type": "heading",
+      "id": "12_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "12_01",
+      "text": "Espessura parcial preserva parte da derme; total destrói a derme e pode ter pouca dor. Profundidade e área, mecanismo, inalação e comorbidades determinam gravidade; não contar eritema superficial na área para reposição."
+    },
+    {
+      "type": "heading",
+      "id": "12_06-heading",
+      "text": "Raciocínio clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "12_06",
+      "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "ABA — Clinical practice guidelines on burn shock resuscitation",
+      "url": "https://academic.oup.com/jbcr/article/45/3/565/7458089",
+      "year": 2024,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Adultos com área queimada de pelo menos 20%; fórmula inicial de 2 mL/kg/% não é volume fixo nem regra pediátrica.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "burn",
+      "organization_or_authors": "ABA",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "ABA — Clinical practice guidelines on burn shock resuscitation"
+    },
+    {
+      "id": 2,
+      "title": "RCH — Burns",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Burns/",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Queimadura pediátrica, elétrica/química e reposição; separar protocolo adulto.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "burn_peds",
+      "organization_or_authors": "RCH",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "RCH — Burns"
+    },
+    {
+      "id": 3,
+      "title": "NSW ACI — Burn injury emergency department flow chart",
+      "url": "https://aci.health.nsw.gov.au/networks/burn-injury/resources/patient-management/ed-flow-chart",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Encaminhamento e manejo inicial de queimaduras.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "burn_nsw",
+      "organization_or_authors": "NSW ACI",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NSW ACI — Burn injury emergency department flow chart"
+    },
+    {
+      "id": 4,
+      "title": "CDC — Clinical guidance for wound management to prevent tetanus",
+      "url": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Revisada em 08/09/2026; ferida, vacinação e imunoglobulina.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "tetanus",
+      "organization_or_authors": "CDC",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "CDC — Clinical guidance for wound management to prevent tetanus"
+    },
+    {
+      "id": 5,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "markdown": "# Queimaduras de espessura parcial e total\n\n## Abordagem inicial\n\nInterromper exposição, retirar adornos/roupa não aderida, resfriar local sem gelo e evitar hipotermia. ABCDE; suspeita de lesão inalatória exige avaliação precoce de via aérea, sem esperar edema obstrutivo. Cobrir com material limpo e acionar centro de queimados.\n\n## Tratamento e decisões\n\nSuperficial parcial: curativo adequado e analgesia, com reavaliação da profundidade. Parcial profunda/total: avaliação para excisão e enxertia. Não usar antibiótico sistêmico profilático de rotina; infecção exige investigação e tratamento dirigido.\n\n## Medicamentos e doses\n\nAdulto com pelo menos 20% da superfície corporal queimada: ABA 2024 sugere iniciar cristalóide com estimativa de 2 mL × kg × percentual queimado para as primeiras 24 horas. É ponto de partida titulado à perfusão/diurese, contando desde a queimadura, não prescrição fixa. Não extrapolar fórmula adulta à criança.\n\n## Internação, alta e escalonamento\n\nInternar/transferir por queimadura extensa/profunda, face/mãos/genitais/articulação importante, inalação, dor intratável ou vulnerabilidade. Monitorar balanço, eletrólitos, função renal, temperatura e perfusão de queimadura circunferencial; pediatria usa protocolo próprio e manutenção separada.\n\n## Definição e fisiopatologia\n\nEspessura parcial preserva parte da derme; total destrói a derme e pode ter pouca dor. Profundidade e área, mecanismo, inalação e comorbidades determinam gravidade; não contar eritema superficial na área para reposição.\n\n## Raciocínio clínico\n\nA avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.\n\n## Referências\n\n1. ABA — Clinical practice guidelines on burn shock resuscitation. 2024. https://academic.oup.com/jbcr/article/45/3/565/7458089\n\n2. RCH — Burns. https://www.rch.org.au/clinicalguide/guideline_index/Burns/\n\n3. NSW ACI — Burn injury emergency department flow chart. 2025. https://aci.health.nsw.gov.au/networks/burn-injury/resources/patient-management/ed-flow-chart\n\n4. CDC — Clinical guidance for wound management to prevent tetanus. 2026. https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html\n\n5. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n"
+}

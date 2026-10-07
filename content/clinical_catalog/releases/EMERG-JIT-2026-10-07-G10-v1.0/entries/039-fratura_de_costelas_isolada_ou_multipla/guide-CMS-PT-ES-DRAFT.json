@@ -1,0 +1,300 @@
+{
+  "schema_version": "1.1",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "status": "DRAFT_ADMIN",
+  "human_approved": false,
+  "human_approval_note": null,
+  "owner": "fratura_de_costelas_isolada_ou_multipla",
+  "canonicalPayloadSha256": "8810159cbe362389a64e4e24cf7cd4908e3d6851baccab62fa7e1bcd78ea298d",
+  "publicationAuthorized": false,
+  "reviewer": null,
+  "review_date": "2026-10-07",
+  "cover": null,
+  "references": [
+    {
+      "id": 1,
+      "title": "WSES-AAST — Thoracic trauma guidelines",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12522690/",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Trauma torácico, contusão, parede torácica e lesões penetrantes; não diretriz de pneumomediastino espontâneo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "thorax",
+      "organization_or_authors": "WSES-AAST",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "WSES-AAST — Thoracic trauma guidelines"
+    },
+    {
+      "id": 2,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "pt": {
+    "title": "Fraturas de costelas",
+    "subtitle": "Guia clínico — candidato para revisão",
+    "summary": "Dor reduz ventilação/tosse e favorece atelectasia/pneumonia. Múltiplas fraturas, idade avançada ou reserva pulmonar baixa elevam risco, mesmo sem tórax instável.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "39_01-heading",
+        "text": "Definição e fisiopatologia",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "39_01",
+        "text": "Dor reduz ventilação/tosse e favorece atelectasia/pneumonia. Múltiplas fraturas, idade avançada ou reserva pulmonar baixa elevam risco, mesmo sem tórax instável."
+      },
+      {
+        "type": "heading",
+        "id": "39_02-heading",
+        "text": "Diagnóstico e exames",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "39_02",
+        "text": "Avaliar esforço, saturação e lesões pleurais; imagem conforme gravidade/mecanismo. Não limitar avaliação a contar costelas; buscar contusão, pneumotórax e lesão abdominal associada."
+      },
+      {
+        "type": "heading",
+        "id": "39_03-heading",
+        "text": "Tratamento e decisões",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "39_03",
+        "text": "Analgesia e incentivo à respiração/tosse/mobilização; alternativa regional se analgesia sistêmica insuficiente. Fixação selecionada em padrões instáveis ou benefício esperado. Não usar faixa apertada que limite expansão."
+      },
+      {
+        "type": "heading",
+        "id": "39_04-heading",
+        "text": "Internação, alta e escalonamento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "39_04",
+        "text": "Alta apenas com oxigenação, ventilação e dor adequadas e retorno confiável. Internar hipoxemia, múltiplas lesões relevantes, fragilidade ou dor que impede ventilação; reavaliar piora respiratória/febre."
+      },
+      {
+        "type": "heading",
+        "id": "39_05-heading",
+        "text": "Medicamentos e doses",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "39_05",
+        "text": "Analgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa."
+      },
+      {
+        "type": "heading",
+        "id": "39_06-heading",
+        "text": "Alternativas e limites",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "39_06",
+        "text": "Alternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "WSES-AAST — Thoracic trauma guidelines",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12522690/",
+        "year": 2025,
+        "authorityStatus": "AUTHORITATIVE_FINAL",
+        "scope": "Trauma torácico, contusão, parede torácica e lesões penetrantes; não diretriz de pneumomediastino espontâneo.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "thorax",
+        "organization_or_authors": "WSES-AAST",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "WSES-AAST — Thoracic trauma guidelines"
+      },
+      {
+        "id": 2,
+        "title": "NHS — Paracetamol for adults",
+        "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+        "year": 2026,
+        "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+        "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "para",
+        "organization_or_authors": "NHS",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NHS — Paracetamol for adults"
+      },
+      {
+        "id": 3,
+        "title": "NHS — Ibuprofen for adults",
+        "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+        "year": 2025,
+        "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+        "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ibu",
+        "organization_or_authors": "NHS",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NHS — Ibuprofen for adults"
+      }
+    ]
+  },
+  "es": {
+    "title": "Fracturas costales",
+    "subtitle": "Guía clínica — candidato para revisión",
+    "summary": "Dolor reduce ventilación/tos y favorece atelectasia/neumonía. Fracturas múltiples, edad avanzada o baja reserva pulmonar aumentan riesgo aun sin tórax inestable.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "39_01-heading",
+        "text": "Definición y fisiopatología",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "39_01",
+        "text": "Dolor reduce ventilación/tos y favorece atelectasia/neumonía. Fracturas múltiples, edad avanzada o baja reserva pulmonar aumentan riesgo aun sin tórax inestable."
+      },
+      {
+        "type": "heading",
+        "id": "39_02-heading",
+        "text": "Diagnóstico y estudios",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "39_02",
+        "text": "Valorar esfuerzo, saturación y lesión pleural; imagen según gravedad/mecanismo. No limitar evaluación a contar costillas; buscar contusión, neumotórax y lesión abdominal asociada."
+      },
+      {
+        "type": "heading",
+        "id": "39_03-heading",
+        "text": "Tratamiento y decisiones",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "39_03",
+        "text": "Analgesia e incentivo a respiración/tos/movilización; alternativa regional si analgesia sistémica insuficiente. Fijación seleccionada en patrones inestables o beneficio esperado. No usar faja ajustada que limite expansión."
+      },
+      {
+        "type": "heading",
+        "id": "39_04-heading",
+        "text": "Internación, alta y escalamiento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "39_04",
+        "text": "Alta solamente con oxigenación, ventilación y dolor adecuados y seguimiento fiable. Internar hipoxemia, múltiples lesiones relevantes, fragilidad o dolor que impide ventilación; reevaluar empeoramiento respiratorio/fiebre."
+      },
+      {
+        "type": "heading",
+        "id": "39_05-heading",
+        "text": "Medicamentos y dosis",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "39_05",
+        "text": "Analgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal."
+      },
+      {
+        "type": "heading",
+        "id": "39_06-heading",
+        "text": "Alternativas y límites",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "39_06",
+        "text": "Alternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "WSES-AAST — Thoracic trauma guidelines",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12522690/",
+        "year": 2025,
+        "authorityStatus": "AUTHORITATIVE_FINAL",
+        "scope": "Trauma torácico, contusão, parede torácica e lesões penetrantes; não diretriz de pneumomediastino espontâneo.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "thorax",
+        "organization_or_authors": "WSES-AAST",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "WSES-AAST — Thoracic trauma guidelines"
+      },
+      {
+        "id": 2,
+        "title": "NHS — Paracetamol for adults",
+        "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+        "year": 2026,
+        "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+        "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "para",
+        "organization_or_authors": "NHS",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NHS — Paracetamol for adults"
+      },
+      {
+        "id": 3,
+        "title": "NHS — Ibuprofen for adults",
+        "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+        "year": 2025,
+        "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+        "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ibu",
+        "organization_or_authors": "NHS",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NHS — Ibuprofen for adults"
+      }
+    ]
+  }
+}

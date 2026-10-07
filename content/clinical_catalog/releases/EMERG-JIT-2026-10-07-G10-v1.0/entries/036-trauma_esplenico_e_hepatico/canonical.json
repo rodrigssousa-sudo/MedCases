@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "trauma_esplenico_e_hepatico",
+  "title": {
+    "pt": "Trauma esplênico e hepático",
+    "es": "Traumatismo esplénico y hepático"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "36_01",
+      "section": "concept",
+      "pt": "Órgãos sólidos podem sangrar sem sinais peritoneais iniciais; estabilidade hemodinâmica e lesões associadas orientam decisão além do grau anatômico. Sangramento tardio permanece possível.",
+      "es": "Órganos sólidos pueden sangrar sin signos peritoneales iniciales; estabilidad hemodinámica y lesiones asociadas orientan decisión además del grado anatómico. Sangrado tardío sigue siendo posible.",
+      "sources": [
+        "liver",
+        "ng39",
+        "spleen"
+      ]
+    },
+    {
+      "id": "36_02",
+      "section": "diagnosis",
+      "pt": "ABCDE, hemograma seriado e tomografia com contraste no estável. FAST ajuda na triagem instável, mas não determina sozinho grau nem exclui lesão.",
+      "es": "ABCDE, hemograma seriado y tomografía contrastada en estable. FAST ayuda en triaje inestable, pero no determina solo grado ni excluye lesión.",
+      "sources": [
+        "liver",
+        "ng39",
+        "spleen"
+      ]
+    },
+    {
+      "id": "36_03",
+      "section": "treatment",
+      "pt": "Estável sem outra indicação cirúrgica: manejo não operatório em centro capaz de vigilância/cirurgia imediata. Alternativa: embolização em sangramento arterial selecionado; instabilidade não responsiva/peritonite: cirurgia. Blush infantil não é indicação automática idêntica à adulta.",
+      "es": "Estable sin otra indicación operatoria: manejo no operatorio en centro con vigilancia/cirugía inmediata. Alternativa: embolización por sangrado arterial seleccionado; inestabilidad no respondiente/peritonitis: cirugía. Blush infantil no implica indicación automática idéntica a la adulta.",
+      "sources": [
+        "liver",
+        "ng39",
+        "spleen"
+      ]
+    },
+    {
+      "id": "36_04",
+      "section": "followup",
+      "pt": "Internar e reavaliar dor, hemoglobina e perfusão; investigar piora, febre ou icterícia/coleção. Retorno à atividade conforme órgão/grau e plano especializado. Se esplenectomia, vacinação e prevenção de infecção são parte obrigatória do seguimento.",
+      "es": "Internar y reevaluar dolor, hemoglobina y perfusión; estudiar empeoramiento, fiebre o ictericia/colección. Retorno a actividad según órgano/grado y plan especializado. Tras esplenectomía, vacunación y prevención de infección integran seguimiento obligatorio.",
+      "sources": [
+        "liver",
+        "ng39",
+        "spleen"
+      ]
+    },
+    {
+      "id": "36_05",
+      "section": "monitoring",
+      "pt": "Manejo conservador não significa ausência de tratamento: reavaliar sinais vitais, dor, hemoglobina e necessidade de transfusão. Imagem de controle e prevenção de trombose dependem do grau e estabilidade. Após esplenectomia, organizar vacinação e prevenção de infecção conforme protocolo; não extrapolar prazo de retorno esportivo de adulto para criança.",
+      "es": "Manejo conservador no significa ausencia de tratamiento: reevaluar signos vitales, dolor, hemoglobina y necesidad transfusional. Imagen de control y prevención de trombosis según grado y estabilidad. Tras esplenectomía, organizar vacunación y prevención de infección según protocolo; no extrapolar retorno deportivo adulto a niño.",
+      "sources": [
+        "spleen"
+      ]
+    },
+    {
+      "id": "36_06",
+      "section": "reasoning",
+      "pt": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.",
+      "es": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.",
+      "sources": [
+        "ng39"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "WSES — Liver trauma guidelines",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7106618/",
+      "year": 2020,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Tratamento não operatório selecionado, cirurgia/embolização, estabilidade e infraestrutura.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "liver",
+      "organization_or_authors": "WSES",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "WSES — Liver trauma guidelines"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    },
+    {
+      "id": 3,
+      "title": "WSES — Follow-up strategies for patients with splenic trauma managed non-operatively",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9560023/",
+      "year": 2022,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Consenso de seguimento; manejo conservador somente com vigilância e acesso a intervenção.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "spleen",
+      "organization_or_authors": "WSES",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "WSES — Follow-up strategies for patients with splenic trauma managed non-operatively"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

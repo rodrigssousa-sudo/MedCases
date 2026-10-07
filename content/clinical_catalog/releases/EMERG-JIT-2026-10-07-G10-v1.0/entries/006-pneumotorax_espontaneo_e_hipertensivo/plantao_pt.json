@@ -1,0 +1,132 @@
+{
+  "mode": "plantao",
+  "language": "pt",
+  "owner": "pneumotorax_espontaneo_e_hipertensivo",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "eec36855eb86e4816b37726e21ecc6b20863a6a3e7e1c403d53843af023b4fad",
+  "factIds": [
+    "06_02",
+    "06_03",
+    "06_04",
+    "06_05",
+    "06_01",
+    "06_06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "06_02-heading",
+      "text": "Abordagem inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "06_02",
+      "text": "Dispneia, dor pleurítica e redução unilateral de murmúrio; avaliar choque e insuficiência respiratória. Se tensão com instabilidade ou comprometimento respiratório grave, descompressão imediata por equipe habilitada e drenagem, sem esperar radiografia."
+    },
+    {
+      "type": "heading",
+      "id": "06_03-heading",
+      "text": "Diagnóstico e exames",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "06_03",
+      "text": "No estável, radiografia ou ultrassom por operador treinado; tomografia se dúvida/complexidade. Diferenciais perigosos: TEP, síndrome coronariana, dissecção e contusão/hemotórax no trauma."
+    },
+    {
+      "type": "heading",
+      "id": "06_04-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "06_04",
+      "text": "Primário pouco sintomático e estável: pode haver manejo conservador com seguimento confiável. Alternativas conforme sintomas/risco/recursos: manejo ambulatorial com dispositivo, aspiração ou dreno. Secundário, hipóxia, bilateralidade ou instabilidade favorecem internação e intervenção."
+    },
+    {
+      "type": "heading",
+      "id": "06_05-heading",
+      "text": "Segurança e populações especiais",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "06_05",
+      "text": "Oxigênio para hipoxemia, com alvo individual na doença com retenção de dióxido de carbono. Monitorar esforço, saturação, pressão e fuga aérea. Persistência/recorrência pode exigir cirurgia/pleurodese; orientar retorno imediato, tabagismo e restrições de voo/mergulho."
+    },
+    {
+      "type": "heading",
+      "id": "06_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "06_01",
+      "text": "Ar pleural reduz expansão pulmonar; sob tensão compromete retorno venoso. Primário ocorre sem doença pulmonar conhecida, secundário tem maior risco pela reserva reduzida. Tensão é diagnóstico clínico no paciente instável."
+    },
+    {
+      "type": "heading",
+      "id": "06_06-heading",
+      "text": "Raciocínio clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "06_06",
+      "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "BTS — Guideline for pleural disease",
+      "url": "https://thorax.bmj.com/content/78/Suppl_3/s1",
+      "year": 2023,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Pneumotórax espontâneo adulto; seleção por sintomas, risco e recursos, não somente tamanho.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "bts",
+      "organization_or_authors": "BTS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "BTS — Guideline for pleural disease"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    },
+    {
+      "id": 3,
+      "title": "WSES-AAST — Thoracic trauma guidelines",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12522690/",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Trauma torácico, contusão, parede torácica e lesões penetrantes; não diretriz de pneumomediastino espontâneo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "thorax",
+      "organization_or_authors": "WSES-AAST",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "WSES-AAST — Thoracic trauma guidelines"
+    }
+  ],
+  "markdown": "# Pneumotórax espontâneo e hipertensivo\n\n## Abordagem inicial\n\nDispneia, dor pleurítica e redução unilateral de murmúrio; avaliar choque e insuficiência respiratória. Se tensão com instabilidade ou comprometimento respiratório grave, descompressão imediata por equipe habilitada e drenagem, sem esperar radiografia.\n\n## Diagnóstico e exames\n\nNo estável, radiografia ou ultrassom por operador treinado; tomografia se dúvida/complexidade. Diferenciais perigosos: TEP, síndrome coronariana, dissecção e contusão/hemotórax no trauma.\n\n## Tratamento e decisões\n\nPrimário pouco sintomático e estável: pode haver manejo conservador com seguimento confiável. Alternativas conforme sintomas/risco/recursos: manejo ambulatorial com dispositivo, aspiração ou dreno. Secundário, hipóxia, bilateralidade ou instabilidade favorecem internação e intervenção.\n\n## Segurança e populações especiais\n\nOxigênio para hipoxemia, com alvo individual na doença com retenção de dióxido de carbono. Monitorar esforço, saturação, pressão e fuga aérea. Persistência/recorrência pode exigir cirurgia/pleurodese; orientar retorno imediato, tabagismo e restrições de voo/mergulho.\n\n## Definição e fisiopatologia\n\nAr pleural reduz expansão pulmonar; sob tensão compromete retorno venoso. Primário ocorre sem doença pulmonar conhecida, secundário tem maior risco pela reserva reduzida. Tensão é diagnóstico clínico no paciente instável.\n\n## Raciocínio clínico\n\nA avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.\n\n## Referências\n\n1. BTS — Guideline for pleural disease. 2023. https://thorax.bmj.com/content/78/Suppl_3/s1\n\n2. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n\n3. WSES-AAST — Thoracic trauma guidelines. 2025. https://pmc.ncbi.nlm.nih.gov/articles/PMC12522690/\n"
+}

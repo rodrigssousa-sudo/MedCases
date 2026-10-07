@@ -1,0 +1,159 @@
+{
+  "mode": "plantao",
+  "language": "es",
+  "owner": "luxacao_anterior_de_ombro",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "dc8307234123e94f9bc584ebdc5d791c30e6ffd83235e79c2cf89c0e237c263b",
+  "factIds": [
+    "02_02",
+    "02_03",
+    "02_05",
+    "02_06",
+    "02_04",
+    "02_01",
+    "02_07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "02_02-heading",
+      "text": "Diagnóstico y estudios",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "02_02",
+      "text": "Examinar pulso y sensibilidad lateral del hombro antes y después de la reducción. La radiografía confirma dirección y fractura asociada; no forzar maniobras en una fractura-luxación. El compromiso vascular exige atención urgente."
+    },
+    {
+      "type": "heading",
+      "id": "02_03-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "02_03",
+      "text": "Reducción cerrada suave por profesional capacitado, con analgesia y anestesia/sedación apropiadas. Alternativa: reducción quirúrgica cuando sea irreductible o exista lesión que la requiera. Después, confirmar alineación y usar cabestrillo seguido de rehabilitación."
+    },
+    {
+      "type": "heading",
+      "id": "02_05-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "02_05",
+      "text": "Analgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal."
+    },
+    {
+      "type": "heading",
+      "id": "02_06-heading",
+      "text": "Alternativas y límites",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "02_06",
+      "text": "Alternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad."
+    },
+    {
+      "type": "heading",
+      "id": "02_04-heading",
+      "text": "Internación, alta y escalamiento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "02_04",
+      "text": "Derivar a traumatología; en mayores valorar lesión del manguito y en jóvenes recurrencia. Alta solamente tras reducción confirmada, examen neurovascular documentado y plan de seguimiento."
+    },
+    {
+      "type": "heading",
+      "id": "02_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "02_01",
+      "text": "Pérdida de congruencia glenohumeral; puede lesionar labrum, manguito rotador, nervio axilar o vasos. La fractura-luxación y la luxación posterior son diagnósticos diferentes."
+    },
+    {
+      "type": "heading",
+      "id": "02_07-heading",
+      "text": "Razonamiento clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "02_07",
+      "text": "Interpretar mecanismo, integridad anatómica y estabilidad conjuntamente. Radiografía sin fractura visible no excluye lesión ligamentaria/tendinosa o fractura oculta. Documentar función y examen neurovascular antes y después de inmovilización/reducción; dolor progresivo o déficit nuevo cambia urgencia. Elección conservadora versus quirúrgica depende de estabilidad, lesiones asociadas y demanda funcional, no solo del nombre de lesión."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "AAOS OrthoInfo — dislocated shoulder",
+      "url": "https://www.orthoinfo.org/diseases--conditions/dislocated-shoulder/",
+      "year": null,
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aaos_shoulder",
+      "organization_or_authors": "AAOS OrthoInfo",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AAOS OrthoInfo — dislocated shoulder"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG38 — Fractures: non-complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng38",
+      "organization_or_authors": "NICE NG38",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 4,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "markdown": "# Luxación anterior del hombro\n\n## Diagnóstico y estudios\n\nExaminar pulso y sensibilidad lateral del hombro antes y después de la reducción. La radiografía confirma dirección y fractura asociada; no forzar maniobras en una fractura-luxación. El compromiso vascular exige atención urgente.\n\n## Tratamiento y decisiones\n\nReducción cerrada suave por profesional capacitado, con analgesia y anestesia/sedación apropiadas. Alternativa: reducción quirúrgica cuando sea irreductible o exista lesión que la requiera. Después, confirmar alineación y usar cabestrillo seguido de rehabilitación.\n\n## Medicamentos y dosis\n\nAnalgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal.\n\n## Alternativas y límites\n\nAlternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad.\n\n## Internación, alta y escalamiento\n\nDerivar a traumatología; en mayores valorar lesión del manguito y en jóvenes recurrencia. Alta solamente tras reducción confirmada, examen neurovascular documentado y plan de seguimiento.\n\n## Definición y fisiopatología\n\nPérdida de congruencia glenohumeral; puede lesionar labrum, manguito rotador, nervio axilar o vasos. La fractura-luxación y la luxación posterior son diagnósticos diferentes.\n\n## Razonamiento clínico\n\nInterpretar mecanismo, integridad anatómica y estabilidad conjuntamente. Radiografía sin fractura visible no excluye lesión ligamentaria/tendinosa o fractura oculta. Documentar función y examen neurovascular antes y después de inmovilización/reducción; dolor progresivo o déficit nuevo cambia urgencia. Elección conservadora versus quirúrgica depende de estabilidad, lesiones asociadas y demanda funcional, no solo del nombre de lesión.\n\n## Referencias\n\n1. AAOS OrthoInfo — dislocated shoulder. https://www.orthoinfo.org/diseases--conditions/dislocated-shoulder/\n\n2. NICE NG38 — Fractures: non-complex assessment and management. 2016. https://www.nice.org.uk/guidance/ng38/chapter/recommendations\n\n3. NHS — Paracetamol for adults. 2026. https://www.nhs.uk/medicines/paracetamol-for-adults/\n\n4. NHS — Ibuprofen for adults. 2025. https://www.nhs.uk/medicines/ibuprofen-for-adults/\n"
+}

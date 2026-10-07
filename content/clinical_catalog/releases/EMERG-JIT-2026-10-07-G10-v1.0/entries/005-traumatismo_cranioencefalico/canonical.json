@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "traumatismo_cranioencefalico",
+  "title": {
+    "pt": "Traumatismo cranioencefálico",
+    "es": "Traumatismo craneoencefálico"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "05_01",
+      "section": "concept",
+      "pt": "Lesão primária do impacto pode ser agravada por hipóxia, hipotensão e hipertensão intracraniana. Glasgow após estabilização: leve 13–15, moderado 9–12, grave 3–8. Inclui fratura de base de crânio como lesão associada, sem outro owner.",
+      "es": "La lesión primaria puede agravarse por hipoxia, hipotensión e hipertensión intracraneal. Glasgow tras estabilización: leve 13–15, moderado 9–12, grave 3–8. Incluye fractura de base de cráneo como lesión asociada, sin otro owner.",
+      "sources": [
+        "head",
+        "tbi"
+      ]
+    },
+    {
+      "id": "05_02",
+      "section": "initial",
+      "pt": "ABCDE, proteção cervical quando indicada, glicemia e Glasgow/pupilas seriados. Glasgow de 8 ou menos exige avaliação imediata para via aérea definitiva por equipe habilitada. Não atribuir alteração de consciência a álcool antes de excluir trauma grave.",
+      "es": "ABCDE, protección cervical cuando corresponda, glucemia y Glasgow/pupilas seriados. Glasgow de 8 o menos exige evaluación inmediata para vía aérea definitiva por equipo capacitado. No atribuir alteración de conciencia al alcohol sin excluir trauma grave.",
+      "sources": [
+        "head",
+        "tbi"
+      ]
+    },
+    {
+      "id": "05_03",
+      "section": "diagnosis",
+      "pt": "Em pessoas de 16 anos ou mais, tomografia em até 1 hora se Glasgow inicial até 12, Glasgow abaixo de 15 após 2 horas, fratura aberta/deprimida ou basal suspeita, convulsão pós-trauma, déficit focal ou mais de um vômito. Crianças têm critérios próprios; não aplicar esta lista adulta.",
+      "es": "En personas de 16 años o más, tomografía hasta 1 hora si Glasgow inicial hasta 12, Glasgow menor de 15 después de 2 horas, sospecha de fractura abierta/hundida o basal, convulsión postraumática, déficit focal o más de un vómito. Niños tienen criterios propios; no aplicar esta lista adulta.",
+      "sources": [
+        "head",
+        "tbi"
+      ]
+    },
+    {
+      "id": "05_04",
+      "section": "treatment",
+      "pt": "Leve estável: observação e orientação de retorno, conforme imagem/risco. Moderado/grave, deterioração ou fístula liquórica: neurocirurgia e internação. Hipertensão intracraniana requer protocolo neurocrítico, possível osmoterapia ou drenagem/cirurgia; não usar corticoide nem osmoterapia programada indiscriminadamente.",
+      "es": "Leve estable: observación e instrucciones de retorno según imagen/riesgo. Moderado/grave, deterioro o fístula de líquido cefalorraquídeo: neurocirugía e internación. La hipertensión intracraneal requiere protocolo neurocrítico, posible osmoterapia o drenaje/cirugía; no usar corticoides ni osmoterapia programada indiscriminada.",
+      "sources": [
+        "head",
+        "tbi"
+      ]
+    },
+    {
+      "id": "05_05",
+      "section": "safety",
+      "pt": "Sinais basais: equimose periorbitária/retroauricular, hemotímpano ou saída de líquido pelo nariz/ouvido. Evitar instrumentação nasal se suspeita de fratura basal. Monitorar oxigenação, pressão, consciência, convulsões e sódio/função renal quando usados agentes osmóticos.",
+      "es": "Signos basales: equimosis periorbitaria/retroauricular, hemotímpano o salida de líquido por nariz/oído. Evitar instrumentación nasal ante sospecha basal. Monitorizar oxigenación, presión, conciencia, convulsiones y sodio/función renal si se usan agentes osmóticos.",
+      "sources": [
+        "head",
+        "tbi"
+      ]
+    },
+    {
+      "id": "05_06",
+      "section": "disposition",
+      "pt": "Alta apenas com consciência no basal, avaliação de risco concluída, cuidador e instruções escritas. Retornar por piora de cefaleia, vômitos, sonolência, déficit ou convulsão; retorno gradual a atividades e avaliação de sintomas persistentes.",
+      "es": "Alta solamente con conciencia basal, riesgo evaluado, cuidador e instrucciones escritas. Volver por cefalea creciente, vómitos, somnolencia, déficit o convulsión; regreso gradual a actividades y evaluación de síntomas persistentes.",
+      "sources": [
+        "head",
+        "tbi"
+      ]
+    },
+    {
+      "id": "05_07",
+      "section": "reasoning",
+      "pt": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.",
+      "es": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.",
+      "sources": [
+        "ng39"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG232 — Head injury: assessment and early management",
+      "url": "https://www.nice.org.uk/guidance/ng232/chapter/recommendations",
+      "year": 2023,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Critérios adultos e pediátricos são diferentes; tabela de tomografia consultada.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "head",
+      "organization_or_authors": "NICE NG232",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG232 — Head injury: assessment and early management"
+    },
+    {
+      "id": 2,
+      "title": "ACS — Best practices guidelines: the management of traumatic brain injury",
+      "url": "https://www.facs.org/media/vgfgjpfk/best-practices-guidelines-traumatic-brain-injury.pdf",
+      "year": 2024,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Revisão de 2024; prevenção de lesão secundária, escalonamento da hipertensão intracraniana e reabilitação.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "tbi",
+      "organization_or_authors": "ACS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "ACS — Best practices guidelines: the management of traumatic brain injury"
+    },
+    {
+      "id": 3,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

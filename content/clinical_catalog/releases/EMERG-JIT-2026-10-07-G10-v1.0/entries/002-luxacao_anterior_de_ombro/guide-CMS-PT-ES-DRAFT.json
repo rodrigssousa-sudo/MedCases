@@ -1,0 +1,367 @@
+{
+  "schema_version": "1.1",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "status": "DRAFT_ADMIN",
+  "human_approved": false,
+  "human_approval_note": null,
+  "owner": "luxacao_anterior_de_ombro",
+  "canonicalPayloadSha256": "dc8307234123e94f9bc584ebdc5d791c30e6ffd83235e79c2cf89c0e237c263b",
+  "publicationAuthorized": false,
+  "reviewer": null,
+  "review_date": "2026-10-07",
+  "cover": null,
+  "references": [
+    {
+      "id": 1,
+      "title": "AAOS OrthoInfo — dislocated shoulder",
+      "url": "https://www.orthoinfo.org/diseases--conditions/dislocated-shoulder/",
+      "year": null,
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aaos_shoulder",
+      "organization_or_authors": "AAOS OrthoInfo",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AAOS OrthoInfo — dislocated shoulder"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG38 — Fractures: non-complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng38",
+      "organization_or_authors": "NICE NG38",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 4,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "pt": {
+    "title": "Luxação anterior do ombro",
+    "subtitle": "Guia clínico — candidato para revisão",
+    "summary": "Perda da congruência glenoumeral; pode lesar labrum, manguito rotador, nervo axilar ou vasos. Fratura-luxação e luxação posterior são diagnósticos diferentes.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "02_01-heading",
+        "text": "Definição e fisiopatologia",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "02_01",
+        "text": "Perda da congruência glenoumeral; pode lesar labrum, manguito rotador, nervo axilar ou vasos. Fratura-luxação e luxação posterior são diagnósticos diferentes."
+      },
+      {
+        "type": "heading",
+        "id": "02_02-heading",
+        "text": "Diagnóstico e exames",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "02_02",
+        "text": "Examinar pulso e sensibilidade lateral do ombro antes e após redução. Radiografia confirma direção e fratura associada; não forçar manobra em fratura-luxação. Compromisso vascular exige atendimento urgente."
+      },
+      {
+        "type": "heading",
+        "id": "02_03-heading",
+        "text": "Tratamento e decisões",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "02_03",
+        "text": "Redução fechada gentil por profissional habilitado, com analgesia e anestesia/sedação apropriadas. Alternativa: redução cirúrgica quando irredutível ou associada a lesão que a exija. Após redução, confirmar alinhamento e usar tipoia seguida de reabilitação."
+      },
+      {
+        "type": "heading",
+        "id": "02_04-heading",
+        "text": "Internação, alta e escalonamento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "02_04",
+        "text": "Encaminhar para ortopedia; idosos exigem atenção a lesão do manguito e jovens a recorrência. Alta apenas após redução confirmada, exame neurovascular documentado e plano de seguimento."
+      },
+      {
+        "type": "heading",
+        "id": "02_05-heading",
+        "text": "Medicamentos e doses",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "02_05",
+        "text": "Analgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa."
+      },
+      {
+        "type": "heading",
+        "id": "02_06-heading",
+        "text": "Alternativas e limites",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "02_06",
+        "text": "Alternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade."
+      },
+      {
+        "type": "heading",
+        "id": "02_07-heading",
+        "text": "Raciocínio clínico",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "02_07",
+        "text": "Interpretar mecanismo, integridade anatômica e estabilidade em conjunto. Radiografia sem fratura evidente não exclui lesão ligamentar/tendínea ou fratura oculta. Documentar função e exame neurovascular antes e depois de imobilização/redução; piora progressiva da dor ou déficit novo muda a urgência. Escolha conservadora versus cirúrgica depende de estabilidade, lesões associadas e demanda funcional, não somente do nome da lesão."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "AAOS OrthoInfo — dislocated shoulder",
+        "url": "https://www.orthoinfo.org/diseases--conditions/dislocated-shoulder/",
+        "year": null,
+        "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+        "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "aaos_shoulder",
+        "organization_or_authors": "AAOS OrthoInfo",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "AAOS OrthoInfo — dislocated shoulder"
+      },
+      {
+        "id": 2,
+        "title": "NICE NG38 — Fractures: non-complex assessment and management",
+        "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng38",
+        "organization_or_authors": "NICE NG38",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+      },
+      {
+        "id": 3,
+        "title": "NHS — Paracetamol for adults",
+        "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+        "year": 2026,
+        "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+        "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "para",
+        "organization_or_authors": "NHS",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NHS — Paracetamol for adults"
+      },
+      {
+        "id": 4,
+        "title": "NHS — Ibuprofen for adults",
+        "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+        "year": 2025,
+        "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+        "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ibu",
+        "organization_or_authors": "NHS",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NHS — Ibuprofen for adults"
+      }
+    ]
+  },
+  "es": {
+    "title": "Luxación anterior del hombro",
+    "subtitle": "Guía clínica — candidato para revisión",
+    "summary": "Pérdida de congruencia glenohumeral; puede lesionar labrum, manguito rotador, nervio axilar o vasos. La fractura-luxación y la luxación posterior son diagnósticos diferentes.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "02_01-heading",
+        "text": "Definición y fisiopatología",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "02_01",
+        "text": "Pérdida de congruencia glenohumeral; puede lesionar labrum, manguito rotador, nervio axilar o vasos. La fractura-luxación y la luxación posterior son diagnósticos diferentes."
+      },
+      {
+        "type": "heading",
+        "id": "02_02-heading",
+        "text": "Diagnóstico y estudios",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "02_02",
+        "text": "Examinar pulso y sensibilidad lateral del hombro antes y después de la reducción. La radiografía confirma dirección y fractura asociada; no forzar maniobras en una fractura-luxación. El compromiso vascular exige atención urgente."
+      },
+      {
+        "type": "heading",
+        "id": "02_03-heading",
+        "text": "Tratamiento y decisiones",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "02_03",
+        "text": "Reducción cerrada suave por profesional capacitado, con analgesia y anestesia/sedación apropiadas. Alternativa: reducción quirúrgica cuando sea irreductible o exista lesión que la requiera. Después, confirmar alineación y usar cabestrillo seguido de rehabilitación."
+      },
+      {
+        "type": "heading",
+        "id": "02_04-heading",
+        "text": "Internación, alta y escalamiento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "02_04",
+        "text": "Derivar a traumatología; en mayores valorar lesión del manguito y en jóvenes recurrencia. Alta solamente tras reducción confirmada, examen neurovascular documentado y plan de seguimiento."
+      },
+      {
+        "type": "heading",
+        "id": "02_05-heading",
+        "text": "Medicamentos y dosis",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "02_05",
+        "text": "Analgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal."
+      },
+      {
+        "type": "heading",
+        "id": "02_06-heading",
+        "text": "Alternativas y límites",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "02_06",
+        "text": "Alternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad."
+      },
+      {
+        "type": "heading",
+        "id": "02_07-heading",
+        "text": "Razonamiento clínico",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "02_07",
+        "text": "Interpretar mecanismo, integridad anatómica y estabilidad conjuntamente. Radiografía sin fractura visible no excluye lesión ligamentaria/tendinosa o fractura oculta. Documentar función y examen neurovascular antes y después de inmovilización/reducción; dolor progresivo o déficit nuevo cambia urgencia. Elección conservadora versus quirúrgica depende de estabilidad, lesiones asociadas y demanda funcional, no solo del nombre de lesión."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "AAOS OrthoInfo — dislocated shoulder",
+        "url": "https://www.orthoinfo.org/diseases--conditions/dislocated-shoulder/",
+        "year": null,
+        "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+        "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "aaos_shoulder",
+        "organization_or_authors": "AAOS OrthoInfo",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "AAOS OrthoInfo — dislocated shoulder"
+      },
+      {
+        "id": 2,
+        "title": "NICE NG38 — Fractures: non-complex assessment and management",
+        "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng38",
+        "organization_or_authors": "NICE NG38",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+      },
+      {
+        "id": 3,
+        "title": "NHS — Paracetamol for adults",
+        "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+        "year": 2026,
+        "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+        "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "para",
+        "organization_or_authors": "NHS",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NHS — Paracetamol for adults"
+      },
+      {
+        "id": 4,
+        "title": "NHS — Ibuprofen for adults",
+        "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+        "year": 2025,
+        "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+        "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ibu",
+        "organization_or_authors": "NHS",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NHS — Ibuprofen for adults"
+      }
+    ]
+  }
+}

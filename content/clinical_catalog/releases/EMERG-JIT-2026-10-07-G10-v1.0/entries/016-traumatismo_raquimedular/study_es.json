@@ -1,0 +1,117 @@
+{
+  "mode": "study",
+  "language": "es",
+  "owner": "traumatismo_raquimedular",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "844e916774f95bb67e40ab6dbcafa815a36861dc342f1dd79597fd89155c165e",
+  "factIds": [
+    "16_01",
+    "16_02",
+    "16_03",
+    "16_04",
+    "16_05",
+    "16_06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "16_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "16_01",
+      "text": "La lesión medular puede ser completa o incompleta. Brown-Séquard es patrón de hemilesión con pérdida motora/propioceptiva ipsilateral y dolorosa/térmica contralateral, incluido en este owner. Shock neurogénico no excluye hemorragia concomitante."
+    },
+    {
+      "type": "heading",
+      "id": "16_02-heading",
+      "text": "Abordaje inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "16_02",
+      "text": "ABCDE con restricción de movimiento, prevenir hipoxia/hipotensión y documentar examen motor, sensitivo y sacro. Bradicardia e hipotensión sugieren componente neurogénico, pero buscar primero sangrado y otras causas."
+    },
+    {
+      "type": "heading",
+      "id": "16_03-heading",
+      "text": "Diagnóstico y estudios",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "16_03",
+      "text": "Tomografía para lesión ósea; déficit neurológico exige resonancia tras tomografía y consulta inmediata al equipo de columna. No demorar traslado por estudio que no modifica estabilización inmediata."
+    },
+    {
+      "type": "heading",
+      "id": "16_04-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "16_04",
+      "text": "Descompresión/estabilización quirúrgica según lesión o manejo no operatorio si es seguro. Soporte hemodinámico adulto especializado: AO Spine 2024 sugiere límite inferior de PAM 75–80 mmHg y no elevar activamente por encima de 90–95 mmHg, durante 3–7 días; evidencia muy baja, individualizar."
+    },
+    {
+      "type": "heading",
+      "id": "16_05-heading",
+      "text": "Seguridad y poblaciones especiales",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "16_05",
+      "text": "No ofrecer metilprednisolona como neuroprotección rutinaria según NG41. Vasopresor, vía y concentración requieren protocolo monitorizado; prevenir lesión por presión, tromboembolismo y complicación respiratoria. Internación/UCI según nivel y soporte."
+    },
+    {
+      "type": "heading",
+      "id": "16_06-heading",
+      "text": "Razonamiento clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "16_06",
+      "text": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG41 — Spinal injury: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng41/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Restrição de movimento, imagem e não utilização de metilprednisolona para neuroproteção.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng41",
+      "organization_or_authors": "NICE NG41",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG41 — Spinal injury: assessment and initial management"
+    },
+    {
+      "id": 2,
+      "title": "AO Spine/Praxis — Acute spinal cord injury: hemodynamic management",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10964888/",
+      "year": 2024,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Adultos; alvos e duração de suporte pressórico são recomendações fracas, evidência muito baixa.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "sci",
+      "organization_or_authors": "AO Spine/Praxis",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AO Spine/Praxis — Acute spinal cord injury: hemodynamic management"
+    }
+  ],
+  "markdown": "# Traumatismo raquimedular\n\n## Definición y fisiopatología\n\nLa lesión medular puede ser completa o incompleta. Brown-Séquard es patrón de hemilesión con pérdida motora/propioceptiva ipsilateral y dolorosa/térmica contralateral, incluido en este owner. Shock neurogénico no excluye hemorragia concomitante.\n\n## Abordaje inicial\n\nABCDE con restricción de movimiento, prevenir hipoxia/hipotensión y documentar examen motor, sensitivo y sacro. Bradicardia e hipotensión sugieren componente neurogénico, pero buscar primero sangrado y otras causas.\n\n## Diagnóstico y estudios\n\nTomografía para lesión ósea; déficit neurológico exige resonancia tras tomografía y consulta inmediata al equipo de columna. No demorar traslado por estudio que no modifica estabilización inmediata.\n\n## Tratamiento y decisiones\n\nDescompresión/estabilización quirúrgica según lesión o manejo no operatorio si es seguro. Soporte hemodinámico adulto especializado: AO Spine 2024 sugiere límite inferior de PAM 75–80 mmHg y no elevar activamente por encima de 90–95 mmHg, durante 3–7 días; evidencia muy baja, individualizar.\n\n## Seguridad y poblaciones especiales\n\nNo ofrecer metilprednisolona como neuroprotección rutinaria según NG41. Vasopresor, vía y concentración requieren protocolo monitorizado; prevenir lesión por presión, tromboembolismo y complicación respiratoria. Internación/UCI según nivel y soporte.\n\n## Razonamiento clínico\n\nEvaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.\n\n## Referencias\n\n1. NICE NG41 — Spinal injury: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng41/chapter/Recommendations\n\n2. AO Spine/Praxis — Acute spinal cord injury: hemodynamic management. 2024. https://pmc.ncbi.nlm.nih.gov/articles/PMC10964888/\n"
+}

@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "lesao_aguda_de_ligamento_cruzado_anterior",
+  "title": {
+    "pt": "Lesão aguda do ligamento cruzado anterior",
+    "es": "Lesión aguda del ligamento cruzado anterior"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "48_01",
+      "section": "concept",
+      "pt": "Lesão após pivô/desaceleração pode causar hemartrose rápida e instabilidade. Menisco/cartilagem associados e maturidade esquelética mudam planejamento; não confundir com luxação multiligamentar.",
+      "es": "Lesión tras pivote/desaceleración puede causar hemartrosis rápida e inestabilidad. Menisco/cartílago asociados y madurez esquelética cambian planificación; no confundir con luxación multiligamentaria.",
+      "sources": [
+        "acl",
+        "ng38"
+      ]
+    },
+    {
+      "id": "48_02",
+      "section": "diagnosis",
+      "pt": "História, exame ligamentar tolerado e neurovascular; excluir fratura conforme avaliação e radiografia. Ressonância esclarece lesões associadas; dor/edema podem limitar exame agudo e exigir reavaliação.",
+      "es": "Historia, examen ligamentario tolerado y neurovascular; excluir fractura según evaluación y radiografía. Resonancia aclara lesiones asociadas; dolor/edema pueden limitar examen agudo y exigir reevaluación.",
+      "sources": [
+        "acl",
+        "ng38"
+      ]
+    },
+    {
+      "id": "48_03",
+      "section": "treatment",
+      "pt": "Controlar dor/edema, recuperar mobilidade e iniciar reabilitação. Alternativas: manejo não operatório em selecionados ou reconstrução conforme instabilidade, atividade e lesões. Quando cirurgia indicada, AAOS 2022 favorece reconstrução precoce, pois risco meniscal/cartilaginoso aumenta após 3 meses.",
+      "es": "Controlar dolor/edema, recuperar movilidad e iniciar rehabilitación. Alternativas: manejo no operatorio seleccionado o reconstrucción según inestabilidad, actividad y lesiones. Si cirugía indicada, AAOS 2022 favorece reconstrucción temprana, pues riesgo meniscal/cartilaginoso aumenta después de 3 meses.",
+      "sources": [
+        "acl",
+        "ng38"
+      ]
+    },
+    {
+      "id": "48_04",
+      "section": "followup",
+      "pt": "Seguimento ortopédico e progressão por critérios funcionais; não liberar esporte só por ausência de dor. Joelho bloqueado, déficit neurovascular ou lesão múltipla exige urgência; criança precisa de planejamento que respeite fise.",
+      "es": "Seguimiento traumatológico y progresión por criterios funcionales; no autorizar deporte solo por ausencia de dolor. Rodilla bloqueada, déficit neurovascular o lesión múltiple exige urgencia; niño precisa plan que respete fisis.",
+      "sources": [
+        "acl",
+        "ng38"
+      ]
+    },
+    {
+      "id": "48_05",
+      "section": "medications",
+      "pt": "Analgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa.",
+      "es": "Analgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal.",
+      "sources": [
+        "para"
+      ]
+    },
+    {
+      "id": "48_06",
+      "section": "alternatives",
+      "pt": "Alternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade.",
+      "es": "Alternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad.",
+      "sources": [
+        "ibu"
+      ]
+    },
+    {
+      "id": "48_07",
+      "section": "reasoning",
+      "pt": "Interpretar mecanismo, integridade anatômica e estabilidade em conjunto. Radiografia sem fratura evidente não exclui lesão ligamentar/tendínea ou fratura oculta. Documentar função e exame neurovascular antes e depois de imobilização/redução; piora progressiva da dor ou déficit novo muda a urgência. Escolha conservadora versus cirúrgica depende de estabilidade, lesões associadas e demanda funcional, não somente do nome da lesão.",
+      "es": "Interpretar mecanismo, integridad anatómica y estabilidad conjuntamente. Radiografía sin fractura visible no excluye lesión ligamentaria/tendinosa o fractura oculta. Documentar función y examen neurovascular antes y después de inmovilización/reducción; dolor progresivo o déficit nuevo cambia urgencia. Elección conservadora versus quirúrgica depende de estabilidad, lesiones asociadas y demanda funcional, no solo del nombre de lesión.",
+      "sources": [
+        "acl",
+        "ng38"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "AAOS — Management of anterior cruciate ligament injuries CPG",
+      "url": "https://www.aaos.org/aclcpg",
+      "year": 2022,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Substitui CPG de 2014; reconstrução precoce quando indicada, antes do aumento de lesão secundária após 3 meses.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "acl",
+      "organization_or_authors": "AAOS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AAOS — Management of anterior cruciate ligament injuries CPG"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG38 — Fractures: non-complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng38",
+      "organization_or_authors": "NICE NG38",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 4,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

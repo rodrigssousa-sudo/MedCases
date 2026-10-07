@@ -1,0 +1,174 @@
+{
+  "mode": "study",
+  "language": "es",
+  "owner": "entorse_de_tornozelo",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "da67f35d89472d36e6d36f4c458c8a35b214aedb58dd97d6d1c66d92679e3c2f",
+  "factIds": [
+    "01_01",
+    "01_02",
+    "01_03",
+    "01_04",
+    "01_05",
+    "01_06",
+    "01_07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "01_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "01_01",
+      "text": "Lesión ligamentaria, generalmente lateral tras inversión. La inestabilidad y la propiocepción alterada favorecen recurrencias; el grado clínico no sustituye la evaluación de fractura o sindesmosis."
+    },
+    {
+      "type": "heading",
+      "id": "01_02-heading",
+      "text": "Diagnóstico y estudios",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "01_02",
+      "text": "Localizar dolor, edema, capacidad de apoyo y lesión proximal. Aplicar reglas de Ottawa para radiografía en mayores de 5 años; sospecha de fractura, lesión sindesmótica o rotura de Aquiles cambia la conducta."
+    },
+    {
+      "type": "heading",
+      "id": "01_03-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "01_03",
+      "text": "Opción principal: soporte externo, apoyo progresivo tolerado y ejercicios de movilidad, fuerza y equilibrio. Una lesión grave puede justificar inmovilización hasta 10 días, seguida de rehabilitación; evitar reposo prolongado."
+    },
+    {
+      "type": "heading",
+      "id": "01_04-heading",
+      "text": "Internación, alta y escalamiento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "01_04",
+      "text": "Alta si la lesión es estable, el dolor está controlado y el apoyo protegido es seguro. Reevaluar dolor persistente, inestabilidad o incapacidad de apoyo; el retorno al deporte depende de función y estabilidad, no solamente de un plazo."
+    },
+    {
+      "type": "heading",
+      "id": "01_05-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "01_05",
+      "text": "Analgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal."
+    },
+    {
+      "type": "heading",
+      "id": "01_06-heading",
+      "text": "Alternativas y límites",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "01_06",
+      "text": "Alternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad."
+    },
+    {
+      "type": "heading",
+      "id": "01_07-heading",
+      "text": "Razonamiento clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "01_07",
+      "text": "Interpretar mecanismo, integridad anatómica y estabilidad conjuntamente. Radiografía sin fractura visible no excluye lesión ligamentaria/tendinosa o fractura oculta. Documentar función y examen neurovascular antes y después de inmovilización/reducción; dolor progresivo o déficit nuevo cambia urgencia. Elección conservadora versus quirúrgica depende de estabilidad, lesiones asociadas y demanda funcional, no solo del nombre de lesión."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "APTA/JOSPT — Lateral ankle ligament sprains, revision 2021",
+      "url": "https://doi.org/10.2519/jospt.2021.0302",
+      "year": 2021,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Recomendações de suporte, carga, exercício e imobilização curta verificadas; PDF integral inicialmente bloqueado pelo editor.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ankle_cpg",
+      "organization_or_authors": "APTA/JOSPT",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "APTA/JOSPT — Lateral ankle ligament sprains, revision 2021"
+    },
+    {
+      "id": 2,
+      "title": "AAOS OrthoInfo — sprained ankle",
+      "url": "https://www.orthoinfo.org/diseases--conditions/sprained-ankle/",
+      "year": null,
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aaos_ankle",
+      "organization_or_authors": "AAOS OrthoInfo",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AAOS OrthoInfo — sprained ankle"
+    },
+    {
+      "id": 3,
+      "title": "NICE NG38 — Fractures: non-complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng38",
+      "organization_or_authors": "NICE NG38",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+    },
+    {
+      "id": 4,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 5,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "markdown": "# Esguince de tobillo\n\n## Definición y fisiopatología\n\nLesión ligamentaria, generalmente lateral tras inversión. La inestabilidad y la propiocepción alterada favorecen recurrencias; el grado clínico no sustituye la evaluación de fractura o sindesmosis.\n\n## Diagnóstico y estudios\n\nLocalizar dolor, edema, capacidad de apoyo y lesión proximal. Aplicar reglas de Ottawa para radiografía en mayores de 5 años; sospecha de fractura, lesión sindesmótica o rotura de Aquiles cambia la conducta.\n\n## Tratamiento y decisiones\n\nOpción principal: soporte externo, apoyo progresivo tolerado y ejercicios de movilidad, fuerza y equilibrio. Una lesión grave puede justificar inmovilización hasta 10 días, seguida de rehabilitación; evitar reposo prolongado.\n\n## Internación, alta y escalamiento\n\nAlta si la lesión es estable, el dolor está controlado y el apoyo protegido es seguro. Reevaluar dolor persistente, inestabilidad o incapacidad de apoyo; el retorno al deporte depende de función y estabilidad, no solamente de un plazo.\n\n## Medicamentos y dosis\n\nAnalgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal.\n\n## Alternativas y límites\n\nAlternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad.\n\n## Razonamiento clínico\n\nInterpretar mecanismo, integridad anatómica y estabilidad conjuntamente. Radiografía sin fractura visible no excluye lesión ligamentaria/tendinosa o fractura oculta. Documentar función y examen neurovascular antes y después de inmovilización/reducción; dolor progresivo o déficit nuevo cambia urgencia. Elección conservadora versus quirúrgica depende de estabilidad, lesiones asociadas y demanda funcional, no solo del nombre de lesión.\n\n## Referencias\n\n1. APTA/JOSPT — Lateral ankle ligament sprains, revision 2021. 2021. https://doi.org/10.2519/jospt.2021.0302\n\n2. AAOS OrthoInfo — sprained ankle. https://www.orthoinfo.org/diseases--conditions/sprained-ankle/\n\n3. NICE NG38 — Fractures: non-complex assessment and management. 2016. https://www.nice.org.uk/guidance/ng38/chapter/recommendations\n\n4. NHS — Paracetamol for adults. 2026. https://www.nhs.uk/medicines/paracetamol-for-adults/\n\n5. NHS — Ibuprofen for adults. 2025. https://www.nhs.uk/medicines/ibuprofen-for-adults/\n"
+}

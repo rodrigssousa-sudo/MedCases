@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "trauma_ocular_hifema_e_ruptura_de_globo_ocular",
+  "title": {
+    "pt": "Trauma ocular: hifema e ruptura de globo",
+    "es": "Trauma ocular: hifema y rotura de globo"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "17_01",
+      "section": "concept",
+      "pt": "Hifema é sangue na câmara anterior; pode elevar pressão e ressangrar. Ruptura de globo é lesão de espessura total com risco de perda visual; não são tratamentos intercambiáveis.",
+      "es": "Hifema es sangre en cámara anterior; puede elevar presión y resangrar. Rotura de globo es lesión de espesor total con riesgo de pérdida visual; no son tratamientos intercambiables.",
+      "sources": [
+        "eye",
+        "eye_adult"
+      ]
+    },
+    {
+      "id": "17_02",
+      "section": "initial",
+      "pt": "Avaliar visão sem pressionar. Suspeita de globo aberto: escudo rígido sem contato/compressão, jejum e oftalmologia emergencial; não medir pressão, manipular ou retirar objeto empalado. Tomografia de órbitas conforme avaliação.",
+      "es": "Evaluar visión sin presionar. Sospecha de globo abierto: protector rígido sin contacto/compresión, ayuno y oftalmología emergente; no medir presión, manipular ni retirar objeto empalado. Tomografía orbitaria según evaluación.",
+      "sources": [
+        "eye",
+        "eye_adult"
+      ]
+    },
+    {
+      "id": "17_03",
+      "section": "treatment",
+      "pt": "Hifema com globo íntegro: proteção, reduzir esforço e avaliação oftalmológica de pressão, volume e lesões associadas. Tratamento medicamentoso tópico é escolhido após exame; drenagem cirúrgica em casos selecionados. Globo aberto: reparo urgente e profilaxia antimicrobiana especializada.",
+      "es": "Hifema con globo íntegro: protección, reducir esfuerzo y evaluación oftalmológica de presión, volumen y lesiones asociadas. Medicación tópica se elige tras examen; drenaje quirúrgico en seleccionados. Globo abierto: reparación urgente y profilaxis antimicrobiana especializada.",
+      "sources": [
+        "eye",
+        "eye_adult"
+      ]
+    },
+    {
+      "id": "17_04",
+      "section": "safety",
+      "pt": "Evitar anti-inflamatório/aspirina no hifema quando não houver indicação indispensável. Doença falciforme, criança ou dificuldade de retorno reduzem limiar de internação. Não fornecer colírio anestésico para uso domiciliar; controlar náusea/dor sem atrasar especialista.",
+      "es": "Evitar antiinflamatorio/aspirina en hifema si no hay indicación indispensable. Enfermedad falciforme, niño o dificultad de retorno reducen umbral de internación. No dar anestésico ocular para domicilio; controlar náusea/dolor sin demorar especialista.",
+      "sources": [
+        "eye",
+        "eye_adult"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "RCH — Acute eye injury",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_eye_injury/",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Pediatria, proteção do globo e irrigação imediata.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "eye",
+      "organization_or_authors": "RCH",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "RCH — Acute eye injury"
+    },
+    {
+      "id": 2,
+      "title": "NSW ACI — Ocular presentations",
+      "url": "https://aci.health.nsw.gov.au/ecat/adult/ocular",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Avaliação inicial adulta e encaminhamento; não guia de cirurgia oftalmológica.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "eye_adult",
+      "organization_or_authors": "NSW ACI",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NSW ACI — Ocular presentations"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

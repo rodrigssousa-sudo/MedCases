@@ -1,0 +1,147 @@
+{
+  "mode": "plantao",
+  "language": "es",
+  "owner": "gangrena_de_fournier",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "3fab4a08279678688c5c40892081a19da4dab022ae1297f9f6825454e10a3270",
+  "factIds": [
+    "08_02",
+    "08_03",
+    "08_04",
+    "08_05",
+    "08_06",
+    "08_01"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "08_02-heading",
+      "text": "Abordaje inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "08_02",
+      "text": "Activar cirugía/urología inmediatamente; ABCDE, cultivos sin demorar antibiótico, hemograma, lactato, electrolitos, función renal y glucemia. Tomografía ayuda en el estable, pero un puntaje o imagen no debe demorar exploración con alta sospecha clínica."
+    },
+    {
+      "type": "heading",
+      "id": "08_03-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "08_03",
+      "text": "Desbridamiento urgente y repetido según viabilidad, reanimación y antibióticos contra Grampositivos incluido MRSA, Gramnegativos y anaerobios. Antibiótico, oxígeno hiperbárico o apósito no sustituyen control quirúrgico del foco."
+    },
+    {
+      "type": "heading",
+      "id": "08_04-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "08_04",
+      "text": "Opción adulta con función renal normal: piperacilina/tazobactam 4,5 g IV cada 6 horas, infusión de 30 minutos, MÁS linezolid 600 mg IV cada 12 horas, infusión de 30–120 minutos. Alternativa para MRSA: vancomicina con dosis y monitorización farmacocinética individual. No combinar ambas de rutina."
+    },
+    {
+      "type": "heading",
+      "id": "08_05-heading",
+      "text": "Seguridad y poblaciones especiales",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "08_05",
+      "text": "Ajustar betalactámico a función renal; revisar alergia, hemograma/plaquetas e interacción de linezolid con fármacos serotoninérgicos. Reducir espectro cuando cultivos lo permitan. Duración depende del foco controlado, desbridamientos y evolución, no de plazo fijo arbitrario."
+    },
+    {
+      "type": "heading",
+      "id": "08_06-heading",
+      "text": "Internación, alta y escalamiento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "08_06",
+      "text": "Internación; UCI si shock, falla orgánica o soporte necesario. Reevaluar extensión, perfusión, diuresis y foco; reconstrucción después de controlar infección. No extrapolar pauta adulta a niño o embarazada sin evaluación específica."
+    },
+    {
+      "type": "heading",
+      "id": "08_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "08_01",
+      "text": "Infección necrosante perineal/genital, frecuentemente polimicrobiana; trombosis microvascular y progresión fascial explican dolor desproporcionado y toxicidad antes de necrosis visible. Absceso simple, celulitis y hernia no son equivalentes."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "EAU — Urological infections: Fournier gangrene",
+      "url": "https://uroweb.org/guidelines/urological-infections/chapter/the-guideline?s=04",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LIVING",
+      "scope": "Desbridamento imediato/urgente, antibióticos de amplo espectro, ajuste microbiológico.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "fournier",
+      "organization_or_authors": "EAU",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "EAU — Urological infections: Fournier gangrene"
+    },
+    {
+      "id": 2,
+      "title": "IDSA — Skin and soft tissue infections",
+      "url": "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/",
+      "year": 2014,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Diretriz ainda listada; combinação empírica para infecção necrosante e terapia dirigida para estreptococo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "id_ssti",
+      "organization_or_authors": "IDSA",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "IDSA — Skin and soft tissue infections"
+    },
+    {
+      "id": 3,
+      "title": "DailyMed — Piperacillin and tazobactam injection",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2cd82553-79dc-45f0-9755-2c08df524ed5",
+      "year": null,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Infusão e ajuste renal; dose escolhida para Fournier na tabela EAU, não confundir com indicação da bula.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "pip",
+      "organization_or_authors": "DailyMed",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "DailyMed — Piperacillin and tazobactam injection"
+    },
+    {
+      "id": 4,
+      "title": "DailyMed — Linezolid injection",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2220c753-e0e8-4797-bce2-34b3c63bd631",
+      "year": null,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "600 mg a cada 12 horas em adultos, infusão de 30–120 minutos, interações serotoninérgicas e hemograma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "linez",
+      "organization_or_authors": "DailyMed",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "DailyMed — Linezolid injection"
+    }
+  ],
+  "markdown": "# Gangrena de Fournier\n\n## Abordaje inicial\n\nActivar cirugía/urología inmediatamente; ABCDE, cultivos sin demorar antibiótico, hemograma, lactato, electrolitos, función renal y glucemia. Tomografía ayuda en el estable, pero un puntaje o imagen no debe demorar exploración con alta sospecha clínica.\n\n## Tratamiento y decisiones\n\nDesbridamiento urgente y repetido según viabilidad, reanimación y antibióticos contra Grampositivos incluido MRSA, Gramnegativos y anaerobios. Antibiótico, oxígeno hiperbárico o apósito no sustituyen control quirúrgico del foco.\n\n## Medicamentos y dosis\n\nOpción adulta con función renal normal: piperacilina/tazobactam 4,5 g IV cada 6 horas, infusión de 30 minutos, MÁS linezolid 600 mg IV cada 12 horas, infusión de 30–120 minutos. Alternativa para MRSA: vancomicina con dosis y monitorización farmacocinética individual. No combinar ambas de rutina.\n\n## Seguridad y poblaciones especiales\n\nAjustar betalactámico a función renal; revisar alergia, hemograma/plaquetas e interacción de linezolid con fármacos serotoninérgicos. Reducir espectro cuando cultivos lo permitan. Duración depende del foco controlado, desbridamientos y evolución, no de plazo fijo arbitrario.\n\n## Internación, alta y escalamiento\n\nInternación; UCI si shock, falla orgánica o soporte necesario. Reevaluar extensión, perfusión, diuresis y foco; reconstrucción después de controlar infección. No extrapolar pauta adulta a niño o embarazada sin evaluación específica.\n\n## Definición y fisiopatología\n\nInfección necrosante perineal/genital, frecuentemente polimicrobiana; trombosis microvascular y progresión fascial explican dolor desproporcionado y toxicidad antes de necrosis visible. Absceso simple, celulitis y hernia no son equivalentes.\n\n## Referencias\n\n1. EAU — Urological infections: Fournier gangrene. https://uroweb.org/guidelines/urological-infections/chapter/the-guideline?s=04\n\n2. IDSA — Skin and soft tissue infections. 2014. https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/\n\n3. DailyMed — Piperacillin and tazobactam injection. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2cd82553-79dc-45f0-9755-2c08df524ed5\n\n4. DailyMed — Linezolid injection. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=2220c753-e0e8-4797-bce2-34b3c63bd631\n"
+}

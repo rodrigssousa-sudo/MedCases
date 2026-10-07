@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "luxacao_posterior_de_quadril",
+  "title": {
+    "pt": "Luxação posterior do quadril",
+    "es": "Luxación posterior de cadera"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "32_01",
+      "section": "concept",
+      "pt": "Trauma de alta energia desloca cabeça femoral, com risco de lesão ciática, acetabular e osteonecrose. Fratura-luxação altera método de redução.",
+      "es": "Trauma de alta energía desplaza cabeza femoral, con riesgo de lesión ciática, acetabular y osteonecrosis. Fractura-luxación cambia método de reducción.",
+      "sources": [
+        "aaos_hip_disloc",
+        "ng39"
+      ]
+    },
+    {
+      "id": "32_02",
+      "section": "diagnosis",
+      "pt": "ABCDE, exame do ciático e perfusão antes/depois; radiografia confirma direção e fratura. Tomografia após redução avalia fragmento intra-articular/congruência conforme ortopedia.",
+      "es": "ABCDE, examen ciático y perfusión antes/después; radiografía confirma dirección y fractura. Tomografía después de reducción evalúa fragmento intraarticular/congruencia según traumatología.",
+      "sources": [
+        "aaos_hip_disloc",
+        "ng39"
+      ]
+    },
+    {
+      "id": "32_03",
+      "section": "treatment",
+      "pt": "Redução urgente sob anestesia/sedação adequada por equipe habilitada, sem força excessiva. Alternativa cirúrgica se irredutível, não concêntrica ou fragmento/fratura que a exija. Não atrasar por consulta eletiva.",
+      "es": "Reducción urgente bajo anestesia/sedación apropiada por equipo capacitado, sin fuerza excesiva. Cirugía si irreductible, no concéntrica o fragmento/fractura que lo exija. No demorar por consulta electiva.",
+      "sources": [
+        "aaos_hip_disloc",
+        "ng39"
+      ]
+    },
+    {
+      "id": "32_04",
+      "section": "followup",
+      "pt": "Internar/observar conforme lesões e estabilidade. Apoio e reabilitação conforme padrão; acompanhar osteonecrose, artrite e déficit ciático, mesmo após redução satisfatória.",
+      "es": "Internar/observar según lesiones y estabilidad. Apoyo y rehabilitación según patrón; seguir osteonecrosis, artritis y déficit ciático aun tras reducción satisfactoria.",
+      "sources": [
+        "aaos_hip_disloc",
+        "ng39"
+      ]
+    },
+    {
+      "id": "32_05",
+      "section": "reasoning",
+      "pt": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.",
+      "es": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.",
+      "sources": [
+        "ng39"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "AAOS OrthoInfo — hip dislocation",
+      "url": "https://www.orthoinfo.org/diseases--conditions/hip-dislocation/",
+      "year": null,
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aaos_hip_disloc",
+      "organization_or_authors": "AAOS OrthoInfo",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AAOS OrthoInfo — hip dislocation"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

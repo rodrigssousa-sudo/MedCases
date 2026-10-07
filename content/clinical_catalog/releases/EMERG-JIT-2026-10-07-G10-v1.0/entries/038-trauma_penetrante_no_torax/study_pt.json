@@ -1,0 +1,105 @@
+{
+  "mode": "study",
+  "language": "pt",
+  "owner": "trauma_penetrante_no_torax",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "97351080963f301e297d833e090de2f07dce3246d378960a1991f044d4009f74",
+  "factIds": [
+    "38_01",
+    "38_02",
+    "38_03",
+    "38_04",
+    "38_05"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "38_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "38_01",
+      "text": "Pode lesar pleura, pulmão, coração, grandes vasos ou diafragma. Ferida pequena não exclui lesão profunda e normalidade inicial não elimina sangramento evolutivo."
+    },
+    {
+      "type": "heading",
+      "id": "38_02-heading",
+      "text": "Abordagem inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "38_02",
+      "text": "ABCDE, avaliar tensão, hemotórax, tamponamento e choque. Cobertura apropriada de ferida aberta com vigilância de tensão; não retirar objeto empalado. Instabilidade exige controle urgente, sem atrasar por tomografia."
+    },
+    {
+      "type": "heading",
+      "id": "38_03-heading",
+      "text": "Diagnóstico e exames",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "38_03",
+      "text": "Ultrassom/radiografia à beira-leito; tomografia no estável conforme trajeto. Consultar cirurgia por trajetória mediastinal ou suspeita cardíaca/diafragmática mesmo com exame aparentemente tranquilo."
+    },
+    {
+      "type": "heading",
+      "id": "38_04-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "38_04",
+      "text": "Drenagem pleural ou cirurgia conforme lesão/sangramento; observação selecionada apenas com investigação e monitorização completas. Reavaliar saída de dreno, ar persistente, oxigenação e perfusão; profilaxia antimicrobiana segue procedimento/protocolo."
+    },
+    {
+      "type": "heading",
+      "id": "38_05-heading",
+      "text": "Raciocínio clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "38_05",
+      "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "WSES-AAST — Thoracic trauma guidelines",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12522690/",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Trauma torácico, contusão, parede torácica e lesões penetrantes; não diretriz de pneumomediastino espontâneo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "thorax",
+      "organization_or_authors": "WSES-AAST",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "WSES-AAST — Thoracic trauma guidelines"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "markdown": "# Trauma penetrante do tórax\n\n## Definição e fisiopatologia\n\nPode lesar pleura, pulmão, coração, grandes vasos ou diafragma. Ferida pequena não exclui lesão profunda e normalidade inicial não elimina sangramento evolutivo.\n\n## Abordagem inicial\n\nABCDE, avaliar tensão, hemotórax, tamponamento e choque. Cobertura apropriada de ferida aberta com vigilância de tensão; não retirar objeto empalado. Instabilidade exige controle urgente, sem atrasar por tomografia.\n\n## Diagnóstico e exames\n\nUltrassom/radiografia à beira-leito; tomografia no estável conforme trajeto. Consultar cirurgia por trajetória mediastinal ou suspeita cardíaca/diafragmática mesmo com exame aparentemente tranquilo.\n\n## Tratamento e decisões\n\nDrenagem pleural ou cirurgia conforme lesão/sangramento; observação selecionada apenas com investigação e monitorização completas. Reavaliar saída de dreno, ar persistente, oxigenação e perfusão; profilaxia antimicrobiana segue procedimento/protocolo.\n\n## Raciocínio clínico\n\nA avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.\n\n## Referências\n\n1. WSES-AAST — Thoracic trauma guidelines. 2025. https://pmc.ncbi.nlm.nih.gov/articles/PMC12522690/\n\n2. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n"
+}

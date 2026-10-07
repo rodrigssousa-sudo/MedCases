@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "traumatismo_raquimedular",
+  "title": {
+    "pt": "Traumatismo raquimedular",
+    "es": "Traumatismo raquimedular"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "16_01",
+      "section": "concept",
+      "pt": "Lesão da medula pode ser completa ou incompleta. Brown-Séquard é padrão de hemilesão com perda motora/proprioceptiva ipsilateral e dolorosa/térmica contralateral, incluído neste owner. Choque neurogênico não exclui hemorragia concomitante.",
+      "es": "La lesión medular puede ser completa o incompleta. Brown-Séquard es patrón de hemilesión con pérdida motora/propioceptiva ipsilateral y dolorosa/térmica contralateral, incluido en este owner. Shock neurogénico no excluye hemorragia concomitante.",
+      "sources": [
+        "ng41",
+        "sci"
+      ]
+    },
+    {
+      "id": "16_02",
+      "section": "initial",
+      "pt": "ABCDE com restrição de movimento, prevenir hipóxia/hipotensão e documentar exame motor, sensitivo e sacral. Bradicardia e hipotensão sugerem componente neurogênico, mas procurar primeiro sangramento e outras causas.",
+      "es": "ABCDE con restricción de movimiento, prevenir hipoxia/hipotensión y documentar examen motor, sensitivo y sacro. Bradicardia e hipotensión sugieren componente neurogénico, pero buscar primero sangrado y otras causas.",
+      "sources": [
+        "ng41",
+        "sci"
+      ]
+    },
+    {
+      "id": "16_03",
+      "section": "diagnosis",
+      "pt": "Tomografia para lesão óssea; déficit neurológico exige ressonância após tomografia e consulta imediata à equipe de coluna. Não atrasar transferência por exame que não muda estabilização imediata.",
+      "es": "Tomografía para lesión ósea; déficit neurológico exige resonancia tras tomografía y consulta inmediata al equipo de columna. No demorar traslado por estudio que no modifica estabilización inmediata.",
+      "sources": [
+        "ng41",
+        "sci"
+      ]
+    },
+    {
+      "id": "16_04",
+      "section": "treatment",
+      "pt": "Descompressão/estabilização cirúrgica conforme lesão ou manejo não operatório se seguro. Suporte hemodinâmico adulto especializado: AO Spine 2024 sugere limite inferior de PAM 75–80 mmHg e não elevar ativamente acima de 90–95 mmHg, por 3–7 dias; evidência muito baixa, individualizar.",
+      "es": "Descompresión/estabilización quirúrgica según lesión o manejo no operatorio si es seguro. Soporte hemodinámico adulto especializado: AO Spine 2024 sugiere límite inferior de PAM 75–80 mmHg y no elevar activamente por encima de 90–95 mmHg, durante 3–7 días; evidencia muy baja, individualizar.",
+      "sources": [
+        "ng41",
+        "sci"
+      ]
+    },
+    {
+      "id": "16_05",
+      "section": "safety",
+      "pt": "Não oferecer metilprednisolona como neuroproteção de rotina segundo NG41. Vasopressor, via e concentração exigem protocolo monitorizado; prevenir lesão por pressão, tromboembolismo e complicação respiratória. Internação/UTI conforme nível e suporte.",
+      "es": "No ofrecer metilprednisolona como neuroprotección rutinaria según NG41. Vasopresor, vía y concentración requieren protocolo monitorizado; prevenir lesión por presión, tromboembolismo y complicación respiratoria. Internación/UCI según nivel y soporte.",
+      "sources": [
+        "ng41",
+        "sci"
+      ]
+    },
+    {
+      "id": "16_06",
+      "section": "reasoning",
+      "pt": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.",
+      "es": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.",
+      "sources": [
+        "ng41"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG41 — Spinal injury: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng41/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Restrição de movimento, imagem e não utilização de metilprednisolona para neuroproteção.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng41",
+      "organization_or_authors": "NICE NG41",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG41 — Spinal injury: assessment and initial management"
+    },
+    {
+      "id": 2,
+      "title": "AO Spine/Praxis — Acute spinal cord injury: hemodynamic management",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10964888/",
+      "year": 2024,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Adultos; alvos e duração de suporte pressórico são recomendações fracas, evidência muito baixa.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "sci",
+      "organization_or_authors": "AO Spine/Praxis",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AO Spine/Praxis — Acute spinal cord injury: hemodynamic management"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

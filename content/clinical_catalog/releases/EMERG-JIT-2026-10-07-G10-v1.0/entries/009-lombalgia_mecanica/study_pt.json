@@ -1,0 +1,120 @@
+{
+  "mode": "study",
+  "language": "pt",
+  "owner": "lombalgia_mecanica",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "1aae7e8a45fe4137cbc025594a3825a008aa97791088504b22decec1821c51c8",
+  "factIds": [
+    "09_01",
+    "09_02",
+    "09_03",
+    "09_04",
+    "09_05"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "09_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "09_01",
+      "text": "Complemento proposto para triagem de lombalgia no adulto geral, mantendo integralmente o conteúdo gestacional G08 de lombalgia_mecanica. Sinal de alarme aponta necessidade de investigar causa específica; não é nova doença independente."
+    },
+    {
+      "type": "heading",
+      "id": "09_02-heading",
+      "text": "Diagnóstico e exames",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "09_02",
+      "text": "Pesquisar retenção urinária, anestesia perineal, déficit progressivo, febre/imunossupressão, câncer, trauma/osteoporose e dor com instabilidade circulatória. Considerar cauda equina, infecção, fratura, neoplasia e causa vascular/visceral; não atribuir esses sinais a lombalgia mecânica."
+    },
+    {
+      "type": "heading",
+      "id": "09_03-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "09_03",
+      "text": "Com suspeita grave: exame neurológico, exames direcionados e encaminhamento urgente para imagem/tratamento da causa. Sem causa grave: manter atividade tolerada, exercício/fisioterapia; considerar anti-inflamatório oral pelo menor tempo se seguro. Paracetamol isolado não é tratamento rotineiro recomendado de lombalgia inespecífica."
+    },
+    {
+      "type": "heading",
+      "id": "09_04-heading",
+      "text": "Segurança e populações especiais",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "09_04",
+      "text": "Não aplicar alternativa com anti-inflamatório à gestação. Não realizar imagem rotineira da lombalgia inespecífica; isso não se aplica à suspeita de compressão, infecção ou fratura. Preservar owners próprios de cauda equina e outras causas."
+    },
+    {
+      "type": "heading",
+      "id": "09_05-heading",
+      "text": "Alternativas e limites",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "09_05",
+      "text": "Alternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG59 — Low back pain and sciatica in over 16s",
+      "url": "https://www.nice.org.uk/guidance/NG59/chapter/recommendations",
+      "year": 2020,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Excluir causa grave antes de tratar lombalgia inespecífica; não usar guideline como protocolo de cauda equina.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "lbp",
+      "organization_or_authors": "NICE NG59",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG59 — Low back pain and sciatica in over 16s"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG41 — Spinal injury: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng41/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Restrição de movimento, imagem e não utilização de metilprednisolona para neuroproteção.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng41",
+      "organization_or_authors": "NICE NG41",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG41 — Spinal injury: assessment and initial management"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "markdown": "# Lombalgia aguda: investigação de sinais de alarme\n\n## Definição e fisiopatologia\n\nComplemento proposto para triagem de lombalgia no adulto geral, mantendo integralmente o conteúdo gestacional G08 de lombalgia_mecanica. Sinal de alarme aponta necessidade de investigar causa específica; não é nova doença independente.\n\n## Diagnóstico e exames\n\nPesquisar retenção urinária, anestesia perineal, déficit progressivo, febre/imunossupressão, câncer, trauma/osteoporose e dor com instabilidade circulatória. Considerar cauda equina, infecção, fratura, neoplasia e causa vascular/visceral; não atribuir esses sinais a lombalgia mecânica.\n\n## Tratamento e decisões\n\nCom suspeita grave: exame neurológico, exames direcionados e encaminhamento urgente para imagem/tratamento da causa. Sem causa grave: manter atividade tolerada, exercício/fisioterapia; considerar anti-inflamatório oral pelo menor tempo se seguro. Paracetamol isolado não é tratamento rotineiro recomendado de lombalgia inespecífica.\n\n## Segurança e populações especiais\n\nNão aplicar alternativa com anti-inflamatório à gestação. Não realizar imagem rotineira da lombalgia inespecífica; isso não se aplica à suspeita de compressão, infecção ou fratura. Preservar owners próprios de cauda equina e outras causas.\n\n## Alternativas e limites\n\nAlternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade.\n\n## Referências\n\n1. NICE NG59 — Low back pain and sciatica in over 16s. 2020. https://www.nice.org.uk/guidance/NG59/chapter/recommendations\n\n2. NICE NG41 — Spinal injury: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng41/chapter/Recommendations\n\n3. NHS — Ibuprofen for adults. 2025. https://www.nhs.uk/medicines/ibuprofen-for-adults/\n"
+}

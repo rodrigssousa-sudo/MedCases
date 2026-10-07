@@ -1,0 +1,117 @@
+{
+  "mode": "plantao",
+  "language": "es",
+  "owner": "acidente_laquetico",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "42610c53ec7efdc9f5437fe8391b4117bbdb65a158a022462639b86bf6724bad",
+  "factIds": [
+    "46_02",
+    "46_03",
+    "46_04",
+    "46_05",
+    "46_06",
+    "46_01"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "46_02-heading",
+      "text": "Abordaje inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "46_02",
+      "text": "ABCDE, reposo y acceso vascular; identificar síndrome y gravedad, medir edema y evaluar coagulación, hemograma, función renal y diuresis. No hacer torniquete, incisión, succión ni aplicar sustancias en mordedura."
+    },
+    {
+      "type": "heading",
+      "id": "46_03-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "46_03",
+      "text": "PCDT brasileño 2026: antiveneno antibotrópico y antilaquético (SABL), 10 frascos-ampolla en moderado sin manifestaciones vagales; 20 en grave con lesión local intensa, hemorragia intensa y/o manifestaciones vagales. Vía IV, cantidad indicada de una vez bajo vigilancia; no sustituir automáticamente por antiveneno sin cobertura para Lachesis."
+    },
+    {
+      "type": "heading",
+      "id": "46_04-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "46_04",
+      "text": "Diluir en solución fisiológica o glucosa 5% según presentación/ficha; PCDT indica infusión de 8–12 mL por minuto, evitando sobrecarga. Confirmar volumen total/velocidad con equipo, especialmente niño/insuficiencia cardíaca. Número de frascos trata carga de veneno; no reducir por peso."
+    },
+    {
+      "type": "heading",
+      "id": "46_05-heading",
+      "text": "Seguridad y poblaciones especiales",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "46_05",
+      "text": "Reacción inmediata: interrumpir temporalmente, tratar anafilaxia y retomar al controlarla bajo equipo. No hacer prueba de sensibilidad ni premedicación automática con antihistamínico/corticoide. Si antiveneno no disponible, traslado urgente con soporte, no antiveneno no equivalente."
+    },
+    {
+      "type": "heading",
+      "id": "46_06-heading",
+      "text": "Internación, alta y escalamiento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "46_06",
+      "text": "Tras antiveneno, observar al menos 24 horas hasta estabilidad y control de coagulopatía/complicaciones. Vigilar coagulación, sangrado, función renal, edema y diuresis; explicar retorno por manifestaciones tardías de enfermedad del suero."
+    },
+    {
+      "type": "heading",
+      "id": "46_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "46_01",
+      "text": "Veneno causa inflamación local, coagulopatía/hemorragia y manifestaciones vagales como vómitos, diarrea, bradicardia e hipotensión. Diferenciar envenenamiento por Bothrops sin demorar tratamiento."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "Ministério da Saúde — PCDT dos acidentes ofídicos",
+      "url": "https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/animais-peconhentos/pcdt-dos-acidentes-ofidicos.pdf",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Documento final de 2026; quadros de dose, via/diluição/velocidade e monitorização. Não usar manual antigo em lugar deste PCDT.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "lachesis",
+      "organization_or_authors": "Ministério da Saúde",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "Ministério da Saúde — PCDT dos acidentes ofídicos"
+    },
+    {
+      "id": 2,
+      "title": "Instituto Butantan — Bula profissional do soro antibotrópico e antilaquético",
+      "url": "https://butantan.gov.br/assets/arquivos/soros-e-vacinas/2024/Bula%20Profissional%20da%20Sa%C3%BAde%20Soro%20Antibotr%C3%B3pico%20e%20Antilaqu%C3%A9tico.pdf",
+      "year": 2024,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Confirma apresentação e indicação; dose clínica e monitorização seguem PCDT 2026.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "sabl",
+      "organization_or_authors": "Instituto Butantan",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "Instituto Butantan — Bula profissional do soro antibotrópico e antilaquético"
+    }
+  ],
+  "markdown": "# Envenenamiento por Lachesis\n\n## Abordaje inicial\n\nABCDE, reposo y acceso vascular; identificar síndrome y gravedad, medir edema y evaluar coagulación, hemograma, función renal y diuresis. No hacer torniquete, incisión, succión ni aplicar sustancias en mordedura.\n\n## Medicamentos y dosis\n\nPCDT brasileño 2026: antiveneno antibotrópico y antilaquético (SABL), 10 frascos-ampolla en moderado sin manifestaciones vagales; 20 en grave con lesión local intensa, hemorragia intensa y/o manifestaciones vagales. Vía IV, cantidad indicada de una vez bajo vigilancia; no sustituir automáticamente por antiveneno sin cobertura para Lachesis.\n\n## Medicamentos y dosis\n\nDiluir en solución fisiológica o glucosa 5% según presentación/ficha; PCDT indica infusión de 8–12 mL por minuto, evitando sobrecarga. Confirmar volumen total/velocidad con equipo, especialmente niño/insuficiencia cardíaca. Número de frascos trata carga de veneno; no reducir por peso.\n\n## Seguridad y poblaciones especiales\n\nReacción inmediata: interrumpir temporalmente, tratar anafilaxia y retomar al controlarla bajo equipo. No hacer prueba de sensibilidad ni premedicación automática con antihistamínico/corticoide. Si antiveneno no disponible, traslado urgente con soporte, no antiveneno no equivalente.\n\n## Internación, alta y escalamiento\n\nTras antiveneno, observar al menos 24 horas hasta estabilidad y control de coagulopatía/complicaciones. Vigilar coagulación, sangrado, función renal, edema y diuresis; explicar retorno por manifestaciones tardías de enfermedad del suero.\n\n## Definición y fisiopatología\n\nVeneno causa inflamación local, coagulopatía/hemorragia y manifestaciones vagales como vómitos, diarrea, bradicardia e hipotensión. Diferenciar envenenamiento por Bothrops sin demorar tratamiento.\n\n## Referencias\n\n1. Ministério da Saúde — PCDT dos acidentes ofídicos. 2026. https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/animais-peconhentos/pcdt-dos-acidentes-ofidicos.pdf\n\n2. Instituto Butantan — Bula profissional do soro antibotrópico e antilaquético. 2024. https://butantan.gov.br/assets/arquivos/soros-e-vacinas/2024/Bula%20Profissional%20da%20Sa%C3%BAde%20Soro%20Antibotr%C3%B3pico%20e%20Antilaqu%C3%A9tico.pdf\n"
+}

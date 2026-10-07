@@ -1,0 +1,105 @@
+{
+  "mode": "study",
+  "language": "pt",
+  "owner": "luxacao_posterior_de_quadril",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "ae9c95663e1cd9fcb9fb6dd63c52f01d8f5914b14ec5ba1fe76d7ff9c1188a59",
+  "factIds": [
+    "32_01",
+    "32_02",
+    "32_03",
+    "32_04",
+    "32_05"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "32_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "32_01",
+      "text": "Trauma de alta energia desloca cabeça femoral, com risco de lesão ciática, acetabular e osteonecrose. Fratura-luxação altera método de redução."
+    },
+    {
+      "type": "heading",
+      "id": "32_02-heading",
+      "text": "Diagnóstico e exames",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "32_02",
+      "text": "ABCDE, exame do ciático e perfusão antes/depois; radiografia confirma direção e fratura. Tomografia após redução avalia fragmento intra-articular/congruência conforme ortopedia."
+    },
+    {
+      "type": "heading",
+      "id": "32_03-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "32_03",
+      "text": "Redução urgente sob anestesia/sedação adequada por equipe habilitada, sem força excessiva. Alternativa cirúrgica se irredutível, não concêntrica ou fragmento/fratura que a exija. Não atrasar por consulta eletiva."
+    },
+    {
+      "type": "heading",
+      "id": "32_04-heading",
+      "text": "Seguimento e sinais de alarme",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "32_04",
+      "text": "Internar/observar conforme lesões e estabilidade. Apoio e reabilitação conforme padrão; acompanhar osteonecrose, artrite e déficit ciático, mesmo após redução satisfatória."
+    },
+    {
+      "type": "heading",
+      "id": "32_05-heading",
+      "text": "Raciocínio clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "32_05",
+      "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "AAOS OrthoInfo — hip dislocation",
+      "url": "https://www.orthoinfo.org/diseases--conditions/hip-dislocation/",
+      "year": null,
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aaos_hip_disloc",
+      "organization_or_authors": "AAOS OrthoInfo",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AAOS OrthoInfo — hip dislocation"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "markdown": "# Luxação posterior do quadril\n\n## Definição e fisiopatologia\n\nTrauma de alta energia desloca cabeça femoral, com risco de lesão ciática, acetabular e osteonecrose. Fratura-luxação altera método de redução.\n\n## Diagnóstico e exames\n\nABCDE, exame do ciático e perfusão antes/depois; radiografia confirma direção e fratura. Tomografia após redução avalia fragmento intra-articular/congruência conforme ortopedia.\n\n## Tratamento e decisões\n\nRedução urgente sob anestesia/sedação adequada por equipe habilitada, sem força excessiva. Alternativa cirúrgica se irredutível, não concêntrica ou fragmento/fratura que a exija. Não atrasar por consulta eletiva.\n\n## Seguimento e sinais de alarme\n\nInternar/observar conforme lesões e estabilidade. Apoio e reabilitação conforme padrão; acompanhar osteonecrose, artrite e déficit ciático, mesmo após redução satisfatória.\n\n## Raciocínio clínico\n\nA avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.\n\n## Referências\n\n1. AAOS OrthoInfo — hip dislocation. https://www.orthoinfo.org/diseases--conditions/hip-dislocation/\n\n2. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n"
+}

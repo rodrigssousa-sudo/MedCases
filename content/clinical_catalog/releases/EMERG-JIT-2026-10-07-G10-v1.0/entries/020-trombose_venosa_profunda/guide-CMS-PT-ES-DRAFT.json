@@ -1,0 +1,278 @@
+{
+  "schema_version": "1.1",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "status": "DRAFT_ADMIN",
+  "human_approved": false,
+  "human_approval_note": null,
+  "owner": "trombose_venosa_profunda",
+  "canonicalPayloadSha256": "86ae0e16d92f1b3fc31e9e8daf755203e18381a98e2c1401c0977d5f75b697bd",
+  "publicationAuthorized": false,
+  "reviewer": null,
+  "review_date": "2026-10-07",
+  "cover": null,
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG158 — Venous thromboembolic diseases",
+      "url": "https://www.nice.org.uk/guidance/ng158/chapter/Recommendations",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LIVING",
+      "scope": "Diagnóstico adulto, anticoagulação interina, seleção e duração do tratamento.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "dvt",
+      "organization_or_authors": "NICE NG158",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG158 — Venous thromboembolic diseases"
+    },
+    {
+      "id": 2,
+      "title": "DailyMed — Eliquis prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a454cd24-0c6d-46e8-b1e4-197388606175",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Esquema ADULTO para TVP/TEP; critérios de redução da fibrilação atrial não se aplicam automaticamente à TVP.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "apix",
+      "organization_or_authors": "DailyMed",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "DailyMed — Eliquis prescribing information"
+    },
+    {
+      "id": 3,
+      "title": "DailyMed — Xarelto prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=10db92f9-2300-4a80-836b-673e1ae91610",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Tratamento ADULTO de TVP; comida, função renal, fígado e interações.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "riva",
+      "organization_or_authors": "DailyMed",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "DailyMed — Xarelto prescribing information"
+    }
+  ],
+  "pt": {
+    "title": "Trombose venosa profunda",
+    "subtitle": "Guia clínico — candidato para revisão",
+    "summary": "Trombo venoso profundo pode embolizar ao pulmão e causar síndrome pós-trombótica. Edema unilateral é sugestivo, não específico; diferenciais incluem celulite, hematoma e cisto poplíteo roto.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "20_01-heading",
+        "text": "Definição e fisiopatologia",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "20_01",
+        "text": "Trombo venoso profundo pode embolizar ao pulmão e causar síndrome pós-trombótica. Edema unilateral é sugestivo, não específico; diferenciais incluem celulite, hematoma e cisto poplíteo roto."
+      },
+      {
+        "type": "heading",
+        "id": "20_02-heading",
+        "text": "Diagnóstico e exames",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "20_02",
+        "text": "Usar Wells de dois níveis no adulto e ultrassom venoso proximal; D-dímero conforme probabilidade. Se TVP provável e imagem não disponível em 4 horas, avaliar anticoagulação terapêutica interina e ultrassom em até 24 horas, considerando sangramento/contraindicações."
+      },
+      {
+        "type": "heading",
+        "id": "20_03-heading",
+        "text": "Medicamentos e doses",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "20_03",
+        "text": "Adulto elegível: apixabana 10 mg por via oral a cada 12 horas durante 7 dias, depois 5 mg a cada 12 horas. Alternativa: rivaroxabana 15 mg por via oral a cada 12 horas com alimento durante 21 dias, depois 20 mg a cada 24 horas com alimento. Escolher um esquema, não combinar; tratar por pelo menos 3 meses e reavaliar duração."
+      },
+      {
+        "type": "heading",
+        "id": "20_04-heading",
+        "text": "Segurança e populações especiais",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "20_04",
+        "text": "Hemograma, plaquetas, função renal/hepática e interações antes de escolher. Evitar rivaroxabana com clearance abaixo de 15 mL/min; doença renal grave exige especialista. Gestação, síndrome antifosfolípide de alto risco, sangramento ativo e hepatopatia relevante mudam escolha. Não reduzir dose de TVP usando critérios da fibrilação atrial."
+      },
+      {
+        "type": "heading",
+        "id": "20_05-heading",
+        "text": "Internação, alta e escalonamento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "20_05",
+        "text": "Dispneia, síncope, dor torácica ou hipóxia: investigar TEP. Flegmasia/ameaça ao membro, sangramento ou instabilidade requerem internação. Alta selecionada com anticoagulação acessível, adesão e retorno; pediatria usa owner/esquema próprio."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "NICE NG158 — Venous thromboembolic diseases",
+        "url": "https://www.nice.org.uk/guidance/ng158/chapter/Recommendations",
+        "year": null,
+        "authorityStatus": "AUTHORITATIVE_LIVING",
+        "scope": "Diagnóstico adulto, anticoagulação interina, seleção e duração do tratamento.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "dvt",
+        "organization_or_authors": "NICE NG158",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG158 — Venous thromboembolic diseases"
+      },
+      {
+        "id": 2,
+        "title": "DailyMed — Eliquis prescribing information",
+        "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a454cd24-0c6d-46e8-b1e4-197388606175",
+        "year": 2025,
+        "authorityStatus": "OFFICIAL_DRUG_LABEL",
+        "scope": "Esquema ADULTO para TVP/TEP; critérios de redução da fibrilação atrial não se aplicam automaticamente à TVP.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "apix",
+        "organization_or_authors": "DailyMed",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "DailyMed — Eliquis prescribing information"
+      },
+      {
+        "id": 3,
+        "title": "DailyMed — Xarelto prescribing information",
+        "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=10db92f9-2300-4a80-836b-673e1ae91610",
+        "year": 2026,
+        "authorityStatus": "OFFICIAL_DRUG_LABEL",
+        "scope": "Tratamento ADULTO de TVP; comida, função renal, fígado e interações.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "riva",
+        "organization_or_authors": "DailyMed",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "DailyMed — Xarelto prescribing information"
+      }
+    ]
+  },
+  "es": {
+    "title": "Trombosis venosa profunda",
+    "subtitle": "Guía clínica — candidato para revisión",
+    "summary": "Trombo venoso profundo puede embolizar al pulmón y causar síndrome postrombótico. Edema unilateral es sugerente, no específico; diferenciales incluyen celulitis, hematoma y quiste poplíteo roto.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "20_01-heading",
+        "text": "Definición y fisiopatología",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "20_01",
+        "text": "Trombo venoso profundo puede embolizar al pulmón y causar síndrome postrombótico. Edema unilateral es sugerente, no específico; diferenciales incluyen celulitis, hematoma y quiste poplíteo roto."
+      },
+      {
+        "type": "heading",
+        "id": "20_02-heading",
+        "text": "Diagnóstico y estudios",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "20_02",
+        "text": "Usar Wells de dos niveles en adulto y ecografía venosa proximal; dímero D según probabilidad. Si TVP probable e imagen no disponible en 4 horas, valorar anticoagulación terapéutica interina y ecografía hasta 24 horas, considerando sangrado/contraindicaciones."
+      },
+      {
+        "type": "heading",
+        "id": "20_03-heading",
+        "text": "Medicamentos y dosis",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "20_03",
+        "text": "Adulto elegible: apixabán 10 mg por vía oral cada 12 horas durante 7 días, luego 5 mg cada 12 horas. Alternativa: rivaroxabán 15 mg por vía oral cada 12 horas con alimento durante 21 días, luego 20 mg cada 24 horas con alimento. Elegir una pauta, no combinar; tratar al menos 3 meses y reevaluar duración."
+      },
+      {
+        "type": "heading",
+        "id": "20_04-heading",
+        "text": "Seguridad y poblaciones especiales",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "20_04",
+        "text": "Hemograma, plaquetas, función renal/hepática e interacciones antes de elegir. Evitar rivaroxabán con clearance menor de 15 mL/min; enfermedad renal grave exige especialista. Embarazo, síndrome antifosfolípido de alto riesgo, sangrado activo y hepatopatía relevante modifican elección. No reducir dosis de TVP con criterios de fibrilación auricular."
+      },
+      {
+        "type": "heading",
+        "id": "20_05-heading",
+        "text": "Internación, alta y escalamiento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "20_05",
+        "text": "Disnea, síncope, dolor torácico o hipoxia: investigar embolia pulmonar. Flegmasia/amenaza del miembro, sangrado o inestabilidad requieren internación. Alta seleccionada con anticoagulación accesible, adherencia y seguimiento; pediatría usa owner/pauta propios."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "NICE NG158 — Venous thromboembolic diseases",
+        "url": "https://www.nice.org.uk/guidance/ng158/chapter/Recommendations",
+        "year": null,
+        "authorityStatus": "AUTHORITATIVE_LIVING",
+        "scope": "Diagnóstico adulto, anticoagulação interina, seleção e duração do tratamento.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "dvt",
+        "organization_or_authors": "NICE NG158",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG158 — Venous thromboembolic diseases"
+      },
+      {
+        "id": 2,
+        "title": "DailyMed — Eliquis prescribing information",
+        "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a454cd24-0c6d-46e8-b1e4-197388606175",
+        "year": 2025,
+        "authorityStatus": "OFFICIAL_DRUG_LABEL",
+        "scope": "Esquema ADULTO para TVP/TEP; critérios de redução da fibrilação atrial não se aplicam automaticamente à TVP.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "apix",
+        "organization_or_authors": "DailyMed",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "DailyMed — Eliquis prescribing information"
+      },
+      {
+        "id": 3,
+        "title": "DailyMed — Xarelto prescribing information",
+        "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=10db92f9-2300-4a80-836b-673e1ae91610",
+        "year": 2026,
+        "authorityStatus": "OFFICIAL_DRUG_LABEL",
+        "scope": "Tratamento ADULTO de TVP; comida, função renal, fígado e interações.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "riva",
+        "organization_or_authors": "DailyMed",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "DailyMed — Xarelto prescribing information"
+      }
+    ]
+  }
+}

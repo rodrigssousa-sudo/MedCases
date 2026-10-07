@@ -1,0 +1,120 @@
+{
+  "mode": "study",
+  "language": "pt",
+  "owner": "trombose_venosa_profunda",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "86ae0e16d92f1b3fc31e9e8daf755203e18381a98e2c1401c0977d5f75b697bd",
+  "factIds": [
+    "20_01",
+    "20_02",
+    "20_03",
+    "20_04",
+    "20_05"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "20_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "20_01",
+      "text": "Trombo venoso profundo pode embolizar ao pulmão e causar síndrome pós-trombótica. Edema unilateral é sugestivo, não específico; diferenciais incluem celulite, hematoma e cisto poplíteo roto."
+    },
+    {
+      "type": "heading",
+      "id": "20_02-heading",
+      "text": "Diagnóstico e exames",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "20_02",
+      "text": "Usar Wells de dois níveis no adulto e ultrassom venoso proximal; D-dímero conforme probabilidade. Se TVP provável e imagem não disponível em 4 horas, avaliar anticoagulação terapêutica interina e ultrassom em até 24 horas, considerando sangramento/contraindicações."
+    },
+    {
+      "type": "heading",
+      "id": "20_03-heading",
+      "text": "Medicamentos e doses",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "20_03",
+      "text": "Adulto elegível: apixabana 10 mg por via oral a cada 12 horas durante 7 dias, depois 5 mg a cada 12 horas. Alternativa: rivaroxabana 15 mg por via oral a cada 12 horas com alimento durante 21 dias, depois 20 mg a cada 24 horas com alimento. Escolher um esquema, não combinar; tratar por pelo menos 3 meses e reavaliar duração."
+    },
+    {
+      "type": "heading",
+      "id": "20_04-heading",
+      "text": "Segurança e populações especiais",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "20_04",
+      "text": "Hemograma, plaquetas, função renal/hepática e interações antes de escolher. Evitar rivaroxabana com clearance abaixo de 15 mL/min; doença renal grave exige especialista. Gestação, síndrome antifosfolípide de alto risco, sangramento ativo e hepatopatia relevante mudam escolha. Não reduzir dose de TVP usando critérios da fibrilação atrial."
+    },
+    {
+      "type": "heading",
+      "id": "20_05-heading",
+      "text": "Internação, alta e escalonamento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "20_05",
+      "text": "Dispneia, síncope, dor torácica ou hipóxia: investigar TEP. Flegmasia/ameaça ao membro, sangramento ou instabilidade requerem internação. Alta selecionada com anticoagulação acessível, adesão e retorno; pediatria usa owner/esquema próprio."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG158 — Venous thromboembolic diseases",
+      "url": "https://www.nice.org.uk/guidance/ng158/chapter/Recommendations",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LIVING",
+      "scope": "Diagnóstico adulto, anticoagulação interina, seleção e duração do tratamento.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "dvt",
+      "organization_or_authors": "NICE NG158",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG158 — Venous thromboembolic diseases"
+    },
+    {
+      "id": 2,
+      "title": "DailyMed — Eliquis prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a454cd24-0c6d-46e8-b1e4-197388606175",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Esquema ADULTO para TVP/TEP; critérios de redução da fibrilação atrial não se aplicam automaticamente à TVP.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "apix",
+      "organization_or_authors": "DailyMed",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "DailyMed — Eliquis prescribing information"
+    },
+    {
+      "id": 3,
+      "title": "DailyMed — Xarelto prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=10db92f9-2300-4a80-836b-673e1ae91610",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Tratamento ADULTO de TVP; comida, função renal, fígado e interações.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "riva",
+      "organization_or_authors": "DailyMed",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "DailyMed — Xarelto prescribing information"
+    }
+  ],
+  "markdown": "# Trombose venosa profunda\n\n## Definição e fisiopatologia\n\nTrombo venoso profundo pode embolizar ao pulmão e causar síndrome pós-trombótica. Edema unilateral é sugestivo, não específico; diferenciais incluem celulite, hematoma e cisto poplíteo roto.\n\n## Diagnóstico e exames\n\nUsar Wells de dois níveis no adulto e ultrassom venoso proximal; D-dímero conforme probabilidade. Se TVP provável e imagem não disponível em 4 horas, avaliar anticoagulação terapêutica interina e ultrassom em até 24 horas, considerando sangramento/contraindicações.\n\n## Medicamentos e doses\n\nAdulto elegível: apixabana 10 mg por via oral a cada 12 horas durante 7 dias, depois 5 mg a cada 12 horas. Alternativa: rivaroxabana 15 mg por via oral a cada 12 horas com alimento durante 21 dias, depois 20 mg a cada 24 horas com alimento. Escolher um esquema, não combinar; tratar por pelo menos 3 meses e reavaliar duração.\n\n## Segurança e populações especiais\n\nHemograma, plaquetas, função renal/hepática e interações antes de escolher. Evitar rivaroxabana com clearance abaixo de 15 mL/min; doença renal grave exige especialista. Gestação, síndrome antifosfolípide de alto risco, sangramento ativo e hepatopatia relevante mudam escolha. Não reduzir dose de TVP usando critérios da fibrilação atrial.\n\n## Internação, alta e escalonamento\n\nDispneia, síncope, dor torácica ou hipóxia: investigar TEP. Flegmasia/ameaça ao membro, sangramento ou instabilidade requerem internação. Alta selecionada com anticoagulação acessível, adesão e retorno; pediatria usa owner/esquema próprio.\n\n## Referências\n\n1. NICE NG158 — Venous thromboembolic diseases. https://www.nice.org.uk/guidance/ng158/chapter/Recommendations\n\n2. DailyMed — Eliquis prescribing information. 2025. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a454cd24-0c6d-46e8-b1e4-197388606175\n\n3. DailyMed — Xarelto prescribing information. 2026. https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=10db92f9-2300-4a80-836b-673e1ae91610\n"
+}

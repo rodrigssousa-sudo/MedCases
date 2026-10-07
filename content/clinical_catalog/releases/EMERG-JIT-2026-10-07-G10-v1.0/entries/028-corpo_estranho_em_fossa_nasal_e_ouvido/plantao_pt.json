@@ -1,0 +1,132 @@
+{
+  "mode": "plantao",
+  "language": "pt",
+  "owner": "corpo_estranho_em_fossa_nasal_e_ouvido",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "ba92bcd2dbed7544f4bbaf928f0aba7033d0976932f9f8d1010a51998b9b62c0",
+  "factIds": [
+    "28_02",
+    "28_03",
+    "28_05",
+    "28_06",
+    "28_04",
+    "28_01"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "28_02-heading",
+      "text": "Diagnóstico e exames",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "28_02",
+      "text": "Identificar material, localização, duração e tentativa anterior. Examinar com iluminação e visualização direta, sem empurrar para dentro; investigar perfuração timpânica/aspiração se compatível."
+    },
+    {
+      "type": "heading",
+      "id": "28_03-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "28_03",
+      "text": "Remoção por técnica adequada à localização: pressão positiva em objeto nasal selecionado, pinça/sucção sob visão no caso apropriado. Pilha ou ímãs com risco de compressão: remoção urgente/ORL. Não irrigar pilha, material expansível ou ouvido com possível perfuração."
+    },
+    {
+      "type": "heading",
+      "id": "28_05-heading",
+      "text": "Medicamentos e doses",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "28_05",
+      "text": "Analgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa."
+    },
+    {
+      "type": "heading",
+      "id": "28_06-heading",
+      "text": "Alternativas e limites",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "28_06",
+      "text": "Alternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade."
+    },
+    {
+      "type": "heading",
+      "id": "28_04-heading",
+      "text": "Internação, alta e escalonamento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "28_04",
+      "text": "Após tentativa mal-sucedida, objeto profundo, dor intensa ou falta de cooperação, interromper e encaminhar; não repetir tentativas traumáticas. Após retirada, avaliar mucosa/tímpano; antibiótico apenas se lesão/infecção justificar."
+    },
+    {
+      "type": "heading",
+      "id": "28_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "28_01",
+      "text": "Objeto retido pode causar inflamação, infecção ou necrose; pilha-botão causa dano químico rápido. Rinorreia unilateral fétida pode revelar objeto nasal não observado."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "Queensland Health — Primary clinical care manual, edition 12",
+      "url": "https://www.health.qld.gov.au/__data/assets/pdf_file/0022/1447051/PCCM_full.pdf",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Corpo estranho nasal/auricular e encaminhamento; população e técnica devem ser respeitadas.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "foreign",
+      "organization_or_authors": "Queensland Health",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "Queensland Health — Primary clinical care manual, edition 12"
+    },
+    {
+      "id": 2,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "markdown": "# Corpo estranho em nariz e ouvido\n\n## Diagnóstico e exames\n\nIdentificar material, localização, duração e tentativa anterior. Examinar com iluminação e visualização direta, sem empurrar para dentro; investigar perfuração timpânica/aspiração se compatível.\n\n## Tratamento e decisões\n\nRemoção por técnica adequada à localização: pressão positiva em objeto nasal selecionado, pinça/sucção sob visão no caso apropriado. Pilha ou ímãs com risco de compressão: remoção urgente/ORL. Não irrigar pilha, material expansível ou ouvido com possível perfuração.\n\n## Medicamentos e doses\n\nAnalgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa.\n\n## Alternativas e limites\n\nAlternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade.\n\n## Internação, alta e escalonamento\n\nApós tentativa mal-sucedida, objeto profundo, dor intensa ou falta de cooperação, interromper e encaminhar; não repetir tentativas traumáticas. Após retirada, avaliar mucosa/tímpano; antibiótico apenas se lesão/infecção justificar.\n\n## Definição e fisiopatologia\n\nObjeto retido pode causar inflamação, infecção ou necrose; pilha-botão causa dano químico rápido. Rinorreia unilateral fétida pode revelar objeto nasal não observado.\n\n## Referências\n\n1. Queensland Health — Primary clinical care manual, edition 12. 2025. https://www.health.qld.gov.au/__data/assets/pdf_file/0022/1447051/PCCM_full.pdf\n\n2. NHS — Paracetamol for adults. 2026. https://www.nhs.uk/medicines/paracetamol-for-adults/\n\n3. NHS — Ibuprofen for adults. 2025. https://www.nhs.uk/medicines/ibuprofen-for-adults/\n"
+}

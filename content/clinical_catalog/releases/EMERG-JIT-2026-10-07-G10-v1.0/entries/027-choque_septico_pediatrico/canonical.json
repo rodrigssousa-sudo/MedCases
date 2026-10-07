@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "choque_septico_pediatrico",
+  "title": {
+    "pt": "Choque séptico pediátrico",
+    "es": "Shock séptico pediátrico"
+  },
+  "populationScope": "Crianças; não extrapolar doses adultas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "27_01",
+      "section": "concept",
+      "pt": "Sepse é infecção com disfunção orgânica; choque inclui disfunção cardiovascular e hipotensão pode ser tardia. Criança febril isoladamente não tem sepse. Este módulo não substitui sepse neonatal já cadastrada.",
+      "es": "Sepsis es infección con disfunción orgánica; shock incluye disfunción cardiovascular y la hipotensión puede ser tardía. Fiebre aislada no significa sepsis. Este módulo no sustituye sepsis neonatal ya registrada.",
+      "sources": [
+        "ssc",
+        "sepsis_chop",
+        "sepsis_dose"
+      ]
+    },
+    {
+      "id": "27_02",
+      "section": "initial",
+      "pt": "Acionar pediatria/UTI, ABCDE, acesso IV ou intraósseo, glicemia e monitorização contínua. Culturas antes do antibiótico se não atrasam; choque: antimicrobiano idealmente em 1 hora, escolhido por foco, idade, imunidade e resistência local.",
+      "es": "Activar pediatría/UCI, ABCDE, acceso IV o intraóseo, glucemia y monitorización continua. Cultivos antes del antibiótico si no demoran; shock: antimicrobiano idealmente en 1 hora según foco, edad, inmunidad y resistencia local.",
+      "sources": [
+        "ssc",
+        "sepsis_chop",
+        "sepsis_dose"
+      ]
+    },
+    {
+      "id": "27_03",
+      "section": "medications",
+      "pt": "SSC 2026, com UTI disponível: cristalóide balanceado em bolus de 10–20 mL/kg, reavaliando após cada um; pode chegar a 40–60 mL/kg na primeira hora, interrompendo por congestão ou choque resolvido. Sem UTI e sem hipotensão: não administrar bolus rotineiro. Sem UTI com hipotensão: até 40 mL/kg na primeira hora, com reavaliação.",
+      "es": "SSC 2026, con UCI disponible: cristaloide balanceado en bolos de 10–20 mL/kg, reevaluando tras cada uno; puede llegar a 40–60 mL/kg en primera hora, suspendiendo por congestión o shock resuelto. Sin UCI y sin hipotensión: no dar bolo rutinario. Sin UCI con hipotensión: hasta 40 mL/kg en primera hora, con reevaluación.",
+      "sources": [
+        "ssc",
+        "sepsis_chop",
+        "sepsis_dose"
+      ]
+    },
+    {
+      "id": "27_04",
+      "section": "medications",
+      "pt": "Choque persistente/sobrecarga: iniciar cedo adrenalina OU noradrenalina em infusão monitorizada; SSC 2026 não demonstra superioridade universal de uma. Referência de início da tabela Arkansas: 0,05 micrograma/kg por minuto, titular por perfusão/pressão com UTI. Usar bomba e solução padronizada conferida; não é dose em bolus e não confundir microgramas com miligramas.",
+      "es": "Shock persistente/sobrecarga: iniciar temprano adrenalina O noradrenalina en infusión monitorizada; SSC 2026 no demuestra superioridad universal de una. Inicio de referencia de tabla Arkansas: 0,05 microgramo/kg por minuto, titular por perfusión/presión con UCI. Usar bomba y solución estandarizada verificada; no es bolo y no confundir microgramos con miligramos.",
+      "sources": [
+        "ssc",
+        "sepsis_chop",
+        "sepsis_dose"
+      ]
+    },
+    {
+      "id": "27_05",
+      "section": "treatment",
+      "pt": "Antibiótico empírico não deve ter esquema universal para todas as idades/focos. Selecionar protocolo pediátrico para meningite, pneumonia, infecção abdominal, neutropenia ou acesso vascular; desescalonar por microbiologia e controlar foco. Cristalóide 0,9% é alternativa quando balanceado indisponível ou contexto específico favorece seu uso.",
+      "es": "Antibiótico empírico no debe tener pauta universal para todas las edades/focos. Elegir protocolo pediátrico para meningitis, neumonía, infección abdominal, neutropenia o acceso vascular; desescalar por microbiología y controlar foco. Cristaloide 0,9% es alternativa si balanceado no disponible o contexto específico favorece su uso.",
+      "sources": [
+        "ssc",
+        "sepsis_chop",
+        "sepsis_dose"
+      ]
+    },
+    {
+      "id": "27_06",
+      "section": "safety",
+      "pt": "Reavaliar consciência, enchimento capilar, pressão para idade, diurese, lactato, ausculta e hepatomegalia. Avaliar extravasamento se vasoativo periférico; não atrasar início seguro aguardando central. UTI/transferência se vasoativo, disfunção orgânica ou suporte crescente.",
+      "es": "Reevaluar conciencia, relleno capilar, presión para edad, diuresis, lactato, auscultación y hepatomegalia. Vigilar extravasación si vasoactivo periférico; no demorar inicio seguro esperando vía central. UCI/traslado por vasoactivo, disfunción orgánica o soporte creciente.",
+      "sources": [
+        "ssc",
+        "sepsis_chop",
+        "sepsis_dose"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "SSC/SCCM — Sepsis and septic shock in children 2026",
+      "url": "https://www.sccm.org/clinical-resources/guidelines/guidelines/surviving-sepsis-campaign-international-guidelines-for-the-management-of-sepsis-and-septic-shock-in",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Substitui 2020. Diferencia disponibilidade de UTI e hipotensão; não estabelece superioridade de adrenalina ou noradrenalina inicial.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ssc",
+      "organization_or_authors": "SSC/SCCM",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "SSC/SCCM — Sepsis and septic shock in children 2026"
+    },
+    {
+      "id": 2,
+      "title": "CHOP — Sepsis clinical pathway",
+      "url": "https://www.chop.edu/clinical-pathway/sepsis-emergency-department-inpatient-picu-clinical-pathway",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Revisão abril de 2026 verificada no texto indexado; leitura direta eventualmente retorna 403.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "sepsis_chop",
+      "organization_or_authors": "CHOP",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "CHOP — Sepsis clinical pathway"
+    },
+    {
+      "id": 3,
+      "title": "Arkansas Children’s — Critical sepsis emergency department pathway",
+      "url": "https://www.archildrens.org/-/media/Files/for-healthcare-professionals/clinical-pathways/Critical-Sepsis-Emergency-Department-Clinical-Pathway.pdf?hash=4951411B0551BCBC7C33C0A8F5D8F050&rev=23fd83ba723c4f23baf43ac5bf4fa479",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Tabela pediátrica de doses lida; data de revisão não identificada no PDF. Usada somente para faixa de infusão, não para substituir SSC 2026.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "sepsis_dose",
+      "organization_or_authors": "Arkansas Children’s",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "Arkansas Children’s — Critical sepsis emergency department pathway"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

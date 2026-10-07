@@ -1,0 +1,278 @@
+{
+  "schema_version": "1.1",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "status": "DRAFT_ADMIN",
+  "human_approved": false,
+  "human_approval_note": null,
+  "owner": "lombalgia_mecanica",
+  "canonicalPayloadSha256": "1aae7e8a45fe4137cbc025594a3825a008aa97791088504b22decec1821c51c8",
+  "publicationAuthorized": false,
+  "reviewer": null,
+  "review_date": "2026-10-07",
+  "cover": null,
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG59 — Low back pain and sciatica in over 16s",
+      "url": "https://www.nice.org.uk/guidance/NG59/chapter/recommendations",
+      "year": 2020,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Excluir causa grave antes de tratar lombalgia inespecífica; não usar guideline como protocolo de cauda equina.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "lbp",
+      "organization_or_authors": "NICE NG59",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG59 — Low back pain and sciatica in over 16s"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG41 — Spinal injury: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng41/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Restrição de movimento, imagem e não utilização de metilprednisolona para neuroproteção.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng41",
+      "organization_or_authors": "NICE NG41",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG41 — Spinal injury: assessment and initial management"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "pt": {
+    "title": "Lombalgia aguda: investigação de sinais de alarme",
+    "subtitle": "Guia clínico — candidato para revisão",
+    "summary": "Complemento proposto para triagem de lombalgia no adulto geral, mantendo integralmente o conteúdo gestacional G08 de lombalgia_mecanica. Sinal de alarme aponta necessidade de investigar causa específica; não é nova doença independente.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "09_01-heading",
+        "text": "Definição e fisiopatologia",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "09_01",
+        "text": "Complemento proposto para triagem de lombalgia no adulto geral, mantendo integralmente o conteúdo gestacional G08 de lombalgia_mecanica. Sinal de alarme aponta necessidade de investigar causa específica; não é nova doença independente."
+      },
+      {
+        "type": "heading",
+        "id": "09_02-heading",
+        "text": "Diagnóstico e exames",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "09_02",
+        "text": "Pesquisar retenção urinária, anestesia perineal, déficit progressivo, febre/imunossupressão, câncer, trauma/osteoporose e dor com instabilidade circulatória. Considerar cauda equina, infecção, fratura, neoplasia e causa vascular/visceral; não atribuir esses sinais a lombalgia mecânica."
+      },
+      {
+        "type": "heading",
+        "id": "09_03-heading",
+        "text": "Tratamento e decisões",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "09_03",
+        "text": "Com suspeita grave: exame neurológico, exames direcionados e encaminhamento urgente para imagem/tratamento da causa. Sem causa grave: manter atividade tolerada, exercício/fisioterapia; considerar anti-inflamatório oral pelo menor tempo se seguro. Paracetamol isolado não é tratamento rotineiro recomendado de lombalgia inespecífica."
+      },
+      {
+        "type": "heading",
+        "id": "09_04-heading",
+        "text": "Segurança e populações especiais",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "09_04",
+        "text": "Não aplicar alternativa com anti-inflamatório à gestação. Não realizar imagem rotineira da lombalgia inespecífica; isso não se aplica à suspeita de compressão, infecção ou fratura. Preservar owners próprios de cauda equina e outras causas."
+      },
+      {
+        "type": "heading",
+        "id": "09_05-heading",
+        "text": "Alternativas e limites",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "09_05",
+        "text": "Alternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "NICE NG59 — Low back pain and sciatica in over 16s",
+        "url": "https://www.nice.org.uk/guidance/NG59/chapter/recommendations",
+        "year": 2020,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "Excluir causa grave antes de tratar lombalgia inespecífica; não usar guideline como protocolo de cauda equina.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "lbp",
+        "organization_or_authors": "NICE NG59",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG59 — Low back pain and sciatica in over 16s"
+      },
+      {
+        "id": 2,
+        "title": "NICE NG41 — Spinal injury: assessment and initial management",
+        "url": "https://www.nice.org.uk/guidance/ng41/chapter/Recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "Restrição de movimento, imagem e não utilização de metilprednisolona para neuroproteção.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng41",
+        "organization_or_authors": "NICE NG41",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG41 — Spinal injury: assessment and initial management"
+      },
+      {
+        "id": 3,
+        "title": "NHS — Ibuprofen for adults",
+        "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+        "year": 2025,
+        "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+        "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ibu",
+        "organization_or_authors": "NHS",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NHS — Ibuprofen for adults"
+      }
+    ]
+  },
+  "es": {
+    "title": "Lumbalgia aguda: evaluación de signos de alarma",
+    "subtitle": "Guía clínica — candidato para revisión",
+    "summary": "Complemento propuesto para triaje de lumbalgia en adulto general, manteniendo íntegro el contenido gestacional G08 de lombalgia_mecanica. Un signo de alarma indica investigar causa específica; no es nueva enfermedad independiente.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "09_01-heading",
+        "text": "Definición y fisiopatología",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "09_01",
+        "text": "Complemento propuesto para triaje de lumbalgia en adulto general, manteniendo íntegro el contenido gestacional G08 de lombalgia_mecanica. Un signo de alarma indica investigar causa específica; no es nueva enfermedad independiente."
+      },
+      {
+        "type": "heading",
+        "id": "09_02-heading",
+        "text": "Diagnóstico y estudios",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "09_02",
+        "text": "Buscar retención urinaria, anestesia perineal, déficit progresivo, fiebre/inmunosupresión, cáncer, trauma/osteoporosis y dolor con inestabilidad circulatoria. Considerar cauda equina, infección, fractura, neoplasia y causa vascular/visceral; no atribuir estos signos a lumbalgia mecánica."
+      },
+      {
+        "type": "heading",
+        "id": "09_03-heading",
+        "text": "Tratamiento y decisiones",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "09_03",
+        "text": "Con sospecha grave: examen neurológico, pruebas dirigidas y derivación urgente para imagen/tratamiento causal. Sin causa grave: actividad tolerada, ejercicio/fisioterapia; considerar antiinflamatorio oral por el menor tiempo si es seguro. Paracetamol aislado no es tratamiento rutinario recomendado de lumbalgia inespecífica."
+      },
+      {
+        "type": "heading",
+        "id": "09_04-heading",
+        "text": "Seguridad y poblaciones especiales",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "09_04",
+        "text": "No aplicar alternativa con antiinflamatorio al embarazo. No solicitar imagen rutinaria de lumbalgia inespecífica; esto no se aplica a sospecha de compresión, infección o fractura. Preservar owners propios de cauda equina y otras causas."
+      },
+      {
+        "type": "heading",
+        "id": "09_05-heading",
+        "text": "Alternativas y límites",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "09_05",
+        "text": "Alternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "NICE NG59 — Low back pain and sciatica in over 16s",
+        "url": "https://www.nice.org.uk/guidance/NG59/chapter/recommendations",
+        "year": 2020,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "Excluir causa grave antes de tratar lombalgia inespecífica; não usar guideline como protocolo de cauda equina.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "lbp",
+        "organization_or_authors": "NICE NG59",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG59 — Low back pain and sciatica in over 16s"
+      },
+      {
+        "id": 2,
+        "title": "NICE NG41 — Spinal injury: assessment and initial management",
+        "url": "https://www.nice.org.uk/guidance/ng41/chapter/Recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "Restrição de movimento, imagem e não utilização de metilprednisolona para neuroproteção.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng41",
+        "organization_or_authors": "NICE NG41",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG41 — Spinal injury: assessment and initial management"
+      },
+      {
+        "id": 3,
+        "title": "NHS — Ibuprofen for adults",
+        "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+        "year": 2025,
+        "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+        "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ibu",
+        "organization_or_authors": "NHS",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NHS — Ibuprofen for adults"
+      }
+    ]
+  }
+}

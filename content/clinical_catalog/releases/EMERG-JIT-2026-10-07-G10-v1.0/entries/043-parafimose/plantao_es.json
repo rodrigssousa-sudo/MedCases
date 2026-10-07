@@ -1,0 +1,132 @@
+{
+  "mode": "plantao",
+  "language": "es",
+  "owner": "parafimose",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "9566fbc0d13afb46b7e644d2bc2e61702f11ce62b0cf06ad3b1c8e29a6900689",
+  "factIds": [
+    "43_02",
+    "43_03",
+    "43_05",
+    "43_06",
+    "43_04",
+    "43_01"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "43_02-heading",
+      "text": "Abordaje inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "43_02",
+      "text": "Evaluar color/perfusión, edema, dolor y micción; retirar constricción y activar urología por isquemia. No prolongar intentos en glande oscuro o perfusión comprometida."
+    },
+    {
+      "type": "heading",
+      "id": "43_03-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "43_03",
+      "text": "Analgesia y compresión controlada para reducir edema, seguida de reducción manual suave por equipo. Alternativa: liberación quirúrgica si irreductible o isquémica. Técnica/anestesia según edad y cooperación; evitar manipulación traumática repetida."
+    },
+    {
+      "type": "heading",
+      "id": "43_05-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "43_05",
+      "text": "Analgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal."
+    },
+    {
+      "type": "heading",
+      "id": "43_06-heading",
+      "text": "Alternativas y límites",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "43_06",
+      "text": "Alternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad."
+    },
+    {
+      "type": "heading",
+      "id": "43_04-heading",
+      "text": "Seguimiento y señales de alarma",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "43_04",
+      "text": "Después, confirmar perfusión y micción y enseñar recolocar prepucio tras higiene/catéter. Niño sin complicación no exige circuncisión automática; adulto/recurrencia requiere evaluación propia. Alta solamente tras resolución e instrucciones."
+    },
+    {
+      "type": "heading",
+      "id": "43_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "43_01",
+      "text": "Prepucio retraído atrapado detrás del glande compromete drenaje venoso y puede evolucionar a isquemia. Es emergencia, diferente de fimosis sin atrapamiento."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "RCH — The penis and foreskin",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/The_penis_and_foreskin/",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Emergência pediátrica e redução de parafimose; não extrapolar indicação de circuncisão ao adulto.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "paraph",
+      "organization_or_authors": "RCH",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "RCH — The penis and foreskin"
+    },
+    {
+      "id": 2,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "markdown": "# Parafimosis\n\n## Abordaje inicial\n\nEvaluar color/perfusión, edema, dolor y micción; retirar constricción y activar urología por isquemia. No prolongar intentos en glande oscuro o perfusión comprometida.\n\n## Tratamiento y decisiones\n\nAnalgesia y compresión controlada para reducir edema, seguida de reducción manual suave por equipo. Alternativa: liberación quirúrgica si irreductible o isquémica. Técnica/anestesia según edad y cooperación; evitar manipulación traumática repetida.\n\n## Medicamentos y dosis\n\nAnalgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal.\n\n## Alternativas y límites\n\nAlternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad.\n\n## Seguimiento y señales de alarma\n\nDespués, confirmar perfusión y micción y enseñar recolocar prepucio tras higiene/catéter. Niño sin complicación no exige circuncisión automática; adulto/recurrencia requiere evaluación propia. Alta solamente tras resolución e instrucciones.\n\n## Definición y fisiopatología\n\nPrepucio retraído atrapado detrás del glande compromete drenaje venoso y puede evolucionar a isquemia. Es emergencia, diferente de fimosis sin atrapamiento.\n\n## Referencias\n\n1. RCH — The penis and foreskin. https://www.rch.org.au/clinicalguide/guideline_index/The_penis_and_foreskin/\n\n2. NHS — Paracetamol for adults. 2026. https://www.nhs.uk/medicines/paracetamol-for-adults/\n\n3. NHS — Ibuprofen for adults. 2025. https://www.nhs.uk/medicines/ibuprofen-for-adults/\n"
+}

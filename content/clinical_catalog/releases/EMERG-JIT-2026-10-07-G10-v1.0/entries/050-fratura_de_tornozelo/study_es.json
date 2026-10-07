@@ -1,0 +1,159 @@
+{
+  "mode": "study",
+  "language": "es",
+  "owner": "fratura_de_tornozelo",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "108449a73e44ba20c54a797461388e5a4f06a80dda4230c40069023ea8dcd571",
+  "factIds": [
+    "50_01",
+    "50_02",
+    "50_03",
+    "50_04",
+    "50_05",
+    "50_06",
+    "50_07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "50_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "50_01",
+      "text": "Patrón maleolar/sindesmótico compromete estabilidad de mortaja. Danis-Weber describe nivel del peroné, pero no determina solo estabilidad ni necesidad quirúrgica."
+    },
+    {
+      "type": "heading",
+      "id": "50_02-heading",
+      "text": "Diagnóstico y estudios",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "50_02",
+      "text": "Piel, perfusión/sensibilidad y radiografía lateral/mortaja; palpar peroné proximal por Maisonneuve. Deformidad con piel/perfusión amenazada exige reducción urgente; repetir examen e imagen después."
+    },
+    {
+      "type": "heading",
+      "id": "50_03-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "50_03",
+      "text": "Adulto con fractura estable: férula/ortesis, analgesia y apoyo tolerado. Estabilidad incierta: revisión e imagen hasta 2 semanas. Mortaja inestable: fijación temprana; tejidos muy comprometidos pueden exigir estabilización temporal."
+    },
+    {
+      "type": "heading",
+      "id": "50_04-heading",
+      "text": "Seguimiento y señales de alarma",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "50_04",
+      "text": "Evaluar riesgo tromboembólico y plan de apoyo/rehabilitación. BOA citado excluye pilón, abierta y esqueleto inmaduro, que requieren módulos propios. Retorno por dolor creciente, edema, dedos fríos o pérdida sensitiva."
+    },
+    {
+      "type": "heading",
+      "id": "50_05-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "50_05",
+      "text": "Analgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal."
+    },
+    {
+      "type": "heading",
+      "id": "50_06-heading",
+      "text": "Alternativas y límites",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "50_06",
+      "text": "Alternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad."
+    },
+    {
+      "type": "heading",
+      "id": "50_07-heading",
+      "text": "Razonamiento clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "50_07",
+      "text": "Interpretar mecanismo, integridad anatómica y estabilidad conjuntamente. Radiografía sin fractura visible no excluye lesión ligamentaria/tendinosa o fractura oculta. Documentar función y examen neurovascular antes y después de inmovilización/reducción; dolor progresivo o déficit nuevo cambia urgencia. Elección conservadora versus quirúrgica depende de estabilidad, lesiones asociadas y demanda funcional, no solo del nombre de lesión."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "BOASt — The management of ankle fractures",
+      "url": "https://www.boa.ac.uk/resource/boast-12-pdf.html",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas fechadas maleolares e sindesmóticas em pessoas com maturidade esquelética; exclui pilão, expostas e imaturas.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ankle_fx",
+      "organization_or_authors": "BOASt",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "BOASt — The management of ankle fractures"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG38 — Fractures: non-complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng38",
+      "organization_or_authors": "NICE NG38",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 4,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "markdown": "# Fractura de tobillo\n\n## Definición y fisiopatología\n\nPatrón maleolar/sindesmótico compromete estabilidad de mortaja. Danis-Weber describe nivel del peroné, pero no determina solo estabilidad ni necesidad quirúrgica.\n\n## Diagnóstico y estudios\n\nPiel, perfusión/sensibilidad y radiografía lateral/mortaja; palpar peroné proximal por Maisonneuve. Deformidad con piel/perfusión amenazada exige reducción urgente; repetir examen e imagen después.\n\n## Tratamiento y decisiones\n\nAdulto con fractura estable: férula/ortesis, analgesia y apoyo tolerado. Estabilidad incierta: revisión e imagen hasta 2 semanas. Mortaja inestable: fijación temprana; tejidos muy comprometidos pueden exigir estabilización temporal.\n\n## Seguimiento y señales de alarma\n\nEvaluar riesgo tromboembólico y plan de apoyo/rehabilitación. BOA citado excluye pilón, abierta y esqueleto inmaduro, que requieren módulos propios. Retorno por dolor creciente, edema, dedos fríos o pérdida sensitiva.\n\n## Medicamentos y dosis\n\nAnalgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal.\n\n## Alternativas y límites\n\nAlternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad.\n\n## Razonamiento clínico\n\nInterpretar mecanismo, integridad anatómica y estabilidad conjuntamente. Radiografía sin fractura visible no excluye lesión ligamentaria/tendinosa o fractura oculta. Documentar función y examen neurovascular antes y después de inmovilización/reducción; dolor progresivo o déficit nuevo cambia urgencia. Elección conservadora versus quirúrgica depende de estabilidad, lesiones asociadas y demanda funcional, no solo del nombre de lesión.\n\n## Referencias\n\n1. BOASt — The management of ankle fractures. 2016. https://www.boa.ac.uk/resource/boast-12-pdf.html\n\n2. NICE NG38 — Fractures: non-complex assessment and management. 2016. https://www.nice.org.uk/guidance/ng38/chapter/recommendations\n\n3. NHS — Paracetamol for adults. 2026. https://www.nhs.uk/medicines/paracetamol-for-adults/\n\n4. NHS — Ibuprofen for adults. 2025. https://www.nhs.uk/medicines/ibuprofen-for-adults/\n"
+}

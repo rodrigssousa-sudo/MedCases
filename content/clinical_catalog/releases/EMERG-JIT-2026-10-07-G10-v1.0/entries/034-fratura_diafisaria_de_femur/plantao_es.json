@@ -1,0 +1,120 @@
+{
+  "mode": "plantao",
+  "language": "es",
+  "owner": "fratura_diafisaria_de_femur",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "8250c1fe827e7cc1a0ed4831553ed012f7a3da4c113fde7980b1cc4a25feb747",
+  "factIds": [
+    "34_02",
+    "34_03",
+    "34_04",
+    "34_01",
+    "34_05"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "34_02-heading",
+      "text": "Abordaje inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "34_02",
+      "text": "ABCDE, hemorragia, examen neurovascular y estabilización. Radiografías incluyen cadera y rodilla; buscar fractura de cuello asociada. Tracción/inmovilización depende de ausencia de contraindicación por lesión pélvica/de rodilla."
+    },
+    {
+      "type": "heading",
+      "id": "34_03-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "34_03",
+      "text": "Adulto: fijación intramedular frecuentemente definitiva. Politrauma inestable/tejidos comprometidos: fijación externa temporal y control de daños. Abierta requiere protocolo propio de antibiótico y desbridamiento."
+    },
+    {
+      "type": "heading",
+      "id": "34_04-heading",
+      "text": "Internación, alta y escalamiento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "34_04",
+      "text": "Internar; vigilar anemia, perfusión, dolor, compartimentos y complicación respiratoria/embolia grasa. Prevención tromboembólica y apoyo/rehabilitación según sangrado y estabilidad; pediatría tiene opciones distintas."
+    },
+    {
+      "type": "heading",
+      "id": "34_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "34_01",
+      "text": "Trauma de alta energía puede causar gran pérdida sanguínea y lesión asociada; fractura abierta, vascular y síndrome compartimental cambian urgencia. No confundir con fractura proximal por fragilidad."
+    },
+    {
+      "type": "heading",
+      "id": "34_05-heading",
+      "text": "Razonamiento clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "34_05",
+      "text": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "AAOS OrthoInfo — femur shaft fractures broken thighbone",
+      "url": "https://www.orthoinfo.org/diseases--conditions/femur-shaft-fractures-broken-thighbone/",
+      "year": null,
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aaos_shaft",
+      "organization_or_authors": "AAOS OrthoInfo",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AAOS OrthoInfo — femur shaft fractures broken thighbone"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG37 — Fractures: complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng37/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fratura exposta, pelve e tratamento ortoplástico.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng37",
+      "organization_or_authors": "NICE NG37",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG37 — Fractures: complex assessment and management"
+    },
+    {
+      "id": 3,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "markdown": "# Fractura diafisaria del fémur\n\n## Abordaje inicial\n\nABCDE, hemorragia, examen neurovascular y estabilización. Radiografías incluyen cadera y rodilla; buscar fractura de cuello asociada. Tracción/inmovilización depende de ausencia de contraindicación por lesión pélvica/de rodilla.\n\n## Tratamiento y decisiones\n\nAdulto: fijación intramedular frecuentemente definitiva. Politrauma inestable/tejidos comprometidos: fijación externa temporal y control de daños. Abierta requiere protocolo propio de antibiótico y desbridamiento.\n\n## Internación, alta y escalamiento\n\nInternar; vigilar anemia, perfusión, dolor, compartimentos y complicación respiratoria/embolia grasa. Prevención tromboembólica y apoyo/rehabilitación según sangrado y estabilidad; pediatría tiene opciones distintas.\n\n## Definición y fisiopatología\n\nTrauma de alta energía puede causar gran pérdida sanguínea y lesión asociada; fractura abierta, vascular y síndrome compartimental cambian urgencia. No confundir con fractura proximal por fragilidad.\n\n## Razonamiento clínico\n\nEvaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.\n\n## Referencias\n\n1. AAOS OrthoInfo — femur shaft fractures broken thighbone. https://www.orthoinfo.org/diseases--conditions/femur-shaft-fractures-broken-thighbone/\n\n2. NICE NG37 — Fractures: complex assessment and management. 2016. https://www.nice.org.uk/guidance/ng37/chapter/recommendations\n\n3. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n"
+}

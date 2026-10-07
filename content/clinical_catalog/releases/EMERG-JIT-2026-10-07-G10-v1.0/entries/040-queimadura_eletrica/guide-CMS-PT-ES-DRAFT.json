@@ -1,0 +1,323 @@
+{
+  "schema_version": "1.1",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "status": "DRAFT_ADMIN",
+  "human_approved": false,
+  "human_approval_note": null,
+  "owner": "queimadura_eletrica",
+  "canonicalPayloadSha256": "c6c470c2c65d47cceb8d90fe2c6d13a8a215c0b7d3ec763b4b3e60e5f6d57ed4",
+  "publicationAuthorized": false,
+  "reviewer": null,
+  "review_date": "2026-10-07",
+  "cover": null,
+  "references": [
+    {
+      "id": 1,
+      "title": "NSW ACI — Burn injury emergency department flow chart",
+      "url": "https://aci.health.nsw.gov.au/networks/burn-injury/resources/patient-management/ed-flow-chart",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Encaminhamento e manejo inicial de queimaduras.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "burn_nsw",
+      "organization_or_authors": "NSW ACI",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NSW ACI — Burn injury emergency department flow chart"
+    },
+    {
+      "id": 2,
+      "title": "RCH — Burns",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Burns/",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Queimadura pediátrica, elétrica/química e reposição; separar protocolo adulto.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "burn_peds",
+      "organization_or_authors": "RCH",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "RCH — Burns"
+    },
+    {
+      "id": 3,
+      "title": "AHA — Adult and pediatric special circumstances of resuscitation",
+      "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Afogamento, hipertermia e lesão elétrica. Diretriz de 2025 inclui atualização do afogamento de 2024.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aha",
+      "organization_or_authors": "AHA",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AHA — Adult and pediatric special circumstances of resuscitation"
+    },
+    {
+      "id": 4,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "pt": {
+    "title": "Queimadura elétrica",
+    "subtitle": "Guia clínico — candidato para revisão",
+    "summary": "Dano profundo, arritmia e trauma de queda podem ser desproporcionais à pequena lesão cutânea. Mecanismo, tensão, percurso, tempo e perda de consciência orientam risco.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "40_01-heading",
+        "text": "Definição e fisiopatologia",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "40_01",
+        "text": "Dano profundo, arritmia e trauma de queda podem ser desproporcionais à pequena lesão cutânea. Mecanismo, tensão, percurso, tempo e perda de consciência orientam risco."
+      },
+      {
+        "type": "heading",
+        "id": "40_02-heading",
+        "text": "Abordagem inicial",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "40_02",
+        "text": "Desligar fonte antes de contato/resgate; ABCDE e ressuscitação quando indicada. Examinar entrada/saída, neurovascular, compartimentos e trauma associado; ECG inicial e exames de CK, eletrólitos/função renal conforme risco."
+      },
+      {
+        "type": "heading",
+        "id": "40_03-heading",
+        "text": "Tratamento e decisões",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "40_03",
+        "text": "Lesão pequena de baixo risco: cuidado local após avaliação. Alta tensão, dano profundo ou alteração sistêmica: centro de queimados, reposição titulada e avaliação cirúrgica. Compartimento/isquemia exige intervenção urgente; antibiótico não é automático."
+      },
+      {
+        "type": "heading",
+        "id": "40_04-heading",
+        "text": "Internação, alta e escalonamento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "40_04",
+        "text": "Monitorização cardíaca/internação se perda de consciência, ECG anormal, sintomas cardíacos, alta tensão ou lesão significativa. Não impor observação longa universal ao baixo risco assintomático com avaliação normal; decisão considera protocolo e circunstância."
+      },
+      {
+        "type": "heading",
+        "id": "40_05-heading",
+        "text": "Raciocínio clínico",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "40_05",
+        "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "NSW ACI — Burn injury emergency department flow chart",
+        "url": "https://aci.health.nsw.gov.au/networks/burn-injury/resources/patient-management/ed-flow-chart",
+        "year": 2025,
+        "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+        "scope": "Encaminhamento e manejo inicial de queimaduras.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "burn_nsw",
+        "organization_or_authors": "NSW ACI",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NSW ACI — Burn injury emergency department flow chart"
+      },
+      {
+        "id": 2,
+        "title": "RCH — Burns",
+        "url": "https://www.rch.org.au/clinicalguide/guideline_index/Burns/",
+        "year": null,
+        "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+        "scope": "Queimadura pediátrica, elétrica/química e reposição; separar protocolo adulto.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "burn_peds",
+        "organization_or_authors": "RCH",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "RCH — Burns"
+      },
+      {
+        "id": 3,
+        "title": "AHA — Adult and pediatric special circumstances of resuscitation",
+        "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation",
+        "year": 2025,
+        "authorityStatus": "AUTHORITATIVE_FINAL",
+        "scope": "Afogamento, hipertermia e lesão elétrica. Diretriz de 2025 inclui atualização do afogamento de 2024.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "aha",
+        "organization_or_authors": "AHA",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "AHA — Adult and pediatric special circumstances of resuscitation"
+      },
+      {
+        "id": 4,
+        "title": "NICE NG39 — Major trauma: assessment and initial management",
+        "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng39",
+        "organization_or_authors": "NICE NG39",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG39 — Major trauma: assessment and initial management"
+      }
+    ]
+  },
+  "es": {
+    "title": "Quemadura eléctrica",
+    "subtitle": "Guía clínica — candidato para revisión",
+    "summary": "Daño profundo, arritmia y trauma por caída pueden ser desproporcionados a pequeña lesión cutánea. Mecanismo, tensión, trayecto, tiempo y pérdida de conciencia orientan riesgo.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "40_01-heading",
+        "text": "Definición y fisiopatología",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "40_01",
+        "text": "Daño profundo, arritmia y trauma por caída pueden ser desproporcionados a pequeña lesión cutánea. Mecanismo, tensión, trayecto, tiempo y pérdida de conciencia orientan riesgo."
+      },
+      {
+        "type": "heading",
+        "id": "40_02-heading",
+        "text": "Abordaje inicial",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "40_02",
+        "text": "Desconectar fuente antes de contacto/rescate; ABCDE y reanimación cuando indicada. Evaluar entrada/salida, neurovascular, compartimentos y trauma asociado; ECG inicial y CK, electrolitos/función renal según riesgo."
+      },
+      {
+        "type": "heading",
+        "id": "40_03-heading",
+        "text": "Tratamiento y decisiones",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "40_03",
+        "text": "Lesión pequeña de bajo riesgo: cuidado local después de evaluación. Alta tensión, daño profundo o alteración sistémica: centro de quemados, reposición titulada y evaluación quirúrgica. Compartimento/isquemia exige intervención urgente; antibiótico no es automático."
+      },
+      {
+        "type": "heading",
+        "id": "40_04-heading",
+        "text": "Internación, alta y escalamiento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "40_04",
+        "text": "Monitorización cardíaca/internación por pérdida de conciencia, ECG anormal, síntomas cardíacos, alta tensión o lesión significativa. No imponer observación larga universal al bajo riesgo asintomático con evaluación normal; decisión según protocolo y circunstancias."
+      },
+      {
+        "type": "heading",
+        "id": "40_05-heading",
+        "text": "Razonamiento clínico",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "40_05",
+        "text": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "NSW ACI — Burn injury emergency department flow chart",
+        "url": "https://aci.health.nsw.gov.au/networks/burn-injury/resources/patient-management/ed-flow-chart",
+        "year": 2025,
+        "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+        "scope": "Encaminhamento e manejo inicial de queimaduras.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "burn_nsw",
+        "organization_or_authors": "NSW ACI",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NSW ACI — Burn injury emergency department flow chart"
+      },
+      {
+        "id": 2,
+        "title": "RCH — Burns",
+        "url": "https://www.rch.org.au/clinicalguide/guideline_index/Burns/",
+        "year": null,
+        "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+        "scope": "Queimadura pediátrica, elétrica/química e reposição; separar protocolo adulto.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "burn_peds",
+        "organization_or_authors": "RCH",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "RCH — Burns"
+      },
+      {
+        "id": 3,
+        "title": "AHA — Adult and pediatric special circumstances of resuscitation",
+        "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation",
+        "year": 2025,
+        "authorityStatus": "AUTHORITATIVE_FINAL",
+        "scope": "Afogamento, hipertermia e lesão elétrica. Diretriz de 2025 inclui atualização do afogamento de 2024.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "aha",
+        "organization_or_authors": "AHA",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "AHA — Adult and pediatric special circumstances of resuscitation"
+      },
+      {
+        "id": 4,
+        "title": "NICE NG39 — Major trauma: assessment and initial management",
+        "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng39",
+        "organization_or_authors": "NICE NG39",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG39 — Major trauma: assessment and initial management"
+      }
+    ]
+  }
+}

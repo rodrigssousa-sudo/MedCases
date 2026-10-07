@@ -1,0 +1,120 @@
+{
+  "mode": "study",
+  "language": "es",
+  "owner": "afogamento_e_submersao",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "ac87751530891c5fc106c36c477a6f933fc53e8c596c3c1a687007bad0b3373b",
+  "factIds": [
+    "18_01",
+    "18_02",
+    "18_03",
+    "18_04",
+    "18_05"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "18_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "18_01",
+      "text": "Compromiso respiratorio por inmersión/sumersión; hipoxia es mecanismo central. Investigar convulsión, hipoglucemia, arritmia, intoxicación y trauma como causa; no usar etiquetas de ahogamiento seco/secundario."
+    },
+    {
+      "type": "heading",
+      "id": "18_02-heading",
+      "text": "Abordaje inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "18_02",
+      "text": "Rescate seguro, evaluar respiración/circulación e iniciar reanimación con ventilaciones si hay paro. Oxigenación/ventilación, retirar ropa mojada y corregir hipotermia; no demorar ventilación intentando expulsar agua. Columna cervical según mecanismo traumático."
+    },
+    {
+      "type": "heading",
+      "id": "18_03-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "18_03",
+      "text": "Oxígeno y soporte no invasivo en seleccionados o invasivo por falla respiratoria/conciencia alterada. Antibiótico no es profilaxis automática; infección, sepsis o agua muy contaminada justifican evaluación dirigida."
+    },
+    {
+      "type": "heading",
+      "id": "18_04-heading",
+      "text": "Internación, alta y escalamiento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "18_04",
+      "text": "Hipoxemia persistente, examen respiratorio anormal o alteración neurológica: internación. En niño, RCH permite alta después de 8 horas desde el evento si asintomático, examen normal, saturación al menos 95% y seguridad/seguimiento; adulto requiere evaluación propia."
+    },
+    {
+      "type": "heading",
+      "id": "18_05-heading",
+      "text": "Razonamiento clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "18_05",
+      "text": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "AHA — Adult and pediatric special circumstances of resuscitation",
+      "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Afogamento, hipertermia e lesão elétrica. Diretriz de 2025 inclui atualização do afogamento de 2024.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aha",
+      "organization_or_authors": "AHA",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AHA — Adult and pediatric special circumstances of resuscitation"
+    },
+    {
+      "id": 2,
+      "title": "RCH — Drowning",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Drowning/",
+      "year": 2020,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Critérios de observação/alta são pediátricos; não extrapolar automaticamente a adulto.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "drowning",
+      "organization_or_authors": "RCH",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "RCH — Drowning"
+    },
+    {
+      "id": 3,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "markdown": "# Ahogamiento y sumersión\n\n## Definición y fisiopatología\n\nCompromiso respiratorio por inmersión/sumersión; hipoxia es mecanismo central. Investigar convulsión, hipoglucemia, arritmia, intoxicación y trauma como causa; no usar etiquetas de ahogamiento seco/secundario.\n\n## Abordaje inicial\n\nRescate seguro, evaluar respiración/circulación e iniciar reanimación con ventilaciones si hay paro. Oxigenación/ventilación, retirar ropa mojada y corregir hipotermia; no demorar ventilación intentando expulsar agua. Columna cervical según mecanismo traumático.\n\n## Tratamiento y decisiones\n\nOxígeno y soporte no invasivo en seleccionados o invasivo por falla respiratoria/conciencia alterada. Antibiótico no es profilaxis automática; infección, sepsis o agua muy contaminada justifican evaluación dirigida.\n\n## Internación, alta y escalamiento\n\nHipoxemia persistente, examen respiratorio anormal o alteración neurológica: internación. En niño, RCH permite alta después de 8 horas desde el evento si asintomático, examen normal, saturación al menos 95% y seguridad/seguimiento; adulto requiere evaluación propia.\n\n## Razonamiento clínico\n\nEvaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.\n\n## Referencias\n\n1. AHA — Adult and pediatric special circumstances of resuscitation. 2025. https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation\n\n2. RCH — Drowning. 2020. https://www.rch.org.au/clinicalguide/guideline_index/Drowning/\n\n3. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n"
+}

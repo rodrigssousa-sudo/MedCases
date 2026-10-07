@@ -1,0 +1,174 @@
+{
+  "mode": "plantao",
+  "language": "pt",
+  "owner": "ferimento_cortocontuso_e_laceracoes",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "624d54cbed7bf150b7c04885c046fb9b918fa731b49476d825a59f50796def7f",
+  "factIds": [
+    "29_02",
+    "29_03",
+    "29_04",
+    "29_06",
+    "29_07",
+    "29_05",
+    "29_01"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "29_02-heading",
+      "text": "Diagnóstico e exames",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "29_02",
+      "text": "Avaliar antes da anestesia função neurovascular/tendínea e profundidade. Imagem se possível corpo estranho/fratura; ferida profunda não explorável, face complexa ou retalho isquêmico exige especialista."
+    },
+    {
+      "type": "heading",
+      "id": "29_03-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "29_03",
+      "text": "Analgesia, limpeza/irrigação e remoção de material/tecido inviável. Alternativas: sutura para bordas/tensão apropriadas, adesivo para ferida limpa superficial sem tensão, ou fechamento tardio/aberta quando contaminação exige. Não usar antibiótico sistêmico em laceração simples de rotina."
+    },
+    {
+      "type": "heading",
+      "id": "29_04-heading",
+      "text": "Medicamentos e doses",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "29_04",
+      "text": "Infiltração em adulto saudável: lidocaína sem adrenalina, solução 1% = 10 mg/mL, menor volume eficaz; dose total não deve exceder 4,5 mg/kg nem 300 mg. Somar todas as fontes de anestésico, aspirar/titular e monitorar toxicidade. Este limite não é dose pediátrica nem meta a atingir."
+    },
+    {
+      "type": "heading",
+      "id": "29_06-heading",
+      "text": "Medicamentos e doses",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "29_06",
+      "text": "Analgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa."
+    },
+    {
+      "type": "heading",
+      "id": "29_07-heading",
+      "text": "Alternativas e limites",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "29_07",
+      "text": "Alternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade."
+    },
+    {
+      "type": "heading",
+      "id": "29_05-heading",
+      "text": "Seguimento e sinais de alarme",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "29_05",
+      "text": "Revisão precoce e retirada de pontos conforme sítio/material. Retornar por febre, secreção, dor progressiva, perda de sensibilidade ou deiscência; revisar vacinação antitetânica."
+    },
+    {
+      "type": "heading",
+      "id": "29_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "29_01",
+      "text": "Ferida de pele pode esconder lesão tendínea, nervosa ou vascular. Limpeza, exploração e fechamento sem tensão determinam resultado; tempo isolado não substitui avaliação da contaminação/viabilidade."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "RCH — Lacerations",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Lacerations/",
+      "year": 2022,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Pediatria, exploração, fechamento e antibióticos seletivos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "laceration",
+      "organization_or_authors": "RCH",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "RCH — Lacerations"
+    },
+    {
+      "id": 2,
+      "title": "DailyMed — Lidocaine hydrochloride injection",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5523fdfe-69fd-49a5-b51f-73e2223d49a9",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Concentração, dose máxima de adulto saudável e toxicidade; limite adulto não é regra pediátrica.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "lido",
+      "organization_or_authors": "DailyMed",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "DailyMed — Lidocaine hydrochloride injection"
+    },
+    {
+      "id": 3,
+      "title": "CDC — Clinical guidance for wound management to prevent tetanus",
+      "url": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Revisada em 08/09/2026; ferida, vacinação e imunoglobulina.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "tetanus",
+      "organization_or_authors": "CDC",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "CDC — Clinical guidance for wound management to prevent tetanus"
+    },
+    {
+      "id": 4,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 5,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "markdown": "# Ferimentos cortocontusos e lacerações\n\n## Diagnóstico e exames\n\nAvaliar antes da anestesia função neurovascular/tendínea e profundidade. Imagem se possível corpo estranho/fratura; ferida profunda não explorável, face complexa ou retalho isquêmico exige especialista.\n\n## Tratamento e decisões\n\nAnalgesia, limpeza/irrigação e remoção de material/tecido inviável. Alternativas: sutura para bordas/tensão apropriadas, adesivo para ferida limpa superficial sem tensão, ou fechamento tardio/aberta quando contaminação exige. Não usar antibiótico sistêmico em laceração simples de rotina.\n\n## Medicamentos e doses\n\nInfiltração em adulto saudável: lidocaína sem adrenalina, solução 1% = 10 mg/mL, menor volume eficaz; dose total não deve exceder 4,5 mg/kg nem 300 mg. Somar todas as fontes de anestésico, aspirar/titular e monitorar toxicidade. Este limite não é dose pediátrica nem meta a atingir.\n\n## Medicamentos e doses\n\nAnalgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa.\n\n## Alternativas e limites\n\nAlternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade.\n\n## Seguimento e sinais de alarme\n\nRevisão precoce e retirada de pontos conforme sítio/material. Retornar por febre, secreção, dor progressiva, perda de sensibilidade ou deiscência; revisar vacinação antitetânica.\n\n## Definição e fisiopatologia\n\nFerida de pele pode esconder lesão tendínea, nervosa ou vascular. Limpeza, exploração e fechamento sem tensão determinam resultado; tempo isolado não substitui avaliação da contaminação/viabilidade.\n\n## Referências\n\n1. RCH — Lacerations. 2022. https://www.rch.org.au/clinicalguide/guideline_index/Lacerations/\n\n2. DailyMed — Lidocaine hydrochloride injection. 2025. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5523fdfe-69fd-49a5-b51f-73e2223d49a9\n\n3. CDC — Clinical guidance for wound management to prevent tetanus. 2026. https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html\n\n4. NHS — Paracetamol for adults. 2026. https://www.nhs.uk/medicines/paracetamol-for-adults/\n\n5. NHS — Ibuprofen for adults. 2025. https://www.nhs.uk/medicines/ibuprofen-for-adults/\n"
+}

@@ -1,0 +1,322 @@
+{
+  "schema_version": "1.1",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "status": "DRAFT_ADMIN",
+  "human_approved": false,
+  "human_approval_note": null,
+  "owner": "mordedura_humana_e_clenched_fist_injury",
+  "canonicalPayloadSha256": "57185e7cb5afe1bea1124e43a8e7b31c14e006d89c6bd111339b9c5f6900002b",
+  "publicationAuthorized": false,
+  "reviewer": null,
+  "review_date": "2026-10-07",
+  "cover": null,
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG184 — Human and animal bites: antimicrobial prescribing",
+      "url": "https://www.nice.org.uk/guidance/ng184/chapter/Recommendations",
+      "year": 2020,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Critérios de profilaxia versus infecção, dose adulta, duração e alergia/gestação.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "bites",
+      "organization_or_authors": "NICE NG184",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG184 — Human and animal bites: antimicrobial prescribing"
+    },
+    {
+      "id": 2,
+      "title": "CDC — Clinical guidance for wound management to prevent tetanus",
+      "url": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Revisada em 08/09/2026; ferida, vacinação e imunoglobulina.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "tetanus",
+      "organization_or_authors": "CDC",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "CDC — Clinical guidance for wound management to prevent tetanus"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    }
+  ],
+  "pt": {
+    "title": "Mordedura humana e lesão por soco nos dentes",
+    "subtitle": "Guia clínico — candidato para revisão",
+    "summary": "Ferida sobre articulação metacarpofalângica pode penetrar tendão/articulação apesar de pequeno orifício. Infecção polimicrobiana inclui flora humana; lesão por soco não é laceração limpa.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "26_01-heading",
+        "text": "Definição e fisiopatologia",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "26_01",
+        "text": "Ferida sobre articulação metacarpofalângica pode penetrar tendão/articulação apesar de pequeno orifício. Infecção polimicrobiana inclui flora humana; lesão por soco não é laceração limpa."
+      },
+      {
+        "type": "heading",
+        "id": "26_02-heading",
+        "text": "Diagnóstico e exames",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "26_02",
+        "text": "Examinar mão nas posições que esclareçam o trajeto, função tendínea e neurovascular. Radiografia se dente retido/fratura; consultar cirurgia da mão por lesão profunda. Avaliar exposição a sangue e profilaxias conforme risco."
+      },
+      {
+        "type": "heading",
+        "id": "26_03-heading",
+        "text": "Tratamento e decisões",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "26_03",
+        "text": "Irrigação, desbridamento quando indicado e antibiótico; profilaxia se mordedura rompeu pele e causou sangramento. Articulação/tendão acometidos exigem exploração especializada; não fechar primariamente ferida de soco contaminada."
+      },
+      {
+        "type": "heading",
+        "id": "26_04-heading",
+        "text": "Internação, alta e escalonamento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "26_04",
+        "text": "Internar/transferir por infecção profunda, sepse, progressão, incapacidade de tratamento oral ou necessidade cirúrgica. Revisão precoce com retorno imediato por dor, edema, febre ou perda de função."
+      },
+      {
+        "type": "heading",
+        "id": "26_05-heading",
+        "text": "Medicamentos e doses",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "26_05",
+        "text": "Adulto com indicação de profilaxia ou infecção: amoxicilina/clavulanato 500/125 mg por via oral a cada 8 horas. Profilaxia: 3 dias; infecção: 5 dias, reavaliando extensão para 7 dias se dano tecidual importante ou acometimento profundo. Ajustar em disfunção renal e não tratar lesão tendínea/articular somente com antibiótico."
+      },
+      {
+        "type": "heading",
+        "id": "26_06-heading",
+        "text": "Alternativas e limites",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "26_06",
+        "text": "Alergia a penicilina, adulto não gestante: alternativa NICE é doxiciclina 200 mg no primeiro dia e depois 100 mg a cada 24 horas, associada a metronidazol 400 mg a cada 8 horas por via oral, pelo mesmo período indicado. Gestação, criança, doença sistêmica, ferida profunda ou incapacidade de via oral exigem seleção própria/especialista; não extrapolar esse esquema."
+      },
+      {
+        "type": "heading",
+        "id": "26_07-heading",
+        "text": "Medicamentos e doses",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "26_07",
+        "text": "Analgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "NICE NG184 — Human and animal bites: antimicrobial prescribing",
+        "url": "https://www.nice.org.uk/guidance/ng184/chapter/Recommendations",
+        "year": 2020,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "Critérios de profilaxia versus infecção, dose adulta, duração e alergia/gestação.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "bites",
+        "organization_or_authors": "NICE NG184",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG184 — Human and animal bites: antimicrobial prescribing"
+      },
+      {
+        "id": 2,
+        "title": "CDC — Clinical guidance for wound management to prevent tetanus",
+        "url": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+        "year": 2026,
+        "authorityStatus": "AUTHORITATIVE_FINAL",
+        "scope": "Revisada em 08/09/2026; ferida, vacinação e imunoglobulina.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "tetanus",
+        "organization_or_authors": "CDC",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "CDC — Clinical guidance for wound management to prevent tetanus"
+      },
+      {
+        "id": 3,
+        "title": "NHS — Paracetamol for adults",
+        "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+        "year": 2026,
+        "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+        "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "para",
+        "organization_or_authors": "NHS",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NHS — Paracetamol for adults"
+      }
+    ]
+  },
+  "es": {
+    "title": "Mordedura humana y lesión por puño contra dientes",
+    "subtitle": "Guía clínica — candidato para revisión",
+    "summary": "Herida sobre articulación metacarpofalángica puede penetrar tendón/articulación pese a pequeño orificio. Infección polimicrobiana incluye flora humana; lesión por puñetazo no es laceración limpia.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "26_01-heading",
+        "text": "Definición y fisiopatología",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "26_01",
+        "text": "Herida sobre articulación metacarpofalángica puede penetrar tendón/articulación pese a pequeño orificio. Infección polimicrobiana incluye flora humana; lesión por puñetazo no es laceración limpia."
+      },
+      {
+        "type": "heading",
+        "id": "26_02-heading",
+        "text": "Diagnóstico y estudios",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "26_02",
+        "text": "Examinar mano en posiciones que aclaren trayecto, función tendinosa y neurovascular. Radiografía si diente retenido/fractura; consultar cirugía de mano por lesión profunda. Valorar exposición a sangre y profilaxis según riesgo."
+      },
+      {
+        "type": "heading",
+        "id": "26_03-heading",
+        "text": "Tratamiento y decisiones",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "26_03",
+        "text": "Irrigación, desbridamiento cuando indicado y antibiótico; profilaxis si mordedura rompe piel y causa sangrado. Articulación/tendón afectados exigen exploración especializada; no cerrar primariamente lesión de puño contaminada."
+      },
+      {
+        "type": "heading",
+        "id": "26_04-heading",
+        "text": "Internación, alta y escalamiento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "26_04",
+        "text": "Internar/trasladar por infección profunda, sepsis, progresión, imposibilidad de tratamiento oral o necesidad quirúrgica. Revisión temprana y retorno inmediato por dolor, edema, fiebre o pérdida de función."
+      },
+      {
+        "type": "heading",
+        "id": "26_05-heading",
+        "text": "Medicamentos y dosis",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "26_05",
+        "text": "Adulto con indicación de profilaxis o infección: amoxicilina/clavulanato 500/125 mg por vía oral cada 8 horas. Profilaxis: 3 días; infección: 5 días, reevaluando extensión a 7 días por daño tisular importante o afectación profunda. Ajustar en disfunción renal y no tratar lesión tendinosa/articular solamente con antibiótico."
+      },
+      {
+        "type": "heading",
+        "id": "26_06-heading",
+        "text": "Alternativas y límites",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "26_06",
+        "text": "Alergia a penicilina, adulto no embarazado: alternativa NICE es doxiciclina 200 mg el primer día y luego 100 mg cada 24 horas, junto con metronidazol 400 mg cada 8 horas por vía oral, durante el mismo período indicado. Embarazo, niño, enfermedad sistémica, herida profunda o imposibilidad oral requieren selección propia/especialista; no extrapolar pauta."
+      },
+      {
+        "type": "heading",
+        "id": "26_07-heading",
+        "text": "Medicamentos y dosis",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "26_07",
+        "text": "Analgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "NICE NG184 — Human and animal bites: antimicrobial prescribing",
+        "url": "https://www.nice.org.uk/guidance/ng184/chapter/Recommendations",
+        "year": 2020,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "Critérios de profilaxia versus infecção, dose adulta, duração e alergia/gestação.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "bites",
+        "organization_or_authors": "NICE NG184",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG184 — Human and animal bites: antimicrobial prescribing"
+      },
+      {
+        "id": 2,
+        "title": "CDC — Clinical guidance for wound management to prevent tetanus",
+        "url": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+        "year": 2026,
+        "authorityStatus": "AUTHORITATIVE_FINAL",
+        "scope": "Revisada em 08/09/2026; ferida, vacinação e imunoglobulina.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "tetanus",
+        "organization_or_authors": "CDC",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "CDC — Clinical guidance for wound management to prevent tetanus"
+      },
+      {
+        "id": 3,
+        "title": "NHS — Paracetamol for adults",
+        "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+        "year": 2026,
+        "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+        "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "para",
+        "organization_or_authors": "NHS",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NHS — Paracetamol for adults"
+      }
+    ]
+  }
+}

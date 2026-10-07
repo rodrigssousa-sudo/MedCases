@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "afogamento_e_submersao",
+  "title": {
+    "pt": "Afogamento e submersão",
+    "es": "Ahogamiento y sumersión"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "18_01",
+      "section": "concept",
+      "pt": "Comprometimento respiratório por imersão/submersão; hipóxia é mecanismo central. Investigar convulsão, hipoglicemia, arritmia, intoxicação e trauma como causa, sem usar rótulos de afogamento seco/secundário.",
+      "es": "Compromiso respiratorio por inmersión/sumersión; hipoxia es mecanismo central. Investigar convulsión, hipoglucemia, arritmia, intoxicación y trauma como causa; no usar etiquetas de ahogamiento seco/secundario.",
+      "sources": [
+        "aha",
+        "drowning"
+      ]
+    },
+    {
+      "id": "18_02",
+      "section": "initial",
+      "pt": "Resgate seguro, avaliar respiração/circulação e iniciar ressuscitação com ventilações se parada. Oxigenação/ventilação, retirar roupa molhada e corrigir hipotermia; não atrasar ventilação tentando expulsar água. Coluna cervical conforme mecanismo traumático.",
+      "es": "Rescate seguro, evaluar respiración/circulación e iniciar reanimación con ventilaciones si hay paro. Oxigenación/ventilación, retirar ropa mojada y corregir hipotermia; no demorar ventilación intentando expulsar agua. Columna cervical según mecanismo traumático.",
+      "sources": [
+        "aha",
+        "drowning"
+      ]
+    },
+    {
+      "id": "18_03",
+      "section": "treatment",
+      "pt": "Oxigênio e suporte não invasivo em selecionados ou invasivo se falência respiratória/consciência alterada. Antibiótico não é profilaxia automática; infecção, sepse ou água grosseiramente contaminada justificam avaliação direcionada.",
+      "es": "Oxígeno y soporte no invasivo en seleccionados o invasivo por falla respiratoria/conciencia alterada. Antibiótico no es profilaxis automática; infección, sepsis o agua muy contaminada justifican evaluación dirigida.",
+      "sources": [
+        "aha",
+        "drowning"
+      ]
+    },
+    {
+      "id": "18_04",
+      "section": "disposition",
+      "pt": "Hipoxemia persistente, exame respiratório alterado ou alteração neurológica: internação. Em criança, protocolo RCH permite alta após 8 horas desde o evento se assintomática, exame normal, saturação de pelo menos 95% e segurança/seguimento; adulto usa avaliação própria.",
+      "es": "Hipoxemia persistente, examen respiratorio anormal o alteración neurológica: internación. En niño, RCH permite alta después de 8 horas desde el evento si asintomático, examen normal, saturación al menos 95% y seguridad/seguimiento; adulto requiere evaluación propia.",
+      "sources": [
+        "aha",
+        "drowning"
+      ]
+    },
+    {
+      "id": "18_05",
+      "section": "reasoning",
+      "pt": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.",
+      "es": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.",
+      "sources": [
+        "ng39"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "AHA — Adult and pediatric special circumstances of resuscitation",
+      "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Afogamento, hipertermia e lesão elétrica. Diretriz de 2025 inclui atualização do afogamento de 2024.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aha",
+      "organization_or_authors": "AHA",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AHA — Adult and pediatric special circumstances of resuscitation"
+    },
+    {
+      "id": 2,
+      "title": "RCH — Drowning",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Drowning/",
+      "year": 2020,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Critérios de observação/alta são pediátricos; não extrapolar automaticamente a adulto.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "drowning",
+      "organization_or_authors": "RCH",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "RCH — Drowning"
+    },
+    {
+      "id": 3,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

@@ -1,0 +1,345 @@
+{
+  "schema_version": "1.1",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "status": "DRAFT_ADMIN",
+  "human_approved": false,
+  "human_approval_note": null,
+  "owner": "disseccao_aguda_de_aorta",
+  "canonicalPayloadSha256": "c893b8c03178667777bfc6180daa7fcb5154f7990fb82a6db196e961fdd679d2",
+  "publicationAuthorized": false,
+  "reviewer": null,
+  "review_date": "2026-10-07",
+  "cover": null,
+  "references": [
+    {
+      "id": 1,
+      "title": "ACC/AHA — Diagnosis and management of aortic disease",
+      "url": "https://www.jacc.org/doi/10.1016/j.jacc.2022.08.004",
+      "year": 2022,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Síndrome aórtica aguda; frequência cardíaca 60–80/minuto e pressão sistólica inferior a 120 mmHg ou menor que mantenha perfusão.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aorta",
+      "organization_or_authors": "ACC/AHA",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "ACC/AHA — Diagnosis and management of aortic disease"
+    },
+    {
+      "id": 2,
+      "title": "ESC — Peripheral arterial and aortic diseases",
+      "url": "https://doi.org/10.1093/eurheartj/ehae179",
+      "year": 2024,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Fonte europeia complementar; não misturar alvos de protocolos diferentes.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "esc_aorta",
+      "organization_or_authors": "ESC",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "ESC — Peripheral arterial and aortic diseases"
+    },
+    {
+      "id": 3,
+      "title": "DailyMed — Esmolol hydrochloride prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4cfdfa50-579b-43e7-bc0a-e831d3099bfd",
+      "year": null,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Administração e titulação IV; uso na dissecção respaldado pela diretriz, não indicação específica da bula.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "esmolol",
+      "organization_or_authors": "DailyMed",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "DailyMed — Esmolol hydrochloride prescribing information"
+    },
+    {
+      "id": 4,
+      "title": "DailyMed — Nicardipine hydrochloride injection",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=433dbca3-0a86-44c2-835d-1051c1c93878",
+      "year": null,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Infusão adulta: 5 mg por hora, incrementos de 2,5 mg por hora, máximo 15 mg por hora.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "nicardipine",
+      "organization_or_authors": "DailyMed",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "DailyMed — Nicardipine hydrochloride injection"
+    }
+  ],
+  "pt": {
+    "title": "Dissecção aguda de aorta",
+    "subtitle": "Guia clínico — candidato para revisão",
+    "summary": "Separação da parede aórtica por sangue na falsa luz. Acometimento ascendente caracteriza tipo A; tipo B não envolve a ascendente. Ruptura, tamponamento e malperfusão tornam qualquer padrão emergencial.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "07_01-heading",
+        "text": "Definição e fisiopatologia",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "07_01",
+        "text": "Separação da parede aórtica por sangue na falsa luz. Acometimento ascendente caracteriza tipo A; tipo B não envolve a ascendente. Ruptura, tamponamento e malperfusão tornam qualquer padrão emergencial."
+      },
+      {
+        "type": "heading",
+        "id": "07_02-heading",
+        "text": "Diagnóstico e exames",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "07_02",
+        "text": "Dor súbita intensa torácica/dorsal, assimetria de pulsos/pressão, déficit neurológico ou insuficiência aórtica. Angiotomografia no estável; ecocardiograma transesofágico pode servir ao instável. D-dímero isolado não exclui alta suspeita. Não iniciar antitrombóticos de síndrome coronariana sem considerar dissecção."
+      },
+      {
+        "type": "heading",
+        "id": "07_03-heading",
+        "text": "Tratamento e decisões",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "07_03",
+        "text": "Acionar cirurgia cardiovascular/vascular; analgesia e monitorização invasiva. Referência ACC/AHA: frequência de 60–80 por minuto e sistólica abaixo de 120 mmHg ou menor pressão que preserve perfusão. Tipo A: cirurgia urgente. Tipo B não complicado: terapia anti-impulso; complicado: intervenção, frequentemente endovascular."
+      },
+      {
+        "type": "heading",
+        "id": "07_04-heading",
+        "text": "Medicamentos e doses",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "07_04",
+        "text": "Exemplo adulto monitorizado: esmolol IV, carga opcional de 500 microgramas/kg em 1 minuto, depois 50 microgramas/kg por minuto por 4 minutos; titular conforme resposta/bula, habitualmente até 200 microgramas/kg por minuto para controle da frequência. Não aplicar carga a paciente em choque. Bradicardia, bloqueio avançado e falência cardíaca descompensada exigem outra estratégia."
+      },
+      {
+        "type": "heading",
+        "id": "07_05-heading",
+        "text": "Medicamentos e doses",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "07_05",
+        "text": "Se pressão permanece elevada após controle da frequência: nicardipina IV 5 mg por hora, aumentar 2,5 mg por hora a cada 5–15 minutos conforme urgência, máximo 15 mg por hora. Não usar vasodilatador isolado antes do controle anti-impulso. Utilizar bomba, concentração conferida e monitorar hipotensão/perfusão."
+      },
+      {
+        "type": "heading",
+        "id": "07_06-heading",
+        "text": "Internação, alta e escalonamento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "07_06",
+        "text": "UTI e centro com tratamento definitivo. A alternativa ao betabloqueador em contraindicação pode ser bloqueador de cálcio não di-hidropiridínico IV, definido pela equipe; não confundir nicardipina com agente de controle da frequência. Seguimento de toda a aorta é obrigatório."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "ACC/AHA — Diagnosis and management of aortic disease",
+        "url": "https://www.jacc.org/doi/10.1016/j.jacc.2022.08.004",
+        "year": 2022,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "Síndrome aórtica aguda; frequência cardíaca 60–80/minuto e pressão sistólica inferior a 120 mmHg ou menor que mantenha perfusão.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "aorta",
+        "organization_or_authors": "ACC/AHA",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "ACC/AHA — Diagnosis and management of aortic disease"
+      },
+      {
+        "id": 2,
+        "title": "ESC — Peripheral arterial and aortic diseases",
+        "url": "https://doi.org/10.1093/eurheartj/ehae179",
+        "year": 2024,
+        "authorityStatus": "AUTHORITATIVE_FINAL",
+        "scope": "Fonte europeia complementar; não misturar alvos de protocolos diferentes.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "esc_aorta",
+        "organization_or_authors": "ESC",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "ESC — Peripheral arterial and aortic diseases"
+      },
+      {
+        "id": 3,
+        "title": "DailyMed — Esmolol hydrochloride prescribing information",
+        "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4cfdfa50-579b-43e7-bc0a-e831d3099bfd",
+        "year": null,
+        "authorityStatus": "OFFICIAL_DRUG_LABEL",
+        "scope": "Administração e titulação IV; uso na dissecção respaldado pela diretriz, não indicação específica da bula.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "esmolol",
+        "organization_or_authors": "DailyMed",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "DailyMed — Esmolol hydrochloride prescribing information"
+      },
+      {
+        "id": 4,
+        "title": "DailyMed — Nicardipine hydrochloride injection",
+        "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=433dbca3-0a86-44c2-835d-1051c1c93878",
+        "year": null,
+        "authorityStatus": "OFFICIAL_DRUG_LABEL",
+        "scope": "Infusão adulta: 5 mg por hora, incrementos de 2,5 mg por hora, máximo 15 mg por hora.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "nicardipine",
+        "organization_or_authors": "DailyMed",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "DailyMed — Nicardipine hydrochloride injection"
+      }
+    ]
+  },
+  "es": {
+    "title": "Disección aguda de aorta",
+    "subtitle": "Guía clínica — candidato para revisión",
+    "summary": "Separación de la pared aórtica por sangre en falsa luz. Afectación ascendente define tipo A; tipo B no afecta la ascendente. Rotura, taponamiento y malperfusión hacen emergente cualquier patrón.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "07_01-heading",
+        "text": "Definición y fisiopatología",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "07_01",
+        "text": "Separación de la pared aórtica por sangre en falsa luz. Afectación ascendente define tipo A; tipo B no afecta la ascendente. Rotura, taponamiento y malperfusión hacen emergente cualquier patrón."
+      },
+      {
+        "type": "heading",
+        "id": "07_02-heading",
+        "text": "Diagnóstico y estudios",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "07_02",
+        "text": "Dolor súbito intenso torácico/dorsal, asimetría de pulsos/presión, déficit neurológico o insuficiencia aórtica. Angiotomografía en el estable; ecocardiograma transesofágico puede servir en el inestable. Dímero D aislado no excluye alta sospecha. Considerar disección antes de antitrombóticos por síndrome coronario."
+      },
+      {
+        "type": "heading",
+        "id": "07_03-heading",
+        "text": "Tratamiento y decisiones",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "07_03",
+        "text": "Activar cirugía cardiovascular/vascular; analgesia y monitorización invasiva. Referencia ACC/AHA: frecuencia de 60–80 por minuto y sistólica menor de 120 mmHg o menor presión que preserve perfusión. Tipo A: cirugía urgente. Tipo B no complicado: tratamiento antiimpulso; complicado: intervención, frecuentemente endovascular."
+      },
+      {
+        "type": "heading",
+        "id": "07_04-heading",
+        "text": "Medicamentos y dosis",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "07_04",
+        "text": "Ejemplo adulto monitorizado: esmolol IV, carga opcional de 500 microgramos/kg en 1 minuto, luego 50 microgramos/kg por minuto durante 4 minutos; titular según respuesta/ficha, habitualmente hasta 200 microgramos/kg por minuto para controlar frecuencia. No aplicar carga en shock. Bradicardia, bloqueo avanzado e insuficiencia cardíaca descompensada exigen otra estrategia."
+      },
+      {
+        "type": "heading",
+        "id": "07_05-heading",
+        "text": "Medicamentos y dosis",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "07_05",
+        "text": "Si la presión sigue elevada después de controlar frecuencia: nicardipina IV 5 mg por hora, aumentar 2,5 mg por hora cada 5–15 minutos según urgencia, máximo 15 mg por hora. No usar vasodilatador aislado antes del control antiimpulso. Usar bomba, concentración verificada y vigilar hipotensión/perfusión."
+      },
+      {
+        "type": "heading",
+        "id": "07_06-heading",
+        "text": "Internación, alta y escalamiento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "07_06",
+        "text": "UCI y centro con tratamiento definitivo. Si el betabloqueante está contraindicado, puede considerarse calcioantagonista no dihidropiridínico IV, elegido por el equipo; no confundir nicardipina con agente de control de frecuencia. Es obligatorio seguir toda la aorta."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "ACC/AHA — Diagnosis and management of aortic disease",
+        "url": "https://www.jacc.org/doi/10.1016/j.jacc.2022.08.004",
+        "year": 2022,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "Síndrome aórtica aguda; frequência cardíaca 60–80/minuto e pressão sistólica inferior a 120 mmHg ou menor que mantenha perfusão.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "aorta",
+        "organization_or_authors": "ACC/AHA",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "ACC/AHA — Diagnosis and management of aortic disease"
+      },
+      {
+        "id": 2,
+        "title": "ESC — Peripheral arterial and aortic diseases",
+        "url": "https://doi.org/10.1093/eurheartj/ehae179",
+        "year": 2024,
+        "authorityStatus": "AUTHORITATIVE_FINAL",
+        "scope": "Fonte europeia complementar; não misturar alvos de protocolos diferentes.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "esc_aorta",
+        "organization_or_authors": "ESC",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "ESC — Peripheral arterial and aortic diseases"
+      },
+      {
+        "id": 3,
+        "title": "DailyMed — Esmolol hydrochloride prescribing information",
+        "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=4cfdfa50-579b-43e7-bc0a-e831d3099bfd",
+        "year": null,
+        "authorityStatus": "OFFICIAL_DRUG_LABEL",
+        "scope": "Administração e titulação IV; uso na dissecção respaldado pela diretriz, não indicação específica da bula.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "esmolol",
+        "organization_or_authors": "DailyMed",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "DailyMed — Esmolol hydrochloride prescribing information"
+      },
+      {
+        "id": 4,
+        "title": "DailyMed — Nicardipine hydrochloride injection",
+        "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=433dbca3-0a86-44c2-835d-1051c1c93878",
+        "year": null,
+        "authorityStatus": "OFFICIAL_DRUG_LABEL",
+        "scope": "Infusão adulta: 5 mg por hora, incrementos de 2,5 mg por hora, máximo 15 mg por hora.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "nicardipine",
+        "organization_or_authors": "DailyMed",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "DailyMed — Nicardipine hydrochloride injection"
+      }
+    ]
+  }
+}

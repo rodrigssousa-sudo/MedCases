@@ -1,0 +1,147 @@
+{
+  "mode": "plantao",
+  "language": "es",
+  "owner": "avulsao_dentaria_e_trauma_alveolo_dentario",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "07154fcacde7e93b8f71a675da4c25f773be8dab1513b0e1c83a2a4154d9c2a5",
+  "factIds": [
+    "30_02",
+    "30_03",
+    "30_05",
+    "30_06",
+    "30_04",
+    "30_01"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "30_02-heading",
+      "text": "Abordaje inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "30_02",
+      "text": "Confirmar diente permanente y excluir aspiración/trauma facial. Sujetar por corona, no frotar raíz. Si reimplantación segura y posible, realizar prontamente; de lo contrario conservar en leche o medio fisiológico apropiado y acudir inmediatamente a odontología."
+    },
+    {
+      "type": "heading",
+      "id": "30_03-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "30_03",
+      "text": "Reimplantación y férula flexible por odontología; si no reimplantable, plan reconstructivo y control de lesión alveolar. IADT recomienda evaluar antibiótico sistémico tras reimplantación con elección/dosis por edad, peso y alergia; no asumir dosis universal."
+    },
+    {
+      "type": "heading",
+      "id": "30_05-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "30_05",
+      "text": "Analgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal."
+    },
+    {
+      "type": "heading",
+      "id": "30_06-heading",
+      "text": "Alternativas y límites",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "30_06",
+      "text": "Alternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad."
+    },
+    {
+      "type": "heading",
+      "id": "30_04-heading",
+      "text": "Seguimiento y señales de alarma",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "30_04",
+      "text": "Férula generalmente 2 semanas, con plazo diferente si fractura alveolar. Seguimiento clínico/radiográfico y endodóntico según madurez radicular; explicar higiene, dieta y retorno por dolor, edema o movilidad. Doxiciclina no es alternativa automática en menores de 12 años."
+    },
+    {
+      "type": "heading",
+      "id": "30_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "30_01",
+      "text": "Avulsión completa interrumpe suministro pulpar y lesiona ligamento periodontal. Tiempo extraoral y desecación influyen en pronóstico; diente temporal no debe reimplantarse."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "IADT/AAPD — Avulsion of permanent teeth",
+      "url": "https://www.aapd.org/media/policies_guidelines/e_avulsion.pdf",
+      "year": 2020,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Reimplante do permanente, armazenamento, contenção e antibiótico; exclui reimplante de dente decíduo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "dental",
+      "organization_or_authors": "IADT/AAPD",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "IADT/AAPD — Avulsion of permanent teeth"
+    },
+    {
+      "id": 2,
+      "title": "CDC — Clinical guidance for wound management to prevent tetanus",
+      "url": "https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html",
+      "year": 2026,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Revisada em 08/09/2026; ferida, vacinação e imunoglobulina.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "tetanus",
+      "organization_or_authors": "CDC",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "CDC — Clinical guidance for wound management to prevent tetanus"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 4,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "markdown": "# Avulsión dental y trauma alveolodentario\n\n## Abordaje inicial\n\nConfirmar diente permanente y excluir aspiración/trauma facial. Sujetar por corona, no frotar raíz. Si reimplantación segura y posible, realizar prontamente; de lo contrario conservar en leche o medio fisiológico apropiado y acudir inmediatamente a odontología.\n\n## Tratamiento y decisiones\n\nReimplantación y férula flexible por odontología; si no reimplantable, plan reconstructivo y control de lesión alveolar. IADT recomienda evaluar antibiótico sistémico tras reimplantación con elección/dosis por edad, peso y alergia; no asumir dosis universal.\n\n## Medicamentos y dosis\n\nAnalgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal.\n\n## Alternativas y límites\n\nAlternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad.\n\n## Seguimiento y señales de alarma\n\nFérula generalmente 2 semanas, con plazo diferente si fractura alveolar. Seguimiento clínico/radiográfico y endodóntico según madurez radicular; explicar higiene, dieta y retorno por dolor, edema o movilidad. Doxiciclina no es alternativa automática en menores de 12 años.\n\n## Definición y fisiopatología\n\nAvulsión completa interrumpe suministro pulpar y lesiona ligamento periodontal. Tiempo extraoral y desecación influyen en pronóstico; diente temporal no debe reimplantarse.\n\n## Referencias\n\n1. IADT/AAPD — Avulsion of permanent teeth. 2020. https://www.aapd.org/media/policies_guidelines/e_avulsion.pdf\n\n2. CDC — Clinical guidance for wound management to prevent tetanus. 2026. https://www.cdc.gov/tetanus/hcp/clinical-guidance/index.html\n\n3. NHS — Paracetamol for adults. 2026. https://www.nhs.uk/medicines/paracetamol-for-adults/\n\n4. NHS — Ibuprofen for adults. 2025. https://www.nhs.uk/medicines/ibuprofen-for-adults/\n"
+}

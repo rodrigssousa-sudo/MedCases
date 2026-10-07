@@ -1,0 +1,233 @@
+{
+  "schema_version": "1.1",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "status": "DRAFT_ADMIN",
+  "human_approved": false,
+  "human_approval_note": null,
+  "owner": "torax_instavel_e_contusao_pulmonar",
+  "canonicalPayloadSha256": "bed289d50297a0b11a1f42e8402b0b860b3983cfdf27317c330702ccdebaf562",
+  "publicationAuthorized": false,
+  "reviewer": null,
+  "review_date": "2026-10-07",
+  "cover": null,
+  "references": [
+    {
+      "id": 1,
+      "title": "WSES-AAST — Thoracic trauma guidelines",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12522690/",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Trauma torácico, contusão, parede torácica e lesões penetrantes; não diretriz de pneumomediastino espontâneo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "thorax",
+      "organization_or_authors": "WSES-AAST",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "WSES-AAST — Thoracic trauma guidelines"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "pt": {
+    "title": "Tórax instável e contusão pulmonar",
+    "subtitle": "Guia clínico — candidato para revisão",
+    "summary": "Fraturas segmentares de costelas tornam a parede instável; contusão lesa alvéolos e causa alteração de troca gasosa. Insuficiência respiratória pode progredir mesmo sem grande alteração inicial de imagem.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "14_01-heading",
+        "text": "Definição e fisiopatologia",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "14_01",
+        "text": "Fraturas segmentares de costelas tornam a parede instável; contusão lesa alvéolos e causa alteração de troca gasosa. Insuficiência respiratória pode progredir mesmo sem grande alteração inicial de imagem."
+      },
+      {
+        "type": "heading",
+        "id": "14_02-heading",
+        "text": "Diagnóstico e exames",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "14_02",
+        "text": "Examinar mecânica ventilatória, saturação e lesões pleurais; imagem por ultrassom/radiografia e tomografia conforme estabilidade. Diferenciar pneumotórax, hemotórax, tamponamento e dor que limita ventilação."
+      },
+      {
+        "type": "heading",
+        "id": "14_03-heading",
+        "text": "Tratamento e decisões",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "14_03",
+        "text": "Analgesia multimodal ou bloqueio regional por equipe, oxigênio se hipoxemia e higiene pulmonar. Suporte não invasivo em selecionados ou intubação se falha/contraindicação. Fixação de costelas pode beneficiar padrão instável selecionado; não comprimir tórax com faixa."
+      },
+      {
+        "type": "heading",
+        "id": "14_04-heading",
+        "text": "Internação, alta e escalonamento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "14_04",
+        "text": "Internação com monitorização; UTI se deterioração, hipoxemia ou suporte ventilatório. Evitar sobrecarga hídrica e acompanhar esforço, tosse, secreções e infecção, sem antibiótico/corticoide automático por contusão."
+      },
+      {
+        "type": "heading",
+        "id": "14_05-heading",
+        "text": "Raciocínio clínico",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "14_05",
+        "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "WSES-AAST — Thoracic trauma guidelines",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12522690/",
+        "year": 2025,
+        "authorityStatus": "AUTHORITATIVE_FINAL",
+        "scope": "Trauma torácico, contusão, parede torácica e lesões penetrantes; não diretriz de pneumomediastino espontâneo.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "thorax",
+        "organization_or_authors": "WSES-AAST",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "WSES-AAST — Thoracic trauma guidelines"
+      },
+      {
+        "id": 2,
+        "title": "NICE NG39 — Major trauma: assessment and initial management",
+        "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng39",
+        "organization_or_authors": "NICE NG39",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG39 — Major trauma: assessment and initial management"
+      }
+    ]
+  },
+  "es": {
+    "title": "Tórax inestable y contusión pulmonar",
+    "subtitle": "Guía clínica — candidato para revisión",
+    "summary": "Fracturas segmentarias de costillas vuelven inestable la pared; contusión lesiona alvéolos y altera intercambio gaseoso. La insuficiencia respiratoria puede progresar pese a imagen inicial poco alterada.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "14_01-heading",
+        "text": "Definición y fisiopatología",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "14_01",
+        "text": "Fracturas segmentarias de costillas vuelven inestable la pared; contusión lesiona alvéolos y altera intercambio gaseoso. La insuficiencia respiratoria puede progresar pese a imagen inicial poco alterada."
+      },
+      {
+        "type": "heading",
+        "id": "14_02-heading",
+        "text": "Diagnóstico y estudios",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "14_02",
+        "text": "Evaluar mecánica ventilatoria, saturación y lesión pleural; ecografía/radiografía y tomografía según estabilidad. Distinguir neumotórax, hemotórax, taponamiento y dolor que limita ventilación."
+      },
+      {
+        "type": "heading",
+        "id": "14_03-heading",
+        "text": "Tratamiento y decisiones",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "14_03",
+        "text": "Analgesia multimodal o bloqueo regional por equipo, oxígeno si hipoxemia e higiene pulmonar. Soporte no invasivo en seleccionados o intubación si falla/contraindicación. Fijación costal puede beneficiar patrón inestable seleccionado; no comprimir tórax con vendaje."
+      },
+      {
+        "type": "heading",
+        "id": "14_04-heading",
+        "text": "Internación, alta y escalamiento",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "14_04",
+        "text": "Internación monitorizada; UCI por deterioro, hipoxemia o soporte ventilatorio. Evitar sobrecarga hídrica y vigilar esfuerzo, tos, secreciones e infección, sin antibiótico/corticoide automático por contusión."
+      },
+      {
+        "type": "heading",
+        "id": "14_05-heading",
+        "text": "Razonamiento clínico",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "14_05",
+        "text": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "WSES-AAST — Thoracic trauma guidelines",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12522690/",
+        "year": 2025,
+        "authorityStatus": "AUTHORITATIVE_FINAL",
+        "scope": "Trauma torácico, contusão, parede torácica e lesões penetrantes; não diretriz de pneumomediastino espontâneo.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "thorax",
+        "organization_or_authors": "WSES-AAST",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "WSES-AAST — Thoracic trauma guidelines"
+      },
+      {
+        "id": 2,
+        "title": "NICE NG39 — Major trauma: assessment and initial management",
+        "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng39",
+        "organization_or_authors": "NICE NG39",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG39 — Major trauma: assessment and initial management"
+      }
+    ]
+  }
+}

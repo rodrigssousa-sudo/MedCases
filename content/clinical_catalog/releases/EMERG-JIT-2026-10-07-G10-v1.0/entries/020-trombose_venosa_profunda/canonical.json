@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "trombose_venosa_profunda",
+  "title": {
+    "pt": "Trombose venosa profunda",
+    "es": "Trombosis venosa profunda"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "20_01",
+      "section": "concept",
+      "pt": "Trombo venoso profundo pode embolizar ao pulmão e causar síndrome pós-trombótica. Edema unilateral é sugestivo, não específico; diferenciais incluem celulite, hematoma e cisto poplíteo roto.",
+      "es": "Trombo venoso profundo puede embolizar al pulmón y causar síndrome postrombótico. Edema unilateral es sugerente, no específico; diferenciales incluyen celulitis, hematoma y quiste poplíteo roto.",
+      "sources": [
+        "dvt",
+        "apix",
+        "riva"
+      ]
+    },
+    {
+      "id": "20_02",
+      "section": "diagnosis",
+      "pt": "Usar Wells de dois níveis no adulto e ultrassom venoso proximal; D-dímero conforme probabilidade. Se TVP provável e imagem não disponível em 4 horas, avaliar anticoagulação terapêutica interina e ultrassom em até 24 horas, considerando sangramento/contraindicações.",
+      "es": "Usar Wells de dos niveles en adulto y ecografía venosa proximal; dímero D según probabilidad. Si TVP probable e imagen no disponible en 4 horas, valorar anticoagulación terapéutica interina y ecografía hasta 24 horas, considerando sangrado/contraindicaciones.",
+      "sources": [
+        "dvt",
+        "apix",
+        "riva"
+      ]
+    },
+    {
+      "id": "20_03",
+      "section": "medications",
+      "pt": "Adulto elegível: apixabana 10 mg por via oral a cada 12 horas durante 7 dias, depois 5 mg a cada 12 horas. Alternativa: rivaroxabana 15 mg por via oral a cada 12 horas com alimento durante 21 dias, depois 20 mg a cada 24 horas com alimento. Escolher um esquema, não combinar; tratar por pelo menos 3 meses e reavaliar duração.",
+      "es": "Adulto elegible: apixabán 10 mg por vía oral cada 12 horas durante 7 días, luego 5 mg cada 12 horas. Alternativa: rivaroxabán 15 mg por vía oral cada 12 horas con alimento durante 21 días, luego 20 mg cada 24 horas con alimento. Elegir una pauta, no combinar; tratar al menos 3 meses y reevaluar duración.",
+      "sources": [
+        "dvt",
+        "apix",
+        "riva"
+      ]
+    },
+    {
+      "id": "20_04",
+      "section": "safety",
+      "pt": "Hemograma, plaquetas, função renal/hepática e interações antes de escolher. Evitar rivaroxabana com clearance abaixo de 15 mL/min; doença renal grave exige especialista. Gestação, síndrome antifosfolípide de alto risco, sangramento ativo e hepatopatia relevante mudam escolha. Não reduzir dose de TVP usando critérios da fibrilação atrial.",
+      "es": "Hemograma, plaquetas, función renal/hepática e interacciones antes de elegir. Evitar rivaroxabán con clearance menor de 15 mL/min; enfermedad renal grave exige especialista. Embarazo, síndrome antifosfolípido de alto riesgo, sangrado activo y hepatopatía relevante modifican elección. No reducir dosis de TVP con criterios de fibrilación auricular.",
+      "sources": [
+        "dvt",
+        "apix",
+        "riva"
+      ]
+    },
+    {
+      "id": "20_05",
+      "section": "disposition",
+      "pt": "Dispneia, síncope, dor torácica ou hipóxia: investigar TEP. Flegmasia/ameaça ao membro, sangramento ou instabilidade requerem internação. Alta selecionada com anticoagulação acessível, adesão e retorno; pediatria usa owner/esquema próprio.",
+      "es": "Disnea, síncope, dolor torácico o hipoxia: investigar embolia pulmonar. Flegmasia/amenaza del miembro, sangrado o inestabilidad requieren internación. Alta seleccionada con anticoagulación accesible, adherencia y seguimiento; pediatría usa owner/pauta propios.",
+      "sources": [
+        "dvt",
+        "apix",
+        "riva"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG158 — Venous thromboembolic diseases",
+      "url": "https://www.nice.org.uk/guidance/ng158/chapter/Recommendations",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LIVING",
+      "scope": "Diagnóstico adulto, anticoagulação interina, seleção e duração do tratamento.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "dvt",
+      "organization_or_authors": "NICE NG158",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG158 — Venous thromboembolic diseases"
+    },
+    {
+      "id": 2,
+      "title": "DailyMed — Eliquis prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=a454cd24-0c6d-46e8-b1e4-197388606175",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Esquema ADULTO para TVP/TEP; critérios de redução da fibrilação atrial não se aplicam automaticamente à TVP.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "apix",
+      "organization_or_authors": "DailyMed",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "DailyMed — Eliquis prescribing information"
+    },
+    {
+      "id": 3,
+      "title": "DailyMed — Xarelto prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=10db92f9-2300-4a80-836b-673e1ae91610",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Tratamento ADULTO de TVP; comida, função renal, fígado e interações.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "riva",
+      "organization_or_authors": "DailyMed",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "DailyMed — Xarelto prescribing information"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

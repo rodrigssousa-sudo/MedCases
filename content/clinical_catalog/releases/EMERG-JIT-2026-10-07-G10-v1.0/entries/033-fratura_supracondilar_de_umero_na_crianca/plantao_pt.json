@@ -1,0 +1,105 @@
+{
+  "mode": "plantao",
+  "language": "pt",
+  "owner": "fratura_supracondilar_de_umero_na_crianca",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "5013e806c13f7c89de32774f6858980536a8010175f26bb684719859508c4b19",
+  "factIds": [
+    "33_02",
+    "33_03",
+    "33_05",
+    "33_04",
+    "33_01"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "33_02-heading",
+      "text": "Diagnóstico e exames",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "33_02",
+      "text": "Registrar pulso, perfusão e função dos nervos mediano, radial e ulnar; radiografia frontal/perfil do úmero distal. Ausência de pulso, isquemia, ferida, déficit ou lesão associada exigem ortopedia imediata."
+    },
+    {
+      "type": "heading",
+      "id": "33_03-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "33_03",
+      "text": "Tipo I: tala acima do cotovelo, flexão de 90 graus, por 3 semanas. Tipo II exige decisão ortopédica; tipo III/flexão geralmente redução e fixação percutânea urgente. Não flexionar acima de 90 graus em tala, pois pode comprometer circulação."
+    },
+    {
+      "type": "heading",
+      "id": "33_05-heading",
+      "text": "Medicamentos e doses",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "33_05",
+      "text": "Analgesia pediátrica, sem extrapolar a recém-nascido: paracetamol 15 mg/kg por via oral a cada 6 horas se necessário, máximo 1.000 mg por dose e 60 mg/kg em 24 horas, sem ultrapassar 4.000 mg em 24 horas. Alternativa em criança acima de 6 meses bem hidratada e sem contraindicação: ibuprofeno 10 mg/kg a cada 8 horas, máximo 400 mg por dose e 30 mg/kg em 24 horas. Lesão renal, desidratação ou sangramento contraindicam anti-inflamatório."
+    },
+    {
+      "type": "heading",
+      "id": "33_04-heading",
+      "text": "Seguimento e sinais de alarme",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "33_04",
+      "text": "Tipo I sem complicação: revisão em 3 semanas; tipo II: revisão com radiografia em 7 dias. Dor crescente, mão fria, parestesia ou piora funcional exigem retorno imediato; não extrapolar dose analgésica adulta."
+    },
+    {
+      "type": "heading",
+      "id": "33_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "33_01",
+      "text": "Fratura distal do úmero, geralmente em extensão; Gartland distingue ausência de desvio, desvio com contato posterior e desvio completo. Lesão arterial/nervosa ou compartimental é prioridade."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "RCH — Supracondylar fracture of the humerus, emergency department",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/fractures/supracondylar_fracture_of_the_humerus_emergency_department/",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Pediatria; Gartland, perfusão, redução e acompanhamento.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "supracond",
+      "organization_or_authors": "RCH",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "RCH — Supracondylar fracture of the humerus, emergency department"
+    },
+    {
+      "id": 2,
+      "title": "RCH — Acute pain management",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "year": 2024,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Pediatria; analgesia e monitorização, atualização de outubro de 2024.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "peds_pain",
+      "organization_or_authors": "RCH",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "RCH — Acute pain management"
+    }
+  ],
+  "markdown": "# Fratura supracondiliana do úmero na criança\n\n## Diagnóstico e exames\n\nRegistrar pulso, perfusão e função dos nervos mediano, radial e ulnar; radiografia frontal/perfil do úmero distal. Ausência de pulso, isquemia, ferida, déficit ou lesão associada exigem ortopedia imediata.\n\n## Tratamento e decisões\n\nTipo I: tala acima do cotovelo, flexão de 90 graus, por 3 semanas. Tipo II exige decisão ortopédica; tipo III/flexão geralmente redução e fixação percutânea urgente. Não flexionar acima de 90 graus em tala, pois pode comprometer circulação.\n\n## Medicamentos e doses\n\nAnalgesia pediátrica, sem extrapolar a recém-nascido: paracetamol 15 mg/kg por via oral a cada 6 horas se necessário, máximo 1.000 mg por dose e 60 mg/kg em 24 horas, sem ultrapassar 4.000 mg em 24 horas. Alternativa em criança acima de 6 meses bem hidratada e sem contraindicação: ibuprofeno 10 mg/kg a cada 8 horas, máximo 400 mg por dose e 30 mg/kg em 24 horas. Lesão renal, desidratação ou sangramento contraindicam anti-inflamatório.\n\n## Seguimento e sinais de alarme\n\nTipo I sem complicação: revisão em 3 semanas; tipo II: revisão com radiografia em 7 dias. Dor crescente, mão fria, parestesia ou piora funcional exigem retorno imediato; não extrapolar dose analgésica adulta.\n\n## Definição e fisiopatologia\n\nFratura distal do úmero, geralmente em extensão; Gartland distingue ausência de desvio, desvio com contato posterior e desvio completo. Lesão arterial/nervosa ou compartimental é prioridade.\n\n## Referências\n\n1. RCH — Supracondylar fracture of the humerus, emergency department. https://www.rch.org.au/clinicalguide/guideline_index/fractures/supracondylar_fracture_of_the_humerus_emergency_department/\n\n2. RCH — Acute pain management. 2024. https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/\n"
+}

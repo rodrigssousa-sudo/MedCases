@@ -1,0 +1,233 @@
+{
+  "schema_version": "1.1",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "status": "DRAFT_ADMIN",
+  "human_approved": false,
+  "human_approval_note": null,
+  "owner": "luxacao_posterior_de_quadril",
+  "canonicalPayloadSha256": "ae9c95663e1cd9fcb9fb6dd63c52f01d8f5914b14ec5ba1fe76d7ff9c1188a59",
+  "publicationAuthorized": false,
+  "reviewer": null,
+  "review_date": "2026-10-07",
+  "cover": null,
+  "references": [
+    {
+      "id": 1,
+      "title": "AAOS OrthoInfo — hip dislocation",
+      "url": "https://www.orthoinfo.org/diseases--conditions/hip-dislocation/",
+      "year": null,
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aaos_hip_disloc",
+      "organization_or_authors": "AAOS OrthoInfo",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AAOS OrthoInfo — hip dislocation"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "pt": {
+    "title": "Luxação posterior do quadril",
+    "subtitle": "Guia clínico — candidato para revisão",
+    "summary": "Trauma de alta energia desloca cabeça femoral, com risco de lesão ciática, acetabular e osteonecrose. Fratura-luxação altera método de redução.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "32_01-heading",
+        "text": "Definição e fisiopatologia",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "32_01",
+        "text": "Trauma de alta energia desloca cabeça femoral, com risco de lesão ciática, acetabular e osteonecrose. Fratura-luxação altera método de redução."
+      },
+      {
+        "type": "heading",
+        "id": "32_02-heading",
+        "text": "Diagnóstico e exames",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "32_02",
+        "text": "ABCDE, exame do ciático e perfusão antes/depois; radiografia confirma direção e fratura. Tomografia após redução avalia fragmento intra-articular/congruência conforme ortopedia."
+      },
+      {
+        "type": "heading",
+        "id": "32_03-heading",
+        "text": "Tratamento e decisões",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "32_03",
+        "text": "Redução urgente sob anestesia/sedação adequada por equipe habilitada, sem força excessiva. Alternativa cirúrgica se irredutível, não concêntrica ou fragmento/fratura que a exija. Não atrasar por consulta eletiva."
+      },
+      {
+        "type": "heading",
+        "id": "32_04-heading",
+        "text": "Seguimento e sinais de alarme",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "32_04",
+        "text": "Internar/observar conforme lesões e estabilidade. Apoio e reabilitação conforme padrão; acompanhar osteonecrose, artrite e déficit ciático, mesmo após redução satisfatória."
+      },
+      {
+        "type": "heading",
+        "id": "32_05-heading",
+        "text": "Raciocínio clínico",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "32_05",
+        "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "AAOS OrthoInfo — hip dislocation",
+        "url": "https://www.orthoinfo.org/diseases--conditions/hip-dislocation/",
+        "year": null,
+        "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+        "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "aaos_hip_disloc",
+        "organization_or_authors": "AAOS OrthoInfo",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "AAOS OrthoInfo — hip dislocation"
+      },
+      {
+        "id": 2,
+        "title": "NICE NG39 — Major trauma: assessment and initial management",
+        "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng39",
+        "organization_or_authors": "NICE NG39",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG39 — Major trauma: assessment and initial management"
+      }
+    ]
+  },
+  "es": {
+    "title": "Luxación posterior de cadera",
+    "subtitle": "Guía clínica — candidato para revisión",
+    "summary": "Trauma de alta energía desplaza cabeza femoral, con riesgo de lesión ciática, acetabular y osteonecrosis. Fractura-luxación cambia método de reducción.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "32_01-heading",
+        "text": "Definición y fisiopatología",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "32_01",
+        "text": "Trauma de alta energía desplaza cabeza femoral, con riesgo de lesión ciática, acetabular y osteonecrosis. Fractura-luxación cambia método de reducción."
+      },
+      {
+        "type": "heading",
+        "id": "32_02-heading",
+        "text": "Diagnóstico y estudios",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "32_02",
+        "text": "ABCDE, examen ciático y perfusión antes/después; radiografía confirma dirección y fractura. Tomografía después de reducción evalúa fragmento intraarticular/congruencia según traumatología."
+      },
+      {
+        "type": "heading",
+        "id": "32_03-heading",
+        "text": "Tratamiento y decisiones",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "32_03",
+        "text": "Reducción urgente bajo anestesia/sedación apropiada por equipo capacitado, sin fuerza excesiva. Cirugía si irreductible, no concéntrica o fragmento/fractura que lo exija. No demorar por consulta electiva."
+      },
+      {
+        "type": "heading",
+        "id": "32_04-heading",
+        "text": "Seguimiento y señales de alarma",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "32_04",
+        "text": "Internar/observar según lesiones y estabilidad. Apoyo y rehabilitación según patrón; seguir osteonecrosis, artritis y déficit ciático aun tras reducción satisfactoria."
+      },
+      {
+        "type": "heading",
+        "id": "32_05-heading",
+        "text": "Razonamiento clínico",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "32_05",
+        "text": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "AAOS OrthoInfo — hip dislocation",
+        "url": "https://www.orthoinfo.org/diseases--conditions/hip-dislocation/",
+        "year": null,
+        "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+        "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "aaos_hip_disloc",
+        "organization_or_authors": "AAOS OrthoInfo",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "AAOS OrthoInfo — hip dislocation"
+      },
+      {
+        "id": 2,
+        "title": "NICE NG39 — Major trauma: assessment and initial management",
+        "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng39",
+        "organization_or_authors": "NICE NG39",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG39 — Major trauma: assessment and initial management"
+      }
+    ]
+  }
+}

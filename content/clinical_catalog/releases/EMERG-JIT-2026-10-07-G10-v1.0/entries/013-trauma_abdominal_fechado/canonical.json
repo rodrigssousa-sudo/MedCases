@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "trauma_abdominal_fechado",
+  "title": {
+    "pt": "Trauma abdominal fechado",
+    "es": "Traumatismo abdominal cerrado"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "13_01",
+      "section": "concept",
+      "pt": "Impacto ou desaceleração pode lesar órgão sólido, víscera oca e vasos. Hemorragia e perfuração têm apresentações distintas; FAST negativo não exclui lesão intestinal ou retroperitoneal.",
+      "es": "Impacto o desaceleración puede lesionar órgano sólido, víscera hueca y vasos. Hemorragia y perforación se presentan de forma diferente; FAST negativo no excluye lesión intestinal o retroperitoneal.",
+      "sources": [
+        "ng39",
+        "liver"
+      ]
+    },
+    {
+      "id": "13_02",
+      "section": "diagnosis",
+      "pt": "ABCDE, exame seriado, hemograma, lactato/gasometria e preparo de sangue conforme gravidade. Instabilidade: ultrassom à beira-leito quando ajuda sem atrasar controle hemorrágico. Estável: tomografia com contraste conforme mecanismo/exame.",
+      "es": "ABCDE, examen seriado, hemograma, lactato/gasometría y preparación de sangre según gravedad. Inestabilidad: ecografía al lado del paciente si ayuda sin demorar hemostasia. Estable: tomografía con contraste según mecanismo/examen.",
+      "sources": [
+        "ng39",
+        "liver"
+      ]
+    },
+    {
+      "id": "13_03",
+      "section": "treatment",
+      "pt": "Instabilidade persistente, peritonite ou lesão com indicação operatória: cirurgia urgente. Estabilidade com lesão selecionada de órgão sólido: manejo não operatório monitorizado; sangramento arterial pode exigir embolização. Observação exige acesso imediato a cirurgia, sangue e reavaliação.",
+      "es": "Inestabilidad persistente, peritonitis o lesión con indicación operatoria: cirugía urgente. Estabilidad con lesión seleccionada de órgano sólido: manejo no operatorio monitorizado; sangrado arterial puede requerir embolización. Observación exige acceso inmediato a cirugía, sangre y reevaluación.",
+      "sources": [
+        "ng39",
+        "liver"
+      ]
+    },
+    {
+      "id": "13_04",
+      "section": "disposition",
+      "pt": "Internar quando lesão, dor persistente ou avaliação inconclusiva. Dor crescente, distensão, vômitos, febre ou queda de hemoglobina exigem nova avaliação; não liberar somente por FAST normal.",
+      "es": "Internar por lesión, dolor persistente o evaluación inconclusa. Dolor creciente, distensión, vómitos, fiebre o descenso de hemoglobina exigen reevaluación; no dar alta solamente por FAST normal.",
+      "sources": [
+        "ng39",
+        "liver"
+      ]
+    },
+    {
+      "id": "13_05",
+      "section": "reasoning",
+      "pt": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem.",
+      "es": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.",
+      "sources": [
+        "ng39"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    },
+    {
+      "id": 2,
+      "title": "WSES — Liver trauma guidelines",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7106618/",
+      "year": 2020,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Tratamento não operatório selecionado, cirurgia/embolização, estabilidade e infraestrutura.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "liver",
+      "organization_or_authors": "WSES",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "WSES — Liver trauma guidelines"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

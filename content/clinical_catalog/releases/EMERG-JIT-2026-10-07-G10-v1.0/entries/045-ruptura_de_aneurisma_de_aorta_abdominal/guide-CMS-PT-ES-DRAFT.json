@@ -1,0 +1,233 @@
+{
+  "schema_version": "1.1",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "status": "DRAFT_ADMIN",
+  "human_approved": false,
+  "human_approval_note": null,
+  "owner": "ruptura_de_aneurisma_de_aorta_abdominal",
+  "canonicalPayloadSha256": "b9790bc17785bcbf13ed3b2154bb7cd068ab75f19070c29f9acb01225d515f63",
+  "publicationAuthorized": false,
+  "reviewer": null,
+  "review_date": "2026-10-07",
+  "cover": null,
+  "references": [
+    {
+      "id": 1,
+      "title": "NICE NG156 — Abdominal aortic aneurysm: diagnosis and management",
+      "url": "https://www.nice.org.uk/guidance/ng156/chapter/Recommendations",
+      "year": 2020,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Ruptura, transferência, avaliação para EVAR ou reparo aberto.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aaa",
+      "organization_or_authors": "NICE NG156",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG156 — Abdominal aortic aneurysm: diagnosis and management"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "pt": {
+    "title": "Ruptura de aneurisma de aorta abdominal",
+    "subtitle": "Guia clínico — candidato para revisão",
+    "summary": "Hemorragia de aneurisma pode causar dor abdominal/lombar, síncope e choque; a tríade clássica pode faltar. Hematoma retroperitoneal inicialmente contido não significa estabilidade duradoura.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "45_01-heading",
+        "text": "Definição e fisiopatologia",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "45_01",
+        "text": "Hemorragia de aneurisma pode causar dor abdominal/lombar, síncope e choque; a tríade clássica pode faltar. Hematoma retroperitoneal inicialmente contido não significa estabilidade duradoura."
+      },
+      {
+        "type": "heading",
+        "id": "45_02-heading",
+        "text": "Abordagem inicial",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "45_02",
+        "text": "Acionar vascular e transferência imediata para reparo. Ressuscitação de hemorragia evitando sobrecarga/normalização agressiva de pressão antes da hemostasia; individualizar se isquemia cerebral/coronária. Ultrassom rápido apoia suspeita; imagem não atrasa operação no colapso."
+      },
+      {
+        "type": "heading",
+        "id": "45_03-heading",
+        "text": "Diagnóstico e exames",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "45_03",
+        "text": "Angiotomografia se condição permite, para anatomia e planejamento. Considerar dissecção, cólica renal, sangramento gastrointestinal e causas ginecológicas; exame abdominal sem massa não exclui ruptura."
+      },
+      {
+        "type": "heading",
+        "id": "45_04-heading",
+        "text": "Tratamento e decisões",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "45_04",
+        "text": "Reparo endovascular ou aberto conforme anatomia, condição e experiência local; não escolher somente pela idade. Internação/UTI após controle, com monitorização renal, perfusão de membros e complicações intestinais/compartimentais."
+      },
+      {
+        "type": "heading",
+        "id": "45_05-heading",
+        "text": "Raciocínio clínico",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "45_05",
+        "text": "A avaliação deve ser dinâmica: sinais vitais isoladamente normais não excluem lesão grave. Estabilidade para tomografia significa capacidade de realizar o exame com monitorização sem atrasar uma intervenção necessária. Reavaliar resposta ao tratamento e tendências de perfusão/consciência; deterioração exige escalonamento imediato. A alternativa menos invasiva é válida somente quando critérios clínicos e recursos de resgate permitem."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "NICE NG156 — Abdominal aortic aneurysm: diagnosis and management",
+        "url": "https://www.nice.org.uk/guidance/ng156/chapter/Recommendations",
+        "year": 2020,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "Ruptura, transferência, avaliação para EVAR ou reparo aberto.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "aaa",
+        "organization_or_authors": "NICE NG156",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG156 — Abdominal aortic aneurysm: diagnosis and management"
+      },
+      {
+        "id": 2,
+        "title": "NICE NG39 — Major trauma: assessment and initial management",
+        "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng39",
+        "organization_or_authors": "NICE NG39",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG39 — Major trauma: assessment and initial management"
+      }
+    ]
+  },
+  "es": {
+    "title": "Rotura de aneurisma de aorta abdominal",
+    "subtitle": "Guía clínica — candidato para revisión",
+    "summary": "Hemorragia aneurismática puede producir dolor abdominal/lumbar, síncope y shock; la tríada clásica puede faltar. Hematoma retroperitoneal inicialmente contenido no significa estabilidad duradera.",
+    "sections": [
+      {
+        "type": "heading",
+        "id": "45_01-heading",
+        "text": "Definición y fisiopatología",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "45_01",
+        "text": "Hemorragia aneurismática puede producir dolor abdominal/lumbar, síncope y shock; la tríada clásica puede faltar. Hematoma retroperitoneal inicialmente contenido no significa estabilidad duradera."
+      },
+      {
+        "type": "heading",
+        "id": "45_02-heading",
+        "text": "Abordaje inicial",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "45_02",
+        "text": "Activar vascular y traslado inmediato para reparación. Reanimación hemorrágica evitando sobrecarga/normalización agresiva de presión antes de hemostasia; individualizar ante isquemia cerebral/coronaria. Ecografía rápida apoya sospecha; imagen no demora operación en colapso."
+      },
+      {
+        "type": "heading",
+        "id": "45_03-heading",
+        "text": "Diagnóstico y estudios",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "45_03",
+        "text": "Angiotomografía si condición permite para anatomía y planificación. Considerar disección, cólico renal, sangrado digestivo y causas ginecológicas; examen sin masa no excluye rotura."
+      },
+      {
+        "type": "heading",
+        "id": "45_04-heading",
+        "text": "Tratamiento y decisiones",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "45_04",
+        "text": "Reparación endovascular o abierta según anatomía, condición y experiencia local; no elegir solamente por edad. Internación/UCI después del control, vigilando función renal, perfusión de miembros y complicaciones intestinales/compartimentales."
+      },
+      {
+        "type": "heading",
+        "id": "45_05-heading",
+        "text": "Razonamiento clínico",
+        "level": 2
+      },
+      {
+        "type": "paragraph",
+        "id": "45_05",
+        "text": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten."
+      }
+    ],
+    "references": [
+      {
+        "id": 1,
+        "title": "NICE NG156 — Abdominal aortic aneurysm: diagnosis and management",
+        "url": "https://www.nice.org.uk/guidance/ng156/chapter/Recommendations",
+        "year": 2020,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "Ruptura, transferência, avaliação para EVAR ou reparo aberto.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "aaa",
+        "organization_or_authors": "NICE NG156",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG156 — Abdominal aortic aneurysm: diagnosis and management"
+      },
+      {
+        "id": 2,
+        "title": "NICE NG39 — Major trauma: assessment and initial management",
+        "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+        "year": 2016,
+        "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+        "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+        "checkedAt": "2026-10-07",
+        "sourceKey": "ng39",
+        "organization_or_authors": "NICE NG39",
+        "source_type": "primary",
+        "status": "verified",
+        "doi": null,
+        "publication": "NICE NG39 — Major trauma: assessment and initial management"
+      }
+    ]
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "owner": "fratura_de_clavicula",
+  "title": {
+    "pt": "Fratura de clavícula",
+    "es": "Fractura de clavícula"
+  },
+  "populationScope": "Contexto e faixas etárias delimitados em cada recomendação; doses adultas não são doses pediátricas.",
+  "operation": "NEW_OWNER_CANDIDATE",
+  "status": "WAITING_OWNER_APPROVAL",
+  "humanApproved": false,
+  "reviewer": null,
+  "facts": [
+    {
+      "id": "21_01",
+      "section": "concept",
+      "pt": "Comum após queda ou impacto; lesão diafisária difere da extremidade lateral instável. Procurar pneumotórax, lesão neurovascular e pele ameaçada.",
+      "es": "Frecuente tras caída o impacto; lesión diafisaria difiere del extremo lateral inestable. Buscar neumotórax, lesión neurovascular y piel amenazada.",
+      "sources": [
+        "aaos_clavicle",
+        "ng38"
+      ]
+    },
+    {
+      "id": "21_02",
+      "section": "diagnosis",
+      "pt": "Exame da pele, pulsos e plexo braquial; radiografias da clavícula. Dispneia ou trauma de alta energia amplia investigação de lesões associadas.",
+      "es": "Examen de piel, pulsos y plexo braquial; radiografías de clavícula. Disnea o trauma de alta energía amplía estudio de lesiones asociadas.",
+      "sources": [
+        "aaos_clavicle",
+        "ng38"
+      ]
+    },
+    {
+      "id": "21_03",
+      "section": "treatment",
+      "pt": "Pouco desvio e estável: tipoia, analgesia e mobilidade orientada. Cirurgia se exposição, ameaça cutânea/neurovascular ou padrão deslocado/instável selecionado, mediante decisão ortopédica.",
+      "es": "Poco desplazamiento y estable: cabestrillo, analgesia y movilidad guiada. Cirugía por exposición, amenaza cutánea/neurovascular o patrón desplazado/inestable seleccionado, mediante decisión traumatológica.",
+      "sources": [
+        "aaos_clavicle",
+        "ng38"
+      ]
+    },
+    {
+      "id": "21_04",
+      "section": "followup",
+      "pt": "Alta com suporte e seguimento; retorno imediato por mão fria, parestesia ou piora de pele/respiração. Avaliar consolidação e função antes de carga intensa ou esporte.",
+      "es": "Alta con soporte y seguimiento; retorno inmediato por mano fría, parestesia o empeoramiento cutáneo/respiratorio. Evaluar consolidación y función antes de carga intensa o deporte.",
+      "sources": [
+        "aaos_clavicle",
+        "ng38"
+      ]
+    },
+    {
+      "id": "21_05",
+      "section": "medications",
+      "pt": "Analgesia oral adulta, quando apropriada: paracetamol 500–1.000 mg por dose, com pelo menos 4 horas entre doses; no máximo 4 doses e 4.000 mg em 24 horas. Somar todas as apresentações que contêm paracetamol. Peso abaixo de 50 kg, fragilidade, hepatopatia, malnutrição ou consumo importante de álcool exigem limite individual menor. Dor intensa ou procedimento pode exigir analgesia/bloqueio por equipe, sem substituir tratamento da causa.",
+      "es": "Analgesia oral adulta si corresponde: paracetamol 500–1.000 mg por dosis, con al menos 4 horas entre dosis; máximo 4 dosis y 4.000 mg en 24 horas. Sumar todas las presentaciones con paracetamol. Peso menor de 50 kg, fragilidad, hepatopatía, malnutrición o consumo importante de alcohol requieren límite individual menor. Dolor intenso o procedimiento puede requerir analgesia/bloqueo por equipo sin sustituir tratamiento causal.",
+      "sources": [
+        "para"
+      ]
+    },
+    {
+      "id": "21_06",
+      "section": "alternatives",
+      "pt": "Alternativa analgésica para adulto estável selecionado: ibuprofeno 200–400 mg por via oral, até 3 vezes ao dia, respeitando pelo menos 4 horas entre doses e máximo 1.200 mg em 24 horas neste esquema curto. Evitar em sangramento/úlcera, lesão renal, desidratação, alergia a anti-inflamatórios, anticoagulação e gestação; não combinar com outro anti-inflamatório. Usar menor dose pelo menor tempo e reavaliar necessidade.",
+      "es": "Alternativa analgésica para adulto estable seleccionado: ibuprofeno 200–400 mg por vía oral, hasta 3 veces al día, respetando al menos 4 horas entre dosis y máximo 1.200 mg en 24 horas en esta pauta corta. Evitar en sangrado/úlcera, lesión renal, deshidratación, alergia a antiinflamatorios, anticoagulación y embarazo; no combinar con otro antiinflamatorio. Usar menor dosis por menor tiempo y reevaluar necesidad.",
+      "sources": [
+        "ibu"
+      ]
+    },
+    {
+      "id": "21_07",
+      "section": "reasoning",
+      "pt": "Interpretar mecanismo, integridade anatômica e estabilidade em conjunto. Radiografia sem fratura evidente não exclui lesão ligamentar/tendínea ou fratura oculta. Documentar função e exame neurovascular antes e depois de imobilização/redução; piora progressiva da dor ou déficit novo muda a urgência. Escolha conservadora versus cirúrgica depende de estabilidade, lesões associadas e demanda funcional, não somente do nome da lesão.",
+      "es": "Interpretar mecanismo, integridad anatómica y estabilidad conjuntamente. Radiografía sin fractura visible no excluye lesión ligamentaria/tendinosa o fractura oculta. Documentar función y examen neurovascular antes y después de inmovilización/reducción; dolor progresivo o déficit nuevo cambia urgencia. Elección conservadora versus quirúrgica depende de estabilidad, lesiones asociadas y demanda funcional, no solo del nombre de lesión.",
+      "sources": [
+        "aaos_clavicle",
+        "ng38"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "AAOS OrthoInfo — clavicle fracture broken collarbone",
+      "url": "https://www.orthoinfo.org/diseases--conditions/clavicle-fracture-broken-collarbone/",
+      "year": null,
+      "authorityStatus": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "scope": "Material oficial para contexto/anatomia e opções; não substitui fonte normativa para sedação, dose ou procedimento invasivo.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aaos_clavicle",
+      "organization_or_authors": "AAOS OrthoInfo",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AAOS OrthoInfo — clavicle fracture broken collarbone"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG38 — Fractures: non-complex assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng38/chapter/recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "Fraturas não complexas; recomendações vigentes consultadas. Não substitui protocolos pediátricos específicos.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng38",
+      "organization_or_authors": "NICE NG38",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG38 — Fractures: non-complex assessment and management"
+    },
+    {
+      "id": 3,
+      "title": "NHS — Paracetamol for adults",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": 2026,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Página revisada em 24/03/2026; dose oral adulta, intervalo, limite diário e vulnerabilidades.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "para",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Paracetamol for adults"
+    },
+    {
+      "id": 4,
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "authorityStatus": "OFFICIAL_MEDICATION_GUIDANCE",
+      "scope": "Dose oral de curta duração; contraindicações e precauções; revisão de 27/08/2025.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ibu",
+      "organization_or_authors": "NHS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NHS — Ibuprofen for adults"
+    }
+  ],
+  "sourceOfTruth": "CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "publicationAuthorized": false
+}

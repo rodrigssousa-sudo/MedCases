@@ -1,0 +1,93 @@
+{
+  "mode": "study",
+  "language": "pt",
+  "owner": "trauma_ocular_hifema_e_ruptura_de_globo_ocular",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "7265a3596b6805542f1121d2c8a803011f3577c0ac8f933b3f3828fabf103507",
+  "factIds": [
+    "17_01",
+    "17_02",
+    "17_03",
+    "17_04"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "17_01-heading",
+      "text": "Definição e fisiopatologia",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "17_01",
+      "text": "Hifema é sangue na câmara anterior; pode elevar pressão e ressangrar. Ruptura de globo é lesão de espessura total com risco de perda visual; não são tratamentos intercambiáveis."
+    },
+    {
+      "type": "heading",
+      "id": "17_02-heading",
+      "text": "Abordagem inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "17_02",
+      "text": "Avaliar visão sem pressionar. Suspeita de globo aberto: escudo rígido sem contato/compressão, jejum e oftalmologia emergencial; não medir pressão, manipular ou retirar objeto empalado. Tomografia de órbitas conforme avaliação."
+    },
+    {
+      "type": "heading",
+      "id": "17_03-heading",
+      "text": "Tratamento e decisões",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "17_03",
+      "text": "Hifema com globo íntegro: proteção, reduzir esforço e avaliação oftalmológica de pressão, volume e lesões associadas. Tratamento medicamentoso tópico é escolhido após exame; drenagem cirúrgica em casos selecionados. Globo aberto: reparo urgente e profilaxia antimicrobiana especializada."
+    },
+    {
+      "type": "heading",
+      "id": "17_04-heading",
+      "text": "Segurança e populações especiais",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "17_04",
+      "text": "Evitar anti-inflamatório/aspirina no hifema quando não houver indicação indispensável. Doença falciforme, criança ou dificuldade de retorno reduzem limiar de internação. Não fornecer colírio anestésico para uso domiciliar; controlar náusea/dor sem atrasar especialista."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "RCH — Acute eye injury",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_eye_injury/",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Pediatria, proteção do globo e irrigação imediata.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "eye",
+      "organization_or_authors": "RCH",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "RCH — Acute eye injury"
+    },
+    {
+      "id": 2,
+      "title": "NSW ACI — Ocular presentations",
+      "url": "https://aci.health.nsw.gov.au/ecat/adult/ocular",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_LOCAL_PROTOCOL",
+      "scope": "Avaliação inicial adulta e encaminhamento; não guia de cirurgia oftalmológica.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "eye_adult",
+      "organization_or_authors": "NSW ACI",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NSW ACI — Ocular presentations"
+    }
+  ],
+  "markdown": "# Trauma ocular: hifema e ruptura de globo\n\n## Definição e fisiopatologia\n\nHifema é sangue na câmara anterior; pode elevar pressão e ressangrar. Ruptura de globo é lesão de espessura total com risco de perda visual; não são tratamentos intercambiáveis.\n\n## Abordagem inicial\n\nAvaliar visão sem pressionar. Suspeita de globo aberto: escudo rígido sem contato/compressão, jejum e oftalmologia emergencial; não medir pressão, manipular ou retirar objeto empalado. Tomografia de órbitas conforme avaliação.\n\n## Tratamento e decisões\n\nHifema com globo íntegro: proteção, reduzir esforço e avaliação oftalmológica de pressão, volume e lesões associadas. Tratamento medicamentoso tópico é escolhido após exame; drenagem cirúrgica em casos selecionados. Globo aberto: reparo urgente e profilaxia antimicrobiana especializada.\n\n## Segurança e populações especiais\n\nEvitar anti-inflamatório/aspirina no hifema quando não houver indicação indispensável. Doença falciforme, criança ou dificuldade de retorno reduzem limiar de internação. Não fornecer colírio anestésico para uso domiciliar; controlar náusea/dor sem atrasar especialista.\n\n## Referências\n\n1. RCH — Acute eye injury. https://www.rch.org.au/clinicalguide/guideline_index/Acute_eye_injury/\n\n2. NSW ACI — Ocular presentations. https://aci.health.nsw.gov.au/ecat/adult/ocular\n"
+}

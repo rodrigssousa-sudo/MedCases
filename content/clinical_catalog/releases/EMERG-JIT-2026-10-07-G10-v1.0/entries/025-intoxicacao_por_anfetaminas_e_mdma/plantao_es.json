@@ -1,0 +1,120 @@
+{
+  "mode": "plantao",
+  "language": "es",
+  "owner": "intoxicacao_por_anfetaminas_e_mdma",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "a53b1b5259f9d422ee1f807c771f839ccb7ac5730111d38129a93ca467dde414",
+  "factIds": [
+    "25_02",
+    "25_04",
+    "25_03",
+    "25_05",
+    "25_01"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "25_02-heading",
+      "text": "Diagnóstico y estudios",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "25_02",
+      "text": "ABCDE, temperatura central, glucemia, ECG, electrolitos/sodio, creatinina y CK según cuadro. Considerar sepsis, psicosis primaria, síndrome serotoninérgico y otras drogas; prueba toxicológica negativa no excluye."
+    },
+    {
+      "type": "heading",
+      "id": "25_04-heading",
+      "text": "Tratamiento y decisiones",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "25_04",
+      "text": "Ambiente tranquilo y enfriamiento activo si hipertermia; antitérmico no corrige exceso de producción de calor. Alternativa/adyuvante para psicosis persistente: antipsicótico evaluando QT/temperatura. Hiponatremia sintomática exige protocolo específico; no dar grandes volúmenes de agua libre."
+    },
+    {
+      "type": "heading",
+      "id": "25_03-heading",
+      "text": "Medicamentos y dosis",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "25_03",
+      "text": "Adulto: benzodiazepina es primera línea para agitación/hiperactividad autonómica. Ejemplo: lorazepam 1–2 mg IV, diluido inmediatamente con igual volumen de solución compatible, velocidad no mayor de 2 mg por minuto; reevaluar antes de repetir y titular por respuesta. Vigilar respiración, presión y conciencia."
+    },
+    {
+      "type": "heading",
+      "id": "25_05-heading",
+      "text": "Internación, alta y escalamiento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "25_05",
+      "text": "UCI por hipertermia grave, convulsión, arritmia, rabdomiólisis/falla orgánica o agitación refractaria. Alta tras normalización clínica sostenida, sin complicación, evaluación de seguridad y orientación para atención del consumo."
+    },
+    {
+      "type": "heading",
+      "id": "25_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "25_01",
+      "text": "Síndrome simpaticomimético con agitación, taquicardia, hipertensión e hipertermia. MDMA añade riesgo de hiponatremia y toxicidad serotoninérgica; no duplicar owner de cocaína por sinónimo."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "ASAM/AAAP — Management of stimulant use disorder and intoxication",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11105801/",
+      "year": 2024,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Intoxicação simpaticomimética; benzodiazepínicos e complicações. Doses da tabela adulta.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "stimulant",
+      "organization_or_authors": "ASAM/AAAP",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "ASAM/AAAP — Management of stimulant use disorder and intoxication"
+    },
+    {
+      "id": 2,
+      "title": "DailyMed — Lorazepam injection",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=20140b19-846b-425f-b191-670e17809945",
+      "year": null,
+      "authorityStatus": "OFFICIAL_DRUG_LABEL",
+      "scope": "Diluição com igual volume, velocidade máxima de 2 mg por minuto e monitorização respiratória.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "loraz",
+      "organization_or_authors": "DailyMed",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "DailyMed — Lorazepam injection"
+    },
+    {
+      "id": 3,
+      "title": "AHA — Adult and pediatric special circumstances of resuscitation",
+      "url": "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation",
+      "year": 2025,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Afogamento, hipertermia e lesão elétrica. Diretriz de 2025 inclui atualização do afogamento de 2024.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "aha",
+      "organization_or_authors": "AHA",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "AHA — Adult and pediatric special circumstances of resuscitation"
+    }
+  ],
+  "markdown": "# Intoxicación por anfetaminas y MDMA\n\n## Diagnóstico y estudios\n\nABCDE, temperatura central, glucemia, ECG, electrolitos/sodio, creatinina y CK según cuadro. Considerar sepsis, psicosis primaria, síndrome serotoninérgico y otras drogas; prueba toxicológica negativa no excluye.\n\n## Tratamiento y decisiones\n\nAmbiente tranquilo y enfriamiento activo si hipertermia; antitérmico no corrige exceso de producción de calor. Alternativa/adyuvante para psicosis persistente: antipsicótico evaluando QT/temperatura. Hiponatremia sintomática exige protocolo específico; no dar grandes volúmenes de agua libre.\n\n## Medicamentos y dosis\n\nAdulto: benzodiazepina es primera línea para agitación/hiperactividad autonómica. Ejemplo: lorazepam 1–2 mg IV, diluido inmediatamente con igual volumen de solución compatible, velocidad no mayor de 2 mg por minuto; reevaluar antes de repetir y titular por respuesta. Vigilar respiración, presión y conciencia.\n\n## Internación, alta y escalamiento\n\nUCI por hipertermia grave, convulsión, arritmia, rabdomiólisis/falla orgánica o agitación refractaria. Alta tras normalización clínica sostenida, sin complicación, evaluación de seguridad y orientación para atención del consumo.\n\n## Definición y fisiopatología\n\nSíndrome simpaticomimético con agitación, taquicardia, hipertensión e hipertermia. MDMA añade riesgo de hiponatremia y toxicidad serotoninérgica; no duplicar owner de cocaína por sinónimo.\n\n## Referencias\n\n1. ASAM/AAAP — Management of stimulant use disorder and intoxication. 2024. https://pmc.ncbi.nlm.nih.gov/articles/PMC11105801/\n\n2. DailyMed — Lorazepam injection. https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=20140b19-846b-425f-b191-670e17809945\n\n3. AHA — Adult and pediatric special circumstances of resuscitation. 2025. https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines/adult-and-pediatric-special-circumstances-of-resuscitation\n"
+}

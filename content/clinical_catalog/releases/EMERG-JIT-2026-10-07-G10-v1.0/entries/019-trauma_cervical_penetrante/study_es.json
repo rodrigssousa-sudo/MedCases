@@ -1,0 +1,105 @@
+{
+  "mode": "study",
+  "language": "es",
+  "owner": "trauma_cervical_penetrante",
+  "version": "EMERG-JIT-2026-10-07-G10-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "46585a7963b0c071d89264de9fe1e8af15a22cd7267a303af08462aaa954d652",
+  "factIds": [
+    "19_01",
+    "19_02",
+    "19_03",
+    "19_04",
+    "19_05"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "id": "19_01-heading",
+      "text": "Definición y fisiopatología",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "19_01",
+      "text": "Penetración más allá del platisma puede lesionar vasos, vía aérea y tubo digestivo. Trayecto externo/zona no define por sí solo la lesión; riesgo de obstrucción y hemorragia exige evaluación dinámica."
+    },
+    {
+      "type": "heading",
+      "id": "19_02-heading",
+      "text": "Abordaje inicial",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "19_02",
+      "text": "Priorizar vía aérea con equipo experimentado y hemostasia por presión dirigida. No retirar objeto empalado ni explorar/pinzar a ciegas. Hematoma expansivo, hemorragia intensa o inestabilidad: cirugía inmediata."
+    },
+    {
+      "type": "heading",
+      "id": "19_03-heading",
+      "text": "Diagnóstico y estudios",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "19_03",
+      "text": "Estable sin indicación operatoria inmediata: angiotomografía. Sospecha aerodigestiva puede exigir endoscopia/esofagografía aun con CTA negativa; discutir con cirugía. Imagen no debe demorar vía aérea o hemostasia."
+    },
+    {
+      "type": "heading",
+      "id": "19_04-heading",
+      "text": "Internación, alta y escalamiento",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "19_04",
+      "text": "Operación o manejo selectivo monitorizado según hallazgos y recursos; no observar ambulatoriamente evaluación incompleta. Vigilar voz, deglución, disnea, hematoma, déficit neurológico e infección."
+    },
+    {
+      "type": "heading",
+      "id": "19_05-heading",
+      "text": "Razonamiento clínico",
+      "level": 2
+    },
+    {
+      "type": "paragraph",
+      "id": "19_05",
+      "text": "Evaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten."
+    }
+  ],
+  "references": [
+    {
+      "id": 1,
+      "title": "ACS — Imaging guidelines",
+      "url": "https://www.facs.org/media/oxdjw5zj/imaging_guidelines.pdf",
+      "year": null,
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "scope": "Trauma cervical penetrante; CTA no estável e avaliação aerodigestiva direcionada.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "neck",
+      "organization_or_authors": "ACS",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "ACS — Imaging guidelines"
+    },
+    {
+      "id": 2,
+      "title": "NICE NG39 — Major trauma: assessment and initial management",
+      "url": "https://www.nice.org.uk/guidance/ng39/chapter/Recommendations",
+      "year": 2016,
+      "authorityStatus": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "scope": "ABCDE, hemorragia, imagem e pneumotórax hipertensivo no trauma.",
+      "checkedAt": "2026-10-07",
+      "sourceKey": "ng39",
+      "organization_or_authors": "NICE NG39",
+      "source_type": "primary",
+      "status": "verified",
+      "doi": null,
+      "publication": "NICE NG39 — Major trauma: assessment and initial management"
+    }
+  ],
+  "markdown": "# Traumatismo cervical penetrante\n\n## Definición y fisiopatología\n\nPenetración más allá del platisma puede lesionar vasos, vía aérea y tubo digestivo. Trayecto externo/zona no define por sí solo la lesión; riesgo de obstrucción y hemorragia exige evaluación dinámica.\n\n## Abordaje inicial\n\nPriorizar vía aérea con equipo experimentado y hemostasia por presión dirigida. No retirar objeto empalado ni explorar/pinzar a ciegas. Hematoma expansivo, hemorragia intensa o inestabilidad: cirugía inmediata.\n\n## Diagnóstico y estudios\n\nEstable sin indicación operatoria inmediata: angiotomografía. Sospecha aerodigestiva puede exigir endoscopia/esofagografía aun con CTA negativa; discutir con cirugía. Imagen no debe demorar vía aérea o hemostasia.\n\n## Internación, alta y escalamiento\n\nOperación o manejo selectivo monitorizado según hallazgos y recursos; no observar ambulatoriamente evaluación incompleta. Vigilar voz, deglución, disnea, hematoma, déficit neurológico e infección.\n\n## Razonamiento clínico\n\nEvaluación dinámica: signos vitales normales aislados no excluyen lesión grave. Estabilidad para tomografía significa poder realizarla monitorizado sin demorar intervención necesaria. Reevaluar respuesta terapéutica y tendencias de perfusión/consciencia; deterioro exige escalamiento inmediato. Alternativa menos invasiva válida solamente cuando criterios clínicos y recursos de rescate lo permiten.\n\n## Referencias\n\n1. ACS — Imaging guidelines. https://www.facs.org/media/oxdjw5zj/imaging_guidelines.pdf\n\n2. NICE NG39 — Major trauma: assessment and initial management. 2016. https://www.nice.org.uk/guidance/ng39/chapter/Recommendations\n"
+}
