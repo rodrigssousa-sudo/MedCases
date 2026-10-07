@@ -1,0 +1,171 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Dispepsia funcional",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "f92d41df892d2deda53c75664e311dd1e449d93d7755feaea991049b91434fb5",
+  "ownerCandidate": "dispepsia_funcional",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_025_f01",
+    "b01_025_f02",
+    "b01_025_f03",
+    "b01_025_f04",
+    "b01_025_f05",
+    "b01_025_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dolor/ardor epigástrico, saciedad precoz o plenitud posprandial sin causa orgánica explicativa tras evaluación apropiada. La dispepsia no estudiada todavía no es automáticamente funcional."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Investigar alarmas, fármacos y Helicobacter pylori; seleccionar endoscopia según riesgo. Para prueba respiratoria/antígeno fecal, suspender el inhibidor de bomba de protones durante 2 semanas cuando sea clínicamente seguro."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sangrado, inestabilidad, vómitos persistentes, disfagia o pérdida de peso requieren investigar causas orgánicas. Tratar H. pylori confirmado con un esquema específico vigente."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tras excluir H. pylori y causas relevantes: alternativa 1, inhibidor de bomba de protones a dosis baja durante 4 semanas; alternativa 2, antagonista H2 durante 4 semanas. Revisar hábitos y usar la menor exposición eficaz; las dosis dependen del producto y función renal."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No confundir este plan de dispepsia funcional con dosis para esofagitis grave o erradicación. No perpetuar tratamiento sin reevaluar respuesta, interacciones y diagnóstico."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Persistencia o nuevas alarmas requieren reevaluación; discutir reducción/suspensión tras control y seguimiento periódico."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_25",
+      "title": "Dispepsia funcional",
+      "url": "https://www.nhs.uk/conditions/indigestion/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 05 May 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_25.txt"
+    },
+    {
+      "key": "cg184",
+      "title": "cg184",
+      "url": "https://www.nice.org.uk/guidance/cg184/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2014,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "cg184_verified",
+      "title": "NICE CG184 — Dyspepsia",
+      "url": "https://www.nice.org.uk/guidance/CG184/chapter/recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Dolor/ardor epigástrico, saciedad precoz o plenitud posprandial sin causa orgánica explicativa tras evaluación apropiada. La dispepsia no estudiada todavía no es automáticamente funcional."
+      ],
+      "factIds": [
+        "b01_025_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Investigar alarmas, fármacos y Helicobacter pylori; seleccionar endoscopia según riesgo. Para prueba respiratoria/antígeno fecal, suspender el inhibidor de bomba de protones durante 2 semanas cuando sea clínicamente seguro."
+      ],
+      "factIds": [
+        "b01_025_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Sangrado, inestabilidad, vómitos persistentes, disfagia o pérdida de peso requieren investigar causas orgánicas. Tratar H. pylori confirmado con un esquema específico vigente."
+      ],
+      "factIds": [
+        "b01_025_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Tras excluir H. pylori y causas relevantes: alternativa 1, inhibidor de bomba de protones a dosis baja durante 4 semanas; alternativa 2, antagonista H2 durante 4 semanas. Revisar hábitos y usar la menor exposición eficaz; las dosis dependen del producto y función renal."
+      ],
+      "factIds": [
+        "b01_025_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No confundir este plan de dispepsia funcional con dosis para esofagitis grave o erradicación. No perpetuar tratamiento sin reevaluar respuesta, interacciones y diagnóstico."
+      ],
+      "factIds": [
+        "b01_025_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Persistencia o nuevas alarmas requieren reevaluación; discutir reducción/suspensión tras control y seguimiento periódico."
+      ],
+      "factIds": [
+        "b01_025_f06"
+      ]
+    }
+  ],
+  "markdown": "# Dispepsia funcional\n\n## Concepto y mecanismo\n\nDolor/ardor epigástrico, saciedad precoz o plenitud posprandial sin causa orgánica explicativa tras evaluación apropiada. La dispepsia no estudiada todavía no es automáticamente funcional.\n\n## Diagnóstico y diferenciales\n\nInvestigar alarmas, fármacos y Helicobacter pylori; seleccionar endoscopia según riesgo. Para prueba respiratoria/antígeno fecal, suspender el inhibidor de bomba de protones durante 2 semanas cuando sea clínicamente seguro.\n\n## Abordaje inicial\n\nSangrado, inestabilidad, vómitos persistentes, disfagia o pérdida de peso requieren investigar causas orgánicas. Tratar H. pylori confirmado con un esquema específico vigente.\n\n## Tratamiento: opciones y criterios de elección\n\nTras excluir H. pylori y causas relevantes: alternativa 1, inhibidor de bomba de protones a dosis baja durante 4 semanas; alternativa 2, antagonista H2 durante 4 semanas. Revisar hábitos y usar la menor exposición eficaz; las dosis dependen del producto y función renal.\n\n## Seguridad y monitorización\n\nNo confundir este plan de dispepsia funcional con dosis para esofagitis grave o erradicación. No perpetuar tratamiento sin reevaluar respuesta, interacciones y diagnóstico.\n\n## Reevaluación y destino\n\nPersistencia o nuevas alarmas requieren reevaluación; discutir reducción/suspensión tras control y seguimiento periódico.\n\n## Referencias\n\n1. [Dispepsia funcional](https://www.nhs.uk/conditions/indigestion/)\n2. [cg184](https://www.nice.org.uk/guidance/cg184/chapter/Recommendations)\n3. [NICE CG184 — Dyspepsia](https://www.nice.org.uk/guidance/CG184/chapter/recommendations)",
+  "approvedReviewCanonicalFileSha256": "e63d6e37121fb122e1eb4b6d07890cea45eb39f24ae9a13e3e4b4ecab52d2a70",
+  "approvedReviewProjectionFileSha256": "923c406acd901f973ad1d33e1eaecb3e1f99ab0aeeb38acf037fcfccca05a1cf"
+}

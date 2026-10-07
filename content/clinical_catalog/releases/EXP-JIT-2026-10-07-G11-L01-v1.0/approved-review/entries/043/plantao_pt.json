@@ -1,0 +1,173 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Fratura de falanges da mão",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "1f6b179b8becc8d26f3040fcc980486f4bdaab1aab64db2109e2e465cbab0e35",
+  "ownerCandidate": "fratura_de_falanges_da_mao",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_043_f01",
+    "b01_043_f02",
+    "b01_043_f03",
+    "b01_043_f04",
+    "b01_043_f05",
+    "b01_043_f06",
+    "b01_043_adult_doses",
+    "b01_043_ped_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Retirar anéis e imobilizar; fratura exposta, lesão tendínea, rotação importante ou déficit exige especialista. Seymour demanda limpeza/tratamento de fratura exposta e antibiótico do protocolo local."
+      ],
+      "factIds": [
+        "b01_043_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar rotação, ferida, unha, extensão/flexão e neurovascular; radiografias direcionadas ao dedo. Não ignorar deformidade rotacional ao fechar a mão."
+      ],
+      "factIds": [
+        "b01_043_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Opção 1: tala ou sindactilização em fratura estável selecionada. Opção 2: redução/fixação para instabilidade, desvio relevante, envolvimento articular ou lesão complexa; decisão por anatomia e idade."
+      ],
+      "factIds": [
+        "b01_043_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+        "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+      ],
+      "factIds": [
+        "b01_043_adult_doses",
+        "b01_043_ped_doses"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Usar analgesia por população na tabela. Não aplicar imobilização excessiva sem controle nem sindactilizar toda lesão articular/tendínea. Avaliar perfusão após qualquer tala."
+      ],
+      "factIds": [
+        "b01_043_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Acompanhar alinhamento e rigidez; planejar mobilização guiada e revisão especializada conforme padrão. Dor crescente, déficit ou ferida infectada exige retorno."
+      ],
+      "factIds": [
+        "b01_043_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Fraturas digitais podem comprometer articulação, tendão ou leito ungueal; lesão infantil de Seymour é fratura exposta com risco de infecção e dano fisário."
+      ],
+      "factIds": [
+        "b01_043_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_43",
+      "title": "Fratura de falanges da mão",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/fractures/Phalangeal_Finger_Fractures/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_43.txt"
+    },
+    {
+      "key": "aaos_finger",
+      "title": "AAOS — Finger fractures",
+      "url": "https://www.orthoinfo.org/diseases--conditions/finger-fractures",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/aaos_finger.txt"
+    },
+    {
+      "key": "bssh",
+      "title": "BSSH — Standards of care in hand trauma",
+      "url": "https://www.bssh.ac.uk/bssh_standards_of_care_in_hand_trauma_.aspx",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/bssh.txt"
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — Acute pain management",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ]
+}

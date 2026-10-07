@@ -1,0 +1,142 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Luxación interfalángica de la mano",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "bf8a185a131a1b788e5bfe22232a1089fdc34976bd31a5d971bc516a71605af5",
+  "ownerCandidate": "luxacao_interfalangica_dos_dedos_da_mao",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_046_f01",
+    "b01_046_f02",
+    "b01_046_f03",
+    "b01_046_f04",
+    "b01_046_f05",
+    "b01_046_f06",
+    "b01_046_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Retirar anillos, proteger y aliviar dolor; reducción solo por profesional capacitado con analgesia y evaluación neurovascular. No insistir en maniobras repetidas si es irreductible."
+      ],
+      "factIds": [
+        "b01_046_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar herida, perfusión, sensibilidad y función tendinosa; obtener radiografías cuando sea posible antes y después de reducción, sin demorar el manejo de isquemia."
+      ],
+      "factIds": [
+        "b01_046_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: reducción cerrada y protección/movilización guiada si es estable. Opción 2: evaluación quirúrgica para luxación abierta, irreductible, inestable o fractura-luxación compleja. La anatomía determina la elección."
+      ],
+      "factIds": [
+        "b01_046_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b01_046_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Paracetamol o ibuprofeno adulto de la tabla pueden complementar analgesia; bloqueo/sedación requiere protocolo específico, no dosis inventadas. Verificar lesión del mecanismo extensor, especialmente patrón volar."
+      ],
+      "factIds": [
+        "b01_046_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar estabilidad, tendones y rigidez con equipo de mano; posición y duración de férula dependen de la lesión. Consultar ante dolor progresivo o déficit."
+      ],
+      "factIds": [
+        "b01_046_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "La pérdida de congruencia interfalángica puede lesionar placa volar, ligamentos o tendones; dirección y fractura asociada cambian el tratamiento."
+      ],
+      "factIds": [
+        "b01_046_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "aaos_finger",
+      "title": "AAOS — Finger fractures",
+      "url": "https://www.orthoinfo.org/diseases--conditions/finger-fractures",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/aaos_finger.txt"
+    },
+    {
+      "key": "bssh",
+      "title": "BSSH — Standards of care in hand trauma",
+      "url": "https://www.bssh.ac.uk/bssh_standards_of_care_in_hand_trauma_.aspx",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/bssh.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ]
+}

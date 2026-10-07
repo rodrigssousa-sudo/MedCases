@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Pacote candidato; aguarda aprovação deste lote. Guias devem permanecer em rascunho no Admin após futura publicação de Estudo/Plantão.",
+  "canonical_payload_sha256": "456ee55977e2f1c7726a34b76d170a000e342cfc12d6335d274d41777f428d49",
+  "owner_candidate": "perfuracao_da_membrana_timpanica",
+  "pt": {
+    "title": "Perfuração da membrana timpânica",
+    "subtitle": "Conteúdo clínico para revisão",
+    "summary": "Pode decorrer de infecção, trauma ou barotrauma, com otalgia, secreção e perda auditiva. Perfuração simples pode cicatrizar espontaneamente.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Pode decorrer de infecção, trauma ou barotrauma, com otalgia, secreção e perda auditiva. Perfuração simples pode cicatrizar espontaneamente."
+        ],
+        "factIds": [
+          "b01_020_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Otoscopia cuidadosa; avaliar mecanismo, audição e vertigem. Trauma com perda auditiva importante, vertigem ou suspeita de lesão craniana demanda avaliação urgente."
+        ],
+        "factIds": [
+          "b01_020_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial",
+        "paragraphs": [
+          "Manter ouvido seco e evitar instrumentação/irrigação. Não inserir gotas sem verificar segurança para tímpano perfurado."
+        ],
+        "factIds": [
+          "b01_020_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: opções e critérios de escolha",
+        "paragraphs": [
+          "Opção 1: observação, proteção contra água e analgesia conforme necessidade. Opção 2: avaliação otorrinolaringológica para reparo quando não cicatriza ou há comprometimento significativo. Antibiótico é condicionado a infecção, não alternativa universal."
+        ],
+        "factIds": [
+          "b01_020_f04"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Evitar fármacos ototóxicos em ouvido médio exposto; verificar produto, indicação e população antes de prescrever. Não forçar manobras de pressão nem mergulhar durante recuperação."
+        ],
+        "factIds": [
+          "b01_020_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação e destino",
+        "paragraphs": [
+          "Reavaliar cicatrização e audição; secreção persistente, dor crescente ou vertigem exigem retorno e eventual especialista."
+        ],
+        "factIds": [
+          "b01_020_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Perforación de la membrana timpánica",
+    "subtitle": "Contenido clínico para revisión",
+    "summary": "Puede deberse a infección, traumatismo o barotrauma, con otalgia, secreción e hipoacusia. Una perforación simple puede cicatrizar espontáneamente.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Puede deberse a infección, traumatismo o barotrauma, con otalgia, secreción e hipoacusia. Una perforación simple puede cicatrizar espontáneamente."
+        ],
+        "factIds": [
+          "b01_020_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Otoscopia cuidadosa; evaluar mecanismo, audición y vértigo. Traumatismo con hipoacusia importante, vértigo o sospecha de lesión craneal requiere evaluación urgente."
+        ],
+        "factIds": [
+          "b01_020_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial",
+        "paragraphs": [
+          "Mantener el oído seco y evitar instrumentación/irrigación. No aplicar gotas sin verificar su seguridad con tímpano perforado."
+        ],
+        "factIds": [
+          "b01_020_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: opciones y criterios de elección",
+        "paragraphs": [
+          "Opción 1: observación, protección del agua y analgesia según necesidad. Opción 2: evaluación otorrinolaringológica para reparación si no cicatriza o existe compromiso significativo. El antibiótico depende de infección, no es una alternativa universal."
+        ],
+        "factIds": [
+          "b01_020_f04"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Evitar fármacos ototóxicos con oído medio expuesto; verificar producto, indicación y población antes de prescribir. No forzar maniobras de presión ni bucear durante la recuperación."
+        ],
+        "factIds": [
+          "b01_020_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación y destino",
+        "paragraphs": [
+          "Reevaluar cicatrización y audición; secreción persistente, dolor creciente o vértigo requieren consulta y posible especialista."
+        ],
+        "factIds": [
+          "b01_020_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_20",
+      "title": "Perfuração da membrana timpânica",
+      "url": "https://www.nhs.uk/conditions/perforated-eardrum/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 19 April 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_20.txt"
+    },
+    {
+      "key": "eardrum_medline",
+      "title": "MedlinePlus — Ruptured eardrum",
+      "url": "https://medlineplus.gov/ency/article/001038.htm",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

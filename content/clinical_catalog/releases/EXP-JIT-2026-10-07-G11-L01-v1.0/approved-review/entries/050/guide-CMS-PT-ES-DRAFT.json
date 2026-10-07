@@ -1,0 +1,193 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Pacote candidato; aguarda aprovação deste lote. Guias devem permanecer em rascunho no Admin após futura publicação de Estudo/Plantão.",
+  "canonical_payload_sha256": "803cb41bde000670b1b7ff78c1a1beb4184f24f9bde3192e4cee709f22ff5b40",
+  "owner_candidate": "febre_sem_sinais_de_localizacao_na_crianca",
+  "pt": {
+    "title": "Febre sem sinais de localização na criança",
+    "subtitle": "Conteúdo clínico para revisão",
+    "summary": "Síndrome sem foco inicial identificável; idade, aspecto e sinais de gravidade determinam investigação. Resposta ao antitérmico não exclui infecção grave.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Síndrome sem foco inicial identificável; idade, aspecto e sinais de gravidade determinam investigação. Resposta ao antitérmico não exclui infecção grave."
+        ],
+        "factIds": [
+          "b01_050_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Avaliar temperatura, perfusão, consciência, respiração, hidratação e urina conforme risco. Menores de 3 meses com temperatura de pelo menos 38 °C exigem avaliação urgente; neonatos precisam investigação hospitalar específica."
+        ],
+        "factIds": [
+          "b01_050_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial",
+        "paragraphs": [
+          "Má perfusão, letargia, dificuldade respiratória, meningismo ou exantema não branqueável exigem emergência. Febre por 5 dias ou mais requer considerar Kawasaki e outras causas."
+        ],
+        "factIds": [
+          "b01_050_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: opções e critérios de escolha",
+        "paragraphs": [
+          "Alívio de desconforto: alternativa 1, paracetamol pediátrico; alternativa 2, ibuprofeno pediátrico se idade e hidratação permitirem. Não dar ambos simultaneamente nem alternar rotineiramente; alto risco exige investigação e tratamento hospitalar, não apenas antitérmico."
+        ],
+        "factIds": [
+          "b01_050_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+        ],
+        "factIds": [
+          "b01_050_ped_doses"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Tabela de analgesia pediátrica não é protocolo neonatal. Não converter mg em mL sem concentração confirmada; evitar ibuprofeno em desidratação. Antibiótico empírico depende de idade/gravidade e protocolo, sem esquema universal neste tema."
+        ],
+        "factIds": [
+          "b01_050_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação e destino",
+        "paragraphs": [
+          "Alta somente com baixo risco, ingestão/diurese adequadas, responsáveis orientados e acesso à reavaliação. Retornar por piora, prostração, dificuldade respiratória ou desidratação."
+        ],
+        "factIds": [
+          "b01_050_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Fiebre infantil sin foco",
+    "subtitle": "Contenido clínico para revisión",
+    "summary": "Síndrome sin foco inicialmente identificable; edad, aspecto y signos de gravedad determinan el estudio. La respuesta al antitérmico no excluye infección grave.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Síndrome sin foco inicialmente identificable; edad, aspecto y signos de gravedad determinan el estudio. La respuesta al antitérmico no excluye infección grave."
+        ],
+        "factIds": [
+          "b01_050_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Evaluar temperatura, perfusión, conciencia, respiración, hidratación y orina según riesgo. Menores de 3 meses con temperatura de al menos 38 °C requieren evaluación urgente; los neonatos necesitan estudio hospitalario específico."
+        ],
+        "factIds": [
+          "b01_050_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial",
+        "paragraphs": [
+          "Mala perfusión, letargo, dificultad respiratoria, meningismo o exantema no blanqueable requiere emergencia. Fiebre durante 5 días o más exige considerar Kawasaki y otras causas."
+        ],
+        "factIds": [
+          "b01_050_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: opciones y criterios de elección",
+        "paragraphs": [
+          "Alivio del malestar: alternativa 1, paracetamol pediátrico; alternativa 2, ibuprofeno pediátrico si edad e hidratación lo permiten. No dar ambos simultáneamente ni alternarlos rutinariamente; el alto riesgo requiere estudio y tratamiento hospitalario, no solo antitérmico."
+        ],
+        "factIds": [
+          "b01_050_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+        ],
+        "factIds": [
+          "b01_050_ped_doses"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "La tabla analgésica pediátrica no es un protocolo neonatal. No convertir mg a mL sin concentración confirmada; evitar ibuprofeno ante deshidratación. El antibiótico empírico depende de edad/gravedad y protocolo, sin esquema universal en este tema."
+        ],
+        "factIds": [
+          "b01_050_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación y destino",
+        "paragraphs": [
+          "Alta solo con bajo riesgo, ingesta/diuresis adecuadas, cuidadores orientados y acceso a reevaluación. Consultar ante empeoramiento, decaimiento, dificultad respiratoria o deshidratación."
+        ],
+        "factIds": [
+          "b01_050_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_50",
+      "title": "Febre sem sinais de localização na criança",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Febrile_child/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_50.txt"
+    },
+    {
+      "key": "ng143",
+      "title": "ng143",
+      "url": "https://www.nice.org.uk/guidance/ng143/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2019,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — Acute pain management",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt"
+    }
+  ]
+}

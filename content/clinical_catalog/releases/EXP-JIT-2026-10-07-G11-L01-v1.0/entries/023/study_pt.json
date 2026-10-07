@@ -1,0 +1,189 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Insônia",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "132feb6340cdfada1f01029b686b9c2db82b98f274bdbadd804bb0114eb01164",
+  "ownerCandidate": "insonia",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_023_f01",
+    "b01_023_f02",
+    "b01_023_f03",
+    "b01_023_f04",
+    "b01_023_f05",
+    "b01_023_f06",
+    "b01_023_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dificuldade de iniciar/manter sono com repercussão diurna; investigar oportunidade de sono, substâncias, dor, saúde mental e apneia antes de medicar."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Caracterizar duração, rotina e impacto com diário; distinguir distúrbio circadiano, apneia e outros transtornos. Ideação suicida, mania ou abstinência exigem avaliação específica urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Rever cafeína/álcool e fármacos; orientar horários regulares e ambiente adequado. Higiene do sono isolada pode ser insuficiente em insônia persistente."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: opções e critérios de escolha"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opção 1: terapia cognitivo-comportamental para insônia. Opção 2: hipnótico de curto prazo em quadro grave selecionado, após análise de riscos e plano de suspensão; zopiclona é exemplo, não prescrição automática."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Zopiclona em adulto selecionado: faixa usual de 3,75–7,5 mg por via oral ao deitar, escolhendo a menor dose apropriada; não repetir na mesma noite. Usar por poucos dias/semanas, geralmente não além de 4 semanas, com plano de retirada e revisão de risco respiratório, hepático e de quedas."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evitar álcool e combinação de sedativos; considerar quedas, dependência, depressão respiratória e direção. Dose exige bula e avaliação individual, especialmente em idosos, gestação e insuficiência hepática; não usar tratamento prolongado por renovação automática."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação e destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Acompanhar resposta, função diurna e desprescrição; refratariedade exige revisar diagnóstico e acesso a terapia comportamental."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_23",
+      "title": "Insônia",
+      "url": "https://www.nhs.uk/conditions/insomnia/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 19 March 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_23.txt"
+    },
+    {
+      "key": "zopiclone",
+      "title": "NHS — Zopiclone",
+      "url": "https://www.nhs.uk/medicines/zopiclone/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 22 June 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/zopiclone.txt"
+    },
+    {
+      "key": "zopiclone_formulary",
+      "title": "Bradford Teaching Hospitals NHS — Zopiclone formulary",
+      "url": "https://www.bradfordhospitalsformulary.nhs.uk/chaptersSubDetails.asp?FC=1&FormularySectionID=4&SubSectionID=A100&SubSectionRef=04",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Dificuldade de iniciar/manter sono com repercussão diurna; investigar oportunidade de sono, substâncias, dor, saúde mental e apneia antes de medicar."
+      ],
+      "factIds": [
+        "b01_023_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Caracterizar duração, rotina e impacto com diário; distinguir distúrbio circadiano, apneia e outros transtornos. Ideação suicida, mania ou abstinência exigem avaliação específica urgente."
+      ],
+      "factIds": [
+        "b01_023_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Rever cafeína/álcool e fármacos; orientar horários regulares e ambiente adequado. Higiene do sono isolada pode ser insuficiente em insônia persistente."
+      ],
+      "factIds": [
+        "b01_023_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Opção 1: terapia cognitivo-comportamental para insônia. Opção 2: hipnótico de curto prazo em quadro grave selecionado, após análise de riscos e plano de suspensão; zopiclona é exemplo, não prescrição automática."
+      ],
+      "factIds": [
+        "b01_023_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Zopiclona em adulto selecionado: faixa usual de 3,75–7,5 mg por via oral ao deitar, escolhendo a menor dose apropriada; não repetir na mesma noite. Usar por poucos dias/semanas, geralmente não além de 4 semanas, com plano de retirada e revisão de risco respiratório, hepático e de quedas."
+      ],
+      "factIds": [
+        "b01_023_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Evitar álcool e combinação de sedativos; considerar quedas, dependência, depressão respiratória e direção. Dose exige bula e avaliação individual, especialmente em idosos, gestação e insuficiência hepática; não usar tratamento prolongado por renovação automática."
+      ],
+      "factIds": [
+        "b01_023_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Acompanhar resposta, função diurna e desprescrição; refratariedade exige revisar diagnóstico e acesso a terapia comportamental."
+      ],
+      "factIds": [
+        "b01_023_f06"
+      ]
+    }
+  ],
+  "markdown": "# Insônia\n\n## Conceito e mecanismo\n\nDificuldade de iniciar/manter sono com repercussão diurna; investigar oportunidade de sono, substâncias, dor, saúde mental e apneia antes de medicar.\n\n## Diagnóstico e diferenciais\n\nCaracterizar duração, rotina e impacto com diário; distinguir distúrbio circadiano, apneia e outros transtornos. Ideação suicida, mania ou abstinência exigem avaliação específica urgente.\n\n## Abordagem inicial\n\nRever cafeína/álcool e fármacos; orientar horários regulares e ambiente adequado. Higiene do sono isolada pode ser insuficiente em insônia persistente.\n\n## Tratamento: opções e critérios de escolha\n\nOpção 1: terapia cognitivo-comportamental para insônia. Opção 2: hipnótico de curto prazo em quadro grave selecionado, após análise de riscos e plano de suspensão; zopiclona é exemplo, não prescrição automática.\n\n## Fármacos, doses e intervalos\n\nZopiclona em adulto selecionado: faixa usual de 3,75–7,5 mg por via oral ao deitar, escolhendo a menor dose apropriada; não repetir na mesma noite. Usar por poucos dias/semanas, geralmente não além de 4 semanas, com plano de retirada e revisão de risco respiratório, hepático e de quedas.\n\n## Segurança e monitorização\n\nEvitar álcool e combinação de sedativos; considerar quedas, dependência, depressão respiratória e direção. Dose exige bula e avaliação individual, especialmente em idosos, gestação e insuficiência hepática; não usar tratamento prolongado por renovação automática.\n\n## Reavaliação e destino\n\nAcompanhar resposta, função diurna e desprescrição; refratariedade exige revisar diagnóstico e acesso a terapia comportamental.\n\n## Referências\n\n1. [Insônia](https://www.nhs.uk/conditions/insomnia/)\n2. [NHS — Zopiclone](https://www.nhs.uk/medicines/zopiclone/)\n3. [Bradford Teaching Hospitals NHS — Zopiclone formulary](https://www.bradfordhospitalsformulary.nhs.uk/chaptersSubDetails.asp?FC=1&FormularySectionID=4&SubSectionID=A100&SubSectionRef=04)",
+  "approvedReviewCanonicalFileSha256": "8ca1c002828f10f38abb77d4e603598698c114279a031af5d2451a699e84de8a",
+  "approvedReviewProjectionFileSha256": "ad543c1409c650c712d77309ba162fd009965566633a5b7256a7031babe4ad0c"
+}

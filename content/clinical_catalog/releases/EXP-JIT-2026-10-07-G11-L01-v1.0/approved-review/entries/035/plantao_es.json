@@ -1,0 +1,90 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Miasis",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "0d5f844d7355bcc8ee2645f5bfd9d84f5f0479a6aba9300c62b4bd95daad6147",
+  "ownerCandidate": "miiase",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_035_f01",
+    "b01_035_f02",
+    "b01_035_f03",
+    "b01_035_f04",
+    "b01_035_f05",
+    "b01_035_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Evaluar estabilidad, dolor, cuidado de heridas y vacunación antitetánica según lesión. No manipular agresivamente lesiones profundas."
+      ],
+      "factIds": [
+        "b01_035_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Identificar localización, larvas, necrosis, extensión y signos de infección. Lesión ocular/cavitaria o compromiso profundo requiere especialista urgente."
+      ],
+      "factIds": [
+        "b01_035_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: extracción completa por un profesional y cuidado local en formas accesibles. Opción 2: exploración/desbridamiento especializado ante lesión profunda, extensa o en herida necrótica. No existe un segundo antiparasitario universal para todas las especies y localizaciones."
+      ],
+      "factIds": [
+        "b01_035_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No asumir indicación de ivermectina o antibiótico en toda miasis; el tratamiento adicional depende de especie, localización e infección. La evaluación pediátrica/del embarazo no permite extrapolación empírica."
+      ],
+      "factIds": [
+        "b01_035_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Confirmar extracción completa y cicatrización, tratar causas de la herida y reducir exposición. Consultar ante fiebre, empeoramiento, necrosis o larvas persistentes."
+      ],
+      "factIds": [
+        "b01_035_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Infestación por larvas de moscas que puede afectar piel, heridas o cavidades; la forma furunculoide difiere de invasión de heridas y localización ocular."
+      ],
+      "factIds": [
+        "b01_035_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "myiasis",
+      "title": "CDC — Myiasis",
+      "url": "https://www.cdc.gov/myiasis/about/index.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

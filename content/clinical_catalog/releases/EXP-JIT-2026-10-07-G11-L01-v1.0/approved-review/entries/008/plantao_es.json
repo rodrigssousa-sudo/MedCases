@@ -1,0 +1,132 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Hiperplasia prostática benigna",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "dcf3f552b9b41ef4ecd56a459bafdef0686d02ddb12a12acf3983fda5cb53fa1",
+  "ownerCandidate": "hiperplasia_prostatica_benigna",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_008_f01",
+    "b01_008_f02",
+    "b01_008_f03",
+    "b01_008_f04",
+    "b01_008_f05",
+    "b01_008_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Retención aguda, fiebre, hematuria importante o lesión renal requieren manejo urgente. Ante síntomas leves, ajustar hábitos y observar con seguimiento."
+      ],
+      "factIds": [
+        "b01_008_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Caracterizar síntomas y medicamentos; examen abdominal/genital y tacto cuando corresponda, orina y discusión informada del PSA. Estudiar función renal si se sospecha compromiso."
+      ],
+      "factIds": [
+        "b01_008_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Alternativa 1: tamsulosina de liberación modificada 400 microgramos por vía oral una vez al día, después de la primera comida, sin partir/triturar. Alternativa 2: finasterida 5 mg oral una vez al día ante próstata aumentada/riesgo de progresión; puede combinarse en pacientes seleccionados."
+      ],
+      "factIds": [
+        "b01_008_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "La tamsulosina puede causar hipotensión postural; informar al cirujano antes de cirugía de cataratas. La finasterida actúa lentamente y modifica la interpretación del PSA; las embarazadas no deben manipular comprimidos rotos. No confundir 400 microgramos con mg ni finasterida 5 mg con 1 mg."
+      ],
+      "factIds": [
+        "b01_008_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar respuesta y efectos adversos; fracaso, retención recurrente o complicaciones justifican urología y discusión de procedimientos."
+      ],
+      "factIds": [
+        "b01_008_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "El crecimiento benigno prostático puede causar síntomas de almacenamiento y vaciamiento; los síntomas urinarios no prueban HPB ni excluyen cáncer, infección o disfunción vesical."
+      ],
+      "factIds": [
+        "b01_008_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_08",
+      "title": "Hiperplasia prostática benigna",
+      "url": "https://www.nhs.uk/conditions/enlarged-prostate/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "last reviewed: 12 January 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_08.txt"
+    },
+    {
+      "key": "cg97",
+      "title": "cg97",
+      "url": "https://www.nice.org.uk/guidance/cg97/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2010,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "tamsulosin",
+      "title": "NHS — Tamsulosin dosing",
+      "url": "https://www.nhs.uk/medicines/tamsulosin/how-and-when-to-take-tamsulosin/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 2 February 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/tamsulosin.txt"
+    },
+    {
+      "key": "finasteride",
+      "title": "NHS — Finasteride dosing",
+      "url": "https://www.nhs.uk/medicines/finasteride/how-and-when-to-take-finasteride/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 2 August 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/finasteride.txt"
+    }
+  ]
+}

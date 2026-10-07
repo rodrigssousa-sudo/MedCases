@@ -1,0 +1,118 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Parálisis facial periférica de Bell",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "8d922f51be4cf8bf0497a37baa8b6d21db669df51edf1aad9a0cec89b377be30",
+  "ownerCandidate": "paralisia_facial_periferica_de_bell",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_003_f01",
+    "b01_003_f02",
+    "b01_003_f03",
+    "b01_003_f04",
+    "b01_003_f05",
+    "b01_003_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Debilidad facial periférica unilateral aguda, que afecta frente y cierre ocular, después de descartar causas identificables. No asumir Bell ante déficit neurológico asociado, traumatismo o evolución atípica."
+      ],
+      "factIds": [
+        "b01_003_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examinar neurología, oído, vesículas, ojo y otros pares craneales. Vesículas u otalgia intensa sugieren Ramsay Hunt; progresión prolongada, recurrencia u otros déficits requieren evaluación."
+      ],
+      "factIds": [
+        "b01_003_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Proteger la córnea si el cierre es incompleto: lubricación diurna, pomada nocturna y protección adecuada. Dolor ocular o alteración visual requiere evaluación oftalmológica urgente."
+      ],
+      "factIds": [
+        "b01_003_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "En adultos, iniciar corticoide preferentemente dentro de las primeras 72 horas: alternativa 1, prednisolona 50 mg por vía oral una vez al día durante 10 días; alternativa 2, prednisolona 60 mg al día durante 5 días y luego 50, 40, 30, 20 y 10 mg en días sucesivos."
+      ],
+      "factIds": [
+        "b01_003_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Elegir un esquema, sin combinarlos. Evaluar diabetes, infección, riesgo gastrointestinal y embarazo antes de prescribir. No extrapolar dosis adultas a niños. Un antiviral aislado no sustituye al corticoide."
+      ],
+      "factIds": [
+        "b01_003_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Controlar recuperación y protección ocular; ausencia de mejoría, empeoramiento o nuevos signos neurológicos requieren reevaluación especializada. Explicar que la recuperación puede tardar meses."
+      ],
+      "factIds": [
+        "b01_003_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_03",
+      "title": "Paralisia facial periférica de Bell",
+      "url": "https://www.nhs.uk/conditions/bells-palsy/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 04 July 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_03.txt"
+    },
+    {
+      "key": "bell50",
+      "title": "bell50",
+      "url": "https://www.barnsleyhospital.nhs.uk/services/a-and-e/bells-palsy",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 19  May  2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/bell50.txt"
+    },
+    {
+      "key": "bell60",
+      "title": "bell60",
+      "url": "https://rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/adult-therapeutic-guidelines/emergency-medicine/bells-palsy-guidelines/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last reviewed:",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/bell60.txt"
+    }
+  ]
+}

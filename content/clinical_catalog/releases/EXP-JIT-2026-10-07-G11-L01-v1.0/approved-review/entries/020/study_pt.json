@@ -1,0 +1,104 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Perfuração da membrana timpânica",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "456ee55977e2f1c7726a34b76d170a000e342cfc12d6335d274d41777f428d49",
+  "ownerCandidate": "perfuracao_da_membrana_timpanica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_020_f01",
+    "b01_020_f02",
+    "b01_020_f03",
+    "b01_020_f04",
+    "b01_020_f05",
+    "b01_020_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Pode decorrer de infecção, trauma ou barotrauma, com otalgia, secreção e perda auditiva. Perfuração simples pode cicatrizar espontaneamente."
+      ],
+      "factIds": [
+        "b01_020_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Otoscopia cuidadosa; avaliar mecanismo, audição e vertigem. Trauma com perda auditiva importante, vertigem ou suspeita de lesão craniana demanda avaliação urgente."
+      ],
+      "factIds": [
+        "b01_020_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Manter ouvido seco e evitar instrumentação/irrigação. Não inserir gotas sem verificar segurança para tímpano perfurado."
+      ],
+      "factIds": [
+        "b01_020_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Opção 1: observação, proteção contra água e analgesia conforme necessidade. Opção 2: avaliação otorrinolaringológica para reparo quando não cicatriza ou há comprometimento significativo. Antibiótico é condicionado a infecção, não alternativa universal."
+      ],
+      "factIds": [
+        "b01_020_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Evitar fármacos ototóxicos em ouvido médio exposto; verificar produto, indicação e população antes de prescrever. Não forçar manobras de pressão nem mergulhar durante recuperação."
+      ],
+      "factIds": [
+        "b01_020_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Reavaliar cicatrização e audição; secreção persistente, dor crescente ou vertigem exigem retorno e eventual especialista."
+      ],
+      "factIds": [
+        "b01_020_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_20",
+      "title": "Perfuração da membrana timpânica",
+      "url": "https://www.nhs.uk/conditions/perforated-eardrum/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 19 April 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_20.txt"
+    },
+    {
+      "key": "eardrum_medline",
+      "title": "MedlinePlus — Ruptured eardrum",
+      "url": "https://medlineplus.gov/ency/article/001038.htm",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

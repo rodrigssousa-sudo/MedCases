@@ -1,0 +1,203 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Luxación interfalángica de la mano",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "80d759263901f35560cb93c93f0a7225ddc95dd41b1b8e8da9db889980c9fac3",
+  "ownerCandidate": "luxacao_interfalangica_dos_dedos_da_mao",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_046_f01",
+    "b01_046_f02",
+    "b01_046_f03",
+    "b01_046_f04",
+    "b01_046_f05",
+    "b01_046_f06",
+    "b01_046_adult_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Retirar anillos, proteger y aliviar dolor; reducción solo por profesional capacitado con analgesia y evaluación neurovascular. No insistir en maniobras repetidas si es irreductible."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar herida, perfusión, sensibilidad y función tendinosa; obtener radiografías cuando sea posible antes y después de reducción, sin demorar el manejo de isquemia."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción 1: reducción cerrada y protección/movilización guiada si es estable. Opción 2: evaluación quirúrgica para luxación abierta, irreductible, inestable o fractura-luxación compleja. La anatomía determina la elección."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Paracetamol o ibuprofeno adulto de la tabla pueden complementar analgesia; bloqueo/sedación requiere protocolo específico, no dosis inventadas. Verificar lesión del mecanismo extensor, especialmente patrón volar."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar estabilidad, tendones y rigidez con equipo de mano; posición y duración de férula dependen de la lesión. Consultar ante dolor progresivo o déficit."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "La pérdida de congruencia interfalángica puede lesionar placa volar, ligamentos o tendones; dirección y fractura asociada cambian el tratamiento."
+    }
+  ],
+  "references": [
+    {
+      "key": "aaos_finger",
+      "title": "AAOS — Finger fractures",
+      "url": "https://www.orthoinfo.org/diseases--conditions/finger-fractures",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/aaos_finger.txt"
+    },
+    {
+      "key": "bssh",
+      "title": "BSSH — Standards of care in hand trauma",
+      "url": "https://www.bssh.ac.uk/bssh_standards_of_care_in_hand_trauma_.aspx",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/bssh.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Retirar anillos, proteger y aliviar dolor; reducción solo por profesional capacitado con analgesia y evaluación neurovascular. No insistir en maniobras repetidas si es irreductible."
+      ],
+      "factIds": [
+        "b01_046_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar herida, perfusión, sensibilidad y función tendinosa; obtener radiografías cuando sea posible antes y después de reducción, sin demorar el manejo de isquemia."
+      ],
+      "factIds": [
+        "b01_046_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: reducción cerrada y protección/movilización guiada si es estable. Opción 2: evaluación quirúrgica para luxación abierta, irreductible, inestable o fractura-luxación compleja. La anatomía determina la elección."
+      ],
+      "factIds": [
+        "b01_046_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b01_046_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Paracetamol o ibuprofeno adulto de la tabla pueden complementar analgesia; bloqueo/sedación requiere protocolo específico, no dosis inventadas. Verificar lesión del mecanismo extensor, especialmente patrón volar."
+      ],
+      "factIds": [
+        "b01_046_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar estabilidad, tendones y rigidez con equipo de mano; posición y duración de férula dependen de la lesión. Consultar ante dolor progresivo o déficit."
+      ],
+      "factIds": [
+        "b01_046_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "La pérdida de congruencia interfalángica puede lesionar placa volar, ligamentos o tendones; dirección y fractura asociada cambian el tratamiento."
+      ],
+      "factIds": [
+        "b01_046_f01"
+      ]
+    }
+  ],
+  "markdown": "# Luxación interfalángica de la mano\n\n## Abordaje inicial\n\nRetirar anillos, proteger y aliviar dolor; reducción solo por profesional capacitado con analgesia y evaluación neurovascular. No insistir en maniobras repetidas si es irreductible.\n\n## Diagnóstico y diferenciales\n\nEvaluar herida, perfusión, sensibilidad y función tendinosa; obtener radiografías cuando sea posible antes y después de reducción, sin demorar el manejo de isquemia.\n\n## Tratamiento: opciones y criterios de elección\n\nOpción 1: reducción cerrada y protección/movilización guiada si es estable. Opción 2: evaluación quirúrgica para luxación abierta, irreductible, inestable o fractura-luxación compleja. La anatomía determina la elección.\n\n## Fármacos, dosis e intervalos\n\nAnalgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.\n\n## Seguridad y monitorización\n\nParacetamol o ibuprofeno adulto de la tabla pueden complementar analgesia; bloqueo/sedación requiere protocolo específico, no dosis inventadas. Verificar lesión del mecanismo extensor, especialmente patrón volar.\n\n## Reevaluación y destino\n\nReevaluar estabilidad, tendones y rigidez con equipo de mano; posición y duración de férula dependen de la lesión. Consultar ante dolor progresivo o déficit.\n\n## Reconocimiento rápido\n\nLa pérdida de congruencia interfalángica puede lesionar placa volar, ligamentos o tendones; dirección y fractura asociada cambian el tratamiento.\n\n## Referencias\n\n1. [AAOS — Finger fractures](https://www.orthoinfo.org/diseases--conditions/finger-fractures)\n2. [BSSH — Standards of care in hand trauma](https://www.bssh.ac.uk/bssh_standards_of_care_in_hand_trauma_.aspx)\n3. [para](https://www.nhs.uk/medicines/paracetamol-for-adults/)\n4. [ibu](https://www.nhs.uk/medicines/ibuprofen-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "bf8a185a131a1b788e5bfe22232a1089fdc34976bd31a5d971bc516a71605af5",
+  "approvedReviewProjectionFileSha256": "0795e970a205d3e072508ed50694f6408a430a9702701783cfed0ff46673b0db"
+}

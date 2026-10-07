@@ -1,0 +1,118 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Hanseníase",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "47d0afe53aa052c6de95ff496a4568c6582b131460dbb2f70487e2a64292754e",
+  "ownerCandidate": "hanseniase",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_032_f01",
+    "b01_032_f02",
+    "b01_032_f03",
+    "b01_032_f04",
+    "b01_032_f05",
+    "b01_032_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Infecção crônica com acometimento cutâneo e neural; alteração de sensibilidade em lesão e nervos periféricos é fundamental. Reações inflamatórias podem causar incapacidade."
+      ],
+      "factIds": [
+        "b01_032_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar pele, sensibilidade, força e nervos, classificar operacionalmente paucibacilar/multibacilar e solicitar exames conforme protocolo. Não excluir hanseníase apenas por baciloscopia negativa."
+      ],
+      "factIds": [
+        "b01_032_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Neurite aguda, déficit motor/sensitivo novo ou lesão ocular exige avaliação urgente e prevenção de incapacidade; notificar e avaliar contatos."
+      ],
+      "factIds": [
+        "b01_032_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Tratamento padrão: poliquimioterapia com rifampicina, dapsona e clofazimina, tanto paucibacilar quanto multibacilar. A duração usual é 6 meses na primeira e 12 meses na segunda. Não são dois esquemas livremente intercambiáveis."
+      ],
+      "factIds": [
+        "b01_032_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Doses dependem de peso, cartela e administração supervisionada/diária do protocolo; não duplicar dose de dapsona no dia supervisionado. Monitorar anemia, toxicidade e interações. Alternativas por resistência/intolerância são especializadas, não invenção de segundo esquema."
+      ],
+      "factIds": [
+        "b01_032_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Acompanhar função neural, reações, adesão e autocuidado; tratamento de reação não substitui poliquimioterapia. Oferecer avaliação de contatos e prevenção conforme programa."
+      ],
+      "factIds": [
+        "b01_032_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_32",
+      "title": "Hanseníase",
+      "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/h/hanseniase",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_32.txt"
+    },
+    {
+      "key": "leprosy_treatment",
+      "title": "Ministério da Saúde — Tratamento hanseníase",
+      "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/h/hanseniase/tratamento/tratamento",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/leprosy_treatment.txt"
+    },
+    {
+      "key": "leprosy_pcdt",
+      "title": "Ministério da Saúde — PCDT Hanseníase, 2022",
+      "url": "https://www.gov.br/saude/pt-br/assuntos/brasil-saudavel/hanseniase/protocolo-clinico-e-diretrizes-terapeuticas-da-hanseniase-2022",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2022,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

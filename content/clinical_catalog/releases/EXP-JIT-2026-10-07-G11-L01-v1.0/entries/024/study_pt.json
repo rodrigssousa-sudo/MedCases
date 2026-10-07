@@ -1,0 +1,261 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Síndrome do intestino irritável",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "63c64da25f6ad424126df8b5aafc2ff79b48ddfbf9e4d5a312a9f7410ead0f06",
+  "ownerCandidate": "sindrome_do_intestino_irritavel",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_024_f01",
+    "b01_024_f02",
+    "b01_024_f03",
+    "b01_024_f04",
+    "b01_024_f05",
+    "b01_024_f06",
+    "b01_024_f07",
+    "b01_024_f08",
+    "b01_024_f09",
+    "b01_024_f10"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Transtorno da interação intestino-cérebro com dor ou desconforto recorrente e mudança do hábito intestinal. Classificar predomínio de constipação, diarreia, padrão misto ou não classificável para escolher tratamento; não equivale a doença inflamatória intestinal."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio clínico"
+    },
+    {
+      "type": "paragraph",
+      "text": "O diagnóstico positivo combina padrão de sintomas e avaliação dirigida; não significa que a dor seja imaginária. Há heterogeneidade de motilidade, sensibilidade visceral e processamento dos sinais intestinais, justificando combinar educação, medidas alimentares e tratamento do sintoma predominante."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Roma V: dor ou desconforto abdominal recorrente, não contínuo, em média pelo menos 3 dias por mês nos últimos 3 meses, associado a pelo menos 2: relação com evacuação, mudança da frequência ou da forma das fezes. Início há pelo menos 6 meses. O padrão clínico não dispensa investigar sinais de alarme."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Investigar padrão das fezes, medicamentos, dieta, relação com evacuação e impacto funcional. Examinar abdome e solicitar exames dirigidos ao contexto; doença celíaca, inflamação, infecção e intolerâncias entram no diferencial. Evitar baterias indiscriminadas quando o quadro típico não tem sinais de alarme."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento de base"
+    },
+    {
+      "type": "paragraph",
+      "text": "Explicar o diagnóstico e pactuar metas de sintomas e qualidade de vida. Individualizar fibras, atividade física e alimentação; dieta com baixo teor de FODMAP deve ter orientação e reintrodução, evitando restrição alimentar indefinida. Terapias dirigidas à interação intestino-cérebro, como terapia cognitivo-comportamental, são opções."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: opções e critérios de escolha"
+    },
+    {
+      "type": "paragraph",
+      "text": "Escolher por subtipo: linaclotida para SII com constipação e rifaximina para SII com diarreia, nas doses verificadas abaixo. Essas opções não são intercambiáveis; alimentação, fibras solúveis e terapia intestino-cérebro podem complementar."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opção para adulto com predomínio de constipação: linaclotida 290 microgramas por via oral uma vez ao dia, em jejum, pelo menos 30 minutos antes de uma refeição. Não mastigar ou triturar os grânulos. É contraindicada se houver obstrução mecânica conhecida ou suspeita; diarreia intensa exige suspender e reidratar."
+    },
+    {
+      "type": "paragraph",
+      "text": "Opção para adulto com predomínio de diarreia, após avaliação: rifaximina 550 mg por via oral três vezes ao dia durante 14 dias. Conferir alergia a rifamicinas, interações e hepatopatia grave. Não usar este esquema como tratamento empírico de disenteria; não confundir com a posologia da encefalopatia hepática."
+    },
+    {
+      "type": "heading",
+      "text": "Populações especiais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Este esquema é para adultos. Crianças, gestantes e lactantes exigem revisão específica do produto e da indicação. Rifaximina tem advertência de risco fetal; não presumir segurança por baixa absorção. A dose pediátrica de linaclotida não é a dose adulta."
+    },
+    {
+      "type": "heading",
+      "text": "Monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reavaliar resposta, efeitos adversos, padrão intestinal e impacto funcional. Sintoma persistente não autoriza acumular tratamentos sem rever o diagnóstico. Registrar retorno e investigar mudança de padrão; antibiótico não é manutenção contínua de rotina."
+    },
+    {
+      "type": "heading",
+      "text": "Red flags, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sangramento digestivo, anemia, perda de peso involuntária, febre, dor progressiva ou exame sugestivo de abdome agudo exigem investigação de outra causa. No plantão, estabilizar e excluir doença urgente antes de atribuir a dor ao diagnóstico prévio. Caso típico estável segue ambulatorialmente."
+    }
+  ],
+  "references": [
+    {
+      "key": "rome5",
+      "title": "Rome Foundation — Rome V criteria, 2026",
+      "url": "https://theromefoundation.org/rome-v-criteria/",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2026,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rome5.txt"
+    },
+    {
+      "key": "ibs_treatment",
+      "title": "NIDDK — IBS treatment",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome/treatment",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last Reviewed November 2017",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibs_treatment.txt"
+    },
+    {
+      "key": "linaclotide",
+      "title": "DailyMed — Linzess label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=09beda19-56d6-4a56-afdc-9a77b70b2ef3",
+      "authorityStatus": "REGULATORY_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/linaclotide.txt"
+    },
+    {
+      "key": "rifaximin",
+      "title": "DailyMed — Xifaxan label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c5e8e2fd-7087-4b78-9181-cc259c0be2f1",
+      "authorityStatus": "REGULATORY_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rifaximin.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Transtorno da interação intestino-cérebro com dor ou desconforto recorrente e mudança do hábito intestinal. Classificar predomínio de constipação, diarreia, padrão misto ou não classificável para escolher tratamento; não equivale a doença inflamatória intestinal."
+      ],
+      "factIds": [
+        "b01_024_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio clínico",
+      "paragraphs": [
+        "O diagnóstico positivo combina padrão de sintomas e avaliação dirigida; não significa que a dor seja imaginária. Há heterogeneidade de motilidade, sensibilidade visceral e processamento dos sinais intestinais, justificando combinar educação, medidas alimentares e tratamento do sintoma predominante."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Roma V: dor ou desconforto abdominal recorrente, não contínuo, em média pelo menos 3 dias por mês nos últimos 3 meses, associado a pelo menos 2: relação com evacuação, mudança da frequência ou da forma das fezes. Início há pelo menos 6 meses. O padrão clínico não dispensa investigar sinais de alarme."
+      ],
+      "factIds": [
+        "b01_024_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Investigar padrão das fezes, medicamentos, dieta, relação com evacuação e impacto funcional. Examinar abdome e solicitar exames dirigidos ao contexto; doença celíaca, inflamação, infecção e intolerâncias entram no diferencial. Evitar baterias indiscriminadas quando o quadro típico não tem sinais de alarme."
+      ],
+      "factIds": [
+        "b01_024_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento de base",
+      "paragraphs": [
+        "Explicar o diagnóstico e pactuar metas de sintomas e qualidade de vida. Individualizar fibras, atividade física e alimentação; dieta com baixo teor de FODMAP deve ter orientação e reintrodução, evitando restrição alimentar indefinida. Terapias dirigidas à interação intestino-cérebro, como terapia cognitivo-comportamental, são opções."
+      ],
+      "factIds": [
+        "b01_024_f04"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Escolher por subtipo: linaclotida para SII com constipação e rifaximina para SII com diarreia, nas doses verificadas abaixo. Essas opções não são intercambiáveis; alimentação, fibras solúveis e terapia intestino-cérebro podem complementar."
+      ],
+      "factIds": [
+        "b01_024_f10"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Opção para adulto com predomínio de constipação: linaclotida 290 microgramas por via oral uma vez ao dia, em jejum, pelo menos 30 minutos antes de uma refeição. Não mastigar ou triturar os grânulos. É contraindicada se houver obstrução mecânica conhecida ou suspeita; diarreia intensa exige suspender e reidratar.",
+        "Opção para adulto com predomínio de diarreia, após avaliação: rifaximina 550 mg por via oral três vezes ao dia durante 14 dias. Conferir alergia a rifamicinas, interações e hepatopatia grave. Não usar este esquema como tratamento empírico de disenteria; não confundir com a posologia da encefalopatia hepática."
+      ],
+      "factIds": [
+        "b01_024_f05",
+        "b01_024_f06"
+      ]
+    },
+    {
+      "heading": "Populações especiais",
+      "paragraphs": [
+        "Este esquema é para adultos. Crianças, gestantes e lactantes exigem revisão específica do produto e da indicação. Rifaximina tem advertência de risco fetal; não presumir segurança por baixa absorção. A dose pediátrica de linaclotida não é a dose adulta."
+      ],
+      "factIds": [
+        "b01_024_f09"
+      ]
+    },
+    {
+      "heading": "Monitorização",
+      "paragraphs": [
+        "Reavaliar resposta, efeitos adversos, padrão intestinal e impacto funcional. Sintoma persistente não autoriza acumular tratamentos sem rever o diagnóstico. Registrar retorno e investigar mudança de padrão; antibiótico não é manutenção contínua de rotina."
+      ],
+      "factIds": [
+        "b01_024_f07"
+      ]
+    },
+    {
+      "heading": "Red flags, internação e alta",
+      "paragraphs": [
+        "Sangramento digestivo, anemia, perda de peso involuntária, febre, dor progressiva ou exame sugestivo de abdome agudo exigem investigação de outra causa. No plantão, estabilizar e excluir doença urgente antes de atribuir a dor ao diagnóstico prévio. Caso típico estável segue ambulatorialmente."
+      ],
+      "factIds": [
+        "b01_024_f08"
+      ]
+    }
+  ],
+  "markdown": "# Síndrome do intestino irritável\n\n## Conceito e mecanismo\n\nTranstorno da interação intestino-cérebro com dor ou desconforto recorrente e mudança do hábito intestinal. Classificar predomínio de constipação, diarreia, padrão misto ou não classificável para escolher tratamento; não equivale a doença inflamatória intestinal.\n\n## Raciocínio clínico\n\nO diagnóstico positivo combina padrão de sintomas e avaliação dirigida; não significa que a dor seja imaginária. Há heterogeneidade de motilidade, sensibilidade visceral e processamento dos sinais intestinais, justificando combinar educação, medidas alimentares e tratamento do sintoma predominante.\n\n## Diagnóstico e diferenciais\n\nRoma V: dor ou desconforto abdominal recorrente, não contínuo, em média pelo menos 3 dias por mês nos últimos 3 meses, associado a pelo menos 2: relação com evacuação, mudança da frequência ou da forma das fezes. Início há pelo menos 6 meses. O padrão clínico não dispensa investigar sinais de alarme.\n\n## Abordagem inicial\n\nInvestigar padrão das fezes, medicamentos, dieta, relação com evacuação e impacto funcional. Examinar abdome e solicitar exames dirigidos ao contexto; doença celíaca, inflamação, infecção e intolerâncias entram no diferencial. Evitar baterias indiscriminadas quando o quadro típico não tem sinais de alarme.\n\n## Tratamento de base\n\nExplicar o diagnóstico e pactuar metas de sintomas e qualidade de vida. Individualizar fibras, atividade física e alimentação; dieta com baixo teor de FODMAP deve ter orientação e reintrodução, evitando restrição alimentar indefinida. Terapias dirigidas à interação intestino-cérebro, como terapia cognitivo-comportamental, são opções.\n\n## Tratamento: opções e critérios de escolha\n\nEscolher por subtipo: linaclotida para SII com constipação e rifaximina para SII com diarreia, nas doses verificadas abaixo. Essas opções não são intercambiáveis; alimentação, fibras solúveis e terapia intestino-cérebro podem complementar.\n\n## Fármacos, doses e intervalos\n\nOpção para adulto com predomínio de constipação: linaclotida 290 microgramas por via oral uma vez ao dia, em jejum, pelo menos 30 minutos antes de uma refeição. Não mastigar ou triturar os grânulos. É contraindicada se houver obstrução mecânica conhecida ou suspeita; diarreia intensa exige suspender e reidratar.\n\nOpção para adulto com predomínio de diarreia, após avaliação: rifaximina 550 mg por via oral três vezes ao dia durante 14 dias. Conferir alergia a rifamicinas, interações e hepatopatia grave. Não usar este esquema como tratamento empírico de disenteria; não confundir com a posologia da encefalopatia hepática.\n\n## Populações especiais\n\nEste esquema é para adultos. Crianças, gestantes e lactantes exigem revisão específica do produto e da indicação. Rifaximina tem advertência de risco fetal; não presumir segurança por baixa absorção. A dose pediátrica de linaclotida não é a dose adulta.\n\n## Monitorização\n\nReavaliar resposta, efeitos adversos, padrão intestinal e impacto funcional. Sintoma persistente não autoriza acumular tratamentos sem rever o diagnóstico. Registrar retorno e investigar mudança de padrão; antibiótico não é manutenção contínua de rotina.\n\n## Red flags, internação e alta\n\nSangramento digestivo, anemia, perda de peso involuntária, febre, dor progressiva ou exame sugestivo de abdome agudo exigem investigação de outra causa. No plantão, estabilizar e excluir doença urgente antes de atribuir a dor ao diagnóstico prévio. Caso típico estável segue ambulatorialmente.\n\n## Referências\n\n1. [Rome Foundation — Rome V criteria, 2026](https://theromefoundation.org/rome-v-criteria/)\n2. [NIDDK — IBS treatment](https://www.niddk.nih.gov/health-information/digestive-diseases/irritable-bowel-syndrome/treatment)\n3. [DailyMed — Linzess label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=09beda19-56d6-4a56-afdc-9a77b70b2ef3)\n4. [DailyMed — Xifaxan label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=c5e8e2fd-7087-4b78-9181-cc259c0be2f1)",
+  "approvedReviewCanonicalFileSha256": "343bc1ecc3becc7730786ec0d6c8b743763c0f9c3e7954e71b0b15048e0d9b5a",
+  "approvedReviewProjectionFileSha256": "99310cd7ccc090ba36495b6e7a65acad9e53ef106efb3f80b34b0cfd3ae61f08"
+}

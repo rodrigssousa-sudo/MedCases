@@ -1,0 +1,175 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Subluxação da cabeça do rádio",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "1b58deffe4a95eed893fa19194a1a222e61b63f7105a012a024f761ffaf5091d",
+  "ownerCandidate": "subluxacao_da_cabeca_do_radio",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_048_f01",
+    "b01_048_f02",
+    "b01_048_f03",
+    "b01_048_f04",
+    "b01_048_f05",
+    "b01_048_f06",
+    "b01_048_ped_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar neurovascular e suspeita de lesão não acidental quando pertinente. Redução por profissional treinado após avaliação; não realizar se diagnóstico incerto."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Apresentação típica permite diagnóstico clínico; edema, equimose, dor óssea relevante ou falha de redução exige radiografia e revisão diagnóstica."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: opções e critérios de escolha"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alternativa 1: hiperpronação. Alternativa 2: supinação com flexão; ambas por profissional habilitado, com reavaliação. Se duas tentativas falharem, reconsiderar diagnóstico e imagem, não insistir indefinidamente."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Após redução, observar retorno ao uso do braço, geralmente em 5–30 minutos. Analgesia pediátrica pode ser necessária conforme quadro; doses adultas não se aplicam."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação e destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alta com uso restabelecido e avaliação tranquila; orientar evitar puxar por mãos/punhos. Persistência de não uso demanda reavaliação."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Comum em crianças pequenas, geralmente após tração do braço; criança evita usar membro sem deformidade importante. Trauma e fratura não devem ser automaticamente excluídos."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_48",
+      "title": "Subluxação da cabeça do rádio",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Pulled_elbow/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated May 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_48.txt"
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — Acute pain management",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Avaliar neurovascular e suspeita de lesão não acidental quando pertinente. Redução por profissional treinado após avaliação; não realizar se diagnóstico incerto."
+      ],
+      "factIds": [
+        "b01_048_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Apresentação típica permite diagnóstico clínico; edema, equimose, dor óssea relevante ou falha de redução exige radiografia e revisão diagnóstica."
+      ],
+      "factIds": [
+        "b01_048_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Alternativa 1: hiperpronação. Alternativa 2: supinação com flexão; ambas por profissional habilitado, com reavaliação. Se duas tentativas falharem, reconsiderar diagnóstico e imagem, não insistir indefinidamente."
+      ],
+      "factIds": [
+        "b01_048_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+      ],
+      "factIds": [
+        "b01_048_ped_doses"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Após redução, observar retorno ao uso do braço, geralmente em 5–30 minutos. Analgesia pediátrica pode ser necessária conforme quadro; doses adultas não se aplicam."
+      ],
+      "factIds": [
+        "b01_048_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Alta com uso restabelecido e avaliação tranquila; orientar evitar puxar por mãos/punhos. Persistência de não uso demanda reavaliação."
+      ],
+      "factIds": [
+        "b01_048_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Comum em crianças pequenas, geralmente após tração do braço; criança evita usar membro sem deformidade importante. Trauma e fratura não devem ser automaticamente excluídos."
+      ],
+      "factIds": [
+        "b01_048_f01"
+      ]
+    }
+  ],
+  "markdown": "# Subluxação da cabeça do rádio\n\n## Abordagem inicial\n\nAvaliar neurovascular e suspeita de lesão não acidental quando pertinente. Redução por profissional treinado após avaliação; não realizar se diagnóstico incerto.\n\n## Diagnóstico e diferenciais\n\nApresentação típica permite diagnóstico clínico; edema, equimose, dor óssea relevante ou falha de redução exige radiografia e revisão diagnóstica.\n\n## Tratamento: opções e critérios de escolha\n\nAlternativa 1: hiperpronação. Alternativa 2: supinação com flexão; ambas por profissional habilitado, com reavaliação. Se duas tentativas falharem, reconsiderar diagnóstico e imagem, não insistir indefinidamente.\n\n## Fármacos, doses e intervalos\n\nAnalgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL.\n\n## Segurança e monitorização\n\nApós redução, observar retorno ao uso do braço, geralmente em 5–30 minutos. Analgesia pediátrica pode ser necessária conforme quadro; doses adultas não se aplicam.\n\n## Reavaliação e destino\n\nAlta com uso restabelecido e avaliação tranquila; orientar evitar puxar por mãos/punhos. Persistência de não uso demanda reavaliação.\n\n## Reconhecimento rápido\n\nComum em crianças pequenas, geralmente após tração do braço; criança evita usar membro sem deformidade importante. Trauma e fratura não devem ser automaticamente excluídos.\n\n## Referências\n\n1. [Subluxação da cabeça do rádio](https://www.rch.org.au/clinicalguide/guideline_index/Pulled_elbow/)\n2. [RCH — Acute pain management](https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/)",
+  "approvedReviewCanonicalFileSha256": "c07c3d4ea812b89ee13e021be31a88ba34f4cb0af38b56fd1a0c6a5ea3f91342",
+  "approvedReviewProjectionFileSha256": "d4a69d38551691e17575b1a2da7ac8f0dddc824a10efebea3f8c7fd33ac10878"
+}

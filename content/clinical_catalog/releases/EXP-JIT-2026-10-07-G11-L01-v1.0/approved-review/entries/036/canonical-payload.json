@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "tungiase",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Tungíase",
+    "es": "Tungiasis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "ALTERNATIVE_IF_UNAVAILABLE",
+  "facts": [
+    {
+      "id": "b01_036_f01",
+      "section": "concept",
+      "pt": "Tunga penetrans na pele, geralmente pés, produz lesão dolorosa/pruriginosa; carga elevada favorece fissuras, incapacidade e infecção secundária.",
+      "es": "Tunga penetrans en la piel, generalmente pies, produce lesión dolorosa/pruriginosa; una carga elevada favorece fisuras, discapacidad e infección secundaria.",
+      "sources": [
+        "tungiasis",
+        "tungiasis_guideline"
+      ]
+    },
+    {
+      "id": "b01_036_f02",
+      "section": "diagnosis",
+      "pt": "Examinar número, localização, inflamação, ulceração e infecção; avaliar mobilidade e vulnerabilidade. Diagnóstico é geralmente clínico em contexto epidemiológico.",
+      "es": "Examinar número, localización, inflamación, ulceración e infección; evaluar movilidad y vulnerabilidad. El diagnóstico suele ser clínico en contexto epidemiológico.",
+      "sources": [
+        "tungiasis",
+        "tungiasis_guideline"
+      ]
+    },
+    {
+      "id": "b01_036_f03",
+      "section": "initial",
+      "pt": "Cuidado de pele/feridas e avaliação antitetânica; tratar infecção secundária quando presente. Evitar extração doméstica com objetos não estéreis.",
+      "es": "Cuidado de piel/heridas y evaluación antitetánica; tratar infección secundaria cuando exista. Evitar extracción doméstica con objetos no estériles.",
+      "sources": [
+        "tungiasis",
+        "tungiasis_guideline"
+      ]
+    },
+    {
+      "id": "b01_036_f04",
+      "section": "options",
+      "pt": "Opção 1: dimeticona de baixa viscosidade, formulação indicada para tungíase, conforme diretriz OPAS de 2025. Opção 2, indisponibilidade: formulação padronizada de óleo de coco com neem descrita na diretriz, por programa/profissional; não substituir por receita caseira.",
+      "es": "Opción 1: dimeticona de baja viscosidad, formulación indicada para tungiasis, según guía OPS de 2025. Opción 2, falta de disponibilidad: formulación estandarizada de aceite de coco con neem descrita en la guía, mediante programa/profesional; no sustituir por una receta casera.",
+      "sources": [
+        "tungiasis",
+        "tungiasis_guideline"
+      ]
+    },
+    {
+      "id": "b01_036_f05",
+      "section": "safety",
+      "pt": "Não inventar concentração, proporção ou intervalo das formulações. A diretriz desencoraja água oxigenada, permanganato e extração por pessoa não treinada; doença grave exige cuidado profissional.",
+      "es": "No inventar concentración, proporción o intervalo de las formulaciones. La guía desaconseja agua oxigenada, permanganato y extracción por personas no capacitadas; la enfermedad grave requiere atención profesional.",
+      "sources": [
+        "tungiasis",
+        "tungiasis_guideline"
+      ]
+    },
+    {
+      "id": "b01_036_f06",
+      "section": "followup",
+      "pt": "Acompanhar resposta e infecção; combinar proteção dos pés e medidas ambientais para reinfestação.",
+      "es": "Controlar respuesta e infección; combinar protección de pies y medidas ambientales contra reinfestación.",
+      "sources": [
+        "tungiasis",
+        "tungiasis_guideline"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "tungiasis",
+      "title": "PAHO — 2025 tungiasis guideline recommendations",
+      "url": "https://www.paho.org/en/news/2-9-2025-paho-publishes-first-guidelines-treatment-tungiasis-neglected-disease-affects",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2025,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/tungiasis.txt"
+    },
+    {
+      "key": "tungiasis_guideline",
+      "title": "PAHO — Guidelines for treatment of tungiasis, 2025",
+      "url": "https://iris.paho.org/handle/10665.2/66996",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2025,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/tungiasis_guideline.txt"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

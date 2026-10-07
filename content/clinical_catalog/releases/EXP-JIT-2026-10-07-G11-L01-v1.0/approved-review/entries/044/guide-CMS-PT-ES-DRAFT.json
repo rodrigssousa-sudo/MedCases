@@ -1,0 +1,225 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Pacote candidato; aguarda aprovação deste lote. Guias devem permanecer em rascunho no Admin após futura publicação de Estudo/Plantão.",
+  "canonical_payload_sha256": "dc57bc497ca2662f9056cc25fd12d8ac0091272dfd567a9d0b138b19d2d6db6b",
+  "owner_candidate": "fratura_de_metatarsos",
+  "pt": {
+    "title": "Fratura de metatarsos",
+    "subtitle": "Conteúdo clínico para revisão",
+    "summary": "Padrão e localização definem risco: avulsão da base do quinto metatarso difere de fratura de Jones, que tem maior risco de não consolidação. Considerar lesão de Lisfranc.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Padrão e localização definem risco: avulsão da base do quinto metatarso difere de fratura de Jones, que tem maior risco de não consolidação. Considerar lesão de Lisfranc."
+        ],
+        "factIds": [
+          "b01_044_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Avaliar mecanismo, apoio, dor focal, edema e neurovascular; radiografias do pé. Equimose plantar ou suspeita de Lisfranc exige avaliação adicional especializada."
+        ],
+        "factIds": [
+          "b01_044_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial",
+        "paragraphs": [
+          "Imobilizar e restringir apoio até definir padrão; fratura exposta, múltipla/desviada ou déficit exige urgência. Não liberar apoio universalmente."
+        ],
+        "factIds": [
+          "b01_044_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: opções e critérios de escolha",
+        "paragraphs": [
+          "Opção 1: bota/calçado rígido ou gesso para fratura estável apropriada. Opção 2: redução/fixação ou regime sem apoio para padrões instáveis, Jones selecionada ou lesão associada; ortopedia define escolha e duração."
+        ],
+        "factIds": [
+          "b01_044_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+          "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+        ],
+        "factIds": [
+          "b01_044_adult_doses",
+          "b01_044_ped_doses"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Analgesia adulta/pediátrica na tabela, sem extrapolação. Protocolos pediátricos exigem considerar fise e anatomia; doses e duração de imobilização não são únicas para todos."
+        ],
+        "factIds": [
+          "b01_044_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação e destino",
+        "paragraphs": [
+          "Acompanhar consolidação e progressão de apoio; retornar por dor crescente, dormência ou alteração de perfusão. Persistência exige excluir não consolidação/lesão associada."
+        ],
+        "factIds": [
+          "b01_044_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Fracturas de metatarsianos",
+    "subtitle": "Contenido clínico para revisión",
+    "summary": "El patrón y la localización definen riesgo: avulsión de la base del quinto metatarsiano difiere de fractura de Jones, con mayor riesgo de falta de consolidación. Considerar lesión de Lisfranc.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "El patrón y la localización definen riesgo: avulsión de la base del quinto metatarsiano difiere de fractura de Jones, con mayor riesgo de falta de consolidación. Considerar lesión de Lisfranc."
+        ],
+        "factIds": [
+          "b01_044_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Evaluar mecanismo, apoyo, dolor focal, edema y estado neurovascular; radiografías del pie. Equimosis plantar o sospecha de Lisfranc exige evaluación especializada adicional."
+        ],
+        "factIds": [
+          "b01_044_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial",
+        "paragraphs": [
+          "Inmovilizar y restringir apoyo hasta definir el patrón; fractura abierta, múltiple/desplazada o déficit requiere urgencia. No permitir apoyo universalmente."
+        ],
+        "factIds": [
+          "b01_044_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: opciones y criterios de elección",
+        "paragraphs": [
+          "Opción 1: bota/calzado rígido o yeso para fractura estable apropiada. Opción 2: reducción/fijación o régimen sin apoyo para patrones inestables, Jones seleccionada o lesión asociada; ortopedia define elección y duración."
+        ],
+        "factIds": [
+          "b01_044_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.",
+          "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+        ],
+        "factIds": [
+          "b01_044_adult_doses",
+          "b01_044_ped_doses"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Analgesia adulta/pediátrica en la tabla, sin extrapolación. Los protocolos pediátricos deben considerar fisis y anatomía; dosis y duración de inmovilización no son iguales para todos."
+        ],
+        "factIds": [
+          "b01_044_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación y destino",
+        "paragraphs": [
+          "Controlar consolidación y progresión del apoyo; consultar ante dolor creciente, adormecimiento o alteración de perfusión. La persistencia exige descartar falta de consolidación/lesión asociada."
+        ],
+        "factIds": [
+          "b01_044_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_44",
+      "title": "Fratura de metatarsos",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/fractures/Metatarsal_Foot_Fractures_-_Emergency_Department/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_44.txt"
+    },
+    {
+      "key": "aaos_forefoot",
+      "title": "AAOS — Toe and forefoot fractures",
+      "url": "https://www.orthoinfo.org/diseases--conditions/toe-and-forefoot-fractures",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/aaos_forefoot.txt"
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — Acute pain management",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ]
+}

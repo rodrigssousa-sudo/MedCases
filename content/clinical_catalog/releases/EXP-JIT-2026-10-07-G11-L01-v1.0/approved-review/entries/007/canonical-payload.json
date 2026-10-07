@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "delirium_nao_relacionado_a_abstinencia_alcoolica",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Delirium não relacionado à abstinência alcoólica",
+    "es": "Delirium no relacionado con abstinencia alcohólica"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Delirium por doença orgânica/medicamentos é diferente da abstinência alcoólica já publicada.",
+  "relatedExistingOwners": [
+    "delirium_tremens"
+  ],
+  "optionRelation": "SECOND_LINE_RESTRICTED",
+  "facts": [
+    {
+      "id": "b01_007_f01",
+      "section": "concept",
+      "pt": "Alteração aguda e flutuante da atenção e cognição, inclusive forma hipoativa. Geralmente resulta da interação entre vulnerabilidade e precipitantes médicos; não equivale a demência crônica.",
+      "es": "Alteración aguda y fluctuante de atención y cognición, incluida la forma hipoactiva. Suele resultar de vulnerabilidad y precipitantes médicos; no equivale a demencia crónica.",
+      "sources": [
+        "topic_07",
+        "cg103"
+      ]
+    },
+    {
+      "id": "b01_007_f02",
+      "section": "diagnosis",
+      "pt": "Aplicar avaliação competente, como 4AT no contexto apropriado; investigar hipóxia, infecção, glicemia, dor, retenção urinária, constipação, medicamentos e distúrbios metabólicos. Na UTI, usar instrumento específico.",
+      "es": "Aplicar evaluación competente, como 4AT en el contexto apropiado; investigar hipoxia, infección, glucemia, dolor, retención urinaria, estreñimiento, medicamentos y trastornos metabólicos. En UCI, utilizar un instrumento específico.",
+      "sources": [
+        "topic_07",
+        "cg103"
+      ]
+    },
+    {
+      "id": "b01_007_f03",
+      "section": "initial",
+      "pt": "Estabilizar ameaças imediatas e tratar causa. Reorientar, promover sono e mobilização segura, acesso a óculos/aparelhos auditivos e participação familiar; evitar contenção desnecessária.",
+      "es": "Estabilizar amenazas inmediatas y tratar la causa. Reorientar, favorecer sueño y movilidad segura, acceso a lentes/audífonos y participación familiar; evitar restricciones innecesarias.",
+      "sources": [
+        "topic_07",
+        "cg103"
+      ]
+    },
+    {
+      "id": "b01_007_f04",
+      "section": "options",
+      "pt": "Opção 1: intervenção multicomponente e tratamento etiológico. Opção 2: somente se sofrimento importante ou risco e falha da desescalada, considerar antipsicótico de curto prazo com seleção individual. Não são opções equivalentes.",
+      "es": "Opción 1: intervención multicomponente y tratamiento etiológico. Opción 2: solo ante sufrimiento importante o riesgo y fracaso de la desescalada, considerar un antipsicótico de corta duración con selección individual. No son opciones equivalentes.",
+      "sources": [
+        "topic_07",
+        "cg103"
+      ]
+    },
+    {
+      "id": "b01_007_f05",
+      "section": "safety",
+      "pt": "Haloperidol não é rotina; se selecionado, usar menor dose por tempo curto, em geral até 1 semana, observando QT e efeitos neurológicos. Parkinson e demência com corpos de Lewy exigem cautela especial. Benzodiazepínico pode piorar este delirium.",
+      "es": "El haloperidol no es rutinario; si se selecciona, utilizar la menor dosis durante poco tiempo, generalmente hasta 1 semana, vigilando QT y efectos neurológicos. Parkinson y demencia con cuerpos de Lewy requieren especial precaución. Las benzodiacepinas pueden empeorar este delirium.",
+      "sources": [
+        "topic_07",
+        "cg103"
+      ]
+    },
+    {
+      "id": "b01_007_f06",
+      "section": "followup",
+      "pt": "Monitorar evolução e segurança diariamente. Persistência exige buscar causas adicionais; alta depende de resolução/estabilidade, capacidade de cuidado e comunicação com seguimento.",
+      "es": "Controlar evolución y seguridad diariamente. La persistencia exige buscar causas adicionales; el alta depende de resolución/estabilidad, capacidad de cuidado y coordinación del seguimiento.",
+      "sources": [
+        "topic_07",
+        "cg103"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_07",
+      "title": "Delirium não relacionado à abstinência alcoólica",
+      "url": "https://medlineplus.gov/delirium.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 18, 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_07.txt"
+    },
+    {
+      "key": "cg103",
+      "title": "cg103",
+      "url": "https://www.nice.org.uk/guidance/cg103/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2010,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

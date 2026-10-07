@@ -1,0 +1,128 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Rinite não alérgica",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "955f31c1881c58e18f485d42f58bbd0bc61eb518d65da36995fb3b0ed2626590",
+  "ownerCandidate": "rinite_nao_alergica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_017_f01",
+    "b01_017_f02",
+    "b01_017_f03",
+    "b01_017_f04",
+    "b01_017_f05",
+    "b01_017_f06",
+    "b01_017_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Remover irritantes e rever uso inadequado de descongestionantes; orientar higiene nasal segura. Não assumir que toda rinorreia é indicação de antibiótico."
+      ],
+      "factIds": [
+        "b01_017_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Rever gatilhos e fármacos; excluir alergia, infecção e alteração estrutural conforme achados. Sinais unilaterais persistentes, sangramento ou dor importante demandam investigação."
+      ],
+      "factIds": [
+        "b01_017_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Opção 1: lavagem salina e controle do gatilho. Opção 2: tratamento intranasal selecionado, como corticosteroide, após identificar padrão e contraindicações; verificar formulação e técnica."
+      ],
+      "factIds": [
+        "b01_017_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Exemplo adulto específico: propionato de fluticasona nasal 50 microgramas por pulverização, 2 pulverizações em cada narina uma vez ao dia, total de 200 microgramas ao dia. Após controle, reduzir conforme bula à menor dose eficaz. Não ultrapassar 200 microgramas ao dia nesse esquema nem converter para furoato de fluticasona."
+      ],
+      "factIds": [
+        "b01_017_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não prolongar descongestionantes tópicos nem tratar automaticamente com anti-histamínico oral se não houver componente alérgico. Gestação e crianças precisam de seleção própria."
+      ],
+      "factIds": [
+        "b01_017_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Reavaliar resposta e diagnóstico; sintomas refratários ou obstrução persistente justificam otorrinolaringologia."
+      ],
+      "factIds": [
+        "b01_017_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Sintomas nasais relacionados a irritantes, temperatura, medicamentos ou outros mecanismos sem alergia predominante. Descongestionante crônico pode causar rinite medicamentosa."
+      ],
+      "factIds": [
+        "b01_017_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_17",
+      "title": "Rinite não alérgica",
+      "url": "https://www.nhs.uk/conditions/non-allergic-rhinitis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 04 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_17.txt"
+    },
+    {
+      "key": "fluticasone",
+      "title": "NHS — Nasal fluticasone dosing",
+      "url": "https://www.nhs.uk/medicines/fluticasone-nasal-spray-and-drops/how-and-when-to-use-fluticasone-nasal-spray-and-drops/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 February 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/fluticasone.txt"
+    },
+    {
+      "key": "fluti_nonallergy_label",
+      "title": "DailyMed — Fluticasone propionate, perennial nonallergic rhinitis label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=f1965bd9-1851-4be5-bbe0-71dd59e034d5",
+      "authorityStatus": "REGULATORY_LABEL",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "costocondrite",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Costocondrite",
+    "es": "Costocondritis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b01_015_f01",
+      "section": "concept",
+      "pt": "Dor de parede torácica por inflamação da região costocondral, frequentemente reproduzível à palpação/movimento. Esse achado não exclui síndrome coronariana ou embolia pulmonar.",
+      "es": "Dolor de pared torácica por inflamación costocondral, frecuentemente reproducible con palpación/movimiento. Ese hallazgo no excluye síndrome coronario ni embolia pulmonar.",
+      "sources": [
+        "topic_15",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_015_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar contexto cardiovascular, respiratório e exame; solicitar ECG e exames quando risco/sintomas exigirem. Febre, edema importante ou trauma sugerem outros diagnósticos.",
+      "es": "Evaluar contexto cardiovascular, respiratorio y examen; solicitar ECG y estudios cuando el riesgo/síntomas lo exijan. Fiebre, edema importante o traumatismo sugieren otros diagnósticos.",
+      "sources": [
+        "topic_15",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_015_f03",
+      "section": "initial",
+      "pt": "Instabilidade, dispneia, sudorese ou dor sugestiva de isquemia exige abordagem de dor torácica aguda. Só atribuir à parede após avaliação segura.",
+      "es": "Inestabilidad, disnea, sudoración o dolor sugestivo de isquemia requiere manejo del dolor torácico agudo. Atribuirlo a la pared solo tras evaluación segura.",
+      "sources": [
+        "topic_15",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_015_f04",
+      "section": "options",
+      "pt": "Alternativa 1: anti-inflamatório oral curto, como ibuprofeno quando seguro. Alternativa 2: paracetamol para analgesia se anti-inflamatório inadequado; reduzir atividades desencadeantes. Casos persistentes selecionados podem exigir tratamento especializado.",
+      "es": "Alternativa 1: antiinflamatorio oral breve, como ibuprofeno si es seguro. Alternativa 2: paracetamol para analgesia si el antiinflamatorio resulta inadecuado; reducir actividades desencadenantes. Casos persistentes seleccionados pueden requerir tratamiento especializado.",
+      "sources": [
+        "topic_15",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_015_f05",
+      "section": "safety",
+      "pt": "As doses adultas estão na tabela. Não usar resposta ao analgésico para excluir doença grave; considerar riscos renal, gastrointestinal e de gestação.",
+      "es": "Las dosis adultas figuran en la tabla. No usar la respuesta al analgésico para excluir enfermedad grave; considerar riesgos renales, gastrointestinales y del embarazo.",
+      "sources": [
+        "topic_15",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_015_f06",
+      "section": "followup",
+      "pt": "Alta com orientações de retorno por mudança do padrão, dispneia ou piora; reavaliar dor persistente e diagnóstico inicial.",
+      "es": "Alta con indicaciones de consulta ante cambios del patrón, disnea o empeoramiento; reevaluar dolor persistente y diagnóstico inicial.",
+      "sources": [
+        "topic_15",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_015_adult_doses",
+      "section": "doses",
+      "sources": [
+        "para",
+        "ibu"
+      ],
+      "pt": "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+      "es": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_15",
+      "title": "Costocondrite",
+      "url": "https://www.nhs.uk/conditions/costochondritis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 14 August 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_15.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

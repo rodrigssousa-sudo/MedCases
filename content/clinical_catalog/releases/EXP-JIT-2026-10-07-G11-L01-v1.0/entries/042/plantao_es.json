@@ -1,0 +1,203 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Fracturas de metacarpianos",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "f36d6b17c6e2740d05835d5d4f85581393c84b8f6cdd84cb9550c83dd880912c",
+  "ownerCandidate": "fratura_de_metacarpos",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_042_f01",
+    "b01_042_f02",
+    "b01_042_f03",
+    "b01_042_f04",
+    "b01_042_f05",
+    "b01_042_f06",
+    "b01_042_adult_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Retirar anillos, elevar, inmovilizar y aliviar dolor; documentar estado neurovascular antes/después. Fractura abierta, rotación, déficit o herida por mordedura requiere atención especializada urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examinar piel, heridas, tendones, rotación digital y estado neurovascular; obtener radiografías apropiadas. Una lesión sobre la articulación tras un golpe puede ser mordedura humana."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción 1: inmovilización conservadora para fractura estable con alineación aceptable. Opción 2: reducción/fijación especializada si es inestable, rotada, articular o abierta. No aplicar un límite universal de angulación a todos los metacarpianos."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia adulta: paracetamol o ibuprofeno de la tabla según riesgo. No reproducir protocolos pediátricos en adultos ni manipular fracturas sin competencia, analgesia y plan de control."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguimiento de mano/ortopedia para alineación, consolidación y movilidad en el momento apropiado. Dolor creciente, parestesias o cambios de color requieren consulta inmediata."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Una fractura metacarpiana puede alterar alineación y función de la mano; localización, rotación y compromiso articular determinan estabilidad. No equivale a fractura de falange."
+    }
+  ],
+  "references": [
+    {
+      "key": "aaos_hand",
+      "title": "AAOS — Hand fractures",
+      "url": "https://www.orthoinfo.org/diseases--conditions/hand-fractures",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/aaos_hand.txt"
+    },
+    {
+      "key": "bssh",
+      "title": "BSSH — Standards of care in hand trauma",
+      "url": "https://www.bssh.ac.uk/bssh_standards_of_care_in_hand_trauma_.aspx",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/bssh.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Retirar anillos, elevar, inmovilizar y aliviar dolor; documentar estado neurovascular antes/después. Fractura abierta, rotación, déficit o herida por mordedura requiere atención especializada urgente."
+      ],
+      "factIds": [
+        "b01_042_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examinar piel, heridas, tendones, rotación digital y estado neurovascular; obtener radiografías apropiadas. Una lesión sobre la articulación tras un golpe puede ser mordedura humana."
+      ],
+      "factIds": [
+        "b01_042_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: inmovilización conservadora para fractura estable con alineación aceptable. Opción 2: reducción/fijación especializada si es inestable, rotada, articular o abierta. No aplicar un límite universal de angulación a todos los metacarpianos."
+      ],
+      "factIds": [
+        "b01_042_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b01_042_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Analgesia adulta: paracetamol o ibuprofeno de la tabla según riesgo. No reproducir protocolos pediátricos en adultos ni manipular fracturas sin competencia, analgesia y plan de control."
+      ],
+      "factIds": [
+        "b01_042_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Seguimiento de mano/ortopedia para alineación, consolidación y movilidad en el momento apropiado. Dolor creciente, parestesias o cambios de color requieren consulta inmediata."
+      ],
+      "factIds": [
+        "b01_042_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Una fractura metacarpiana puede alterar alineación y función de la mano; localización, rotación y compromiso articular determinan estabilidad. No equivale a fractura de falange."
+      ],
+      "factIds": [
+        "b01_042_f01"
+      ]
+    }
+  ],
+  "markdown": "# Fracturas de metacarpianos\n\n## Abordaje inicial\n\nRetirar anillos, elevar, inmovilizar y aliviar dolor; documentar estado neurovascular antes/después. Fractura abierta, rotación, déficit o herida por mordedura requiere atención especializada urgente.\n\n## Diagnóstico y diferenciales\n\nExaminar piel, heridas, tendones, rotación digital y estado neurovascular; obtener radiografías apropiadas. Una lesión sobre la articulación tras un golpe puede ser mordedura humana.\n\n## Tratamiento: opciones y criterios de elección\n\nOpción 1: inmovilización conservadora para fractura estable con alineación aceptable. Opción 2: reducción/fijación especializada si es inestable, rotada, articular o abierta. No aplicar un límite universal de angulación a todos los metacarpianos.\n\n## Fármacos, dosis e intervalos\n\nAnalgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.\n\n## Seguridad y monitorización\n\nAnalgesia adulta: paracetamol o ibuprofeno de la tabla según riesgo. No reproducir protocolos pediátricos en adultos ni manipular fracturas sin competencia, analgesia y plan de control.\n\n## Reevaluación y destino\n\nSeguimiento de mano/ortopedia para alineación, consolidación y movilidad en el momento apropiado. Dolor creciente, parestesias o cambios de color requieren consulta inmediata.\n\n## Reconocimiento rápido\n\nUna fractura metacarpiana puede alterar alineación y función de la mano; localización, rotación y compromiso articular determinan estabilidad. No equivale a fractura de falange.\n\n## Referencias\n\n1. [AAOS — Hand fractures](https://www.orthoinfo.org/diseases--conditions/hand-fractures)\n2. [BSSH — Standards of care in hand trauma](https://www.bssh.ac.uk/bssh_standards_of_care_in_hand_trauma_.aspx)\n3. [para](https://www.nhs.uk/medicines/paracetamol-for-adults/)\n4. [ibu](https://www.nhs.uk/medicines/ibuprofen-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "2fd18f97de33ada22666f6b90feec2243d15c4f8239283da774a33d0559c8a97",
+  "approvedReviewProjectionFileSha256": "41ec3aec3e4f61b16665892e01a1b52874a28a1a6c0489d69ece0dc3ba7a1920"
+}

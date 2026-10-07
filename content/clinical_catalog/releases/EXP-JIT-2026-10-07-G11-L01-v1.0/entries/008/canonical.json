@@ -1,0 +1,156 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "hiperplasia_prostatica_benigna",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Hiperplasia prostática benigna",
+    "es": "Hiperplasia prostática benigna"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Aumento benigno da próstata com sintomas crônicos, não retenção aguda nem infecção.",
+  "relatedExistingOwners": [
+    "retencao_urinaria_aguda",
+    "prostatite_bacteriana_aguda"
+  ],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b01_008_f01",
+      "section": "concept",
+      "pt": "Aumento benigno da próstata pode causar sintomas de armazenamento e esvaziamento; sintomas urinários não provam HPB nem excluem câncer, infecção ou disfunção vesical.",
+      "es": "El crecimiento benigno prostático puede causar síntomas de almacenamiento y vaciamiento; los síntomas urinarios no prueban HPB ni excluyen cáncer, infección o disfunción vesical.",
+      "sources": [
+        "topic_08",
+        "cg97",
+        "tamsulosin",
+        "finasteride"
+      ]
+    },
+    {
+      "id": "b01_008_f02",
+      "section": "diagnosis",
+      "pt": "Caracterizar sintomas e medicamentos; exame abdominal/genital e toque quando indicado, urina e discussão informada de PSA. Investigar função renal se houver suspeita de comprometimento.",
+      "es": "Caracterizar síntomas y medicamentos; examen abdominal/genital y tacto cuando corresponda, orina y discusión informada del PSA. Estudiar función renal si se sospecha compromiso.",
+      "sources": [
+        "topic_08",
+        "cg97",
+        "tamsulosin",
+        "finasteride"
+      ]
+    },
+    {
+      "id": "b01_008_f03",
+      "section": "initial",
+      "pt": "Retenção aguda, febre, hematúria importante ou lesão renal exigem abordagem urgente. Em sintomas leves, ajustar hábitos e observar com seguimento.",
+      "es": "Retención aguda, fiebre, hematuria importante o lesión renal requieren manejo urgente. Ante síntomas leves, ajustar hábitos y observar con seguimiento.",
+      "sources": [
+        "topic_08",
+        "cg97",
+        "tamsulosin",
+        "finasteride"
+      ]
+    },
+    {
+      "id": "b01_008_f04",
+      "section": "options",
+      "pt": "Alternativa 1: tamsulosina de liberação modificada 400 microgramas por via oral uma vez ao dia, após a primeira refeição, sem partir/triturar. Alternativa 2: finasterida 5 mg oral uma vez ao dia em próstata aumentada/risco de progressão; pode ser combinada em pacientes selecionados.",
+      "es": "Alternativa 1: tamsulosina de liberación modificada 400 microgramos por vía oral una vez al día, después de la primera comida, sin partir/triturar. Alternativa 2: finasterida 5 mg oral una vez al día ante próstata aumentada/riesgo de progresión; puede combinarse en pacientes seleccionados.",
+      "sources": [
+        "cg97",
+        "tamsulosin",
+        "finasteride"
+      ]
+    },
+    {
+      "id": "b01_008_f05",
+      "section": "safety",
+      "pt": "Tamsulosina pode causar hipotensão postural; informar cirurgião antes de cirurgia de catarata. Finasterida age lentamente e altera interpretação de PSA; gestantes não devem manusear comprimidos quebrados. Não confundir 400 microgramas com mg nem finasterida 5 mg com 1 mg.",
+      "es": "La tamsulosina puede causar hipotensión postural; informar al cirujano antes de cirugía de cataratas. La finasterida actúa lentamente y modifica la interpretación del PSA; las embarazadas no deben manipular comprimidos rotos. No confundir 400 microgramos con mg ni finasterida 5 mg con 1 mg.",
+      "sources": [
+        "cg97",
+        "tamsulosin",
+        "finasteride"
+      ]
+    },
+    {
+      "id": "b01_008_f06",
+      "section": "followup",
+      "pt": "Reavaliar resposta e efeitos adversos; falha, retenção recorrente ou complicações justificam urologia e discussão de procedimento.",
+      "es": "Reevaluar respuesta y efectos adversos; fracaso, retención recurrente o complicaciones justifican urología y discusión de procedimientos.",
+      "sources": [
+        "topic_08",
+        "cg97",
+        "tamsulosin",
+        "finasteride"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_08",
+      "title": "Hiperplasia prostática benigna",
+      "url": "https://www.nhs.uk/conditions/enlarged-prostate/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "last reviewed: 12 January 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_08.txt"
+    },
+    {
+      "key": "cg97",
+      "title": "cg97",
+      "url": "https://www.nice.org.uk/guidance/cg97/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2010,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "tamsulosin",
+      "title": "NHS — Tamsulosin dosing",
+      "url": "https://www.nhs.uk/medicines/tamsulosin/how-and-when-to-take-tamsulosin/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 2 February 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/tamsulosin.txt"
+    },
+    {
+      "key": "finasteride",
+      "title": "NHS — Finasteride dosing",
+      "url": "https://www.nhs.uk/medicines/finasteride/how-and-when-to-take-finasteride/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 2 August 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/finasteride.txt"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

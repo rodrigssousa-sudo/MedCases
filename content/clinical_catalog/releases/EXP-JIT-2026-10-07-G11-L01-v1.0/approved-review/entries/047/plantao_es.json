@@ -1,0 +1,128 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Luxación de codo",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "153764d116ab42c84915e5ec4f0ceed090ae66ec71d999ecc12a55cfdd3755ef",
+  "ownerCandidate": "luxacao_de_cotovelo",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_047_f01",
+    "b01_047_f02",
+    "b01_047_f03",
+    "b01_047_f04",
+    "b01_047_f05",
+    "b01_047_f06",
+    "b01_047_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Emergencia ortopédica: inmovilizar, analgesia y reducción por equipo capacitado; déficit vascular/neurológico o lesión abierta requiere respuesta especializada inmediata."
+      ],
+      "factIds": [
+        "b01_047_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar pulso, perfusión, fuerza/sensibilidad, herida y radiografía; repetir examen después de reducción. Investigar fractura asociada e inestabilidad."
+      ],
+      "factIds": [
+        "b01_047_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: reducción cerrada, inmovilización breve y movilización guiada en luxación simple estable. Opción 2: reparación/fijación quirúrgica si es compleja, inestable o con lesión vascular; no son intercambiables."
+      ],
+      "factIds": [
+        "b01_047_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b01_047_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Sedación y bloqueo requieren evaluación, monitorización y protocolo del equipo. No utilizar solo analgesia oral para demorar reducción; evitar inmovilización prolongada indiscriminada por riesgo de rigidez."
+      ],
+      "factIds": [
+        "b01_047_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Confirmar congruencia y plan ortopédico; orientar consulta ante dolor creciente, parestesias, mano fría o cambios de color."
+      ],
+      "factIds": [
+        "b01_047_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "La luxación simple difiere de fractura-luxación compleja y puede lesionar nervios/vasos. Una perfusión aparentemente normal no reemplaza el examen neurovascular documentado."
+      ],
+      "factIds": [
+        "b01_047_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "aaos_elbow",
+      "title": "AAOS — Elbow dislocation",
+      "url": "https://www.orthoinfo.org/diseases--conditions/elbow-dislocation",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/aaos_elbow.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ]
+}

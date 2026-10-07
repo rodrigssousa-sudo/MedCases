@@ -1,0 +1,189 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Cervicalgia mecánica sin radiculopatía",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "521e69b2a1e597768c108c03b49b57339607a65ebe22dfaceae0491e7add7d9c",
+  "ownerCandidate": "cervicalgia_mecanica_sem_radiculopatia",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_014_f01",
+    "b01_014_f02",
+    "b01_014_f03",
+    "b01_014_f04",
+    "b01_014_f05",
+    "b01_014_f06",
+    "b01_014_adult_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Déficit progresivo, signos medulares, infección o sospecha vascular requiere derivación urgente. En presentación benigna, mantener movimiento tolerable y adaptar actividades."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar traumatismo, fiebre, cáncer, inmunosupresión, fuerza, sensibilidad, marcha y signos medulares. Las imágenes deben guiarse por riesgo, no ser automáticas en dolor mecánico simple."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción 1: ejercicio guiado, fisioterapia y medidas posturales. Opción 2: analgesia breve con paracetamol o ibuprofeno según riesgo; no sustituye la movilización. Evitar collar de rutina."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Utilizar la tabla de dosis adultas; no extrapolar a niños. El antiinflamatorio resulta inadecuado en determinadas situaciones renales, hemorrágicas y del embarazo. Evitar manipulación sin descartar contraindicaciones."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar persistencia, limitación funcional o aparición de irradiación/déficit. Consultar inmediatamente ante debilidad, fiebre o alteración de la marcha."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "El dolor cervical mecánico varía con movimiento/postura, sin déficit radicular. Puede afectar músculos y articulaciones; radiculopatía, mielopatía y traumatismo relevante requieren otra evaluación."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_14",
+      "title": "Cervicalgia mecânica sem radiculopatia",
+      "url": "https://medlineplus.gov/neckinjuriesanddisorders.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated August 4, 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_14.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Déficit progresivo, signos medulares, infección o sospecha vascular requiere derivación urgente. En presentación benigna, mantener movimiento tolerable y adaptar actividades."
+      ],
+      "factIds": [
+        "b01_014_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar traumatismo, fiebre, cáncer, inmunosupresión, fuerza, sensibilidad, marcha y signos medulares. Las imágenes deben guiarse por riesgo, no ser automáticas en dolor mecánico simple."
+      ],
+      "factIds": [
+        "b01_014_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: ejercicio guiado, fisioterapia y medidas posturales. Opción 2: analgesia breve con paracetamol o ibuprofeno según riesgo; no sustituye la movilización. Evitar collar de rutina."
+      ],
+      "factIds": [
+        "b01_014_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b01_014_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Utilizar la tabla de dosis adultas; no extrapolar a niños. El antiinflamatorio resulta inadecuado en determinadas situaciones renales, hemorrágicas y del embarazo. Evitar manipulación sin descartar contraindicaciones."
+      ],
+      "factIds": [
+        "b01_014_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar persistencia, limitación funcional o aparición de irradiación/déficit. Consultar inmediatamente ante debilidad, fiebre o alteración de la marcha."
+      ],
+      "factIds": [
+        "b01_014_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "El dolor cervical mecánico varía con movimiento/postura, sin déficit radicular. Puede afectar músculos y articulaciones; radiculopatía, mielopatía y traumatismo relevante requieren otra evaluación."
+      ],
+      "factIds": [
+        "b01_014_f01"
+      ]
+    }
+  ],
+  "markdown": "# Cervicalgia mecánica sin radiculopatía\n\n## Abordaje inicial\n\nDéficit progresivo, signos medulares, infección o sospecha vascular requiere derivación urgente. En presentación benigna, mantener movimiento tolerable y adaptar actividades.\n\n## Diagnóstico y diferenciales\n\nEvaluar traumatismo, fiebre, cáncer, inmunosupresión, fuerza, sensibilidad, marcha y signos medulares. Las imágenes deben guiarse por riesgo, no ser automáticas en dolor mecánico simple.\n\n## Tratamiento: opciones y criterios de elección\n\nOpción 1: ejercicio guiado, fisioterapia y medidas posturales. Opción 2: analgesia breve con paracetamol o ibuprofeno según riesgo; no sustituye la movilización. Evitar collar de rutina.\n\n## Fármacos, dosis e intervalos\n\nAnalgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.\n\n## Seguridad y monitorización\n\nUtilizar la tabla de dosis adultas; no extrapolar a niños. El antiinflamatorio resulta inadecuado en determinadas situaciones renales, hemorrágicas y del embarazo. Evitar manipulación sin descartar contraindicaciones.\n\n## Reevaluación y destino\n\nReevaluar persistencia, limitación funcional o aparición de irradiación/déficit. Consultar inmediatamente ante debilidad, fiebre o alteración de la marcha.\n\n## Reconocimiento rápido\n\nEl dolor cervical mecánico varía con movimiento/postura, sin déficit radicular. Puede afectar músculos y articulaciones; radiculopatía, mielopatía y traumatismo relevante requieren otra evaluación.\n\n## Referencias\n\n1. [Cervicalgia mecânica sem radiculopatia](https://medlineplus.gov/neckinjuriesanddisorders.html)\n2. [para](https://www.nhs.uk/medicines/paracetamol-for-adults/)\n3. [ibu](https://www.nhs.uk/medicines/ibuprofen-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "ab238ab3d4c2fbbce5d4e7bcc61142a32cd6de441bc6a59b49e41046c8913fba",
+  "approvedReviewProjectionFileSha256": "aa101cba1c0220c02985e16f3d7c9ad581f0234d83d6a0f856d68d6e146f0545"
+}

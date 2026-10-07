@@ -1,0 +1,189 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Distensión muscular",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "d36f939d4f5963343ea3d7426c7164db560c7acaef8e6e63277c672f5230be2e",
+  "ownerCandidate": "distensao_muscular",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_040_f01",
+    "b01_040_f02",
+    "b01_040_f03",
+    "b01_040_f04",
+    "b01_040_f05",
+    "b01_040_f06",
+    "b01_040_adult_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "La lesión muscular por sobrecarga o estiramiento puede variar de microlesión a rotura; diferenciar esguince ligamentario, fractura y lesión tendinosa completa."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar mecanismo, hematoma, dolor, fuerza y función; es necesario el examen neurovascular. Imágenes selectivas ante sospecha de rotura relevante u otro diagnóstico."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Protección relativa, frío protegido y control del edema inicialmente, seguidos de movilización progresiva. Dolor desproporcionado, déficit o edema importante exige descartar síndrome compartimental."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alternativa analgésica 1: paracetamol. Alternativa 2: ibuprofeno breve si es seguro. Rehabilitación y progresión de carga son esenciales; una rotura importante puede requerir evaluación quirúrgica."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dosis adultas en la tabla; no usar analgésicos para permitir esfuerzo lesivo. Evitar antiinflamatorios ante deshidratación/enfermedad renal, sangrado o contraindicación durante el embarazo."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Regreso gradual a actividad con recuperación funcional; persistencia, debilidad o hematoma creciente requiere reevaluación."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_40",
+      "title": "Distensão muscular",
+      "url": "https://www.nhs.uk/conditions/sprains-and-strains/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 23 April 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_40.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "La lesión muscular por sobrecarga o estiramiento puede variar de microlesión a rotura; diferenciar esguince ligamentario, fractura y lesión tendinosa completa."
+      ],
+      "factIds": [
+        "b01_040_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar mecanismo, hematoma, dolor, fuerza y función; es necesario el examen neurovascular. Imágenes selectivas ante sospecha de rotura relevante u otro diagnóstico."
+      ],
+      "factIds": [
+        "b01_040_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Protección relativa, frío protegido y control del edema inicialmente, seguidos de movilización progresiva. Dolor desproporcionado, déficit o edema importante exige descartar síndrome compartimental."
+      ],
+      "factIds": [
+        "b01_040_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Alternativa analgésica 1: paracetamol. Alternativa 2: ibuprofeno breve si es seguro. Rehabilitación y progresión de carga son esenciales; una rotura importante puede requerir evaluación quirúrgica."
+      ],
+      "factIds": [
+        "b01_040_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b01_040_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Dosis adultas en la tabla; no usar analgésicos para permitir esfuerzo lesivo. Evitar antiinflamatorios ante deshidratación/enfermedad renal, sangrado o contraindicación durante el embarazo."
+      ],
+      "factIds": [
+        "b01_040_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Regreso gradual a actividad con recuperación funcional; persistencia, debilidad o hematoma creciente requiere reevaluación."
+      ],
+      "factIds": [
+        "b01_040_f06"
+      ]
+    }
+  ],
+  "markdown": "# Distensión muscular\n\n## Concepto y mecanismo\n\nLa lesión muscular por sobrecarga o estiramiento puede variar de microlesión a rotura; diferenciar esguince ligamentario, fractura y lesión tendinosa completa.\n\n## Diagnóstico y diferenciales\n\nEvaluar mecanismo, hematoma, dolor, fuerza y función; es necesario el examen neurovascular. Imágenes selectivas ante sospecha de rotura relevante u otro diagnóstico.\n\n## Abordaje inicial\n\nProtección relativa, frío protegido y control del edema inicialmente, seguidos de movilización progresiva. Dolor desproporcionado, déficit o edema importante exige descartar síndrome compartimental.\n\n## Tratamiento: opciones y criterios de elección\n\nAlternativa analgésica 1: paracetamol. Alternativa 2: ibuprofeno breve si es seguro. Rehabilitación y progresión de carga son esenciales; una rotura importante puede requerir evaluación quirúrgica.\n\n## Fármacos, dosis e intervalos\n\nAnalgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.\n\n## Seguridad y monitorización\n\nDosis adultas en la tabla; no usar analgésicos para permitir esfuerzo lesivo. Evitar antiinflamatorios ante deshidratación/enfermedad renal, sangrado o contraindicación durante el embarazo.\n\n## Reevaluación y destino\n\nRegreso gradual a actividad con recuperación funcional; persistencia, debilidad o hematoma creciente requiere reevaluación.\n\n## Referencias\n\n1. [Distensão muscular](https://www.nhs.uk/conditions/sprains-and-strains/)\n2. [para](https://www.nhs.uk/medicines/paracetamol-for-adults/)\n3. [ibu](https://www.nhs.uk/medicines/ibuprofen-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "979ba528a65e8bc91938e06a3aba106fb9b24f59cdf5bf15d18de6d4b82d8cbe",
+  "approvedReviewProjectionFileSha256": "c565c65de8ea5ae42a619fd0661c04577131356c7abbf73fad387bf4960deef0"
+}

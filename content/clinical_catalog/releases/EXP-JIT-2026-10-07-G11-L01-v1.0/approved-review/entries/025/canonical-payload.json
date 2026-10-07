@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "dispepsia_funcional",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Dispepsia funcional",
+    "es": "Dispepsia funcional"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "INTERCHANGEABLE_CONTEXTUAL",
+  "facts": [
+    {
+      "id": "b01_025_f01",
+      "section": "concept",
+      "pt": "Dor/queimação epigástrica, saciedade precoce ou plenitude pós-prandial sem causa orgânica explicativa após avaliação apropriada. Dispepsia não investigada ainda não é automaticamente funcional.",
+      "es": "Dolor/ardor epigástrico, saciedad precoz o plenitud posprandial sin causa orgánica explicativa tras evaluación apropiada. La dispepsia no estudiada todavía no es automáticamente funcional.",
+      "sources": [
+        "topic_25",
+        "cg184",
+        "cg184_verified"
+      ]
+    },
+    {
+      "id": "b01_025_f02",
+      "section": "diagnosis",
+      "pt": "Investigar alarmes, fármacos e Helicobacter pylori; selecionar endoscopia conforme risco. Para teste respiratório/antígeno fecal, interromper inibidor de bomba de prótons por 2 semanas quando clinicamente seguro.",
+      "es": "Investigar alarmas, fármacos y Helicobacter pylori; seleccionar endoscopia según riesgo. Para prueba respiratoria/antígeno fecal, suspender el inhibidor de bomba de protones durante 2 semanas cuando sea clínicamente seguro.",
+      "sources": [
+        "topic_25",
+        "cg184",
+        "cg184_verified"
+      ]
+    },
+    {
+      "id": "b01_025_f03",
+      "section": "initial",
+      "pt": "Sangramento, instabilidade, vômitos persistentes, disfagia ou emagrecimento exigem investigar causa orgânica. Tratar H. pylori quando confirmado com esquema específico vigente.",
+      "es": "Sangrado, inestabilidad, vómitos persistentes, disfagia o pérdida de peso requieren investigar causas orgánicas. Tratar H. pylori confirmado con un esquema específico vigente.",
+      "sources": [
+        "topic_25",
+        "cg184",
+        "cg184_verified"
+      ]
+    },
+    {
+      "id": "b01_025_f04",
+      "section": "options",
+      "pt": "Após excluir H. pylori e causas relevantes: alternativa 1, inibidor de bomba de prótons em baixa dose por 4 semanas; alternativa 2, antagonista H2 por 4 semanas. Rever hábitos e usar menor exposição eficaz; doses dependem do produto e função renal.",
+      "es": "Tras excluir H. pylori y causas relevantes: alternativa 1, inhibidor de bomba de protones a dosis baja durante 4 semanas; alternativa 2, antagonista H2 durante 4 semanas. Revisar hábitos y usar la menor exposición eficaz; las dosis dependen del producto y función renal.",
+      "sources": [
+        "topic_25",
+        "cg184",
+        "cg184_verified"
+      ]
+    },
+    {
+      "id": "b01_025_f05",
+      "section": "safety",
+      "pt": "Não confundir esse plano de dispepsia funcional com doses para esofagite grave ou erradicação. Não perpetuar tratamento sem reavaliar resposta, interações e diagnóstico.",
+      "es": "No confundir este plan de dispepsia funcional con dosis para esofagitis grave o erradicación. No perpetuar tratamiento sin reevaluar respuesta, interacciones y diagnóstico.",
+      "sources": [
+        "topic_25",
+        "cg184",
+        "cg184_verified"
+      ]
+    },
+    {
+      "id": "b01_025_f06",
+      "section": "followup",
+      "pt": "Persistência ou novos alarmes exige revisão; discutir redução/suspensão após controle e acompanhamento periódico.",
+      "es": "Persistencia o nuevas alarmas requieren reevaluación; discutir reducción/suspensión tras control y seguimiento periódico.",
+      "sources": [
+        "topic_25",
+        "cg184",
+        "cg184_verified"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_25",
+      "title": "Dispepsia funcional",
+      "url": "https://www.nhs.uk/conditions/indigestion/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 05 May 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_25.txt"
+    },
+    {
+      "key": "cg184",
+      "title": "cg184",
+      "url": "https://www.nice.org.uk/guidance/cg184/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2014,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "cg184_verified",
+      "title": "NICE CG184 — Dyspepsia",
+      "url": "https://www.nice.org.uk/guidance/CG184/chapter/recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

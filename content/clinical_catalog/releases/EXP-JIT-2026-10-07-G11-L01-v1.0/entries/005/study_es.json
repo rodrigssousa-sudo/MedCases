@@ -1,0 +1,157 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Síncope y presíncope",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "0f1f877360fc901f13fa30690b194e4dcbeb52472c8a0218bfd48f5652741157",
+  "ownerCandidate": "sincope_e_pre_sincope",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_005_f01",
+    "b01_005_f02",
+    "b01_005_f03",
+    "b01_005_f04",
+    "b01_005_f05",
+    "b01_005_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "El síncope es pérdida transitoria de conciencia por hipoperfusión global, con recuperación espontánea; diferenciar epilepsia, hipoglucemia y causas cardíacas. La presíncope no excluye riesgo."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Obtener relato de testigos, circunstancias, pródromos y recuperación. Evaluar signos vitales, presión acostado/de pie, examen cardiovascular y ECG de 12 derivaciones; los estudios adicionales deben responder a sospechas concretas."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Inestabilidad, ECG anormal, síncope durante esfuerzo, cardiopatía, disnea o antecedentes familiares de muerte súbita requieren evaluación cardíaca urgente. Lesiones, sangrado o déficit neurológico cambian la prioridad."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción 1, síncope reflejo: educación, evitar desencadenantes y maniobras de contrapresión si existe pródromo. Opción 2, causa ortostática: revisar fármacos y corregir volumen cuando corresponda. La arritmia exige tratamiento específico, no estas medidas aisladas."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No prescribir anticonvulsivantes sin diagnóstico ni solicitar EEG de rutina para síncope. La expansión de volumen y la sal no son universales en insuficiencia cardíaca o renal."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alta solo después de evaluar riesgo y una causa probablemente benigna; orientar sobre recurrencia, conducción y consulta. Los episodios inexplicados requieren investigación y posible monitorización cardíaca prolongada."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_05",
+      "title": "Síncope e pré-síncope",
+      "url": "https://www.nice.org.uk/guidance/cg109/chapter/Recommendations",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "cg109",
+      "title": "cg109",
+      "url": "https://www.nice.org.uk/guidance/cg109/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2010,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "El síncope es pérdida transitoria de conciencia por hipoperfusión global, con recuperación espontánea; diferenciar epilepsia, hipoglucemia y causas cardíacas. La presíncope no excluye riesgo."
+      ],
+      "factIds": [
+        "b01_005_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Obtener relato de testigos, circunstancias, pródromos y recuperación. Evaluar signos vitales, presión acostado/de pie, examen cardiovascular y ECG de 12 derivaciones; los estudios adicionales deben responder a sospechas concretas."
+      ],
+      "factIds": [
+        "b01_005_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Inestabilidad, ECG anormal, síncope durante esfuerzo, cardiopatía, disnea o antecedentes familiares de muerte súbita requieren evaluación cardíaca urgente. Lesiones, sangrado o déficit neurológico cambian la prioridad."
+      ],
+      "factIds": [
+        "b01_005_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1, síncope reflejo: educación, evitar desencadenantes y maniobras de contrapresión si existe pródromo. Opción 2, causa ortostática: revisar fármacos y corregir volumen cuando corresponda. La arritmia exige tratamiento específico, no estas medidas aisladas."
+      ],
+      "factIds": [
+        "b01_005_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No prescribir anticonvulsivantes sin diagnóstico ni solicitar EEG de rutina para síncope. La expansión de volumen y la sal no son universales en insuficiencia cardíaca o renal."
+      ],
+      "factIds": [
+        "b01_005_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Alta solo después de evaluar riesgo y una causa probablemente benigna; orientar sobre recurrencia, conducción y consulta. Los episodios inexplicados requieren investigación y posible monitorización cardíaca prolongada."
+      ],
+      "factIds": [
+        "b01_005_f06"
+      ]
+    }
+  ],
+  "markdown": "# Síncope y presíncope\n\n## Concepto y mecanismo\n\nEl síncope es pérdida transitoria de conciencia por hipoperfusión global, con recuperación espontánea; diferenciar epilepsia, hipoglucemia y causas cardíacas. La presíncope no excluye riesgo.\n\n## Diagnóstico y diferenciales\n\nObtener relato de testigos, circunstancias, pródromos y recuperación. Evaluar signos vitales, presión acostado/de pie, examen cardiovascular y ECG de 12 derivaciones; los estudios adicionales deben responder a sospechas concretas.\n\n## Abordaje inicial\n\nInestabilidad, ECG anormal, síncope durante esfuerzo, cardiopatía, disnea o antecedentes familiares de muerte súbita requieren evaluación cardíaca urgente. Lesiones, sangrado o déficit neurológico cambian la prioridad.\n\n## Tratamiento: opciones y criterios de elección\n\nOpción 1, síncope reflejo: educación, evitar desencadenantes y maniobras de contrapresión si existe pródromo. Opción 2, causa ortostática: revisar fármacos y corregir volumen cuando corresponda. La arritmia exige tratamiento específico, no estas medidas aisladas.\n\n## Seguridad y monitorización\n\nNo prescribir anticonvulsivantes sin diagnóstico ni solicitar EEG de rutina para síncope. La expansión de volumen y la sal no son universales en insuficiencia cardíaca o renal.\n\n## Reevaluación y destino\n\nAlta solo después de evaluar riesgo y una causa probablemente benigna; orientar sobre recurrencia, conducción y consulta. Los episodios inexplicados requieren investigación y posible monitorización cardíaca prolongada.\n\n## Referencias\n\n1. [Síncope e pré-síncope](https://www.nice.org.uk/guidance/cg109/chapter/Recommendations)\n2. [cg109](https://www.nice.org.uk/guidance/cg109/chapter/Recommendations)",
+  "approvedReviewCanonicalFileSha256": "03d5c5528368f4e22eb10e70e87b161f37167ed39ed322789befdf65a580a0dc",
+  "approvedReviewProjectionFileSha256": "1f63e0dcb5c9cdda1556502d7e1527d066e0099efe4a5736fd10f5cd23e159a5"
+}

@@ -1,0 +1,145 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "entorse_dos_ligamentos_colaterais_do_joelho",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Entorse dos ligamentos colaterais do joelho",
+    "es": "Esguince de ligamento colateral de rodilla"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b01_041_f01",
+      "section": "concept",
+      "pt": "Lesão colateral medial ou lateral causa dor localizada e possível instabilidade; lesões laterais ou multiligamentares podem representar maior complexidade.",
+      "es": "La lesión colateral medial o lateral causa dolor localizado y posible inestabilidad; lesiones laterales o multiligamentarias pueden tener mayor complejidad.",
+      "sources": [
+        "topic_41",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_041_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar mecanismo, apoio, estabilidade e neurovascular; considerar radiografia para suspeita óssea e ressonância para lesão associada relevante. Não classificar só pela intensidade da dor.",
+      "es": "Evaluar mecanismo, apoyo, estabilidad y estado neurovascular; considerar radiografía ante sospecha ósea y resonancia para lesión asociada relevante. No clasificar solo por intensidad del dolor.",
+      "sources": [
+        "topic_41",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_041_f03",
+      "section": "initial",
+      "pt": "Trauma com suspeita de luxação, déficit neurovascular ou grande instabilidade exige urgência. Proteger, ajustar apoio e aliviar dor.",
+      "es": "Traumatismo con sospecha de luxación, déficit neurovascular o gran inestabilidad requiere urgencia. Proteger, ajustar apoyo y aliviar dolor.",
+      "sources": [
+        "topic_41",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_041_f04",
+      "section": "options",
+      "pt": "Opção 1: tratamento conservador, órtese selecionada e reabilitação em lesão isolada apropriada. Opção 2: avaliação cirúrgica para avulsão, instabilidade importante ou lesão multiligamentar; seleção é anatômica e funcional.",
+      "es": "Opción 1: tratamiento conservador, ortesis seleccionada y rehabilitación ante lesión aislada apropiada. Opción 2: evaluación quirúrgica por avulsión, inestabilidad importante o lesión multiligamentaria; la selección depende de anatomía y función.",
+      "sources": [
+        "topic_41",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_041_f05",
+      "section": "safety",
+      "pt": "Paracetamol ou ibuprofeno adulto são alternativas de analgesia da tabela. Não liberar esporte com instabilidade nem aplicar a mesma duração de órtese a todas as lesões.",
+      "es": "Paracetamol o ibuprofeno adulto son alternativas analgésicas de la tabla. No autorizar deporte con inestabilidad ni aplicar la misma duración de ortesis a todas las lesiones.",
+      "sources": [
+        "topic_41",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_041_f06",
+      "section": "followup",
+      "pt": "Reavaliar estabilidade, amplitude e força; retorno ao esporte somente após recuperação adequada e orientação.",
+      "es": "Reevaluar estabilidad, amplitud y fuerza; volver al deporte solo tras recuperación adecuada y orientación.",
+      "sources": [
+        "topic_41",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_041_adult_doses",
+      "section": "doses",
+      "sources": [
+        "para",
+        "ibu"
+      ],
+      "pt": "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+      "es": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_41",
+      "title": "Entorse dos ligamentos colaterais do joelho",
+      "url": "https://www.orthoinfo.org/diseases--conditions/collateral-ligament-injuries/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_41.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

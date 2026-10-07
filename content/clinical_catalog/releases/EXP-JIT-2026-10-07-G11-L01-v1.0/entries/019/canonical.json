@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "hemorragia_subconjuntival",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Hemorragia subconjuntival",
+    "es": "Hemorragia subconjuntival"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "STANDARD_PLUS_SYMPTOMATIC_ONLY",
+  "facts": [
+    {
+      "id": "b01_019_f01",
+      "section": "concept",
+      "pt": "Sangramento conjuntival delimitado, habitualmente indolor e sem alteração visual; costuma resolver espontaneamente.",
+      "es": "Hemorragia conjuntival delimitada, habitualmente indolora y sin alteración visual; suele resolverse espontáneamente.",
+      "sources": [
+        "topic_19"
+      ]
+    },
+    {
+      "id": "b01_019_f02",
+      "section": "diagnosis",
+      "pt": "Verificar acuidade, trauma, dor, medicamentos e recorrência; medir pressão arterial. Investigar sangramento sistêmico quando história/exame indicarem.",
+      "es": "Verificar agudeza, traumatismo, dolor, medicamentos y recurrencia; medir presión arterial. Investigar sangrado sistémico cuando lo indiquen antecedentes/examen.",
+      "sources": [
+        "topic_19"
+      ]
+    },
+    {
+      "id": "b01_019_f03",
+      "section": "initial",
+      "pt": "Trauma importante, dor ou perda visual exigem excluir lesão ocular grave. Não suspender anticoagulante automaticamente por mancha isolada.",
+      "es": "Traumatismo importante, dolor o pérdida visual exige descartar lesión ocular grave. No suspender anticoagulantes automáticamente por una mancha aislada.",
+      "sources": [
+        "topic_19"
+      ]
+    },
+    {
+      "id": "b01_019_f04",
+      "section": "options",
+      "pt": "Conduta principal: observação e orientação. Medida complementar: lágrima artificial se irritação; não há segunda terapia curativa necessária nem indicação rotineira de antibiótico.",
+      "es": "Conducta principal: observación y orientación. Medida complementaria: lágrimas artificiales si existe irritación; no se necesita una segunda terapia curativa ni antibiótico rutinario.",
+      "sources": [
+        "topic_19"
+      ]
+    },
+    {
+      "id": "b01_019_f05",
+      "section": "safety",
+      "pt": "Sem necessidade de dose sistêmica empírica. Examinar apresentação atípica antes de classificar como benigna.",
+      "es": "No requiere una dosis sistémica empírica. Examinar presentaciones atípicas antes de clasificarlas como benignas.",
+      "sources": [
+        "topic_19"
+      ]
+    },
+    {
+      "id": "b01_019_f06",
+      "section": "followup",
+      "pt": "Reavaliar persistência, recorrência ou novos sintomas; comunicar sinais de retorno ocular.",
+      "es": "Reevaluar persistencia, recurrencia o nuevos síntomas; explicar signos de consulta ocular.",
+      "sources": [
+        "topic_19"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_19",
+      "title": "Hemorragia subconjuntival",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/sub-conjunctivalhaemorrhage",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_SUMMARY_ONLY",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_19.txt"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

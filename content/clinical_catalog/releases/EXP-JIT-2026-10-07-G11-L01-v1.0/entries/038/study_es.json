@@ -1,0 +1,157 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Dermatitis por estasis venosa",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "ad52f0b209bd02c7d5f8f5b58705a8194d3d60ed07e90f69ca48724c2a1d1678",
+  "ownerCandidate": "dermatite_de_estase_venosa",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_038_f01",
+    "b01_038_f02",
+    "b01_038_f03",
+    "b01_038_f04",
+    "b01_038_f05",
+    "b01_038_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "La hipertensión venosa crónica produce eccema, edema y cambios pigmentarios en piernas; bilateralidad y cronicidad ayudan a diferenciar de celulitis aguda."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar circulación arterial, edema, várices, úlceras e infección. Dolor agudo unilateral o disnea requiere investigar trombosis/embolia, sin atribuirlo al eccema."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Cuidar la piel, elevar cuando se tolere y movilizar; tratar heridas con evaluación vascular. No iniciar compresión fuerte sin verificar seguridad arterial."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Estrategia 1: emoliente y corticoide tópico seleccionado para inflamación. Estrategia 2: compresión ajustada y manejo venoso si la circulación arterial lo permite; son complementarias y abordan mecanismos distintos."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Potencia/duración del tópico y presión de compresión requieren evaluar piel, úlcera y perfusión; no ofrecer un valor universal. Antibióticos solo para infección, no eccema aislado."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar inflamación, edema y heridas; úlcera que no cicatriza o sospecha de isquemia requiere especialista."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_38",
+      "title": "Dermatite de estase venosa",
+      "url": "https://www.nhs.uk/conditions/varicose-eczema/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 20 April 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_38.txt"
+    },
+    {
+      "key": "eczema_treatment",
+      "title": "NHS — Varicose eczema: treatment",
+      "url": "https://www.nhs.uk/conditions/varicose-eczema/treatment/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "La hipertensión venosa crónica produce eccema, edema y cambios pigmentarios en piernas; bilateralidad y cronicidad ayudan a diferenciar de celulitis aguda."
+      ],
+      "factIds": [
+        "b01_038_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar circulación arterial, edema, várices, úlceras e infección. Dolor agudo unilateral o disnea requiere investigar trombosis/embolia, sin atribuirlo al eccema."
+      ],
+      "factIds": [
+        "b01_038_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Cuidar la piel, elevar cuando se tolere y movilizar; tratar heridas con evaluación vascular. No iniciar compresión fuerte sin verificar seguridad arterial."
+      ],
+      "factIds": [
+        "b01_038_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Estrategia 1: emoliente y corticoide tópico seleccionado para inflamación. Estrategia 2: compresión ajustada y manejo venoso si la circulación arterial lo permite; son complementarias y abordan mecanismos distintos."
+      ],
+      "factIds": [
+        "b01_038_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Potencia/duración del tópico y presión de compresión requieren evaluar piel, úlcera y perfusión; no ofrecer un valor universal. Antibióticos solo para infección, no eccema aislado."
+      ],
+      "factIds": [
+        "b01_038_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar inflamación, edema y heridas; úlcera que no cicatriza o sospecha de isquemia requiere especialista."
+      ],
+      "factIds": [
+        "b01_038_f06"
+      ]
+    }
+  ],
+  "markdown": "# Dermatitis por estasis venosa\n\n## Concepto y mecanismo\n\nLa hipertensión venosa crónica produce eccema, edema y cambios pigmentarios en piernas; bilateralidad y cronicidad ayudan a diferenciar de celulitis aguda.\n\n## Diagnóstico y diferenciales\n\nEvaluar circulación arterial, edema, várices, úlceras e infección. Dolor agudo unilateral o disnea requiere investigar trombosis/embolia, sin atribuirlo al eccema.\n\n## Abordaje inicial\n\nCuidar la piel, elevar cuando se tolere y movilizar; tratar heridas con evaluación vascular. No iniciar compresión fuerte sin verificar seguridad arterial.\n\n## Tratamiento: opciones y criterios de elección\n\nEstrategia 1: emoliente y corticoide tópico seleccionado para inflamación. Estrategia 2: compresión ajustada y manejo venoso si la circulación arterial lo permite; son complementarias y abordan mecanismos distintos.\n\n## Seguridad y monitorización\n\nPotencia/duración del tópico y presión de compresión requieren evaluar piel, úlcera y perfusión; no ofrecer un valor universal. Antibióticos solo para infección, no eccema aislado.\n\n## Reevaluación y destino\n\nReevaluar inflamación, edema y heridas; úlcera que no cicatriza o sospecha de isquemia requiere especialista.\n\n## Referencias\n\n1. [Dermatite de estase venosa](https://www.nhs.uk/conditions/varicose-eczema/)\n2. [NHS — Varicose eczema: treatment](https://www.nhs.uk/conditions/varicose-eczema/treatment/)",
+  "approvedReviewCanonicalFileSha256": "36e49ca15f55015c57eabf256629c6b7084bdfd3dc374adca8615ae570104abe",
+  "approvedReviewProjectionFileSha256": "78fafa731ae76b6badf8291135870e29592f807017b17c1c998bf709ea0582c6"
+}

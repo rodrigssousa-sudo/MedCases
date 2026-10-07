@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "dermatite_de_estase_venosa",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Dermatite de estase venosa",
+    "es": "Dermatitis por estasis venosa"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "COMPLEMENTARY",
+  "facts": [
+    {
+      "id": "b01_038_f01",
+      "section": "concept",
+      "pt": "Hipertensão venosa crônica produz eczema, edema e alterações pigmentares de pernas; bilateralidade e cronicidade ajudam a diferenciar de celulite aguda.",
+      "es": "La hipertensión venosa crónica produce eccema, edema y cambios pigmentarios en piernas; bilateralidad y cronicidad ayudan a diferenciar de celulitis aguda.",
+      "sources": [
+        "topic_38",
+        "eczema_treatment"
+      ]
+    },
+    {
+      "id": "b01_038_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar circulação arterial, edema, varizes, úlceras e infecção. Dor aguda unilateral ou dispneia exige investigar trombose/embolia, não atribuir ao eczema.",
+      "es": "Evaluar circulación arterial, edema, várices, úlceras e infección. Dolor agudo unilateral o disnea requiere investigar trombosis/embolia, sin atribuirlo al eccema.",
+      "sources": [
+        "topic_38",
+        "eczema_treatment"
+      ]
+    },
+    {
+      "id": "b01_038_f03",
+      "section": "initial",
+      "pt": "Cuidado de pele, elevação quando tolerada e movimento; tratar ferida com avaliação vascular. Não iniciar compressão forte antes de verificar segurança arterial.",
+      "es": "Cuidar la piel, elevar cuando se tolere y movilizar; tratar heridas con evaluación vascular. No iniciar compresión fuerte sin verificar seguridad arterial.",
+      "sources": [
+        "topic_38",
+        "eczema_treatment"
+      ]
+    },
+    {
+      "id": "b01_038_f04",
+      "section": "options",
+      "pt": "Estratégia 1: emoliente e corticosteroide tópico selecionado para inflamação. Estratégia 2: compressão ajustada e manejo venoso quando circulação arterial permitir; são complementares e abordam mecanismos diferentes.",
+      "es": "Estrategia 1: emoliente y corticoide tópico seleccionado para inflamación. Estrategia 2: compresión ajustada y manejo venoso si la circulación arterial lo permite; son complementarias y abordan mecanismos distintos.",
+      "sources": [
+        "topic_38",
+        "eczema_treatment"
+      ]
+    },
+    {
+      "id": "b01_038_f05",
+      "section": "safety",
+      "pt": "Potência/duração do tópico e pressão de compressão exigem avaliação de pele, úlcera e perfusão; não oferecer valor universal. Antibiótico somente para infecção, não eczema isolado.",
+      "es": "Potencia/duración del tópico y presión de compresión requieren evaluar piel, úlcera y perfusión; no ofrecer un valor universal. Antibióticos solo para infección, no eccema aislado.",
+      "sources": [
+        "topic_38",
+        "eczema_treatment"
+      ]
+    },
+    {
+      "id": "b01_038_f06",
+      "section": "followup",
+      "pt": "Reavaliar controle inflamatório, edema e feridas; úlcera não cicatrizante ou suspeita de isquemia exige especialista.",
+      "es": "Reevaluar inflamación, edema y heridas; úlcera que no cicatriza o sospecha de isquemia requiere especialista.",
+      "sources": [
+        "topic_38",
+        "eczema_treatment"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_38",
+      "title": "Dermatite de estase venosa",
+      "url": "https://www.nhs.uk/conditions/varicose-eczema/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 20 April 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_38.txt"
+    },
+    {
+      "key": "eczema_treatment",
+      "title": "NHS — Varicose eczema: treatment",
+      "url": "https://www.nhs.uk/conditions/varicose-eczema/treatment/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

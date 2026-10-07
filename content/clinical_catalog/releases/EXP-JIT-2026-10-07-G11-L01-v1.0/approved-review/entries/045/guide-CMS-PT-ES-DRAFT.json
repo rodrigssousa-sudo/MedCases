@@ -1,0 +1,225 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Pacote candidato; aguarda aprovação deste lote. Guias devem permanecer em rascunho no Admin após futura publicação de Estudo/Plantão.",
+  "canonical_payload_sha256": "5cbbd754a930978df3200981963a6355f406252995bbdaceae0776285cf0a6ba",
+  "owner_candidate": "fratura_dos_dedos_do_pe",
+  "pt": {
+    "title": "Fratura dos dedos do pé",
+    "subtitle": "Conteúdo clínico para revisão",
+    "summary": "Fraturas de dedos menores simples diferem das do hálux, articulares e expostas. Lesão ungueal infantil pode indicar Seymour e demandar tratamento urgente.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Fraturas de dedos menores simples diferem das do hálux, articulares e expostas. Lesão ungueal infantil pode indicar Seymour e demandar tratamento urgente."
+        ],
+        "factIds": [
+          "b01_045_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Examinar alinhamento, rotação, unha, ferida e perfusão; imagem seletiva, especialmente hálux, deformidade, exposição ou suspeita fisária."
+        ],
+        "factIds": [
+          "b01_045_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial",
+        "paragraphs": [
+          "Proteger, elevar e aliviar dor. Fratura exposta ou Seymour exige atendimento especializado e tratamento de ferida; não tratar como contusão simples."
+        ],
+        "factIds": [
+          "b01_045_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: opções e critérios de escolha",
+        "paragraphs": [
+          "Opção 1: sindactilização protegida e calçado rígido em fratura alinhada de dedo menor. Opção 2: redução e avaliação ortopédica se desviada, rotada ou complexa; hálux frequentemente requer seguimento específico."
+        ],
+        "factIds": [
+          "b01_045_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+          "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+        ],
+        "factIds": [
+          "b01_045_adult_doses",
+          "b01_045_ped_doses"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Usar analgesia adequada à idade na tabela. Não aplicar fita com compressão excessiva nem ignorar ferida/comprometimento ungueal. Não extrapolar protocolo pediátrico integral a adultos."
+        ],
+        "factIds": [
+          "b01_045_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação e destino",
+        "paragraphs": [
+          "Orientar cuidado da pele, progressão de apoio e retorno por dor crescente, alteração de cor ou infecção; controlar lesão de hálux/desvio conforme ortopedia."
+        ],
+        "factIds": [
+          "b01_045_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Fracturas de dedos del pie",
+    "subtitle": "Contenido clínico para revisión",
+    "summary": "Las fracturas simples de dedos menores difieren de las del hallux, articulares y abiertas. Una lesión ungueal infantil puede indicar Seymour y requerir tratamiento urgente.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Las fracturas simples de dedos menores difieren de las del hallux, articulares y abiertas. Una lesión ungueal infantil puede indicar Seymour y requerir tratamiento urgente."
+        ],
+        "factIds": [
+          "b01_045_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Examinar alineación, rotación, uña, herida y perfusión; imágenes selectivas, especialmente hallux, deformidad, exposición o sospecha fisaria."
+        ],
+        "factIds": [
+          "b01_045_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial",
+        "paragraphs": [
+          "Proteger, elevar y aliviar dolor. Una fractura abierta o Seymour requiere atención especializada y manejo de la herida; no tratarla como una contusión simple."
+        ],
+        "factIds": [
+          "b01_045_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: opciones y criterios de elección",
+        "paragraphs": [
+          "Opción 1: vendaje protegido al dedo vecino y calzado rígido ante fractura alineada de dedo menor. Opción 2: reducción y evaluación ortopédica si está desplazada, rotada o es compleja; el hallux suele requerir seguimiento específico."
+        ],
+        "factIds": [
+          "b01_045_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.",
+          "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+        ],
+        "factIds": [
+          "b01_045_adult_doses",
+          "b01_045_ped_doses"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Utilizar analgesia adecuada a la edad en la tabla. No aplicar cinta con compresión excesiva ni ignorar herida/compromiso ungueal. No extrapolar todo el protocolo pediátrico a adultos."
+        ],
+        "factIds": [
+          "b01_045_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación y destino",
+        "paragraphs": [
+          "Orientar cuidado de piel, progresión del apoyo y consulta ante dolor creciente, cambios de color o infección; controlar lesión del hallux/desplazamiento según ortopedia."
+        ],
+        "factIds": [
+          "b01_045_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "rch_toes",
+      "title": "RCH — Toe fractures",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/fractures/Toe_Fractures_-_Emergency_Department/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_toes.txt"
+    },
+    {
+      "key": "aaos_forefoot",
+      "title": "AAOS — Toe and forefoot fractures",
+      "url": "https://www.orthoinfo.org/diseases--conditions/toe-and-forefoot-fractures",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/aaos_forefoot.txt"
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — Acute pain management",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ]
+}

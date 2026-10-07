@@ -1,0 +1,224 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Fracturas de metatarsianos",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "5d0e0a7ed69826fdfbb8d1987e3b4205b845bcf63e2c9ced9ef92259301a8532",
+  "ownerCandidate": "fratura_de_metatarsos",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_044_f01",
+    "b01_044_f02",
+    "b01_044_f03",
+    "b01_044_f04",
+    "b01_044_f05",
+    "b01_044_f06",
+    "b01_044_adult_doses",
+    "b01_044_ped_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Inmovilizar y restringir apoyo hasta definir el patrón; fractura abierta, múltiple/desplazada o déficit requiere urgencia. No permitir apoyo universalmente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar mecanismo, apoyo, dolor focal, edema y estado neurovascular; radiografías del pie. Equimosis plantar o sospecha de Lisfranc exige evaluación especializada adicional."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción 1: bota/calzado rígido o yeso para fractura estable apropiada. Opción 2: reducción/fijación o régimen sin apoyo para patrones inestables, Jones seleccionada o lesión asociada; ortopedia define elección y duración."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia adulta/pediátrica en la tabla, sin extrapolación. Los protocolos pediátricos deben considerar fisis y anatomía; dosis y duración de inmovilización no son iguales para todos."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Controlar consolidación y progresión del apoyo; consultar ante dolor creciente, adormecimiento o alteración de perfusión. La persistencia exige descartar falta de consolidación/lesión asociada."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "El patrón y la localización definen riesgo: avulsión de la base del quinto metatarsiano difiere de fractura de Jones, con mayor riesgo de falta de consolidación. Considerar lesión de Lisfranc."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_44",
+      "title": "Fratura de metatarsos",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/fractures/Metatarsal_Foot_Fractures_-_Emergency_Department/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_44.txt"
+    },
+    {
+      "key": "aaos_forefoot",
+      "title": "AAOS — Toe and forefoot fractures",
+      "url": "https://www.orthoinfo.org/diseases--conditions/toe-and-forefoot-fractures",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/aaos_forefoot.txt"
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — Acute pain management",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Inmovilizar y restringir apoyo hasta definir el patrón; fractura abierta, múltiple/desplazada o déficit requiere urgencia. No permitir apoyo universalmente."
+      ],
+      "factIds": [
+        "b01_044_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar mecanismo, apoyo, dolor focal, edema y estado neurovascular; radiografías del pie. Equimosis plantar o sospecha de Lisfranc exige evaluación especializada adicional."
+      ],
+      "factIds": [
+        "b01_044_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: bota/calzado rígido o yeso para fractura estable apropiada. Opción 2: reducción/fijación o régimen sin apoyo para patrones inestables, Jones seleccionada o lesión asociada; ortopedia define elección y duración."
+      ],
+      "factIds": [
+        "b01_044_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.",
+        "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+      ],
+      "factIds": [
+        "b01_044_adult_doses",
+        "b01_044_ped_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Analgesia adulta/pediátrica en la tabla, sin extrapolación. Los protocolos pediátricos deben considerar fisis y anatomía; dosis y duración de inmovilización no son iguales para todos."
+      ],
+      "factIds": [
+        "b01_044_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Controlar consolidación y progresión del apoyo; consultar ante dolor creciente, adormecimiento o alteración de perfusión. La persistencia exige descartar falta de consolidación/lesión asociada."
+      ],
+      "factIds": [
+        "b01_044_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "El patrón y la localización definen riesgo: avulsión de la base del quinto metatarsiano difiere de fractura de Jones, con mayor riesgo de falta de consolidación. Considerar lesión de Lisfranc."
+      ],
+      "factIds": [
+        "b01_044_f01"
+      ]
+    }
+  ],
+  "markdown": "# Fracturas de metatarsianos\n\n## Abordaje inicial\n\nInmovilizar y restringir apoyo hasta definir el patrón; fractura abierta, múltiple/desplazada o déficit requiere urgencia. No permitir apoyo universalmente.\n\n## Diagnóstico y diferenciales\n\nEvaluar mecanismo, apoyo, dolor focal, edema y estado neurovascular; radiografías del pie. Equimosis plantar o sospecha de Lisfranc exige evaluación especializada adicional.\n\n## Tratamiento: opciones y criterios de elección\n\nOpción 1: bota/calzado rígido o yeso para fractura estable apropiada. Opción 2: reducción/fijación o régimen sin apoyo para patrones inestables, Jones seleccionada o lesión asociada; ortopedia define elección y duración.\n\n## Fármacos, dosis e intervalos\n\nAnalgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.\n\nAnalgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL.\n\n## Seguridad y monitorización\n\nAnalgesia adulta/pediátrica en la tabla, sin extrapolación. Los protocolos pediátricos deben considerar fisis y anatomía; dosis y duración de inmovilización no son iguales para todos.\n\n## Reevaluación y destino\n\nControlar consolidación y progresión del apoyo; consultar ante dolor creciente, adormecimiento o alteración de perfusión. La persistencia exige descartar falta de consolidación/lesión asociada.\n\n## Reconocimiento rápido\n\nEl patrón y la localización definen riesgo: avulsión de la base del quinto metatarsiano difiere de fractura de Jones, con mayor riesgo de falta de consolidación. Considerar lesión de Lisfranc.\n\n## Referencias\n\n1. [Fratura de metatarsos](https://www.rch.org.au/clinicalguide/guideline_index/fractures/Metatarsal_Foot_Fractures_-_Emergency_Department/)\n2. [AAOS — Toe and forefoot fractures](https://www.orthoinfo.org/diseases--conditions/toe-and-forefoot-fractures)\n3. [RCH — Acute pain management](https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/)\n4. [para](https://www.nhs.uk/medicines/paracetamol-for-adults/)\n5. [ibu](https://www.nhs.uk/medicines/ibuprofen-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "dc57bc497ca2662f9056cc25fd12d8ac0091272dfd567a9d0b138b19d2d6db6b",
+  "approvedReviewProjectionFileSha256": "6c0abe1fca6d3f3b5a6a360ada06842b86f5b2cb4189e881db4e9ed74aa33fe6"
+}

@@ -1,0 +1,161 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Pacote candidato; aguarda aprovação deste lote. Guias devem permanecer em rascunho no Admin após futura publicação de Estudo/Plantão.",
+  "canonical_payload_sha256": "68b72147b956be17724e1273e96d427ef132d703b7ea0a3b2f5540b1c4ce76e7",
+  "owner_candidate": "fimose",
+  "pt": {
+    "title": "Fimose",
+    "subtitle": "Conteúdo clínico para revisão",
+    "summary": "Não retração fisiológica na infância difere de fimose cicatricial patológica; retração forçada causa trauma e pode agravar cicatrização.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Não retração fisiológica na infância difere de fimose cicatricial patológica; retração forçada causa trauma e pode agravar cicatrização."
+        ],
+        "factIds": [
+          "b01_022_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Identificar anel cicatricial, retração previamente possível, infecções e sintomas urinários. Parafimose é emergência distinta; retenção urinária exige atendimento imediato."
+        ],
+        "factIds": [
+          "b01_022_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial",
+        "paragraphs": [
+          "Sem sintomas e padrão fisiológico: orientação e observação, sem manipulação forçada. Suspeita de fimose patológica requer exame e plano dirigido."
+        ],
+        "factIds": [
+          "b01_022_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: opções e critérios de escolha",
+        "paragraphs": [
+          "Opção 1, contexto pediátrico selecionado: betametasona tópica 0,05% no anel estreito 2–3 vezes ao dia por 2–4 semanas de teste; boa resposta permite completar 6–12 semanas no total com acompanhamento. Opção 2: avaliação cirúrgica se cicatricial, refratária ou com complicações."
+        ],
+        "factIds": [
+          "b01_022_f04"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Não extrapolar automaticamente protocolo pediátrico para adultos; investigar dermatoses e diabetes conforme contexto. Não indicar circuncisão para toda não retração fisiológica."
+        ],
+        "factIds": [
+          "b01_022_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação e destino",
+        "paragraphs": [
+          "Reavaliar resposta e técnica; retornar por retenção, edema doloroso com prepúcio preso ou infecção."
+        ],
+        "factIds": [
+          "b01_022_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Fimosis",
+    "subtitle": "Contenido clínico para revisión",
+    "summary": "La falta de retracción fisiológica infantil difiere de la fimosis cicatricial patológica; forzar retracción causa traumatismo y puede agravar la cicatrización.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "La falta de retracción fisiológica infantil difiere de la fimosis cicatricial patológica; forzar retracción causa traumatismo y puede agravar la cicatrización."
+        ],
+        "factIds": [
+          "b01_022_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Identificar anillo cicatricial, retracción previamente posible, infecciones y síntomas urinarios. La parafimosis es otra emergencia; retención urinaria requiere atención inmediata."
+        ],
+        "factIds": [
+          "b01_022_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial",
+        "paragraphs": [
+          "Sin síntomas y con patrón fisiológico: orientación y observación, sin manipulación forzada. La sospecha de fimosis patológica requiere examen y plan dirigido."
+        ],
+        "factIds": [
+          "b01_022_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: opciones y criterios de elección",
+        "paragraphs": [
+          "Opción 1, contexto pediátrico seleccionado: betametasona tópica 0,05% en el anillo estrecho 2–3 veces al día durante 2–4 semanas de prueba; una buena respuesta permite completar 6–12 semanas en total con seguimiento. Opción 2: evaluación quirúrgica si es cicatricial, refractaria o complicada."
+        ],
+        "factIds": [
+          "b01_022_f04"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "No extrapolar automáticamente el protocolo pediátrico a adultos; investigar dermatosis y diabetes según contexto. No indicar circuncisión para toda falta de retracción fisiológica."
+        ],
+        "factIds": [
+          "b01_022_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación y destino",
+        "paragraphs": [
+          "Reevaluar respuesta y técnica; consultar ante retención, edema doloroso con prepucio atrapado o infección."
+        ],
+        "factIds": [
+          "b01_022_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_22",
+      "title": "Fimose",
+      "url": "https://www.nhs.uk/conditions/phimosis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 06 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_22.txt"
+    },
+    {
+      "key": "rch_foreskin",
+      "title": "RCH — Penis and foreskin",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/The_penis_and_foreskin/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated September 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_foreskin.txt"
+    }
+  ]
+}

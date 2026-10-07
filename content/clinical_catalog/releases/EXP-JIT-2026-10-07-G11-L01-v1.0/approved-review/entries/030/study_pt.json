@@ -1,0 +1,104 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Sarampo",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "aa90b3bbfdf4e14e8adf18fe1e4a22145fc3cd4dc8e47214036545590f647e99",
+  "ownerCandidate": "sarampo",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_030_f01",
+    "b01_030_f02",
+    "b01_030_f03",
+    "b01_030_f04",
+    "b01_030_f05",
+    "b01_030_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Infecção altamente contagiosa com febre, tosse, coriza, conjuntivite e exantema; complicações incluem pneumonia e encefalite. História vacinal não elimina avaliação de exposição."
+      ],
+      "factIds": [
+        "b01_030_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Notificar suspeita e coordenar PCR/amostras e sorologia com vigilância, sem esperar confirmação para isolamento. Diferenciar outros exantemas e reações medicamentosas."
+      ],
+      "factIds": [
+        "b01_030_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Isolamento aéreo durante 4 dias após início do exantema, com individualização em imunocomprometidos. Avaliar hidratação, oxigenação e estado neurológico; complicações graves exigem hospital."
+      ],
+      "factIds": [
+        "b01_030_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Base: suporte clínico e manejo de complicações; não existe segunda terapia antiviral de rotina. Complemento pediátrico selecionado, especialmente doença grave: vitamina A oral em 2 doses com 24 horas de intervalo; cada dose é 50.000 unidades internacionais abaixo de 6 meses, 100.000 entre 6–11 meses e 200.000 a partir de 12 meses."
+      ],
+      "factIds": [
+        "b01_030_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Vitamina A exige supervisão e não substitui vacinação. Não extrapolar megadoses para gestantes ou adultos; toxicidade é possível. Antibiótico apenas para complicação bacteriana identificada."
+      ],
+      "factIds": [
+        "b01_030_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Coordenar contatos e prevenção pós-exposição conforme vigilância. Retornar por dispneia, desidratação, prostração ou alterações neurológicas."
+      ],
+      "factIds": [
+        "b01_030_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_30",
+      "title": "Sarampo",
+      "url": "https://www.nhs.uk/conditions/measles/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 31 July 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_30.txt"
+    },
+    {
+      "key": "measles",
+      "title": "CDC — Measles clinical overview",
+      "url": "https://www.cdc.gov/measles/hcp/clinical-overview/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

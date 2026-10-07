@@ -1,0 +1,104 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Sarampión",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "aa90b3bbfdf4e14e8adf18fe1e4a22145fc3cd4dc8e47214036545590f647e99",
+  "ownerCandidate": "sarampo",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_030_f01",
+    "b01_030_f02",
+    "b01_030_f03",
+    "b01_030_f04",
+    "b01_030_f05",
+    "b01_030_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Aislamiento aéreo durante 4 días después del inicio del exantema, individualizando en inmunocomprometidos. Evaluar hidratación, oxigenación y estado neurológico; las complicaciones graves requieren hospital."
+      ],
+      "factIds": [
+        "b01_030_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Notificar sospecha y coordinar PCR/muestras y serología con vigilancia, sin esperar confirmación para aislamiento. Diferenciar otros exantemas y reacciones farmacológicas."
+      ],
+      "factIds": [
+        "b01_030_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Base: soporte clínico y manejo de complicaciones; no existe una segunda terapia antiviral rutinaria. Complemento pediátrico seleccionado, especialmente enfermedad grave: vitamina A oral en 2 dosis separadas por 24 horas; cada dosis es 50.000 unidades internacionales antes de los 6 meses, 100.000 entre 6–11 meses y 200.000 desde los 12 meses."
+      ],
+      "factIds": [
+        "b01_030_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "La vitamina A exige supervisión y no sustituye la vacunación. No extrapolar megadosis a embarazadas o adultos; puede causar toxicidad. Antibióticos solo para complicaciones bacterianas identificadas."
+      ],
+      "factIds": [
+        "b01_030_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Coordinar contactos y prevención posexposición con vigilancia. Consultar ante disnea, deshidratación, decaimiento o alteraciones neurológicas."
+      ],
+      "factIds": [
+        "b01_030_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Infección muy contagiosa con fiebre, tos, coriza, conjuntivitis y exantema; las complicaciones incluyen neumonía y encefalitis. Los antecedentes vacunales no eliminan la evaluación de exposición."
+      ],
+      "factIds": [
+        "b01_030_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_30",
+      "title": "Sarampo",
+      "url": "https://www.nhs.uk/conditions/measles/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 31 July 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_30.txt"
+    },
+    {
+      "key": "measles",
+      "title": "CDC — Measles clinical overview",
+      "url": "https://www.cdc.gov/measles/hcp/clinical-overview/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

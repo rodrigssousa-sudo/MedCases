@@ -1,0 +1,157 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Perforación de la membrana timpánica",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "7e61c052feab0fecb26fe37e027447044c78d99da1ee7d4f878a5cb9e2a24bfd",
+  "ownerCandidate": "perfuracao_da_membrana_timpanica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_020_f01",
+    "b01_020_f02",
+    "b01_020_f03",
+    "b01_020_f04",
+    "b01_020_f05",
+    "b01_020_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Puede deberse a infección, traumatismo o barotrauma, con otalgia, secreción e hipoacusia. Una perforación simple puede cicatrizar espontáneamente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Otoscopia cuidadosa; evaluar mecanismo, audición y vértigo. Traumatismo con hipoacusia importante, vértigo o sospecha de lesión craneal requiere evaluación urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Mantener el oído seco y evitar instrumentación/irrigación. No aplicar gotas sin verificar su seguridad con tímpano perforado."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción 1: observación, protección del agua y analgesia según necesidad. Opción 2: evaluación otorrinolaringológica para reparación si no cicatriza o existe compromiso significativo. El antibiótico depende de infección, no es una alternativa universal."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evitar fármacos ototóxicos con oído medio expuesto; verificar producto, indicación y población antes de prescribir. No forzar maniobras de presión ni bucear durante la recuperación."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar cicatrización y audición; secreción persistente, dolor creciente o vértigo requieren consulta y posible especialista."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_20",
+      "title": "Perfuração da membrana timpânica",
+      "url": "https://www.nhs.uk/conditions/perforated-eardrum/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 19 April 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_20.txt"
+    },
+    {
+      "key": "eardrum_medline",
+      "title": "MedlinePlus — Ruptured eardrum",
+      "url": "https://medlineplus.gov/ency/article/001038.htm",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Puede deberse a infección, traumatismo o barotrauma, con otalgia, secreción e hipoacusia. Una perforación simple puede cicatrizar espontáneamente."
+      ],
+      "factIds": [
+        "b01_020_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Otoscopia cuidadosa; evaluar mecanismo, audición y vértigo. Traumatismo con hipoacusia importante, vértigo o sospecha de lesión craneal requiere evaluación urgente."
+      ],
+      "factIds": [
+        "b01_020_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Mantener el oído seco y evitar instrumentación/irrigación. No aplicar gotas sin verificar su seguridad con tímpano perforado."
+      ],
+      "factIds": [
+        "b01_020_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: observación, protección del agua y analgesia según necesidad. Opción 2: evaluación otorrinolaringológica para reparación si no cicatriza o existe compromiso significativo. El antibiótico depende de infección, no es una alternativa universal."
+      ],
+      "factIds": [
+        "b01_020_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Evitar fármacos ototóxicos con oído medio expuesto; verificar producto, indicación y población antes de prescribir. No forzar maniobras de presión ni bucear durante la recuperación."
+      ],
+      "factIds": [
+        "b01_020_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar cicatrización y audición; secreción persistente, dolor creciente o vértigo requieren consulta y posible especialista."
+      ],
+      "factIds": [
+        "b01_020_f06"
+      ]
+    }
+  ],
+  "markdown": "# Perforación de la membrana timpánica\n\n## Concepto y mecanismo\n\nPuede deberse a infección, traumatismo o barotrauma, con otalgia, secreción e hipoacusia. Una perforación simple puede cicatrizar espontáneamente.\n\n## Diagnóstico y diferenciales\n\nOtoscopia cuidadosa; evaluar mecanismo, audición y vértigo. Traumatismo con hipoacusia importante, vértigo o sospecha de lesión craneal requiere evaluación urgente.\n\n## Abordaje inicial\n\nMantener el oído seco y evitar instrumentación/irrigación. No aplicar gotas sin verificar su seguridad con tímpano perforado.\n\n## Tratamiento: opciones y criterios de elección\n\nOpción 1: observación, protección del agua y analgesia según necesidad. Opción 2: evaluación otorrinolaringológica para reparación si no cicatriza o existe compromiso significativo. El antibiótico depende de infección, no es una alternativa universal.\n\n## Seguridad y monitorización\n\nEvitar fármacos ototóxicos con oído medio expuesto; verificar producto, indicación y población antes de prescribir. No forzar maniobras de presión ni bucear durante la recuperación.\n\n## Reevaluación y destino\n\nReevaluar cicatrización y audición; secreción persistente, dolor creciente o vértigo requieren consulta y posible especialista.\n\n## Referencias\n\n1. [Perfuração da membrana timpânica](https://www.nhs.uk/conditions/perforated-eardrum/)\n2. [MedlinePlus — Ruptured eardrum](https://medlineplus.gov/ency/article/001038.htm)",
+  "approvedReviewCanonicalFileSha256": "456ee55977e2f1c7726a34b76d170a000e342cfc12d6335d274d41777f428d49",
+  "approvedReviewProjectionFileSha256": "7f155745f1631a62b523639c469c38f080bd3472989dc11872773da9a5ba4a28"
+}

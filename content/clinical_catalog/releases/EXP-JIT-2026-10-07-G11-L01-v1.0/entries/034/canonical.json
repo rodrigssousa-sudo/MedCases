@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "larva_migrans_cutanea",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Larva migrans cutânea",
+    "es": "Larva migrans cutánea"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "INTERCHANGEABLE_ADULT_REGIMENS",
+  "facts": [
+    {
+      "id": "b01_034_f01",
+      "section": "concept",
+      "pt": "Larvas de ancilostomídeos animais na pele causam trajeto serpiginoso pruriginoso, frequentemente após contato com solo/areia contaminados.",
+      "es": "Larvas de anquilostomas animales en la piel producen un trayecto serpiginoso pruriginoso, frecuentemente tras contacto con tierra/arena contaminadas.",
+      "sources": [
+        "clm",
+        "clm_yellowbook"
+      ]
+    },
+    {
+      "id": "b01_034_f02",
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico por morfologia e exposição; diferenciar larva currens da estrongiloidíase e outras dermatoses. Avaliar infecção secundária.",
+      "es": "Diagnóstico clínico por morfología y exposición; diferenciar larva currens de estrongiloidiasis y otras dermatosis. Evaluar infección secundaria.",
+      "sources": [
+        "clm",
+        "clm_yellowbook"
+      ]
+    },
+    {
+      "id": "b01_034_f03",
+      "section": "initial",
+      "pt": "Aliviar prurido e evitar escoriações; doença extensa, foliculite ou apresentação atípica requer avaliação adicional.",
+      "es": "Aliviar prurito y evitar excoriaciones; enfermedad extensa, foliculitis o presentación atípica requiere evaluación adicional.",
+      "sources": [
+        "clm",
+        "clm_yellowbook"
+      ]
+    },
+    {
+      "id": "b01_034_f04",
+      "section": "options",
+      "pt": "Em adultos: alternativa 1, albendazol 400 mg oral uma vez ao dia por 3–7 dias; alternativa 2, ivermectina 200 microgramas/kg oral em dose única. Reavaliação pode indicar tratamento adicional em casos selecionados.",
+      "es": "En adultos: alternativa 1, albendazol 400 mg oral una vez al día durante 3–7 días; alternativa 2, ivermectina 200 microgramos/kg oral en dosis única. La reevaluación puede indicar tratamiento adicional en casos seleccionados.",
+      "sources": [
+        "clm"
+      ]
+    },
+    {
+      "id": "b01_034_f05",
+      "section": "safety",
+      "pt": "Crianças: albendazol 400 mg ao dia por 3 dias somente acima de 2 anos; ivermectina 200 microgramas/kg dose única somente acima de 15 kg no protocolo citado. Gestação e menores exigem avaliação específica; não converter microgramas em mg incorretamente.",
+      "es": "Niños: albendazol 400 mg al día durante 3 días solo mayores de 2 años; ivermectina 200 microgramos/kg en dosis única solo por encima de 15 kg en el protocolo citado. Embarazo y niños menores requieren evaluación específica; no convertir microgramos a mg incorrectamente.",
+      "sources": [
+        "clm"
+      ]
+    },
+    {
+      "id": "b01_034_f06",
+      "section": "followup",
+      "pt": "Reavaliar resposta e lesões secundárias. Prevenir com calçados e evitar contato direto com solo contaminado; crioterapia não é solução rotineira porque localização larvária é incerta.",
+      "es": "Reevaluar respuesta y lesiones secundarias. Prevenir con calzado y evitar contacto directo con suelo contaminado; la crioterapia no es una solución rutinaria porque la ubicación larvaria es incierta.",
+      "sources": [
+        "clm",
+        "clm_yellowbook"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "clm",
+      "title": "CDC — Cutaneous larva migrans treatment",
+      "url": "https://www.cdc.gov/zoonotic-hookworm/hcp/clinical-care/index.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "clm_yellowbook",
+      "title": "CDC Yellow Book 2026 — Post-travel dermatologic conditions",
+      "url": "https://www.cdc.gov/yellow-book/hcp/post-travel-evaluation/post-travel-dermatologic-conditions.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

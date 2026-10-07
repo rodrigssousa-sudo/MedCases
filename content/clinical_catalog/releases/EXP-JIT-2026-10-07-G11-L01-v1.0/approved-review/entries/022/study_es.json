@@ -1,0 +1,104 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Fimosis",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "68b72147b956be17724e1273e96d427ef132d703b7ea0a3b2f5540b1c4ce76e7",
+  "ownerCandidate": "fimose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_022_f01",
+    "b01_022_f02",
+    "b01_022_f03",
+    "b01_022_f04",
+    "b01_022_f05",
+    "b01_022_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "La falta de retracción fisiológica infantil difiere de la fimosis cicatricial patológica; forzar retracción causa traumatismo y puede agravar la cicatrización."
+      ],
+      "factIds": [
+        "b01_022_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Identificar anillo cicatricial, retracción previamente posible, infecciones y síntomas urinarios. La parafimosis es otra emergencia; retención urinaria requiere atención inmediata."
+      ],
+      "factIds": [
+        "b01_022_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Sin síntomas y con patrón fisiológico: orientación y observación, sin manipulación forzada. La sospecha de fimosis patológica requiere examen y plan dirigido."
+      ],
+      "factIds": [
+        "b01_022_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1, contexto pediátrico seleccionado: betametasona tópica 0,05% en el anillo estrecho 2–3 veces al día durante 2–4 semanas de prueba; una buena respuesta permite completar 6–12 semanas en total con seguimiento. Opción 2: evaluación quirúrgica si es cicatricial, refractaria o complicada."
+      ],
+      "factIds": [
+        "b01_022_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No extrapolar automáticamente el protocolo pediátrico a adultos; investigar dermatosis y diabetes según contexto. No indicar circuncisión para toda falta de retracción fisiológica."
+      ],
+      "factIds": [
+        "b01_022_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar respuesta y técnica; consultar ante retención, edema doloroso con prepucio atrapado o infección."
+      ],
+      "factIds": [
+        "b01_022_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_22",
+      "title": "Fimose",
+      "url": "https://www.nhs.uk/conditions/phimosis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 06 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_22.txt"
+    },
+    {
+      "key": "rch_foreskin",
+      "title": "RCH — Penis and foreskin",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/The_penis_and_foreskin/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated September 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_foreskin.txt"
+    }
+  ]
+}

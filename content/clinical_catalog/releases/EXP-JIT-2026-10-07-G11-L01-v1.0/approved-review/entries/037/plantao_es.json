@@ -1,0 +1,128 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Reacción local a picaduras de insectos",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "88a244a20b3005b3c713e964179a041e1b77430209b24e8ed15ec48af2b1b307",
+  "ownerCandidate": "reacao_local_a_picadas_de_insetos",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_037_f01",
+    "b01_037_f02",
+    "b01_037_f03",
+    "b01_037_f04",
+    "b01_037_f05",
+    "b01_037_f06",
+    "b01_037_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Retirar aguijón visible de manera segura, limpiar y aplicar frío protegido. Disnea, edema de vía aérea, hipotensión o reacción generalizada requiere protocolo de anafilaxia."
+      ],
+      "factIds": [
+        "b01_037_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examinar extensión, tiempo, localización y signos sistémicos; diferenciar celulitis, lesión por garrapata y envenenamiento específico."
+      ],
+      "factIds": [
+        "b01_037_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Alternativa 1: antihistamínico oral para prurito; en adulto elegible, cetirizina 10 mg una vez al día. Alternativa 2: corticoide tópico de baja potencia durante poco tiempo en piel intacta, según producto y localización; la compresa fría es complementaria."
+      ],
+      "factIds": [
+        "b01_037_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Ejemplo tópico seleccionado: hidrocortisona 1% en capa fina 1–2 veces al día durante hasta 7 días en piel intacta; aplicación en cara, genitales, piel infectada o niños exige orientación específica. No sustituye tratamiento de anafilaxia."
+      ],
+      "factIds": [
+        "b01_037_f07"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No utilizar antihistamínico en lugar de adrenalina en anafilaxia. Ajustar selección ante enfermedad renal, niños y embarazo; no indicar antibióticos sin signos de infección."
+      ],
+      "factIds": [
+        "b01_037_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Consultar ante empeoramiento progresivo, fiebre, pus o síntomas sistémicos. Una reacción sistémica previa requiere un plan preventivo especializado."
+      ],
+      "factIds": [
+        "b01_037_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Dolor, prurito y edema local pueden ser reacción inflamatoria, sin implicar infección bacteriana. Los síntomas sistémicos requieren evaluar anafilaxia."
+      ],
+      "factIds": [
+        "b01_037_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_37",
+      "title": "Reação local a picadas de insetos",
+      "url": "https://www.nhs.uk/conditions/insect-bites-and-stings/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 01 June 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_37.txt"
+    },
+    {
+      "key": "cetirizine",
+      "title": "NHS — Cetirizine dosing",
+      "url": "https://www.nhs.uk/medicines/cetirizine/how-and-when-to-take-cetirizine/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 18 February 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/cetirizine.txt"
+    },
+    {
+      "key": "hydrocortisone_skin",
+      "title": "NHS — Hydrocortisone for skin",
+      "url": "https://www.nhs.uk/medicines/hydrocortisone-for-skin/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

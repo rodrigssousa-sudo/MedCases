@@ -1,0 +1,127 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Doença celíaca",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "8be1e680491e2a2c47609e7c1ce36ba78be719d275cb1524be1b6505f84102c9",
+  "ownerCandidate": "doenca_celiaca",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_028_f01",
+    "b01_028_f02",
+    "b01_028_f03",
+    "b01_028_f04",
+    "b01_028_f05",
+    "b01_028_f06",
+    "b01_028_f07",
+    "b01_028_f08",
+    "b01_028_f09"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Avaliar anemia, perda ponderal, desidratação e repercussões nutricionais. Evitar iniciar dieta sem glúten antes dos exames, pois pode dificultar a confirmação; se a dieta já começou, planejar investigação com gastroenterologia."
+      ],
+      "factIds": [
+        "b01_028_f04"
+      ]
+    },
+    {
+      "heading": "Red flags, internação e alta",
+      "paragraphs": [
+        "Desidratação, desnutrição grave, sangramento ou abdome agudo exigem atendimento urgente. Quadro estável segue ambulatorialmente, com plano nutricional e retorno documentados."
+      ],
+      "factIds": [
+        "b01_028_f07"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Investigar durante consumo de glúten: sorologia adequada, incluindo IgA total, e avaliação especializada para confirmação. Deficiência de IgA exige estratégia sorológica própria; sorologia negativa não encerra investigação se suspeita forte.",
+        "Endoscopia com biópsias duodenais permanece importante. Existem critérios específicos para diagnóstico sem biópsia em pacientes selecionados; não aplicar esse caminho automaticamente a qualquer teste positivo."
+      ],
+      "factIds": [
+        "b01_028_f02",
+        "b01_028_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Tratamento modificador da doença: dieta estritamente sem glúten contínua, com nutricionista. Complemento: corrigir deficiências demonstradas e acompanhar recuperação; não é segunda terapia equivalente. Doença refratária exige confirmação e especialista, sem imunossupressão empírica."
+      ],
+      "factIds": [
+        "b01_028_f09"
+      ]
+    },
+    {
+      "heading": "Tratamento de base",
+      "paragraphs": [
+        "Após confirmação, dieta estrita sem glúten, orientação nutricional e prevenção de contaminação cruzada. Corrigir deficiências documentadas; suplementos não substituem a retirada do glúten."
+      ],
+      "factIds": [
+        "b01_028_f05"
+      ]
+    },
+    {
+      "heading": "Populações especiais",
+      "paragraphs": [
+        "Crianças precisam acompanhar crescimento e critérios diagnósticos pediátricos. Gestação exige atenção às carências; não prescrever corticoide para toda celíaca sintomática. Doença refratária requer centro especializado."
+      ],
+      "factIds": [
+        "b01_028_f08"
+      ]
+    },
+    {
+      "heading": "Monitorização",
+      "paragraphs": [
+        "Acompanhar sintomas, peso, deficiências e sorologia. Persistência exige verificar exposição inadvertida e outras causas antes de diagnosticar refratariedade; considerar colite microscópica, intolerâncias e insuficiência pancreática."
+      ],
+      "factIds": [
+        "b01_028_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Enteropatia imunomediada desencadeada por glúten, com manifestações intestinais e extraintestinais; pode ocorrer sem diarreia. Não equivale a alergia ao trigo nem a sensibilidade não celíaca."
+      ],
+      "factIds": [
+        "b01_028_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "celiac_diagnosis",
+      "title": "NIDDK — Celiac disease diagnosis",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease/diagnosis",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last Reviewed October 2020",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/celiac_diagnosis.txt"
+    },
+    {
+      "key": "celiac_treatment",
+      "title": "NIDDK — Celiac disease treatment",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease/treatment",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last Reviewed October 2020",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/celiac_treatment.txt"
+    }
+  ]
+}

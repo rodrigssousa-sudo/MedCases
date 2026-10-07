@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "esporotricose",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Esporotricose",
+    "es": "Esporotricosis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b01_033_f01",
+      "section": "concept",
+      "pt": "Micose por Sporothrix, frequentemente inoculada por vegetais ou contato com gato infectado; formas cutânea fixa, linfocutânea e disseminada exigem manejos distintos.",
+      "es": "Micosis por Sporothrix, frecuentemente inoculada por vegetales o contacto con gatos infectados; las formas cutánea fija, linfocutánea y diseminada requieren manejos distintos.",
+      "sources": [
+        "topic_33",
+        "sporo_gvs"
+      ]
+    },
+    {
+      "id": "b01_033_f02",
+      "section": "diagnosis",
+      "pt": "Suspeitar em lesões nodulares/ulceradas com cadeia linfática; obter material para confirmação micológica conforme disponibilidade. Diferenciar leishmaniose, micobacteriose e infecção bacteriana.",
+      "es": "Sospechar ante lesiones nodulares/ulceradas con cadena linfática; obtener material para confirmación micológica según disponibilidad. Diferenciar leishmaniasis, micobacteriosis e infección bacteriana.",
+      "sources": [
+        "topic_33",
+        "sporo_gvs"
+      ]
+    },
+    {
+      "id": "b01_033_f03",
+      "section": "initial",
+      "pt": "Avaliar imunossupressão, gestação, lesões oculares e sintomas sistêmicos. Forma extracutânea/disseminada exige infectologia e possível hospitalização.",
+      "es": "Evaluar inmunosupresión, embarazo, lesiones oculares y síntomas sistémicos. La forma extracutánea/diseminada requiere infectología y posible internación.",
+      "sources": [
+        "topic_33",
+        "sporo_gvs"
+      ]
+    },
+    {
+      "id": "b01_033_f04",
+      "section": "options",
+      "pt": "Opção 1, forma cutânea adulta usual: itraconazol oral 200 mg ao dia, com duração definida por resposta e protocolo. Opção 2: alternativa selecionada, como terbinafina ou iodeto de potássio, sob especialista se intolerância/contraindicação; formas graves podem exigir anfotericina B lipídica.",
+      "es": "Opción 1, forma cutánea adulta habitual: itraconazol oral 200 mg al día, con duración definida por respuesta y protocolo. Opción 2: alternativa seleccionada, como terbinafina o yoduro de potasio, bajo especialista ante intolerancia/contraindicación; las formas graves pueden requerir anfotericina B lipídica.",
+      "sources": [
+        "topic_33",
+        "sporo_gvs"
+      ]
+    },
+    {
+      "id": "b01_033_f05",
+      "section": "safety",
+      "pt": "Não intercambiar formulações de itraconazol sem revisar absorção; verificar hepatotoxicidade, interações e insuficiência cardíaca. Gestação/crianças exigem protocolo próprio. Não fornecer dose universal das alternativas especializadas nem duração arbitrária.",
+      "es": "No intercambiar formulaciones de itraconazol sin revisar absorción; verificar hepatotoxicidad, interacciones e insuficiencia cardíaca. Embarazo/niños requieren protocolo propio. No ofrecer dosis universales de alternativas especializadas ni duración arbitraria.",
+      "sources": [
+        "topic_33",
+        "sporo_gvs"
+      ]
+    },
+    {
+      "id": "b01_033_f06",
+      "section": "followup",
+      "pt": "Acompanhar resolução e tolerância ao longo de meses; reduzir exposição e orientar manejo veterinário seguro de animais infectados, sem abandono.",
+      "es": "Controlar resolución y tolerancia a lo largo de meses; reducir exposición y orientar manejo veterinario seguro de animales infectados, sin abandono.",
+      "sources": [
+        "topic_33",
+        "sporo_gvs"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_33",
+      "title": "Esporotricose",
+      "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/e/esporotricose-humana",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_33.txt"
+    },
+    {
+      "key": "sporo_gvs",
+      "title": "Ministério da Saúde — Guia de Vigilância em Saúde, volume 2, 6ª edição",
+      "url": "https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/vigilancia/guia-de-vigilancia-em-saude-volume-2-6a-edicao",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2023,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

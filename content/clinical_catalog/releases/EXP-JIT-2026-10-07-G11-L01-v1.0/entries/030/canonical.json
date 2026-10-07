@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "sarampo",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Sarampo",
+    "es": "Sarampión"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "STANDARD_PLUS_INDICATED_ADJUNCT",
+  "facts": [
+    {
+      "id": "b01_030_f01",
+      "section": "concept",
+      "pt": "Infecção altamente contagiosa com febre, tosse, coriza, conjuntivite e exantema; complicações incluem pneumonia e encefalite. História vacinal não elimina avaliação de exposição.",
+      "es": "Infección muy contagiosa con fiebre, tos, coriza, conjuntivitis y exantema; las complicaciones incluyen neumonía y encefalitis. Los antecedentes vacunales no eliminan la evaluación de exposición.",
+      "sources": [
+        "topic_30",
+        "measles"
+      ]
+    },
+    {
+      "id": "b01_030_f02",
+      "section": "diagnosis",
+      "pt": "Notificar suspeita e coordenar PCR/amostras e sorologia com vigilância, sem esperar confirmação para isolamento. Diferenciar outros exantemas e reações medicamentosas.",
+      "es": "Notificar sospecha y coordinar PCR/muestras y serología con vigilancia, sin esperar confirmación para aislamiento. Diferenciar otros exantemas y reacciones farmacológicas.",
+      "sources": [
+        "topic_30",
+        "measles"
+      ]
+    },
+    {
+      "id": "b01_030_f03",
+      "section": "initial",
+      "pt": "Isolamento aéreo durante 4 dias após início do exantema, com individualização em imunocomprometidos. Avaliar hidratação, oxigenação e estado neurológico; complicações graves exigem hospital.",
+      "es": "Aislamiento aéreo durante 4 días después del inicio del exantema, individualizando en inmunocomprometidos. Evaluar hidratación, oxigenación y estado neurológico; las complicaciones graves requieren hospital.",
+      "sources": [
+        "topic_30",
+        "measles"
+      ]
+    },
+    {
+      "id": "b01_030_f04",
+      "section": "options",
+      "pt": "Base: suporte clínico e manejo de complicações; não existe segunda terapia antiviral de rotina. Complemento pediátrico selecionado, especialmente doença grave: vitamina A oral em 2 doses com 24 horas de intervalo; cada dose é 50.000 unidades internacionais abaixo de 6 meses, 100.000 entre 6–11 meses e 200.000 a partir de 12 meses.",
+      "es": "Base: soporte clínico y manejo de complicaciones; no existe una segunda terapia antiviral rutinaria. Complemento pediátrico seleccionado, especialmente enfermedad grave: vitamina A oral en 2 dosis separadas por 24 horas; cada dosis es 50.000 unidades internacionales antes de los 6 meses, 100.000 entre 6–11 meses y 200.000 desde los 12 meses.",
+      "sources": [
+        "measles"
+      ]
+    },
+    {
+      "id": "b01_030_f05",
+      "section": "safety",
+      "pt": "Vitamina A exige supervisão e não substitui vacinação. Não extrapolar megadoses para gestantes ou adultos; toxicidade é possível. Antibiótico apenas para complicação bacteriana identificada.",
+      "es": "La vitamina A exige supervisión y no sustituye la vacunación. No extrapolar megadosis a embarazadas o adultos; puede causar toxicidad. Antibióticos solo para complicaciones bacterianas identificadas.",
+      "sources": [
+        "topic_30",
+        "measles"
+      ]
+    },
+    {
+      "id": "b01_030_f06",
+      "section": "followup",
+      "pt": "Coordenar contatos e prevenção pós-exposição conforme vigilância. Retornar por dispneia, desidratação, prostração ou alterações neurológicas.",
+      "es": "Coordinar contactos y prevención posexposición con vigilancia. Consultar ante disnea, deshidratación, decaimiento o alteraciones neurológicas.",
+      "sources": [
+        "topic_30",
+        "measles"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_30",
+      "title": "Sarampo",
+      "url": "https://www.nhs.uk/conditions/measles/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 31 July 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_30.txt"
+    },
+    {
+      "key": "measles",
+      "title": "CDC — Measles clinical overview",
+      "url": "https://www.cdc.gov/measles/hcp/clinical-overview/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

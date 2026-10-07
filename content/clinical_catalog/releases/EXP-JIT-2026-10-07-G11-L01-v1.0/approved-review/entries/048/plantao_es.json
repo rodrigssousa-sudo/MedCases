@@ -1,0 +1,114 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Subluxación de cabeza radial (codo de niñera)",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "c07c3d4ea812b89ee13e021be31a88ba34f4cb0af38b56fd1a0c6a5ea3f91342",
+  "ownerCandidate": "subluxacao_da_cabeca_do_radio",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_048_f01",
+    "b01_048_f02",
+    "b01_048_f03",
+    "b01_048_f04",
+    "b01_048_f05",
+    "b01_048_f06",
+    "b01_048_ped_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Evaluar estado neurovascular y sospecha de lesión no accidental cuando corresponda. Reducción por profesional capacitado tras evaluación; no realizar si el diagnóstico es incierto."
+      ],
+      "factIds": [
+        "b01_048_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "La presentación típica permite diagnóstico clínico; edema, equimosis, dolor óseo relevante o fracaso de reducción requiere radiografía y revisión diagnóstica."
+      ],
+      "factIds": [
+        "b01_048_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Alternativa 1: hiperpronación. Alternativa 2: supinación con flexión; ambas por profesional capacitado, con reevaluación. Si fallan dos intentos, reconsiderar diagnóstico e imágenes, sin insistir indefinidamente."
+      ],
+      "factIds": [
+        "b01_048_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+      ],
+      "factIds": [
+        "b01_048_ped_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Tras reducción, observar recuperación del uso del brazo, generalmente en 5–30 minutos. Puede necesitar analgesia pediátrica según el cuadro; las dosis adultas no se aplican."
+      ],
+      "factIds": [
+        "b01_048_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Alta con uso restablecido y evaluación tranquilizadora; orientar evitar tirar de manos/muñecas. Si persiste la falta de uso, reevaluar."
+      ],
+      "factIds": [
+        "b01_048_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Frecuente en niños pequeños, generalmente tras tracción del brazo; evita usar el miembro sin gran deformidad. No descartar automáticamente traumatismo y fractura."
+      ],
+      "factIds": [
+        "b01_048_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_48",
+      "title": "Subluxação da cabeça do rádio",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Pulled_elbow/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated May 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_48.txt"
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — Acute pain management",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt"
+    }
+  ]
+}

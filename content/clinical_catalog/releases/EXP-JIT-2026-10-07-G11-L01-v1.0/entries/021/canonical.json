@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "balanopostite",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Balanopostite",
+    "es": "Balanopostitis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Inflamação de glande e prepúcio não equivale a aprisionamento do prepúcio nem a candidíase vulvovaginal.",
+  "relatedExistingOwners": [
+    "parafimose",
+    "candidiase_vulvovaginal"
+  ],
+  "optionRelation": "ETIOLOGY_DEPENDENT",
+  "facts": [
+    {
+      "id": "b01_021_f01",
+      "section": "concept",
+      "pt": "Inflamação de glande/prepúcio pode ser irritativa, candidiásica, bacteriana ou relacionada a IST; não escolher antimicrobiano apenas pela localização.",
+      "es": "La inflamación de glande/prepucio puede ser irritativa, candidiásica, bacteriana o relacionada con ITS; no elegir antimicrobianos solo por la localización.",
+      "sources": [
+        "topic_21",
+        "rch_foreskin",
+        "clotrimazole"
+      ]
+    },
+    {
+      "id": "b01_021_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar secreção, ulceração, exposição sexual, higiene e retração; testar IST conforme risco e glicemia em recorrência/suspeita de diabetes.",
+      "es": "Evaluar secreción, ulceración, exposición sexual, higiene y retracción; estudiar ITS según riesgo y glucemia ante recurrencia/sospecha de diabetes.",
+      "sources": [
+        "topic_21",
+        "rch_foreskin",
+        "clotrimazole"
+      ]
+    },
+    {
+      "id": "b01_021_f03",
+      "section": "initial",
+      "pt": "Parafimose, retenção urinária, necrose ou febre importante exigem urgência. Higiene suave com água, secagem e suspensão de irritantes; não forçar retração.",
+      "es": "Parafimosis, retención urinaria, necrosis o fiebre importante requieren urgencia. Higiene suave con agua, secado y suspensión de irritantes; no forzar retracción.",
+      "sources": [
+        "topic_21",
+        "rch_foreskin",
+        "clotrimazole"
+      ]
+    },
+    {
+      "id": "b01_021_f04",
+      "section": "options",
+      "pt": "Opção 1, suspeita de Candida: antifúngico tópico, como clotrimazol 1%, com uso conforme formulação e orientação local. Opção 2, quadro irritativo: remover gatilho e considerar corticosteroide tópico de baixa potência por período curto após excluir infecção.",
+      "es": "Opción 1, sospecha de Candida: antifúngico tópico, como clotrimazol 1%, según formulación y orientación local. Opción 2, cuadro irritativo: retirar el desencadenante y considerar corticoide tópico de baja potencia durante poco tiempo tras descartar infección.",
+      "sources": [
+        "topic_21",
+        "rch_foreskin",
+        "clotrimazole"
+      ]
+    },
+    {
+      "id": "b01_021_f05",
+      "section": "safety",
+      "pt": "As opções dependem da etiologia e não são intercambiáveis. Infecção bacteriana/IST exige esquema próprio; não inventar antibiótico universal. Crianças têm causas e cuidados específicos.",
+      "es": "Las opciones dependen de la etiología y no son intercambiables. Infección bacteriana/ITS exige su propio esquema; no inventar un antibiótico universal. Los niños tienen causas y cuidados específicos.",
+      "sources": [
+        "topic_21",
+        "rch_foreskin",
+        "clotrimazole"
+      ]
+    },
+    {
+      "id": "b01_021_f06",
+      "section": "followup",
+      "pt": "Reavaliar persistência/recorrência; lesão atípica ou suspeita de dermatose/neoplasia exige especialista. Orientar prevenção e manejo da causa de base.",
+      "es": "Reevaluar persistencia/recurrencia; lesión atípica o sospecha de dermatosis/neoplasia requiere especialista. Orientar prevención y manejo de la causa de base.",
+      "sources": [
+        "topic_21",
+        "rch_foreskin",
+        "clotrimazole"
+      ]
+    },
+    {
+      "id": "b01_021_f07",
+      "section": "doses",
+      "pt": "Clotrimazol cutâneo 1% para Candida, quando selecionado: aplicar 2–3 vezes ao dia, em geral por pelo menos 2 semanas conforme produto verificado. Reavaliar ausência de melhora; não confundir creme externo com formulação vaginal e verificar efeito sobre contraceptivos de látex.",
+      "es": "Clotrimazol cutáneo 1% para Candida, si se selecciona: aplicar 2–3 veces al día, generalmente durante al menos 2 semanas según producto verificado. Reevaluar ausencia de mejoría; no confundir crema externa con formulación vaginal y verificar efecto sobre anticonceptivos de látex.",
+      "sources": [
+        "topic_21",
+        "rch_foreskin",
+        "clotrimazole"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_21",
+      "title": "Balanopostite",
+      "url": "https://www.nhs.uk/conditions/balanitis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 30 May 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_21.txt"
+    },
+    {
+      "key": "rch_foreskin",
+      "title": "RCH — Penis and foreskin",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/The_penis_and_foreskin/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated September 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_foreskin.txt"
+    },
+    {
+      "key": "clotrimazole",
+      "title": "NHS — Clotrimazole",
+      "url": "https://www.nhs.uk/medicines/clotrimazole/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 8 July 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/clotrimazole.txt"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

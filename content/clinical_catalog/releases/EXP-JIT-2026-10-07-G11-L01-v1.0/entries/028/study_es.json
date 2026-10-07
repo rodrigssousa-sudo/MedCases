@@ -1,0 +1,215 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Enfermedad celíaca",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "950220c53b911d6ff76c450a2f8d8f253a9ea9b57cb00f81f61ee2aac2c630af",
+  "ownerCandidate": "doenca_celiaca",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_028_f01",
+    "b01_028_f02",
+    "b01_028_f03",
+    "b01_028_f04",
+    "b01_028_f05",
+    "b01_028_f06",
+    "b01_028_f07",
+    "b01_028_f08",
+    "b01_028_f09"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Enteropatía inmunomediada desencadenada por gluten, con manifestaciones intestinales y extraintestinales; puede existir sin diarrea. No equivale a alergia al trigo ni a sensibilidad no celíaca."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento clínico"
+    },
+    {
+      "type": "paragraph",
+      "text": "La dieta influye tanto en la enfermedad como en su estudio. Retirar el gluten antes de realizar pruebas puede reducir la posibilidad de demostrar alteraciones diagnósticas. Tras la confirmación, el razonamiento se invierte: el control depende de evitar exposición y seguir la recuperación clínica y nutricional."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Investigar durante el consumo de gluten: serología adecuada, incluida IgA total, y evaluación especializada para confirmación. El déficit de IgA exige estrategia serológica propia; una serología negativa no cierra el estudio ante sospecha fuerte."
+    },
+    {
+      "type": "paragraph",
+      "text": "La endoscopia con biopsias duodenales sigue siendo importante. Existen criterios específicos para diagnóstico sin biopsia en pacientes seleccionados; no aplicar esa vía automáticamente a cualquier prueba positiva."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar anemia, pérdida de peso, deshidratación y repercusiones nutricionales. Evitar iniciar dieta sin gluten antes de los estudios, porque puede dificultar la confirmación; si ya se inició, planificar el estudio con gastroenterología."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento de base"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tras confirmar, dieta estricta sin gluten, orientación nutricional y prevención de contaminación cruzada. Corregir carencias documentadas; los suplementos no sustituyen la retirada del gluten."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tratamiento modificador de la enfermedad: dieta estricta sin gluten continua, con nutricionista. Complemento: corregir deficiencias demostradas y controlar recuperación; no constituye una segunda terapia equivalente. La enfermedad refractaria exige confirmación y especialista, sin inmunosupresión empírica."
+    },
+    {
+      "type": "heading",
+      "text": "Poblaciones especiales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Los niños necesitan seguimiento del crecimiento y criterios diagnósticos pediátricos. El embarazo exige atención a las carencias; no prescribir corticoide para toda enfermedad celíaca sintomática. La enfermedad refractaria requiere centro especializado."
+    },
+    {
+      "type": "heading",
+      "text": "Monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vigilar síntomas, peso, carencias y serología. La persistencia exige verificar exposición inadvertida y otras causas antes de diagnosticar refractariedad; considerar colitis microscópica, intolerancias e insuficiencia pancreática."
+    },
+    {
+      "type": "heading",
+      "text": "Alarmas, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Deshidratación, desnutrición grave, sangrado o abdomen agudo requieren atención urgente. El cuadro estable continúa ambulatoriamente, con plan nutricional y seguimiento documentados."
+    }
+  ],
+  "references": [
+    {
+      "key": "celiac_diagnosis",
+      "title": "NIDDK — Celiac disease diagnosis",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease/diagnosis",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last Reviewed October 2020",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/celiac_diagnosis.txt"
+    },
+    {
+      "key": "celiac_treatment",
+      "title": "NIDDK — Celiac disease treatment",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease/treatment",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last Reviewed October 2020",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/celiac_treatment.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Enteropatía inmunomediada desencadenada por gluten, con manifestaciones intestinales y extraintestinales; puede existir sin diarrea. No equivale a alergia al trigo ni a sensibilidad no celíaca."
+      ],
+      "factIds": [
+        "b01_028_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento clínico",
+      "paragraphs": [
+        "La dieta influye tanto en la enfermedad como en su estudio. Retirar el gluten antes de realizar pruebas puede reducir la posibilidad de demostrar alteraciones diagnósticas. Tras la confirmación, el razonamiento se invierte: el control depende de evitar exposición y seguir la recuperación clínica y nutricional."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Investigar durante el consumo de gluten: serología adecuada, incluida IgA total, y evaluación especializada para confirmación. El déficit de IgA exige estrategia serológica propia; una serología negativa no cierra el estudio ante sospecha fuerte.",
+        "La endoscopia con biopsias duodenales sigue siendo importante. Existen criterios específicos para diagnóstico sin biopsia en pacientes seleccionados; no aplicar esa vía automáticamente a cualquier prueba positiva."
+      ],
+      "factIds": [
+        "b01_028_f02",
+        "b01_028_f03"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Evaluar anemia, pérdida de peso, deshidratación y repercusiones nutricionales. Evitar iniciar dieta sin gluten antes de los estudios, porque puede dificultar la confirmación; si ya se inició, planificar el estudio con gastroenterología."
+      ],
+      "factIds": [
+        "b01_028_f04"
+      ]
+    },
+    {
+      "heading": "Tratamiento de base",
+      "paragraphs": [
+        "Tras confirmar, dieta estricta sin gluten, orientación nutricional y prevención de contaminación cruzada. Corregir carencias documentadas; los suplementos no sustituyen la retirada del gluten."
+      ],
+      "factIds": [
+        "b01_028_f05"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Tratamiento modificador de la enfermedad: dieta estricta sin gluten continua, con nutricionista. Complemento: corregir deficiencias demostradas y controlar recuperación; no constituye una segunda terapia equivalente. La enfermedad refractaria exige confirmación y especialista, sin inmunosupresión empírica."
+      ],
+      "factIds": [
+        "b01_028_f09"
+      ]
+    },
+    {
+      "heading": "Poblaciones especiales",
+      "paragraphs": [
+        "Los niños necesitan seguimiento del crecimiento y criterios diagnósticos pediátricos. El embarazo exige atención a las carencias; no prescribir corticoide para toda enfermedad celíaca sintomática. La enfermedad refractaria requiere centro especializado."
+      ],
+      "factIds": [
+        "b01_028_f08"
+      ]
+    },
+    {
+      "heading": "Monitorización",
+      "paragraphs": [
+        "Vigilar síntomas, peso, carencias y serología. La persistencia exige verificar exposición inadvertida y otras causas antes de diagnosticar refractariedad; considerar colitis microscópica, intolerancias e insuficiencia pancreática."
+      ],
+      "factIds": [
+        "b01_028_f06"
+      ]
+    },
+    {
+      "heading": "Alarmas, internación y alta",
+      "paragraphs": [
+        "Deshidratación, desnutrición grave, sangrado o abdomen agudo requieren atención urgente. El cuadro estable continúa ambulatoriamente, con plan nutricional y seguimiento documentados."
+      ],
+      "factIds": [
+        "b01_028_f07"
+      ]
+    }
+  ],
+  "markdown": "# Enfermedad celíaca\n\n## Concepto y mecanismo\n\nEnteropatía inmunomediada desencadenada por gluten, con manifestaciones intestinales y extraintestinales; puede existir sin diarrea. No equivale a alergia al trigo ni a sensibilidad no celíaca.\n\n## Razonamiento clínico\n\nLa dieta influye tanto en la enfermedad como en su estudio. Retirar el gluten antes de realizar pruebas puede reducir la posibilidad de demostrar alteraciones diagnósticas. Tras la confirmación, el razonamiento se invierte: el control depende de evitar exposición y seguir la recuperación clínica y nutricional.\n\n## Diagnóstico y diferenciales\n\nInvestigar durante el consumo de gluten: serología adecuada, incluida IgA total, y evaluación especializada para confirmación. El déficit de IgA exige estrategia serológica propia; una serología negativa no cierra el estudio ante sospecha fuerte.\n\nLa endoscopia con biopsias duodenales sigue siendo importante. Existen criterios específicos para diagnóstico sin biopsia en pacientes seleccionados; no aplicar esa vía automáticamente a cualquier prueba positiva.\n\n## Abordaje inicial\n\nEvaluar anemia, pérdida de peso, deshidratación y repercusiones nutricionales. Evitar iniciar dieta sin gluten antes de los estudios, porque puede dificultar la confirmación; si ya se inició, planificar el estudio con gastroenterología.\n\n## Tratamiento de base\n\nTras confirmar, dieta estricta sin gluten, orientación nutricional y prevención de contaminación cruzada. Corregir carencias documentadas; los suplementos no sustituyen la retirada del gluten.\n\n## Tratamiento: opciones y criterios de elección\n\nTratamiento modificador de la enfermedad: dieta estricta sin gluten continua, con nutricionista. Complemento: corregir deficiencias demostradas y controlar recuperación; no constituye una segunda terapia equivalente. La enfermedad refractaria exige confirmación y especialista, sin inmunosupresión empírica.\n\n## Poblaciones especiales\n\nLos niños necesitan seguimiento del crecimiento y criterios diagnósticos pediátricos. El embarazo exige atención a las carencias; no prescribir corticoide para toda enfermedad celíaca sintomática. La enfermedad refractaria requiere centro especializado.\n\n## Monitorización\n\nVigilar síntomas, peso, carencias y serología. La persistencia exige verificar exposición inadvertida y otras causas antes de diagnosticar refractariedad; considerar colitis microscópica, intolerancias e insuficiencia pancreática.\n\n## Alarmas, internación y alta\n\nDeshidratación, desnutrición grave, sangrado o abdomen agudo requieren atención urgente. El cuadro estable continúa ambulatoriamente, con plan nutricional y seguimiento documentados.\n\n## Referencias\n\n1. [NIDDK — Celiac disease diagnosis](https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease/diagnosis)\n2. [NIDDK — Celiac disease treatment](https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease/treatment)",
+  "approvedReviewCanonicalFileSha256": "8be1e680491e2a2c47609e7c1ce36ba78be719d275cb1524be1b6505f84102c9",
+  "approvedReviewProjectionFileSha256": "4ac653fe34de50e6115bb1907c0780613c6b1ce94a996fb9ae593e385c596733"
+}

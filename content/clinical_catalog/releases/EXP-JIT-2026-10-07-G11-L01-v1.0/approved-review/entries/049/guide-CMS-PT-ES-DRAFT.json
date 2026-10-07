@@ -1,0 +1,193 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Pacote candidato; aguarda aprovação deste lote. Guias devem permanecer em rascunho no Admin após futura publicação de Estudo/Plantão.",
+  "canonical_payload_sha256": "6d737606a01c43a1d69dc7a4725fc2c836e346288e42b4a24d01a86ee7319c75",
+  "owner_candidate": "sinovite_transitoria_do_quadril",
+  "pt": {
+    "title": "Sinovite transitória do quadril",
+    "subtitle": "Conteúdo clínico para revisão",
+    "summary": "Causa de claudicação infantil frequentemente após infecção viral; é diagnóstico após excluir situações perigosas, sobretudo artrite séptica.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Causa de claudicação infantil frequentemente após infecção viral; é diagnóstico após excluir situações perigosas, sobretudo artrite séptica."
+        ],
+        "factIds": [
+          "b01_049_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Avaliar febre, capacidade de apoio, amplitude e outras articulações; dor de quadril pode aparecer no joelho. Incapacidade de apoio, febre ou exame preocupante exige investigação urgente."
+        ],
+        "factIds": [
+          "b01_049_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial",
+        "paragraphs": [
+          "Não usar ultrassom com derrame como prova isolada de sinovite benigna; artrite séptica é emergência. Selecionar exames e encaminhamento conforme risco."
+        ],
+        "factIds": [
+          "b01_049_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: opções e critérios de escolha",
+        "paragraphs": [
+          "Base: repouso relativo e retorno progressivo conforme melhora. Alternativas para dor: paracetamol ou ibuprofeno pediátrico da tabela se elegível; são sintomáticos, não substituem exclusão de infecção."
+        ],
+        "factIds": [
+          "b01_049_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL."
+        ],
+        "factIds": [
+          "b01_049_ped_doses"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Evitar ibuprofeno em desidratação/doença renal e respeitar idade. Não indicar antibiótico ou corticosteroide rotineiro para sinovite transitória confirmada."
+        ],
+        "factIds": [
+          "b01_049_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação e destino",
+        "paragraphs": [
+          "Alta somente se baixo risco, mobilidade aceitável e plano de revisão. Retornar imediatamente por febre, piora ou incapacidade de apoio; persistência exige investigar outra causa."
+        ],
+        "factIds": [
+          "b01_049_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Sinovitis transitoria de cadera",
+    "subtitle": "Contenido clínico para revisión",
+    "summary": "Causa de cojera infantil frecuentemente después de infección viral; se diagnostica tras descartar situaciones peligrosas, especialmente artritis séptica.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Causa de cojera infantil frecuentemente después de infección viral; se diagnostica tras descartar situaciones peligrosas, especialmente artritis séptica."
+        ],
+        "factIds": [
+          "b01_049_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Evaluar fiebre, capacidad de apoyo, amplitud y otras articulaciones; el dolor de cadera puede manifestarse en rodilla. Imposibilidad de apoyo, fiebre o examen preocupante requiere evaluación urgente."
+        ],
+        "factIds": [
+          "b01_049_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial",
+        "paragraphs": [
+          "No utilizar derrame ecográfico como prueba aislada de sinovitis benigna; la artritis séptica es una emergencia. Seleccionar estudios y derivación según riesgo."
+        ],
+        "factIds": [
+          "b01_049_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: opciones y criterios de elección",
+        "paragraphs": [
+          "Base: reposo relativo y regreso progresivo según mejoría. Alternativas para dolor: paracetamol o ibuprofeno pediátrico de la tabla si es elegible; son sintomáticos y no sustituyen descartar infección."
+        ],
+        "factIds": [
+          "b01_049_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+        ],
+        "factIds": [
+          "b01_049_ped_doses"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Evitar ibuprofeno ante deshidratación/enfermedad renal y respetar edad. No indicar antibióticos ni corticoides rutinarios para sinovitis transitoria confirmada."
+        ],
+        "factIds": [
+          "b01_049_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación y destino",
+        "paragraphs": [
+          "Alta solo si hay bajo riesgo, movilidad aceptable y plan de revisión. Consultar inmediatamente ante fiebre, empeoramiento o imposibilidad de apoyo; la persistencia exige investigar otra causa."
+        ],
+        "factIds": [
+          "b01_049_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_49",
+      "title": "Sinovite transitória do quadril",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Child_with_limp/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_49.txt"
+    },
+    {
+      "key": "rch_synovitis",
+      "title": "RCH — Transient synovitis",
+      "url": "https://www.rch.org.au/kidsinfo/fact_sheets/Transient_synovitis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — Acute pain management",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt"
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "diarreia_cronica",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Diarreia crônica",
+    "es": "Diarrea crónica — evaluación en adultos"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Síndrome de diarreia persistente/crônica com investigação etiológica distinta do episódio infeccioso agudo.",
+  "relatedExistingOwners": [
+    "diarrea_aguda_009",
+    "diarreia_viajante"
+  ],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b01_027_f01",
+      "section": "definition",
+      "pt": "Diarreia por pelo menos 4 semanas é síndrome, não etiologia. Caracterizar padrão aquoso, gorduroso ou inflamatório e procurar relação com alimentação, medicamentos, cirurgia e sintomas sistêmicos.",
+      "es": "La diarrea durante al menos 4 semanas es un síndrome, no una etiología. Caracterizar patrón acuoso, graso o inflamatorio y buscar relación con alimentación, medicamentos, cirugía y síntomas sistémicos.",
+      "sources": [
+        "diarrhea_diagnosis",
+        "diarrhea_guideline"
+      ]
+    },
+    {
+      "id": "b01_027_f02",
+      "section": "initial",
+      "pt": "Avaliar hidratação, diurese, peso, sinais vitais e tolerância à alimentação. Diarreia crônica também pode descompensar agudamente; reposição de perdas não deve aguardar a conclusão da investigação.",
+      "es": "Evaluar hidratación, diuresis, peso, signos vitales y tolerancia alimentaria. La diarrea crónica también puede descompensarse de forma aguda; la reposición de pérdidas no debe esperar a completar la investigación.",
+      "sources": [
+        "diarrhea_diagnosis",
+        "diarrhea_guideline"
+      ]
+    },
+    {
+      "id": "b01_027_f03",
+      "section": "diagnosis",
+      "pt": "História e exame guiam hemograma, eletrólitos, função renal, albumina e testes etiológicos. Rever laxantes, metformina, antibióticos e outros fármacos. Pesquisa fecal e endoscopia devem responder às hipóteses clínicas.",
+      "es": "La historia y el examen orientan hemograma, electrolitos, función renal, albúmina y pruebas etiológicas. Revisar laxantes, metformina, antibióticos y otros fármacos. El estudio fecal y la endoscopia deben responder a las hipótesis clínicas.",
+      "sources": [
+        "diarrhea_diagnosis",
+        "diarrhea_guideline"
+      ]
+    },
+    {
+      "id": "b01_027_f04",
+      "section": "diagnosis",
+      "pt": "Em adulto imunocompetente com diarreia aquosa sem alarme, a avaliação dirigida inclui Giardia, doença celíaca e marcador inflamatório fecal; considerar diarreia por ácidos biliares. Essa estratégia limitada não se aplica automaticamente a sangue, má absorção, imunossupressão ou perda ponderal.",
+      "es": "En adulto inmunocompetente con diarrea acuosa sin alarma, la evaluación dirigida incluye Giardia, enfermedad celíaca y marcador inflamatorio fecal; considerar diarrea por ácidos biliares. Esa estrategia limitada no se aplica automáticamente a sangre, malabsorción, inmunosupresión o pérdida de peso.",
+      "sources": [
+        "diarrhea_diagnosis",
+        "diarrhea_guideline"
+      ]
+    },
+    {
+      "id": "b01_027_f05",
+      "section": "diagnosis",
+      "pt": "Diferenciais relevantes incluem doença inflamatória intestinal, colite microscópica, doença celíaca, infecção persistente, insuficiência pancreática, efeitos de medicamentos e causas funcionais. Mucosa colônica aparentemente normal não exclui colite microscópica; biópsias podem ser necessárias.",
+      "es": "Los diferenciales relevantes incluyen enfermedad inflamatoria intestinal, colitis microscópica, enfermedad celíaca, infección persistente, insuficiencia pancreática, efectos farmacológicos y causas funcionales. Una mucosa colónica aparentemente normal no excluye colitis microscópica; pueden ser necesarias biopsias.",
+      "sources": [
+        "diarrhea_diagnosis",
+        "diarrhea_guideline"
+      ]
+    },
+    {
+      "id": "b01_027_f06",
+      "section": "treatment",
+      "pt": "Tratar a causa documentada e corrigir desidratação e desnutrição. Não existe dose universal para a síndrome; antibiótico, corticoide e antiparasitário não devem ser prescritos indistintamente para toda diarreia crônica.",
+      "es": "Tratar la causa documentada y corregir deshidratación y desnutrición. No existe dosis universal para el síndrome; antibiótico, corticoide y antiparasitario no deben indicarse indiscriminadamente para toda diarrea crónica.",
+      "sources": [
+        "diarrhea_diagnosis",
+        "diarrhea_guideline"
+      ]
+    },
+    {
+      "id": "b01_027_f07",
+      "section": "monitoring",
+      "pt": "Acompanhar peso, frequência, perdas, eletrólitos e resultados pendentes. Persistência ou mudança de padrão exige reavaliar hipóteses, adesão e exposição; documentar um plano de investigação e retorno.",
+      "es": "Vigilar peso, frecuencia, pérdidas, electrolitos y resultados pendientes. La persistencia o cambio de patrón exige reevaluar hipótesis, adherencia y exposición; documentar un plan diagnóstico y de seguimiento.",
+      "sources": [
+        "diarrhea_diagnosis",
+        "diarrhea_guideline"
+      ]
+    },
+    {
+      "id": "b01_027_f08",
+      "section": "disposition",
+      "pt": "Sangue, anemia, emagrecimento, diarreia noturna, hipoalbuminemia ou história familiar relevante indicam investigação ampliada. Instabilidade, lesão renal ou incapacidade de reposição oral podem exigir internação; quadro estável pode continuar investigação ambulatorial.",
+      "es": "Sangre, anemia, adelgazamiento, diarrea nocturna, hipoalbuminemia o historia familiar relevante indican evaluación ampliada. Inestabilidad, lesión renal o incapacidad de reposición oral pueden exigir internación; el cuadro estable puede continuar evaluación ambulatoria.",
+      "sources": [
+        "diarrhea_diagnosis",
+        "diarrhea_guideline"
+      ]
+    },
+    {
+      "id": "b01_027_f09",
+      "section": "special",
+      "pt": "Em imunossuprimidos, incluir infecções oportunistas e toxicidade de tratamento. Crianças e gestantes requerem avaliação própria; evitar restrições alimentares extensas sem acompanhamento nutricional.",
+      "es": "En personas inmunosuprimidas, incluir infecciones oportunistas y toxicidad del tratamiento. Niños y embarazadas requieren evaluación específica; evitar restricciones alimentarias extensas sin seguimiento nutricional.",
+      "sources": [
+        "diarrhea_diagnosis",
+        "diarrhea_guideline"
+      ]
+    },
+    {
+      "id": "b01_027_f10",
+      "section": "options",
+      "pt": "Caminho 1: reposição hídrica/nutricional e tratamento da causa demonstrada. Caminho 2: manejo funcional após investigação adequada, com medidas alimentares e sintomáticas selecionadas. Não indicar antibiótico, antiparasitário ou corticosteroide empírico universal; alarme muda o fluxo.",
+      "es": "Camino 1: reposición hídrica/nutricional y tratamiento de la causa demostrada. Camino 2: manejo funcional tras evaluación adecuada, con medidas alimentarias y sintomáticas seleccionadas. No indicar antibiótico, antiparasitario o corticoide empírico universal; las alarmas cambian el flujo.",
+      "sources": [
+        "diarrhea_diagnosis",
+        "diarrhea_guideline"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A duração muda o diferencial, mas não elimina urgências. Separar fezes aquosas, gordurosas e inflamatórias organiza hipóteses e reduz exames sem propósito. O contexto clínico decide quando uma investigação limitada é suficiente e quando endoscopia, histologia ou avaliação nutricional ampliada são necessárias.",
+      "es": "La duración modifica el diagnóstico diferencial, pero no elimina urgencias. Separar heces acuosas, grasas e inflamatorias organiza hipótesis y reduce estudios sin propósito. El contexto clínico determina cuándo basta un estudio limitado y cuándo se necesitan endoscopia, histología o evaluación nutricional ampliada.",
+      "sources": [
+        "AGA",
+        "JGA",
+        "NIDDK"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "diarrhea_diagnosis",
+      "title": "NIDDK — Diarrhea diagnosis",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/diarrhea/diagnosis",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last Reviewed September 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/diarrhea_diagnosis.txt"
+    },
+    {
+      "key": "diarrhea_guideline",
+      "title": "Japan Gastroenterological Association — Chronic diarrhea guideline 2023",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11633876/",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2023,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-intestinal-group07-2026-10-04/entries/004/canonical-payload.json"
+}

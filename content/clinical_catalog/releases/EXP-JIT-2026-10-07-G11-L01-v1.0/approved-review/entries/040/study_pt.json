@@ -1,0 +1,128 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Distensão muscular",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "979ba528a65e8bc91938e06a3aba106fb9b24f59cdf5bf15d18de6d4b82d8cbe",
+  "ownerCandidate": "distensao_muscular",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_040_f01",
+    "b01_040_f02",
+    "b01_040_f03",
+    "b01_040_f04",
+    "b01_040_f05",
+    "b01_040_f06",
+    "b01_040_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Lesão muscular por sobrecarga ou estiramento pode variar de microlesão a ruptura; diferenciar entorse ligamentar, fratura e lesão tendínea completa."
+      ],
+      "factIds": [
+        "b01_040_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar mecanismo, hematoma, dor, força e função; exame neurovascular é necessário. Imagem seletiva quando suspeita de ruptura relevante ou outro diagnóstico."
+      ],
+      "factIds": [
+        "b01_040_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Proteção relativa, frio protegido e controle do edema inicialmente, seguidos de mobilização progressiva. Dor desproporcional, déficit ou edema importante exige excluir síndrome compartimental."
+      ],
+      "factIds": [
+        "b01_040_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Alternativa analgésica 1: paracetamol. Alternativa 2: ibuprofeno curto se seguro. Reabilitação e progressão de carga são essenciais; ruptura significativa pode exigir avaliação cirúrgica."
+      ],
+      "factIds": [
+        "b01_040_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz."
+      ],
+      "factIds": [
+        "b01_040_adult_doses"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Doses adultas na tabela; não usar analgésico para permitir esforço lesivo. Evitar anti-inflamatório diante de desidratação/doença renal, sangramento ou contraindicação gestacional."
+      ],
+      "factIds": [
+        "b01_040_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Retorno gradual à atividade com recuperação funcional; persistência, fraqueza ou hematoma crescente exige reavaliação."
+      ],
+      "factIds": [
+        "b01_040_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_40",
+      "title": "Distensão muscular",
+      "url": "https://www.nhs.uk/conditions/sprains-and-strains/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 23 April 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_40.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ]
+}

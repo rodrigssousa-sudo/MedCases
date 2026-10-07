@@ -1,0 +1,104 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Tungiasis",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "b523472ce4814c8958b82be2713651d6565644011b9d04c030decf6c171d88a0",
+  "ownerCandidate": "tungiase",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_036_f01",
+    "b01_036_f02",
+    "b01_036_f03",
+    "b01_036_f04",
+    "b01_036_f05",
+    "b01_036_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Cuidado de piel/heridas y evaluación antitetánica; tratar infección secundaria cuando exista. Evitar extracción doméstica con objetos no estériles."
+      ],
+      "factIds": [
+        "b01_036_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examinar número, localización, inflamación, ulceración e infección; evaluar movilidad y vulnerabilidad. El diagnóstico suele ser clínico en contexto epidemiológico."
+      ],
+      "factIds": [
+        "b01_036_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: dimeticona de baja viscosidad, formulación indicada para tungiasis, según guía OPS de 2025. Opción 2, falta de disponibilidad: formulación estandarizada de aceite de coco con neem descrita en la guía, mediante programa/profesional; no sustituir por una receta casera."
+      ],
+      "factIds": [
+        "b01_036_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No inventar concentración, proporción o intervalo de las formulaciones. La guía desaconseja agua oxigenada, permanganato y extracción por personas no capacitadas; la enfermedad grave requiere atención profesional."
+      ],
+      "factIds": [
+        "b01_036_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Controlar respuesta e infección; combinar protección de pies y medidas ambientales contra reinfestación."
+      ],
+      "factIds": [
+        "b01_036_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Tunga penetrans en la piel, generalmente pies, produce lesión dolorosa/pruriginosa; una carga elevada favorece fisuras, discapacidad e infección secundaria."
+      ],
+      "factIds": [
+        "b01_036_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "tungiasis",
+      "title": "PAHO — 2025 tungiasis guideline recommendations",
+      "url": "https://www.paho.org/en/news/2-9-2025-paho-publishes-first-guidelines-treatment-tungiasis-neglected-disease-affects",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2025,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/tungiasis.txt"
+    },
+    {
+      "key": "tungiasis_guideline",
+      "title": "PAHO — Guidelines for treatment of tungiasis, 2025",
+      "url": "https://iris.paho.org/handle/10665.2/66996",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2025,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/tungiasis_guideline.txt"
+    }
+  ]
+}

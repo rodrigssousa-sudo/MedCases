@@ -1,0 +1,189 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Sinovitis transitoria de cadera",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "6fa6990ea19e85308aaecf41891201686fd9d2713eb25e0526ab8c8c5b4f8154",
+  "ownerCandidate": "sinovite_transitoria_do_quadril",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_049_f01",
+    "b01_049_f02",
+    "b01_049_f03",
+    "b01_049_f04",
+    "b01_049_f05",
+    "b01_049_f06",
+    "b01_049_ped_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "No utilizar derrame ecográfico como prueba aislada de sinovitis benigna; la artritis séptica es una emergencia. Seleccionar estudios y derivación según riesgo."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar fiebre, capacidad de apoyo, amplitud y otras articulaciones; el dolor de cadera puede manifestarse en rodilla. Imposibilidad de apoyo, fiebre o examen preocupante requiere evaluación urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Base: reposo relativo y regreso progresivo según mejoría. Alternativas para dolor: paracetamol o ibuprofeno pediátrico de la tabla si es elegible; son sintomáticos y no sustituyen descartar infección."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evitar ibuprofeno ante deshidratación/enfermedad renal y respetar edad. No indicar antibióticos ni corticoides rutinarios para sinovitis transitoria confirmada."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alta solo si hay bajo riesgo, movilidad aceptable y plan de revisión. Consultar inmediatamente ante fiebre, empeoramiento o imposibilidad de apoyo; la persistencia exige investigar otra causa."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Causa de cojera infantil frecuentemente después de infección viral; se diagnostica tras descartar situaciones peligrosas, especialmente artritis séptica."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_49",
+      "title": "Sinovite transitória do quadril",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Child_with_limp/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_49.txt"
+    },
+    {
+      "key": "rch_synovitis",
+      "title": "RCH — Transient synovitis",
+      "url": "https://www.rch.org.au/kidsinfo/fact_sheets/Transient_synovitis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — Acute pain management",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "No utilizar derrame ecográfico como prueba aislada de sinovitis benigna; la artritis séptica es una emergencia. Seleccionar estudios y derivación según riesgo."
+      ],
+      "factIds": [
+        "b01_049_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar fiebre, capacidad de apoyo, amplitud y otras articulaciones; el dolor de cadera puede manifestarse en rodilla. Imposibilidad de apoyo, fiebre o examen preocupante requiere evaluación urgente."
+      ],
+      "factIds": [
+        "b01_049_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Base: reposo relativo y regreso progresivo según mejoría. Alternativas para dolor: paracetamol o ibuprofeno pediátrico de la tabla si es elegible; son sintomáticos y no sustituyen descartar infección."
+      ],
+      "factIds": [
+        "b01_049_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+      ],
+      "factIds": [
+        "b01_049_ped_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Evitar ibuprofeno ante deshidratación/enfermedad renal y respetar edad. No indicar antibióticos ni corticoides rutinarios para sinovitis transitoria confirmada."
+      ],
+      "factIds": [
+        "b01_049_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Alta solo si hay bajo riesgo, movilidad aceptable y plan de revisión. Consultar inmediatamente ante fiebre, empeoramiento o imposibilidad de apoyo; la persistencia exige investigar otra causa."
+      ],
+      "factIds": [
+        "b01_049_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Causa de cojera infantil frecuentemente después de infección viral; se diagnostica tras descartar situaciones peligrosas, especialmente artritis séptica."
+      ],
+      "factIds": [
+        "b01_049_f01"
+      ]
+    }
+  ],
+  "markdown": "# Sinovitis transitoria de cadera\n\n## Abordaje inicial\n\nNo utilizar derrame ecográfico como prueba aislada de sinovitis benigna; la artritis séptica es una emergencia. Seleccionar estudios y derivación según riesgo.\n\n## Diagnóstico y diferenciales\n\nEvaluar fiebre, capacidad de apoyo, amplitud y otras articulaciones; el dolor de cadera puede manifestarse en rodilla. Imposibilidad de apoyo, fiebre o examen preocupante requiere evaluación urgente.\n\n## Tratamiento: opciones y criterios de elección\n\nBase: reposo relativo y regreso progresivo según mejoría. Alternativas para dolor: paracetamol o ibuprofeno pediátrico de la tabla si es elegible; son sintomáticos y no sustituyen descartar infección.\n\n## Fármacos, dosis e intervalos\n\nAnalgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL.\n\n## Seguridad y monitorización\n\nEvitar ibuprofeno ante deshidratación/enfermedad renal y respetar edad. No indicar antibióticos ni corticoides rutinarios para sinovitis transitoria confirmada.\n\n## Reevaluación y destino\n\nAlta solo si hay bajo riesgo, movilidad aceptable y plan de revisión. Consultar inmediatamente ante fiebre, empeoramiento o imposibilidad de apoyo; la persistencia exige investigar otra causa.\n\n## Reconocimiento rápido\n\nCausa de cojera infantil frecuentemente después de infección viral; se diagnostica tras descartar situaciones peligrosas, especialmente artritis séptica.\n\n## Referencias\n\n1. [Sinovite transitória do quadril](https://www.rch.org.au/clinicalguide/guideline_index/Child_with_limp/)\n2. [RCH — Transient synovitis](https://www.rch.org.au/kidsinfo/fact_sheets/Transient_synovitis/)\n3. [RCH — Acute pain management](https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/)",
+  "approvedReviewCanonicalFileSha256": "6d737606a01c43a1d69dc7a4725fc2c836e346288e42b4a24d01a86ee7319c75",
+  "approvedReviewProjectionFileSha256": "f3298ecf7ca43f0f91c84b7d8811b9e6e52e43c6f674279237fa94c69b2bd6b8"
+}

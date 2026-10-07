@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "doenca_renal_cronica",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Doença renal crônica",
+    "es": "Enfermedad renal crónica"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Doença renal persistente e estratificação longitudinal, distinta de lesão renal aguda.",
+  "relatedExistingOwners": [
+    "lesao_renal_aguda"
+  ],
+  "optionRelation": "COMPLEMENTARY",
+  "facts": [
+    {
+      "id": "b01_009_f01",
+      "section": "concept",
+      "pt": "Alteração estrutural ou funcional renal persistente por mais de 3 meses. Classificar por causa, filtração e albuminúria; distinguir doença crônica de lesão renal aguda.",
+      "es": "Alteración estructural o funcional renal persistente durante más de 3 meses. Clasificar por causa, filtración y albuminuria; distinguir enfermedad crónica de lesión renal aguda.",
+      "sources": [
+        "topic_09",
+        "ng203",
+        "kdigo"
+      ]
+    },
+    {
+      "id": "b01_009_f02",
+      "section": "diagnosis",
+      "pt": "Repetir função renal quando necessário, avaliar albuminúria urinária, urina, pressão e tendência prévia. Filtração isolada anormal não estabelece cronicidade. Buscar obstrução ou causas tratáveis conforme contexto.",
+      "es": "Repetir función renal cuando corresponda, evaluar albuminuria urinaria, orina, presión y evolución previa. Una filtración anormal aislada no demuestra cronicidad. Buscar obstrucción o causas tratables según el contexto.",
+      "sources": [
+        "topic_09",
+        "ng203",
+        "kdigo"
+      ]
+    },
+    {
+      "id": "b01_009_f03",
+      "section": "initial",
+      "pt": "Hipercalemia, edema pulmonar, uremia sintomática ou deterioração rápida exigem avaliação urgente. Rever nefrotóxicos e adequação de todos os medicamentos à função renal.",
+      "es": "Hiperpotasemia, edema pulmonar, uremia sintomática o deterioro rápido requieren evaluación urgente. Revisar nefrotóxicos y adecuar todos los medicamentos a la función renal.",
+      "sources": [
+        "topic_09",
+        "ng203",
+        "kdigo"
+      ]
+    },
+    {
+      "id": "b01_009_f04",
+      "section": "options",
+      "pt": "Estratégia 1: controle de pressão e albuminúria, com IECA ou BRA quando indicado. Estratégia 2: inibidor de SGLT2 em pessoas elegíveis, conforme função renal, albuminúria, diabetes/insuficiência cardíaca e bula específica; geralmente complementar, não substituto automático.",
+      "es": "Estrategia 1: controlar presión y albuminuria, con IECA o ARA II cuando esté indicado. Estrategia 2: inhibidor de SGLT2 en personas elegibles según función renal, albuminuria, diabetes/insuficiencia cardíaca y ficha específica; generalmente complementario, no sustituto automático.",
+      "sources": [
+        "topic_09",
+        "ng203",
+        "kdigo"
+      ]
+    },
+    {
+      "id": "b01_009_f05",
+      "section": "safety",
+      "pt": "Não combinar IECA e BRA. Monitorar creatinina e potássio após início/ajuste; suspensão de SGLT2 pode ser necessária em doença crítica, jejum prolongado ou cirurgia. Não extrapolar limiar renal entre diferentes produtos nem usar em gestação sem avaliação específica.",
+      "es": "No combinar IECA y ARA II. Controlar creatinina y potasio tras inicio/ajuste; puede requerirse suspender SGLT2 durante enfermedad crítica, ayuno prolongado o cirugía. No extrapolar umbrales renales entre productos ni utilizar durante el embarazo sin evaluación específica.",
+      "sources": [
+        "topic_09",
+        "ng203",
+        "kdigo"
+      ]
+    },
+    {
+      "id": "b01_009_f06",
+      "section": "followup",
+      "pt": "Planejar seguimento por risco, manejo cardiovascular, nutrição e complicações. KDIGO 2024 permanece referência final; atualização focada em elaboração não é diretriz final substitutiva.",
+      "es": "Planificar seguimiento según riesgo, manejo cardiovascular, nutrición y complicaciones. KDIGO 2024 sigue siendo referencia final; la actualización focalizada en elaboración no constituye una guía final sustitutiva.",
+      "sources": [
+        "topic_09",
+        "ng203",
+        "kdigo"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_09",
+      "title": "Doença renal crônica",
+      "url": "https://www.nhs.uk/conditions/kidney-disease/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 22 March 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_09.txt"
+    },
+    {
+      "key": "ng203",
+      "title": "ng203",
+      "url": "https://www.nice.org.uk/guidance/ng203/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2021,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "kdigo",
+      "title": "KDIGO — CKD 2024 remains current; focused update underway",
+      "url": "https://kdigo.org/guidelines/ckd-evaluation-and-management/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2024,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

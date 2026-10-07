@@ -1,0 +1,157 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Delirium no relacionado con abstinencia alcohólica",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "0b61960d88e8e19f8d449b85bdf2e6696c162c48c26249ee1f82cfa05f180f01",
+  "ownerCandidate": "delirium_nao_relacionado_a_abstinencia_alcoolica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_007_f01",
+    "b01_007_f02",
+    "b01_007_f03",
+    "b01_007_f04",
+    "b01_007_f05",
+    "b01_007_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alteración aguda y fluctuante de atención y cognición, incluida la forma hipoactiva. Suele resultar de vulnerabilidad y precipitantes médicos; no equivale a demencia crónica."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Aplicar evaluación competente, como 4AT en el contexto apropiado; investigar hipoxia, infección, glucemia, dolor, retención urinaria, estreñimiento, medicamentos y trastornos metabólicos. En UCI, utilizar un instrumento específico."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Estabilizar amenazas inmediatas y tratar la causa. Reorientar, favorecer sueño y movilidad segura, acceso a lentes/audífonos y participación familiar; evitar restricciones innecesarias."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción 1: intervención multicomponente y tratamiento etiológico. Opción 2: solo ante sufrimiento importante o riesgo y fracaso de la desescalada, considerar un antipsicótico de corta duración con selección individual. No son opciones equivalentes."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "El haloperidol no es rutinario; si se selecciona, utilizar la menor dosis durante poco tiempo, generalmente hasta 1 semana, vigilando QT y efectos neurológicos. Parkinson y demencia con cuerpos de Lewy requieren especial precaución. Las benzodiacepinas pueden empeorar este delirium."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Controlar evolución y seguridad diariamente. La persistencia exige buscar causas adicionales; el alta depende de resolución/estabilidad, capacidad de cuidado y coordinación del seguimiento."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_07",
+      "title": "Delirium não relacionado à abstinência alcoólica",
+      "url": "https://medlineplus.gov/delirium.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 18, 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_07.txt"
+    },
+    {
+      "key": "cg103",
+      "title": "cg103",
+      "url": "https://www.nice.org.uk/guidance/cg103/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2010,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Alteración aguda y fluctuante de atención y cognición, incluida la forma hipoactiva. Suele resultar de vulnerabilidad y precipitantes médicos; no equivale a demencia crónica."
+      ],
+      "factIds": [
+        "b01_007_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Aplicar evaluación competente, como 4AT en el contexto apropiado; investigar hipoxia, infección, glucemia, dolor, retención urinaria, estreñimiento, medicamentos y trastornos metabólicos. En UCI, utilizar un instrumento específico."
+      ],
+      "factIds": [
+        "b01_007_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Estabilizar amenazas inmediatas y tratar la causa. Reorientar, favorecer sueño y movilidad segura, acceso a lentes/audífonos y participación familiar; evitar restricciones innecesarias."
+      ],
+      "factIds": [
+        "b01_007_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: intervención multicomponente y tratamiento etiológico. Opción 2: solo ante sufrimiento importante o riesgo y fracaso de la desescalada, considerar un antipsicótico de corta duración con selección individual. No son opciones equivalentes."
+      ],
+      "factIds": [
+        "b01_007_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "El haloperidol no es rutinario; si se selecciona, utilizar la menor dosis durante poco tiempo, generalmente hasta 1 semana, vigilando QT y efectos neurológicos. Parkinson y demencia con cuerpos de Lewy requieren especial precaución. Las benzodiacepinas pueden empeorar este delirium."
+      ],
+      "factIds": [
+        "b01_007_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Controlar evolución y seguridad diariamente. La persistencia exige buscar causas adicionales; el alta depende de resolución/estabilidad, capacidad de cuidado y coordinación del seguimiento."
+      ],
+      "factIds": [
+        "b01_007_f06"
+      ]
+    }
+  ],
+  "markdown": "# Delirium no relacionado con abstinencia alcohólica\n\n## Concepto y mecanismo\n\nAlteración aguda y fluctuante de atención y cognición, incluida la forma hipoactiva. Suele resultar de vulnerabilidad y precipitantes médicos; no equivale a demencia crónica.\n\n## Diagnóstico y diferenciales\n\nAplicar evaluación competente, como 4AT en el contexto apropiado; investigar hipoxia, infección, glucemia, dolor, retención urinaria, estreñimiento, medicamentos y trastornos metabólicos. En UCI, utilizar un instrumento específico.\n\n## Abordaje inicial\n\nEstabilizar amenazas inmediatas y tratar la causa. Reorientar, favorecer sueño y movilidad segura, acceso a lentes/audífonos y participación familiar; evitar restricciones innecesarias.\n\n## Tratamiento: opciones y criterios de elección\n\nOpción 1: intervención multicomponente y tratamiento etiológico. Opción 2: solo ante sufrimiento importante o riesgo y fracaso de la desescalada, considerar un antipsicótico de corta duración con selección individual. No son opciones equivalentes.\n\n## Seguridad y monitorización\n\nEl haloperidol no es rutinario; si se selecciona, utilizar la menor dosis durante poco tiempo, generalmente hasta 1 semana, vigilando QT y efectos neurológicos. Parkinson y demencia con cuerpos de Lewy requieren especial precaución. Las benzodiacepinas pueden empeorar este delirium.\n\n## Reevaluación y destino\n\nControlar evolución y seguridad diariamente. La persistencia exige buscar causas adicionales; el alta depende de resolución/estabilidad, capacidad de cuidado y coordinación del seguimiento.\n\n## Referencias\n\n1. [Delirium não relacionado à abstinência alcoólica](https://medlineplus.gov/delirium.html)\n2. [cg103](https://www.nice.org.uk/guidance/cg103/chapter/Recommendations)",
+  "approvedReviewCanonicalFileSha256": "8c38c2e6e0ead05bf55d9a50ee4757aed6eb1f1572e948bdf648f7ce7cce57f2",
+  "approvedReviewProjectionFileSha256": "b8472bc289c1e30cbe951afcde84652f658b31c1e0c6aaf9f233926a0972a955"
+}

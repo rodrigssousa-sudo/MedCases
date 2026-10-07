@@ -1,0 +1,104 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Síncope y presíncope",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "03d5c5528368f4e22eb10e70e87b161f37167ed39ed322789befdf65a580a0dc",
+  "ownerCandidate": "sincope_e_pre_sincope",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_005_f01",
+    "b01_005_f02",
+    "b01_005_f03",
+    "b01_005_f04",
+    "b01_005_f05",
+    "b01_005_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Inestabilidad, ECG anormal, síncope durante esfuerzo, cardiopatía, disnea o antecedentes familiares de muerte súbita requieren evaluación cardíaca urgente. Lesiones, sangrado o déficit neurológico cambian la prioridad."
+      ],
+      "factIds": [
+        "b01_005_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Obtener relato de testigos, circunstancias, pródromos y recuperación. Evaluar signos vitales, presión acostado/de pie, examen cardiovascular y ECG de 12 derivaciones; los estudios adicionales deben responder a sospechas concretas."
+      ],
+      "factIds": [
+        "b01_005_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1, síncope reflejo: educación, evitar desencadenantes y maniobras de contrapresión si existe pródromo. Opción 2, causa ortostática: revisar fármacos y corregir volumen cuando corresponda. La arritmia exige tratamiento específico, no estas medidas aisladas."
+      ],
+      "factIds": [
+        "b01_005_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No prescribir anticonvulsivantes sin diagnóstico ni solicitar EEG de rutina para síncope. La expansión de volumen y la sal no son universales en insuficiencia cardíaca o renal."
+      ],
+      "factIds": [
+        "b01_005_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Alta solo después de evaluar riesgo y una causa probablemente benigna; orientar sobre recurrencia, conducción y consulta. Los episodios inexplicados requieren investigación y posible monitorización cardíaca prolongada."
+      ],
+      "factIds": [
+        "b01_005_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "El síncope es pérdida transitoria de conciencia por hipoperfusión global, con recuperación espontánea; diferenciar epilepsia, hipoglucemia y causas cardíacas. La presíncope no excluye riesgo."
+      ],
+      "factIds": [
+        "b01_005_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_05",
+      "title": "Síncope e pré-síncope",
+      "url": "https://www.nice.org.uk/guidance/cg109/chapter/Recommendations",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "cg109",
+      "title": "cg109",
+      "url": "https://www.nice.org.uk/guidance/cg109/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2010,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

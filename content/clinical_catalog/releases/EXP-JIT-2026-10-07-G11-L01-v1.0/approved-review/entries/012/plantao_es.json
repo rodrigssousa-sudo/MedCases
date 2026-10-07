@@ -1,0 +1,128 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Tendinopatía y lesión del manguito rotador",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "b8c47699b3e113fedb5b84b3fd416ccda69f60c6921c9f0eddd27b8acf340b2c",
+  "ownerCandidate": "tendinopatia_e_lesao_do_manguito_rotador",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_012_f01",
+    "b01_012_f02",
+    "b01_012_f03",
+    "b01_012_f04",
+    "b01_012_f05",
+    "b01_012_f06",
+    "b01_012_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Traumatismo con pérdida de fuerza, sospecha de luxación, déficit neurovascular o articulación febril requiere evaluación urgente. Evitar inmovilización prolongada sin indicación."
+      ],
+      "factIds": [
+        "b01_012_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Comparar movilidad activa/pasiva y fuerza; examinar neurología y cuello. La radiografía descarta lesiones óseas según contexto; ecografía o resonancia evalúan tendones cuando cambien la conducta."
+      ],
+      "factIds": [
+        "b01_012_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: adaptar actividades, fisioterapia y analgesia breve. Opción 2: evaluar reparación quirúrgica ante rotura traumática o fracaso conservador seleccionado; una infiltración puede aliviar casos seleccionados, sin reparar la rotura."
+      ],
+      "factIds": [
+        "b01_012_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b01_012_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Para dolor, elegir paracetamol o ibuprofeno en dosis adultas verificadas, considerando contraindicaciones. Los procedimientos requieren evaluación especializada; no infiltrar empíricamente ante sospecha de infección."
+      ],
+      "factIds": [
+        "b01_012_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar dolor, fuerza y función; retorno progresivo a la actividad según recuperación. Persistencia o debilidad importante requiere ortopedia."
+      ],
+      "factIds": [
+        "b01_012_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "La tendinopatía y las roturas parciales/completas del manguito pueden causar dolor y debilidad; degeneración y traumatismo tienen implicaciones diferentes."
+      ],
+      "factIds": [
+        "b01_012_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_12",
+      "title": "Tendinopatia e lesão do manguito rotador",
+      "url": "https://www.orthoinfo.org/diseases--conditions/rotator-cuff-tears",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_12.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ]
+}

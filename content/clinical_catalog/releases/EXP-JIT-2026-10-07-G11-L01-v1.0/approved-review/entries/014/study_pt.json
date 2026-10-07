@@ -1,0 +1,128 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Cervicalgia mecânica sem radiculopatia",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "ab238ab3d4c2fbbce5d4e7bcc61142a32cd6de441bc6a59b49e41046c8913fba",
+  "ownerCandidate": "cervicalgia_mecanica_sem_radiculopatia",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_014_f01",
+    "b01_014_f02",
+    "b01_014_f03",
+    "b01_014_f04",
+    "b01_014_f05",
+    "b01_014_f06",
+    "b01_014_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Dor cervical mecânica varia com movimento/postura, sem déficit radicular. Pode envolver músculos e articulações; radiculopatia, mielopatia e trauma relevante pertencem a outra avaliação."
+      ],
+      "factIds": [
+        "b01_014_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar trauma, febre, câncer, imunossupressão, força, sensibilidade, marcha e sinais medulares. Imagem deve ser orientada por risco, não automática na dor mecânica simples."
+      ],
+      "factIds": [
+        "b01_014_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Déficit progressivo, sinais medulares, infecção ou suspeita vascular exige encaminhamento urgente. Na apresentação benigna, manter movimento tolerável e ajustar atividades."
+      ],
+      "factIds": [
+        "b01_014_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Opção 1: exercício orientado, fisioterapia e medidas posturais. Opção 2: analgesia curta com paracetamol ou ibuprofeno conforme risco; não substitui mobilização. Evitar colar de rotina."
+      ],
+      "factIds": [
+        "b01_014_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz."
+      ],
+      "factIds": [
+        "b01_014_adult_doses"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Usar tabela adulta de dose; não extrapolar a crianças. Anti-inflamatório é inadequado em situações renais, hemorrágicas e de gestação específicas. Evitar manipulação sem excluir contraindicações."
+      ],
+      "factIds": [
+        "b01_014_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Reavaliar persistência, limitação funcional ou aparecimento de irradiação/déficit. Retornar imediatamente diante de fraqueza, febre ou alteração da marcha."
+      ],
+      "factIds": [
+        "b01_014_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_14",
+      "title": "Cervicalgia mecânica sem radiculopatia",
+      "url": "https://medlineplus.gov/neckinjuriesanddisorders.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated August 4, 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_14.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ]
+}

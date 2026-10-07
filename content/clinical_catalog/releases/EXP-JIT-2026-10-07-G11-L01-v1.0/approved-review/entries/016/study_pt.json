@@ -1,0 +1,142 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Rinite alérgica",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "3650a51cc98076cff712d0c7c03110677c4c096df7111a24c3139fa4ef7a9ca6",
+  "ownerCandidate": "rinite_alergica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_016_f01",
+    "b01_016_f02",
+    "b01_016_f03",
+    "b01_016_f04",
+    "b01_016_f05",
+    "b01_016_f06",
+    "b01_016_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Inflamação nasal mediada por alergia, com espirros, prurido, rinorreia e obstrução; pode coexistir com asma e sintomas oculares."
+      ],
+      "factIds": [
+        "b01_016_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Correlacionar exposição e sintomas; testes alérgicos quando mudarem manejo. Obstrução unilateral, sangramento, dor facial importante ou secreção persistente atípica exigem outra investigação."
+      ],
+      "factIds": [
+        "b01_016_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Reduzir exposição evitável e orientar lavagem salina com água segura e técnica adequada; avaliar controle de asma."
+      ],
+      "factIds": [
+        "b01_016_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Alternativa 1, adultos: cetirizina 10 mg por via oral uma vez ao dia para sintomas alérgicos, individualizando em doença renal. Alternativa 2: corticosteroide intranasal, como fluticasona, especialmente para obstrução/persistência; dose depende da apresentação específica."
+      ],
+      "factIds": [
+        "b01_016_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Exemplo adulto específico: propionato de fluticasona nasal 50 microgramas por pulverização, 2 pulverizações em cada narina uma vez ao dia, total de 200 microgramas ao dia. Após controle, reduzir conforme bula à menor dose eficaz. Não ultrapassar 200 microgramas ao dia nesse esquema nem converter para furoato de fluticasona."
+      ],
+      "factIds": [
+        "b01_016_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não converter pulverizações entre formulações de concentração diferente. Direcionar spray longe do septo e acompanhar epistaxe. Antihistamínico pode causar sonolência; gestação/crianças exigem avaliação própria. Evitar descongestionante nasal prolongado."
+      ],
+      "factIds": [
+        "b01_016_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Reavaliar técnica e resposta; persistência exige investigar exposição, adesão e outras causas. Imunoterapia é decisão especializada para casos selecionados."
+      ],
+      "factIds": [
+        "b01_016_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_16",
+      "title": "Rinite alérgica",
+      "url": "https://www.nhs.uk/conditions/allergic-rhinitis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 08 January 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_16.txt"
+    },
+    {
+      "key": "cetirizine",
+      "title": "NHS — Cetirizine dosing",
+      "url": "https://www.nhs.uk/medicines/cetirizine/how-and-when-to-take-cetirizine/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 18 February 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/cetirizine.txt"
+    },
+    {
+      "key": "fluticasone",
+      "title": "NHS — Nasal fluticasone dosing",
+      "url": "https://www.nhs.uk/medicines/fluticasone-nasal-spray-and-drops/how-and-when-to-use-fluticasone-nasal-spray-and-drops/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 February 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/fluticasone.txt"
+    },
+    {
+      "key": "fluti_allergy_label",
+      "title": "DailyMed — Fluticasone propionate 50 micrograms/spray, allergy label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0107ad1c-1d8e-434c-a91f-dd2caf4fa5e5&version=2",
+      "authorityStatus": "REGULATORY_LABEL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

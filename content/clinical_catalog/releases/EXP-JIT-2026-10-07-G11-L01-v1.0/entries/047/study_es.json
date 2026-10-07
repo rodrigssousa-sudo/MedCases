@@ -1,0 +1,189 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Luxación de codo",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "9c76099c16e2cda9b8ff695b72b790ce317dba812d24af47486a15c4dd7f56b2",
+  "ownerCandidate": "luxacao_de_cotovelo",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_047_f01",
+    "b01_047_f02",
+    "b01_047_f03",
+    "b01_047_f04",
+    "b01_047_f05",
+    "b01_047_f06",
+    "b01_047_adult_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "La luxación simple difiere de fractura-luxación compleja y puede lesionar nervios/vasos. Una perfusión aparentemente normal no reemplaza el examen neurovascular documentado."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar pulso, perfusión, fuerza/sensibilidad, herida y radiografía; repetir examen después de reducción. Investigar fractura asociada e inestabilidad."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Emergencia ortopédica: inmovilizar, analgesia y reducción por equipo capacitado; déficit vascular/neurológico o lesión abierta requiere respuesta especializada inmediata."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción 1: reducción cerrada, inmovilización breve y movilización guiada en luxación simple estable. Opción 2: reparación/fijación quirúrgica si es compleja, inestable o con lesión vascular; no son intercambiables."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sedación y bloqueo requieren evaluación, monitorización y protocolo del equipo. No utilizar solo analgesia oral para demorar reducción; evitar inmovilización prolongada indiscriminada por riesgo de rigidez."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Confirmar congruencia y plan ortopédico; orientar consulta ante dolor creciente, parestesias, mano fría o cambios de color."
+    }
+  ],
+  "references": [
+    {
+      "key": "aaos_elbow",
+      "title": "AAOS — Elbow dislocation",
+      "url": "https://www.orthoinfo.org/diseases--conditions/elbow-dislocation",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/aaos_elbow.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "La luxación simple difiere de fractura-luxación compleja y puede lesionar nervios/vasos. Una perfusión aparentemente normal no reemplaza el examen neurovascular documentado."
+      ],
+      "factIds": [
+        "b01_047_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar pulso, perfusión, fuerza/sensibilidad, herida y radiografía; repetir examen después de reducción. Investigar fractura asociada e inestabilidad."
+      ],
+      "factIds": [
+        "b01_047_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Emergencia ortopédica: inmovilizar, analgesia y reducción por equipo capacitado; déficit vascular/neurológico o lesión abierta requiere respuesta especializada inmediata."
+      ],
+      "factIds": [
+        "b01_047_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: reducción cerrada, inmovilización breve y movilización guiada en luxación simple estable. Opción 2: reparación/fijación quirúrgica si es compleja, inestable o con lesión vascular; no son intercambiables."
+      ],
+      "factIds": [
+        "b01_047_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b01_047_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Sedación y bloqueo requieren evaluación, monitorización y protocolo del equipo. No utilizar solo analgesia oral para demorar reducción; evitar inmovilización prolongada indiscriminada por riesgo de rigidez."
+      ],
+      "factIds": [
+        "b01_047_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Confirmar congruencia y plan ortopédico; orientar consulta ante dolor creciente, parestesias, mano fría o cambios de color."
+      ],
+      "factIds": [
+        "b01_047_f06"
+      ]
+    }
+  ],
+  "markdown": "# Luxación de codo\n\n## Concepto y mecanismo\n\nLa luxación simple difiere de fractura-luxación compleja y puede lesionar nervios/vasos. Una perfusión aparentemente normal no reemplaza el examen neurovascular documentado.\n\n## Diagnóstico y diferenciales\n\nEvaluar pulso, perfusión, fuerza/sensibilidad, herida y radiografía; repetir examen después de reducción. Investigar fractura asociada e inestabilidad.\n\n## Abordaje inicial\n\nEmergencia ortopédica: inmovilizar, analgesia y reducción por equipo capacitado; déficit vascular/neurológico o lesión abierta requiere respuesta especializada inmediata.\n\n## Tratamiento: opciones y criterios de elección\n\nOpción 1: reducción cerrada, inmovilización breve y movilización guiada en luxación simple estable. Opción 2: reparación/fijación quirúrgica si es compleja, inestable o con lesión vascular; no son intercambiables.\n\n## Fármacos, dosis e intervalos\n\nAnalgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.\n\n## Seguridad y monitorización\n\nSedación y bloqueo requieren evaluación, monitorización y protocolo del equipo. No utilizar solo analgesia oral para demorar reducción; evitar inmovilización prolongada indiscriminada por riesgo de rigidez.\n\n## Reevaluación y destino\n\nConfirmar congruencia y plan ortopédico; orientar consulta ante dolor creciente, parestesias, mano fría o cambios de color.\n\n## Referencias\n\n1. [AAOS — Elbow dislocation](https://www.orthoinfo.org/diseases--conditions/elbow-dislocation)\n2. [para](https://www.nhs.uk/medicines/paracetamol-for-adults/)\n3. [ibu](https://www.nhs.uk/medicines/ibuprofen-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "153764d116ab42c84915e5ec4f0ceed090ae66ec71d999ecc12a55cfdd3755ef",
+  "approvedReviewProjectionFileSha256": "d7dc5dc11de6e2a84ad60638c6abc46b2c86f12af3d0ba2cf42a2c1511306797"
+}

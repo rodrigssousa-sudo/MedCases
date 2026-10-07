@@ -1,0 +1,146 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "insonia",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Insônia",
+    "es": "Insomnio"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "FIRST_LINE_VS_RESTRICTED_RESCUE",
+  "facts": [
+    {
+      "id": "b01_023_f01",
+      "section": "concept",
+      "pt": "Dificuldade de iniciar/manter sono com repercussão diurna; investigar oportunidade de sono, substâncias, dor, saúde mental e apneia antes de medicar.",
+      "es": "Dificultad para iniciar/mantener el sueño con repercusión diurna; evaluar oportunidad de sueño, sustancias, dolor, salud mental y apnea antes de medicar.",
+      "sources": [
+        "topic_23",
+        "zopiclone",
+        "zopiclone_formulary"
+      ]
+    },
+    {
+      "id": "b01_023_f02",
+      "section": "diagnosis",
+      "pt": "Caracterizar duração, rotina e impacto com diário; distinguir distúrbio circadiano, apneia e outros transtornos. Ideação suicida, mania ou abstinência exigem avaliação específica urgente.",
+      "es": "Caracterizar duración, rutina e impacto con diario; distinguir trastorno circadiano, apnea y otros cuadros. Ideación suicida, manía o abstinencia requieren evaluación específica urgente.",
+      "sources": [
+        "topic_23",
+        "zopiclone",
+        "zopiclone_formulary"
+      ]
+    },
+    {
+      "id": "b01_023_f03",
+      "section": "initial",
+      "pt": "Rever cafeína/álcool e fármacos; orientar horários regulares e ambiente adequado. Higiene do sono isolada pode ser insuficiente em insônia persistente.",
+      "es": "Revisar cafeína/alcohol y fármacos; orientar horarios regulares y ambiente adecuado. La higiene del sueño aislada puede resultar insuficiente en insomnio persistente.",
+      "sources": [
+        "topic_23",
+        "zopiclone",
+        "zopiclone_formulary"
+      ]
+    },
+    {
+      "id": "b01_023_f04",
+      "section": "options",
+      "pt": "Opção 1: terapia cognitivo-comportamental para insônia. Opção 2: hipnótico de curto prazo em quadro grave selecionado, após análise de riscos e plano de suspensão; zopiclona é exemplo, não prescrição automática.",
+      "es": "Opción 1: terapia cognitivo-conductual para insomnio. Opción 2: hipnótico de corta duración ante un cuadro grave seleccionado, tras evaluar riesgos y planificar suspensión; zopiclona es un ejemplo, no una prescripción automática.",
+      "sources": [
+        "topic_23",
+        "zopiclone",
+        "zopiclone_formulary"
+      ]
+    },
+    {
+      "id": "b01_023_f05",
+      "section": "safety",
+      "pt": "Evitar álcool e combinação de sedativos; considerar quedas, dependência, depressão respiratória e direção. Dose exige bula e avaliação individual, especialmente em idosos, gestação e insuficiência hepática; não usar tratamento prolongado por renovação automática.",
+      "es": "Evitar alcohol y combinación de sedantes; considerar caídas, dependencia, depresión respiratoria y conducción. La dosis exige ficha y evaluación individual, especialmente en mayores, embarazo e insuficiencia hepática; no prolongar mediante renovaciones automáticas.",
+      "sources": [
+        "topic_23",
+        "zopiclone",
+        "zopiclone_formulary"
+      ]
+    },
+    {
+      "id": "b01_023_f06",
+      "section": "followup",
+      "pt": "Acompanhar resposta, função diurna e desprescrição; refratariedade exige revisar diagnóstico e acesso a terapia comportamental.",
+      "es": "Controlar respuesta, función diurna y deprescripción; la refractariedad exige revisar diagnóstico y acceso a terapia conductual.",
+      "sources": [
+        "topic_23",
+        "zopiclone",
+        "zopiclone_formulary"
+      ]
+    },
+    {
+      "id": "b01_023_f07",
+      "section": "doses",
+      "pt": "Zopiclona em adulto selecionado: faixa usual de 3,75–7,5 mg por via oral ao deitar, escolhendo a menor dose apropriada; não repetir na mesma noite. Usar por poucos dias/semanas, geralmente não além de 4 semanas, com plano de retirada e revisão de risco respiratório, hepático e de quedas.",
+      "es": "Zopiclona en adulto seleccionado: rango habitual de 3,75–7,5 mg por vía oral al acostarse, eligiendo la menor dosis apropiada; no repetir en la misma noche. Usar durante pocos días/semanas, generalmente no más de 4 semanas, con plan de retirada y revisión del riesgo respiratorio, hepático y de caídas.",
+      "sources": [
+        "topic_23",
+        "zopiclone",
+        "zopiclone_formulary"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_23",
+      "title": "Insônia",
+      "url": "https://www.nhs.uk/conditions/insomnia/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 19 March 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_23.txt"
+    },
+    {
+      "key": "zopiclone",
+      "title": "NHS — Zopiclone",
+      "url": "https://www.nhs.uk/medicines/zopiclone/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 22 June 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/zopiclone.txt"
+    },
+    {
+      "key": "zopiclone_formulary",
+      "title": "Bradford Teaching Hospitals NHS — Zopiclone formulary",
+      "url": "https://www.bradfordhospitalsformulary.nhs.uk/chaptersSubDetails.asp?FC=1&FormularySectionID=4&SubSectionID=A100&SubSectionRef=04",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

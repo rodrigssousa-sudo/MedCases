@@ -1,0 +1,104 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Dermatite de estase venosa",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "36e49ca15f55015c57eabf256629c6b7084bdfd3dc374adca8615ae570104abe",
+  "ownerCandidate": "dermatite_de_estase_venosa",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_038_f01",
+    "b01_038_f02",
+    "b01_038_f03",
+    "b01_038_f04",
+    "b01_038_f05",
+    "b01_038_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Cuidado de pele, elevação quando tolerada e movimento; tratar ferida com avaliação vascular. Não iniciar compressão forte antes de verificar segurança arterial."
+      ],
+      "factIds": [
+        "b01_038_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar circulação arterial, edema, varizes, úlceras e infecção. Dor aguda unilateral ou dispneia exige investigar trombose/embolia, não atribuir ao eczema."
+      ],
+      "factIds": [
+        "b01_038_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Estratégia 1: emoliente e corticosteroide tópico selecionado para inflamação. Estratégia 2: compressão ajustada e manejo venoso quando circulação arterial permitir; são complementares e abordam mecanismos diferentes."
+      ],
+      "factIds": [
+        "b01_038_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Potência/duração do tópico e pressão de compressão exigem avaliação de pele, úlcera e perfusão; não oferecer valor universal. Antibiótico somente para infecção, não eczema isolado."
+      ],
+      "factIds": [
+        "b01_038_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Reavaliar controle inflamatório, edema e feridas; úlcera não cicatrizante ou suspeita de isquemia exige especialista."
+      ],
+      "factIds": [
+        "b01_038_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Hipertensão venosa crônica produz eczema, edema e alterações pigmentares de pernas; bilateralidade e cronicidade ajudam a diferenciar de celulite aguda."
+      ],
+      "factIds": [
+        "b01_038_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_38",
+      "title": "Dermatite de estase venosa",
+      "url": "https://www.nhs.uk/conditions/varicose-eczema/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 20 April 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_38.txt"
+    },
+    {
+      "key": "eczema_treatment",
+      "title": "NHS — Varicose eczema: treatment",
+      "url": "https://www.nhs.uk/conditions/varicose-eczema/treatment/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

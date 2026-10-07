@@ -1,0 +1,157 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Esporotricose",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "f82382147b60febe92a139735dabdaf056db6a05ef4bc65f833e960040debc5c",
+  "ownerCandidate": "esporotricose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_033_f01",
+    "b01_033_f02",
+    "b01_033_f03",
+    "b01_033_f04",
+    "b01_033_f05",
+    "b01_033_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar imunossupressão, gestação, lesões oculares e sintomas sistêmicos. Forma extracutânea/disseminada exige infectologia e possível hospitalização."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Suspeitar em lesões nodulares/ulceradas com cadeia linfática; obter material para confirmação micológica conforme disponibilidade. Diferenciar leishmaniose, micobacteriose e infecção bacteriana."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: opções e critérios de escolha"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opção 1, forma cutânea adulta usual: itraconazol oral 200 mg ao dia, com duração definida por resposta e protocolo. Opção 2: alternativa selecionada, como terbinafina ou iodeto de potássio, sob especialista se intolerância/contraindicação; formas graves podem exigir anfotericina B lipídica."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não intercambiar formulações de itraconazol sem revisar absorção; verificar hepatotoxicidade, interações e insuficiência cardíaca. Gestação/crianças exigem protocolo próprio. Não fornecer dose universal das alternativas especializadas nem duração arbitrária."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação e destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Acompanhar resolução e tolerância ao longo de meses; reduzir exposição e orientar manejo veterinário seguro de animais infectados, sem abandono."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Micose por Sporothrix, frequentemente inoculada por vegetais ou contato com gato infectado; formas cutânea fixa, linfocutânea e disseminada exigem manejos distintos."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_33",
+      "title": "Esporotricose",
+      "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/e/esporotricose-humana",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_33.txt"
+    },
+    {
+      "key": "sporo_gvs",
+      "title": "Ministério da Saúde — Guia de Vigilância em Saúde, volume 2, 6ª edição",
+      "url": "https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/vigilancia/guia-de-vigilancia-em-saude-volume-2-6a-edicao",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2023,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Avaliar imunossupressão, gestação, lesões oculares e sintomas sistêmicos. Forma extracutânea/disseminada exige infectologia e possível hospitalização."
+      ],
+      "factIds": [
+        "b01_033_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Suspeitar em lesões nodulares/ulceradas com cadeia linfática; obter material para confirmação micológica conforme disponibilidade. Diferenciar leishmaniose, micobacteriose e infecção bacteriana."
+      ],
+      "factIds": [
+        "b01_033_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Opção 1, forma cutânea adulta usual: itraconazol oral 200 mg ao dia, com duração definida por resposta e protocolo. Opção 2: alternativa selecionada, como terbinafina ou iodeto de potássio, sob especialista se intolerância/contraindicação; formas graves podem exigir anfotericina B lipídica."
+      ],
+      "factIds": [
+        "b01_033_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não intercambiar formulações de itraconazol sem revisar absorção; verificar hepatotoxicidade, interações e insuficiência cardíaca. Gestação/crianças exigem protocolo próprio. Não fornecer dose universal das alternativas especializadas nem duração arbitrária."
+      ],
+      "factIds": [
+        "b01_033_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Acompanhar resolução e tolerância ao longo de meses; reduzir exposição e orientar manejo veterinário seguro de animais infectados, sem abandono."
+      ],
+      "factIds": [
+        "b01_033_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Micose por Sporothrix, frequentemente inoculada por vegetais ou contato com gato infectado; formas cutânea fixa, linfocutânea e disseminada exigem manejos distintos."
+      ],
+      "factIds": [
+        "b01_033_f01"
+      ]
+    }
+  ],
+  "markdown": "# Esporotricose\n\n## Abordagem inicial\n\nAvaliar imunossupressão, gestação, lesões oculares e sintomas sistêmicos. Forma extracutânea/disseminada exige infectologia e possível hospitalização.\n\n## Diagnóstico e diferenciais\n\nSuspeitar em lesões nodulares/ulceradas com cadeia linfática; obter material para confirmação micológica conforme disponibilidade. Diferenciar leishmaniose, micobacteriose e infecção bacteriana.\n\n## Tratamento: opções e critérios de escolha\n\nOpção 1, forma cutânea adulta usual: itraconazol oral 200 mg ao dia, com duração definida por resposta e protocolo. Opção 2: alternativa selecionada, como terbinafina ou iodeto de potássio, sob especialista se intolerância/contraindicação; formas graves podem exigir anfotericina B lipídica.\n\n## Segurança e monitorização\n\nNão intercambiar formulações de itraconazol sem revisar absorção; verificar hepatotoxicidade, interações e insuficiência cardíaca. Gestação/crianças exigem protocolo próprio. Não fornecer dose universal das alternativas especializadas nem duração arbitrária.\n\n## Reavaliação e destino\n\nAcompanhar resolução e tolerância ao longo de meses; reduzir exposição e orientar manejo veterinário seguro de animais infectados, sem abandono.\n\n## Reconhecimento rápido\n\nMicose por Sporothrix, frequentemente inoculada por vegetais ou contato com gato infectado; formas cutânea fixa, linfocutânea e disseminada exigem manejos distintos.\n\n## Referências\n\n1. [Esporotricose](https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/e/esporotricose-humana)\n2. [Ministério da Saúde — Guia de Vigilância em Saúde, volume 2, 6ª edição](https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/vigilancia/guia-de-vigilancia-em-saude-volume-2-6a-edicao)",
+  "approvedReviewCanonicalFileSha256": "92c220114e67196a3c648ccf2e8adc7d8619656ee1681e762a3e8dd79b59cc31",
+  "approvedReviewProjectionFileSha256": "cd57afaf41c77755269e22e31ad1b46aafd25093d254636ff3787ccbebd076bf"
+}

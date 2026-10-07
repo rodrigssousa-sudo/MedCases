@@ -1,0 +1,104 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Larva migrans cutánea",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "79a87076201c0dc090967f4a8c756089092605f997aa6bfab580ba732ce1913e",
+  "ownerCandidate": "larva_migrans_cutanea",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_034_f01",
+    "b01_034_f02",
+    "b01_034_f03",
+    "b01_034_f04",
+    "b01_034_f05",
+    "b01_034_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Aliviar prurito y evitar excoriaciones; enfermedad extensa, foliculitis o presentación atípica requiere evaluación adicional."
+      ],
+      "factIds": [
+        "b01_034_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Diagnóstico clínico por morfología y exposición; diferenciar larva currens de estrongiloidiasis y otras dermatosis. Evaluar infección secundaria."
+      ],
+      "factIds": [
+        "b01_034_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "En adultos: alternativa 1, albendazol 400 mg oral una vez al día durante 3–7 días; alternativa 2, ivermectina 200 microgramos/kg oral en dosis única. La reevaluación puede indicar tratamiento adicional en casos seleccionados."
+      ],
+      "factIds": [
+        "b01_034_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Niños: albendazol 400 mg al día durante 3 días solo mayores de 2 años; ivermectina 200 microgramos/kg en dosis única solo por encima de 15 kg en el protocolo citado. Embarazo y niños menores requieren evaluación específica; no convertir microgramos a mg incorrectamente."
+      ],
+      "factIds": [
+        "b01_034_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar respuesta y lesiones secundarias. Prevenir con calzado y evitar contacto directo con suelo contaminado; la crioterapia no es una solución rutinaria porque la ubicación larvaria es incierta."
+      ],
+      "factIds": [
+        "b01_034_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Larvas de anquilostomas animales en la piel producen un trayecto serpiginoso pruriginoso, frecuentemente tras contacto con tierra/arena contaminadas."
+      ],
+      "factIds": [
+        "b01_034_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "clm",
+      "title": "CDC — Cutaneous larva migrans treatment",
+      "url": "https://www.cdc.gov/zoonotic-hookworm/hcp/clinical-care/index.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "clm_yellowbook",
+      "title": "CDC Yellow Book 2026 — Post-travel dermatologic conditions",
+      "url": "https://www.cdc.gov/yellow-book/hcp/post-travel-evaluation/post-travel-dermatologic-conditions.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

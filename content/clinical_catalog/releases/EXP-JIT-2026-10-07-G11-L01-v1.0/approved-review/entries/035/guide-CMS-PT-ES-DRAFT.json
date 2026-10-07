@@ -1,0 +1,147 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Pacote candidato; aguarda aprovação deste lote. Guias devem permanecer em rascunho no Admin após futura publicação de Estudo/Plantão.",
+  "canonical_payload_sha256": "0d5f844d7355bcc8ee2645f5bfd9d84f5f0479a6aba9300c62b4bd95daad6147",
+  "owner_candidate": "miiase",
+  "pt": {
+    "title": "Miíase",
+    "subtitle": "Conteúdo clínico para revisão",
+    "summary": "Infestação por larvas de moscas, podendo afetar pele, feridas ou cavidades; forma furunculoide difere de invasão de ferida e localização ocular.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Infestação por larvas de moscas, podendo afetar pele, feridas ou cavidades; forma furunculoide difere de invasão de ferida e localização ocular."
+        ],
+        "factIds": [
+          "b01_035_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Identificar localização, larvas, necrose, extensão e sinais de infecção. Lesão ocular/cavitária ou comprometimento profundo requer especialista urgente."
+        ],
+        "factIds": [
+          "b01_035_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial",
+        "paragraphs": [
+          "Avaliar estabilidade, dor, cuidado de ferida e situação vacinal antitetânica conforme tipo de lesão. Não manipular agressivamente lesões profundas."
+        ],
+        "factIds": [
+          "b01_035_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: opções e critérios de escolha",
+        "paragraphs": [
+          "Opção 1: extração completa por profissional e cuidado local na forma acessível. Opção 2: exploração/desbridamento especializado quando profunda, extensa ou em ferida necrótica. Não há segundo antiparasitário universal para todas as espécies e localizações."
+        ],
+        "factIds": [
+          "b01_035_f04"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Não presumir indicação de ivermectina nem antibiótico em toda miíase; tratamento adicional depende de espécie, local e infecção. Avaliação pediátrica/gestacional não admite extrapolação empírica."
+        ],
+        "factIds": [
+          "b01_035_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação e destino",
+        "paragraphs": [
+          "Confirmar remoção completa e cicatrização, tratar causas da ferida e reduzir exposição. Retornar por febre, piora, necrose ou larvas persistentes."
+        ],
+        "factIds": [
+          "b01_035_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Miasis",
+    "subtitle": "Contenido clínico para revisión",
+    "summary": "Infestación por larvas de moscas que puede afectar piel, heridas o cavidades; la forma furunculoide difiere de invasión de heridas y localización ocular.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Infestación por larvas de moscas que puede afectar piel, heridas o cavidades; la forma furunculoide difiere de invasión de heridas y localización ocular."
+        ],
+        "factIds": [
+          "b01_035_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Identificar localización, larvas, necrosis, extensión y signos de infección. Lesión ocular/cavitaria o compromiso profundo requiere especialista urgente."
+        ],
+        "factIds": [
+          "b01_035_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial",
+        "paragraphs": [
+          "Evaluar estabilidad, dolor, cuidado de heridas y vacunación antitetánica según lesión. No manipular agresivamente lesiones profundas."
+        ],
+        "factIds": [
+          "b01_035_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: opciones y criterios de elección",
+        "paragraphs": [
+          "Opción 1: extracción completa por un profesional y cuidado local en formas accesibles. Opción 2: exploración/desbridamiento especializado ante lesión profunda, extensa o en herida necrótica. No existe un segundo antiparasitario universal para todas las especies y localizaciones."
+        ],
+        "factIds": [
+          "b01_035_f04"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "No asumir indicación de ivermectina o antibiótico en toda miasis; el tratamiento adicional depende de especie, localización e infección. La evaluación pediátrica/del embarazo no permite extrapolación empírica."
+        ],
+        "factIds": [
+          "b01_035_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación y destino",
+        "paragraphs": [
+          "Confirmar extracción completa y cicatrización, tratar causas de la herida y reducir exposición. Consultar ante fiebre, empeoramiento, necrosis o larvas persistentes."
+        ],
+        "factIds": [
+          "b01_035_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "myiasis",
+      "title": "CDC — Myiasis",
+      "url": "https://www.cdc.gov/myiasis/about/index.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

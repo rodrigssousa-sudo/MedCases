@@ -1,0 +1,189 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Esguince de ligamento colateral de rodilla",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "b2cf3036f80efb9011a0a1e3a29f1deb6f7d3f1442ee3d460bb2fbc39e9d85a8",
+  "ownerCandidate": "entorse_dos_ligamentos_colaterais_do_joelho",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_041_f01",
+    "b01_041_f02",
+    "b01_041_f03",
+    "b01_041_f04",
+    "b01_041_f05",
+    "b01_041_f06",
+    "b01_041_adult_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Traumatismo con sospecha de luxación, déficit neurovascular o gran inestabilidad requiere urgencia. Proteger, ajustar apoyo y aliviar dolor."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar mecanismo, apoyo, estabilidad y estado neurovascular; considerar radiografía ante sospecha ósea y resonancia para lesión asociada relevante. No clasificar solo por intensidad del dolor."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción 1: tratamiento conservador, ortesis seleccionada y rehabilitación ante lesión aislada apropiada. Opción 2: evaluación quirúrgica por avulsión, inestabilidad importante o lesión multiligamentaria; la selección depende de anatomía y función."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Paracetamol o ibuprofeno adulto son alternativas analgésicas de la tabla. No autorizar deporte con inestabilidad ni aplicar la misma duración de ortesis a todas las lesiones."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar estabilidad, amplitud y fuerza; volver al deporte solo tras recuperación adecuada y orientación."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "La lesión colateral medial o lateral causa dolor localizado y posible inestabilidad; lesiones laterales o multiligamentarias pueden tener mayor complejidad."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_41",
+      "title": "Entorse dos ligamentos colaterais do joelho",
+      "url": "https://www.orthoinfo.org/diseases--conditions/collateral-ligament-injuries/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_41.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Traumatismo con sospecha de luxación, déficit neurovascular o gran inestabilidad requiere urgencia. Proteger, ajustar apoyo y aliviar dolor."
+      ],
+      "factIds": [
+        "b01_041_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar mecanismo, apoyo, estabilidad y estado neurovascular; considerar radiografía ante sospecha ósea y resonancia para lesión asociada relevante. No clasificar solo por intensidad del dolor."
+      ],
+      "factIds": [
+        "b01_041_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: tratamiento conservador, ortesis seleccionada y rehabilitación ante lesión aislada apropiada. Opción 2: evaluación quirúrgica por avulsión, inestabilidad importante o lesión multiligamentaria; la selección depende de anatomía y función."
+      ],
+      "factIds": [
+        "b01_041_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b01_041_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Paracetamol o ibuprofeno adulto son alternativas analgésicas de la tabla. No autorizar deporte con inestabilidad ni aplicar la misma duración de ortesis a todas las lesiones."
+      ],
+      "factIds": [
+        "b01_041_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar estabilidad, amplitud y fuerza; volver al deporte solo tras recuperación adecuada y orientación."
+      ],
+      "factIds": [
+        "b01_041_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "La lesión colateral medial o lateral causa dolor localizado y posible inestabilidad; lesiones laterales o multiligamentarias pueden tener mayor complejidad."
+      ],
+      "factIds": [
+        "b01_041_f01"
+      ]
+    }
+  ],
+  "markdown": "# Esguince de ligamento colateral de rodilla\n\n## Abordaje inicial\n\nTraumatismo con sospecha de luxación, déficit neurovascular o gran inestabilidad requiere urgencia. Proteger, ajustar apoyo y aliviar dolor.\n\n## Diagnóstico y diferenciales\n\nEvaluar mecanismo, apoyo, estabilidad y estado neurovascular; considerar radiografía ante sospecha ósea y resonancia para lesión asociada relevante. No clasificar solo por intensidad del dolor.\n\n## Tratamiento: opciones y criterios de elección\n\nOpción 1: tratamiento conservador, ortesis seleccionada y rehabilitación ante lesión aislada apropiada. Opción 2: evaluación quirúrgica por avulsión, inestabilidad importante o lesión multiligamentaria; la selección depende de anatomía y función.\n\n## Fármacos, dosis e intervalos\n\nAnalgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.\n\n## Seguridad y monitorización\n\nParacetamol o ibuprofeno adulto son alternativas analgésicas de la tabla. No autorizar deporte con inestabilidad ni aplicar la misma duración de ortesis a todas las lesiones.\n\n## Reevaluación y destino\n\nReevaluar estabilidad, amplitud y fuerza; volver al deporte solo tras recuperación adecuada y orientación.\n\n## Reconocimiento rápido\n\nLa lesión colateral medial o lateral causa dolor localizado y posible inestabilidad; lesiones laterales o multiligamentarias pueden tener mayor complejidad.\n\n## Referencias\n\n1. [Entorse dos ligamentos colaterais do joelho](https://www.orthoinfo.org/diseases--conditions/collateral-ligament-injuries/)\n2. [para](https://www.nhs.uk/medicines/paracetamol-for-adults/)\n3. [ibu](https://www.nhs.uk/medicines/ibuprofen-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "0035e87760e8ea50d581f1f68e151a23ef1c75b284e793aa525140cf1f1ba188",
+  "approvedReviewProjectionFileSha256": "442379b1f79f55cdf930e006a08516c41a7b56a50f104aecf6d5e0bba52d51c0"
+}

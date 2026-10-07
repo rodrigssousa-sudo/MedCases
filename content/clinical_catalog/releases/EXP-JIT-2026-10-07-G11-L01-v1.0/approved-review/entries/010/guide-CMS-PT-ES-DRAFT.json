@@ -1,0 +1,221 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Pacote candidato; aguarda aprovação deste lote. Guias devem permanecer em rascunho no Admin após futura publicação de Estudo/Plantão.",
+  "canonical_payload_sha256": "8eceb76faa56eca17bea8e08ddba94224b87967309958f899ced9e289ed551bd",
+  "owner_candidate": "osteoartrite",
+  "pt": {
+    "title": "Osteoartrite",
+    "subtitle": "Conteúdo clínico para revisão",
+    "summary": "Doença articular com alterações de cartilagem, osso e tecidos periarticulares; dor relacionada à atividade e limitação funcional são usuais. Imagem não define sozinha intensidade dos sintomas.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Doença articular com alterações de cartilagem, osso e tecidos periarticulares; dor relacionada à atividade e limitação funcional são usuais. Imagem não define sozinha intensidade dos sintomas."
+        ],
+        "factIds": [
+          "b01_010_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Diagnóstico frequentemente clínico; articulação quente, febre, trauma relevante ou padrão inflamatório exige investigar outra causa. Não solicitar imagem rotineira em apresentação típica."
+        ],
+        "factIds": [
+          "b01_010_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial",
+        "paragraphs": [
+          "Avaliar função, impacto e comorbidades. Exercício terapêutico e redução de peso quando indicado são base do manejo, mantendo atividade adaptada."
+        ],
+        "factIds": [
+          "b01_010_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: opções e critérios de escolha",
+        "paragraphs": [
+          "Opção 1: anti-inflamatório tópico, especialmente no joelho, conforme formulação. Opção 2: anti-inflamatório oral por período curto se tópico insuficiente/inadequado, com avaliação de risco e gastroproteção quando indicada. Infiltração ou artroplastia são decisões selecionadas."
+        ],
+        "factIds": [
+          "b01_010_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz."
+        ],
+        "factIds": [
+          "b01_010_adult_doses"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Ibuprofeno adulto na tabela é dose curta de referência, não prescrição crônica. Considerar risco renal, cardiovascular, gastrointestinal e gestação. Paracetamol e opioides não são rotina de manutenção."
+        ],
+        "factIds": [
+          "b01_010_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação e destino",
+        "paragraphs": [
+          "Reavaliar capacidade funcional e tolerância; encaminhar quando dor/limitação prejudicar qualidade de vida apesar do manejo conservador."
+        ],
+        "factIds": [
+          "b01_010_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Osteoartrosis",
+    "subtitle": "Contenido clínico para revisión",
+    "summary": "Enfermedad articular con alteraciones del cartílago, hueso y tejidos periarticulares; son habituales dolor con actividad y limitación funcional. La imagen no define por sí sola la intensidad de los síntomas.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Enfermedad articular con alteraciones del cartílago, hueso y tejidos periarticulares; son habituales dolor con actividad y limitación funcional. La imagen no define por sí sola la intensidad de los síntomas."
+        ],
+        "factIds": [
+          "b01_010_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "El diagnóstico suele ser clínico; articulación caliente, fiebre, traumatismo relevante o patrón inflamatorio exige investigar otra causa. No pedir imágenes rutinarias ante presentación típica."
+        ],
+        "factIds": [
+          "b01_010_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial",
+        "paragraphs": [
+          "Evaluar función, impacto y comorbilidades. Ejercicio terapéutico y reducción de peso cuando corresponda son la base del manejo, manteniendo actividad adaptada."
+        ],
+        "factIds": [
+          "b01_010_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: opciones y criterios de elección",
+        "paragraphs": [
+          "Opción 1: antiinflamatorio tópico, especialmente en la rodilla, según formulación. Opción 2: antiinflamatorio oral durante poco tiempo si el tópico resulta insuficiente/inadecuado, con evaluación de riesgo y gastroprotección cuando corresponda. Infiltración o artroplastia son decisiones seleccionadas."
+        ],
+        "factIds": [
+          "b01_010_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+        ],
+        "factIds": [
+          "b01_010_adult_doses"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "El ibuprofeno adulto de la tabla es una dosis breve de referencia, no una prescripción crónica. Considerar riesgo renal, cardiovascular, gastrointestinal y embarazo. Paracetamol y opioides no son mantenimiento rutinario."
+        ],
+        "factIds": [
+          "b01_010_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación y destino",
+        "paragraphs": [
+          "Reevaluar capacidad funcional y tolerancia; derivar cuando dolor/limitación afecte la calidad de vida pese al manejo conservador."
+        ],
+        "factIds": [
+          "b01_010_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_10",
+      "title": "Osteoartrite",
+      "url": "https://www.nhs.uk/conditions/osteoarthritis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 20 March 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_10.txt"
+    },
+    {
+      "key": "ng226",
+      "title": "ng226",
+      "url": "https://www.nice.org.uk/guidance/ng226/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2022,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "ng226_rationale",
+      "title": "NICE NG226 — Osteoarthritis rationale",
+      "url": "https://www.nice.org.uk/guidance/ng226/chapter/Rationale-and-impact",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Hemorragia subconjuntival",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "8b9820d5b0ecab15b1a776cdaa6fec058018244d95dab1ffaeaf15c2a4e5b757",
+  "ownerCandidate": "hemorragia_subconjuntival",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_019_f01",
+    "b01_019_f02",
+    "b01_019_f03",
+    "b01_019_f04",
+    "b01_019_f05",
+    "b01_019_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Trauma importante, dor ou perda visual exigem excluir lesão ocular grave. Não suspender anticoagulante automaticamente por mancha isolada."
+      ],
+      "factIds": [
+        "b01_019_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Verificar acuidade, trauma, dor, medicamentos e recorrência; medir pressão arterial. Investigar sangramento sistêmico quando história/exame indicarem."
+      ],
+      "factIds": [
+        "b01_019_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Conduta principal: observação e orientação. Medida complementar: lágrima artificial se irritação; não há segunda terapia curativa necessária nem indicação rotineira de antibiótico."
+      ],
+      "factIds": [
+        "b01_019_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Sem necessidade de dose sistêmica empírica. Examinar apresentação atípica antes de classificar como benigna."
+      ],
+      "factIds": [
+        "b01_019_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Reavaliar persistência, recorrência ou novos sintomas; comunicar sinais de retorno ocular."
+      ],
+      "factIds": [
+        "b01_019_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Sangramento conjuntival delimitado, habitualmente indolor e sem alteração visual; costuma resolver espontaneamente."
+      ],
+      "factIds": [
+        "b01_019_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_19",
+      "title": "Hemorragia subconjuntival",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/sub-conjunctivalhaemorrhage",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_SUMMARY_ONLY",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_19.txt"
+    }
+  ]
+}

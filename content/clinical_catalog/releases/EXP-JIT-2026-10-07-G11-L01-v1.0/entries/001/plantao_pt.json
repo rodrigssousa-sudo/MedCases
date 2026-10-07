@@ -1,0 +1,185 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Vertigem posicional paroxística benigna",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "cb110617a12c86a3f457563da96c68d05d208d59e6f43b58c62ca1f98fd75fa7",
+  "ownerCandidate": "vertigem_posicional_paroxistica_benigna",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_001_f01",
+    "b01_001_f02",
+    "b01_001_f03",
+    "b01_001_f04",
+    "b01_001_f05",
+    "b01_001_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Déficit focal, incapacidade de caminhar, cefaleia intensa nova ou vertigem contínua exigem excluir causa central. Não aplicar HINTS a crises posicionais breves."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Na suspeita de canal posterior, realizar Dix–Hallpike por profissional treinado; padrão atípico ou teste negativo com suspeita de canal horizontal exige avaliação específica."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: opções e critérios de escolha"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opção 1: reposicionamento canalicular, como Epley para canal posterior confirmado. Opção 2: observação com acompanhamento quando a manobra não for possível ou for recusada; reabilitação vestibular pode complementar."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar limitações cervicais antes da manobra. Supressores vestibulares não são tratamento rotineiro nem corrigem a canalitíase; evitar exames de imagem sem indicação clínica."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação e destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reavaliar persistência ou recorrência; sintomas refratários exigem confirmar canal, diagnóstico e eventual causa central. Orientar prevenção de quedas e retorno diante de sinais neurológicos."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Otocônias deslocadas provocam vertigem breve com movimentos da cabeça; é diferente de vertigem contínua e doença de Ménière. O canal afetado orienta a manobra."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_01",
+      "title": "Vertigem posicional paroxística benigna",
+      "url": "https://www.nice.org.uk/guidance/ng127/chapter/Recommendations-for-adults-aged-over-16",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "ng127",
+      "title": "ng127",
+      "url": "https://www.nice.org.uk/guidance/ng127/chapter/Recommendations-for-adults-aged-over-16",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2019,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "bppv",
+      "title": "bppv",
+      "url": "https://www.entnet.org/quality-practice/quality-products/clinical-practice-guidelines/bppv/",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2017,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "bppv_journal",
+      "title": "AAO-HNS — Clinical Practice Guideline: BPPV (Update), 2017",
+      "url": "https://aao-hnsfjournals.onlinelibrary.wiley.com/doi/10.1177/0194599816689667",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2017,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Déficit focal, incapacidade de caminhar, cefaleia intensa nova ou vertigem contínua exigem excluir causa central. Não aplicar HINTS a crises posicionais breves."
+      ],
+      "factIds": [
+        "b01_001_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Na suspeita de canal posterior, realizar Dix–Hallpike por profissional treinado; padrão atípico ou teste negativo com suspeita de canal horizontal exige avaliação específica."
+      ],
+      "factIds": [
+        "b01_001_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Opção 1: reposicionamento canalicular, como Epley para canal posterior confirmado. Opção 2: observação com acompanhamento quando a manobra não for possível ou for recusada; reabilitação vestibular pode complementar."
+      ],
+      "factIds": [
+        "b01_001_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Avaliar limitações cervicais antes da manobra. Supressores vestibulares não são tratamento rotineiro nem corrigem a canalitíase; evitar exames de imagem sem indicação clínica."
+      ],
+      "factIds": [
+        "b01_001_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Reavaliar persistência ou recorrência; sintomas refratários exigem confirmar canal, diagnóstico e eventual causa central. Orientar prevenção de quedas e retorno diante de sinais neurológicos."
+      ],
+      "factIds": [
+        "b01_001_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Otocônias deslocadas provocam vertigem breve com movimentos da cabeça; é diferente de vertigem contínua e doença de Ménière. O canal afetado orienta a manobra."
+      ],
+      "factIds": [
+        "b01_001_f01"
+      ]
+    }
+  ],
+  "markdown": "# Vertigem posicional paroxística benigna\n\n## Abordagem inicial\n\nDéficit focal, incapacidade de caminhar, cefaleia intensa nova ou vertigem contínua exigem excluir causa central. Não aplicar HINTS a crises posicionais breves.\n\n## Diagnóstico e diferenciais\n\nNa suspeita de canal posterior, realizar Dix–Hallpike por profissional treinado; padrão atípico ou teste negativo com suspeita de canal horizontal exige avaliação específica.\n\n## Tratamento: opções e critérios de escolha\n\nOpção 1: reposicionamento canalicular, como Epley para canal posterior confirmado. Opção 2: observação com acompanhamento quando a manobra não for possível ou for recusada; reabilitação vestibular pode complementar.\n\n## Segurança e monitorização\n\nAvaliar limitações cervicais antes da manobra. Supressores vestibulares não são tratamento rotineiro nem corrigem a canalitíase; evitar exames de imagem sem indicação clínica.\n\n## Reavaliação e destino\n\nReavaliar persistência ou recorrência; sintomas refratários exigem confirmar canal, diagnóstico e eventual causa central. Orientar prevenção de quedas e retorno diante de sinais neurológicos.\n\n## Reconhecimento rápido\n\nOtocônias deslocadas provocam vertigem breve com movimentos da cabeça; é diferente de vertigem contínua e doença de Ménière. O canal afetado orienta a manobra.\n\n## Referências\n\n1. [Vertigem posicional paroxística benigna](https://www.nice.org.uk/guidance/ng127/chapter/Recommendations-for-adults-aged-over-16)\n2. [ng127](https://www.nice.org.uk/guidance/ng127/chapter/Recommendations-for-adults-aged-over-16)\n3. [bppv](https://www.entnet.org/quality-practice/quality-products/clinical-practice-guidelines/bppv/)\n4. [AAO-HNS — Clinical Practice Guideline: BPPV (Update), 2017](https://aao-hnsfjournals.onlinelibrary.wiley.com/doi/10.1177/0194599816689667)",
+  "approvedReviewCanonicalFileSha256": "073a92f08d8b3c3e5b16890f68f0b55016c71438f8e5a5db932d182735ea4cf9",
+  "approvedReviewProjectionFileSha256": "62c63166f866a11c56fbe741d94e62cd424369a5ab9ceba2b88d47e5bf946fbd"
+}

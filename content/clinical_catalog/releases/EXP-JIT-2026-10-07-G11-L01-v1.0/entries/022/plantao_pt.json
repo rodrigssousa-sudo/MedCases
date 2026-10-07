@@ -1,0 +1,157 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Fimose",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "6853ce632e81eca7becf7a3b4aeae3e5e3344e79b506639eebb85a7899454c7b",
+  "ownerCandidate": "fimose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_022_f01",
+    "b01_022_f02",
+    "b01_022_f03",
+    "b01_022_f04",
+    "b01_022_f05",
+    "b01_022_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sem sintomas e padrão fisiológico: orientação e observação, sem manipulação forçada. Suspeita de fimose patológica requer exame e plano dirigido."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Identificar anel cicatricial, retração previamente possível, infecções e sintomas urinários. Parafimose é emergência distinta; retenção urinária exige atendimento imediato."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: opções e critérios de escolha"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opção 1, contexto pediátrico selecionado: betametasona tópica 0,05% no anel estreito 2–3 vezes ao dia por 2–4 semanas de teste; boa resposta permite completar 6–12 semanas no total com acompanhamento. Opção 2: avaliação cirúrgica se cicatricial, refratária ou com complicações."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não extrapolar automaticamente protocolo pediátrico para adultos; investigar dermatoses e diabetes conforme contexto. Não indicar circuncisão para toda não retração fisiológica."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação e destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reavaliar resposta e técnica; retornar por retenção, edema doloroso com prepúcio preso ou infecção."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não retração fisiológica na infância difere de fimose cicatricial patológica; retração forçada causa trauma e pode agravar cicatrização."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_22",
+      "title": "Fimose",
+      "url": "https://www.nhs.uk/conditions/phimosis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 06 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_22.txt"
+    },
+    {
+      "key": "rch_foreskin",
+      "title": "RCH — Penis and foreskin",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/The_penis_and_foreskin/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated September 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_foreskin.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Sem sintomas e padrão fisiológico: orientação e observação, sem manipulação forçada. Suspeita de fimose patológica requer exame e plano dirigido."
+      ],
+      "factIds": [
+        "b01_022_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Identificar anel cicatricial, retração previamente possível, infecções e sintomas urinários. Parafimose é emergência distinta; retenção urinária exige atendimento imediato."
+      ],
+      "factIds": [
+        "b01_022_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Opção 1, contexto pediátrico selecionado: betametasona tópica 0,05% no anel estreito 2–3 vezes ao dia por 2–4 semanas de teste; boa resposta permite completar 6–12 semanas no total com acompanhamento. Opção 2: avaliação cirúrgica se cicatricial, refratária ou com complicações."
+      ],
+      "factIds": [
+        "b01_022_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não extrapolar automaticamente protocolo pediátrico para adultos; investigar dermatoses e diabetes conforme contexto. Não indicar circuncisão para toda não retração fisiológica."
+      ],
+      "factIds": [
+        "b01_022_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Reavaliar resposta e técnica; retornar por retenção, edema doloroso com prepúcio preso ou infecção."
+      ],
+      "factIds": [
+        "b01_022_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Não retração fisiológica na infância difere de fimose cicatricial patológica; retração forçada causa trauma e pode agravar cicatrização."
+      ],
+      "factIds": [
+        "b01_022_f01"
+      ]
+    }
+  ],
+  "markdown": "# Fimose\n\n## Abordagem inicial\n\nSem sintomas e padrão fisiológico: orientação e observação, sem manipulação forçada. Suspeita de fimose patológica requer exame e plano dirigido.\n\n## Diagnóstico e diferenciais\n\nIdentificar anel cicatricial, retração previamente possível, infecções e sintomas urinários. Parafimose é emergência distinta; retenção urinária exige atendimento imediato.\n\n## Tratamento: opções e critérios de escolha\n\nOpção 1, contexto pediátrico selecionado: betametasona tópica 0,05% no anel estreito 2–3 vezes ao dia por 2–4 semanas de teste; boa resposta permite completar 6–12 semanas no total com acompanhamento. Opção 2: avaliação cirúrgica se cicatricial, refratária ou com complicações.\n\n## Segurança e monitorização\n\nNão extrapolar automaticamente protocolo pediátrico para adultos; investigar dermatoses e diabetes conforme contexto. Não indicar circuncisão para toda não retração fisiológica.\n\n## Reavaliação e destino\n\nReavaliar resposta e técnica; retornar por retenção, edema doloroso com prepúcio preso ou infecção.\n\n## Reconhecimento rápido\n\nNão retração fisiológica na infância difere de fimose cicatricial patológica; retração forçada causa trauma e pode agravar cicatrização.\n\n## Referências\n\n1. [Fimose](https://www.nhs.uk/conditions/phimosis/)\n2. [RCH — Penis and foreskin](https://www.rch.org.au/clinicalguide/guideline_index/The_penis_and_foreskin/)",
+  "approvedReviewCanonicalFileSha256": "68b72147b956be17724e1273e96d427ef132d703b7ea0a3b2f5540b1c4ce76e7",
+  "approvedReviewProjectionFileSha256": "3925cd969de2e66ac88c7b07c6859d3822baec0db17eb4fa1f7311ce3e38da78"
+}

@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "vertigem_posicional_paroxistica_benigna",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Vertigem posicional paroxística benigna",
+    "es": "Vértigo posicional paroxístico benigno"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Vertigem posicional por canalitíase não equivale a hidropsia endolinfática/Ménière.",
+  "relatedExistingOwners": [
+    "doenca_meniere"
+  ],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b01_001_f01",
+      "section": "concept",
+      "pt": "Otocônias deslocadas provocam vertigem breve com movimentos da cabeça; é diferente de vertigem contínua e doença de Ménière. O canal afetado orienta a manobra.",
+      "es": "Las otoconias desplazadas provocan vértigo breve al mover la cabeza; difiere del vértigo continuo y de Ménière. El canal afectado determina la maniobra.",
+      "sources": [
+        "topic_01",
+        "ng127",
+        "bppv",
+        "bppv_journal"
+      ]
+    },
+    {
+      "id": "b01_001_f02",
+      "section": "diagnosis",
+      "pt": "Na suspeita de canal posterior, realizar Dix–Hallpike por profissional treinado; padrão atípico ou teste negativo com suspeita de canal horizontal exige avaliação específica.",
+      "es": "Ante sospecha de canal posterior, realizar Dix–Hallpike por un profesional capacitado; un patrón atípico o sospecha de canal horizontal requiere evaluación específica.",
+      "sources": [
+        "topic_01",
+        "ng127",
+        "bppv",
+        "bppv_journal"
+      ]
+    },
+    {
+      "id": "b01_001_f03",
+      "section": "initial",
+      "pt": "Déficit focal, incapacidade de caminhar, cefaleia intensa nova ou vertigem contínua exigem excluir causa central. Não aplicar HINTS a crises posicionais breves.",
+      "es": "Déficit focal, incapacidad para caminar, cefalea intensa nueva o vértigo continuo obligan a descartar causa central. No aplicar HINTS a episodios posicionales breves.",
+      "sources": [
+        "topic_01",
+        "ng127",
+        "bppv",
+        "bppv_journal"
+      ]
+    },
+    {
+      "id": "b01_001_f04",
+      "section": "options",
+      "pt": "Opção 1: reposicionamento canalicular, como Epley para canal posterior confirmado. Opção 2: observação com acompanhamento quando a manobra não for possível ou for recusada; reabilitação vestibular pode complementar.",
+      "es": "Opción 1: reposicionamiento canalicular, como Epley para el canal posterior confirmado. Opción 2: observación con seguimiento si la maniobra no es posible o se rechaza; la rehabilitación vestibular puede complementar.",
+      "sources": [
+        "topic_01",
+        "ng127",
+        "bppv",
+        "bppv_journal"
+      ]
+    },
+    {
+      "id": "b01_001_f05",
+      "section": "safety",
+      "pt": "Avaliar limitações cervicais antes da manobra. Supressores vestibulares não são tratamento rotineiro nem corrigem a canalitíase; evitar exames de imagem sem indicação clínica.",
+      "es": "Evaluar las limitaciones cervicales antes de la maniobra. Los supresores vestibulares no son tratamiento rutinario ni corrigen la canalitiasis; evitar imágenes sin indicación clínica.",
+      "sources": [
+        "topic_01",
+        "ng127",
+        "bppv",
+        "bppv_journal"
+      ]
+    },
+    {
+      "id": "b01_001_f06",
+      "section": "followup",
+      "pt": "Reavaliar persistência ou recorrência; sintomas refratários exigem confirmar canal, diagnóstico e eventual causa central. Orientar prevenção de quedas e retorno diante de sinais neurológicos.",
+      "es": "Reevaluar persistencia o recurrencia; los síntomas refractarios exigen confirmar canal, diagnóstico y posibles causas centrales. Orientar sobre caídas y consultar ante signos neurológicos.",
+      "sources": [
+        "topic_01",
+        "ng127",
+        "bppv",
+        "bppv_journal"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_01",
+      "title": "Vertigem posicional paroxística benigna",
+      "url": "https://www.nice.org.uk/guidance/ng127/chapter/Recommendations-for-adults-aged-over-16",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "ng127",
+      "title": "ng127",
+      "url": "https://www.nice.org.uk/guidance/ng127/chapter/Recommendations-for-adults-aged-over-16",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2019,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "bppv",
+      "title": "bppv",
+      "url": "https://www.entnet.org/quality-practice/quality-products/clinical-practice-guidelines/bppv/",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2017,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "bppv_journal",
+      "title": "AAO-HNS — Clinical Practice Guideline: BPPV (Update), 2017",
+      "url": "https://aao-hnsfjournals.onlinelibrary.wiley.com/doi/10.1177/0194599816689667",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2017,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

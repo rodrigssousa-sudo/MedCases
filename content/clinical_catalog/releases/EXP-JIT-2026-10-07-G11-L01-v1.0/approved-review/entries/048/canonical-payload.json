@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "subluxacao_da_cabeca_do_radio",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Subluxação da cabeça do rádio",
+    "es": "Subluxación de cabeza radial (codo de niñera)"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "INTERCHANGEABLE_MANOEUVRES",
+  "facts": [
+    {
+      "id": "b01_048_f01",
+      "section": "concept",
+      "pt": "Comum em crianças pequenas, geralmente após tração do braço; criança evita usar membro sem deformidade importante. Trauma e fratura não devem ser automaticamente excluídos.",
+      "es": "Frecuente en niños pequeños, generalmente tras tracción del brazo; evita usar el miembro sin gran deformidad. No descartar automáticamente traumatismo y fractura.",
+      "sources": [
+        "topic_48",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b01_048_f02",
+      "section": "diagnosis",
+      "pt": "Apresentação típica permite diagnóstico clínico; edema, equimose, dor óssea relevante ou falha de redução exige radiografia e revisão diagnóstica.",
+      "es": "La presentación típica permite diagnóstico clínico; edema, equimosis, dolor óseo relevante o fracaso de reducción requiere radiografía y revisión diagnóstica.",
+      "sources": [
+        "topic_48",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b01_048_f03",
+      "section": "initial",
+      "pt": "Avaliar neurovascular e suspeita de lesão não acidental quando pertinente. Redução por profissional treinado após avaliação; não realizar se diagnóstico incerto.",
+      "es": "Evaluar estado neurovascular y sospecha de lesión no accidental cuando corresponda. Reducción por profesional capacitado tras evaluación; no realizar si el diagnóstico es incierto.",
+      "sources": [
+        "topic_48",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b01_048_f04",
+      "section": "options",
+      "pt": "Alternativa 1: hiperpronação. Alternativa 2: supinação com flexão; ambas por profissional habilitado, com reavaliação. Se duas tentativas falharem, reconsiderar diagnóstico e imagem, não insistir indefinidamente.",
+      "es": "Alternativa 1: hiperpronación. Alternativa 2: supinación con flexión; ambas por profesional capacitado, con reevaluación. Si fallan dos intentos, reconsiderar diagnóstico e imágenes, sin insistir indefinidamente.",
+      "sources": [
+        "topic_48",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b01_048_f05",
+      "section": "safety",
+      "pt": "Após redução, observar retorno ao uso do braço, geralmente em 5–30 minutos. Analgesia pediátrica pode ser necessária conforme quadro; doses adultas não se aplicam.",
+      "es": "Tras reducción, observar recuperación del uso del brazo, generalmente en 5–30 minutos. Puede necesitar analgesia pediátrica según el cuadro; las dosis adultas no se aplican.",
+      "sources": [
+        "topic_48",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b01_048_f06",
+      "section": "followup",
+      "pt": "Alta com uso restabelecido e avaliação tranquila; orientar evitar puxar por mãos/punhos. Persistência de não uso demanda reavaliação.",
+      "es": "Alta con uso restablecido y evaluación tranquilizadora; orientar evitar tirar de manos/muñecas. Si persiste la falta de uso, reevaluar.",
+      "sources": [
+        "topic_48",
+        "rch_pain"
+      ]
+    },
+    {
+      "id": "b01_048_ped_doses",
+      "section": "doses",
+      "sources": [
+        "rch_pain"
+      ],
+      "pt": "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL.",
+      "es": "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_48",
+      "title": "Subluxação da cabeça do rádio",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Pulled_elbow/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated May 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_48.txt"
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — Acute pain management",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

@@ -1,0 +1,142 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Cefalea de tipo tensional",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "1146ec32be5ae7712ffe5d8c1a2cd9c4eeace200736bfb7ffda06f68b9950927",
+  "ownerCandidate": "cefaleia_do_tipo_tensional",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_004_f01",
+    "b01_004_f02",
+    "b01_004_f03",
+    "b01_004_f04",
+    "b01_004_f05",
+    "b01_004_f06",
+    "b01_004_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Tratar el episodio tras descartar alarmas; abordar sueño, estrés y factores musculares. No pedir neuroimágenes solo para tranquilizar cuando el diagnóstico primario esté establecido."
+      ],
+      "factIds": [
+        "b01_004_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Diagnóstico clínico y diario de cefalea; evaluar patrón, frecuencia y uso de analgésicos. Inicio súbito intenso, fiebre/meningismo, déficit focal o cambios importantes requieren investigar causas secundarias."
+      ],
+      "factIds": [
+        "b01_004_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Alternativa 1: paracetamol oral para la crisis. Alternativa 2: ibuprofeno oral si no está contraindicado. Para el patrón crónico, considerar prevención especializada, incluida acupuntura según disponibilidad; no usar opioides."
+      ],
+      "factIds": [
+        "b01_004_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b01_004_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Utilizar las dosis adultas verificadas en la tabla de este tema. Limitar el uso repetido para prevenir cefalea por sobreuso; los antiinflamatorios requieren evaluación renal, gastrointestinal y del embarazo."
+      ],
+      "factIds": [
+        "b01_004_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Revisar el diario y la frecuencia de crisis; recurrencia incapacitante o diagnóstico incierto requiere seguimiento. Alta solo con examen tranquilizador e indicaciones explícitas de consulta."
+      ],
+      "factIds": [
+        "b01_004_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Dolor generalmente bilateral, opresivo, leve o moderado, sin empeorar con la actividad habitual; vómitos o síntomas migrañosos destacados requieren reconsiderar el diagnóstico."
+      ],
+      "factIds": [
+        "b01_004_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_04",
+      "title": "Cefaleia do tipo tensional",
+      "url": "https://www.nhs.uk/conditions/tension-headaches/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 01 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_04.txt"
+    },
+    {
+      "key": "cg150",
+      "title": "cg150",
+      "url": "https://www.nice.org.uk/guidance/cg150/chapter/recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2012,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ]
+}

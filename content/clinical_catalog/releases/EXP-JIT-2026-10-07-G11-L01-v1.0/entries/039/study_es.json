@@ -1,0 +1,189 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Bursitis olecraniana",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "1ff80b367fd81cf7818e835fcbfdf7faf4f128f7d5306993ff3ccdb66b83e862",
+  "ownerCandidate": "bursite_olecraniana",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_039_f01",
+    "b01_039_f02",
+    "b01_039_f03",
+    "b01_039_f04",
+    "b01_039_f05",
+    "b01_039_f06",
+    "b01_039_adult_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "La distensión/inflamación de la bursa posterior del codo puede ser aséptica, traumática, por cristales o infecciosa; dolor y edema no definen por sí solos la causa."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar calor, eritema, herida, fiebre y movimiento articular; la sospecha séptica requiere evaluación, posible aspiración/cultivo y diferenciar artritis séptica."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Inestabilidad o signos infecciosos relevantes requieren urgencia. En la forma aséptica, proteger de presión y evitar traumatismos repetidos."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción 1, aséptica: protección, medidas locales y analgesia breve. Opción 2, séptica/complicada: toma de muestras y antibióticos según evaluación/cultivo, eventualmente drenaje o cirugía. No son terapias intercambiables."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Paracetamol o ibuprofeno adulto pueden aliviar dolor si son seguros. No aspirar/infiltrar toda bursa empíricamente; el corticoide es inadecuado sin descartar infección. No inventar un antibiótico universal."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar empeoramiento, fiebre y función; persistencia o recurrencia exige revisar causa y posible ortopedia."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_39",
+      "title": "Bursite olecraniana",
+      "url": "https://www.orthoinfo.org/diseases--conditions/elbow-olecranon-bursitis/?wmode=opaque",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_39.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "La distensión/inflamación de la bursa posterior del codo puede ser aséptica, traumática, por cristales o infecciosa; dolor y edema no definen por sí solos la causa."
+      ],
+      "factIds": [
+        "b01_039_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar calor, eritema, herida, fiebre y movimiento articular; la sospecha séptica requiere evaluación, posible aspiración/cultivo y diferenciar artritis séptica."
+      ],
+      "factIds": [
+        "b01_039_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Inestabilidad o signos infecciosos relevantes requieren urgencia. En la forma aséptica, proteger de presión y evitar traumatismos repetidos."
+      ],
+      "factIds": [
+        "b01_039_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1, aséptica: protección, medidas locales y analgesia breve. Opción 2, séptica/complicada: toma de muestras y antibióticos según evaluación/cultivo, eventualmente drenaje o cirugía. No son terapias intercambiables."
+      ],
+      "factIds": [
+        "b01_039_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b01_039_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Paracetamol o ibuprofeno adulto pueden aliviar dolor si son seguros. No aspirar/infiltrar toda bursa empíricamente; el corticoide es inadecuado sin descartar infección. No inventar un antibiótico universal."
+      ],
+      "factIds": [
+        "b01_039_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar empeoramiento, fiebre y función; persistencia o recurrencia exige revisar causa y posible ortopedia."
+      ],
+      "factIds": [
+        "b01_039_f06"
+      ]
+    }
+  ],
+  "markdown": "# Bursitis olecraniana\n\n## Concepto y mecanismo\n\nLa distensión/inflamación de la bursa posterior del codo puede ser aséptica, traumática, por cristales o infecciosa; dolor y edema no definen por sí solos la causa.\n\n## Diagnóstico y diferenciales\n\nEvaluar calor, eritema, herida, fiebre y movimiento articular; la sospecha séptica requiere evaluación, posible aspiración/cultivo y diferenciar artritis séptica.\n\n## Abordaje inicial\n\nInestabilidad o signos infecciosos relevantes requieren urgencia. En la forma aséptica, proteger de presión y evitar traumatismos repetidos.\n\n## Tratamiento: opciones y criterios de elección\n\nOpción 1, aséptica: protección, medidas locales y analgesia breve. Opción 2, séptica/complicada: toma de muestras y antibióticos según evaluación/cultivo, eventualmente drenaje o cirugía. No son terapias intercambiables.\n\n## Fármacos, dosis e intervalos\n\nAnalgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.\n\n## Seguridad y monitorización\n\nParacetamol o ibuprofeno adulto pueden aliviar dolor si son seguros. No aspirar/infiltrar toda bursa empíricamente; el corticoide es inadecuado sin descartar infección. No inventar un antibiótico universal.\n\n## Reevaluación y destino\n\nReevaluar empeoramiento, fiebre y función; persistencia o recurrencia exige revisar causa y posible ortopedia.\n\n## Referencias\n\n1. [Bursite olecraniana](https://www.orthoinfo.org/diseases--conditions/elbow-olecranon-bursitis/?wmode=opaque)\n2. [para](https://www.nhs.uk/medicines/paracetamol-for-adults/)\n3. [ibu](https://www.nhs.uk/medicines/ibuprofen-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "335256b00b27e85a50d2ff45ae42da20aa46f4c1460425503979c8b56481b88d",
+  "approvedReviewProjectionFileSha256": "1a2668f325875558c043b3ba9e2506a4ac036ea503bdda97ebe960c1bb6f3572"
+}

@@ -1,0 +1,175 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Pacote candidato; aguarda aprovação deste lote. Guias devem permanecer em rascunho no Admin após futura publicação de Estudo/Plantão.",
+  "canonical_payload_sha256": "3c4e1931c305bc2993cd86c7324cd18e6bff1a427a37c45fa392ac6da41a9f7f",
+  "owner_candidate": "conjuntivite_alergica",
+  "pt": {
+    "title": "Conjuntivite alérgica",
+    "subtitle": "Conteúdo clínico para revisão",
+    "summary": "Prurido ocular bilateral com lacrimejamento favorece alergia. Dor importante, fotofobia ou redução visual não são achados tranquilizadores de conjuntivite simples.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Prurido ocular bilateral com lacrimejamento favorece alergia. Dor importante, fotofobia ou redução visual não são achados tranquilizadores de conjuntivite simples."
+        ],
+        "factIds": [
+          "b01_018_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Avaliar acuidade visual, lateralidade, córnea e uso de lentes; excluir ceratite e outras causas. Usuário de lentes com olho doloroso exige avaliação prioritária."
+        ],
+        "factIds": [
+          "b01_018_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial",
+        "paragraphs": [
+          "Evitar fricção e exposição desencadeante, retirar lentes durante irritação e usar compressas frias/lubrificação apropriada."
+        ],
+        "factIds": [
+          "b01_018_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: opções e critérios de escolha",
+        "paragraphs": [
+          "Alternativa 1: cetotifeno oftálmico 0,025%, 1 gota no olho afetado duas vezes ao dia, com intervalo de 8–12 horas, máximo de 2 aplicações por dia; bula verificada para idade a partir de 3 anos. Alternativa 2: lubrificação/compressas em quadro leve ou anti-histamínico oral se rinite concomitante."
+        ],
+        "factIds": [
+          "b01_018_f04"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Não usar corticosteroide ocular empiricamente: risco de infecção, glaucoma e lesão corneana requer supervisão. Não confundir concentração oftálmica com formulação oral nem reutilizar dose adulta em crianças."
+        ],
+        "factIds": [
+          "b01_018_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação e destino",
+        "paragraphs": [
+          "Retornar por dor, fotofobia, piora ou alteração visual; persistência exige avaliação ocular e revisão de causa."
+        ],
+        "factIds": [
+          "b01_018_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Conjuntivitis alérgica",
+    "subtitle": "Contenido clínico para revisión",
+    "summary": "El prurito ocular bilateral con lagrimeo favorece alergia. Dolor importante, fotofobia o reducción visual no son hallazgos tranquilizadores de conjuntivitis simple.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "El prurito ocular bilateral con lagrimeo favorece alergia. Dolor importante, fotofobia o reducción visual no son hallazgos tranquilizadores de conjuntivitis simple."
+        ],
+        "factIds": [
+          "b01_018_f01"
+        ]
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Evaluar agudeza visual, lateralidad, córnea y uso de lentes; descartar queratitis y otras causas. Un usuario de lentes con ojo doloroso requiere evaluación prioritaria."
+        ],
+        "factIds": [
+          "b01_018_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial",
+        "paragraphs": [
+          "Evitar frotarse y exposiciones desencadenantes, retirar lentes durante la irritación y utilizar compresas frías/lubricación adecuada."
+        ],
+        "factIds": [
+          "b01_018_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: opciones y criterios de elección",
+        "paragraphs": [
+          "Alternativa 1: ketotifeno oftálmico 0,025%, 1 gota en el ojo afectado dos veces al día, con intervalo de 8–12 horas, máximo de 2 aplicaciones diarias; ficha verificada desde los 3 años. Alternativa 2: lubricación/compresas para cuadros leves o antihistamínico oral si existe rinitis concomitante."
+        ],
+        "factIds": [
+          "b01_018_f04"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "No utilizar corticoide ocular empíricamente: el riesgo de infección, glaucoma y lesión corneal exige supervisión. No confundir concentración oftálmica con formulación oral ni reutilizar dosis adultas en niños."
+        ],
+        "factIds": [
+          "b01_018_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación y destino",
+        "paragraphs": [
+          "Consultar ante dolor, fotofobia, empeoramiento o alteración visual; la persistencia requiere evaluación ocular y revisión de la causa."
+        ],
+        "factIds": [
+          "b01_018_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_18",
+      "title": "Conjuntivite alérgica",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/conjunctivitis_acuteallergic",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_SUMMARY_ONLY",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_18.txt"
+    },
+    {
+      "key": "ketotifen",
+      "title": "DailyMed — Ketotifen 0.025% ophthalmic label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=52c62397-58f1-d34d-e063-6294a90a6faf&type=display",
+      "authorityStatus": "REGULATORY_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ketotifen.txt"
+    },
+    {
+      "key": "cetirizine",
+      "title": "NHS — Cetirizine dosing",
+      "url": "https://www.nhs.uk/medicines/cetirizine/how-and-when-to-take-cetirizine/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 18 February 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/cetirizine.txt"
+    }
+  ]
+}

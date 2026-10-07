@@ -1,0 +1,128 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Lesión de menisco",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "2e7b17818052a840ac06033db484c8d102f57341910a2ce3350ffb84e2b595c4",
+  "ownerCandidate": "lesao_de_menisco",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_013_f01",
+    "b01_013_f02",
+    "b01_013_f03",
+    "b01_013_f04",
+    "b01_013_f05",
+    "b01_013_f06",
+    "b01_013_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "La lesión meniscal puede ser traumática o degenerativa; dolor en la interlínea, derrame y síntomas mecánicos no identifican por sí solos el tipo de lesión."
+      ],
+      "factIds": [
+        "b01_013_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar mecanismo, derrame, bloqueo verdadero, estabilidad ligamentaria y capacidad de apoyo. La resonancia es selectiva; descartar fractura, infección y lesión ligamentaria asociada."
+      ],
+      "factIds": [
+        "b01_013_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Rodilla bloqueada, traumatismo importante, imposibilidad de apoyo o signos de infección requieren evaluación prioritaria. Protección relativa y analgesia, sin forzar un movimiento bloqueado."
+      ],
+      "factIds": [
+        "b01_013_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: rehabilitación, adaptación de actividad y analgesia para lesión estable. Opción 2: reparación/abordaje artroscópico seleccionado para bloqueo o lesión reparable; no indicar artroscopia automática ante un hallazgo degenerativo incidental."
+      ],
+      "factIds": [
+        "b01_013_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+      ],
+      "factIds": [
+        "b01_013_adult_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Paracetamol o ibuprofeno adulto son alternativas para el dolor en la tabla, no un tratamiento reparador. Riesgo renal, gastrointestinal y embarazo limitan los antiinflamatorios."
+      ],
+      "factIds": [
+        "b01_013_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Controlar amplitud, estabilidad y función; volver al deporte tras recuperación y orientación. Persistencia mecánica requiere reevaluación ortopédica."
+      ],
+      "factIds": [
+        "b01_013_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_13",
+      "title": "Lesão de menisco",
+      "url": "https://www.nhs.uk/conditions/meniscus-tear/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 02 September 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_13.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ]
+}

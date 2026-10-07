@@ -1,0 +1,143 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Hemorragia subconjuntival",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "47f18aa487171a1302a02c2baa5ddeb201773590c193bc883807a261351fdb02",
+  "ownerCandidate": "hemorragia_subconjuntival",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_019_f01",
+    "b01_019_f02",
+    "b01_019_f03",
+    "b01_019_f04",
+    "b01_019_f05",
+    "b01_019_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Traumatismo importante, dolor o pérdida visual exige descartar lesión ocular grave. No suspender anticoagulantes automáticamente por una mancha aislada."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Verificar agudeza, traumatismo, dolor, medicamentos y recurrencia; medir presión arterial. Investigar sangrado sistémico cuando lo indiquen antecedentes/examen."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Conducta principal: observación y orientación. Medida complementaria: lágrimas artificiales si existe irritación; no se necesita una segunda terapia curativa ni antibiótico rutinario."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No requiere una dosis sistémica empírica. Examinar presentaciones atípicas antes de clasificarlas como benignas."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar persistencia, recurrencia o nuevos síntomas; explicar signos de consulta ocular."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hemorragia conjuntival delimitada, habitualmente indolora y sin alteración visual; suele resolverse espontáneamente."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_19",
+      "title": "Hemorragia subconjuntival",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/sub-conjunctivalhaemorrhage",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_SUMMARY_ONLY",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_19.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Traumatismo importante, dolor o pérdida visual exige descartar lesión ocular grave. No suspender anticoagulantes automáticamente por una mancha aislada."
+      ],
+      "factIds": [
+        "b01_019_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Verificar agudeza, traumatismo, dolor, medicamentos y recurrencia; medir presión arterial. Investigar sangrado sistémico cuando lo indiquen antecedentes/examen."
+      ],
+      "factIds": [
+        "b01_019_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Conducta principal: observación y orientación. Medida complementaria: lágrimas artificiales si existe irritación; no se necesita una segunda terapia curativa ni antibiótico rutinario."
+      ],
+      "factIds": [
+        "b01_019_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No requiere una dosis sistémica empírica. Examinar presentaciones atípicas antes de clasificarlas como benignas."
+      ],
+      "factIds": [
+        "b01_019_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar persistencia, recurrencia o nuevos síntomas; explicar signos de consulta ocular."
+      ],
+      "factIds": [
+        "b01_019_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Hemorragia conjuntival delimitada, habitualmente indolora y sin alteración visual; suele resolverse espontáneamente."
+      ],
+      "factIds": [
+        "b01_019_f01"
+      ]
+    }
+  ],
+  "markdown": "# Hemorragia subconjuntival\n\n## Abordaje inicial\n\nTraumatismo importante, dolor o pérdida visual exige descartar lesión ocular grave. No suspender anticoagulantes automáticamente por una mancha aislada.\n\n## Diagnóstico y diferenciales\n\nVerificar agudeza, traumatismo, dolor, medicamentos y recurrencia; medir presión arterial. Investigar sangrado sistémico cuando lo indiquen antecedentes/examen.\n\n## Tratamiento: opciones y criterios de elección\n\nConducta principal: observación y orientación. Medida complementaria: lágrimas artificiales si existe irritación; no se necesita una segunda terapia curativa ni antibiótico rutinario.\n\n## Seguridad y monitorización\n\nNo requiere una dosis sistémica empírica. Examinar presentaciones atípicas antes de clasificarlas como benignas.\n\n## Reevaluación y destino\n\nReevaluar persistencia, recurrencia o nuevos síntomas; explicar signos de consulta ocular.\n\n## Reconocimiento rápido\n\nHemorragia conjuntival delimitada, habitualmente indolora y sin alteración visual; suele resolverse espontáneamente.\n\n## Referencias\n\n1. [Hemorragia subconjuntival](https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/sub-conjunctivalhaemorrhage)",
+  "approvedReviewCanonicalFileSha256": "8b9820d5b0ecab15b1a776cdaa6fec058018244d95dab1ffaeaf15c2a4e5b757",
+  "approvedReviewProjectionFileSha256": "3df6978923cd2c78bc3417b47ad9066cde5f4df0178633c19031077a05ba230e"
+}

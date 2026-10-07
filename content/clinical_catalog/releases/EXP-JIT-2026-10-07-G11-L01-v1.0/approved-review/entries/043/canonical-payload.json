@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "fratura_de_falanges_da_mao",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Fratura de falanges da mão",
+    "es": "Fracturas de falanges de la mano"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b01_043_f01",
+      "section": "concept",
+      "pt": "Fraturas digitais podem comprometer articulação, tendão ou leito ungueal; lesão infantil de Seymour é fratura exposta com risco de infecção e dano fisário.",
+      "es": "Las fracturas digitales pueden comprometer articulación, tendón o lecho ungueal; la lesión infantil de Seymour es una fractura abierta con riesgo de infección y daño fisario.",
+      "sources": [
+        "topic_43",
+        "aaos_finger",
+        "bssh",
+        "rch_pain",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_043_f02",
+      "section": "diagnosis",
+      "pt": "Examinar rotação, ferida, unha, extensão/flexão e neurovascular; radiografias direcionadas ao dedo. Não ignorar deformidade rotacional ao fechar a mão.",
+      "es": "Examinar rotación, herida, uña, extensión/flexión y estado neurovascular; radiografías dirigidas al dedo. No ignorar deformidad rotacional al cerrar la mano.",
+      "sources": [
+        "topic_43",
+        "aaos_finger",
+        "bssh",
+        "rch_pain",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_043_f03",
+      "section": "initial",
+      "pt": "Retirar anéis e imobilizar; fratura exposta, lesão tendínea, rotação importante ou déficit exige especialista. Seymour demanda limpeza/tratamento de fratura exposta e antibiótico do protocolo local.",
+      "es": "Retirar anillos e inmovilizar; fractura abierta, lesión tendinosa, rotación importante o déficit requiere especialista. Seymour exige limpieza/manejo de fractura abierta y antibiótico del protocolo local.",
+      "sources": [
+        "topic_43",
+        "aaos_finger",
+        "bssh",
+        "rch_pain",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_043_f04",
+      "section": "options",
+      "pt": "Opção 1: tala ou sindactilização em fratura estável selecionada. Opção 2: redução/fixação para instabilidade, desvio relevante, envolvimento articular ou lesão complexa; decisão por anatomia e idade.",
+      "es": "Opción 1: férula o vendaje al dedo vecino en fractura estable seleccionada. Opción 2: reducción/fijación por inestabilidad, desplazamiento relevante, compromiso articular o lesión compleja; decidir según anatomía y edad.",
+      "sources": [
+        "topic_43",
+        "aaos_finger",
+        "bssh",
+        "rch_pain",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_043_f05",
+      "section": "safety",
+      "pt": "Usar analgesia por população na tabela. Não aplicar imobilização excessiva sem controle nem sindactilizar toda lesão articular/tendínea. Avaliar perfusão após qualquer tala.",
+      "es": "Utilizar analgesia según población en la tabla. No prolongar inmovilización sin control ni vendar al dedo vecino toda lesión articular/tendinosa. Evaluar perfusión después de cualquier férula.",
+      "sources": [
+        "topic_43",
+        "aaos_finger",
+        "bssh",
+        "rch_pain",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_043_f06",
+      "section": "followup",
+      "pt": "Acompanhar alinhamento e rigidez; planejar mobilização guiada e revisão especializada conforme padrão. Dor crescente, déficit ou ferida infectada exige retorno.",
+      "es": "Controlar alineación y rigidez; planificar movilización guiada y revisión especializada según patrón. Dolor creciente, déficit o herida infectada requiere consulta.",
+      "sources": [
+        "topic_43",
+        "aaos_finger",
+        "bssh",
+        "rch_pain",
+        "para",
+        "ibu"
+      ]
+    },
+    {
+      "id": "b01_043_adult_doses",
+      "section": "doses",
+      "sources": [
+        "para",
+        "ibu"
+      ],
+      "pt": "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz.",
+      "es": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    },
+    {
+      "id": "b01_043_ped_doses",
+      "section": "doses",
+      "sources": [
+        "rch_pain"
+      ],
+      "pt": "Analgesia oral pediátrica de referência: paracetamol 15 mg/kg por dose a cada 6 horas, máximo de 1.000 mg por dose e 60 mg/kg em 24 horas, sem exceder 4.000 mg em 24 horas; esquema conservador de manutenção para idade acima de 1 mês, não protocolo neonatal. Alternativa, acima de 3 meses: ibuprofeno 10 mg/kg por dose a cada 8 horas, máximo de 400 mg por dose e 30 mg/kg em 24 horas. Evitar ibuprofeno em desidratação, comprometimento renal ou risco hemorrágico. Febre abaixo de 3 meses requer avaliação urgente, não automedicação. Confirmar peso apropriado ao cálculo, usando peso ideal quando indicado pelo protocolo, e concentração antes de calcular volume em mL.",
+      "es": "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_43",
+      "title": "Fratura de falanges da mão",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/fractures/Phalangeal_Finger_Fractures/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_43.txt"
+    },
+    {
+      "key": "aaos_finger",
+      "title": "AAOS — Finger fractures",
+      "url": "https://www.orthoinfo.org/diseases--conditions/finger-fractures",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/aaos_finger.txt"
+    },
+    {
+      "key": "bssh",
+      "title": "BSSH — Standards of care in hand trauma",
+      "url": "https://www.bssh.ac.uk/bssh_standards_of_care_in_hand_trauma_.aspx",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/bssh.txt"
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — Acute pain management",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

@@ -1,0 +1,157 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Larva migrans cutánea",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "aef4408d822094640434e4f1d40e311842f6b23222d849a2ccf9ae9cfbdba630",
+  "ownerCandidate": "larva_migrans_cutanea",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_034_f01",
+    "b01_034_f02",
+    "b01_034_f03",
+    "b01_034_f04",
+    "b01_034_f05",
+    "b01_034_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Aliviar prurito y evitar excoriaciones; enfermedad extensa, foliculitis o presentación atípica requiere evaluación adicional."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Diagnóstico clínico por morfología y exposición; diferenciar larva currens de estrongiloidiasis y otras dermatosis. Evaluar infección secundaria."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "En adultos: alternativa 1, albendazol 400 mg oral una vez al día durante 3–7 días; alternativa 2, ivermectina 200 microgramos/kg oral en dosis única. La reevaluación puede indicar tratamiento adicional en casos seleccionados."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Niños: albendazol 400 mg al día durante 3 días solo mayores de 2 años; ivermectina 200 microgramos/kg en dosis única solo por encima de 15 kg en el protocolo citado. Embarazo y niños menores requieren evaluación específica; no convertir microgramos a mg incorrectamente."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar respuesta y lesiones secundarias. Prevenir con calzado y evitar contacto directo con suelo contaminado; la crioterapia no es una solución rutinaria porque la ubicación larvaria es incierta."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Larvas de anquilostomas animales en la piel producen un trayecto serpiginoso pruriginoso, frecuentemente tras contacto con tierra/arena contaminadas."
+    }
+  ],
+  "references": [
+    {
+      "key": "clm",
+      "title": "CDC — Cutaneous larva migrans treatment",
+      "url": "https://www.cdc.gov/zoonotic-hookworm/hcp/clinical-care/index.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "clm_yellowbook",
+      "title": "CDC Yellow Book 2026 — Post-travel dermatologic conditions",
+      "url": "https://www.cdc.gov/yellow-book/hcp/post-travel-evaluation/post-travel-dermatologic-conditions.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Aliviar prurito y evitar excoriaciones; enfermedad extensa, foliculitis o presentación atípica requiere evaluación adicional."
+      ],
+      "factIds": [
+        "b01_034_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Diagnóstico clínico por morfología y exposición; diferenciar larva currens de estrongiloidiasis y otras dermatosis. Evaluar infección secundaria."
+      ],
+      "factIds": [
+        "b01_034_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "En adultos: alternativa 1, albendazol 400 mg oral una vez al día durante 3–7 días; alternativa 2, ivermectina 200 microgramos/kg oral en dosis única. La reevaluación puede indicar tratamiento adicional en casos seleccionados."
+      ],
+      "factIds": [
+        "b01_034_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Niños: albendazol 400 mg al día durante 3 días solo mayores de 2 años; ivermectina 200 microgramos/kg en dosis única solo por encima de 15 kg en el protocolo citado. Embarazo y niños menores requieren evaluación específica; no convertir microgramos a mg incorrectamente."
+      ],
+      "factIds": [
+        "b01_034_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar respuesta y lesiones secundarias. Prevenir con calzado y evitar contacto directo con suelo contaminado; la crioterapia no es una solución rutinaria porque la ubicación larvaria es incierta."
+      ],
+      "factIds": [
+        "b01_034_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Larvas de anquilostomas animales en la piel producen un trayecto serpiginoso pruriginoso, frecuentemente tras contacto con tierra/arena contaminadas."
+      ],
+      "factIds": [
+        "b01_034_f01"
+      ]
+    }
+  ],
+  "markdown": "# Larva migrans cutánea\n\n## Abordaje inicial\n\nAliviar prurito y evitar excoriaciones; enfermedad extensa, foliculitis o presentación atípica requiere evaluación adicional.\n\n## Diagnóstico y diferenciales\n\nDiagnóstico clínico por morfología y exposición; diferenciar larva currens de estrongiloidiasis y otras dermatosis. Evaluar infección secundaria.\n\n## Tratamiento: opciones y criterios de elección\n\nEn adultos: alternativa 1, albendazol 400 mg oral una vez al día durante 3–7 días; alternativa 2, ivermectina 200 microgramos/kg oral en dosis única. La reevaluación puede indicar tratamiento adicional en casos seleccionados.\n\n## Seguridad y monitorización\n\nNiños: albendazol 400 mg al día durante 3 días solo mayores de 2 años; ivermectina 200 microgramos/kg en dosis única solo por encima de 15 kg en el protocolo citado. Embarazo y niños menores requieren evaluación específica; no convertir microgramos a mg incorrectamente.\n\n## Reevaluación y destino\n\nReevaluar respuesta y lesiones secundarias. Prevenir con calzado y evitar contacto directo con suelo contaminado; la crioterapia no es una solución rutinaria porque la ubicación larvaria es incierta.\n\n## Reconocimiento rápido\n\nLarvas de anquilostomas animales en la piel producen un trayecto serpiginoso pruriginoso, frecuentemente tras contacto con tierra/arena contaminadas.\n\n## Referencias\n\n1. [CDC — Cutaneous larva migrans treatment](https://www.cdc.gov/zoonotic-hookworm/hcp/clinical-care/index.html)\n2. [CDC Yellow Book 2026 — Post-travel dermatologic conditions](https://www.cdc.gov/yellow-book/hcp/post-travel-evaluation/post-travel-dermatologic-conditions.html)",
+  "approvedReviewCanonicalFileSha256": "79a87076201c0dc090967f4a8c756089092605f997aa6bfab580ba732ce1913e",
+  "approvedReviewProjectionFileSha256": "99d27a901a91bcb2bd5e6a636f3532475b8643ef067c1969e58113ab39d9651e"
+}

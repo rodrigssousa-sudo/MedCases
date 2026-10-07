@@ -1,0 +1,118 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Neurite vestibular e labirintite",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "e6e3d41572a63670a2b361f56255907f8755b34ef6c17349e5c98f2ba022c8b2",
+  "ownerCandidate": "neurite_vestibular_e_labirintite",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_002_f01",
+    "b01_002_f02",
+    "b01_002_f03",
+    "b01_002_f04",
+    "b01_002_f05",
+    "b01_002_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Controlar vômitos e corrigir desidratação; internação se incapacidade de ingerir líquidos ou caminhar com segurança. Investigar infecção bacteriana quando houver sinais específicos."
+      ],
+      "factIds": [
+        "b01_002_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar marcha, neurologia, nistagmo, audição e hidratação. HINTS somente por examinador treinado em síndrome vestibular aguda; suspeita de AVC ou perda auditiva súbita demanda avaliação urgente."
+      ],
+      "factIds": [
+        "b01_002_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Opção 1: alívio sintomático com antiemético ou anti-histamínico por até 3 dias, com escolha individual. Opção 2: mobilização progressiva e reabilitação vestibular para desequilíbrio persistente; são estratégias de fases diferentes."
+      ],
+      "factIds": [
+        "b01_002_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Supressores prolongados podem retardar compensação vestibular e causar sedação. Antibióticos não tratam doença viral; corticosteroide não é prescrição automática. Gestação, fragilidade e comorbidades exigem seleção própria."
+      ],
+      "factIds": [
+        "b01_002_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Evitar dirigir enquanto houver vertigem; retornar por déficit focal, piora ou sintomas auditivos. Persistência exige revisar diagnóstico e acesso à reabilitação."
+      ],
+      "factIds": [
+        "b01_002_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Síndrome vestibular aguda inflamatória: neurite costuma preservar audição; labirintite pode causar perda auditiva e zumbido. Vertigem contínua não deve ser rotulada como VPPB."
+      ],
+      "factIds": [
+        "b01_002_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_02",
+      "title": "Neurite vestibular e labirintite",
+      "url": "https://www.nhs.uk/conditions/labyrinthitis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "last reviewed: 12 May 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_02.txt"
+    },
+    {
+      "key": "ng127",
+      "title": "ng127",
+      "url": "https://www.nice.org.uk/guidance/ng127/chapter/Recommendations-for-adults-aged-over-16",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2019,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "vestibular_rehab",
+      "title": "AAO-HNS — Vestibular rehabilitation",
+      "url": "https://www.entnet.org/resource/position-statement-vestibular-rehabilitation/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

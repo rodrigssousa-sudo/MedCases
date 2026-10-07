@@ -1,0 +1,157 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Esporotricosis",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "f82382147b60febe92a139735dabdaf056db6a05ef4bc65f833e960040debc5c",
+  "ownerCandidate": "esporotricose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_033_f01",
+    "b01_033_f02",
+    "b01_033_f03",
+    "b01_033_f04",
+    "b01_033_f05",
+    "b01_033_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar inmunosupresión, embarazo, lesiones oculares y síntomas sistémicos. La forma extracutánea/diseminada requiere infectología y posible internación."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sospechar ante lesiones nodulares/ulceradas con cadena linfática; obtener material para confirmación micológica según disponibilidad. Diferenciar leishmaniasis, micobacteriosis e infección bacteriana."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción 1, forma cutánea adulta habitual: itraconazol oral 200 mg al día, con duración definida por respuesta y protocolo. Opción 2: alternativa seleccionada, como terbinafina o yoduro de potasio, bajo especialista ante intolerancia/contraindicación; las formas graves pueden requerir anfotericina B lipídica."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No intercambiar formulaciones de itraconazol sin revisar absorción; verificar hepatotoxicidad, interacciones e insuficiencia cardíaca. Embarazo/niños requieren protocolo propio. No ofrecer dosis universales de alternativas especializadas ni duración arbitraria."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Controlar resolución y tolerancia a lo largo de meses; reducir exposición y orientar manejo veterinario seguro de animales infectados, sin abandono."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Micosis por Sporothrix, frecuentemente inoculada por vegetales o contacto con gatos infectados; las formas cutánea fija, linfocutánea y diseminada requieren manejos distintos."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_33",
+      "title": "Esporotricose",
+      "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/e/esporotricose-humana",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_33.txt"
+    },
+    {
+      "key": "sporo_gvs",
+      "title": "Ministério da Saúde — Guia de Vigilância em Saúde, volume 2, 6ª edição",
+      "url": "https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/vigilancia/guia-de-vigilancia-em-saude-volume-2-6a-edicao",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2023,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Evaluar inmunosupresión, embarazo, lesiones oculares y síntomas sistémicos. La forma extracutánea/diseminada requiere infectología y posible internación."
+      ],
+      "factIds": [
+        "b01_033_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Sospechar ante lesiones nodulares/ulceradas con cadena linfática; obtener material para confirmación micológica según disponibilidad. Diferenciar leishmaniasis, micobacteriosis e infección bacteriana."
+      ],
+      "factIds": [
+        "b01_033_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1, forma cutánea adulta habitual: itraconazol oral 200 mg al día, con duración definida por respuesta y protocolo. Opción 2: alternativa seleccionada, como terbinafina o yoduro de potasio, bajo especialista ante intolerancia/contraindicación; las formas graves pueden requerir anfotericina B lipídica."
+      ],
+      "factIds": [
+        "b01_033_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No intercambiar formulaciones de itraconazol sin revisar absorción; verificar hepatotoxicidad, interacciones e insuficiencia cardíaca. Embarazo/niños requieren protocolo propio. No ofrecer dosis universales de alternativas especializadas ni duración arbitraria."
+      ],
+      "factIds": [
+        "b01_033_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Controlar resolución y tolerancia a lo largo de meses; reducir exposición y orientar manejo veterinario seguro de animales infectados, sin abandono."
+      ],
+      "factIds": [
+        "b01_033_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Micosis por Sporothrix, frecuentemente inoculada por vegetales o contacto con gatos infectados; las formas cutánea fija, linfocutánea y diseminada requieren manejos distintos."
+      ],
+      "factIds": [
+        "b01_033_f01"
+      ]
+    }
+  ],
+  "markdown": "# Esporotricosis\n\n## Abordaje inicial\n\nEvaluar inmunosupresión, embarazo, lesiones oculares y síntomas sistémicos. La forma extracutánea/diseminada requiere infectología y posible internación.\n\n## Diagnóstico y diferenciales\n\nSospechar ante lesiones nodulares/ulceradas con cadena linfática; obtener material para confirmación micológica según disponibilidad. Diferenciar leishmaniasis, micobacteriosis e infección bacteriana.\n\n## Tratamiento: opciones y criterios de elección\n\nOpción 1, forma cutánea adulta habitual: itraconazol oral 200 mg al día, con duración definida por respuesta y protocolo. Opción 2: alternativa seleccionada, como terbinafina o yoduro de potasio, bajo especialista ante intolerancia/contraindicación; las formas graves pueden requerir anfotericina B lipídica.\n\n## Seguridad y monitorización\n\nNo intercambiar formulaciones de itraconazol sin revisar absorción; verificar hepatotoxicidad, interacciones e insuficiencia cardíaca. Embarazo/niños requieren protocolo propio. No ofrecer dosis universales de alternativas especializadas ni duración arbitraria.\n\n## Reevaluación y destino\n\nControlar resolución y tolerancia a lo largo de meses; reducir exposición y orientar manejo veterinario seguro de animales infectados, sin abandono.\n\n## Reconocimiento rápido\n\nMicosis por Sporothrix, frecuentemente inoculada por vegetales o contacto con gatos infectados; las formas cutánea fija, linfocutánea y diseminada requieren manejos distintos.\n\n## Referencias\n\n1. [Esporotricose](https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/e/esporotricose-humana)\n2. [Ministério da Saúde — Guia de Vigilância em Saúde, volume 2, 6ª edição](https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/vigilancia/guia-de-vigilancia-em-saude-volume-2-6a-edicao)",
+  "approvedReviewCanonicalFileSha256": "92c220114e67196a3c648ccf2e8adc7d8619656ee1681e762a3e8dd79b59cc31",
+  "approvedReviewProjectionFileSha256": "958b09d8652fd790ed5805b1fc7707ccb74e4c8ca3400632757a5dc6d9b77a07"
+}

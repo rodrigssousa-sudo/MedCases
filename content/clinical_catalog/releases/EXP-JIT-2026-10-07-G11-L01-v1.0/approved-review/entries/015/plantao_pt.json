@@ -1,0 +1,128 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Costocondrite",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "98105ec2c08d1be4da9c85f8f14235bd7f2077aa3a70bc16cb323ae3808ffe63",
+  "ownerCandidate": "costocondrite",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_015_f01",
+    "b01_015_f02",
+    "b01_015_f03",
+    "b01_015_f04",
+    "b01_015_f05",
+    "b01_015_f06",
+    "b01_015_adult_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Instabilidade, dispneia, sudorese ou dor sugestiva de isquemia exige abordagem de dor torácica aguda. Só atribuir à parede após avaliação segura."
+      ],
+      "factIds": [
+        "b01_015_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar contexto cardiovascular, respiratório e exame; solicitar ECG e exames quando risco/sintomas exigirem. Febre, edema importante ou trauma sugerem outros diagnósticos."
+      ],
+      "factIds": [
+        "b01_015_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Alternativa 1: anti-inflamatório oral curto, como ibuprofeno quando seguro. Alternativa 2: paracetamol para analgesia se anti-inflamatório inadequado; reduzir atividades desencadeantes. Casos persistentes selecionados podem exigir tratamento especializado."
+      ],
+      "factIds": [
+        "b01_015_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Analgesia oral de curta duração em adultos: alternativa 1, paracetamol 500–1.000 mg por dose, intervalo mínimo de 4 horas, máximo de 4 doses e 4.000 mg em 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dose, até 3 vezes ao dia, intervalo mínimo de 4 horas, máximo de 1.200 mg em 24 horas neste esquema. Não somar paracetamol de produtos combinados; limite menor pode ser necessário em peso abaixo de 50 kg, hepatopatia, fragilidade, malnutrição ou uso importante de álcool. Evitar ibuprofeno em desidratação, doença renal relevante, sangramento/úlcera, hipersensibilidade e situações contraindicadas na gestação; revisar anticoagulantes. Usar menor dose e menor duração eficaz."
+      ],
+      "factIds": [
+        "b01_015_adult_doses"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "As doses adultas estão na tabela. Não usar resposta ao analgésico para excluir doença grave; considerar riscos renal, gastrointestinal e de gestação."
+      ],
+      "factIds": [
+        "b01_015_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Alta com orientações de retorno por mudança do padrão, dispneia ou piora; reavaliar dor persistente e diagnóstico inicial."
+      ],
+      "factIds": [
+        "b01_015_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Dor de parede torácica por inflamação da região costocondral, frequentemente reproduzível à palpação/movimento. Esse achado não exclui síndrome coronariana ou embolia pulmonar."
+      ],
+      "factIds": [
+        "b01_015_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_15",
+      "title": "Costocondrite",
+      "url": "https://www.nhs.uk/conditions/costochondritis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 14 August 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_15.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ]
+}

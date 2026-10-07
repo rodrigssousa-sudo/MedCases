@@ -1,0 +1,132 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Hipotensão ortostática",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "5acf31aeb5e16cf4683a06a0233239208f89d28e4d5ae06107f5c8ed68b0ed24",
+  "ownerCandidate": "hipotensao_ortostatica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_006_f01",
+    "b01_006_f02",
+    "b01_006_f03",
+    "b01_006_f04",
+    "b01_006_f05",
+    "b01_006_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Queda postural da pressão associada a sintomas pode resultar de hipovolemia, fármacos ou disautonomia; idosos têm maior risco de quedas."
+      ],
+      "factIds": [
+        "b01_006_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Medir pressão e frequência cardíaca deitado e após pelo menos 1 minuto em pé; queda de pelo menos 20 mmHg sistólica ou 10 mmHg diastólica apoia diagnóstico. Se história típica com teste normal, repetir avaliação e considerar medidas até 3 minutos/especialista."
+      ],
+      "factIds": [
+        "b01_006_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Deitar se sintomático, prevenir quedas e procurar desidratação, hemorragia, arritmia e efeitos medicamentosos. Instabilidade persistente exige abordagem de choque, não diagnóstico postural isolado."
+      ],
+      "factIds": [
+        "b01_006_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Opção 1: corrigir causa reversível, levantar gradualmente e ajustar hidratação/revisar fármacos. Opção 2: compressão e medidas físicas; sintomas persistentes por disautonomia podem justificar midodrina ou fludrocortisona sob supervisão especializada."
+      ],
+      "factIds": [
+        "b01_006_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não aumentar sal/líquidos indiscriminadamente em doença renal ou insuficiência cardíaca. Tratamento farmacológico exige monitorar hipertensão em decúbito; fludrocortisona também retenção hídrica e potássio. Não fornecer dose empírica única."
+      ],
+      "factIds": [
+        "b01_006_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Reavaliar sintomas, pressão em diferentes posições e quedas após ajustes; encaminhar persistência incapacitante ou suspeita neurológica/autonômica."
+      ],
+      "factIds": [
+        "b01_006_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_06",
+      "title": "Hipotensão ortostática",
+      "url": "https://medlineplus.gov/lowbloodpressure.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated January 28, 2019",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_06.txt"
+    },
+    {
+      "key": "orthostasis",
+      "title": "orthostasis",
+      "url": "https://www.rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/adult-therapeutic-guidelines/geriatric-frailty-multimorbidity/orthostatic-hypotension-guidelines/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last reviewed:",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/orthostasis.txt"
+    },
+    {
+      "key": "cg109",
+      "title": "cg109",
+      "url": "https://www.nice.org.uk/guidance/cg109/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2010,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "ng136",
+      "title": "NICE NG136 — Postural hypotension, recommendations 1.1.5–1.1.7",
+      "url": "https://www.nice.org.uk/guidance/ng136/chapter/recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

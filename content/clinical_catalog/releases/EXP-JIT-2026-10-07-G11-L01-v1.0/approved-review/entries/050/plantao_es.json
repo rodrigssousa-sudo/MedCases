@@ -1,0 +1,128 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Fiebre infantil sin foco",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "803cb41bde000670b1b7ff78c1a1beb4184f24f9bde3192e4cee709f22ff5b40",
+  "ownerCandidate": "febre_sem_sinais_de_localizacao_na_crianca",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_050_f01",
+    "b01_050_f02",
+    "b01_050_f03",
+    "b01_050_f04",
+    "b01_050_f05",
+    "b01_050_f06",
+    "b01_050_ped_doses"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Mala perfusión, letargo, dificultad respiratoria, meningismo o exantema no blanqueable requiere emergencia. Fiebre durante 5 días o más exige considerar Kawasaki y otras causas."
+      ],
+      "factIds": [
+        "b01_050_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar temperatura, perfusión, conciencia, respiración, hidratación y orina según riesgo. Menores de 3 meses con temperatura de al menos 38 °C requieren evaluación urgente; los neonatos necesitan estudio hospitalario específico."
+      ],
+      "factIds": [
+        "b01_050_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Alivio del malestar: alternativa 1, paracetamol pediátrico; alternativa 2, ibuprofeno pediátrico si edad e hidratación lo permiten. No dar ambos simultáneamente ni alternarlos rutinariamente; el alto riesgo requiere estudio y tratamiento hospitalario, no solo antitérmico."
+      ],
+      "factIds": [
+        "b01_050_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+      ],
+      "factIds": [
+        "b01_050_ped_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "La tabla analgésica pediátrica no es un protocolo neonatal. No convertir mg a mL sin concentración confirmada; evitar ibuprofeno ante deshidratación. El antibiótico empírico depende de edad/gravedad y protocolo, sin esquema universal en este tema."
+      ],
+      "factIds": [
+        "b01_050_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Alta solo con bajo riesgo, ingesta/diuresis adecuadas, cuidadores orientados y acceso a reevaluación. Consultar ante empeoramiento, decaimiento, dificultad respiratoria o deshidratación."
+      ],
+      "factIds": [
+        "b01_050_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Síndrome sin foco inicialmente identificable; edad, aspecto y signos de gravedad determinan el estudio. La respuesta al antitérmico no excluye infección grave."
+      ],
+      "factIds": [
+        "b01_050_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_50",
+      "title": "Febre sem sinais de localização na criança",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Febrile_child/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_50.txt"
+    },
+    {
+      "key": "ng143",
+      "title": "ng143",
+      "url": "https://www.nice.org.uk/guidance/ng143/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2019,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — Acute pain management",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt"
+    }
+  ]
+}

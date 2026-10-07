@@ -1,0 +1,104 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Perforación de la membrana timpánica",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "456ee55977e2f1c7726a34b76d170a000e342cfc12d6335d274d41777f428d49",
+  "ownerCandidate": "perfuracao_da_membrana_timpanica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_020_f01",
+    "b01_020_f02",
+    "b01_020_f03",
+    "b01_020_f04",
+    "b01_020_f05",
+    "b01_020_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Mantener el oído seco y evitar instrumentación/irrigación. No aplicar gotas sin verificar su seguridad con tímpano perforado."
+      ],
+      "factIds": [
+        "b01_020_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Otoscopia cuidadosa; evaluar mecanismo, audición y vértigo. Traumatismo con hipoacusia importante, vértigo o sospecha de lesión craneal requiere evaluación urgente."
+      ],
+      "factIds": [
+        "b01_020_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: observación, protección del agua y analgesia según necesidad. Opción 2: evaluación otorrinolaringológica para reparación si no cicatriza o existe compromiso significativo. El antibiótico depende de infección, no es una alternativa universal."
+      ],
+      "factIds": [
+        "b01_020_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Evitar fármacos ototóxicos con oído medio expuesto; verificar producto, indicación y población antes de prescribir. No forzar maniobras de presión ni bucear durante la recuperación."
+      ],
+      "factIds": [
+        "b01_020_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar cicatrización y audición; secreción persistente, dolor creciente o vértigo requieren consulta y posible especialista."
+      ],
+      "factIds": [
+        "b01_020_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Puede deberse a infección, traumatismo o barotrauma, con otalgia, secreción e hipoacusia. Una perforación simple puede cicatrizar espontáneamente."
+      ],
+      "factIds": [
+        "b01_020_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_20",
+      "title": "Perfuração da membrana timpânica",
+      "url": "https://www.nhs.uk/conditions/perforated-eardrum/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 19 April 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_20.txt"
+    },
+    {
+      "key": "eardrum_medline",
+      "title": "MedlinePlus — Ruptured eardrum",
+      "url": "https://medlineplus.gov/ency/article/001038.htm",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

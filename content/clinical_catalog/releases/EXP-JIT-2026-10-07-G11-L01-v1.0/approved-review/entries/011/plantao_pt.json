@@ -1,0 +1,118 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Fibromialgia",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "666db88d2ba3d4a6af422e59154ee51019dc81ba7a7585eca7c3d20af80d9484",
+  "ownerCandidate": "fibromialgia",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_011_f01",
+    "b01_011_f02",
+    "b01_011_f03",
+    "b01_011_f04",
+    "b01_011_f05",
+    "b01_011_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Validar sintomas e pactuar metas de função; não prometer cura farmacológica. No Plantão, tratar intercorrência e red flags sem substituir seguimento longitudinal."
+      ],
+      "factIds": [
+        "b01_011_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar distribuição da dor, sono, cognição, impacto funcional e saúde mental; exames orientados por achados para excluir causas tratáveis. Fraqueza objetiva, febre ou emagrecimento exigem outro diagnóstico."
+      ],
+      "factIds": [
+        "b01_011_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Estratégia 1: exercício supervisionado adaptado e terapia cognitivo-comportamental ou de aceitação/compromisso. Estratégia 2: antidepressivo selecionado, após discutir benefícios e riscos, como parte de plano individual para dor primária crônica; não são mutuamente excludentes."
+      ],
+      "factIds": [
+        "b01_011_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não iniciar opioides, benzodiazepínicos ou anti-inflamatórios como rotina para dor primária crônica. Diretrizes variam no uso de gabapentinoides; não apresentá-los como alternativa universal. Dose de psicofármaco depende de produto e perfil clínico."
+      ],
+      "factIds": [
+        "b01_011_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Reavaliar função, atividade, sono, efeitos adversos e risco psíquico; encaminhar casos complexos. Diferenciar piora habitual de doença nova."
+      ],
+      "factIds": [
+        "b01_011_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Síndrome de dor disseminada associada a alterações do processamento da dor, fadiga e sono não reparador. Não equivale a artrite inflamatória nem exige exames extensos indiscriminados."
+      ],
+      "factIds": [
+        "b01_011_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_11",
+      "title": "Fibromialgia",
+      "url": "https://www.nhs.uk/conditions/fibromyalgia/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 12 October 2022",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_11.txt"
+    },
+    {
+      "key": "ng193",
+      "title": "ng193",
+      "url": "https://www.nice.org.uk/guidance/ng193/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2021,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "ng193_verified",
+      "title": "NICE NG193 — Chronic primary pain",
+      "url": "https://www.nice.org.uk/guidance/ng193/chapter/recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

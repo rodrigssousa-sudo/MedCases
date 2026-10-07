@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "doenca_celiaca",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Doença celíaca",
+    "es": "Enfermedad celíaca"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "SINGLE_DISEASE_MODIFYING_STANDARD",
+  "facts": [
+    {
+      "id": "b01_028_f01",
+      "section": "definition",
+      "pt": "Enteropatia imunomediada desencadeada por glúten, com manifestações intestinais e extraintestinais; pode ocorrer sem diarreia. Não equivale a alergia ao trigo nem a sensibilidade não celíaca.",
+      "es": "Enteropatía inmunomediada desencadenada por gluten, con manifestaciones intestinales y extraintestinales; puede existir sin diarrea. No equivale a alergia al trigo ni a sensibilidad no celíaca.",
+      "sources": [
+        "celiac_diagnosis",
+        "celiac_treatment"
+      ]
+    },
+    {
+      "id": "b01_028_f02",
+      "section": "diagnosis",
+      "pt": "Investigar durante consumo de glúten: sorologia adequada, incluindo IgA total, e avaliação especializada para confirmação. Deficiência de IgA exige estratégia sorológica própria; sorologia negativa não encerra investigação se suspeita forte.",
+      "es": "Investigar durante el consumo de gluten: serología adecuada, incluida IgA total, y evaluación especializada para confirmación. El déficit de IgA exige estrategia serológica propia; una serología negativa no cierra el estudio ante sospecha fuerte.",
+      "sources": [
+        "celiac_diagnosis",
+        "celiac_treatment"
+      ]
+    },
+    {
+      "id": "b01_028_f03",
+      "section": "diagnosis",
+      "pt": "Endoscopia com biópsias duodenais permanece importante. Existem critérios específicos para diagnóstico sem biópsia em pacientes selecionados; não aplicar esse caminho automaticamente a qualquer teste positivo.",
+      "es": "La endoscopia con biopsias duodenales sigue siendo importante. Existen criterios específicos para diagnóstico sin biopsia en pacientes seleccionados; no aplicar esa vía automáticamente a cualquier prueba positiva.",
+      "sources": [
+        "celiac_diagnosis",
+        "celiac_treatment"
+      ]
+    },
+    {
+      "id": "b01_028_f04",
+      "section": "initial",
+      "pt": "Avaliar anemia, perda ponderal, desidratação e repercussões nutricionais. Evitar iniciar dieta sem glúten antes dos exames, pois pode dificultar a confirmação; se a dieta já começou, planejar investigação com gastroenterologia.",
+      "es": "Evaluar anemia, pérdida de peso, deshidratación y repercusiones nutricionales. Evitar iniciar dieta sin gluten antes de los estudios, porque puede dificultar la confirmación; si ya se inició, planificar el estudio con gastroenterología.",
+      "sources": [
+        "celiac_diagnosis",
+        "celiac_treatment"
+      ]
+    },
+    {
+      "id": "b01_028_f05",
+      "section": "treatment",
+      "pt": "Após confirmação, dieta estrita sem glúten, orientação nutricional e prevenção de contaminação cruzada. Corrigir deficiências documentadas; suplementos não substituem a retirada do glúten.",
+      "es": "Tras confirmar, dieta estricta sin gluten, orientación nutricional y prevención de contaminación cruzada. Corregir carencias documentadas; los suplementos no sustituyen la retirada del gluten.",
+      "sources": [
+        "celiac_diagnosis",
+        "celiac_treatment"
+      ]
+    },
+    {
+      "id": "b01_028_f06",
+      "section": "monitoring",
+      "pt": "Acompanhar sintomas, peso, deficiências e sorologia. Persistência exige verificar exposição inadvertida e outras causas antes de diagnosticar refratariedade; considerar colite microscópica, intolerâncias e insuficiência pancreática.",
+      "es": "Vigilar síntomas, peso, carencias y serología. La persistencia exige verificar exposición inadvertida y otras causas antes de diagnosticar refractariedad; considerar colitis microscópica, intolerancias e insuficiencia pancreática.",
+      "sources": [
+        "celiac_diagnosis",
+        "celiac_treatment"
+      ]
+    },
+    {
+      "id": "b01_028_f07",
+      "section": "disposition",
+      "pt": "Desidratação, desnutrição grave, sangramento ou abdome agudo exigem atendimento urgente. Quadro estável segue ambulatorialmente, com plano nutricional e retorno documentados.",
+      "es": "Deshidratación, desnutrición grave, sangrado o abdomen agudo requieren atención urgente. El cuadro estable continúa ambulatoriamente, con plan nutricional y seguimiento documentados.",
+      "sources": [
+        "celiac_diagnosis",
+        "celiac_treatment"
+      ]
+    },
+    {
+      "id": "b01_028_f08",
+      "section": "special",
+      "pt": "Crianças precisam acompanhar crescimento e critérios diagnósticos pediátricos. Gestação exige atenção às carências; não prescrever corticoide para toda celíaca sintomática. Doença refratária requer centro especializado.",
+      "es": "Los niños necesitan seguimiento del crecimiento y criterios diagnósticos pediátricos. El embarazo exige atención a las carencias; no prescribir corticoide para toda enfermedad celíaca sintomática. La enfermedad refractaria requiere centro especializado.",
+      "sources": [
+        "celiac_diagnosis",
+        "celiac_treatment"
+      ]
+    },
+    {
+      "id": "b01_028_f09",
+      "section": "options",
+      "pt": "Tratamento modificador da doença: dieta estritamente sem glúten contínua, com nutricionista. Complemento: corrigir deficiências demonstradas e acompanhar recuperação; não é segunda terapia equivalente. Doença refratária exige confirmação e especialista, sem imunossupressão empírica.",
+      "es": "Tratamiento modificador de la enfermedad: dieta estricta sin gluten continua, con nutricionista. Complemento: corregir deficiencias demostradas y controlar recuperación; no constituye una segunda terapia equivalente. La enfermedad refractaria exige confirmación y especialista, sin inmunosupresión empírica.",
+      "sources": [
+        "celiac_diagnosis",
+        "celiac_treatment"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "id": "study_reasoning",
+      "section": "definition",
+      "pt": "A dieta interfere tanto na doença quanto na investigação. Retirar glúten antes de testar pode reduzir a chance de demonstrar alterações diagnósticas. Depois da confirmação, o raciocínio se inverte: o controle depende de evitar exposição e acompanhar recuperação clínica e nutricional.",
+      "es": "La dieta influye tanto en la enfermedad como en su estudio. Retirar el gluten antes de realizar pruebas puede reducir la posibilidad de demostrar alteraciones diagnósticas. Tras la confirmación, el razonamiento se invierte: el control depende de evitar exposición y seguir la recuperación clínica y nutricional.",
+      "sources": [
+        "ES25",
+        "DX",
+        "TX"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "celiac_diagnosis",
+      "title": "NIDDK — Celiac disease diagnosis",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease/diagnosis",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last Reviewed October 2020",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/celiac_diagnosis.txt"
+    },
+    {
+      "key": "celiac_treatment",
+      "title": "NIDDK — Celiac disease treatment",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/celiac-disease/treatment",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last Reviewed October 2020",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/celiac_treatment.txt"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-intestinal-group07-2026-10-04/entries/021/canonical-payload.json"
+}

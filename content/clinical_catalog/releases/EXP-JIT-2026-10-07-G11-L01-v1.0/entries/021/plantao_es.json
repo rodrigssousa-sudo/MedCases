@@ -1,0 +1,189 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Balanopostitis",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "01fb12b14e9377d6d17b0fdd8d97599fad3f6935d72b796dfa337f7fa961acf0",
+  "ownerCandidate": "balanopostite",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_021_f01",
+    "b01_021_f02",
+    "b01_021_f03",
+    "b01_021_f04",
+    "b01_021_f05",
+    "b01_021_f06",
+    "b01_021_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Parafimosis, retención urinaria, necrosis o fiebre importante requieren urgencia. Higiene suave con agua, secado y suspensión de irritantes; no forzar retracción."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar secreción, ulceración, exposición sexual, higiene y retracción; estudiar ITS según riesgo y glucemia ante recurrencia/sospecha de diabetes."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción 1, sospecha de Candida: antifúngico tópico, como clotrimazol 1%, según formulación y orientación local. Opción 2, cuadro irritativo: retirar el desencadenante y considerar corticoide tópico de baja potencia durante poco tiempo tras descartar infección."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Clotrimazol cutáneo 1% para Candida, si se selecciona: aplicar 2–3 veces al día, generalmente durante al menos 2 semanas según producto verificado. Reevaluar ausencia de mejoría; no confundir crema externa con formulación vaginal y verificar efecto sobre anticonceptivos de látex."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Las opciones dependen de la etiología y no son intercambiables. Infección bacteriana/ITS exige su propio esquema; no inventar un antibiótico universal. Los niños tienen causas y cuidados específicos."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar persistencia/recurrencia; lesión atípica o sospecha de dermatosis/neoplasia requiere especialista. Orientar prevención y manejo de la causa de base."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "La inflamación de glande/prepucio puede ser irritativa, candidiásica, bacteriana o relacionada con ITS; no elegir antimicrobianos solo por la localización."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_21",
+      "title": "Balanopostite",
+      "url": "https://www.nhs.uk/conditions/balanitis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 30 May 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_21.txt"
+    },
+    {
+      "key": "rch_foreskin",
+      "title": "RCH — Penis and foreskin",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/The_penis_and_foreskin/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated September 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_foreskin.txt"
+    },
+    {
+      "key": "clotrimazole",
+      "title": "NHS — Clotrimazole",
+      "url": "https://www.nhs.uk/medicines/clotrimazole/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 8 July 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/clotrimazole.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Parafimosis, retención urinaria, necrosis o fiebre importante requieren urgencia. Higiene suave con agua, secado y suspensión de irritantes; no forzar retracción."
+      ],
+      "factIds": [
+        "b01_021_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar secreción, ulceración, exposición sexual, higiene y retracción; estudiar ITS según riesgo y glucemia ante recurrencia/sospecha de diabetes."
+      ],
+      "factIds": [
+        "b01_021_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1, sospecha de Candida: antifúngico tópico, como clotrimazol 1%, según formulación y orientación local. Opción 2, cuadro irritativo: retirar el desencadenante y considerar corticoide tópico de baja potencia durante poco tiempo tras descartar infección."
+      ],
+      "factIds": [
+        "b01_021_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Clotrimazol cutáneo 1% para Candida, si se selecciona: aplicar 2–3 veces al día, generalmente durante al menos 2 semanas según producto verificado. Reevaluar ausencia de mejoría; no confundir crema externa con formulación vaginal y verificar efecto sobre anticonceptivos de látex."
+      ],
+      "factIds": [
+        "b01_021_f07"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Las opciones dependen de la etiología y no son intercambiables. Infección bacteriana/ITS exige su propio esquema; no inventar un antibiótico universal. Los niños tienen causas y cuidados específicos."
+      ],
+      "factIds": [
+        "b01_021_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar persistencia/recurrencia; lesión atípica o sospecha de dermatosis/neoplasia requiere especialista. Orientar prevención y manejo de la causa de base."
+      ],
+      "factIds": [
+        "b01_021_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "La inflamación de glande/prepucio puede ser irritativa, candidiásica, bacteriana o relacionada con ITS; no elegir antimicrobianos solo por la localización."
+      ],
+      "factIds": [
+        "b01_021_f01"
+      ]
+    }
+  ],
+  "markdown": "# Balanopostitis\n\n## Abordaje inicial\n\nParafimosis, retención urinaria, necrosis o fiebre importante requieren urgencia. Higiene suave con agua, secado y suspensión de irritantes; no forzar retracción.\n\n## Diagnóstico y diferenciales\n\nEvaluar secreción, ulceración, exposición sexual, higiene y retracción; estudiar ITS según riesgo y glucemia ante recurrencia/sospecha de diabetes.\n\n## Tratamiento: opciones y criterios de elección\n\nOpción 1, sospecha de Candida: antifúngico tópico, como clotrimazol 1%, según formulación y orientación local. Opción 2, cuadro irritativo: retirar el desencadenante y considerar corticoide tópico de baja potencia durante poco tiempo tras descartar infección.\n\n## Fármacos, dosis e intervalos\n\nClotrimazol cutáneo 1% para Candida, si se selecciona: aplicar 2–3 veces al día, generalmente durante al menos 2 semanas según producto verificado. Reevaluar ausencia de mejoría; no confundir crema externa con formulación vaginal y verificar efecto sobre anticonceptivos de látex.\n\n## Seguridad y monitorización\n\nLas opciones dependen de la etiología y no son intercambiables. Infección bacteriana/ITS exige su propio esquema; no inventar un antibiótico universal. Los niños tienen causas y cuidados específicos.\n\n## Reevaluación y destino\n\nReevaluar persistencia/recurrencia; lesión atípica o sospecha de dermatosis/neoplasia requiere especialista. Orientar prevención y manejo de la causa de base.\n\n## Reconocimiento rápido\n\nLa inflamación de glande/prepucio puede ser irritativa, candidiásica, bacteriana o relacionada con ITS; no elegir antimicrobianos solo por la localización.\n\n## Referencias\n\n1. [Balanopostite](https://www.nhs.uk/conditions/balanitis/)\n2. [RCH — Penis and foreskin](https://www.rch.org.au/clinicalguide/guideline_index/The_penis_and_foreskin/)\n3. [NHS — Clotrimazole](https://www.nhs.uk/medicines/clotrimazole/)",
+  "approvedReviewCanonicalFileSha256": "ae3fe639a29a435247d04e91a1232220229d85a0c2de887503869fce2821299a",
+  "approvedReviewProjectionFileSha256": "b1fba03edfd6508c50a651b7343c5a1cd3f118d9a08b758eb55e68c6ae904913"
+}

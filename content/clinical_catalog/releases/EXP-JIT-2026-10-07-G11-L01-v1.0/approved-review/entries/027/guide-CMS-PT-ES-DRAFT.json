@@ -1,0 +1,219 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Pacote candidato; aguarda aprovação deste lote. Guias devem permanecer em rascunho no Admin após futura publicação de Estudo/Plantão.",
+  "canonical_payload_sha256": "bb53dc5c765762f651daf76a966c827163b9a37d08d5981406f987d3aefbdb1f",
+  "owner_candidate": "diarreia_cronica",
+  "pt": {
+    "title": "Diarreia crônica",
+    "subtitle": "Conteúdo clínico para revisão",
+    "summary": "Diarreia por pelo menos 4 semanas é síndrome, não etiologia. Caracterizar padrão aquoso, gorduroso ou inflamatório e procurar relação com alimentação, medicamentos, cirurgia e sintomas sistêmicos.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Diarreia por pelo menos 4 semanas é síndrome, não etiologia. Caracterizar padrão aquoso, gorduroso ou inflamatório e procurar relação com alimentação, medicamentos, cirurgia e sintomas sistêmicos."
+        ],
+        "factIds": [
+          "b01_027_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio clínico",
+        "paragraphs": [
+          "A duração muda o diferencial, mas não elimina urgências. Separar fezes aquosas, gordurosas e inflamatórias organiza hipóteses e reduz exames sem propósito. O contexto clínico decide quando uma investigação limitada é suficiente e quando endoscopia, histologia ou avaliação nutricional ampliada são necessárias."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "História e exame guiam hemograma, eletrólitos, função renal, albumina e testes etiológicos. Rever laxantes, metformina, antibióticos e outros fármacos. Pesquisa fecal e endoscopia devem responder às hipóteses clínicas.",
+          "Em adulto imunocompetente com diarreia aquosa sem alarme, a avaliação dirigida inclui Giardia, doença celíaca e marcador inflamatório fecal; considerar diarreia por ácidos biliares. Essa estratégia limitada não se aplica automaticamente a sangue, má absorção, imunossupressão ou perda ponderal.",
+          "Diferenciais relevantes incluem doença inflamatória intestinal, colite microscópica, doença celíaca, infecção persistente, insuficiência pancreática, efeitos de medicamentos e causas funcionais. Mucosa colônica aparentemente normal não exclui colite microscópica; biópsias podem ser necessárias."
+        ],
+        "factIds": [
+          "b01_027_f03",
+          "b01_027_f04",
+          "b01_027_f05"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial",
+        "paragraphs": [
+          "Avaliar hidratação, diurese, peso, sinais vitais e tolerância à alimentação. Diarreia crônica também pode descompensar agudamente; reposição de perdas não deve aguardar a conclusão da investigação."
+        ],
+        "factIds": [
+          "b01_027_f02"
+        ]
+      },
+      {
+        "heading": "Tratamento de base",
+        "paragraphs": [
+          "Tratar a causa documentada e corrigir desidratação e desnutrição. Não existe dose universal para a síndrome; antibiótico, corticoide e antiparasitário não devem ser prescritos indistintamente para toda diarreia crônica."
+        ],
+        "factIds": [
+          "b01_027_f06"
+        ]
+      },
+      {
+        "heading": "Tratamento: opções e critérios de escolha",
+        "paragraphs": [
+          "Caminho 1: reposição hídrica/nutricional e tratamento da causa demonstrada. Caminho 2: manejo funcional após investigação adequada, com medidas alimentares e sintomáticas selecionadas. Não indicar antibiótico, antiparasitário ou corticosteroide empírico universal; alarme muda o fluxo."
+        ],
+        "factIds": [
+          "b01_027_f10"
+        ]
+      },
+      {
+        "heading": "Populações especiais",
+        "paragraphs": [
+          "Em imunossuprimidos, incluir infecções oportunistas e toxicidade de tratamento. Crianças e gestantes requerem avaliação própria; evitar restrições alimentares extensas sem acompanhamento nutricional."
+        ],
+        "factIds": [
+          "b01_027_f09"
+        ]
+      },
+      {
+        "heading": "Monitorização",
+        "paragraphs": [
+          "Acompanhar peso, frequência, perdas, eletrólitos e resultados pendentes. Persistência ou mudança de padrão exige reavaliar hipóteses, adesão e exposição; documentar um plano de investigação e retorno."
+        ],
+        "factIds": [
+          "b01_027_f07"
+        ]
+      },
+      {
+        "heading": "Red flags, internação e alta",
+        "paragraphs": [
+          "Sangue, anemia, emagrecimento, diarreia noturna, hipoalbuminemia ou história familiar relevante indicam investigação ampliada. Instabilidade, lesão renal ou incapacidade de reposição oral podem exigir internação; quadro estável pode continuar investigação ambulatorial."
+        ],
+        "factIds": [
+          "b01_027_f08"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Diarrea crónica — evaluación en adultos",
+    "subtitle": "Contenido clínico para revisión",
+    "summary": "La diarrea durante al menos 4 semanas es un síndrome, no una etiología. Caracterizar patrón acuoso, graso o inflamatorio y buscar relación con alimentación, medicamentos, cirugía y síntomas sistémicos.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "La diarrea durante al menos 4 semanas es un síndrome, no una etiología. Caracterizar patrón acuoso, graso o inflamatorio y buscar relación con alimentación, medicamentos, cirugía y síntomas sistémicos."
+        ],
+        "factIds": [
+          "b01_027_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento clínico",
+        "paragraphs": [
+          "La duración modifica el diagnóstico diferencial, pero no elimina urgencias. Separar heces acuosas, grasas e inflamatorias organiza hipótesis y reduce estudios sin propósito. El contexto clínico determina cuándo basta un estudio limitado y cuándo se necesitan endoscopia, histología o evaluación nutricional ampliada."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "La historia y el examen orientan hemograma, electrolitos, función renal, albúmina y pruebas etiológicas. Revisar laxantes, metformina, antibióticos y otros fármacos. El estudio fecal y la endoscopia deben responder a las hipótesis clínicas.",
+          "En adulto inmunocompetente con diarrea acuosa sin alarma, la evaluación dirigida incluye Giardia, enfermedad celíaca y marcador inflamatorio fecal; considerar diarrea por ácidos biliares. Esa estrategia limitada no se aplica automáticamente a sangre, malabsorción, inmunosupresión o pérdida de peso.",
+          "Los diferenciales relevantes incluyen enfermedad inflamatoria intestinal, colitis microscópica, enfermedad celíaca, infección persistente, insuficiencia pancreática, efectos farmacológicos y causas funcionales. Una mucosa colónica aparentemente normal no excluye colitis microscópica; pueden ser necesarias biopsias."
+        ],
+        "factIds": [
+          "b01_027_f03",
+          "b01_027_f04",
+          "b01_027_f05"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial",
+        "paragraphs": [
+          "Evaluar hidratación, diuresis, peso, signos vitales y tolerancia alimentaria. La diarrea crónica también puede descompensarse de forma aguda; la reposición de pérdidas no debe esperar a completar la investigación."
+        ],
+        "factIds": [
+          "b01_027_f02"
+        ]
+      },
+      {
+        "heading": "Tratamiento de base",
+        "paragraphs": [
+          "Tratar la causa documentada y corregir deshidratación y desnutrición. No existe dosis universal para el síndrome; antibiótico, corticoide y antiparasitario no deben indicarse indiscriminadamente para toda diarrea crónica."
+        ],
+        "factIds": [
+          "b01_027_f06"
+        ]
+      },
+      {
+        "heading": "Tratamiento: opciones y criterios de elección",
+        "paragraphs": [
+          "Camino 1: reposición hídrica/nutricional y tratamiento de la causa demostrada. Camino 2: manejo funcional tras evaluación adecuada, con medidas alimentarias y sintomáticas seleccionadas. No indicar antibiótico, antiparasitario o corticoide empírico universal; las alarmas cambian el flujo."
+        ],
+        "factIds": [
+          "b01_027_f10"
+        ]
+      },
+      {
+        "heading": "Poblaciones especiales",
+        "paragraphs": [
+          "En personas inmunosuprimidas, incluir infecciones oportunistas y toxicidad del tratamiento. Niños y embarazadas requieren evaluación específica; evitar restricciones alimentarias extensas sin seguimiento nutricional."
+        ],
+        "factIds": [
+          "b01_027_f09"
+        ]
+      },
+      {
+        "heading": "Monitorización",
+        "paragraphs": [
+          "Vigilar peso, frecuencia, pérdidas, electrolitos y resultados pendientes. La persistencia o cambio de patrón exige reevaluar hipótesis, adherencia y exposición; documentar un plan diagnóstico y de seguimiento."
+        ],
+        "factIds": [
+          "b01_027_f07"
+        ]
+      },
+      {
+        "heading": "Alarmas, internación y alta",
+        "paragraphs": [
+          "Sangre, anemia, adelgazamiento, diarrea nocturna, hipoalbuminemia o historia familiar relevante indican evaluación ampliada. Inestabilidad, lesión renal o incapacidad de reposición oral pueden exigir internación; el cuadro estable puede continuar evaluación ambulatoria."
+        ],
+        "factIds": [
+          "b01_027_f08"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "diarrhea_diagnosis",
+      "title": "NIDDK — Diarrhea diagnosis",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/diarrhea/diagnosis",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last Reviewed September 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/diarrhea_diagnosis.txt"
+    },
+    {
+      "key": "diarrhea_guideline",
+      "title": "Japan Gastroenterological Association — Chronic diarrhea guideline 2023",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11633876/",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2023,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

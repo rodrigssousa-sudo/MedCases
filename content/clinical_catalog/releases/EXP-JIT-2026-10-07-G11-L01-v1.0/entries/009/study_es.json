@@ -1,0 +1,171 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Enfermedad renal crónica",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "fcff8a2aa942f7fa224b3f64c1fa2fe88e458cd69b47a4dfb5c4e4a37f79f225",
+  "ownerCandidate": "doenca_renal_cronica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_009_f01",
+    "b01_009_f02",
+    "b01_009_f03",
+    "b01_009_f04",
+    "b01_009_f05",
+    "b01_009_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alteración estructural o funcional renal persistente durante más de 3 meses. Clasificar por causa, filtración y albuminuria; distinguir enfermedad crónica de lesión renal aguda."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Repetir función renal cuando corresponda, evaluar albuminuria urinaria, orina, presión y evolución previa. Una filtración anormal aislada no demuestra cronicidad. Buscar obstrucción o causas tratables según el contexto."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hiperpotasemia, edema pulmonar, uremia sintomática o deterioro rápido requieren evaluación urgente. Revisar nefrotóxicos y adecuar todos los medicamentos a la función renal."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Estrategia 1: controlar presión y albuminuria, con IECA o ARA II cuando esté indicado. Estrategia 2: inhibidor de SGLT2 en personas elegibles según función renal, albuminuria, diabetes/insuficiencia cardíaca y ficha específica; generalmente complementario, no sustituto automático."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No combinar IECA y ARA II. Controlar creatinina y potasio tras inicio/ajuste; puede requerirse suspender SGLT2 durante enfermedad crítica, ayuno prolongado o cirugía. No extrapolar umbrales renales entre productos ni utilizar durante el embarazo sin evaluación específica."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Planificar seguimiento según riesgo, manejo cardiovascular, nutrición y complicaciones. KDIGO 2024 sigue siendo referencia final; la actualización focalizada en elaboración no constituye una guía final sustitutiva."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_09",
+      "title": "Doença renal crônica",
+      "url": "https://www.nhs.uk/conditions/kidney-disease/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 22 March 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_09.txt"
+    },
+    {
+      "key": "ng203",
+      "title": "ng203",
+      "url": "https://www.nice.org.uk/guidance/ng203/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2021,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "kdigo",
+      "title": "KDIGO — CKD 2024 remains current; focused update underway",
+      "url": "https://kdigo.org/guidelines/ckd-evaluation-and-management/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2024,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Alteración estructural o funcional renal persistente durante más de 3 meses. Clasificar por causa, filtración y albuminuria; distinguir enfermedad crónica de lesión renal aguda."
+      ],
+      "factIds": [
+        "b01_009_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Repetir función renal cuando corresponda, evaluar albuminuria urinaria, orina, presión y evolución previa. Una filtración anormal aislada no demuestra cronicidad. Buscar obstrucción o causas tratables según el contexto."
+      ],
+      "factIds": [
+        "b01_009_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Hiperpotasemia, edema pulmonar, uremia sintomática o deterioro rápido requieren evaluación urgente. Revisar nefrotóxicos y adecuar todos los medicamentos a la función renal."
+      ],
+      "factIds": [
+        "b01_009_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Estrategia 1: controlar presión y albuminuria, con IECA o ARA II cuando esté indicado. Estrategia 2: inhibidor de SGLT2 en personas elegibles según función renal, albuminuria, diabetes/insuficiencia cardíaca y ficha específica; generalmente complementario, no sustituto automático."
+      ],
+      "factIds": [
+        "b01_009_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No combinar IECA y ARA II. Controlar creatinina y potasio tras inicio/ajuste; puede requerirse suspender SGLT2 durante enfermedad crítica, ayuno prolongado o cirugía. No extrapolar umbrales renales entre productos ni utilizar durante el embarazo sin evaluación específica."
+      ],
+      "factIds": [
+        "b01_009_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Planificar seguimiento según riesgo, manejo cardiovascular, nutrición y complicaciones. KDIGO 2024 sigue siendo referencia final; la actualización focalizada en elaboración no constituye una guía final sustitutiva."
+      ],
+      "factIds": [
+        "b01_009_f06"
+      ]
+    }
+  ],
+  "markdown": "# Enfermedad renal crónica\n\n## Concepto y mecanismo\n\nAlteración estructural o funcional renal persistente durante más de 3 meses. Clasificar por causa, filtración y albuminuria; distinguir enfermedad crónica de lesión renal aguda.\n\n## Diagnóstico y diferenciales\n\nRepetir función renal cuando corresponda, evaluar albuminuria urinaria, orina, presión y evolución previa. Una filtración anormal aislada no demuestra cronicidad. Buscar obstrucción o causas tratables según el contexto.\n\n## Abordaje inicial\n\nHiperpotasemia, edema pulmonar, uremia sintomática o deterioro rápido requieren evaluación urgente. Revisar nefrotóxicos y adecuar todos los medicamentos a la función renal.\n\n## Tratamiento: opciones y criterios de elección\n\nEstrategia 1: controlar presión y albuminuria, con IECA o ARA II cuando esté indicado. Estrategia 2: inhibidor de SGLT2 en personas elegibles según función renal, albuminuria, diabetes/insuficiencia cardíaca y ficha específica; generalmente complementario, no sustituto automático.\n\n## Seguridad y monitorización\n\nNo combinar IECA y ARA II. Controlar creatinina y potasio tras inicio/ajuste; puede requerirse suspender SGLT2 durante enfermedad crítica, ayuno prolongado o cirugía. No extrapolar umbrales renales entre productos ni utilizar durante el embarazo sin evaluación específica.\n\n## Reevaluación y destino\n\nPlanificar seguimiento según riesgo, manejo cardiovascular, nutrición y complicaciones. KDIGO 2024 sigue siendo referencia final; la actualización focalizada en elaboración no constituye una guía final sustitutiva.\n\n## Referencias\n\n1. [Doença renal crônica](https://www.nhs.uk/conditions/kidney-disease/)\n2. [ng203](https://www.nice.org.uk/guidance/ng203/chapter/Recommendations)\n3. [KDIGO — CKD 2024 remains current; focused update underway](https://kdigo.org/guidelines/ckd-evaluation-and-management/)",
+  "approvedReviewCanonicalFileSha256": "87262c4fe13bdbeae0f5b6a935e30daad3edd3e4e3f0ca8d412938c1645c869f",
+  "approvedReviewProjectionFileSha256": "3be6bfa4da03e41edd064c7cfb385a96af750d8b35fc8e906a4cfeef4bc51883"
+}

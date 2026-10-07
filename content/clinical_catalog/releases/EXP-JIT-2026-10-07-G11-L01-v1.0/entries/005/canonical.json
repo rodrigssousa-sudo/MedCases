@@ -1,0 +1,119 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "sincope_e_pre_sincope",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Síncope e pré-síncope",
+    "es": "Síncope y presíncope"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Algoritmo de perda transitória de consciência inclui causas reflexas e avaliação de risco, sem equivaler a arritmia isolada.",
+  "relatedExistingOwners": [
+    "bradiarritmia_grave",
+    "fa_aguda",
+    "tpsv"
+  ],
+  "optionRelation": "ETIOLOGY_DEPENDENT",
+  "facts": [
+    {
+      "id": "b01_005_f01",
+      "section": "concept",
+      "pt": "Síncope é perda transitória de consciência por hipoperfusão global, com recuperação espontânea; diferenciar crises epilépticas, hipoglicemia e causas cardíacas. Pré-síncope não elimina risco.",
+      "es": "El síncope es pérdida transitoria de conciencia por hipoperfusión global, con recuperación espontánea; diferenciar epilepsia, hipoglucemia y causas cardíacas. La presíncope no excluye riesgo.",
+      "sources": [
+        "topic_05",
+        "cg109"
+      ]
+    },
+    {
+      "id": "b01_005_f02",
+      "section": "diagnosis",
+      "pt": "Obter relato de testemunha, circunstância, pródromos e recuperação. Avaliar sinais vitais, pressão deitada/em pé, exame cardiovascular e ECG de 12 derivações; exames adicionais devem responder a suspeitas concretas.",
+      "es": "Obtener relato de testigos, circunstancias, pródromos y recuperación. Evaluar signos vitales, presión acostado/de pie, examen cardiovascular y ECG de 12 derivaciones; los estudios adicionales deben responder a sospechas concretas.",
+      "sources": [
+        "topic_05",
+        "cg109"
+      ]
+    },
+    {
+      "id": "b01_005_f03",
+      "section": "initial",
+      "pt": "Instabilidade, ECG anormal, síncope no esforço, cardiopatia, dispneia ou história familiar de morte súbita exigem avaliação cardíaca urgente. Lesão, sangramento ou déficit neurológico mudam a prioridade.",
+      "es": "Inestabilidad, ECG anormal, síncope durante esfuerzo, cardiopatía, disnea o antecedentes familiares de muerte súbita requieren evaluación cardíaca urgente. Lesiones, sangrado o déficit neurológico cambian la prioridad.",
+      "sources": [
+        "topic_05",
+        "cg109"
+      ]
+    },
+    {
+      "id": "b01_005_f04",
+      "section": "options",
+      "pt": "Opção 1, síncope reflexa: educação, evitar gatilhos e manobras de contrapressão quando houver pródromo. Opção 2, causa ortostática: revisão de fármacos e correção de volume quando indicada. Arritmia exige tratamento específico, não essas medidas isoladas.",
+      "es": "Opción 1, síncope reflejo: educación, evitar desencadenantes y maniobras de contrapresión si existe pródromo. Opción 2, causa ortostática: revisar fármacos y corregir volumen cuando corresponda. La arritmia exige tratamiento específico, no estas medidas aisladas.",
+      "sources": [
+        "topic_05",
+        "cg109"
+      ]
+    },
+    {
+      "id": "b01_005_f05",
+      "section": "safety",
+      "pt": "Não prescrever anticonvulsivante sem diagnóstico nem usar EEG rotineiro para síncope. Expansão volêmica e sal não são universais em insuficiência cardíaca ou renal.",
+      "es": "No prescribir anticonvulsivantes sin diagnóstico ni solicitar EEG de rutina para síncope. La expansión de volumen y la sal no son universales en insuficiencia cardíaca o renal.",
+      "sources": [
+        "topic_05",
+        "cg109"
+      ]
+    },
+    {
+      "id": "b01_005_f06",
+      "section": "followup",
+      "pt": "Alta apenas após avaliação de risco e causa provável benigna; orientar recorrência, direção e retorno. Episódios sem explicação exigem investigação e eventual monitorização cardíaca prolongada.",
+      "es": "Alta solo después de evaluar riesgo y una causa probablemente benigna; orientar sobre recurrencia, conducción y consulta. Los episodios inexplicados requieren investigación y posible monitorización cardíaca prolongada.",
+      "sources": [
+        "topic_05",
+        "cg109"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_05",
+      "title": "Síncope e pré-síncope",
+      "url": "https://www.nice.org.uk/guidance/cg109/chapter/Recommendations",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "cg109",
+      "title": "cg109",
+      "url": "https://www.nice.org.uk/guidance/cg109/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2010,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

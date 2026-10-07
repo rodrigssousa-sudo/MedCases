@@ -1,0 +1,157 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Fimosis",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "6853ce632e81eca7becf7a3b4aeae3e5e3344e79b506639eebb85a7899454c7b",
+  "ownerCandidate": "fimose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_022_f01",
+    "b01_022_f02",
+    "b01_022_f03",
+    "b01_022_f04",
+    "b01_022_f05",
+    "b01_022_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sin síntomas y con patrón fisiológico: orientación y observación, sin manipulación forzada. La sospecha de fimosis patológica requiere examen y plan dirigido."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Identificar anillo cicatricial, retracción previamente posible, infecciones y síntomas urinarios. La parafimosis es otra emergencia; retención urinaria requiere atención inmediata."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción 1, contexto pediátrico seleccionado: betametasona tópica 0,05% en el anillo estrecho 2–3 veces al día durante 2–4 semanas de prueba; una buena respuesta permite completar 6–12 semanas en total con seguimiento. Opción 2: evaluación quirúrgica si es cicatricial, refractaria o complicada."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No extrapolar automáticamente el protocolo pediátrico a adultos; investigar dermatosis y diabetes según contexto. No indicar circuncisión para toda falta de retracción fisiológica."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar respuesta y técnica; consultar ante retención, edema doloroso con prepucio atrapado o infección."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "La falta de retracción fisiológica infantil difiere de la fimosis cicatricial patológica; forzar retracción causa traumatismo y puede agravar la cicatrización."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_22",
+      "title": "Fimose",
+      "url": "https://www.nhs.uk/conditions/phimosis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 06 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_22.txt"
+    },
+    {
+      "key": "rch_foreskin",
+      "title": "RCH — Penis and foreskin",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/The_penis_and_foreskin/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated September 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_foreskin.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Sin síntomas y con patrón fisiológico: orientación y observación, sin manipulación forzada. La sospecha de fimosis patológica requiere examen y plan dirigido."
+      ],
+      "factIds": [
+        "b01_022_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Identificar anillo cicatricial, retracción previamente posible, infecciones y síntomas urinarios. La parafimosis es otra emergencia; retención urinaria requiere atención inmediata."
+      ],
+      "factIds": [
+        "b01_022_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1, contexto pediátrico seleccionado: betametasona tópica 0,05% en el anillo estrecho 2–3 veces al día durante 2–4 semanas de prueba; una buena respuesta permite completar 6–12 semanas en total con seguimiento. Opción 2: evaluación quirúrgica si es cicatricial, refractaria o complicada."
+      ],
+      "factIds": [
+        "b01_022_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No extrapolar automáticamente el protocolo pediátrico a adultos; investigar dermatosis y diabetes según contexto. No indicar circuncisión para toda falta de retracción fisiológica."
+      ],
+      "factIds": [
+        "b01_022_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar respuesta y técnica; consultar ante retención, edema doloroso con prepucio atrapado o infección."
+      ],
+      "factIds": [
+        "b01_022_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "La falta de retracción fisiológica infantil difiere de la fimosis cicatricial patológica; forzar retracción causa traumatismo y puede agravar la cicatrización."
+      ],
+      "factIds": [
+        "b01_022_f01"
+      ]
+    }
+  ],
+  "markdown": "# Fimosis\n\n## Abordaje inicial\n\nSin síntomas y con patrón fisiológico: orientación y observación, sin manipulación forzada. La sospecha de fimosis patológica requiere examen y plan dirigido.\n\n## Diagnóstico y diferenciales\n\nIdentificar anillo cicatricial, retracción previamente posible, infecciones y síntomas urinarios. La parafimosis es otra emergencia; retención urinaria requiere atención inmediata.\n\n## Tratamiento: opciones y criterios de elección\n\nOpción 1, contexto pediátrico seleccionado: betametasona tópica 0,05% en el anillo estrecho 2–3 veces al día durante 2–4 semanas de prueba; una buena respuesta permite completar 6–12 semanas en total con seguimiento. Opción 2: evaluación quirúrgica si es cicatricial, refractaria o complicada.\n\n## Seguridad y monitorización\n\nNo extrapolar automáticamente el protocolo pediátrico a adultos; investigar dermatosis y diabetes según contexto. No indicar circuncisión para toda falta de retracción fisiológica.\n\n## Reevaluación y destino\n\nReevaluar respuesta y técnica; consultar ante retención, edema doloroso con prepucio atrapado o infección.\n\n## Reconocimiento rápido\n\nLa falta de retracción fisiológica infantil difiere de la fimosis cicatricial patológica; forzar retracción causa traumatismo y puede agravar la cicatrización.\n\n## Referencias\n\n1. [Fimose](https://www.nhs.uk/conditions/phimosis/)\n2. [RCH — Penis and foreskin](https://www.rch.org.au/clinicalguide/guideline_index/The_penis_and_foreskin/)",
+  "approvedReviewCanonicalFileSha256": "68b72147b956be17724e1273e96d427ef132d703b7ea0a3b2f5540b1c4ce76e7",
+  "approvedReviewProjectionFileSha256": "bbb678f3caf5fca4f82d9714593f2d104adecfb2bb5ab483ae04be745e62c3da"
+}

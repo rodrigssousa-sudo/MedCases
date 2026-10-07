@@ -1,0 +1,141 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Intolerância à lactose",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "e5ffa25609ab57224e8774a1d7a7a28cf58e6d0ff11e87bfe90bd4c8a827f38f",
+  "ownerCandidate": "intolerancia_a_lactose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_026_f01",
+    "b01_026_f02",
+    "b01_026_f03",
+    "b01_026_f04",
+    "b01_026_f05",
+    "b01_026_f06",
+    "b01_026_f07",
+    "b01_026_f08",
+    "b01_026_f09"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Má digestão de lactose por baixa atividade de lactase pode causar gases, distensão, cólica e diarreia. Má absorção sem sintomas não equivale a intolerância; não é alergia à proteína do leite."
+      ],
+      "factIds": [
+        "b01_026_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio clínico",
+      "paragraphs": [
+        "Digestão reduzida e intolerância clínica não são sinônimos: o efeito depende da quantidade ingerida e do contexto alimentar. O objetivo é controlar sintomas preservando nutrição, e não impor a mesma exclusão a todos. Quando a deficiência é secundária, tratar a lesão intestinal pode modificar a tolerância."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Relacionar ingestão e sintomas; teste respiratório de hidrogênio pode ajudar, interpretado junto da resposta clínica. Considerar doença celíaca, intestino irritável, inflamação e supercrescimento bacteriano."
+      ],
+      "factIds": [
+        "b01_026_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Avaliar hidratação e gravidade; sangue, febre ou perda ponderal não devem ser explicados apenas pela intolerância. Investigar lesão intestinal quando início é secundário a outra doença."
+      ],
+      "factIds": [
+        "b01_026_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento de base",
+      "paragraphs": [
+        "Reduzir lactose conforme tolerância individual, sem excluir desnecessariamente todos os laticínios. Manter adequação nutricional e tratar a causa da deficiência secundária."
+      ],
+      "factIds": [
+        "b01_026_f04"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Alternativa 1: ajustar quantidade de lactose e usar alimentos sem lactose, preservando nutrição. Alternativa 2: lactase junto de alimentos conforme atividade e instrução do produto; não inventar dose única em mg. Tratar causa secundária quando presente."
+      ],
+      "factIds": [
+        "b01_026_f09"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Lactase oral pode ajudar antes de alimentos com lactose; atividade enzimática e apresentação variam entre produtos. Não existe dose em miligramas intercambiável universal; seguir produto validado."
+      ],
+      "factIds": [
+        "b01_026_f05"
+      ]
+    },
+    {
+      "heading": "Populações especiais",
+      "paragraphs": [
+        "Crianças pequenas, gestantes e lactantes exigem orientação antes de suplementos ou exclusões extensas. Deficiência secundária pode melhorar com tratamento da doença intestinal."
+      ],
+      "factIds": [
+        "b01_026_f08"
+      ]
+    },
+    {
+      "heading": "Monitorização",
+      "paragraphs": [
+        "Acompanhar resposta e adequação da dieta. Se não melhorar, revisar diagnóstico em vez de aumentar indefinidamente a restrição."
+      ],
+      "factIds": [
+        "b01_026_f06"
+      ]
+    },
+    {
+      "heading": "Red flags, internação e alta",
+      "paragraphs": [
+        "Geralmente ambulatorial; desidratação importante ou sinais de outra doença exigem avaliação urgente."
+      ],
+      "factIds": [
+        "b01_026_f07"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "lactose_treatment",
+      "title": "NIDDK — Lactose intolerance treatment",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/lactose-intolerance/treatment",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last Reviewed February 2018",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/lactose_treatment.txt"
+    },
+    {
+      "key": "lactose_diagnosis",
+      "title": "NIDDK — Diagnosis of lactose intolerance",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/lactose-intolerance/diagnosis",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

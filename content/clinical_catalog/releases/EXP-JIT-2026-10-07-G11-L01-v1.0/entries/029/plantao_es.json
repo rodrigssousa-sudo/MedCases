@@ -1,0 +1,157 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Tuberculosis",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "3f1656ed46bc8997f94647249cadb3e6aacbca91cbd058fe614e46c236295345",
+  "ownerCandidate": "tuberculose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_029_f01",
+    "b01_029_f02",
+    "b01_029_f03",
+    "b01_029_f04",
+    "b01_029_f05",
+    "b01_029_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Aplicar aislamiento aéreo cuando corresponda, notificar y evaluar gravedad. Hipoxemia, hemoptisis importante o compromiso sistémico requiere hospital; coordinar estudio de contactos."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "La sospecha clínica debe conducir a radiografía y muestras para prueba molecular, cultivo y sensibilidad según disponibilidad. Investigar VIH y sitios extrapulmonares; una prueba negativa aislada no excluye enfermedad."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tuberculosis pulmonar sensible: opción 1, isoniazida + rifampicina + pirazinamida + etambutol durante 2 meses, luego isoniazida + rifampicina durante 4 meses. Opción 2, elegibles desde los 12 años: isoniazida + rifapentina + pirazinamida + moxifloxacino durante 2 meses, luego isoniazida + rifapentina + moxifloxacino durante 2 meses."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "El esquema corto depende de elegibilidad, peso, sensibilidad, interacciones y disponibilidad/programa nacional; no es universal en embarazo, resistencia o enfermedad extrapulmonar. Las dosis por peso/formulación requieren protocolo específico; nunca usar monoterapia. Vigilar toxicidad hepática, visual e interacciones."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Garantizar adherencia, seguimiento microbiológico y apoyo social; resistencia o intolerancia requiere equipo especializado. La recomendación del esquema corto es condicional en la guía oficial de 2025."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Infección por complejo Mycobacterium tuberculosis; enfermedad activa no equivale a infección latente. La forma pulmonar transmisible exige medidas de salud pública."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_29",
+      "title": "Tuberculose",
+      "url": "https://medlineplus.gov/tuberculosis.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated August 26, 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_29.txt"
+    },
+    {
+      "key": "tb2025",
+      "title": "ATS/CDC/ERS/IDSA — Updates on the treatment of tuberculosis, 2025",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11755361/",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2025,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Aplicar aislamiento aéreo cuando corresponda, notificar y evaluar gravedad. Hipoxemia, hemoptisis importante o compromiso sistémico requiere hospital; coordinar estudio de contactos."
+      ],
+      "factIds": [
+        "b01_029_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "La sospecha clínica debe conducir a radiografía y muestras para prueba molecular, cultivo y sensibilidad según disponibilidad. Investigar VIH y sitios extrapulmonares; una prueba negativa aislada no excluye enfermedad."
+      ],
+      "factIds": [
+        "b01_029_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Tuberculosis pulmonar sensible: opción 1, isoniazida + rifampicina + pirazinamida + etambutol durante 2 meses, luego isoniazida + rifampicina durante 4 meses. Opción 2, elegibles desde los 12 años: isoniazida + rifapentina + pirazinamida + moxifloxacino durante 2 meses, luego isoniazida + rifapentina + moxifloxacino durante 2 meses."
+      ],
+      "factIds": [
+        "b01_029_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "El esquema corto depende de elegibilidad, peso, sensibilidad, interacciones y disponibilidad/programa nacional; no es universal en embarazo, resistencia o enfermedad extrapulmonar. Las dosis por peso/formulación requieren protocolo específico; nunca usar monoterapia. Vigilar toxicidad hepática, visual e interacciones."
+      ],
+      "factIds": [
+        "b01_029_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Garantizar adherencia, seguimiento microbiológico y apoyo social; resistencia o intolerancia requiere equipo especializado. La recomendación del esquema corto es condicional en la guía oficial de 2025."
+      ],
+      "factIds": [
+        "b01_029_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Infección por complejo Mycobacterium tuberculosis; enfermedad activa no equivale a infección latente. La forma pulmonar transmisible exige medidas de salud pública."
+      ],
+      "factIds": [
+        "b01_029_f01"
+      ]
+    }
+  ],
+  "markdown": "# Tuberculosis\n\n## Abordaje inicial\n\nAplicar aislamiento aéreo cuando corresponda, notificar y evaluar gravedad. Hipoxemia, hemoptisis importante o compromiso sistémico requiere hospital; coordinar estudio de contactos.\n\n## Diagnóstico y diferenciales\n\nLa sospecha clínica debe conducir a radiografía y muestras para prueba molecular, cultivo y sensibilidad según disponibilidad. Investigar VIH y sitios extrapulmonares; una prueba negativa aislada no excluye enfermedad.\n\n## Tratamiento: opciones y criterios de elección\n\nTuberculosis pulmonar sensible: opción 1, isoniazida + rifampicina + pirazinamida + etambutol durante 2 meses, luego isoniazida + rifampicina durante 4 meses. Opción 2, elegibles desde los 12 años: isoniazida + rifapentina + pirazinamida + moxifloxacino durante 2 meses, luego isoniazida + rifapentina + moxifloxacino durante 2 meses.\n\n## Seguridad y monitorización\n\nEl esquema corto depende de elegibilidad, peso, sensibilidad, interacciones y disponibilidad/programa nacional; no es universal en embarazo, resistencia o enfermedad extrapulmonar. Las dosis por peso/formulación requieren protocolo específico; nunca usar monoterapia. Vigilar toxicidad hepática, visual e interacciones.\n\n## Reevaluación y destino\n\nGarantizar adherencia, seguimiento microbiológico y apoyo social; resistencia o intolerancia requiere equipo especializado. La recomendación del esquema corto es condicional en la guía oficial de 2025.\n\n## Reconocimiento rápido\n\nInfección por complejo Mycobacterium tuberculosis; enfermedad activa no equivale a infección latente. La forma pulmonar transmisible exige medidas de salud pública.\n\n## Referencias\n\n1. [Tuberculose](https://medlineplus.gov/tuberculosis.html)\n2. [ATS/CDC/ERS/IDSA — Updates on the treatment of tuberculosis, 2025](https://pmc.ncbi.nlm.nih.gov/articles/PMC11755361/)",
+  "approvedReviewCanonicalFileSha256": "b5db729afbead8effb85a57c51d8d48c34d81d4ffac68da65856ad42616d80f4",
+  "approvedReviewProjectionFileSha256": "1fceefd78305a77ee296120dd6d7d388d992de886defbd7abbba0a7c0d5596f8"
+}

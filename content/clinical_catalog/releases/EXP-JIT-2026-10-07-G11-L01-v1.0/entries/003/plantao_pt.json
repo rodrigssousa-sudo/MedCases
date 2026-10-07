@@ -1,0 +1,171 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Paralisia facial periférica de Bell",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "0b98a659e621322f463db7e5e3ae9656032f34aaaa9b4baf1f784c073827a29f",
+  "ownerCandidate": "paralisia_facial_periferica_de_bell",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_003_f01",
+    "b01_003_f02",
+    "b01_003_f03",
+    "b01_003_f04",
+    "b01_003_f05",
+    "b01_003_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Proteger a córnea se fechamento incompleto: lubrificação diurna, pomada noturna e proteção adequada. Dor ocular ou alteração visual demanda avaliação oftalmológica urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examinar neurologia, ouvido, vesículas, olho e demais pares cranianos. Vesículas/otalgia intensa sugerem Ramsay Hunt; progressão prolongada, recorrência ou outros déficits exigem investigação."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: opções e critérios de escolha"
+    },
+    {
+      "type": "paragraph",
+      "text": "Em adultos, iniciar corticosteroide preferencialmente nas primeiras 72 horas: alternativa 1, prednisolona 50 mg por via oral uma vez ao dia por 10 dias; alternativa 2, prednisolona 60 mg ao dia por 5 dias, depois 50, 40, 30, 20 e 10 mg em dias sucessivos."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Escolher um esquema, não combiná-los. Avaliar diabetes, infecção, risco gastrointestinal e gestação antes da prescrição. Não extrapolar doses adultas a crianças. Antiviral isolado não substitui corticosteroide."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação e destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Acompanhar recuperação e proteção ocular; ausência de melhora, piora ou novas alterações neurológicas exigem reavaliação especializada. Explicar que recuperação pode levar meses."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Fraqueza facial periférica unilateral aguda, incluindo testa e fechamento ocular, após excluir causas identificáveis. Não assumir Bell em déficit neurológico associado, trauma ou evolução atípica."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_03",
+      "title": "Paralisia facial periférica de Bell",
+      "url": "https://www.nhs.uk/conditions/bells-palsy/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 04 July 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_03.txt"
+    },
+    {
+      "key": "bell50",
+      "title": "bell50",
+      "url": "https://www.barnsleyhospital.nhs.uk/services/a-and-e/bells-palsy",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 19  May  2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/bell50.txt"
+    },
+    {
+      "key": "bell60",
+      "title": "bell60",
+      "url": "https://rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/adult-therapeutic-guidelines/emergency-medicine/bells-palsy-guidelines/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last reviewed:",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/bell60.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Proteger a córnea se fechamento incompleto: lubrificação diurna, pomada noturna e proteção adequada. Dor ocular ou alteração visual demanda avaliação oftalmológica urgente."
+      ],
+      "factIds": [
+        "b01_003_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar neurologia, ouvido, vesículas, olho e demais pares cranianos. Vesículas/otalgia intensa sugerem Ramsay Hunt; progressão prolongada, recorrência ou outros déficits exigem investigação."
+      ],
+      "factIds": [
+        "b01_003_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Em adultos, iniciar corticosteroide preferencialmente nas primeiras 72 horas: alternativa 1, prednisolona 50 mg por via oral uma vez ao dia por 10 dias; alternativa 2, prednisolona 60 mg ao dia por 5 dias, depois 50, 40, 30, 20 e 10 mg em dias sucessivos."
+      ],
+      "factIds": [
+        "b01_003_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Escolher um esquema, não combiná-los. Avaliar diabetes, infecção, risco gastrointestinal e gestação antes da prescrição. Não extrapolar doses adultas a crianças. Antiviral isolado não substitui corticosteroide."
+      ],
+      "factIds": [
+        "b01_003_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Acompanhar recuperação e proteção ocular; ausência de melhora, piora ou novas alterações neurológicas exigem reavaliação especializada. Explicar que recuperação pode levar meses."
+      ],
+      "factIds": [
+        "b01_003_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Fraqueza facial periférica unilateral aguda, incluindo testa e fechamento ocular, após excluir causas identificáveis. Não assumir Bell em déficit neurológico associado, trauma ou evolução atípica."
+      ],
+      "factIds": [
+        "b01_003_f01"
+      ]
+    }
+  ],
+  "markdown": "# Paralisia facial periférica de Bell\n\n## Abordagem inicial\n\nProteger a córnea se fechamento incompleto: lubrificação diurna, pomada noturna e proteção adequada. Dor ocular ou alteração visual demanda avaliação oftalmológica urgente.\n\n## Diagnóstico e diferenciais\n\nExaminar neurologia, ouvido, vesículas, olho e demais pares cranianos. Vesículas/otalgia intensa sugerem Ramsay Hunt; progressão prolongada, recorrência ou outros déficits exigem investigação.\n\n## Tratamento: opções e critérios de escolha\n\nEm adultos, iniciar corticosteroide preferencialmente nas primeiras 72 horas: alternativa 1, prednisolona 50 mg por via oral uma vez ao dia por 10 dias; alternativa 2, prednisolona 60 mg ao dia por 5 dias, depois 50, 40, 30, 20 e 10 mg em dias sucessivos.\n\n## Segurança e monitorização\n\nEscolher um esquema, não combiná-los. Avaliar diabetes, infecção, risco gastrointestinal e gestação antes da prescrição. Não extrapolar doses adultas a crianças. Antiviral isolado não substitui corticosteroide.\n\n## Reavaliação e destino\n\nAcompanhar recuperação e proteção ocular; ausência de melhora, piora ou novas alterações neurológicas exigem reavaliação especializada. Explicar que recuperação pode levar meses.\n\n## Reconhecimento rápido\n\nFraqueza facial periférica unilateral aguda, incluindo testa e fechamento ocular, após excluir causas identificáveis. Não assumir Bell em déficit neurológico associado, trauma ou evolução atípica.\n\n## Referências\n\n1. [Paralisia facial periférica de Bell](https://www.nhs.uk/conditions/bells-palsy/)\n2. [bell50](https://www.barnsleyhospital.nhs.uk/services/a-and-e/bells-palsy)\n3. [bell60](https://rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/adult-therapeutic-guidelines/emergency-medicine/bells-palsy-guidelines/)",
+  "approvedReviewCanonicalFileSha256": "8d922f51be4cf8bf0497a37baa8b6d21db669df51edf1aad9a0cec89b377be30",
+  "approvedReviewProjectionFileSha256": "7df9d6961143f3c981e7a90a2c68ec41b22226aa4b14bd5502bd36ea263258e4"
+}

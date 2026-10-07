@@ -1,0 +1,171 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Mpox",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "af474f88c260b5ea08980d5f4e495dab400f2cfa8c2c6fc567e4b562573aa683",
+  "ownerCandidate": "mpox",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_031_f01",
+    "b01_031_f02",
+    "b01_031_f03",
+    "b01_031_f04",
+    "b01_031_f05",
+    "b01_031_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Infecção por monkeypox virus com lesões cutâneas/mucosas, possíveis sintomas sistêmicos e dor anorretal. Gravidade varia com imunidade e localização."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Coletar lesão para teste específico conforme protocolo, avaliar exposição e pesquisar IST quando indicado. Diferenciar varicela, herpes, sífilis e outras dermatoses."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Aplicar medidas de controle e notificação; avaliar dor, ingestão, lesões oculares e imunossupressão. Comprometimento ocular, doença disseminada ou incapacidade de cuidado exige avaliação urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: opções e critérios de escolha"
+    },
+    {
+      "type": "paragraph",
+      "text": "Estratégia 1: suporte, analgesia e cuidado de lesões em doença sem alto risco. Estratégia 2: em doença grave/alto risco, discutir terapias específicas com infectologia sob critérios de acesso; não indicar tecovirimat de rotina a todos."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ensaios PALM007/STOMP não demonstraram benefício clínico de rotina nos grupos estudados; isso não elimina consulta especializada para situações graves excluídas dos ensaios. Não apresentar cidofovir/brincidofovir como alternativas ambulatoriais equivalentes."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação e destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Acompanhar cicatrização e controle da dor; manter precauções conforme orientação de saúde pública e avaliar contatos/vacinação quando indicada."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_31",
+      "title": "Mpox",
+      "url": "https://www.nhs.uk/conditions/mpox/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 09 April 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_31.txt"
+    },
+    {
+      "key": "mpox_care",
+      "title": "CDC — Mpox clinical care",
+      "url": "https://www.cdc.gov/mpox/hcp/clinical-care/index.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "mpox_tec",
+      "title": "CDC — Tecovirimat following PALM007 and STOMP",
+      "url": "https://www.cdc.gov/mpox/hcp/clinical-care/tecovirimat.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Infecção por monkeypox virus com lesões cutâneas/mucosas, possíveis sintomas sistêmicos e dor anorretal. Gravidade varia com imunidade e localização."
+      ],
+      "factIds": [
+        "b01_031_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Coletar lesão para teste específico conforme protocolo, avaliar exposição e pesquisar IST quando indicado. Diferenciar varicela, herpes, sífilis e outras dermatoses."
+      ],
+      "factIds": [
+        "b01_031_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial",
+      "paragraphs": [
+        "Aplicar medidas de controle e notificação; avaliar dor, ingestão, lesões oculares e imunossupressão. Comprometimento ocular, doença disseminada ou incapacidade de cuidado exige avaliação urgente."
+      ],
+      "factIds": [
+        "b01_031_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: opções e critérios de escolha",
+      "paragraphs": [
+        "Estratégia 1: suporte, analgesia e cuidado de lesões em doença sem alto risco. Estratégia 2: em doença grave/alto risco, discutir terapias específicas com infectologia sob critérios de acesso; não indicar tecovirimat de rotina a todos."
+      ],
+      "factIds": [
+        "b01_031_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Ensaios PALM007/STOMP não demonstraram benefício clínico de rotina nos grupos estudados; isso não elimina consulta especializada para situações graves excluídas dos ensaios. Não apresentar cidofovir/brincidofovir como alternativas ambulatoriais equivalentes."
+      ],
+      "factIds": [
+        "b01_031_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação e destino",
+      "paragraphs": [
+        "Acompanhar cicatrização e controle da dor; manter precauções conforme orientação de saúde pública e avaliar contatos/vacinação quando indicada."
+      ],
+      "factIds": [
+        "b01_031_f06"
+      ]
+    }
+  ],
+  "markdown": "# Mpox\n\n## Conceito e mecanismo\n\nInfecção por monkeypox virus com lesões cutâneas/mucosas, possíveis sintomas sistêmicos e dor anorretal. Gravidade varia com imunidade e localização.\n\n## Diagnóstico e diferenciais\n\nColetar lesão para teste específico conforme protocolo, avaliar exposição e pesquisar IST quando indicado. Diferenciar varicela, herpes, sífilis e outras dermatoses.\n\n## Abordagem inicial\n\nAplicar medidas de controle e notificação; avaliar dor, ingestão, lesões oculares e imunossupressão. Comprometimento ocular, doença disseminada ou incapacidade de cuidado exige avaliação urgente.\n\n## Tratamento: opções e critérios de escolha\n\nEstratégia 1: suporte, analgesia e cuidado de lesões em doença sem alto risco. Estratégia 2: em doença grave/alto risco, discutir terapias específicas com infectologia sob critérios de acesso; não indicar tecovirimat de rotina a todos.\n\n## Segurança e monitorização\n\nEnsaios PALM007/STOMP não demonstraram benefício clínico de rotina nos grupos estudados; isso não elimina consulta especializada para situações graves excluídas dos ensaios. Não apresentar cidofovir/brincidofovir como alternativas ambulatoriais equivalentes.\n\n## Reavaliação e destino\n\nAcompanhar cicatrização e controle da dor; manter precauções conforme orientação de saúde pública e avaliar contatos/vacinação quando indicada.\n\n## Referências\n\n1. [Mpox](https://www.nhs.uk/conditions/mpox/)\n2. [CDC — Mpox clinical care](https://www.cdc.gov/mpox/hcp/clinical-care/index.html)\n3. [CDC — Tecovirimat following PALM007 and STOMP](https://www.cdc.gov/mpox/hcp/clinical-care/tecovirimat.html)",
+  "approvedReviewCanonicalFileSha256": "f693093718ecfdf94d4bee5c81afa32d2ede82042c5e5bb27f1b37e4efb927d2",
+  "approvedReviewProjectionFileSha256": "e78f6ef038ffa033f2168de4dd05a4e3252df8cff8e8265da2252b881bb1625b"
+}

@@ -1,0 +1,238 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Fracturas de falanges de la mano",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "7f7f70c5cab77f3022cc820f222013d0ef525f935ffab615d7475c6bc57d56e1",
+  "ownerCandidate": "fratura_de_falanges_da_mao",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_043_f01",
+    "b01_043_f02",
+    "b01_043_f03",
+    "b01_043_f04",
+    "b01_043_f05",
+    "b01_043_f06",
+    "b01_043_adult_doses",
+    "b01_043_ped_doses"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Las fracturas digitales pueden comprometer articulación, tendón o lecho ungueal; la lesión infantil de Seymour es una fractura abierta con riesgo de infección y daño fisario."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examinar rotación, herida, uña, extensión/flexión y estado neurovascular; radiografías dirigidas al dedo. No ignorar deformidad rotacional al cerrar la mano."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Retirar anillos e inmovilizar; fractura abierta, lesión tendinosa, rotación importante o déficit requiere especialista. Seymour exige limpieza/manejo de fractura abierta y antibiótico del protocolo local."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción 1: férula o vendaje al dedo vecino en fractura estable seleccionada. Opción 2: reducción/fijación por inestabilidad, desplazamiento relevante, compromiso articular o lesión compleja; decidir según anatomía y edad."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces."
+    },
+    {
+      "type": "paragraph",
+      "text": "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Utilizar analgesia según población en la tabla. No prolongar inmovilización sin control ni vendar al dedo vecino toda lesión articular/tendinosa. Evaluar perfusión después de cualquier férula."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Controlar alineación y rigidez; planificar movilización guiada y revisión especializada según patrón. Dolor creciente, déficit o herida infectada requiere consulta."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_43",
+      "title": "Fratura de falanges da mão",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/fractures/Phalangeal_Finger_Fractures/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_43.txt"
+    },
+    {
+      "key": "aaos_finger",
+      "title": "AAOS — Finger fractures",
+      "url": "https://www.orthoinfo.org/diseases--conditions/finger-fractures",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/aaos_finger.txt"
+    },
+    {
+      "key": "bssh",
+      "title": "BSSH — Standards of care in hand trauma",
+      "url": "https://www.bssh.ac.uk/bssh_standards_of_care_in_hand_trauma_.aspx",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/bssh.txt"
+    },
+    {
+      "key": "rch_pain",
+      "title": "RCH — Acute pain management",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated October 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/rch_pain.txt"
+    },
+    {
+      "key": "para",
+      "title": "para",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/para.txt"
+    },
+    {
+      "key": "ibu",
+      "title": "ibu",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/ibu.txt"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Las fracturas digitales pueden comprometer articulación, tendón o lecho ungueal; la lesión infantil de Seymour es una fractura abierta con riesgo de infección y daño fisario."
+      ],
+      "factIds": [
+        "b01_043_f01"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examinar rotación, herida, uña, extensión/flexión y estado neurovascular; radiografías dirigidas al dedo. No ignorar deformidad rotacional al cerrar la mano."
+      ],
+      "factIds": [
+        "b01_043_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Retirar anillos e inmovilizar; fractura abierta, lesión tendinosa, rotación importante o déficit requiere especialista. Seymour exige limpieza/manejo de fractura abierta y antibiótico del protocolo local."
+      ],
+      "factIds": [
+        "b01_043_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: férula o vendaje al dedo vecino en fractura estable seleccionada. Opción 2: reducción/fijación por inestabilidad, desplazamiento relevante, compromiso articular o lesión compleja; decidir según anatomía y edad."
+      ],
+      "factIds": [
+        "b01_043_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Analgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.",
+        "Analgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL."
+      ],
+      "factIds": [
+        "b01_043_adult_doses",
+        "b01_043_ped_doses"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Utilizar analgesia según población en la tabla. No prolongar inmovilización sin control ni vendar al dedo vecino toda lesión articular/tendinosa. Evaluar perfusión después de cualquier férula."
+      ],
+      "factIds": [
+        "b01_043_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Controlar alineación y rigidez; planificar movilización guiada y revisión especializada según patrón. Dolor creciente, déficit o herida infectada requiere consulta."
+      ],
+      "factIds": [
+        "b01_043_f06"
+      ]
+    }
+  ],
+  "markdown": "# Fracturas de falanges de la mano\n\n## Concepto y mecanismo\n\nLas fracturas digitales pueden comprometer articulación, tendón o lecho ungueal; la lesión infantil de Seymour es una fractura abierta con riesgo de infección y daño fisario.\n\n## Diagnóstico y diferenciales\n\nExaminar rotación, herida, uña, extensión/flexión y estado neurovascular; radiografías dirigidas al dedo. No ignorar deformidad rotacional al cerrar la mano.\n\n## Abordaje inicial\n\nRetirar anillos e inmovilizar; fractura abierta, lesión tendinosa, rotación importante o déficit requiere especialista. Seymour exige limpieza/manejo de fractura abierta y antibiótico del protocolo local.\n\n## Tratamiento: opciones y criterios de elección\n\nOpción 1: férula o vendaje al dedo vecino en fractura estable seleccionada. Opción 2: reducción/fijación por inestabilidad, desplazamiento relevante, compromiso articular o lesión compleja; decidir según anatomía y edad.\n\n## Fármacos, dosis e intervalos\n\nAnalgesia oral de corta duración en adultos: alternativa 1, paracetamol 500–1.000 mg por dosis, intervalo mínimo de 4 horas, máximo de 4 dosis y 4.000 mg en 24 horas. Alternativa 2, ibuprofeno 200–400 mg por dosis, hasta 3 veces al día, intervalo mínimo de 4 horas, máximo de 1.200 mg en 24 horas en este esquema. No sumar paracetamol de productos combinados; puede requerirse un límite menor con peso inferior a 50 kg, hepatopatía, fragilidad, malnutrición o consumo importante de alcohol. Evitar ibuprofeno ante deshidratación, enfermedad renal relevante, sangrado/úlcera, hipersensibilidad y situaciones contraindicadas en el embarazo; revisar anticoagulantes. Usar la menor dosis y duración eficaces.\n\nAnalgesia oral pediátrica de referencia: paracetamol 15 mg/kg por dosis cada 6 horas, máximo de 1.000 mg por dosis y 60 mg/kg en 24 horas, sin superar 4.000 mg en 24 horas; esquema conservador de mantenimiento para edad mayor de 1 mes, no protocolo neonatal. Alternativa, mayores de 3 meses: ibuprofeno 10 mg/kg por dosis cada 8 horas, máximo de 400 mg por dosis y 30 mg/kg en 24 horas. Evitar ibuprofeno ante deshidratación, compromiso renal o riesgo hemorrágico. La fiebre antes de los 3 meses requiere evaluación urgente, no automedicación. Confirmar el peso apropiado para el cálculo, usando peso ideal cuando lo indique el protocolo, y concentración antes de calcular volumen en mL.\n\n## Seguridad y monitorización\n\nUtilizar analgesia según población en la tabla. No prolongar inmovilización sin control ni vendar al dedo vecino toda lesión articular/tendinosa. Evaluar perfusión después de cualquier férula.\n\n## Reevaluación y destino\n\nControlar alineación y rigidez; planificar movilización guiada y revisión especializada según patrón. Dolor creciente, déficit o herida infectada requiere consulta.\n\n## Referencias\n\n1. [Fratura de falanges da mão](https://www.rch.org.au/clinicalguide/guideline_index/fractures/Phalangeal_Finger_Fractures/)\n2. [AAOS — Finger fractures](https://www.orthoinfo.org/diseases--conditions/finger-fractures)\n3. [BSSH — Standards of care in hand trauma](https://www.bssh.ac.uk/bssh_standards_of_care_in_hand_trauma_.aspx)\n4. [RCH — Acute pain management](https://www.rch.org.au/clinicalguide/guideline_index/Acute_pain_management/)\n5. [para](https://www.nhs.uk/medicines/paracetamol-for-adults/)\n6. [ibu](https://www.nhs.uk/medicines/ibuprofen-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "1f6b179b8becc8d26f3040fcc980486f4bdaab1aab64db2109e2e465cbab0e35",
+  "approvedReviewProjectionFileSha256": "db30c27549fc7a301f366794d802289eaa8ca64e8c3311bbfd9af4c147a17889"
+}

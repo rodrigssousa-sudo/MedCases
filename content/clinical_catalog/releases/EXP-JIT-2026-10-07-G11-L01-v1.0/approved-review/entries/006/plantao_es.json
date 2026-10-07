@@ -1,0 +1,132 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Hipotensión ortostática",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "5acf31aeb5e16cf4683a06a0233239208f89d28e4d5ae06107f5c8ed68b0ed24",
+  "ownerCandidate": "hipotensao_ortostatica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_006_f01",
+    "b01_006_f02",
+    "b01_006_f03",
+    "b01_006_f04",
+    "b01_006_f05",
+    "b01_006_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Acostar si está sintomático, prevenir caídas y buscar deshidratación, hemorragia, arritmia y efectos farmacológicos. La inestabilidad persistente requiere manejo de shock, no un diagnóstico postural aislado."
+      ],
+      "factIds": [
+        "b01_006_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Medir presión y frecuencia cardíaca acostado y tras al menos 1 minuto de pie; una caída de al menos 20 mmHg sistólica o 10 mmHg diastólica apoya el diagnóstico. Ante historia típica con prueba normal, repetir evaluación y considerar mediciones hasta 3 minutos/especialista."
+      ],
+      "factIds": [
+        "b01_006_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Opción 1: corregir causas reversibles, levantarse gradualmente y ajustar hidratación/revisar fármacos. Opción 2: compresión y medidas físicas; síntomas persistentes por disautonomía pueden justificar midodrina o fludrocortisona bajo supervisión especializada."
+      ],
+      "factIds": [
+        "b01_006_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No aumentar sal o líquidos indiscriminadamente en enfermedad renal o insuficiencia cardíaca. El tratamiento farmacológico exige controlar hipertensión en decúbito; la fludrocortisona también retención de líquidos y potasio. No ofrecer una dosis empírica única."
+      ],
+      "factIds": [
+        "b01_006_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar síntomas, presión en distintas posiciones y caídas tras los ajustes; derivar persistencia incapacitante o sospecha neurológica/autonómica."
+      ],
+      "factIds": [
+        "b01_006_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "La caída postural de presión con síntomas puede deberse a hipovolemia, fármacos o disautonomía; las personas mayores tienen mayor riesgo de caídas."
+      ],
+      "factIds": [
+        "b01_006_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_06",
+      "title": "Hipotensão ortostática",
+      "url": "https://medlineplus.gov/lowbloodpressure.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated January 28, 2019",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_06.txt"
+    },
+    {
+      "key": "orthostasis",
+      "title": "orthostasis",
+      "url": "https://www.rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/adult-therapeutic-guidelines/geriatric-frailty-multimorbidity/orthostatic-hypotension-guidelines/",
+      "authorityStatus": "AUTHORITATIVE_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last reviewed:",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/orthostasis.txt"
+    },
+    {
+      "key": "cg109",
+      "title": "cg109",
+      "url": "https://www.nice.org.uk/guidance/cg109/chapter/Recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2010,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "ng136",
+      "title": "NICE NG136 — Postural hypotension, recommendations 1.1.5–1.1.7",
+      "url": "https://www.nice.org.uk/guidance/ng136/chapter/recommendations",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ]
+}

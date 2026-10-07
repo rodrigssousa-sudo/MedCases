@@ -1,0 +1,418 @@
+{
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "humanApproval": "PASS",
+  "clinicalApproval": "PASS",
+  "clinicalAuditRequiredAgain": false,
+  "approvalText": "APROVADO EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewer": "Owner — aprovação explícita no chat",
+  "approvedAt": "2026-10-07T19:39:32.642664+00:00",
+  "approvedCanonicalHashes": {
+    "vertigem_posicional_paroxistica_benigna": "cb110617a12c86a3f457563da96c68d05d208d59e6f43b58c62ca1f98fd75fa7",
+    "neurite_vestibular_e_labirintite": "05229b7d848d394613a85fdf397e8cad9813189711cfca229d56a21f70c36eac",
+    "paralisia_facial_periferica_de_bell": "0b98a659e621322f463db7e5e3ae9656032f34aaaa9b4baf1f784c073827a29f",
+    "cefaleia_do_tipo_tensional": "9936b52dc46ee68f17853ffe1f0c40ff36e5bd1323a4580a8b76580937f805ea",
+    "sincope_e_pre_sincope": "0f1f877360fc901f13fa30690b194e4dcbeb52472c8a0218bfd48f5652741157",
+    "hipotensao_ortostatica": "642f9ec8059a9d06ba3058e88ffdb703d3c1bf4cccac786ce9d92998261fa076",
+    "delirium_nao_relacionado_a_abstinencia_alcoolica": "0b61960d88e8e19f8d449b85bdf2e6696c162c48c26249ee1f82cfa05f180f01",
+    "hiperplasia_prostatica_benigna": "db696cf0997e7c804acfb0ec92bfac442dee1b8dfa7e462ade72ebc0293bb663",
+    "doenca_renal_cronica": "fcff8a2aa942f7fa224b3f64c1fa2fe88e458cd69b47a4dfb5c4e4a37f79f225",
+    "osteoartrite": "81badd0e1c1be4c5f247980d5cbf017f62ae1f6e08b012b9030dd72775fcf311",
+    "fibromialgia": "fc9b9f78ca9d096c86e264595daba3dedd60207c4c2b251012d6a5f7fb615cbc",
+    "tendinopatia_e_lesao_do_manguito_rotador": "2eccce2597f1625e6d8f8751a9033cf4e93dd61651f202b9b73d389ef96eaeb2",
+    "lesao_de_menisco": "df86d107ad5d99cba7e396c9f28fcf782cdc7ac560176eae4523978206eded0a",
+    "cervicalgia_mecanica_sem_radiculopatia": "521e69b2a1e597768c108c03b49b57339607a65ebe22dfaceae0491e7add7d9c",
+    "costocondrite": "2a2fbe11b50f907b02507a5184a54107af94b8a8ca445837bafb8a7cc8b6cad2",
+    "rinite_alergica": "94c9cc719681d3c0c3aa89eba31ee24e2afaac4e9e660724bcf81dd3f5486c6f",
+    "rinite_nao_alergica": "9339ffea0396e504c2b2977569fd21691415d4970b9165e57714c21da69f209c",
+    "conjuntivite_alergica": "234cd34a4cbfc2ea5737ea16be64c2814c870d70d405a6892674c4ee02e73e6c",
+    "hemorragia_subconjuntival": "47f18aa487171a1302a02c2baa5ddeb201773590c193bc883807a261351fdb02",
+    "perfuracao_da_membrana_timpanica": "7e61c052feab0fecb26fe37e027447044c78d99da1ee7d4f878a5cb9e2a24bfd",
+    "balanopostite": "01fb12b14e9377d6d17b0fdd8d97599fad3f6935d72b796dfa337f7fa961acf0",
+    "fimose": "6853ce632e81eca7becf7a3b4aeae3e5e3344e79b506639eebb85a7899454c7b",
+    "insonia": "132feb6340cdfada1f01029b686b9c2db82b98f274bdbadd804bb0114eb01164",
+    "sindrome_do_intestino_irritavel": "63c64da25f6ad424126df8b5aafc2ff79b48ddfbf9e4d5a312a9f7410ead0f06",
+    "dispepsia_funcional": "f92d41df892d2deda53c75664e311dd1e449d93d7755feaea991049b91434fb5",
+    "intolerancia_a_lactose": "6f3def4608540447cb9ab04f4b016dde47904032e20391a6a699bcb1061a7444",
+    "diarreia_cronica": "27211337bd398dd09eed9d6247fc1f80c00dc517889114b116c6fc3333f5590a",
+    "doenca_celiaca": "950220c53b911d6ff76c450a2f8d8f253a9ea9b57cb00f81f61ee2aac2c630af",
+    "tuberculose": "3f1656ed46bc8997f94647249cadb3e6aacbca91cbd058fe614e46c236295345",
+    "sarampo": "3ae0c4e006e0403ad314af7681deb947c12def085fc18af74f523197824ff524",
+    "mpox": "af474f88c260b5ea08980d5f4e495dab400f2cfa8c2c6fc567e4b562573aa683",
+    "hanseniase": "43dccaf2959c1676089576843fcb8fa2bc7742059cce7071106bb0093b3a7c5e",
+    "esporotricose": "f82382147b60febe92a139735dabdaf056db6a05ef4bc65f833e960040debc5c",
+    "larva_migrans_cutanea": "aef4408d822094640434e4f1d40e311842f6b23222d849a2ccf9ae9cfbdba630",
+    "miiase": "110831dfffe59922267c3775eee0062017338fbab6fce85562ec3a2fd5e1ff21",
+    "tungiase": "02f7a066b0d1ee19c903d73f5fae2811aeaaeeb876f8fcc7079246cb6f8c65c8",
+    "reacao_local_a_picadas_de_insetos": "44ffe79cb2650efb5d5c530e01c51cfb8139348927e4a1dbc7e7afeca52ff9e8",
+    "dermatite_de_estase_venosa": "ad52f0b209bd02c7d5f8f5b58705a8194d3d60ed07e90f69ca48724c2a1d1678",
+    "bursite_olecraniana": "1ff80b367fd81cf7818e835fcbfdf7faf4f128f7d5306993ff3ccdb66b83e862",
+    "distensao_muscular": "d36f939d4f5963343ea3d7426c7164db560c7acaef8e6e63277c672f5230be2e",
+    "entorse_dos_ligamentos_colaterais_do_joelho": "b2cf3036f80efb9011a0a1e3a29f1deb6f7d3f1442ee3d460bb2fbc39e9d85a8",
+    "fratura_de_metacarpos": "f36d6b17c6e2740d05835d5d4f85581393c84b8f6cdd84cb9550c83dd880912c",
+    "fratura_de_falanges_da_mao": "7f7f70c5cab77f3022cc820f222013d0ef525f935ffab615d7475c6bc57d56e1",
+    "fratura_de_metatarsos": "5d0e0a7ed69826fdfbb8d1987e3b4205b845bcf63e2c9ced9ef92259301a8532",
+    "fratura_dos_dedos_do_pe": "87871d0c9626e430db0ed83f7bce9fb862cf07d7cbdfe354582ba91a795c7c2b",
+    "luxacao_interfalangica_dos_dedos_da_mao": "80d759263901f35560cb93c93f0a7225ddc95dd41b1b8e8da9db889980c9fac3",
+    "luxacao_de_cotovelo": "9c76099c16e2cda9b8ff695b72b790ce317dba812d24af47486a15c4dd7f56b2",
+    "subluxacao_da_cabeca_do_radio": "1b58deffe4a95eed893fa19194a1a222e61b63f7105a012a024f761ffaf5091d",
+    "sinovite_transitoria_do_quadril": "6fa6990ea19e85308aaecf41891201686fd9d2713eb25e0526ab8c8c5b4f8154",
+    "febre_sem_sinais_de_localizacao_na_crianca": "309b3fdd83cb1caa0eb711c872e817878882a76189ecb845889da1486d843f70"
+  },
+  "approvedCanonicalFileHashes": {
+    "vertigem_posicional_paroxistica_benigna": "073a92f08d8b3c3e5b16890f68f0b55016c71438f8e5a5db932d182735ea4cf9",
+    "neurite_vestibular_e_labirintite": "e6e3d41572a63670a2b361f56255907f8755b34ef6c17349e5c98f2ba022c8b2",
+    "paralisia_facial_periferica_de_bell": "8d922f51be4cf8bf0497a37baa8b6d21db669df51edf1aad9a0cec89b377be30",
+    "cefaleia_do_tipo_tensional": "1146ec32be5ae7712ffe5d8c1a2cd9c4eeace200736bfb7ffda06f68b9950927",
+    "sincope_e_pre_sincope": "03d5c5528368f4e22eb10e70e87b161f37167ed39ed322789befdf65a580a0dc",
+    "hipotensao_ortostatica": "5acf31aeb5e16cf4683a06a0233239208f89d28e4d5ae06107f5c8ed68b0ed24",
+    "delirium_nao_relacionado_a_abstinencia_alcoolica": "8c38c2e6e0ead05bf55d9a50ee4757aed6eb1f1572e948bdf648f7ce7cce57f2",
+    "hiperplasia_prostatica_benigna": "dcf3f552b9b41ef4ecd56a459bafdef0686d02ddb12a12acf3983fda5cb53fa1",
+    "doenca_renal_cronica": "87262c4fe13bdbeae0f5b6a935e30daad3edd3e4e3f0ca8d412938c1645c869f",
+    "osteoartrite": "8eceb76faa56eca17bea8e08ddba94224b87967309958f899ced9e289ed551bd",
+    "fibromialgia": "666db88d2ba3d4a6af422e59154ee51019dc81ba7a7585eca7c3d20af80d9484",
+    "tendinopatia_e_lesao_do_manguito_rotador": "b8c47699b3e113fedb5b84b3fd416ccda69f60c6921c9f0eddd27b8acf340b2c",
+    "lesao_de_menisco": "2e7b17818052a840ac06033db484c8d102f57341910a2ce3350ffb84e2b595c4",
+    "cervicalgia_mecanica_sem_radiculopatia": "ab238ab3d4c2fbbce5d4e7bcc61142a32cd6de441bc6a59b49e41046c8913fba",
+    "costocondrite": "98105ec2c08d1be4da9c85f8f14235bd7f2077aa3a70bc16cb323ae3808ffe63",
+    "rinite_alergica": "3650a51cc98076cff712d0c7c03110677c4c096df7111a24c3139fa4ef7a9ca6",
+    "rinite_nao_alergica": "955f31c1881c58e18f485d42f58bbd0bc61eb518d65da36995fb3b0ed2626590",
+    "conjuntivite_alergica": "3c4e1931c305bc2993cd86c7324cd18e6bff1a427a37c45fa392ac6da41a9f7f",
+    "hemorragia_subconjuntival": "8b9820d5b0ecab15b1a776cdaa6fec058018244d95dab1ffaeaf15c2a4e5b757",
+    "perfuracao_da_membrana_timpanica": "456ee55977e2f1c7726a34b76d170a000e342cfc12d6335d274d41777f428d49",
+    "balanopostite": "ae3fe639a29a435247d04e91a1232220229d85a0c2de887503869fce2821299a",
+    "fimose": "68b72147b956be17724e1273e96d427ef132d703b7ea0a3b2f5540b1c4ce76e7",
+    "insonia": "8ca1c002828f10f38abb77d4e603598698c114279a031af5d2451a699e84de8a",
+    "sindrome_do_intestino_irritavel": "343bc1ecc3becc7730786ec0d6c8b743763c0f9c3e7954e71b0b15048e0d9b5a",
+    "dispepsia_funcional": "e63d6e37121fb122e1eb4b6d07890cea45eb39f24ae9a13e3e4b4ecab52d2a70",
+    "intolerancia_a_lactose": "e5ffa25609ab57224e8774a1d7a7a28cf58e6d0ff11e87bfe90bd4c8a827f38f",
+    "diarreia_cronica": "bb53dc5c765762f651daf76a966c827163b9a37d08d5981406f987d3aefbdb1f",
+    "doenca_celiaca": "8be1e680491e2a2c47609e7c1ce36ba78be719d275cb1524be1b6505f84102c9",
+    "tuberculose": "b5db729afbead8effb85a57c51d8d48c34d81d4ffac68da65856ad42616d80f4",
+    "sarampo": "aa90b3bbfdf4e14e8adf18fe1e4a22145fc3cd4dc8e47214036545590f647e99",
+    "mpox": "f693093718ecfdf94d4bee5c81afa32d2ede82042c5e5bb27f1b37e4efb927d2",
+    "hanseniase": "47d0afe53aa052c6de95ff496a4568c6582b131460dbb2f70487e2a64292754e",
+    "esporotricose": "92c220114e67196a3c648ccf2e8adc7d8619656ee1681e762a3e8dd79b59cc31",
+    "larva_migrans_cutanea": "79a87076201c0dc090967f4a8c756089092605f997aa6bfab580ba732ce1913e",
+    "miiase": "0d5f844d7355bcc8ee2645f5bfd9d84f5f0479a6aba9300c62b4bd95daad6147",
+    "tungiase": "b523472ce4814c8958b82be2713651d6565644011b9d04c030decf6c171d88a0",
+    "reacao_local_a_picadas_de_insetos": "88a244a20b3005b3c713e964179a041e1b77430209b24e8ed15ec48af2b1b307",
+    "dermatite_de_estase_venosa": "36e49ca15f55015c57eabf256629c6b7084bdfd3dc374adca8615ae570104abe",
+    "bursite_olecraniana": "335256b00b27e85a50d2ff45ae42da20aa46f4c1460425503979c8b56481b88d",
+    "distensao_muscular": "979ba528a65e8bc91938e06a3aba106fb9b24f59cdf5bf15d18de6d4b82d8cbe",
+    "entorse_dos_ligamentos_colaterais_do_joelho": "0035e87760e8ea50d581f1f68e151a23ef1c75b284e793aa525140cf1f1ba188",
+    "fratura_de_metacarpos": "2fd18f97de33ada22666f6b90feec2243d15c4f8239283da774a33d0559c8a97",
+    "fratura_de_falanges_da_mao": "1f6b179b8becc8d26f3040fcc980486f4bdaab1aab64db2109e2e465cbab0e35",
+    "fratura_de_metatarsos": "dc57bc497ca2662f9056cc25fd12d8ac0091272dfd567a9d0b138b19d2d6db6b",
+    "fratura_dos_dedos_do_pe": "5cbbd754a930978df3200981963a6355f406252995bbdaceae0776285cf0a6ba",
+    "luxacao_interfalangica_dos_dedos_da_mao": "bf8a185a131a1b788e5bfe22232a1089fdc34976bd31a5d971bc516a71605af5",
+    "luxacao_de_cotovelo": "153764d116ab42c84915e5ec4f0ceed090ae66ec71d999ecc12a55cfdd3755ef",
+    "subluxacao_da_cabeca_do_radio": "c07c3d4ea812b89ee13e021be31a88ba34f4cb0af38b56fd1a0c6a5ea3f91342",
+    "sinovite_transitoria_do_quadril": "6d737606a01c43a1d69dc7a4725fc2c836e346288e42b4a24d01a86ee7319c75",
+    "febre_sem_sinais_de_localizacao_na_crianca": "803cb41bde000670b1b7ff78c1a1beb4184f24f9bde3192e4cee709f22ff5b40"
+  },
+  "approvedOriginalProjectionFileHashes": {
+    "vertigem_posicional_paroxistica_benigna": {
+      "study_pt": "dc808b642572f1db127a4f0fc8832db924690bfa653f77b0a135fa5b2c47545a",
+      "study_es": "aea8410d9db4827cceb4ce2d3c429d900044bd6d155def7caa42404a11ddff23",
+      "plantao_pt": "62c63166f866a11c56fbe741d94e62cd424369a5ab9ceba2b88d47e5bf946fbd",
+      "plantao_es": "49ab69446b2f138dca5989fbdad4e85aa9b0d0d46fd7ce4444130c50bd44b650"
+    },
+    "neurite_vestibular_e_labirintite": {
+      "study_pt": "1de48b05cb49ba1f2b11b89f858fa4df81f9dfb643f88e3f01d9ac020b559c87",
+      "study_es": "14faa3f608b05f74febda6da557476df816c9399d450102afbc01bd868d35a25",
+      "plantao_pt": "e8a315e596b7aeea8d8c459dcb3e821c12a261e019903fa72ace66b00cb390af",
+      "plantao_es": "7743fe819585f665c050e3a4c1b54d468e9a869af815663a31fd62ab4c380568"
+    },
+    "paralisia_facial_periferica_de_bell": {
+      "study_pt": "fd9d42548fea22fcdce4e9f0dd840b6c90cf4cdc4dbf4714f133ed4f557e279c",
+      "study_es": "aff57b98e03809e09eccfa256d8499b63997f0a8d6c01a53a1c6da4861446b46",
+      "plantao_pt": "7df9d6961143f3c981e7a90a2c68ec41b22226aa4b14bd5502bd36ea263258e4",
+      "plantao_es": "b11cac4386f41d10ab6ca08d03ed8b8b3c2e9fc5fd64b151958a5a31d5ca2ebb"
+    },
+    "cefaleia_do_tipo_tensional": {
+      "study_pt": "1d6c560fc92b31615104820796020b4f03a3e39839679efc5364c730716e33e3",
+      "study_es": "ac49dcfe9fccc4ba8f3072fa15c0501086c3f880e8b810981c9b80071341a846",
+      "plantao_pt": "7febc90e694fae3395c0eba3e9fc825639f73dd14829d11c6486c6b115d7ff15",
+      "plantao_es": "ad93b914e2454010f8b48ffcfb371f21ccf75f426d7a8244a22fcc818de6a127"
+    },
+    "sincope_e_pre_sincope": {
+      "study_pt": "218d2ad014b304353559082dde678edf80e29f43576f6b19eb26a6df52fd0ab1",
+      "study_es": "1f63e0dcb5c9cdda1556502d7e1527d066e0099efe4a5736fd10f5cd23e159a5",
+      "plantao_pt": "b72617f50c5ce60ae3382d60510daeb2f47999c8e375c6f94ba8aac3fea70d1f",
+      "plantao_es": "7b122634530e102103c78eec91efcbed075280cb594fcea2a8447be25aee0105"
+    },
+    "hipotensao_ortostatica": {
+      "study_pt": "d790b07de7defe3ef51a5c9be30050e6193a23b8b26921e4eaaae5e6b61332f8",
+      "study_es": "a0c23fb82b5ebc3d854d1feb04cd6e0181ca4af44394129f0d711c4a38b71ae9",
+      "plantao_pt": "d43912bcf286dcc4e9051b7326030637929abaf95c8b2b9bcc4c955a68d8339c",
+      "plantao_es": "6618a0e0f6d1001e85af4bfaa81485c47fc743735c29a21ac9ebca16e9c904ae"
+    },
+    "delirium_nao_relacionado_a_abstinencia_alcoolica": {
+      "study_pt": "f0f0f53f2ff02f7a54040b905e0a6d05eb90ae9a3f3a616569aafa56939e3a1b",
+      "study_es": "b8472bc289c1e30cbe951afcde84652f658b31c1e0c6aaf9f233926a0972a955",
+      "plantao_pt": "c142fd0b18ee46f2ddd0c1fc56f88aa5cccee792dffe517447b31f4a16b832f3",
+      "plantao_es": "0fc3f8bd70db19c9001a16c6c85313f7672d9c8e9f9dde9a17b9eedbc7471e30"
+    },
+    "hiperplasia_prostatica_benigna": {
+      "study_pt": "18c677f49fa927ea1f37646e4408d48545a0ae44e44ae77ebb6e35400fbf8738",
+      "study_es": "156e264a1f6cddba38fad83abf633288dff0d1d406c0c29d8b8a4dafcae92c60",
+      "plantao_pt": "8eeea8bf078354358996ba2364f3320be195e306313d371ff2ded4295276f16c",
+      "plantao_es": "ce7bd6fcef30711177686fdc47d565b3cd3286965f54655bdfcc095c5cd94742"
+    },
+    "doenca_renal_cronica": {
+      "study_pt": "6a71e3fbf23e3012d2c4dfb95405450c8df8f82dedd1a293fc34d206621c711d",
+      "study_es": "3be6bfa4da03e41edd064c7cfb385a96af750d8b35fc8e906a4cfeef4bc51883",
+      "plantao_pt": "3e29d47dbfa27f251e0b5072f243c22b40c0e590fc98813f87ab2ad30ad5f037",
+      "plantao_es": "c17c42a5db783b54b07e23f4cb608bbbc05e312686c9b992f9d6387e5f061924"
+    },
+    "osteoartrite": {
+      "study_pt": "294369af0e03f51a5effde4da31b8356bfa806dfa6ac547c69ed4ab6598b6329",
+      "study_es": "148542051b889305bb5043c331e0977d5bf9afa8f680eff16592a21d85fa289d",
+      "plantao_pt": "d22dcf8f29a3e73898a106856e1052a5645e5f466da558ae310cce1c9fc83a8e",
+      "plantao_es": "b8a5f31d9298251eb49d59104684902b6f8a2cd510d096aa35caf202558abde9"
+    },
+    "fibromialgia": {
+      "study_pt": "217f4a03d627fd3dfed4ea06248bdda0bd866cac40e6e45a2e1e84ab18057ecb",
+      "study_es": "6ab80fc701cc85a9424ef8e11f1ffcbdecf8f73e37ff642e43a9d2ddb9760e44",
+      "plantao_pt": "280fe8d04a7b7ab52b8460f620e21e68a44f849ba6569e34e954d4b292240ec5",
+      "plantao_es": "24d7659e9c90646544b85860c5f47398d5eb939271eed5b669dd7f2e0fea5577"
+    },
+    "tendinopatia_e_lesao_do_manguito_rotador": {
+      "study_pt": "2fb69ba80f39548ab7dde3ccf86d8638dbb0ae1ca3e1244a4fdefa03b6776ddb",
+      "study_es": "444ca43ae7fceec1c2665ddb27246c30bdf04e6b1d0836e95648ca420b5c6197",
+      "plantao_pt": "a23e934562500e2e21ab82df95cd7f4f4c49162389cf3c635b9ebcde71a86fbb",
+      "plantao_es": "89f3912fb769879f1ff4c07aae34ae25cd5f1110b57ad00091ca0602371b4245"
+    },
+    "lesao_de_menisco": {
+      "study_pt": "e1c716314566293f230c6dac2f71e71dadfb50c3922f8202db66664a9657b81e",
+      "study_es": "8806cefefcc85dccd0012ea47d137dec719568d3900d8fdbea50cc913df01399",
+      "plantao_pt": "15774cbe20e091ee42ce6cbdbab09d6eede41ee78c45fab47d8df15b4ecdecb2",
+      "plantao_es": "8f61164c0be8944eecd00b64fc343fc95e6f98d9b9bf8d893b490c1e4c25c89b"
+    },
+    "cervicalgia_mecanica_sem_radiculopatia": {
+      "study_pt": "1898a64dbf7112fcbba66c1aa0e69e02cab114e09d65cfc85f3424d7784e732c",
+      "study_es": "8d20ae3bff75a15b1cf9dfa9053f5b13b6412e5000f3037d98192fdff9a5a0fb",
+      "plantao_pt": "30cec42484e5227fbc5611cea6d7521d094f956c8614a972fa84db29a413436f",
+      "plantao_es": "aa101cba1c0220c02985e16f3d7c9ad581f0234d83d6a0f856d68d6e146f0545"
+    },
+    "costocondrite": {
+      "study_pt": "f8114a769f1ffc1915ffd34b4716d243c9b65059376909ebfd8c9e50b226b3e7",
+      "study_es": "f03f4a150b6fcb315869c37d7841381bfa7866dadb97ba176ad502fa89953ae7",
+      "plantao_pt": "5389434ecd3d54de80b2ab4bda9a34d8c6867a8429ba5d331d5bf5b8f1fb5cbe",
+      "plantao_es": "4af201d70aeea8db8d899b1352b77a7bd872520785b8f683ea7fb373b739ac88"
+    },
+    "rinite_alergica": {
+      "study_pt": "4b257dbe9b59487eebbb7811fa8c1824499b686ce20812046005bf284653ae59",
+      "study_es": "05b6181548c09846f04a1812a9ac3ec86ea5d2cff41adbe6406fcbf402282c44",
+      "plantao_pt": "0cc0077d241d8f7ec2069b4a8553c4c8e7c55fb5f4379be1c9ac7fd03115f617",
+      "plantao_es": "25be116fb1678b8b2daca0111afe4f23dd6aa85636e2eaebaa550b421687ed43"
+    },
+    "rinite_nao_alergica": {
+      "study_pt": "ca680dc178aabf89a6281d2f08caab10be27c2490c7ffdf8e559f5a783729bee",
+      "study_es": "51d010b605f385cce58375a4a0461297cc90d8920a33626e6ddb5d547e7a2d42",
+      "plantao_pt": "bfe75c1e21aeed63b79b45df3239b7d158f87c3be567c03c99d323d92fde8c36",
+      "plantao_es": "ee9b569384069418c6ebf7b99842ca5f3eaa41fa29973568407da72e6371bd1c"
+    },
+    "conjuntivite_alergica": {
+      "study_pt": "ce86893c94736973099dab28a63cf554d4a543f36c3917666c78caba6f771345",
+      "study_es": "500f7b0f5298c5fc6625da8a91aab567fe2f62082e360670615ba1be20f45d13",
+      "plantao_pt": "f3c60e9bc5ec9c8dd7be9feffba3088b2d27c1434f6f626af08352bd1647d5ef",
+      "plantao_es": "a542b55a831e175c4be4b3b3b1014b0ea32c83c7e7facd50675b6e4842bf6833"
+    },
+    "hemorragia_subconjuntival": {
+      "study_pt": "12e97b60d71c6c1fa1f3177300cf7dacbf4a35b0a49791c4633bebc11ab1e0fd",
+      "study_es": "fc9f5a09596b59f55292ef78312c4bab7af909a5652fa2a3bf9729ee7b7997f1",
+      "plantao_pt": "114f18e953df6803b17e226cf4f46b7b1348f12625263be17bb3f28049a1b252",
+      "plantao_es": "3df6978923cd2c78bc3417b47ad9066cde5f4df0178633c19031077a05ba230e"
+    },
+    "perfuracao_da_membrana_timpanica": {
+      "study_pt": "e54dfe3cde29e1846d2e141c359176350b70bfed4fb80c5fc277f3a2a68294f6",
+      "study_es": "7f155745f1631a62b523639c469c38f080bd3472989dc11872773da9a5ba4a28",
+      "plantao_pt": "2a27421536808e74ee7e66f6a76278184bcc0f7d87ba1d20dcf5e6f4749520d2",
+      "plantao_es": "5b9fdd4c3e2d23495fcd3520983aef315fd3ab06cff4ca493e253b2d90329810"
+    },
+    "balanopostite": {
+      "study_pt": "92330e4cd55bb96b643784dc915145531f3892fe6623d5069e312debf916d8f3",
+      "study_es": "310b649dace5f56939d576c01b14d0ac51cbe0c8f2fb7c3d340bbec7645ca009",
+      "plantao_pt": "5e77b70bfc50726136d0b46e9df7948f640dbc3c820565d75a9cf09add784ac2",
+      "plantao_es": "b1fba03edfd6508c50a651b7343c5a1cd3f118d9a08b758eb55e68c6ae904913"
+    },
+    "fimose": {
+      "study_pt": "3d1e012becfa417921b7fdba071f0a8771268803e60f9d5752843ebaa7e0889b",
+      "study_es": "abe6a5bc397aed184bc5086790b75dd50823204768525ac7f920e94510ef9468",
+      "plantao_pt": "3925cd969de2e66ac88c7b07c6859d3822baec0db17eb4fa1f7311ce3e38da78",
+      "plantao_es": "bbb678f3caf5fca4f82d9714593f2d104adecfb2bb5ab483ae04be745e62c3da"
+    },
+    "insonia": {
+      "study_pt": "ad543c1409c650c712d77309ba162fd009965566633a5b7256a7031babe4ad0c",
+      "study_es": "e4632c62fd0909cda7dd5fc7644ef8ec263b2a4396e6c68032f995582d6073d1",
+      "plantao_pt": "bbff93672b76f85008f5d949611c930f2515f11d98268e61b7375b6eaf2b8244",
+      "plantao_es": "c359f6b10a662e9d8b8b25c2f5a8c8c6b644e9a0d837fcc04dfa2e45f8c50e7a"
+    },
+    "sindrome_do_intestino_irritavel": {
+      "study_pt": "99310cd7ccc090ba36495b6e7a65acad9e53ef106efb3f80b34b0cfd3ae61f08",
+      "study_es": "7001d18c1872a5b51ef81ab011679d5e20ee55e08814faae69be73857597ad66",
+      "plantao_pt": "97be8e37ddb258ffdd4e9889ada374632d48be441655efdff50c2ceb17dbda7f",
+      "plantao_es": "6414294d7866cdbea48d9406b2d91c6bb80af3b16bba30b5cc469816433c3127"
+    },
+    "dispepsia_funcional": {
+      "study_pt": "4045ac29728eadcceb2187080c90ea9ea2d9750d871e5421364ab2597c618fd0",
+      "study_es": "923c406acd901f973ad1d33e1eaecb3e1f99ab0aeeb38acf037fcfccca05a1cf",
+      "plantao_pt": "d4d01e82b6a9e16f8070de0deb18ceb5a8c70960aa347d2b8193c913bf044a99",
+      "plantao_es": "7786626f684958efa4a806f3273eb4e188697f8897173d00840a8697d422a11a"
+    },
+    "intolerancia_a_lactose": {
+      "study_pt": "761c83fd283acdd936e93bbe1eff4f7ba0c55d764a805cf11e132b4980798013",
+      "study_es": "c1f74e2ce44a80f4d7dde961bcf147760dfc4f3e7bd041f726f5eca74f535d14",
+      "plantao_pt": "b12dbb07de22c05f7b204b5c7243f6123c38ae71e96e824aa52407bc6929b693",
+      "plantao_es": "6521766e4c6fd0c3f0b8500a5b5e938e86c669acc814ca243abe46f5b25fa023"
+    },
+    "diarreia_cronica": {
+      "study_pt": "2f9d7211a0475655cad383a83ed5187d01e168ae4563455d7d08083e05fc44ad",
+      "study_es": "311621af270320dfc507e846989d1f933eb05b1199abccc711f6adb4b323338d",
+      "plantao_pt": "30468bfbf4b9164fab53fb9759a1ae8816920304bd28b6fa4d167c6cc9a2d2ce",
+      "plantao_es": "0cd6a032dfc7c580db16b830e2a1b130dd6694d45f87dcf34c4c0ba044eb78bd"
+    },
+    "doenca_celiaca": {
+      "study_pt": "c20b09b08b7499ba50ec5c0f7ed4be8df3cb863cd627062fd955e9cea77c75e4",
+      "study_es": "4ac653fe34de50e6115bb1907c0780613c6b1ce94a996fb9ae593e385c596733",
+      "plantao_pt": "b961358345b8a2b9c154f2d406a804c7a5889a3df7f192fedf5f2444364fbd18",
+      "plantao_es": "249e38145ccd4bf3cda7dac5507a5361559a8fd4c1235904e337ba898296fc16"
+    },
+    "tuberculose": {
+      "study_pt": "39eb8505587f8ae285877d482ad4296810ba6b13efe4d0a0c60eac5ee1f53846",
+      "study_es": "79023d6252630c6d4e6bd9064455143adf6617f167fb4086e2f9d111d22a2f78",
+      "plantao_pt": "47773cf0f29837a84e49da088ca675a64902f35f5f2aa824476b615db5a2abd3",
+      "plantao_es": "1fceefd78305a77ee296120dd6d7d388d992de886defbd7abbba0a7c0d5596f8"
+    },
+    "sarampo": {
+      "study_pt": "f8a37a12f0b2e992cd8d960ed0479722a7e644e288ed7ebccb59ff73558e4bc9",
+      "study_es": "31603b717ecedb7666d6e03e357210694e84a5e7909ca2b1ee8d535e61d5c53a",
+      "plantao_pt": "cd0210fe3236a854c9f689b1cf9d828e2ee072c56f179af8961ba10876b54569",
+      "plantao_es": "d49e22d05e88714bb871553fcc7873cc12229ab357d628fe31770f89a85dc227"
+    },
+    "mpox": {
+      "study_pt": "e78f6ef038ffa033f2168de4dd05a4e3252df8cff8e8265da2252b881bb1625b",
+      "study_es": "011640fa3285ebd1cbf1a1710363eeb743d43ce43c3d397ed6385b7101cd4429",
+      "plantao_pt": "a5c8e900867902d5cf0f746db2503b1e3758f0b6126a1c3e1a666ff61b028621",
+      "plantao_es": "d9408a512d4f681da284b079b31ef97c3f52607d770de6bcd886f4c38b986530"
+    },
+    "hanseniase": {
+      "study_pt": "f2f7ed5c8e14eaba622fb5cf6f52c74e4544e70d769e292d23b7c95769c33f50",
+      "study_es": "303b531cc1937e3d08bae11de458b4d4eb57a23df43662dc3a5324530be78e4c",
+      "plantao_pt": "ca692173c5f2a7989d794446af06a2011b7467e81e343d0233f998050fdd0cf3",
+      "plantao_es": "678c0899e108a4ce27f6750021b2838af3b7cdaebb98ef4f48a3af7cc553e81d"
+    },
+    "esporotricose": {
+      "study_pt": "ee0c62b6c4c5e00e9fb637527d0e3a5d01ef4b92e1bca70ce34318ac52f4f901",
+      "study_es": "a4abe834e784988aa1d44eae15aee28a2bb58932ada71d6141641be055f54fbe",
+      "plantao_pt": "cd57afaf41c77755269e22e31ad1b46aafd25093d254636ff3787ccbebd076bf",
+      "plantao_es": "958b09d8652fd790ed5805b1fc7707ccb74e4c8ca3400632757a5dc6d9b77a07"
+    },
+    "larva_migrans_cutanea": {
+      "study_pt": "1154c432f850ebb7913a7cf7b2c60899b61c9b3a7747c196e063e6506f325975",
+      "study_es": "2da18adadb506ac44845855bd051ddd6a41f6f2a0727e2760174a1f04ba92a87",
+      "plantao_pt": "849ce9c3f9559c7f47bb58a7cf8c66dbeef02d9dda90a2f3cdc7e1e6c2c99613",
+      "plantao_es": "99d27a901a91bcb2bd5e6a636f3532475b8643ef067c1969e58113ab39d9651e"
+    },
+    "miiase": {
+      "study_pt": "e8bcff86f87e5976d263d74649fddbe581b91636df8e4855d92ea9db0e69cbd5",
+      "study_es": "f6887d5c6e440627e0f0285ee804cfa45b3c8e6729b0bcde13db1000bfce579c",
+      "plantao_pt": "416e339b2afdc2098aa4e4cdba31c9927666b686a1a90a4a8bf23db2e397a854",
+      "plantao_es": "0f130057e9abbbf1bc3478eb45bd9e69e03a474fc85e59f3ce7a3049d72f2538"
+    },
+    "tungiase": {
+      "study_pt": "5626e9bfa26bf95574663badb11f53ea6c5bd2414562be1f13e51339ad6fc6fa",
+      "study_es": "0a2d7c926e836ce79d690a6e8ae174144d14badcd9dc95173909f0a97e3c15d5",
+      "plantao_pt": "eda258cf3197f54d8a3d9a102946723826deee6c09e3a5c6c1985dc22956d667",
+      "plantao_es": "cd7392cc2e2c5a4af4d1ad7f5bd1cc0536e16591eba08e0b1246d7f6e050dd5b"
+    },
+    "reacao_local_a_picadas_de_insetos": {
+      "study_pt": "3751b807fbba2f98bcefda9ee33ad1fec37863bf46fe36c3c250644fed88ad8b",
+      "study_es": "3d3454c232c6e61187cee9a9a9ee75cf886708b4e8db006fb2c8cf82dcb6cc7e",
+      "plantao_pt": "08d4caa272b0d84588106c7784b7ededc258fab3fdb73ddd697b707d751e8e3f",
+      "plantao_es": "4792119be20a9aee965eb79b223ba3a3a0f04584f0e79a099c866e4e7b370fc1"
+    },
+    "dermatite_de_estase_venosa": {
+      "study_pt": "8484a33232e8af0043e944e1348de2f035aeaf7e085570009da192a7559adc9c",
+      "study_es": "78fafa731ae76b6badf8291135870e29592f807017b17c1c998bf709ea0582c6",
+      "plantao_pt": "ae80601e99f3f39deb5748a6a99e2f1b2727254630fc2c7eb8aa316e093b7368",
+      "plantao_es": "44ddcd41e0a9f8cd71a6c96675ad7afeaf0b91876f323dfd90d6f39170f4ec22"
+    },
+    "bursite_olecraniana": {
+      "study_pt": "baa297bb74f0d5e16a2bfb5e68418610c82eb2eca641ec555ea976d26e29436c",
+      "study_es": "1a2668f325875558c043b3ba9e2506a4ac036ea503bdda97ebe960c1bb6f3572",
+      "plantao_pt": "6d838a18ad4fc9408049a79733314e543fd4ab3d1149bdfc0987614746de9dcf",
+      "plantao_es": "48303a0f97dc92f402371d8454d95e569dec13729959518e071422f70c216f73"
+    },
+    "distensao_muscular": {
+      "study_pt": "fd62234991c21c7d28190d34712d8d2e4cc9e64286026b1ad8b4de712e841ff6",
+      "study_es": "c565c65de8ea5ae42a619fd0661c04577131356c7abbf73fad387bf4960deef0",
+      "plantao_pt": "9fd9cdcda90023ee257e14335f42a37414f166f4e10811fb99592d4617c3455b",
+      "plantao_es": "801c2832254d4f44f2f7627f2d0eb89369a8e9e773bbf762ea0bdf7c41a49ce2"
+    },
+    "entorse_dos_ligamentos_colaterais_do_joelho": {
+      "study_pt": "fc3862d81e04622e96510acc01dc4651f3e93ae3743b2e0c91d71f8eb52e71e8",
+      "study_es": "f3d6d2f582cbf81691a8d9815571dd6746fe28d3b9c62c238b484770ec50f132",
+      "plantao_pt": "48e8023a7c794dbe910e78b1a87eb068601ed6c88ae23a6a68e8b6a0e4258915",
+      "plantao_es": "442379b1f79f55cdf930e006a08516c41a7b56a50f104aecf6d5e0bba52d51c0"
+    },
+    "fratura_de_metacarpos": {
+      "study_pt": "85b99fbeb9cdb59cc858f74d26c04b5e4ca062ab65edaeba61319c104151c4d5",
+      "study_es": "c3d0dbc9d14507b5143cd46a60ef08fd36a4d16a1cfdfbc28ea8e639e2fb9989",
+      "plantao_pt": "02245e7e56ad534d0629d5d3dac5bed4e4ef64330310e1c25fad80b93dfc108e",
+      "plantao_es": "41ec3aec3e4f61b16665892e01a1b52874a28a1a6c0489d69ece0dc3ba7a1920"
+    },
+    "fratura_de_falanges_da_mao": {
+      "study_pt": "e195783e0e08b1af008be90526faf209a98abc03e12a292f0271a8332da0a338",
+      "study_es": "db30c27549fc7a301f366794d802289eaa8ca64e8c3311bbfd9af4c147a17889",
+      "plantao_pt": "b928eef877eff5b2bf51c07bb8d9169a1e9a2c8099851dfe32989058c7550530",
+      "plantao_es": "8bc5d4223d0072f5a2ebf84734fb8b4a25ed88d2813c8b098a85fa7195ba8a36"
+    },
+    "fratura_de_metatarsos": {
+      "study_pt": "7b3b6a2fb84e3014532c08c7fd0e43700df2735308fd983d50eafa9e8930e746",
+      "study_es": "d2bd640d6ff93612936d1995d9e3490903d9c01c67d834f0dae51b5554134097",
+      "plantao_pt": "429e9672762aad7965a1fb61000482672fdcce39644465a992c1799f82e877da",
+      "plantao_es": "6c0abe1fca6d3f3b5a6a360ada06842b86f5b2cb4189e881db4e9ed74aa33fe6"
+    },
+    "fratura_dos_dedos_do_pe": {
+      "study_pt": "ded0f97737e82aaf088cec10696456105acb6fe005c64fc3a8d0ad3bcd68181d",
+      "study_es": "84a4b52d4a28109232bc248516c040196cf2466d66935dfe93154c7525bcc18e",
+      "plantao_pt": "ad3ac37396b654e8cd72d607a85aa211244c4d6eb991afa24089f7281b8f9ba0",
+      "plantao_es": "9e78bcd8d0769951f2b43e6b3a93b951374eef7648f25d2aca1275827a44367b"
+    },
+    "luxacao_interfalangica_dos_dedos_da_mao": {
+      "study_pt": "94ba192d0dc2a70f55422fc83437d855ab8e6ac70709ade89544a71c0efa3848",
+      "study_es": "a26152501dd2cf32c22438180d28717bfe5139c8f223b7cc55c93ecce8763832",
+      "plantao_pt": "d9b6669a6ec93f015c25c96baf5f2dcd5d725b5111fa772652fc963149b7851d",
+      "plantao_es": "0795e970a205d3e072508ed50694f6408a430a9702701783cfed0ff46673b0db"
+    },
+    "luxacao_de_cotovelo": {
+      "study_pt": "cb55080739ed49b0f5c46375ca78972897822c7efae28714b67fac63365f0fd2",
+      "study_es": "d7dc5dc11de6e2a84ad60638c6abc46b2c86f12af3d0ba2cf42a2c1511306797",
+      "plantao_pt": "97801df8f2cc69cbb05c0348c556e23a17f2683dbd78bd70a6cf0124d989c1b0",
+      "plantao_es": "702ff122890f7b004613d81760b9be55ebd534ba7745c4803839a2b8d01a00ee"
+    },
+    "subluxacao_da_cabeca_do_radio": {
+      "study_pt": "87f7e7c40dac25b746f359f5e49aae7a551f4ef49ff001f88b85a648aa5603a7",
+      "study_es": "dddfcdaeeea269f15f782bdedb2cd2c65fa425b9b80746f90230c4283e1ee262",
+      "plantao_pt": "d4a69d38551691e17575b1a2da7ac8f0dddc824a10efebea3f8c7fd33ac10878",
+      "plantao_es": "4754158b6d2538d3efafa8bc03f573d5953367e00c7b084598b98ffbd624caa0"
+    },
+    "sinovite_transitoria_do_quadril": {
+      "study_pt": "edcf3084d66ac4fafa3888ee8daaf1853275bb58ee15e5d11dd518e181fc3d4d",
+      "study_es": "6f818206aa315c94b80857dbff7ceccc81c204776dc6f012c3228376b72b9022",
+      "plantao_pt": "e85d59125d6d6e4073c58076e3a9dcb8681a5be1ebcfd5af6e2de8ce7ed63219",
+      "plantao_es": "f3298ecf7ca43f0f91c84b7d8811b9e6e52e43c6f674279237fa94c69b2bd6b8"
+    },
+    "febre_sem_sinais_de_localizacao_na_crianca": {
+      "study_pt": "0570a358efcebff7cdd506e6fafbeb3a8fa562953cc56777840f37b568b917f7",
+      "study_es": "db6bc3cce87fa573c371d5aa9062e59f0b96d404a9547acb13223b8a9e529f19",
+      "plantao_pt": "c5ab3172bfaa1fba31797048612ce6d4a7f8e690f26155b3cfe770c9a11eeb17",
+      "plantao_es": "36bd96fb987a670116725de80520090af9bcfe3d99c7b8ec3b1094a1075f26b1"
+    }
+  },
+  "approvedReviewManifestFileSha256": "8d864c73da1944128c2802ccbf744c468a4226cbbe7914143cfd9154381028e1",
+  "approvedReviewHtmlFileSha256": "7d9385c5903d461c423a2d779463790b0dd2467f1830e7bb9ebbfe584e5c577b",
+  "projectionAdapter": "Representação markdown/flat blocks, mesmos textos clínicos aprovados; payload canônico preservado byte a byte."
+}

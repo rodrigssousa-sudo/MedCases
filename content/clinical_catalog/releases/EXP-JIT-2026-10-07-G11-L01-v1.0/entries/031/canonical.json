@@ -1,0 +1,135 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "mpox",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Mpox",
+    "es": "Mpox"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "SUPPORT_VS_SPECIALIST_RESTRICTED",
+  "facts": [
+    {
+      "id": "b01_031_f01",
+      "section": "concept",
+      "pt": "Infecção por monkeypox virus com lesões cutâneas/mucosas, possíveis sintomas sistêmicos e dor anorretal. Gravidade varia com imunidade e localização.",
+      "es": "Infección por monkeypox virus con lesiones cutáneas/mucosas, posibles síntomas sistémicos y dolor anorrectal. La gravedad varía con inmunidad y localización.",
+      "sources": [
+        "topic_31",
+        "mpox_care",
+        "mpox_tec"
+      ]
+    },
+    {
+      "id": "b01_031_f02",
+      "section": "diagnosis",
+      "pt": "Coletar lesão para teste específico conforme protocolo, avaliar exposição e pesquisar IST quando indicado. Diferenciar varicela, herpes, sífilis e outras dermatoses.",
+      "es": "Tomar muestras de lesión para prueba específica según protocolo, evaluar exposición y estudiar ITS cuando corresponda. Diferenciar varicela, herpes, sífilis y otras dermatosis.",
+      "sources": [
+        "topic_31",
+        "mpox_care",
+        "mpox_tec"
+      ]
+    },
+    {
+      "id": "b01_031_f03",
+      "section": "initial",
+      "pt": "Aplicar medidas de controle e notificação; avaliar dor, ingestão, lesões oculares e imunossupressão. Comprometimento ocular, doença disseminada ou incapacidade de cuidado exige avaliação urgente.",
+      "es": "Aplicar medidas de control y notificación; evaluar dolor, ingesta, lesiones oculares e inmunosupresión. Compromiso ocular, enfermedad diseminada o incapacidad de cuidado requiere evaluación urgente.",
+      "sources": [
+        "topic_31",
+        "mpox_care",
+        "mpox_tec"
+      ]
+    },
+    {
+      "id": "b01_031_f04",
+      "section": "options",
+      "pt": "Estratégia 1: suporte, analgesia e cuidado de lesões em doença sem alto risco. Estratégia 2: em doença grave/alto risco, discutir terapias específicas com infectologia sob critérios de acesso; não indicar tecovirimat de rotina a todos.",
+      "es": "Estrategia 1: soporte, analgesia y cuidado de lesiones en enfermedad sin alto riesgo. Estrategia 2: ante enfermedad grave/alto riesgo, discutir terapias específicas con infectología bajo criterios de acceso; no indicar tecovirimat rutinariamente a todos.",
+      "sources": [
+        "topic_31",
+        "mpox_care",
+        "mpox_tec"
+      ]
+    },
+    {
+      "id": "b01_031_f05",
+      "section": "safety",
+      "pt": "Ensaios PALM007/STOMP não demonstraram benefício clínico de rotina nos grupos estudados; isso não elimina consulta especializada para situações graves excluídas dos ensaios. Não apresentar cidofovir/brincidofovir como alternativas ambulatoriais equivalentes.",
+      "es": "Los ensayos PALM007/STOMP no demostraron beneficio clínico rutinario en los grupos estudiados; eso no elimina consulta especializada para cuadros graves excluidos de los ensayos. No presentar cidofovir/brincidofovir como alternativas ambulatorias equivalentes.",
+      "sources": [
+        "topic_31",
+        "mpox_care",
+        "mpox_tec"
+      ]
+    },
+    {
+      "id": "b01_031_f06",
+      "section": "followup",
+      "pt": "Acompanhar cicatrização e controle da dor; manter precauções conforme orientação de saúde pública e avaliar contatos/vacinação quando indicada.",
+      "es": "Controlar cicatrización y dolor; mantener precauciones según salud pública y evaluar contactos/vacunación cuando corresponda.",
+      "sources": [
+        "topic_31",
+        "mpox_care",
+        "mpox_tec"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_31",
+      "title": "Mpox",
+      "url": "https://www.nhs.uk/conditions/mpox/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 09 April 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_31.txt"
+    },
+    {
+      "key": "mpox_care",
+      "title": "CDC — Mpox clinical care",
+      "url": "https://www.cdc.gov/mpox/hcp/clinical-care/index.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    },
+    {
+      "key": "mpox_tec",
+      "title": "CDC — Tecovirimat following PALM007 and STOMP",
+      "url": "https://www.cdc.gov/mpox/hcp/clinical-care/tecovirimat.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

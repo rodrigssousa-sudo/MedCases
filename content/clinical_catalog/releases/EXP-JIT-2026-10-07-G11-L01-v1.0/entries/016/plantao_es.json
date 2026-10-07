@@ -1,0 +1,203 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Rinitis alérgica",
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "94c9cc719681d3c0c3aa89eba31ee24e2afaac4e9e660724bcf81dd3f5486c6f",
+  "ownerCandidate": "rinite_alergica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b01_016_f01",
+    "b01_016_f02",
+    "b01_016_f03",
+    "b01_016_f04",
+    "b01_016_f05",
+    "b01_016_f06",
+    "b01_016_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reducir exposiciones evitables y orientar lavado salino con agua segura y técnica adecuada; evaluar control del asma."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Relacionar exposición y síntomas; pruebas alérgicas si cambian el manejo. Obstrucción unilateral, sangrado, dolor facial importante o secreción persistente atípica requieren otra evaluación."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: opciones y criterios de elección"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alternativa 1, adultos: cetirizina 10 mg por vía oral una vez al día para síntomas alérgicos, individualizando ante enfermedad renal. Alternativa 2: corticoide intranasal, como fluticasona, especialmente ante obstrucción/persistencia; la dosis depende de la presentación específica."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ejemplo adulto específico: propionato de fluticasona nasal 50 microgramos por pulverización, 2 pulverizaciones en cada fosa nasal una vez al día, total de 200 microgramos diarios. Tras control, reducir según ficha a la menor dosis eficaz. No superar 200 microgramos diarios en este esquema ni convertir a furoato de fluticasona."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No convertir pulverizaciones entre formulaciones de distinta concentración. Dirigir el spray lejos del tabique y vigilar epistaxis. El antihistamínico puede causar somnolencia; embarazo/niños requieren evaluación específica. Evitar descongestivos nasales prolongados."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación y destino"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar técnica y respuesta; la persistencia exige investigar exposición, adherencia y otras causas. La inmunoterapia es una decisión especializada en casos seleccionados."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Inflamación nasal alérgica con estornudos, prurito, rinorrea y obstrucción; puede coexistir con asma y síntomas oculares."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_16",
+      "title": "Rinite alérgica",
+      "url": "https://www.nhs.uk/conditions/allergic-rhinitis/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 08 January 2026",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_16.txt"
+    },
+    {
+      "key": "cetirizine",
+      "title": "NHS — Cetirizine dosing",
+      "url": "https://www.nhs.uk/medicines/cetirizine/how-and-when-to-take-cetirizine/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 18 February 2025",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/cetirizine.txt"
+    },
+    {
+      "key": "fluticasone",
+      "title": "NHS — Nasal fluticasone dosing",
+      "url": "https://www.nhs.uk/medicines/fluticasone-nasal-spray-and-drops/how-and-when-to-use-fluticasone-nasal-spray-and-drops/",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Page last reviewed: 24 February 2023",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/fluticasone.txt"
+    },
+    {
+      "key": "fluti_allergy_label",
+      "title": "DailyMed — Fluticasone propionate 50 micrograms/spray, allergy label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0107ad1c-1d8e-434c-a91f-dd2caf4fa5e5&version=2",
+      "authorityStatus": "REGULATORY_LABEL",
+      "readMethod": "WEB_INDEXED_VERIFIED_CLAIMS",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial",
+      "paragraphs": [
+        "Reducir exposiciones evitables y orientar lavado salino con agua segura y técnica adecuada; evaluar control del asma."
+      ],
+      "factIds": [
+        "b01_016_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Relacionar exposición y síntomas; pruebas alérgicas si cambian el manejo. Obstrucción unilateral, sangrado, dolor facial importante o secreción persistente atípica requieren otra evaluación."
+      ],
+      "factIds": [
+        "b01_016_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: opciones y criterios de elección",
+      "paragraphs": [
+        "Alternativa 1, adultos: cetirizina 10 mg por vía oral una vez al día para síntomas alérgicos, individualizando ante enfermedad renal. Alternativa 2: corticoide intranasal, como fluticasona, especialmente ante obstrucción/persistencia; la dosis depende de la presentación específica."
+      ],
+      "factIds": [
+        "b01_016_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Ejemplo adulto específico: propionato de fluticasona nasal 50 microgramos por pulverización, 2 pulverizaciones en cada fosa nasal una vez al día, total de 200 microgramos diarios. Tras control, reducir según ficha a la menor dosis eficaz. No superar 200 microgramos diarios en este esquema ni convertir a furoato de fluticasona."
+      ],
+      "factIds": [
+        "b01_016_f07"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No convertir pulverizaciones entre formulaciones de distinta concentración. Dirigir el spray lejos del tabique y vigilar epistaxis. El antihistamínico puede causar somnolencia; embarazo/niños requieren evaluación específica. Evitar descongestivos nasales prolongados."
+      ],
+      "factIds": [
+        "b01_016_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación y destino",
+      "paragraphs": [
+        "Reevaluar técnica y respuesta; la persistencia exige investigar exposición, adherencia y otras causas. La inmunoterapia es una decisión especializada en casos seleccionados."
+      ],
+      "factIds": [
+        "b01_016_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Inflamación nasal alérgica con estornudos, prurito, rinorrea y obstrucción; puede coexistir con asma y síntomas oculares."
+      ],
+      "factIds": [
+        "b01_016_f01"
+      ]
+    }
+  ],
+  "markdown": "# Rinitis alérgica\n\n## Abordaje inicial\n\nReducir exposiciones evitables y orientar lavado salino con agua segura y técnica adecuada; evaluar control del asma.\n\n## Diagnóstico y diferenciales\n\nRelacionar exposición y síntomas; pruebas alérgicas si cambian el manejo. Obstrucción unilateral, sangrado, dolor facial importante o secreción persistente atípica requieren otra evaluación.\n\n## Tratamiento: opciones y criterios de elección\n\nAlternativa 1, adultos: cetirizina 10 mg por vía oral una vez al día para síntomas alérgicos, individualizando ante enfermedad renal. Alternativa 2: corticoide intranasal, como fluticasona, especialmente ante obstrucción/persistencia; la dosis depende de la presentación específica.\n\n## Fármacos, dosis e intervalos\n\nEjemplo adulto específico: propionato de fluticasona nasal 50 microgramos por pulverización, 2 pulverizaciones en cada fosa nasal una vez al día, total de 200 microgramos diarios. Tras control, reducir según ficha a la menor dosis eficaz. No superar 200 microgramos diarios en este esquema ni convertir a furoato de fluticasona.\n\n## Seguridad y monitorización\n\nNo convertir pulverizaciones entre formulaciones de distinta concentración. Dirigir el spray lejos del tabique y vigilar epistaxis. El antihistamínico puede causar somnolencia; embarazo/niños requieren evaluación específica. Evitar descongestivos nasales prolongados.\n\n## Reevaluación y destino\n\nReevaluar técnica y respuesta; la persistencia exige investigar exposición, adherencia y otras causas. La inmunoterapia es una decisión especializada en casos seleccionados.\n\n## Reconocimiento rápido\n\nInflamación nasal alérgica con estornudos, prurito, rinorrea y obstrucción; puede coexistir con asma y síntomas oculares.\n\n## Referencias\n\n1. [Rinite alérgica](https://www.nhs.uk/conditions/allergic-rhinitis/)\n2. [NHS — Cetirizine dosing](https://www.nhs.uk/medicines/cetirizine/how-and-when-to-take-cetirizine/)\n3. [NHS — Nasal fluticasone dosing](https://www.nhs.uk/medicines/fluticasone-nasal-spray-and-drops/how-and-when-to-use-fluticasone-nasal-spray-and-drops/)\n4. [DailyMed — Fluticasone propionate 50 micrograms/spray, allergy label](https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=0107ad1c-1d8e-434c-a91f-dd2caf4fa5e5&version=2)",
+  "approvedReviewCanonicalFileSha256": "3650a51cc98076cff712d0c7c03110677c4c096df7111a24c3139fa4ef7a9ca6",
+  "approvedReviewProjectionFileSha256": "25be116fb1678b8b2daca0111afe4f23dd6aa85636e2eaebaa550b421687ed43"
+}

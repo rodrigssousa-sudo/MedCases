@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "tuberculose",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Tuberculose",
+    "es": "Tuberculosis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b01_029_f01",
+      "section": "concept",
+      "pt": "Infecção por complexo Mycobacterium tuberculosis; doença ativa não equivale a infecção latente. Forma pulmonar transmissível exige medidas de saúde pública.",
+      "es": "Infección por complejo Mycobacterium tuberculosis; enfermedad activa no equivale a infección latente. La forma pulmonar transmisible exige medidas de salud pública.",
+      "sources": [
+        "topic_29",
+        "tb2025"
+      ]
+    },
+    {
+      "id": "b01_029_f02",
+      "section": "diagnosis",
+      "pt": "Suspeita clínica deve levar a radiografia e amostras para teste molecular, cultura e sensibilidade conforme disponibilidade. Investigar HIV e sítios extrapulmonares; teste negativo isolado não exclui doença.",
+      "es": "La sospecha clínica debe conducir a radiografía y muestras para prueba molecular, cultivo y sensibilidad según disponibilidad. Investigar VIH y sitios extrapulmonares; una prueba negativa aislada no excluye enfermedad.",
+      "sources": [
+        "topic_29",
+        "tb2025"
+      ]
+    },
+    {
+      "id": "b01_029_f03",
+      "section": "initial",
+      "pt": "Isolar transmissão aérea quando indicada, notificar e avaliar gravidade. Hipoxemia, hemoptise importante ou comprometimento sistêmico exige hospital; coordenar investigação de contatos.",
+      "es": "Aplicar aislamiento aéreo cuando corresponda, notificar y evaluar gravedad. Hipoxemia, hemoptisis importante o compromiso sistémico requiere hospital; coordinar estudio de contactos.",
+      "sources": [
+        "topic_29",
+        "tb2025"
+      ]
+    },
+    {
+      "id": "b01_029_f04",
+      "section": "options",
+      "pt": "Tuberculose pulmonar sensível: opção 1, isoniazida + rifampicina + pirazinamida + etambutol por 2 meses, depois isoniazida + rifampicina por 4 meses. Opção 2, elegíveis a partir de 12 anos: isoniazida + rifapentina + pirazinamida + moxifloxacino por 2 meses, depois isoniazida + rifapentina + moxifloxacino por 2 meses.",
+      "es": "Tuberculosis pulmonar sensible: opción 1, isoniazida + rifampicina + pirazinamida + etambutol durante 2 meses, luego isoniazida + rifampicina durante 4 meses. Opción 2, elegibles desde los 12 años: isoniazida + rifapentina + pirazinamida + moxifloxacino durante 2 meses, luego isoniazida + rifapentina + moxifloxacino durante 2 meses.",
+      "sources": [
+        "topic_29",
+        "tb2025"
+      ]
+    },
+    {
+      "id": "b01_029_f05",
+      "section": "safety",
+      "pt": "O esquema curto é condicionado a elegibilidade, peso, sensibilidade, interações e disponibilidade/programa nacional; não é universal em gestação, resistência ou doença extrapulmonar. Doses por peso/formulação exigem protocolo específico; nunca usar monoterapia. Monitorar toxicidade hepática, visual e interações.",
+      "es": "El esquema corto depende de elegibilidad, peso, sensibilidad, interacciones y disponibilidad/programa nacional; no es universal en embarazo, resistencia o enfermedad extrapulmonar. Las dosis por peso/formulación requieren protocolo específico; nunca usar monoterapia. Vigilar toxicidad hepática, visual e interacciones.",
+      "sources": [
+        "topic_29",
+        "tb2025"
+      ]
+    },
+    {
+      "id": "b01_029_f06",
+      "section": "followup",
+      "pt": "Garantir adesão, acompanhamento microbiológico e suporte social; resistência ou intolerância exige equipe especializada. A recomendação de esquema curto é condicional na diretriz oficial de 2025.",
+      "es": "Garantizar adherencia, seguimiento microbiológico y apoyo social; resistencia o intolerancia requiere equipo especializado. La recomendación del esquema corto es condicional en la guía oficial de 2025.",
+      "sources": [
+        "topic_29",
+        "tb2025"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "topic_29",
+      "title": "Tuberculose",
+      "url": "https://medlineplus.gov/tuberculosis.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": "Last updated August 26, 2024",
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "evidence/topic_29.txt"
+    },
+    {
+      "key": "tb2025",
+      "title": "ATS/CDC/ERS/IDSA — Updates on the treatment of tuberculosis, 2025",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11755361/",
+      "authorityStatus": "AUTHORITATIVE_FINAL",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": 2025,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}

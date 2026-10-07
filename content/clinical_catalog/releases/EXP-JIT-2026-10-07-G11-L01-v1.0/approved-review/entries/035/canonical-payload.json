@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L01-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "miiase",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Miíase",
+    "es": "Miasis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G10",
+  "identityDecision": "Não encontrado como ID, título principal PT/ES ou alias dos 667 owners ativos; menção em diferencial não constitui owner próprio. Candidato de expansão, sujeito a binding final antes da autoria.",
+  "relatedExistingOwners": [],
+  "optionRelation": "LOCATION_DEPENDENT_PROCEDURES",
+  "facts": [
+    {
+      "id": "b01_035_f01",
+      "section": "concept",
+      "pt": "Infestação por larvas de moscas, podendo afetar pele, feridas ou cavidades; forma furunculoide difere de invasão de ferida e localização ocular.",
+      "es": "Infestación por larvas de moscas que puede afectar piel, heridas o cavidades; la forma furunculoide difiere de invasión de heridas y localización ocular.",
+      "sources": [
+        "myiasis"
+      ]
+    },
+    {
+      "id": "b01_035_f02",
+      "section": "diagnosis",
+      "pt": "Identificar localização, larvas, necrose, extensão e sinais de infecção. Lesão ocular/cavitária ou comprometimento profundo requer especialista urgente.",
+      "es": "Identificar localización, larvas, necrosis, extensión y signos de infección. Lesión ocular/cavitaria o compromiso profundo requiere especialista urgente.",
+      "sources": [
+        "myiasis"
+      ]
+    },
+    {
+      "id": "b01_035_f03",
+      "section": "initial",
+      "pt": "Avaliar estabilidade, dor, cuidado de ferida e situação vacinal antitetânica conforme tipo de lesão. Não manipular agressivamente lesões profundas.",
+      "es": "Evaluar estabilidad, dolor, cuidado de heridas y vacunación antitetánica según lesión. No manipular agresivamente lesiones profundas.",
+      "sources": [
+        "myiasis"
+      ]
+    },
+    {
+      "id": "b01_035_f04",
+      "section": "options",
+      "pt": "Opção 1: extração completa por profissional e cuidado local na forma acessível. Opção 2: exploração/desbridamento especializado quando profunda, extensa ou em ferida necrótica. Não há segundo antiparasitário universal para todas as espécies e localizações.",
+      "es": "Opción 1: extracción completa por un profesional y cuidado local en formas accesibles. Opción 2: exploración/desbridamiento especializado ante lesión profunda, extensa o en herida necrótica. No existe un segundo antiparasitario universal para todas las especies y localizaciones.",
+      "sources": [
+        "myiasis"
+      ]
+    },
+    {
+      "id": "b01_035_f05",
+      "section": "safety",
+      "pt": "Não presumir indicação de ivermectina nem antibiótico em toda miíase; tratamento adicional depende de espécie, local e infecção. Avaliação pediátrica/gestacional não admite extrapolação empírica.",
+      "es": "No asumir indicación de ivermectina o antibiótico en toda miasis; el tratamiento adicional depende de especie, localización e infección. La evaluación pediátrica/del embarazo no permite extrapolación empírica.",
+      "sources": [
+        "myiasis"
+      ]
+    },
+    {
+      "id": "b01_035_f06",
+      "section": "followup",
+      "pt": "Confirmar remoção completa e cicatrização, tratar causas da ferida e reduzir exposição. Retornar por febre, piora, necrose ou larvas persistentes.",
+      "es": "Confirmar extracción completa y cicatrización, tratar causas de la herida y reducir exposición. Consultar ante fiebre, empeoramiento, necrosis o larvas persistentes.",
+      "sources": [
+        "myiasis"
+      ]
+    }
+  ],
+  "studyExplanations": [],
+  "references": [
+    {
+      "key": "myiasis",
+      "title": "CDC — Myiasis",
+      "url": "https://www.cdc.gov/myiasis/about/index.html",
+      "authorityStatus": "OFFICIAL_SUPPORTIVE_CLINICAL_INFORMATION",
+      "readMethod": "WEB_READ",
+      "checkedAt": "2026-10-07",
+      "publicationYear": null,
+      "lastReviewAsDisplayed": null,
+      "recencyAssessment": "Final quando identificado como guideline; portais públicos e bulas como apoio no escopo consultado. Não apresentar atualização em draft como final.",
+      "yearNote": "Não confundir data de consulta com ano de publicação; ano explícito no título quando confirmado.",
+      "scope": "Somente recomendações públicas consultadas; respeitar população, formulação e contexto descritos.",
+      "sourceEvidenceRecord": "Leitura web registrada no histórico desta execução"
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Dosagens numéricas somente onde verificadas; protocolos especializados individualizados não são prescrições executáveis universais.",
+  "previousPreparation": null
+}
