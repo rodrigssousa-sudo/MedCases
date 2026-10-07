@@ -295,6 +295,9 @@ class _ContentInventorySectionState extends State<ContentInventorySection> {
                       'syncErrors': 'Erros de sync',
                       'possibleDuplicates': 'Duplicados a revisar',
                       if (drugs) 'gold33Complete': 'Gold33 homologado',
+                      if (!drugs) 'published': 'Ativos no app',
+                      if (!drugs) 'guidesDraft': 'Guias em rascunho',
+                      if (!drugs) 'guidesPublished': 'Guias publicados',
                     }.entries)
                       Padding(
                           padding: const EdgeInsets.only(right: 14),
@@ -513,6 +516,9 @@ class _ContentInventoryOverviewState extends State<ContentInventoryOverview> {
                                     'pending': 'Pendentes',
                                     if (i == 0)
                                       'gold33Complete': 'Gold33 homologado',
+                                    if (i == 1) 'published': 'Ativos no app',
+                                    if (i == 1) 'guidesDraft': 'Guias em rascunho',
+                                    if (i == 1) 'guidesPublished': 'Guias publicados',
                                     'withoutReview': 'Sem revisão',
                                     'outdated': 'Desatualizados',
                                     'syncErrors': 'Erros de sync',
@@ -527,8 +533,8 @@ class _ContentInventoryOverviewState extends State<ContentInventoryOverview> {
                                 Text(
                                     'Sincronização: ${meta['syncState'] ?? 'Não executada'}'),
                                 if (i == 1)
-                                  const Text(
-                                      'O registro identificado contém rascunhos locais; presença no inventário não significa publicação clínica.'),
+                                  Text(
+                                      'Catálogo ativo: ${meta['sourceVersion'] ?? 'Não disponível'}. Guias em rascunho são um fluxo editorial separado.'),
                                 const Text(
                                     'As abas de Fármacos e Patologias incluem busca, o que falta, fila derivada e histórico.'),
                               ]);

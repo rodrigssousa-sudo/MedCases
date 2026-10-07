@@ -2,6 +2,7 @@
 const {hash,classify,summary,normalize}=require('./model');
 const {createAdminControlCenter}=require('../admin_control_center');
 const {readClinicalCatalog}=require('./clinical_catalog');
+const {loadActivePathologies,readActivePathologyInventory}=require('./active_pathologies');
 const ROOT='adminContentInventoryV2';
 const FILTERS=new Set(['ALL','HAS_GAPS','PT_ES_COMPLETE','GOLD33_COMPLETE','APPROVED','PUBLISHED','PENDING','NEEDS_PT','NEEDS_ES','NEEDS_REVIEW','NEEDS_UPDATE','SYNC_ERROR','POSSIBLE_DUPLICATE','CALCULATION_BLOCKED','CLINICAL_CONTENT_PENDING','GOLD33_INCOMPLETE','NEW']);
 function createInventory({db,loadSource,now=()=>Date.now(),documentId='__name__'}) {
@@ -16,11 +17,11 @@ function createInventory({db,loadSource,now=()=>Date.now(),documentId='__name__'
   try {
    const oldRows=prior.generation?(await ref.collection('generations').doc(prior.generation).collection('items').get()).docs.map(d=>d.data()):[];
    stage='READ_SOURCE';
-   const loaded=await loadSource(kind,{previous:oldRows}),oldMap=new Map(oldRows.map(x=>[x.recordId,x]));
+   const loaded=kind==='pathologies'?await loadActivePathologies(db,{previous:oldRows}):await loadSource(kind,{previous:oldRows}),oldMap=new Map(oldRows.map(x=>[x.recordId,x]));
    const seen=new Set(loaded.rows.map(x=>x.recordId));
    const missing=oldRows.filter(x=>!seen.has(x.recordId)).map(x=>({...x,missingInSource:true,syncStatus:'MISSING_IN_SOURCE'}));
    stage='PROJECT_METADATA';
-   const rows=classify([...loaded.rows,...missing]).map(x=>({...x,firstIndexedAt:oldMap.get(x.recordId)?.firstIndexedAt||startedAt,lastSeenSourceVersion:x.missingInSource?x.lastSeenSourceVersion:loaded.source.revision,lastSyncAt:startedAt}));
+   const rows=classify([...loaded.rows,...(loaded.retainMissingRows===false?[]:missing)]).map(x=>({...x,firstIndexedAt:oldMap.get(x.recordId)?.firstIndexedAt||startedAt,lastSeenSourceVersion:x.missingInSource?x.lastSeenSourceVersion:loaded.source.revision,lastSyncAt:startedAt}));
    const fingerprint=hash(rows.map(({lastSyncAt,firstIndexedAt,...r})=>r));
    const generation=hash(`${loaded.source.revision}:${fingerprint}`).slice(0,40);
    const items=ref.collection('generations').doc(generation).collection('items');
@@ -41,6 +42,7 @@ function createInventory({db,loadSource,now=()=>Date.now(),documentId='__name__'
  async function read(uid,p={}) {
   await authorize(uid);if(p.action==='clinicalCatalog'){if(p.kind!=='pathologies')throw Error('INVALID_INVENTORY_KIND');return readClinicalCatalog(db,p);}if(p.action&&!['page','detail','history','queue'].includes(p.action))throw Error('INVALID_INVENTORY_ACTION');const ref=root(p.kind),meta=(await ref.get()).data()||{};
   if(p.action==='history'){const docs=await ref.collection('runs').orderBy('startedAt','desc').limit(20).get();return {runs:docs.docs.map(d=>d.data())};}
+  if(p.kind==='pathologies')return readActivePathologyInventory(db,p,meta);
   if(!meta.generation)return {meta:{syncState:meta.syncState||'NOT_SYNCED'},rows:[],nextCursor:null};
   const generation=p.generation||meta.generation;if(!/^[a-f0-9]{40}$/.test(generation))throw Error('INVALID_GENERATION');
   const items=ref.collection('generations').doc(generation).collection('items');
