@@ -1,0 +1,170 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Pterigión",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "122a8d1705161704db58ebbfb8804b66f2a9149841e2441a68a81f8302111505",
+  "ownerCandidate": "pterigio",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_049_f01",
+    "b03_049_f02",
+    "b03_049_f03",
+    "b03_049_f04",
+    "b03_049_f05",
+    "b03_049_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Crecimiento fibrovascular conjuntival sobre córnea, asociado a ambiente/ultravioleta; causa irritación/astigmatismo."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Protección limita exposición y lubricante mejora superficie; resección trata crecimiento formado. Ponderar beneficio con recurrencia/cicatrización."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examen, agudeza/extensión/progresión; atipia o crecimiento rápido: excluir neoplasia de superficie. Diferenciar pinguécula/infección."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dolor intenso, fotofobia/baja visual súbita no es simple: evaluar urgencia ocular. Leve: proteger superficie/exposición."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primera elección conservadora: protección ultravioleta/lágrimas artificiales. Si progresa, amenaza eje, astigmatismo relevante o persiste: excisión especializada, frecuentemente injerto conjuntival. Corticoide tópico solo en inflamación seleccionada/supervisada."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Lubricante alivia, no elimina tejido. Cirugía puede recurrir; mitomicina/adyuvantes solo con indicación/preparación especializada, no receta casera. No antibiótico sin infección."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguir crecimiento/visión y necesidad quirúrgica. Alta de guardia sin signos peligrosos y con seguimiento."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_158",
+      "title": "EYES — Pterygium",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/pterygium",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_GUIDELINE_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "web-verification-record.json:topic_158",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "pterygium_nhs",
+      "title": "University Hospitals Sussex NHS — Pterygium surgery",
+      "url": "https://www.uhsussex.nhs.uk/resources/your-guide-to-pterygium-surgery-2/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2023,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published 2018 Jun 12. doi:10.1186/s40662-018-0107-0",
+      "scope": "NHS Sussex página revista em outubro 2023: lubrificação/proteção ambiental, cirurgia selecionada e enxerto conjuntival; risco de recorrência. Texto oficial lido na busca.",
+      "sourceEvidenceRecord": "web-verification-record.json:pterygium_nhs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Crecimiento fibrovascular conjuntival sobre córnea, asociado a ambiente/ultravioleta; causa irritación/astigmatismo."
+      ],
+      "factIds": [
+        "b03_049_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Protección limita exposición y lubricante mejora superficie; resección trata crecimiento formado. Ponderar beneficio con recurrencia/cicatrización."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examen, agudeza/extensión/progresión; atipia o crecimiento rápido: excluir neoplasia de superficie. Diferenciar pinguécula/infección."
+      ],
+      "factIds": [
+        "b03_049_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Dolor intenso, fotofobia/baja visual súbita no es simple: evaluar urgencia ocular. Leve: proteger superficie/exposición."
+      ],
+      "factIds": [
+        "b03_049_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección conservadora: protección ultravioleta/lágrimas artificiales. Si progresa, amenaza eje, astigmatismo relevante o persiste: excisión especializada, frecuentemente injerto conjuntival. Corticoide tópico solo en inflamación seleccionada/supervisada."
+      ],
+      "factIds": [
+        "b03_049_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Lubricante alivia, no elimina tejido. Cirugía puede recurrir; mitomicina/adyuvantes solo con indicación/preparación especializada, no receta casera. No antibiótico sin infección."
+      ],
+      "factIds": [
+        "b03_049_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguir crecimiento/visión y necesidad quirúrgica. Alta de guardia sin signos peligrosos y con seguimiento."
+      ],
+      "factIds": [
+        "b03_049_f06"
+      ]
+    }
+  ],
+  "markdown": "# Pterigión\n\n## Concepto y mecanismo\n\nCrecimiento fibrovascular conjuntival sobre córnea, asociado a ambiente/ultravioleta; causa irritación/astigmatismo.\n\n## Razonamiento y elección terapéutica\n\nProtección limita exposición y lubricante mejora superficie; resección trata crecimiento formado. Ponderar beneficio con recurrencia/cicatrización.\n\n## Diagnóstico y diferenciales\n\nExamen, agudeza/extensión/progresión; atipia o crecimiento rápido: excluir neoplasia de superficie. Diferenciar pinguécula/infección.\n\n## Abordaje inicial y urgencias\n\nDolor intenso, fotofobia/baja visual súbita no es simple: evaluar urgencia ocular. Leve: proteger superficie/exposición.\n\n## Tratamiento: primera elección y alternativas\n\nPrimera elección conservadora: protección ultravioleta/lágrimas artificiales. Si progresa, amenaza eje, astigmatismo relevante o persiste: excisión especializada, frecuentemente injerto conjuntival. Corticoide tópico solo en inflamación seleccionada/supervisada.\n\n## Seguridad y monitorización\n\nLubricante alivia, no elimina tejido. Cirugía puede recurrir; mitomicina/adyuvantes solo con indicación/preparación especializada, no receta casera. No antibiótico sin infección.\n\n## Reevaluación, internación y alta\n\nSeguir crecimiento/visión y necesidad quirúrgica. Alta de guardia sin signos peligrosos y con seguimiento.\n\n## Referencias\n\n1. [EYES — Pterygium](https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/pterygium)\n2. [University Hospitals Sussex NHS — Pterygium surgery](https://www.uhsussex.nhs.uk/resources/your-guide-to-pterygium-surgery-2/)",
+  "approvedReviewCanonicalFileSha256": "92ba775d48dc72e906e976d69f812aa4b5501bad22a04566cfd505512c6985b8",
+  "approvedReviewProjectionFileSha256": "be8bf2d2f7d21fa7ab664b7e2024b743748bc38b422abfe08b86e3d3acd22a70"
+}

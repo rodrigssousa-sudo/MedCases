@@ -1,0 +1,119 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Histoplasmose",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "b9bcdf51174b73b6c28ae68a9ae235d3ce38b458b7adf90b517c9c38fba932ac",
+  "ownerCandidate": "histoplasmose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_026_f01",
+    "b03_026_f02",
+    "b03_026_f03",
+    "b03_026_f04",
+    "b03_026_f05",
+    "b03_026_f06",
+    "b03_026_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Micose adquirida por inalação; pode ser pulmonar autolimitada, grave, disseminada ou envolver sistema nervoso, sobretudo em imunossuprimidos."
+      ],
+      "factIds": [
+        "b03_026_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "As recomendações de 2025 para formas leves/moderadas e o consenso de setembro de 2026 para doença grave têm escopos diferentes. Observação, itraconazol e anfotericina não devem ser oferecidos como equivalentes no choque."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Exposição, imagem, antígeno urinário/sérico e microbiologia/histologia conforme síndrome. Investigar imunossupressão e HIV; antígeno/cultura interpretados no contexto, sem confundir com outras micoses."
+      ],
+      "factIds": [
+        "b03_026_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Insuficiência respiratória, choque, doença disseminada aguda grave ou sinais neurológicos: hospitalização/infectologia; coletar amostras sem atrasar tratamento."
+      ],
+      "factIds": [
+        "b03_026_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Imunocompetente com pulmonar leve: em geral observar sem antifúngico; moderada, escolher tratar ou observar conforme evolução/risco. Se tratamento pulmonar indicado: itraconazol convencional por 6–12 semanas após carga. Doença disseminada em HIV costuma exigir tratamento muito mais longo; não usar duração pulmonar curta."
+      ],
+      "factIds": [
+        "b03_026_f05"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "IDSA setembro de 2026: doença grave sem sistema nervoso, anfotericina B lipossomal 3 mg/kg intravenosa uma vez ao dia; com sistema nervoso, 5 mg/kg uma vez ao dia. Duração de indução individualizada; não copiar para formulação desoxicolato. Itraconazol convencional na transição: 200 mg oral 3 vezes ao dia por 3 dias, depois 200 mg a cada 12 horas."
+      ],
+      "factIds": [
+        "b03_026_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Monitorizar rim, potássio/magnésio na anfotericina; fígado, interações, níveis terapêuticos e insuficiência cardíaca no itraconazol. Formulação SUBA não é intercambiável mg por mg. Gestação exige evitar azol especialmente no primeiro trimestre e avaliação especializada."
+      ],
+      "factIds": [
+        "b03_026_f06"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar resposta e duração pelo órgão/imunidade; imunossuprimidos exigem seguimento e possível supressão. Alta após estabilidade e garantia de tratamento/monitorização."
+      ],
+      "factIds": [
+        "b03_026_f07"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "histo2026",
+      "title": "IDSA — Histoplasmosis recommendations, updated September 2026",
+      "url": "https://www.idsociety.org/practice-guideline/histoplasmosis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published. Jennifer Loveless, methodologist, was responsible for general project management, organizing and p",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:histo2026",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "histo_nih",
+      "title": "NIH — Histoplasmosis in adults/adolescents with HIV, living guideline",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/histoplasmosis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NIH guideline HIV: histoplasmose disseminada requer curso prolongado e monitorização; não aplicar duração de forma pulmonar leve/moderada à disseminada.",
+      "sourceEvidenceRecord": "web-verification-record.json:histo_nih",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

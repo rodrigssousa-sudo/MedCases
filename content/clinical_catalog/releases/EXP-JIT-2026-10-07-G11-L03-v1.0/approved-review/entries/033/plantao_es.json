@@ -1,0 +1,102 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Infección relacionada con catéter intravascular",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "e0706a82b0ff67f6fdc89b381caa6a99f802ae27eb746404a7b18270f08d7526",
+  "ownerCandidate": "infeccao_relacionada_a_cateter_intravascular",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_033_f01",
+    "b03_033_f02",
+    "b03_033_f03",
+    "b03_033_f04",
+    "b03_033_f05",
+    "b03_033_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Sepsis: tratar inmediatamente/nuevo acceso seguro. Retirar catéter infectado en alto riesgo, especialmente S. aureus, Candida, túnel o persistencia según equipo."
+      ],
+      "factIds": [
+        "b03_033_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Hemocultivos periféricos/del catéter antes de antibiótico sin demorar; comparar agente/tiempo de positividad según protocolo. Buscar otro foco, túnel infectado/trombosis séptica."
+      ],
+      "factIds": [
+        "b03_033_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Empirismo: vancomicina ante riesgo de grampositivo resistente; añadir gramnegativos por gravedad/riesgo local. MSSA favorece beta-lactámico como cefazolina; alternativas según contraindicación/agente por infectología. Salvamento con lock y terapia sistémica solo en catéter/agente elegible."
+      ],
+      "factIds": [
+        "b03_033_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No tratar Candida con antibacteriano ni usar lock solo para bacteriemia. Duración según agente, negativización/complicaciones; cultivos, riñón/exposición de vancomicina. IDSA 2009 está archivada/en actualización; Michigan 2023 apoya la operación actual."
+      ],
+      "factIds": [
+        "b03_033_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Persistencia: buscar endocarditis/focos y revisar catéter. Alta estable, con cultivos/plan y acceso definido; no recolocar indiscriminadamente en el mismo lugar."
+      ],
+      "factIds": [
+        "b03_033_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Infección local o sanguínea atribuible a catéter vascular; tener catéter durante bacteriemia no prueba causalidad."
+      ],
+      "factIds": [
+        "b03_033_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "catheter2023",
+      "title": "Michigan Medicine — Catheter-related bloodstream infection, 2023",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK589895/",
+      "authorityStatus": "OFFICIAL_REGIONAL_CLINICAL_PROTOCOL",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2023,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Michigan Medicine 2023: recomendações específicas verificadas por busca primária: culturas periféricas/cateter, vancomicina empírica conforme risco, retirada do cateter nas indicações e salvage excepcional. Resposta direta NCBI foi captcha, não leitura integral.",
+      "sourceEvidenceRecord": "web-verification-record.json:catheter2023",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "catheter2009",
+      "title": "IDSA — Catheter guideline 2009, ARCHIVED, update underway",
+      "url": "https://www.idsociety.org/practice-guideline/iv-catheter",
+      "authorityStatus": "ARCHIVED_GUIDELINE_HISTORICAL_NOT_CURRENT",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2009,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published in 2001. The guidelines are intended for use by health care providers who care for patients who eit",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:catheter2009",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

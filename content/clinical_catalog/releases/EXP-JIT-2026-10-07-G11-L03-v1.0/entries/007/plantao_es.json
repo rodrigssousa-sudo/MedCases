@@ -1,0 +1,173 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Empiema pleural",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "18ed3b84b67cdfed7675e71ad1bc7773769d22013bfdbcfd844d1aace0bbccc1",
+  "ownerCandidate": "empiema_pleural",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_007_f01",
+    "b03_007_f02",
+    "b03_007_f03",
+    "b03_007_f04",
+    "b03_007_f05",
+    "b03_007_f06",
+    "b03_007_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Internar, tratar sepsis e iniciar antibióticos para agentes probables/anaerobios; infección hospitalaria exige valorar resistencia. Drenaje ecoguiado es central para controlar el foco."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ecografía/TC evalúan colección. Pus indica drenaje; en líquido no purulento, pH ≤7,2 indica alto riesgo de infección complicada y drenaje si es técnicamente seguro. Cultivos de líquido y sangre."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Si persiste colección tras drenaje inicial: alteplasa y dornasa alfa intrapleurales en servicio especializado; alternativa ante fracaso/inadecuación: cirugía torácica, frecuentemente videotoracoscopia. Un agente aislado no equivale a la combinación."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Esquema BTS en adulto seleccionado: alteplasa 10 mg intrapleural 2 veces al día MÁS dornasa alfa 5 mg intrapleural 2 veces al día durante 3 días. No es dosis intravenosa; preparación, administración por drenaje y valoración hemorrágica requieren protocolo especializado."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Valorar sangrado, anticoagulantes y consentimiento; no usar estreptoquinasa rutinaria. Revisar drenaje, fiebre, marcadores e imágenes; duración antibiótica según control del foco/respuesta, sin plazo fijo inventado."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alta tras controlar foco, estabilidad y plan antibiótico/seguimiento; deterioro respiratorio o sepsis persistente exige reevaluar drenaje y cirugía."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Infección pleural con pus o microbiología compatible; puede evolucionar a tabicaciones y atrapamiento pulmonar."
+    }
+  ],
+  "references": [
+    {
+      "key": "bts2023",
+      "title": "BTS — Pleural disease guideline 2023",
+      "url": "https://www.brit-thoracic.org.uk/document-library/guidelines/pleural-disease/pleural-disease-full-supplement/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2023,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published monthly (subscribers receive all supplements)",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:bts2023",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_107",
+      "title": "RCH — Parapneumonic effusion",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Parapneumonic_effusion/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated August 2022",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_107",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Internar, tratar sepsis e iniciar antibióticos para agentes probables/anaerobios; infección hospitalaria exige valorar resistencia. Drenaje ecoguiado es central para controlar el foco."
+      ],
+      "factIds": [
+        "b03_007_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Ecografía/TC evalúan colección. Pus indica drenaje; en líquido no purulento, pH ≤7,2 indica alto riesgo de infección complicada y drenaje si es técnicamente seguro. Cultivos de líquido y sangre."
+      ],
+      "factIds": [
+        "b03_007_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Si persiste colección tras drenaje inicial: alteplasa y dornasa alfa intrapleurales en servicio especializado; alternativa ante fracaso/inadecuación: cirugía torácica, frecuentemente videotoracoscopia. Un agente aislado no equivale a la combinación."
+      ],
+      "factIds": [
+        "b03_007_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Esquema BTS en adulto seleccionado: alteplasa 10 mg intrapleural 2 veces al día MÁS dornasa alfa 5 mg intrapleural 2 veces al día durante 3 días. No es dosis intravenosa; preparación, administración por drenaje y valoración hemorrágica requieren protocolo especializado."
+      ],
+      "factIds": [
+        "b03_007_f05"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Valorar sangrado, anticoagulantes y consentimiento; no usar estreptoquinasa rutinaria. Revisar drenaje, fiebre, marcadores e imágenes; duración antibiótica según control del foco/respuesta, sin plazo fijo inventado."
+      ],
+      "factIds": [
+        "b03_007_f06"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Alta tras controlar foco, estabilidad y plan antibiótico/seguimiento; deterioro respiratorio o sepsis persistente exige reevaluar drenaje y cirugía."
+      ],
+      "factIds": [
+        "b03_007_f07"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Infección pleural con pus o microbiología compatible; puede evolucionar a tabicaciones y atrapamiento pulmonar."
+      ],
+      "factIds": [
+        "b03_007_f01"
+      ]
+    }
+  ],
+  "markdown": "# Empiema pleural\n\n## Abordaje inicial y urgencias\n\nInternar, tratar sepsis e iniciar antibióticos para agentes probables/anaerobios; infección hospitalaria exige valorar resistencia. Drenaje ecoguiado es central para controlar el foco.\n\n## Diagnóstico y diferenciales\n\nEcografía/TC evalúan colección. Pus indica drenaje; en líquido no purulento, pH ≤7,2 indica alto riesgo de infección complicada y drenaje si es técnicamente seguro. Cultivos de líquido y sangre.\n\n## Tratamiento: primera elección y alternativas\n\nSi persiste colección tras drenaje inicial: alteplasa y dornasa alfa intrapleurales en servicio especializado; alternativa ante fracaso/inadecuación: cirugía torácica, frecuentemente videotoracoscopia. Un agente aislado no equivale a la combinación.\n\n## Fármacos, dosis e intervalos\n\nEsquema BTS en adulto seleccionado: alteplasa 10 mg intrapleural 2 veces al día MÁS dornasa alfa 5 mg intrapleural 2 veces al día durante 3 días. No es dosis intravenosa; preparación, administración por drenaje y valoración hemorrágica requieren protocolo especializado.\n\n## Seguridad y monitorización\n\nValorar sangrado, anticoagulantes y consentimiento; no usar estreptoquinasa rutinaria. Revisar drenaje, fiebre, marcadores e imágenes; duración antibiótica según control del foco/respuesta, sin plazo fijo inventado.\n\n## Reevaluación, internación y alta\n\nAlta tras controlar foco, estabilidad y plan antibiótico/seguimiento; deterioro respiratorio o sepsis persistente exige reevaluar drenaje y cirugía.\n\n## Reconocimiento rápido\n\nInfección pleural con pus o microbiología compatible; puede evolucionar a tabicaciones y atrapamiento pulmonar.\n\n## Referencias\n\n1. [BTS — Pleural disease guideline 2023](https://www.brit-thoracic.org.uk/document-library/guidelines/pleural-disease/pleural-disease-full-supplement/)\n2. [RCH — Parapneumonic effusion](https://www.rch.org.au/clinicalguide/guideline_index/Parapneumonic_effusion/)",
+  "approvedReviewCanonicalFileSha256": "a899f24bdf38c922853b118b25203621cdb2ddfb542a44a3f0f4457ae271aeb8",
+  "approvedReviewProjectionFileSha256": "4a4418b5098243090f1d55b77dd8ccb947fbb3f47e1520e2d6b19b7a865e5eda"
+}

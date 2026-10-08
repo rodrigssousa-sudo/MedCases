@@ -1,0 +1,173 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Histoplasmosis",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "0d796f358a03908d751d316b1a9179d1c5a6a8d364d1c7d2bce148e0e740129f",
+  "ownerCandidate": "histoplasmose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_026_f01",
+    "b03_026_f02",
+    "b03_026_f03",
+    "b03_026_f04",
+    "b03_026_f05",
+    "b03_026_f06",
+    "b03_026_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Insuficiencia respiratoria, shock, diseminada aguda grave o signos neurológicos: internación/infectología; obtener muestras sin retrasar tratamiento."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Exposición, imágenes, antígeno urinario/sérico y microbiología/histología según síndrome. Evaluar inmunosupresión/VIH; interpretar pruebas sin confundir otras micosis."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Pulmonar leve inmunocompetente: generalmente observar sin antifúngico; moderada: tratar u observar según evolución/riesgo. Si se trata pulmonar: itraconazol convencional 6–12 semanas tras carga. Diseminada con VIH suele requerir mucho más tiempo; no usar duración pulmonar breve."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "IDSA septiembre 2026: grave sin sistema nervioso, anfotericina B liposomal 3 mg/kg intravenosa una vez al día; con sistema nervioso, 5 mg/kg una vez al día. Inducción individualizada; no copiar a desoxicolato. Itraconazol convencional en transición: 200 mg oral 3 veces al día durante 3 días, luego 200 mg cada 12 horas."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vigilar riñón, potasio/magnesio con anfotericina; hígado, interacciones, niveles y fallo cardíaco con itraconazol. SUBA no es intercambiable mg por mg. Embarazo: evitar azol especialmente primer trimestre y consultar especialista."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar respuesta/duración por órgano/inmunidad; inmunosuprimidos requieren seguimiento y posible supresión. Alta con estabilidad y terapia/monitorización aseguradas."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Micosis inhalada; pulmonar autolimitada, grave, diseminada o del sistema nervioso, especialmente en inmunosuprimidos."
+    }
+  ],
+  "references": [
+    {
+      "key": "histo2026",
+      "title": "IDSA — Histoplasmosis recommendations, updated September 2026",
+      "url": "https://www.idsociety.org/practice-guideline/histoplasmosis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published. Jennifer Loveless, methodologist, was responsible for general project management, organizing and p",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:histo2026",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "histo_nih",
+      "title": "NIH — Histoplasmosis in adults/adolescents with HIV, living guideline",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/histoplasmosis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NIH guideline HIV: histoplasmose disseminada requer curso prolongado e monitorização; não aplicar duração de forma pulmonar leve/moderada à disseminada.",
+      "sourceEvidenceRecord": "web-verification-record.json:histo_nih",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Insuficiencia respiratoria, shock, diseminada aguda grave o signos neurológicos: internación/infectología; obtener muestras sin retrasar tratamiento."
+      ],
+      "factIds": [
+        "b03_026_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Exposición, imágenes, antígeno urinario/sérico y microbiología/histología según síndrome. Evaluar inmunosupresión/VIH; interpretar pruebas sin confundir otras micosis."
+      ],
+      "factIds": [
+        "b03_026_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Pulmonar leve inmunocompetente: generalmente observar sin antifúngico; moderada: tratar u observar según evolución/riesgo. Si se trata pulmonar: itraconazol convencional 6–12 semanas tras carga. Diseminada con VIH suele requerir mucho más tiempo; no usar duración pulmonar breve."
+      ],
+      "factIds": [
+        "b03_026_f05"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "IDSA septiembre 2026: grave sin sistema nervioso, anfotericina B liposomal 3 mg/kg intravenosa una vez al día; con sistema nervioso, 5 mg/kg una vez al día. Inducción individualizada; no copiar a desoxicolato. Itraconazol convencional en transición: 200 mg oral 3 veces al día durante 3 días, luego 200 mg cada 12 horas."
+      ],
+      "factIds": [
+        "b03_026_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Vigilar riñón, potasio/magnesio con anfotericina; hígado, interacciones, niveles y fallo cardíaco con itraconazol. SUBA no es intercambiable mg por mg. Embarazo: evitar azol especialmente primer trimestre y consultar especialista."
+      ],
+      "factIds": [
+        "b03_026_f06"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar respuesta/duración por órgano/inmunidad; inmunosuprimidos requieren seguimiento y posible supresión. Alta con estabilidad y terapia/monitorización aseguradas."
+      ],
+      "factIds": [
+        "b03_026_f07"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Micosis inhalada; pulmonar autolimitada, grave, diseminada o del sistema nervioso, especialmente en inmunosuprimidos."
+      ],
+      "factIds": [
+        "b03_026_f01"
+      ]
+    }
+  ],
+  "markdown": "# Histoplasmosis\n\n## Abordaje inicial y urgencias\n\nInsuficiencia respiratoria, shock, diseminada aguda grave o signos neurológicos: internación/infectología; obtener muestras sin retrasar tratamiento.\n\n## Diagnóstico y diferenciales\n\nExposición, imágenes, antígeno urinario/sérico y microbiología/histología según síndrome. Evaluar inmunosupresión/VIH; interpretar pruebas sin confundir otras micosis.\n\n## Tratamiento: primera elección y alternativas\n\nPulmonar leve inmunocompetente: generalmente observar sin antifúngico; moderada: tratar u observar según evolución/riesgo. Si se trata pulmonar: itraconazol convencional 6–12 semanas tras carga. Diseminada con VIH suele requerir mucho más tiempo; no usar duración pulmonar breve.\n\n## Fármacos, dosis e intervalos\n\nIDSA septiembre 2026: grave sin sistema nervioso, anfotericina B liposomal 3 mg/kg intravenosa una vez al día; con sistema nervioso, 5 mg/kg una vez al día. Inducción individualizada; no copiar a desoxicolato. Itraconazol convencional en transición: 200 mg oral 3 veces al día durante 3 días, luego 200 mg cada 12 horas.\n\n## Seguridad y monitorización\n\nVigilar riñón, potasio/magnesio con anfotericina; hígado, interacciones, niveles y fallo cardíaco con itraconazol. SUBA no es intercambiable mg por mg. Embarazo: evitar azol especialmente primer trimestre y consultar especialista.\n\n## Reevaluación, internación y alta\n\nReevaluar respuesta/duración por órgano/inmunidad; inmunosuprimidos requieren seguimiento y posible supresión. Alta con estabilidad y terapia/monitorización aseguradas.\n\n## Reconocimiento rápido\n\nMicosis inhalada; pulmonar autolimitada, grave, diseminada o del sistema nervioso, especialmente en inmunosuprimidos.\n\n## Referencias\n\n1. [IDSA — Histoplasmosis recommendations, updated September 2026](https://www.idsociety.org/practice-guideline/histoplasmosis)\n2. [NIH — Histoplasmosis in adults/adolescents with HIV, living guideline](https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/histoplasmosis)",
+  "approvedReviewCanonicalFileSha256": "b9bcdf51174b73b6c28ae68a9ae235d3ce38b458b7adf90b517c9c38fba932ac",
+  "approvedReviewProjectionFileSha256": "d3508963c47466036bdffe5f7ba093701ff54740d7af2db05eb36caa6ca88455"
+}

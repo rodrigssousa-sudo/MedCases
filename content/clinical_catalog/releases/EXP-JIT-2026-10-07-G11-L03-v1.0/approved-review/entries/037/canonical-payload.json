@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "granuloma_anular",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Granuloma anular",
+    "es": "Granuloma anular"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_037_f01",
+      "section": "concept",
+      "pt": "Dermatose inflamatória benigna com pápulas em anel, geralmente sem descamação; não é micose por definição.",
+      "es": "Dermatosis inflamatoria benigna con pápulas anulares, generalmente sin escama; no es micosis por definición.",
+      "sources": [
+        "granuloma_derm",
+        "topic_146",
+        "granuloma_college"
+      ]
+    },
+    {
+      "id": "b03_037_f02",
+      "section": "diagnosis",
+      "pt": "Exame clínico; biópsia se dúvida/apresentação atípica. Diferenciar tinha, sarcoidose e outras dermatoses; investigar doenças associadas conforme sinais, sem rastreio indiscriminado.",
+      "es": "Examen clínico; biopsia ante duda/atipia. Diferenciar tiña, sarcoidosis/otras dermatosis; estudiar asociaciones por signos, sin cribado indiscriminado.",
+      "sources": [
+        "granuloma_derm",
+        "topic_146",
+        "granuloma_college"
+      ]
+    },
+    {
+      "id": "b03_037_f03",
+      "section": "initial",
+      "pt": "Não costuma ser emergência. Ulceração, febre, dor intensa ou crescimento atípico exige reconsiderar diagnóstico; orientar benignidade quando confirmado.",
+      "es": "Generalmente no urgente. Ulceración, fiebre, dolor intenso/crecimiento atípico exige reconsiderar; explicar benignidad si confirmado.",
+      "sources": [
+        "granuloma_derm",
+        "topic_146",
+        "granuloma_college"
+      ]
+    },
+    {
+      "id": "b03_037_f04",
+      "section": "options",
+      "pt": "Primeira escolha em localizado assintomático: observação. Se incômodo, corticoide tópico ou intralesional selecionado por dermatologia; alternativa para disseminado persistente, fototerapia. Terapias sistêmicas são excepcionais, com benefício/risco individual.",
+      "es": "Primera elección localizado asintomático: observar. Si molesta, corticoide tópico/intralesional por dermatología; alternativa para diseminado persistente: fototerapia. Sistémicos excepcionales según beneficio/riesgo.",
+      "sources": [
+        "granuloma_derm",
+        "topic_146",
+        "granuloma_college"
+      ]
+    },
+    {
+      "id": "b03_037_f05",
+      "section": "safety",
+      "pt": "Não prescrever antifúngico só pelo formato em anel. Corticoide pode causar atrofia; potência, local e duração individualizados. Não prometer cura permanente com tratamento sistêmico potencialmente tóxico.",
+      "es": "No dar antifúngico solo por forma anular. Corticoide puede atrofiar; potencia, sitio/duración individualizados. No prometer cura permanente con sistémico tóxico.",
+      "sources": [
+        "granuloma_derm",
+        "topic_146",
+        "granuloma_college"
+      ]
+    },
+    {
+      "id": "b03_037_f06",
+      "section": "followup",
+      "pt": "Acompanhar evolução se diagnóstico seguro; recorrência é possível. Encaminhar disseminação, dúvida ou repercussão relevante.",
+      "es": "Seguir evolución si diagnóstico seguro; puede recurrir. Derivar diseminación, duda/impacto importante.",
+      "sources": [
+        "granuloma_derm",
+        "topic_146",
+        "granuloma_college"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A ausência de descamação ajuda a distinguir de tinha; inflamação granulomatosa pode resolver espontaneamente. O risco de tratamento pode superar o de uma doença assintomática.",
+      "es": "La falta de escama ayuda frente a tiña; inflamación granulomatosa puede resolver sola. Tratar puede ser más riesgoso que enfermedad asintomática.",
+      "sources": [
+        "granuloma_derm",
+        "topic_146",
+        "granuloma_college"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "granuloma_derm",
+      "title": "DermNet — Granuloma annulare",
+      "url": "https://dermnetnz.org/topics/granuloma-annulare",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed: February, 2025",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:granuloma_derm",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_146",
+      "title": "NHS — Granuloma annulare",
+      "url": "https://www.nhs.uk/conditions/granuloma-annulare/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 11 July 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_146",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "granuloma_college",
+      "title": "Australasian College of Dermatologists — Granuloma annulare",
+      "url": "https://www.dermcoll.edu.au/wp-content/uploads/2021/10/Granuloma-Annulare-A-Z-of-Skin.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:granuloma_college",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

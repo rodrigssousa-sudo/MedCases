@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "insuficiencia_hepatica_aguda_nao_cirrotica",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Insuficiência hepática aguda não cirrótica",
+    "es": "Insuficiencia hepática aguda no cirrótica"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed. Falência hepática aguda sem cirrose prévia; não duplicar owner etiológico de intoxicação.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_020_f01",
+      "section": "concept",
+      "pt": "Disfunção hepática aguda com coagulopatia e encefalopatia sem cirrose prévia; é emergência distinta de descompensação de cirrose.",
+      "es": "Fallo hepático agudo con coagulopatía y encefalopatía sin cirrosis previa; emergencia distinta de descompensación cirrótica.",
+      "sources": [
+        "alf",
+        "alf_ped"
+      ]
+    },
+    {
+      "id": "b03_020_f02",
+      "section": "diagnosis",
+      "pt": "Rever medicamentos, paracetamol, suplementos, vírus, isquemia e causas autoimunes/metabólicas; dosar INR, glicemia, função renal, eletrólitos e investigação etiológica. Valor baixo de paracetamol tardio não exclui toxicidade.",
+      "es": "Revisar medicamentos, paracetamol, suplementos, virus, isquemia y causas autoinmunes/metabólicas; INR, glucemia, riñón, electrolitos y etiología. Nivel bajo tardío de paracetamol no excluye toxicidad.",
+      "sources": [
+        "alf",
+        "alf_ped"
+      ]
+    },
+    {
+      "id": "b03_020_f03",
+      "section": "initial",
+      "pt": "UTI/centro de transplante precocemente: proteger via aérea em encefalopatia grave, corrigir hipoglicemia e monitorizar neurologia, perfusão e diurese. Não aguardar critérios prognósticos finais para discutir transferência.",
+      "es": "UCI/centro de trasplante temprano: proteger vía aérea en encefalopatía grave, corregir hipoglucemia y vigilar neurología, perfusión y diuresis. No esperar criterios finales para discutir traslado.",
+      "sources": [
+        "alf",
+        "alf_ped"
+      ]
+    },
+    {
+      "id": "b03_020_f04",
+      "section": "options",
+      "pt": "N-acetilcisteína é prioritária em toxicidade possível por paracetamol; em adulto selecionado sem paracetamol, pode ser usada conforme protocolo especializado. Tratar causa específica quando identificada, como antiviral em herpes; transplante é opção em falha irreversível elegível.",
+      "es": "N-acetilcisteína es prioritaria ante posible toxicidad por paracetamol; en adulto seleccionado sin paracetamol puede usarse según protocolo especializado. Tratar causa específica, como antiviral en herpes; trasplante si fallo irreversible elegible.",
+      "sources": [
+        "alf",
+        "alf_ped"
+      ]
+    },
+    {
+      "id": "b03_020_f05",
+      "section": "safety",
+      "pt": "Não extrapolar benefício de N-acetilcisteína em adulto não-paracetamol para crianças. Dose/infusão seguem o protocolo específico da etiologia/peso; não criar esquema universal. Não corrigir INR com plasma apenas pelo número sem sangramento/procedimento indicado, pois pode mascarar evolução.",
+      "es": "No extrapolar NAC adulta no-paracetamol a niños. Dosis/infusión según etiología/peso; no crear esquema universal. No corregir INR con plasma solo por el número sin sangrado/procedimiento, pues puede ocultar evolución.",
+      "sources": [
+        "alf",
+        "alf_ped"
+      ]
+    },
+    {
+      "id": "b03_020_f06",
+      "section": "followup",
+      "pt": "Monitorização intensiva até melhora consistente ou decisão de transplante; não é caso de alta ambulatorial com encefalopatia/coagulopatia progressiva. Seguimento etiológico após recuperação.",
+      "es": "Monitorización intensiva hasta mejoría consistente o trasplante; no dar alta ambulatoria con encefalopatía/coagulopatía progresiva. Seguimiento causal tras recuperación.",
+      "sources": [
+        "alf",
+        "alf_ped"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "N-acetilcisteína e transplante não são duas alternativas equivalentes: um tratamento etiológico/adjuvante pode coexistir com avaliação de resgate definitivo. População pediátrica possui evidência diferente.",
+      "es": "NAC y trasplante no son alternativas equivalentes: tratamiento causal/adjunto puede coexistir con rescate definitivo. La población pediátrica tiene evidencia diferente.",
+      "sources": [
+        "alf",
+        "alf_ped"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "alf",
+      "title": "AASLD — Defining and managing acute liver failure",
+      "url": "https://www.aasld.org/liver-fellow-network/core-series/back-basics/defining-and-managing-acute-liver-failure",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:alf",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "alf_ped",
+      "title": "AASLD — Pediatric acute liver failure, NAC limitations",
+      "url": "https://www.aasld.org/liver-fellow-network/core-series/clinical-pearls/pediatric-acute-liver-failure-prompt-recognition",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:alf_ped",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

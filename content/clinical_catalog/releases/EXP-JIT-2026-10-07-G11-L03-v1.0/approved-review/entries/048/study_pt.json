@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Catarata",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "23a1ceb259bc882539d94cede1ad1266392faf45c0a87c8e67b3701364bec39b",
+  "ownerCandidate": "catarata",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_048_f01",
+    "b03_048_f02",
+    "b03_048_f03",
+    "b03_048_f04",
+    "b03_048_f05",
+    "b03_048_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Opacificação do cristalino com redução visual gradual, ofuscamento e alteração de contraste; catarata típica não causa olho vermelho doloroso agudo."
+      ],
+      "factIds": [
+        "b03_048_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A opacidade é estrutural; lentes externas podem compensar parte da função, mas a cirurgia remove o cristalino opaco. Não se fabrica um segundo medicamento curativo."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Acuidade e exame ocular confirmam opacidade e outras causas de baixa visual; avaliar repercussão funcional e comorbidades retinianas. Não atribuir perda súbita à catarata sem investigação."
+      ],
+      "factIds": [
+        "b03_048_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "No Plantão, excluir glaucoma agudo, descolamento, infecção e causas vasculares quando dor/perda súbita. Catarata estável segue avaliação eletiva."
+      ],
+      "factIds": [
+        "b03_048_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Leve: atualizar correção óptica, iluminação e medidas de segurança. Alternativa definitiva quando função/qualidade de vida justificam: cirurgia com implante de lente após decisão compartilhada. Não limitar indicação apenas a um corte de acuidade."
+      ],
+      "factIds": [
+        "b03_048_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não há colírio/fármaco comprovado que reverta rotineiramente catarata. Avaliar biometrias, risco, consentimento e expectativa; esquemas pós-operatórios pertencem ao cirurgião, não à lista de medicamentos para catarata não operada."
+      ],
+      "factIds": [
+        "b03_048_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Acompanhar evolução e funcionalidade; orientar retorno urgente após cirurgia por dor intensa ou queda visual. Crianças com catarata têm urgência e tratamento próprios para evitar ambliopia."
+      ],
+      "factIds": [
+        "b03_048_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "ng77",
+      "title": "NICE NG77 — Adult cataracts recommendations",
+      "url": "https://www.nice.org.uk/guidance/ng77/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE NG77 com vigilância de maio 2025: decisão compartilhada funcional sobre cirurgia, sem corte isolado de acuidade.",
+      "sourceEvidenceRecord": "web-verification-record.json:ng77",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_157",
+      "title": "NHS — Cataracts in adults",
+      "url": "https://www.nhs.uk/conditions/cataracts/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 12 March 2025",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_157",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

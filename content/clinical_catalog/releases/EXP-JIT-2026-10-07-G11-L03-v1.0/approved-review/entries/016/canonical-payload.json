@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "incontinencia_fecal_no_adulto",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Incontinência fecal no adulto",
+    "es": "Incontinencia fecal en adultos"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed. Incontinência fecal no adulto; distinta de encoprese pediátrica e de impactação/colite estercoral.",
+  "relatedExistingOwners": [
+    "encoprese_pediatrica",
+    "impactacao_fecal_fecaloma",
+    "colite_estercoral_impactacao_fecal"
+  ],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_016_f01",
+      "section": "concept",
+      "pt": "Perda involuntária de fezes é sintoma de causas diversas: diarreia, impactação com transbordamento, lesão esfincteriana ou doença neurológica.",
+      "es": "Pérdida involuntaria de heces es síntoma de diarrea, impactación con rebosamiento, lesión esfinteriana o enfermedad neurológica.",
+      "sources": [
+        "cg49",
+        "topic_120"
+      ]
+    },
+    {
+      "id": "b03_016_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar consistência/frequência, obstetrícia/cirurgias, medicamentos e exame abdominal, perineal/retal conforme indicação. Sangue, perda de peso, início abrupto ou sinais neurológicos requerem investigação.",
+      "es": "Evaluar consistencia/frecuencia, antecedentes obstétricos/quirúrgicos, fármacos y examen abdominal, perineal/rectal. Sangre, pérdida de peso, inicio brusco o signos neurológicos exige estudio.",
+      "sources": [
+        "cg49",
+        "topic_120"
+      ]
+    },
+    {
+      "id": "b03_016_f03",
+      "section": "initial",
+      "pt": "Nova incontinência com retenção urinária, anestesia em sela ou déficit de membros exige excluir cauda equina urgentemente. Fecaloma requer desimpactação; não iniciar antidiarreico para transbordamento.",
+      "es": "Incontinencia nueva con retención urinaria, anestesia en silla de montar o déficit de piernas: descartar cauda equina urgente. Fecaloma: desimpactar; no dar antidiarreico al rebosamiento.",
+      "sources": [
+        "cg49",
+        "topic_120"
+      ]
+    },
+    {
+      "id": "b03_016_f04",
+      "section": "options",
+      "pt": "Primeira escolha: regular consistência, rotina intestinal, proteção da pele e tratar causa. Loperamida pode ser opção se fezes soltas, após excluir infecção/causas contraindicatórias. Alternativa/complemento: treino de assoalho pélvico/biofeedback; neuromodulação sacral ou cirurgia em elegíveis após avaliação especializada.",
+      "es": "Primera elección: regular consistencia, rutina, proteger piel y tratar causa. Loperamida si heces blandas, tras excluir infección/contraindicaciones. Alternativa/complemento: piso pélvico/biofeedback; neuromodulación sacra o cirugía en elegibles evaluados.",
+      "sources": [
+        "cg49",
+        "topic_120"
+      ]
+    },
+    {
+      "id": "b03_016_f05",
+      "section": "safety",
+      "pt": "Não usar loperamida em constipação, diarreia sanguinolenta infecciosa ou suspeita de obstrução. Titular conforme consistência, sem transformar dose de diarreia aguda em tratamento crônico universal.",
+      "es": "No usar loperamida en estreñimiento, diarrea infecciosa sanguinolenta o sospecha de obstrucción. Titular por consistencia, sin convertir dosis de diarrea aguda en tratamiento crónico universal.",
+      "sources": [
+        "cg49",
+        "topic_120"
+      ]
+    },
+    {
+      "id": "b03_016_f06",
+      "section": "followup",
+      "pt": "Seguimento com diário intestinal e impacto funcional; encaminhar falha, lesão estrutural ou diagnóstico incerto. Alta apenas após excluir causas urgentes e definir plano.",
+      "es": "Seguir diario intestinal/impacto funcional; derivar fracaso, lesión estructural o incertidumbre. Alta tras excluir causas urgentes y definir plan.",
+      "sources": [
+        "cg49",
+        "topic_120"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Fezes líquidas e transbordamento podem parecer iguais, mas exigem intervenções opostas. A continência depende de consistência, sensibilidade e esfíncter; aumentar medicamentos sem esclarecer o mecanismo pode piorar.",
+      "es": "Heces líquidas y rebosamiento parecen similares pero requieren acciones opuestas. Continencia depende de consistencia, sensibilidad y esfínter; medicar sin aclarar mecanismo puede empeorar.",
+      "sources": [
+        "cg49",
+        "topic_120"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "cg49",
+      "title": "NICE CG49 — Faecal incontinence adult recommendations",
+      "url": "https://www.nice.org.uk/guidance/cg49/chapter/Recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE CG49: tratar causas e consistência; loperamida se fezes soltas; não usar em impactação. Reabilitação e opções especializadas individualizadas.",
+      "sourceEvidenceRecord": "web-verification-record.json:cg49",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_120",
+      "title": "NHS — Bowel incontinence",
+      "url": "https://www.nhs.uk/conditions/bowel-incontinence/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 15 August 2024",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_120",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

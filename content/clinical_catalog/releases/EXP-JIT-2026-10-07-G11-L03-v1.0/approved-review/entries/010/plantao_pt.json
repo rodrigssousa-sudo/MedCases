@@ -1,0 +1,115 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Síndrome de hipoventilação da obesidade",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "58840bd815afe65547d3e62ca7c44997fd08a914235abc31daa649352f47b036",
+  "ownerCandidate": "sindrome_de_hipoventilacao_da_obesidade",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_010_f01",
+    "b03_010_f02",
+    "b03_010_f03",
+    "b03_010_f04",
+    "b03_010_f05",
+    "b03_010_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Sonolência, acidose ou insuficiência respiratória aguda: hospitalização, gasometrias seriadas e suporte ventilatório; proteger via aérea se necessário. Evitar sedativos e oxigênio isolado sem avaliar ventilação."
+      ],
+      "factIds": [
+        "b03_010_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Confirmar gasometria e avaliar sono; bicarbonato sérico pode orientar triagem em probabilidade baixa/moderada, mas não substitui gasometria em alta suspeita. Excluir DPOC, doença neuromuscular e efeito de sedativos."
+      ],
+      "factIds": [
+        "b03_010_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Adulto estável com apneia obstrutiva grave associada: CPAP é primeira estratégia ATS. Alternativa se ventilação inadequada, intolerância ou fenótipo apropriado: ventilação não invasiva com ajuste especializado. Perda de peso sustentada, incluindo avaliação bariátrica elegível, trata o mecanismo."
+      ],
+      "factIds": [
+        "b03_010_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não há duas opções farmacológicas que substituam ventilação. Oxigênio adicional somente se necessário, com controle de dióxido de carbono; alta após insuficiência respiratória exige plano de suporte e estudo/titulação do sono."
+      ],
+      "factIds": [
+        "b03_010_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar adesão, sintomas, gasometria e eficácia do dispositivo. Persistência de hipercapnia ou hipoxemia exige revisar ajuste e outras causas, não simplesmente aumentar oxigênio."
+      ],
+      "factIds": [
+        "b03_010_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Obesidade com hipercapnia diurna após excluir outras causas de hipoventilação; frequentemente coexistem distúrbios respiratórios do sono."
+      ],
+      "factIds": [
+        "b03_010_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "ohs_full",
+      "title": "ATS — OHS full final guideline, 2019",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6680300/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2019,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published yet. In healthcare systems where the cost of PAP is not reimbursed by a third-party payer, direct o",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:ohs_full",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "ats_ohs",
+      "title": "ATS — Obesity hypoventilation syndrome guideline, 2019",
+      "url": "https://www.thoracic.org/statements/guideline-implementation-tools/eval-and-mgmt-of-ohs.php",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2019,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:ats_ohs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_110",
+      "title": "NHLBI — Obesity hypoventilation syndrome",
+      "url": "https://www.nhlbi.nih.gov/health/obesity-hypoventilation-syndrome",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated on March 24, 2022",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_110",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

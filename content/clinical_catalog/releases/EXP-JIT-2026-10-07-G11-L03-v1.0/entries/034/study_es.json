@@ -1,0 +1,170 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Infección de prótesis articular",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "7ef1638b33e38ebe388caf56bfa6c481f70203d198e1468673147a4f993e6f23",
+  "ownerCandidate": "infeccao_de_protese_articular",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_034_f01",
+    "b03_034_f02",
+    "b03_034_f03",
+    "b03_034_f04",
+    "b03_034_f05",
+    "b03_034_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Infección con biofilm en prótesis, aguda/crónica; distinta de artritis séptica nativa."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Biofilm reduce eficacia del antibiótico solo. DAIR/recambio tienen indicaciones propias; EBJIS 2025 distingue curación, supresión y agente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dolor, calor, derrame, fístula/disfunción; inflamatorios, imagen y aspirado/cultivos por ortopedia. Obtener muestras antes de antibiótico si seguro; no retrasar sepsis."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Internar sepsis/inestabilidad y consultar ortopedia/infectología. Desbridamiento/estrategia del implante son centrales; analgesia sola no resuelve foco."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Aguda con prótesis estable/elegible: desbridamiento, antimicrobianos y retención (DAIR). Crónica, aflojamiento o inelegibilidad: recambio en uno/dos tiempos por equipo. Antibiótico dirigido con estrategia antibiofilm si corresponde."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Rifampicina en estafilococo susceptible solo combinada, nunca sola; revisar interacciones/momento tras controlar foco. Dosis/duración según cirugía, cultivo/órganos. Supresión crónica es seleccionada, no curación equivalente."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vigilar herida, función, cultivos/toxicidad; fracaso exige revisar cirugía. Alta con antimicrobianos/monitorización y seguimiento multidisciplinario."
+    }
+  ],
+  "references": [
+    {
+      "key": "ebjis2025",
+      "title": "EBJIS — DAIR for acute periprosthetic joint infection, 2025",
+      "url": "https://jbji.copernicus.org/articles/10/101/2025/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published maps, institutional affiliations, or any other geographical representation in this paper. While Cop",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:ebjis2025",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "ebjis_summary",
+      "title": "EBJIS — DAIR position paper summary, 2025",
+      "url": "https://jbji.copernicus.org/articles/10/139/2025/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published maps, institutional affiliations, or any other geographical representation in this paper. While Cop",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:ebjis_summary",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Infección con biofilm en prótesis, aguda/crónica; distinta de artritis séptica nativa."
+      ],
+      "factIds": [
+        "b03_034_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Biofilm reduce eficacia del antibiótico solo. DAIR/recambio tienen indicaciones propias; EBJIS 2025 distingue curación, supresión y agente."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Dolor, calor, derrame, fístula/disfunción; inflamatorios, imagen y aspirado/cultivos por ortopedia. Obtener muestras antes de antibiótico si seguro; no retrasar sepsis."
+      ],
+      "factIds": [
+        "b03_034_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Internar sepsis/inestabilidad y consultar ortopedia/infectología. Desbridamiento/estrategia del implante son centrales; analgesia sola no resuelve foco."
+      ],
+      "factIds": [
+        "b03_034_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Aguda con prótesis estable/elegible: desbridamiento, antimicrobianos y retención (DAIR). Crónica, aflojamiento o inelegibilidad: recambio en uno/dos tiempos por equipo. Antibiótico dirigido con estrategia antibiofilm si corresponde."
+      ],
+      "factIds": [
+        "b03_034_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Rifampicina en estafilococo susceptible solo combinada, nunca sola; revisar interacciones/momento tras controlar foco. Dosis/duración según cirugía, cultivo/órganos. Supresión crónica es seleccionada, no curación equivalente."
+      ],
+      "factIds": [
+        "b03_034_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Vigilar herida, función, cultivos/toxicidad; fracaso exige revisar cirugía. Alta con antimicrobianos/monitorización y seguimiento multidisciplinario."
+      ],
+      "factIds": [
+        "b03_034_f06"
+      ]
+    }
+  ],
+  "markdown": "# Infección de prótesis articular\n\n## Concepto y mecanismo\n\nInfección con biofilm en prótesis, aguda/crónica; distinta de artritis séptica nativa.\n\n## Razonamiento y elección terapéutica\n\nBiofilm reduce eficacia del antibiótico solo. DAIR/recambio tienen indicaciones propias; EBJIS 2025 distingue curación, supresión y agente.\n\n## Diagnóstico y diferenciales\n\nDolor, calor, derrame, fístula/disfunción; inflamatorios, imagen y aspirado/cultivos por ortopedia. Obtener muestras antes de antibiótico si seguro; no retrasar sepsis.\n\n## Abordaje inicial y urgencias\n\nInternar sepsis/inestabilidad y consultar ortopedia/infectología. Desbridamiento/estrategia del implante son centrales; analgesia sola no resuelve foco.\n\n## Tratamiento: primera elección y alternativas\n\nAguda con prótesis estable/elegible: desbridamiento, antimicrobianos y retención (DAIR). Crónica, aflojamiento o inelegibilidad: recambio en uno/dos tiempos por equipo. Antibiótico dirigido con estrategia antibiofilm si corresponde.\n\n## Seguridad y monitorización\n\nRifampicina en estafilococo susceptible solo combinada, nunca sola; revisar interacciones/momento tras controlar foco. Dosis/duración según cirugía, cultivo/órganos. Supresión crónica es seleccionada, no curación equivalente.\n\n## Reevaluación, internación y alta\n\nVigilar herida, función, cultivos/toxicidad; fracaso exige revisar cirugía. Alta con antimicrobianos/monitorización y seguimiento multidisciplinario.\n\n## Referencias\n\n1. [EBJIS — DAIR for acute periprosthetic joint infection, 2025](https://jbji.copernicus.org/articles/10/101/2025/)\n2. [EBJIS — DAIR position paper summary, 2025](https://jbji.copernicus.org/articles/10/139/2025/)",
+  "approvedReviewCanonicalFileSha256": "38ef28cdc65e5d9f17c78a0097dc0417da5821a15dc2cfaf2a9206347be53bc1",
+  "approvedReviewProjectionFileSha256": "0d91647c426e86e97001f5372873d71146db1ba399b7415a4798282ca401a92e"
+}

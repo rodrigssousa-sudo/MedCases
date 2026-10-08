@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Derrame pleural",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "4df2a25b253fbda68dcc8d9f9104b0f1dd4d1f4cddcfb526eb752e7dc99fc826",
+  "ownerCandidate": "derrame_pleural",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_006_f01",
+    "b03_006_f02",
+    "b03_006_f03",
+    "b03_006_f04",
+    "b03_006_f05",
+    "b03_006_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Desconforto respiratório ou hipoxemia: avaliar urgentemente e considerar drenagem terapêutica especializada. Monitorizar durante e após procedimento; interromper drenagem diante de dor, tosse persistente ou piora respiratória."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Radiografia/ultrassom identificam volume e loculações. Derrame novo inexplicado pode exigir toracocentese guiada por ultrassom; analisar proteínas/LDH com amostras séricas, pH se infecção provável, microbiologia e citologia conforme hipótese."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira estratégia: tratar causa, como diurético na congestão cardíaca ou antibiótico na infecção. Alternativa/complemento sintomático: drenagem. Derrame maligno recorrente pode requerer cateter pleural de longa permanência ou pleurodese após avaliação da expansão pulmonar e preferência."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não indicar antibiótico para todo derrame. Suspeita infecciosa com pus ou perfil bioquímico de alto risco exige protocolo de infecção pleural. Procedimento invasivo exige avaliação de anticoagulação, anatomia e operador treinado."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Internar se hipoxemia, instabilidade, infecção complicada ou necessidade de drenagem. Derrame sem causa definida necessita investigação/seguimento, inclusive se melhora após punção."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Acúmulo de líquido pleural, transudativo ou exsudativo, por causas como insuficiência cardíaca, infecção, neoplasia e embolia. Não significa automaticamente empiema."
+    }
+  ],
+  "references": [
+    {
+      "key": "bts2023",
+      "title": "BTS — Pleural disease guideline 2023",
+      "url": "https://www.brit-thoracic.org.uk/document-library/guidelines/pleural-disease/pleural-disease-full-supplement/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2023,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published monthly (subscribers receive all supplements)",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:bts2023",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_106",
+      "title": "RCH — Pleural effusion (see >> Parapneumonic effusion)",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Parapneumonic_effusion/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated August 2022",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_106",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Desconforto respiratório ou hipoxemia: avaliar urgentemente e considerar drenagem terapêutica especializada. Monitorizar durante e após procedimento; interromper drenagem diante de dor, tosse persistente ou piora respiratória."
+      ],
+      "factIds": [
+        "b03_006_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Radiografia/ultrassom identificam volume e loculações. Derrame novo inexplicado pode exigir toracocentese guiada por ultrassom; analisar proteínas/LDH com amostras séricas, pH se infecção provável, microbiologia e citologia conforme hipótese."
+      ],
+      "factIds": [
+        "b03_006_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira estratégia: tratar causa, como diurético na congestão cardíaca ou antibiótico na infecção. Alternativa/complemento sintomático: drenagem. Derrame maligno recorrente pode requerer cateter pleural de longa permanência ou pleurodese após avaliação da expansão pulmonar e preferência."
+      ],
+      "factIds": [
+        "b03_006_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não indicar antibiótico para todo derrame. Suspeita infecciosa com pus ou perfil bioquímico de alto risco exige protocolo de infecção pleural. Procedimento invasivo exige avaliação de anticoagulação, anatomia e operador treinado."
+      ],
+      "factIds": [
+        "b03_006_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Internar se hipoxemia, instabilidade, infecção complicada ou necessidade de drenagem. Derrame sem causa definida necessita investigação/seguimento, inclusive se melhora após punção."
+      ],
+      "factIds": [
+        "b03_006_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Acúmulo de líquido pleural, transudativo ou exsudativo, por causas como insuficiência cardíaca, infecção, neoplasia e embolia. Não significa automaticamente empiema."
+      ],
+      "factIds": [
+        "b03_006_f01"
+      ]
+    }
+  ],
+  "markdown": "# Derrame pleural\n\n## Abordagem inicial e urgências\n\nDesconforto respiratório ou hipoxemia: avaliar urgentemente e considerar drenagem terapêutica especializada. Monitorizar durante e após procedimento; interromper drenagem diante de dor, tosse persistente ou piora respiratória.\n\n## Diagnóstico e diferenciais\n\nRadiografia/ultrassom identificam volume e loculações. Derrame novo inexplicado pode exigir toracocentese guiada por ultrassom; analisar proteínas/LDH com amostras séricas, pH se infecção provável, microbiologia e citologia conforme hipótese.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira estratégia: tratar causa, como diurético na congestão cardíaca ou antibiótico na infecção. Alternativa/complemento sintomático: drenagem. Derrame maligno recorrente pode requerer cateter pleural de longa permanência ou pleurodese após avaliação da expansão pulmonar e preferência.\n\n## Segurança e monitorização\n\nNão indicar antibiótico para todo derrame. Suspeita infecciosa com pus ou perfil bioquímico de alto risco exige protocolo de infecção pleural. Procedimento invasivo exige avaliação de anticoagulação, anatomia e operador treinado.\n\n## Reavaliação, internação e alta\n\nInternar se hipoxemia, instabilidade, infecção complicada ou necessidade de drenagem. Derrame sem causa definida necessita investigação/seguimento, inclusive se melhora após punção.\n\n## Reconhecimento rápido\n\nAcúmulo de líquido pleural, transudativo ou exsudativo, por causas como insuficiência cardíaca, infecção, neoplasia e embolia. Não significa automaticamente empiema.\n\n## Referências\n\n1. [BTS — Pleural disease guideline 2023](https://www.brit-thoracic.org.uk/document-library/guidelines/pleural-disease/pleural-disease-full-supplement/)\n2. [RCH — Pleural effusion (see >> Parapneumonic effusion)](https://www.rch.org.au/clinicalguide/guideline_index/Parapneumonic_effusion/)",
+  "approvedReviewCanonicalFileSha256": "ec0be0539421be361e13f7f04580da7e84381b08210c46699e2cf22334a5ffba",
+  "approvedReviewProjectionFileSha256": "3d926fdcfc9d0d8f08082bcbdd79084b23b069299c954c5abbd69dfadac6170d"
+}

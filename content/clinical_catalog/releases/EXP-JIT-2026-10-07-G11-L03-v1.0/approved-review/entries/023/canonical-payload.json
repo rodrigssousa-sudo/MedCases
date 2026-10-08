@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "febre_de_oropouche",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Febre de Oropouche",
+    "es": "Fiebre de Oropouche"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "SUPPORTIVE_NO_SPECIFIC_ANTIVIRAL",
+  "facts": [
+    {
+      "id": "b03_023_f01",
+      "section": "concept",
+      "pt": "Arbovirose por Oropouche com febre, cefaleia, mialgia e possível recorrência de sintomas; eventos neurológicos e riscos gestacionais exigem atenção.",
+      "es": "Arbovirosis por Oropouche con fiebre, cefalea, mialgia y posible recurrencia; complicaciones neurológicas/riesgo gestacional requieren atención.",
+      "sources": [
+        "oro_cdc"
+      ]
+    },
+    {
+      "id": "b03_023_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar exposição regional e testes articulados com vigilância; apresentação se sobrepõe a dengue e outras arboviroses. Investigar gravidade e gestação, sem confirmar somente por sintomas.",
+      "es": "Exposición regional y pruebas coordinadas con vigilancia; se superpone a dengue/otras arbovirosis. Evaluar gravedad/embarazo; no confirmar solo por síntomas.",
+      "sources": [
+        "oro_cdc"
+      ]
+    },
+    {
+      "id": "b03_023_f03",
+      "section": "initial",
+      "pt": "Hidratar e avaliar tolerância oral; meningismo, alteração mental, sangramento, instabilidade ou vômitos persistentes exigem hospital. Gestante precisa acompanhamento obstétrico e investigação/notificação específica.",
+      "es": "Hidratar/evaluar tolerancia oral; meningismo, confusión, sangrado, inestabilidad o vómitos persistentes: hospital. Embarazada: seguimiento obstétrico e investigación/notificación específica.",
+      "sources": [
+        "oro_cdc"
+      ]
+    },
+    {
+      "id": "b03_023_f04",
+      "section": "options",
+      "pt": "Primeira estratégia: suporte, repouso e paracetamol para febre/dor quando elegível. Alternativa ao manejo oral em incapacidade de hidratação: suporte hospitalar. Não há vacina ou antiviral específico estabelecido; não fabricar dois tratamentos etiológicos.",
+      "es": "Primera estrategia: soporte, reposo y paracetamol para fiebre/dolor si elegible. Si no tolera hidratación oral: soporte hospitalario. No hay vacuna/antiviral específico establecido; no inventar dos tratamientos causales.",
+      "sources": [
+        "oro_cdc"
+      ]
+    },
+    {
+      "id": "b03_023_f05",
+      "section": "safety",
+      "pt": "Na febre de Oropouche, evitar ácido acetilsalicílico e anti-inflamatórios não esteroides pelo risco de sangramento, mesmo após excluir dengue. Avaliar fígado/risco gestacional antes de antitérmico; não extrapolar esquema adulto para crianças. Reduzir picadas com proteção compatível com gestação.",
+      "es": "En fiebre de Oropouche, evitar aspirina/antiinflamatorios no esteroideos por riesgo de sangrado, incluso tras excluir dengue. Revisar hígado/embarazo antes de antitérmico; no extrapolar a niños. Prevenir picaduras con protección compatible con embarazo.",
+      "sources": [
+        "oro_cdc"
+      ]
+    },
+    {
+      "id": "b03_023_f06",
+      "section": "followup",
+      "pt": "Alta com estabilidade e plano de retorno; orientar recorrência e alarmes neurológicos. Manter acompanhamento obstétrico quando aplicável e coordenação com vigilância.",
+      "es": "Alta estable con plan de retorno; explicar recurrencia/alarmas neurológicas. Seguimiento obstétrico cuando corresponde y coordinación con vigilancia.",
+      "sources": [
+        "oro_cdc"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A semelhança com dengue torna a exclusão de risco hemorrágico parte da escolha sintomática. Atualizações de vigilância gestacional não equivalem à descoberta de tratamento antiviral.",
+      "es": "La semejanza con dengue exige evaluar riesgo hemorrágico al tratar síntomas. Actualizar vigilancia gestacional no significa descubrir un antiviral.",
+      "sources": [
+        "oro_cdc"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "oro_cdc",
+      "title": "CDC — About Oropouche, 2025",
+      "url": "https://www.cdc.gov/oropouche/about/index.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC setembro de 2025: repouso, fluidos, paracetamol elegível; evitar aspirina e anti-inflamatórios no Oropouche, não apenas até excluir dengue.",
+      "sourceEvidenceRecord": "web-verification-record.json:oro_cdc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

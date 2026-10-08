@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "abscesso_cerebral",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Abscesso cerebral",
+    "es": "Absceso cerebral"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_031_f01",
+      "section": "concept",
+      "pt": "Coleção infecciosa intracerebral, por foco contíguo, disseminação hematogênica ou neurocirurgia; pode causar efeito de massa e convulsões.",
+      "es": "Colección infecciosa intracerebral por foco contiguo, sangre o neurocirugía; puede causar masa/convulsiones.",
+      "sources": [
+        "brain2024",
+        "brain_nhs",
+        "topic_140"
+      ]
+    },
+    {
+      "id": "b03_031_f02",
+      "section": "diagnosis",
+      "pt": "Ressonância com difusão preferida quando disponível; TC se necessidade imediata. Hemoculturas e material da aspiração para microbiologia; investigar fonte dentária/ORL/endocardite. Evitar punção lombar diante de massa pelo risco de herniação.",
+      "es": "Resonancia con difusión si disponible; TC para urgencia. Hemocultivos/material aspirado y fuente dental/ORL/endocarditis. Evitar punción lumbar ante masa por riesgo de herniación.",
+      "sources": [
+        "brain2024",
+        "brain_nhs",
+        "topic_140"
+      ]
+    },
+    {
+      "id": "b03_031_f03",
+      "section": "initial",
+      "pt": "Hospital e neurocirurgia/infectologia urgentes; manejar via aérea, convulsões e hipertensão intracraniana conforme quadro. Coletar material sem atrasar antibiótico em paciente grave.",
+      "es": "Hospital/neurocirugía/infectología urgentes; vía aérea, convulsiones/presión intracraneal según cuadro. Obtener material sin retrasar antibiótico en grave.",
+      "sources": [
+        "brain2024",
+        "brain_nhs",
+        "topic_140"
+      ]
+    },
+    {
+      "id": "b03_031_f04",
+      "section": "options",
+      "pt": "Comunitário: cefalosporina de terceira geração, como ceftriaxona, MAIS metronidazol é esquema empírico ESCMID; ajustar à cultura. Pós-neurocirurgia exige cobertura diferente, como carbapenêmico com cobertura antiestafilocócica resistente, selecionada por equipe. Aspiração/excisão quando viável; tratamento exclusivamente medicamentoso apenas em elegíveis.",
+      "es": "Comunitario: cefalosporina de tercera generación como ceftriaxona MÁS metronidazol según ESCMID; ajustar al cultivo. Posneurocirugía: cobertura diferente, como carbapenémico y antiestafilocócico resistente por equipo. Aspiración/exéresis si viable; solo medicamentos en elegibles.",
+      "sources": [
+        "brain2024",
+        "brain_nhs",
+        "topic_140"
+      ]
+    },
+    {
+      "id": "b03_031_f05",
+      "section": "safety",
+      "pt": "ESCMID orienta geralmente 6–8 semanas de antimicrobianos, individualizadas por drenagem, agente e resposta. Não usar curso curto de meningite; corticoide só em edema grave/risco de herniação por decisão especializada. Doses são hospitalares por peso/função renal.",
+      "es": "ESCMID: generalmente 6–8 semanas, según drenaje, agente/respuesta. No usar curso corto de meningitis; corticoide solo en edema grave/riesgo de herniación por especialista. Dosis hospitalarias según peso/riñón.",
+      "sources": [
+        "brain2024",
+        "brain_nhs",
+        "topic_140"
+      ]
+    },
+    {
+      "id": "b03_031_f06",
+      "section": "followup",
+      "pt": "Imagem e exame neurológico seriados; nova cefaleia intensa, déficit ou convulsão exige reavaliar. Alta somente com estabilidade e plano antimicrobiano/monitorização assegurado.",
+      "es": "Imágenes/examen neurológico seriados; cefalea intensa nueva, déficit/convulsión: reevaluar. Alta estable con antimicrobianos/monitorización asegurados.",
+      "sources": [
+        "brain2024",
+        "brain_nhs",
+        "topic_140"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Antibiótico e drenagem são complementares, pois microbiologia e controle do foco orientam cura. A origem pós-operatória muda flora e impede usar automaticamente o regime comunitário.",
+      "es": "Antibiótico/drenaje se complementan; microbiología y foco orientan curación. El origen posoperatorio cambia flora e impide copiar régimen comunitario.",
+      "sources": [
+        "brain2024",
+        "brain_nhs",
+        "topic_140"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "brain2024",
+      "title": "ESCMID — Brain abscess guideline, 2024",
+      "url": "https://www.clinicalmicrobiologyandinfection.com/article/S1198-743X(23)00399-3/fulltext",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "ESCMID final 2024: aspiração/excisão, cefalosporina de terceira geração + metronidazol em comunidade, carbapenêmico + vancomicina/linezolida no pós-neurocirúrgico; duração usual 6–8 semanas individualizada. Trechos primários consultados, não acesso integral restrito.",
+      "sourceEvidenceRecord": "web-verification-record.json:brain2024",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "brain_nhs",
+      "title": "NHS — Brain abscess treatment",
+      "url": "https://www.nhs.uk/conditions/brain-abscess/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 18 October 2022",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:brain_nhs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_140",
+      "title": "NHS — Brain abscess",
+      "url": "https://www.nhs.uk/conditions/brain-abscess/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 18 October 2022",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_140",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

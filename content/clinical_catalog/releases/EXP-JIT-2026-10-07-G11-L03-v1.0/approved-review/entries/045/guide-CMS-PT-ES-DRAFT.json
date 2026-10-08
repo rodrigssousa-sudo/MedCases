@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação do lote; Guia deverá permanecer DRAFT no Admin após futura publicação dos modos.",
+  "canonical_payload_sha256": "195f98265a95efc9fd7127eedbb82c44cee0c47348b6553b6469b08b6b2f7577",
+  "owner_candidate": "dacriocistite",
+  "pt": {
+    "title": "Dacriocistite",
+    "subtitle": "Primeira escolha e alternativas por cenário",
+    "summary": "Infecção do saco lacrimal, geralmente por obstrução de drenagem; pode causar abscesso e celulite adjacente.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Infecção do saco lacrimal, geralmente por obstrução de drenagem; pode causar abscesso e celulite adjacente."
+        ],
+        "factIds": [
+          "b03_045_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "Antibiótico controla infecção, mas a obstrução pode manter estase. Procedimento definitivo e drenagem aguda têm objetivos/momentos diferentes, não substituem avaliação da órbita."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Dor/edema próximo ao canto medial, secreção e febre; examinar visão, motilidade e proptose. Dor ao mover olhos ou baixa visual exige excluir celulite orbital; criança pode progredir rapidamente."
+        ],
+        "factIds": [
+          "b03_045_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Oftalmologia no mesmo dia em grave/criança; hospital se sepse, extensão orbital, intolerância oral ou necessidade de drenagem. Não sondar/espremê-lo sem orientação durante fase infectada."
+        ],
+        "factIds": [
+          "b03_045_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Antibiótico sistêmico dirigido à flora/gravidade: opção oral como amoxicilina/clavulanato em adulto leve elegível; alternativa intravenosa especializada quando grave ou oral inviável. Abscesso pode requerer drenagem; correção da obstrução por cirurgia lacrimal após avaliação evita recorrência."
+        ],
+        "factIds": [
+          "b03_045_f04"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Colírio sozinho não trata infecção do saco lacrimal. Alergia/resistência, rim, gestação e idade determinam regime; não reutilizar dose adulta no recém-nascido nem adiar hospitalização neonatal."
+        ],
+        "factIds": [
+          "b03_045_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Revisão precoce de resposta; piora, febre ou sinais orbitais exigem internação. Após controle, avaliar via lacrimal e necessidade de cirurgia."
+        ],
+        "factIds": [
+          "b03_045_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Dacriocistitis",
+    "subtitle": "Primera elección y alternativas por escenario",
+    "summary": "Infección del saco lagrimal, generalmente por obstrucción; puede causar absceso/celulitis.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Infección del saco lagrimal, generalmente por obstrucción; puede causar absceso/celulitis."
+        ],
+        "factIds": [
+          "b03_045_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Antibiótico controla infección, pero obstrucción mantiene estasis. Cirugía definitiva/drenaje agudo tienen objetivos/tiempos distintos; no sustituyen evaluar órbita."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Dolor/edema en canto medial, secreción/fiebre; visión, motilidad/proptosis. Dolor al mover ojos o baja visual: excluir celulitis orbitaria; niños pueden progresar rápido."
+        ],
+        "factIds": [
+          "b03_045_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Oftalmología el mismo día en grave/niño; hospital si sepsis, extensión orbitaria, intolerancia oral/drenaje. No sondar/exprimir sin indicación durante infección."
+        ],
+        "factIds": [
+          "b03_045_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Antibiótico sistémico según flora/gravedad: oral como amoxicilina/clavulanato en adulto leve elegible; intravenoso especializado si grave/oral inviable. Absceso puede requerir drenaje; cirugía de obstrucción tras evaluación previene recurrencia."
+        ],
+        "factIds": [
+          "b03_045_f04"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Colirio solo no trata el saco lagrimal. Alergia/resistencia, riñón, embarazo/edad determinan esquema; no copiar dosis adulta al recién nacido ni retrasar hospitalización neonatal."
+        ],
+        "factIds": [
+          "b03_045_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Revisión temprana; peor evolución, fiebre/signos orbitarios: internar. Tras control, evaluar vía lagrimal/cirugía."
+        ],
+        "factIds": [
+          "b03_045_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_154",
+      "title": "EYES — Dacryocystitis (acute)",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/dacryocystitis_acute",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_GUIDELINE_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "web-verification-record.json:topic_154",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "dacry_nhs",
+      "title": "American Academy of Ophthalmology EyeWiki — Dacryocystitis",
+      "url": "https://eyewiki.org/Dacryocystitis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published September 11, 2023. Accessed March 25, 2025. https://www.ncbi.nlm.nih.gov/books/NBK470565/",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:dacry_nhs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

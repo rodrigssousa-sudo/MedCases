@@ -1,0 +1,170 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Hantavirosis",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "d15959a7bdf8790919ad83ad93c378683049f45995c9966e16cadba14d8a0f1e",
+  "ownerCandidate": "hantavirose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_024_f01",
+    "b03_024_f02",
+    "b03_024_f03",
+    "b03_024_f04",
+    "b03_024_f05",
+    "b03_024_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Infección por hantavirus asociada a roedores; en América puede causar síndrome cardiopulmonar de rápida progresión."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "La fuga capilar/disfunción cardíaca hace peligrosa la sobrecarga. Soporte temprano y traslado son terapias, sin inventar dos fármacos específicos."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Fiebre, exposición y síntomas respiratorios; hemograma, oxigenación e imágenes, confirmación serológica/molecular. Diferenciar neumonía, dengue, leptospirosis e insuficiencia cardíaca."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sospecha cardiopulmonar: traslado temprano a UCI incluso antes de confirmar. Monitorizar perfusión/oxigenación; líquidos cautelosos por extravasación/edema pulmonar."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primera estrategia: soporte intensivo respiratorio/hemodinámico. Rescate en fallo grave elegible: evaluar ECMO en centro experto. No hay antiviral específico demostrado para esta forma; antibiótico mientras no se excluya infección bacteriana relevante."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No presentar ribavirina como cura estándar de la forma cardiopulmonar americana. Precauciones según virus/contexto: considerar transmisión interpersonal de virus Andes y vigilancia."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Puede empeorar rápidamente; no dar alta ante sospecha cardiopulmonar progresiva. Tras recuperación: función y limpieza segura de lugares con roedores."
+    }
+  ],
+  "references": [
+    {
+      "key": "hanta_cdc",
+      "title": "CDC — Hantavirus pulmonary syndrome clinical brief",
+      "url": "https://www.cdc.gov/hantavirus/hcp/clinical-overview/hps.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC 2026: UTI precoce para suspeita cardiopulmonar, não aguardar confirmação; cautela com fluidos, suporte e ECMO selecionada; não há cura antiviral comprovada.",
+      "sourceEvidenceRecord": "web-verification-record.json:hanta_cdc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_133",
+      "title": "NHS — Hantavirus",
+      "url": "https://www.nhs.uk/conditions/hantavirus/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 12 May 2026",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_133",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Infección por hantavirus asociada a roedores; en América puede causar síndrome cardiopulmonar de rápida progresión."
+      ],
+      "factIds": [
+        "b03_024_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "La fuga capilar/disfunción cardíaca hace peligrosa la sobrecarga. Soporte temprano y traslado son terapias, sin inventar dos fármacos específicos."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Fiebre, exposición y síntomas respiratorios; hemograma, oxigenación e imágenes, confirmación serológica/molecular. Diferenciar neumonía, dengue, leptospirosis e insuficiencia cardíaca."
+      ],
+      "factIds": [
+        "b03_024_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Sospecha cardiopulmonar: traslado temprano a UCI incluso antes de confirmar. Monitorizar perfusión/oxigenación; líquidos cautelosos por extravasación/edema pulmonar."
+      ],
+      "factIds": [
+        "b03_024_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera estrategia: soporte intensivo respiratorio/hemodinámico. Rescate en fallo grave elegible: evaluar ECMO en centro experto. No hay antiviral específico demostrado para esta forma; antibiótico mientras no se excluya infección bacteriana relevante."
+      ],
+      "factIds": [
+        "b03_024_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No presentar ribavirina como cura estándar de la forma cardiopulmonar americana. Precauciones según virus/contexto: considerar transmisión interpersonal de virus Andes y vigilancia."
+      ],
+      "factIds": [
+        "b03_024_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Puede empeorar rápidamente; no dar alta ante sospecha cardiopulmonar progresiva. Tras recuperación: función y limpieza segura de lugares con roedores."
+      ],
+      "factIds": [
+        "b03_024_f06"
+      ]
+    }
+  ],
+  "markdown": "# Hantavirosis\n\n## Concepto y mecanismo\n\nInfección por hantavirus asociada a roedores; en América puede causar síndrome cardiopulmonar de rápida progresión.\n\n## Razonamiento y elección terapéutica\n\nLa fuga capilar/disfunción cardíaca hace peligrosa la sobrecarga. Soporte temprano y traslado son terapias, sin inventar dos fármacos específicos.\n\n## Diagnóstico y diferenciales\n\nFiebre, exposición y síntomas respiratorios; hemograma, oxigenación e imágenes, confirmación serológica/molecular. Diferenciar neumonía, dengue, leptospirosis e insuficiencia cardíaca.\n\n## Abordaje inicial y urgencias\n\nSospecha cardiopulmonar: traslado temprano a UCI incluso antes de confirmar. Monitorizar perfusión/oxigenación; líquidos cautelosos por extravasación/edema pulmonar.\n\n## Tratamiento: primera elección y alternativas\n\nPrimera estrategia: soporte intensivo respiratorio/hemodinámico. Rescate en fallo grave elegible: evaluar ECMO en centro experto. No hay antiviral específico demostrado para esta forma; antibiótico mientras no se excluya infección bacteriana relevante.\n\n## Seguridad y monitorización\n\nNo presentar ribavirina como cura estándar de la forma cardiopulmonar americana. Precauciones según virus/contexto: considerar transmisión interpersonal de virus Andes y vigilancia.\n\n## Reevaluación, internación y alta\n\nPuede empeorar rápidamente; no dar alta ante sospecha cardiopulmonar progresiva. Tras recuperación: función y limpieza segura de lugares con roedores.\n\n## Referencias\n\n1. [CDC — Hantavirus pulmonary syndrome clinical brief](https://www.cdc.gov/hantavirus/hcp/clinical-overview/hps.html)\n2. [NHS — Hantavirus](https://www.nhs.uk/conditions/hantavirus/)",
+  "approvedReviewCanonicalFileSha256": "ce2607af48993f0aeb0e030fe9d22c386ceed8cd6155a120002934bbd4afdd29",
+  "approvedReviewProjectionFileSha256": "2f11fb6b5c0a403e7c2797063dbb53a3dc3e2357674b0d9d6fdfccd9b7c188d9"
+}

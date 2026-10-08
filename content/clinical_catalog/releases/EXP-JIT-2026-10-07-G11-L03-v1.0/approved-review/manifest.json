@@ -1,0 +1,1064 @@
+{
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "batch": 3,
+  "queueRanks": [
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110,
+    115,
+    116,
+    117,
+    118,
+    119,
+    120,
+    121,
+    122,
+    123,
+    124,
+    130,
+    131,
+    132,
+    133,
+    134,
+    135,
+    136,
+    137,
+    138,
+    139,
+    140,
+    141,
+    142,
+    143,
+    144,
+    145,
+    146,
+    147,
+    148,
+    149,
+    150,
+    151,
+    152,
+    153,
+    154,
+    155,
+    156,
+    157,
+    158,
+    159
+  ],
+  "baselineOwnerCount": 767,
+  "count": 50,
+  "projections": 200,
+  "guides": 50,
+  "status": "WAITING_HUMAN_APPROVAL",
+  "published": false,
+  "entries": [
+    {
+      "rank": 1,
+      "queueRank": 101,
+      "title": {
+        "pt": "Estenose mitral",
+        "es": "Estenosis mitral"
+      },
+      "ownerCandidate": "estenose_mitral",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "78739ece9f92d708d867458c9bdd2aa7ee613622862f191dcc9ee95f3d5e9c84",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "78739ece9f92d708d867458c9bdd2aa7ee613622862f191dcc9ee95f3d5e9c84",
+        "guide-CMS-PT-ES-DRAFT.json": "aeaf1cbbbecda0b9f3e07993af1ee55dab10e89121972f5a94450d2149a0b04b",
+        "plantao_es.json": "9b6a1ec6de1cb618fb3f982cc49f015fd7969f927a8e958b42e63e9da25c0d97",
+        "plantao_pt.json": "6e17d7deb0189ff38f1a49ecf97ce5a3ca057dc93d1ac2902ca799082bb14436",
+        "study_es.json": "6e18a02f11898e0b807c735d1a5320d0483173fa3071155c39ee7d734193c512",
+        "study_pt.json": "107907bed52c5cd3f4b26079494941cddd20328ddabb214c6ead2ade2fac30d7"
+      }
+    },
+    {
+      "rank": 2,
+      "queueRank": 102,
+      "title": {
+        "pt": "Insuficiência mitral crônica primária",
+        "es": "Insuficiencia mitral crónica primaria"
+      },
+      "ownerCandidate": "insuficiencia_mitral_cronica_primaria",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "1c8acb05c0903851078029c793b5dd8363898a7b3dff0c8a0146dcc0ee93e643",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "1c8acb05c0903851078029c793b5dd8363898a7b3dff0c8a0146dcc0ee93e643",
+        "guide-CMS-PT-ES-DRAFT.json": "89209a901a238146a8e62bba4b5560c54ff557bed8e34a8cc45082cd66bc1151",
+        "plantao_es.json": "813f71e790874556c714838fd0eb5225b2f9388a516d5e26f7d4c7cccad66454",
+        "plantao_pt.json": "604c5bbde6b2721c160f47b18d9fdf3bca5aef905605c1c33d850682a068487f",
+        "study_es.json": "e2ded40f4d36261b13b7e902aa578528881058f3e7f65b8971425b190e392f6c",
+        "study_pt.json": "d3f1de7d1c2af65c87c26a0cd133f8c1184a6ee7203b7166f635a706af5def83"
+      }
+    },
+    {
+      "rank": 3,
+      "queueRank": 103,
+      "title": {
+        "pt": "Cardiomiopatia dilatada",
+        "es": "Miocardiopatía dilatada"
+      },
+      "ownerCandidate": "cardiomiopatia_dilatada",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "462e54e69f60645451e4053499e8bc23eb11e54428f196488e996bd6c65475ee",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "462e54e69f60645451e4053499e8bc23eb11e54428f196488e996bd6c65475ee",
+        "guide-CMS-PT-ES-DRAFT.json": "875629e892c55c303633ada6559fde81d56df671abac0da0fbe06e165fb01900",
+        "plantao_es.json": "b7ff17531ee3ff56473cb96a029aa2d3c622479c1f614cbd8f797743d07ea2f6",
+        "plantao_pt.json": "3f9bdd2b6d3b154378a6fe24f21a265e9f2321db81054e5f7f537a41e3278ba8",
+        "study_es.json": "b6239183d124c5c1e61bf78bfa242e66e9dc0aa13492ba605fa1c56ba19549b6",
+        "study_pt.json": "3ddc1ba2e7cd21dd240357cb13e073ca38557269f9630e96e3a3c9de02171de5"
+      }
+    },
+    {
+      "rank": 4,
+      "queueRank": 104,
+      "title": {
+        "pt": "Hipertensão pulmonar",
+        "es": "Hipertensión pulmonar"
+      },
+      "ownerCandidate": "hipertensao_pulmonar",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "bdea303b61cd38a1bb31e407429ff70896fbac02e40539480958edbd06c51fc1",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "bdea303b61cd38a1bb31e407429ff70896fbac02e40539480958edbd06c51fc1",
+        "guide-CMS-PT-ES-DRAFT.json": "1453f51eddae347d03eac9d713a16e995f91694e2bd2ea3bd0948bc491bbf023",
+        "plantao_es.json": "08b9b0bbe777d07b9b8eb809aaacd114edf8f208da6f1e8bfcc008b5ba4786a2",
+        "plantao_pt.json": "332d4767d3c0e470cd07733fd51b48fafd41c7652380d042fb79303b15904590",
+        "study_es.json": "18b07ff64b79a01c9abd2f218f24ca08401e7b1ea65cb4f113c59373764af0f4",
+        "study_pt.json": "3cd41aada54a8372239646378997c02c7f97b45971941eddade4a9e58fb341fb"
+      }
+    },
+    {
+      "rank": 5,
+      "queueRank": 105,
+      "title": {
+        "pt": "Bronquiectasias",
+        "es": "Bronquiectasias"
+      },
+      "ownerCandidate": "bronquiectasias",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "70912a9180dfeb27bdd3db4d79cb0bc2e479d93b1a6e05c3daf040d21fc98cab",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "70912a9180dfeb27bdd3db4d79cb0bc2e479d93b1a6e05c3daf040d21fc98cab",
+        "guide-CMS-PT-ES-DRAFT.json": "446d65b0e81ab9ccd10cb15d7cb273f7e2c16f4a07b7b53917a3f462ca3dbe20",
+        "plantao_es.json": "d541840ad1971505ad7bc7255b6aa593869bf59ab855a4affa262d1287d00a50",
+        "plantao_pt.json": "f298cd82a3352cad75358555b2154805b1ae58b05d407a953aa23e3eef87f78f",
+        "study_es.json": "7ddd107ac7a55cf534fd4d323d7e8b701fb8d3a31fd9c14749912de6c1f65212",
+        "study_pt.json": "77f9f25f2736413ec4eec45d4d740ee2da2fd3a2ceaf9ebf93a90bc8192af522"
+      }
+    },
+    {
+      "rank": 6,
+      "queueRank": 106,
+      "title": {
+        "pt": "Derrame pleural",
+        "es": "Derrame pleural"
+      },
+      "ownerCandidate": "derrame_pleural",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "ec0be0539421be361e13f7f04580da7e84381b08210c46699e2cf22334a5ffba",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "ec0be0539421be361e13f7f04580da7e84381b08210c46699e2cf22334a5ffba",
+        "guide-CMS-PT-ES-DRAFT.json": "8f1ec21d4d8bee280e80c7196cf8d31c4cfcb6624aaee868f577c95c80ce4525",
+        "plantao_es.json": "f1abf1634dfd34ef12912ec9e1009648b698073e498d2b8d740ebe78fd79df40",
+        "plantao_pt.json": "3d926fdcfc9d0d8f08082bcbdd79084b23b069299c954c5abbd69dfadac6170d",
+        "study_es.json": "3853ab92b4a80f3683692592e174cf19109a49ac38ef9490ce2ca0fd75f88cfa",
+        "study_pt.json": "56eded3bd080bcd9a6b3062aa8bb8be21bdd2923ce1cbddddae6aa6457714856"
+      }
+    },
+    {
+      "rank": 7,
+      "queueRank": 107,
+      "title": {
+        "pt": "Empiema pleural",
+        "es": "Empiema pleural"
+      },
+      "ownerCandidate": "empiema_pleural",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "a899f24bdf38c922853b118b25203621cdb2ddfb542a44a3f0f4457ae271aeb8",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "a899f24bdf38c922853b118b25203621cdb2ddfb542a44a3f0f4457ae271aeb8",
+        "guide-CMS-PT-ES-DRAFT.json": "a394ccc7c74d4a23cd91a61f89c6d23677c82bc13bc00b14256c9e516e60dae3",
+        "plantao_es.json": "4a4418b5098243090f1d55b77dd8ccb947fbb3f47e1520e2d6b19b7a865e5eda",
+        "plantao_pt.json": "6a6eaf4e0d153a2f09a6764a23dca9ea3f5869e3dac3ab7be7899a38eabee870",
+        "study_es.json": "68f7d58bb2314e5952def9e9e42ade6e59c80202c3c4df0f15a4b826efb44b45",
+        "study_pt.json": "3d9e66f78d8280e500605fca0ed943317286081173f1deebd8513a16562333f8"
+      }
+    },
+    {
+      "rank": 8,
+      "queueRank": 108,
+      "title": {
+        "pt": "Abscesso pulmonar",
+        "es": "Absceso pulmonar"
+      },
+      "ownerCandidate": "abscesso_pulmonar",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "763b2a6727a342a2db04d8e313369ee662db052376992eec1110228d75da0c4c",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "763b2a6727a342a2db04d8e313369ee662db052376992eec1110228d75da0c4c",
+        "guide-CMS-PT-ES-DRAFT.json": "61d9d2425a61771216851084bb5a39e661b15d1b1aed37a3e239a2416bac58a8",
+        "plantao_es.json": "c21c96be74097456ff8cfa6652cb7108c8b1fd0260b39a24c5bf1bbb44acac45",
+        "plantao_pt.json": "39718181c2654c789edb7e7a0e2cc6bfa9d0ed56106fbff762498aebc9aaad37",
+        "study_es.json": "a73c5bfd640d241cf60d26aa4090e738b65b70d3d9a4e65ce23fb0c9fdf62902",
+        "study_pt.json": "a7f0cd7c99c4e0f2c8812cd69a8b11ccfafbe958e380560772ebade3c328a13d"
+      }
+    },
+    {
+      "rank": 9,
+      "queueRank": 109,
+      "title": {
+        "pt": "Pneumoconioses (incluindo silicose e asbestose)",
+        "es": "Neumoconiosis (incluidas silicosis y asbestosis)"
+      },
+      "ownerCandidate": "pneumoconioses_incluindo_silicose_e_asbestose",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "6eccf23c17a1eb239773d6c5129eb808aa7210571ae598973b3e37339d7dbc93",
+      "optionRelation": "NONPHARMACOLOGIC_FIRST_NO_CURATIVE_DRUG",
+      "files": {
+        "canonical-payload.json": "6eccf23c17a1eb239773d6c5129eb808aa7210571ae598973b3e37339d7dbc93",
+        "guide-CMS-PT-ES-DRAFT.json": "3c9f0edaec9dffc71a165d4ac0ac6124c08476ffdd508b1c25785388efe11234",
+        "plantao_es.json": "1c82a5d67f75914c80feb7419c4d82c3d7ae2566b9c0dca1a71953f4b9a9a5ec",
+        "plantao_pt.json": "d6223c271f7e9226ae2ddfb9b0a1005b4c402fa8cb42fdc50ab8129eab29e17f",
+        "study_es.json": "70d95613c6429b0458139862d2fb5c7fe9c3647f7e2ce412235e06743bd4381e",
+        "study_pt.json": "02e7f2ee9f705e1b83348349d2cdc6239a7ba8618d783b2cb233484fa85e256e"
+      }
+    },
+    {
+      "rank": 10,
+      "queueRank": 110,
+      "title": {
+        "pt": "Síndrome de hipoventilação da obesidade",
+        "es": "Síndrome de hipoventilación por obesidad"
+      },
+      "ownerCandidate": "sindrome_de_hipoventilacao_da_obesidade",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "58840bd815afe65547d3e62ca7c44997fd08a914235abc31daa649352f47b036",
+      "optionRelation": "DEVICE_FIRST_ALTERNATIVES_BY_PHENOTYPE",
+      "files": {
+        "canonical-payload.json": "58840bd815afe65547d3e62ca7c44997fd08a914235abc31daa649352f47b036",
+        "guide-CMS-PT-ES-DRAFT.json": "8a7bb6e51acef826ed04dbe9c769a18922c9c29cecbbd7e2291f1a0d5366195c",
+        "plantao_es.json": "74fab88e583f0b83ccd3655160b641789fbe081a0e3201c1fd69ef8dd6535af3",
+        "plantao_pt.json": "1016cc4a5dee72d692a3c6f779a700da17c2981755bc7438a7001380d21dba2c",
+        "study_es.json": "7e6f8a29ed3e8bea7d97ea367820a73a76a0322110c65819cd0c3715773d4808",
+        "study_pt.json": "5cab0d320221527d3af16467fe27d3bc856f0caaa34fb346e45b6001f5cab054"
+      }
+    },
+    {
+      "rank": 11,
+      "queueRank": 115,
+      "title": {
+        "pt": "Insuficiência pancreática exócrina",
+        "es": "Insuficiencia pancreática exocrina"
+      },
+      "ownerCandidate": "insuficiencia_pancreatica_exocrina",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "c0cf7e6129de3d1c20e52b6d54165ceeecaf7790bb8c2214c43d57cf977c3905",
+      "optionRelation": "ENZYME_REPLACEMENT_STANDARD_FORMULATION_ALTERNATIVES",
+      "files": {
+        "canonical-payload.json": "c0cf7e6129de3d1c20e52b6d54165ceeecaf7790bb8c2214c43d57cf977c3905",
+        "guide-CMS-PT-ES-DRAFT.json": "8827345811ac9a5a36d5e2a2a447f6889511081d852c1539f018f69f715d5dc6",
+        "plantao_es.json": "a8fcb6a7fd7ee65ca16fd164a2a5b61cadf71392c4e67cadba7ddbe60064a4cd",
+        "plantao_pt.json": "c79cae84ffbf002c62410364db43557623a2fe6f2e0061845bdfba8d60555251",
+        "study_es.json": "b59b85db8fb97de9306e71de0ad5f403be5efa38dcc66eeb59ab50d86d697fcb",
+        "study_pt.json": "06ff898d6c7a0cd0b5c4c74a8c80e6bb19b900cd3245d1df1b218e8ea6805080"
+      }
+    },
+    {
+      "rank": 12,
+      "queueRank": 116,
+      "title": {
+        "pt": "Gastroparesia",
+        "es": "Gastroparesia"
+      },
+      "ownerCandidate": "gastroparesia",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "7b556455ec29d7dad0271b8fcfc4bac2e37e24957b3ecad3ea1c5a1aefcfc8d1",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "7b556455ec29d7dad0271b8fcfc4bac2e37e24957b3ecad3ea1c5a1aefcfc8d1",
+        "guide-CMS-PT-ES-DRAFT.json": "179fec0c7717893ec16cc6d284e29332dd3c2673fabd44b64b51d5f24f867973",
+        "plantao_es.json": "f82bbf252c7a986a2f96ce75629a7df5dcd40dd7c037d89497587bbe3682830b",
+        "plantao_pt.json": "ead0f3d7a8fc827529fa08726e138ddaafb80818c7edd805562a293c3e0e917b",
+        "study_es.json": "0126dcb5b795b0902fbf9006b46d0dc1baae42a6eee18328f9005c5208cd7c98",
+        "study_pt.json": "4a35c32c21d20ac970851dbdbb76428fe5635ab8b6ee6f83807cd1cfcb85a72c"
+      }
+    },
+    {
+      "rank": 13,
+      "queueRank": 117,
+      "title": {
+        "pt": "Síndrome de vômitos cíclicos",
+        "es": "Síndrome de vómitos cíclicos"
+      },
+      "ownerCandidate": "sindrome_de_vomitos_ciclicos",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "33541b2ca9492dc1b34d06347c0a98d9349b347d472781d5af71ce7b00bb6410",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "33541b2ca9492dc1b34d06347c0a98d9349b347d472781d5af71ce7b00bb6410",
+        "guide-CMS-PT-ES-DRAFT.json": "78f86b58807e7f4a91589a2ee80967b64f8d995495c48270aa5bb2c1b2682309",
+        "plantao_es.json": "ae69f785ea6b5048533c337aee7174eb2efb8132ebb2df606df87f4b02ccb475",
+        "plantao_pt.json": "f0305eaf847138c474fefc67674477b7bbfe48ea5cd7a5f3f275c4c07853679f",
+        "study_es.json": "0bea6965e81e661b8fe881e24380a996e9b4966818dffdb9bada0516b99e0f33",
+        "study_pt.json": "39474047a5c5779fbe5e4e55352b69ad4d1cb68f4235176603802cc26d5ee5d9"
+      }
+    },
+    {
+      "rank": 14,
+      "queueRank": 118,
+      "title": {
+        "pt": "Síndrome de hiperêmese canabinoide",
+        "es": "Síndrome de hiperémesis cannabinoide"
+      },
+      "ownerCandidate": "sindrome_de_hiperemese_canabinoide",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "ed24920a91d740ebf117d2116d588e657dc4bc90ca2f6cac54447662e9e01b75",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "ed24920a91d740ebf117d2116d588e657dc4bc90ca2f6cac54447662e9e01b75",
+        "guide-CMS-PT-ES-DRAFT.json": "65fedb8c896e045d9af4b9313726fd6ef574f7a02b23e5c9bbad8597efe0bbcf",
+        "plantao_es.json": "1ad15861c6057104aea76812a25a35f25de21fdedc78af3d746c4fffef5fad45",
+        "plantao_pt.json": "0a0f51f123b59cb4acc0644de7fc6564b02c15d099ef49a1d444b9738f2974ce",
+        "study_es.json": "d02cdfdfd9617a0e8d1c50ed84aecaff41cfd2dcb4ed3bbc7eaccb0575be6824",
+        "study_pt.json": "4c823636a1b8b23d25616e8b0ac4b4e88839dbf8e5221f47b99d63373c268104"
+      }
+    },
+    {
+      "rank": 15,
+      "queueRank": 119,
+      "title": {
+        "pt": "Síndrome de dumping",
+        "es": "Síndrome de dumping"
+      },
+      "ownerCandidate": "sindrome_de_dumping",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "3702812f9c4c1e4d3983bcd68e4bb46d06787a872c16c886bf0aab2d0e9b07fe",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "3702812f9c4c1e4d3983bcd68e4bb46d06787a872c16c886bf0aab2d0e9b07fe",
+        "guide-CMS-PT-ES-DRAFT.json": "f2299616b2eb7bf1399f2f1ba059a03490d487042c9fd34b3ce5f44afdb76150",
+        "plantao_es.json": "1c8f972491c013cb0d565b08ba339c02e4e76902270cf77e917a77db2c40ab46",
+        "plantao_pt.json": "d0d72ae3669f195d7fe543614a1d4e94551c8ba97917cc9e53253269228f3632",
+        "study_es.json": "65dce20e20a950a545eec9acf48703314990b6dee4224afa7ec18e936b77625b",
+        "study_pt.json": "8f49c3ea5336e9ec929fdab8dbd62a60741e81fecee9d623f86eb2bba9dfe402"
+      }
+    },
+    {
+      "rank": 16,
+      "queueRank": 120,
+      "title": {
+        "pt": "Incontinência fecal no adulto",
+        "es": "Incontinencia fecal en adultos"
+      },
+      "ownerCandidate": "incontinencia_fecal_no_adulto",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "136226a86545c69ac3b191bfa85528de47ce8179a2a33b05861a6499bf7988e3",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "136226a86545c69ac3b191bfa85528de47ce8179a2a33b05861a6499bf7988e3",
+        "guide-CMS-PT-ES-DRAFT.json": "56708568b52c065ce0e8c90cdb54e2f0d10a61eba3b94bd26fd36e53f9eb13ce",
+        "plantao_es.json": "baa691b66b444da0330ae4875666cbef0fb1d1e786867143b9ef47d7977dfe9c",
+        "plantao_pt.json": "56a0e484f600b574227d3392e30bc95c586cf28af42866592cf5ff9c7c20f686",
+        "study_es.json": "d01f1633a35460a571ca664d92531fde05792545ba3c2c8775d2d43af63f8cca",
+        "study_pt.json": "58c82114cc57d433cb8fb8630731e2d3ad951271912f948aab940a1009598d8e"
+      }
+    },
+    {
+      "rank": 17,
+      "queueRank": 121,
+      "title": {
+        "pt": "Prolapso retal",
+        "es": "Prolapso rectal"
+      },
+      "ownerCandidate": "prolapso_retal",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "e8ee03e585314465486be9a607c78cea530e2b8f5be11ce6fbb25b0c4cc3d382",
+      "optionRelation": "SURGICAL_OPTIONS_NO_CURATIVE_DRUG",
+      "files": {
+        "canonical-payload.json": "e8ee03e585314465486be9a607c78cea530e2b8f5be11ce6fbb25b0c4cc3d382",
+        "guide-CMS-PT-ES-DRAFT.json": "59dd8952d11a7b507e8cdc1d5f07b4db48519271753d692a5d52cf9334fd6362",
+        "plantao_es.json": "5f5cc94731301e09ef3d787fddb210ddc646e49905c6b3541f916d2094860e52",
+        "plantao_pt.json": "c6a850bbc432088358bd7130c042a5924aa1f2fc342b4801d40f9bf703a69eb7",
+        "study_es.json": "4839fb5df5932b750db9e653f0e6c68218b01b4a84b3108343e201841e5f1c13",
+        "study_pt.json": "641758489ab9c229ffc98467f928af8bc4d3bacba9bd07b7ce0758b18ef4420a"
+      }
+    },
+    {
+      "rank": 18,
+      "queueRank": 122,
+      "title": {
+        "pt": "Cirrose hepática",
+        "es": "Cirrosis hepática"
+      },
+      "ownerCandidate": "cirrose_hepatica",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "a4c71d826d40407a35854a74ebf58733765c8a9f65fb48efed97e15379d52e0d",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "a4c71d826d40407a35854a74ebf58733765c8a9f65fb48efed97e15379d52e0d",
+        "guide-CMS-PT-ES-DRAFT.json": "ec7116e84e4e1089f96a76400e234e4b68bb69838e7c051f4d3754ad2c3fbb50",
+        "plantao_es.json": "06a2eabd457a7d2281493d853ea136a44d65776300eab88fe62d80d14cd07e40",
+        "plantao_pt.json": "ee6f28f5c350d20c9d51194c517cf15ca012a78002669706e36a70b3089728a0",
+        "study_es.json": "635b4f01acf2ac88fd718c1c043bd121e8a1ac96b20d791b75c1b97535b478e3",
+        "study_pt.json": "d6e1341232b17d938b0fce8fee0f7f6a2c4f50237dff8f9f91857220f7912ad6"
+      }
+    },
+    {
+      "rank": 19,
+      "queueRank": 123,
+      "title": {
+        "pt": "Hepatite alcoólica",
+        "es": "Hepatitis asociada al alcohol"
+      },
+      "ownerCandidate": "hepatite_alcoolica",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "871406f8634253c16ff4bdceb826f907a11922cc8e37630f7ecfc63115b6f3a2",
+      "optionRelation": "SELECTED_STEROID_STANDARD_ADJUNCT_NOT_EQUIVALENT",
+      "files": {
+        "canonical-payload.json": "871406f8634253c16ff4bdceb826f907a11922cc8e37630f7ecfc63115b6f3a2",
+        "guide-CMS-PT-ES-DRAFT.json": "72db049620fa92cfb6bd07627aea0d4e8ecc41269f6099e266dff02d64a9a80a",
+        "plantao_es.json": "1ef3ec213e1c2af985e30ec61681d23ed74a2ed2c25e841a6a756b48eb374588",
+        "plantao_pt.json": "56399210234ce7b0f38283573f27918a615ae1a7d833a9da49a719406019c504",
+        "study_es.json": "e9ecfb653caba758076bcdec72238b6d67fe84ebcdb6821f8f692b6f854ad73d",
+        "study_pt.json": "cee11eea3c80f3df9c3668338d2adc3b9a7a843a270cc29c706b63700fd71842"
+      }
+    },
+    {
+      "rank": 20,
+      "queueRank": 124,
+      "title": {
+        "pt": "Insuficiência hepática aguda não cirrótica",
+        "es": "Insuficiencia hepática aguda no cirrótica"
+      },
+      "ownerCandidate": "insuficiencia_hepatica_aguda_nao_cirrotica",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "4d9d3a317d5951ed08056c342011356a2d0a3a8fe83335b69c27d0d615ee154e",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "4d9d3a317d5951ed08056c342011356a2d0a3a8fe83335b69c27d0d615ee154e",
+        "guide-CMS-PT-ES-DRAFT.json": "569f8958ccb8a7843dd9b417b4b64a489cfada30c8e241c0054b3fcc4e2e7e04",
+        "plantao_es.json": "7cc655bc14910413a447d8b1e26cc98c8a0d3c4aab328a84fd7bfa8dcbd30929",
+        "plantao_pt.json": "3b9dbc46ace8085fa363e8498e66b49ab7aca33a2ce7dae4acbe9d36484c5464",
+        "study_es.json": "812b08639108a9f89eac5870cb7122ff0a83b103d1b433276ad03bea9f2cbee3",
+        "study_pt.json": "b0f9aa1dd6b5f2877fc2138573aedce921947cb3de158464430fb09662edcdd6"
+      }
+    },
+    {
+      "rank": 21,
+      "queueRank": 130,
+      "title": {
+        "pt": "Pólipos colorretais",
+        "es": "Pólipos colorrectales"
+      },
+      "ownerCandidate": "polipos_colorretais",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "c7f2a6d3b81757d382b70af0aa9ae667c35392068c5dd244380818cdcc457ebc",
+      "optionRelation": "PROCEDURAL_OPTIONS_NO_CURATIVE_DRUG",
+      "files": {
+        "canonical-payload.json": "c7f2a6d3b81757d382b70af0aa9ae667c35392068c5dd244380818cdcc457ebc",
+        "guide-CMS-PT-ES-DRAFT.json": "6f55a06afe1f438743156b02d20584acb4647c847fe3fa05344e446638f6e6a2",
+        "plantao_es.json": "9675a37d9f23a2f3af2c3699272c17aeefd1344550eec30ad9d50ffb861c9a82",
+        "plantao_pt.json": "484d673df33695312fc7c896a6db3b9de6e42a2933dced787107fc5fdc1ea40d",
+        "study_es.json": "9202125bf87578b2a6c81588d17c7bea0432b96b8a436338fa2f1636c65bd1e1",
+        "study_pt.json": "788e9361882334e38b8e0f43e4d38e0951effd8899154314943c081839efba55"
+      }
+    },
+    {
+      "rank": 22,
+      "queueRank": 131,
+      "title": {
+        "pt": "Febre amarela",
+        "es": "Fiebre amarilla"
+      },
+      "ownerCandidate": "febre_amarela",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "0e2ffae64d8345d80c740d5aaf40c71d13d0769ebaac89d84e20c375532642f9",
+      "optionRelation": "SUPPORTIVE_NO_SPECIFIC_ANTIVIRAL",
+      "files": {
+        "canonical-payload.json": "0e2ffae64d8345d80c740d5aaf40c71d13d0769ebaac89d84e20c375532642f9",
+        "guide-CMS-PT-ES-DRAFT.json": "d33c3b52c91e553e13cd3ff90e620e64153b101ad0a0a21ad9b0d4ab3675809f",
+        "plantao_es.json": "5b5b6f312436340dd4d176b821ff15ca020aec5273c18d9daf4c64e327a592e5",
+        "plantao_pt.json": "0905250743222f51ff583afaa1ca4d480ee4537c427d707389e3cc36695ee3f1",
+        "study_es.json": "ff1d133d1be16d0a755c0e66cc8f9d7938eb1683624bbaa0bd962d1f2b9df617",
+        "study_pt.json": "529a022273dcf345d2450464d22d8e768fb4e58a9c12515b8a7e0faa8f7d8c81"
+      }
+    },
+    {
+      "rank": 23,
+      "queueRank": 132,
+      "title": {
+        "pt": "Febre de Oropouche",
+        "es": "Fiebre de Oropouche"
+      },
+      "ownerCandidate": "febre_de_oropouche",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "ddb519bd4580a3fbfa73b60ff71d4211249e98f9cbd563733af667b638a3ba43",
+      "optionRelation": "SUPPORTIVE_NO_SPECIFIC_ANTIVIRAL",
+      "files": {
+        "canonical-payload.json": "ddb519bd4580a3fbfa73b60ff71d4211249e98f9cbd563733af667b638a3ba43",
+        "guide-CMS-PT-ES-DRAFT.json": "168e14140993d8e16dd0f65de3f7f795efe7f506a6fc854d6a58eea4989ef1bb",
+        "plantao_es.json": "ebdd1c77c8483bc8db91b69e154421266515703bdc9e63f2a8fa535316863bac",
+        "plantao_pt.json": "ea87f76a2469f79a049e7dca5581b9bdde8752228566089a328243f6faa74826",
+        "study_es.json": "c168de261b6b0854a147c65ced802f18bda5805f00fe7045b952660d3e0dfbc3",
+        "study_pt.json": "b296e966d6f220c46e4113ae2eb7bf8437d46757d60e39ce1c3c22331556390c"
+      }
+    },
+    {
+      "rank": 24,
+      "queueRank": 133,
+      "title": {
+        "pt": "Hantavirose",
+        "es": "Hantavirosis"
+      },
+      "ownerCandidate": "hantavirose",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "ce2607af48993f0aeb0e030fe9d22c386ceed8cd6155a120002934bbd4afdd29",
+      "optionRelation": "ICU_SUPPORT_RESCUE_BY_ELIGIBILITY",
+      "files": {
+        "canonical-payload.json": "ce2607af48993f0aeb0e030fe9d22c386ceed8cd6155a120002934bbd4afdd29",
+        "guide-CMS-PT-ES-DRAFT.json": "e8d13acdf0fd487ad7b0d12ff55d98bf0dca243a1451419440f9476c4bcbcd80",
+        "plantao_es.json": "469b882d83dd9c0fddb7ba9e0be582d95a938ea962c37d2362f187f79a60559d",
+        "plantao_pt.json": "18d043ee3caa34f86ef461fcc9ffbc412114b4f80903eaa32e46680b4f967429",
+        "study_es.json": "2f11fb6b5c0a403e7c2797063dbb53a3dc3e2357674b0d9d6fdfccd9b7c188d9",
+        "study_pt.json": "db341a88844d8394383164e58dd2b67753cb53e4c6f1c912070f0694eb8afbb8"
+      }
+    },
+    {
+      "rank": 25,
+      "queueRank": 134,
+      "title": {
+        "pt": "Leishmaniose",
+        "es": "Leishmaniasis"
+      },
+      "ownerCandidate": "leishmaniose",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "248dc8524fdbdea591560e052c70e5c2c1b35648b17bbe9e30a5dd0cdda2e1f0",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "248dc8524fdbdea591560e052c70e5c2c1b35648b17bbe9e30a5dd0cdda2e1f0",
+        "guide-CMS-PT-ES-DRAFT.json": "2f2d8e23cd069925586071575aba594856554f0bf74c21ed48ba08ff791ce193",
+        "plantao_es.json": "79d96667c6cc29ee4166a25cf129a5a0a975e6f0308146f94e1b53acec0481bb",
+        "plantao_pt.json": "74c0008cf7d7a5f855ce78123123db1772dc537fd6ce24e1ad399e5603f928d6",
+        "study_es.json": "d4e3a7b3baab008e71ce3778c4009f7ed478e7785e26c0437f3ea5eee5d27f25",
+        "study_pt.json": "7d6bc5f08373588ee24cc6a74028491e5c42334c3a62179e9255ee16e31bc78d"
+      }
+    },
+    {
+      "rank": 26,
+      "queueRank": 135,
+      "title": {
+        "pt": "Histoplasmose",
+        "es": "Histoplasmosis"
+      },
+      "ownerCandidate": "histoplasmose",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "b9bcdf51174b73b6c28ae68a9ae235d3ce38b458b7adf90b517c9c38fba932ac",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "b9bcdf51174b73b6c28ae68a9ae235d3ce38b458b7adf90b517c9c38fba932ac",
+        "guide-CMS-PT-ES-DRAFT.json": "745a3615cc06c2f3820c69bf1aca79d05f80e870b7b8ba66903d5e65e4893b89",
+        "plantao_es.json": "d3508963c47466036bdffe5f7ba093701ff54740d7af2db05eb36caa6ca88455",
+        "plantao_pt.json": "060be978c97b8d594cb99879b987ec34cc58503062daa3f09e2bdfe8f1675bec",
+        "study_es.json": "90483849b32b3336f3560ee4e3366c351bdffd82d4e6da9c6141559443d2c9c0",
+        "study_pt.json": "f6505e17071f0c62bdf07f47c713950dfdd066256bc2539b0a79aa206f9f17ee"
+      }
+    },
+    {
+      "rank": 27,
+      "queueRank": 136,
+      "title": {
+        "pt": "Paracoccidioidomicose",
+        "es": "Paracoccidioidomicosis"
+      },
+      "ownerCandidate": "paracoccidioidomicose",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "4fa8b8e01f9071b3016ea26769a1d2f271512b8a3a5659ea645a62bc4893fdc0",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "4fa8b8e01f9071b3016ea26769a1d2f271512b8a3a5659ea645a62bc4893fdc0",
+        "guide-CMS-PT-ES-DRAFT.json": "9e3d70ea3538c1afe7a917312c66ff9ebbbc02adb84d49eafef472c20632f4ce",
+        "plantao_es.json": "610d7cff91314573f34e15c60684c09bffcce5c6939905abc3625623d02c093b",
+        "plantao_pt.json": "7e74c1fffdcecd972931f8388aa548a8c7a62adde5d6113b64c37b77e31f4f1c",
+        "study_es.json": "639997078d033f279ee15ae202d475e8415e8fd8f390e661bddaf9582d7db348",
+        "study_pt.json": "5761f2ef8b775e9047ce50788e49fe46e4a380ce1e372d4e7e9bb9593f8618df"
+      }
+    },
+    {
+      "rank": 28,
+      "queueRank": 137,
+      "title": {
+        "pt": "Brucelose",
+        "es": "Brucelosis"
+      },
+      "ownerCandidate": "brucelose",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "84271f3739874a0ea0302d6e61bec721edc13aad3e119dd85df6f929c5591f8e",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "84271f3739874a0ea0302d6e61bec721edc13aad3e119dd85df6f929c5591f8e",
+        "guide-CMS-PT-ES-DRAFT.json": "000805c504ca94d07c6c6a1b67b544a4a0ed81d441bcb2dbb92c0e77be6c6f65",
+        "plantao_es.json": "072616e106ff90910c09b57d03d4ecdc1ab98ddb22cab299955eb7b114365752",
+        "plantao_pt.json": "8dd6be251f28631e1ea92c25c37b063689c4006816c9ca1baa2672934ce3882a",
+        "study_es.json": "ffe4c5efe9106203ade3819a99e7bd2985eb2601ea2971d090350a17f7abf00f",
+        "study_pt.json": "01210dc8a957690d72868c9d0c6408ac1a5416b70ff3a795c2b63d70099e48b4"
+      }
+    },
+    {
+      "rank": 29,
+      "queueRank": 138,
+      "title": {
+        "pt": "Febre tifoide e paratifoide",
+        "es": "Fiebre tifoidea y paratifoidea"
+      },
+      "ownerCandidate": "febre_tifoide_e_paratifoide",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "3e605c0fa272ee23057c9105f53648624b7dd7eed43c7b3195fa1f5f5cd295c4",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "3e605c0fa272ee23057c9105f53648624b7dd7eed43c7b3195fa1f5f5cd295c4",
+        "guide-CMS-PT-ES-DRAFT.json": "eff807b77d886d5654aaf9dd0a7f668ffc7eac076eeb427765d98698f499914e",
+        "plantao_es.json": "de1afbb7986ff941594fc825f01bdff6180f628a7f3f20f94af0072ae58073a4",
+        "plantao_pt.json": "b57576bc7b6943da69b6762486ae2a11680fe380f51e2090ee8a35f3dc7aae4b",
+        "study_es.json": "bda875de9979ecf3bbc1b20ac59d8e2a03ae622a9894c0e62670ff796a3ebb4e",
+        "study_pt.json": "69c251d73531729f11e52bf34d473d52d169db798011e033bc666a8983ea2cf4"
+      }
+    },
+    {
+      "rank": 30,
+      "queueRank": 139,
+      "title": {
+        "pt": "Encefalite infecciosa",
+        "es": "Encefalitis infecciosa"
+      },
+      "ownerCandidate": "encefalite_infecciosa",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "f96db7ed50f7e15525e1d3d2774752a32af56788ba622337347f399cd76acb37",
+      "optionRelation": "TIME_CRITICAL_STANDARD_ETIOLOGY_SPECIFIC_ALTERNATIVES",
+      "files": {
+        "canonical-payload.json": "f96db7ed50f7e15525e1d3d2774752a32af56788ba622337347f399cd76acb37",
+        "guide-CMS-PT-ES-DRAFT.json": "71806e847458af807d3736449c295eac973a14c0bfbeaabb6c3cd1d93e2c3b29",
+        "plantao_es.json": "47e76f4c30f2c5ec98112d7e17f5fcfb4c88ab37f8881a960c6a655caf4c6a35",
+        "plantao_pt.json": "4c126b7a783e708ee3678713ec70fe0c82458d1d5ec8ad1459654a910c72e939",
+        "study_es.json": "0ade23b292600b0df1746beb1a9fb8e7c3165d837cb1e59ee6a46c7927c75435",
+        "study_pt.json": "6c80ccb3e0c519a597021f906fe4e8191f47c8bb7c3415b9cceab9bc198a753a"
+      }
+    },
+    {
+      "rank": 31,
+      "queueRank": 140,
+      "title": {
+        "pt": "Abscesso cerebral",
+        "es": "Absceso cerebral"
+      },
+      "ownerCandidate": "abscesso_cerebral",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "e34aef7a7221b4765b44240551fa9f5b52827f3261bcdee5408eedf07ae6a6fe",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "e34aef7a7221b4765b44240551fa9f5b52827f3261bcdee5408eedf07ae6a6fe",
+        "guide-CMS-PT-ES-DRAFT.json": "98d5fe159ba8c906d0cbaf5b655e9c662139e77d4bff618fe0111b7acb1affa0",
+        "plantao_es.json": "b96022caa261f81ccc55d6c7b82cf7ec2d34875778a7fc3a73c18e8b36d3d23b",
+        "plantao_pt.json": "e21a677d431754962f8bc196e52624eaea7ba094162c778d09c63b88047742b3",
+        "study_es.json": "232f84e3523eef09ed960782fcdddb2f064725785c006a0430fd00b4b9b246b0",
+        "study_pt.json": "5a5ecfc6dd9f190803b7548802a5da6f28a8de6c69e80ff7ed8371a60f84284a"
+      }
+    },
+    {
+      "rank": 32,
+      "queueRank": 141,
+      "title": {
+        "pt": "Infecção de sítio cirúrgico",
+        "es": "Infección del sitio quirúrgico"
+      },
+      "ownerCandidate": "infeccao_de_sitio_cirurgico",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "e78829287a1793e5a3f9790bce5741eb7ab6b3501d89d163186028213233fb80",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "e78829287a1793e5a3f9790bce5741eb7ab6b3501d89d163186028213233fb80",
+        "guide-CMS-PT-ES-DRAFT.json": "8b97e7ba80e4dacc878640ae28fb1086a718d30092499a34f0d86ad82033f368",
+        "plantao_es.json": "1d4cb48bffb8acb4873e97d284b4b3f707cfe1e75f9219cc25e00ea23119d1cc",
+        "plantao_pt.json": "5d9594b260eab3b1470a68c0e4640e1c63373718bff4802ca656cc6eddea640b",
+        "study_es.json": "d9696a4a80e66e6835da391e2bbbb5eda7c9ab8b8aafbda6876a013ac508886b",
+        "study_pt.json": "e262742f2a8a166ba48237a75a59bf20caba86040bda781a0333609a341f39ea"
+      }
+    },
+    {
+      "rank": 33,
+      "queueRank": 142,
+      "title": {
+        "pt": "Infecção relacionada a cateter intravascular",
+        "es": "Infección relacionada con catéter intravascular"
+      },
+      "ownerCandidate": "infeccao_relacionada_a_cateter_intravascular",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "e0706a82b0ff67f6fdc89b381caa6a99f802ae27eb746404a7b18270f08d7526",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "e0706a82b0ff67f6fdc89b381caa6a99f802ae27eb746404a7b18270f08d7526",
+        "guide-CMS-PT-ES-DRAFT.json": "d2acb992f30cbbd64b1e2db4fe2589e77fb0ba3e543d9e6572dc4da171a549c2",
+        "plantao_es.json": "384211213a89c910ac5e523314c2b491fa324eb5f82c4b2ae72293be112ea4db",
+        "plantao_pt.json": "d37a47b4f482a07fe2792d30e9938cd59825a2f0df9078e087ac3bf0c865a390",
+        "study_es.json": "a8414a9d7f041c3401b07d71e78548f9be09559064eb4666768fcb73afc5d7e4",
+        "study_pt.json": "1c98cd3c7ed9f8011157a6bb555c303b6e90d2eec5487fb734a612253f36f14b"
+      }
+    },
+    {
+      "rank": 34,
+      "queueRank": 143,
+      "title": {
+        "pt": "Infecção de prótese articular",
+        "es": "Infección de prótesis articular"
+      },
+      "ownerCandidate": "infeccao_de_protese_articular",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "38ef28cdc65e5d9f17c78a0097dc0417da5821a15dc2cfaf2a9206347be53bc1",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "38ef28cdc65e5d9f17c78a0097dc0417da5821a15dc2cfaf2a9206347be53bc1",
+        "guide-CMS-PT-ES-DRAFT.json": "c2a3cf6b878263e6998c05b978ee839439d97419cc495bf811278b9cbc4b0121",
+        "plantao_es.json": "d26474ae27dc16fd2441015c88ac9ad8b1897ac276d367f949b9782101e2016d",
+        "plantao_pt.json": "be5b51384adc23b199d7ccd16031e15f4165cb5a87ad5bed46e924447ef1785d",
+        "study_es.json": "0d91647c426e86e97001f5372873d71146db1ba399b7415a4798282ca401a92e",
+        "study_pt.json": "1f7e0fabff4f8daca0277d3eb4bb996720da33ff1d11fb5fa19a644cd75221bf"
+      }
+    },
+    {
+      "rank": 35,
+      "queueRank": 144,
+      "title": {
+        "pt": "Panarício herpético",
+        "es": "Panadizo herpético"
+      },
+      "ownerCandidate": "panaricio_herpetico",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "cad4777f42735d3354546337c4a1e10d691c72209ee272458caaae73027c0c43",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "cad4777f42735d3354546337c4a1e10d691c72209ee272458caaae73027c0c43",
+        "guide-CMS-PT-ES-DRAFT.json": "9aa41308d81c8e7997a5ce24e937bff824fa888ebb79d0e9e9c6fb45d90be1cb",
+        "plantao_es.json": "20a63b57ffb4f2d03d61c8cf0ee54104f68e775ecae702ca3d3ed6d89d93490b",
+        "plantao_pt.json": "511d10193c6e8555df458cc897ee562e1e925608daf4dde6e9001c83ba2cc1d4",
+        "study_es.json": "86439e2c29c53be75df3b38ec0519d90d0469fe96978ececb7b21b38743a923c",
+        "study_pt.json": "326ae8da635dc35bcd5c422d8d59c5f490dc00caf5324777cd35e0ffca35cdd6"
+      }
+    },
+    {
+      "rank": 36,
+      "queueRank": 145,
+      "title": {
+        "pt": "Granuloma piogênico",
+        "es": "Granuloma piógeno"
+      },
+      "ownerCandidate": "granuloma_piogenico",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "e5c73a0e5d581ffad9783a8cda4e403cbcfba72c33c44527765c37d434721c65",
+      "optionRelation": "PROCEDURAL_FIRST_TOPICAL_SELECTED",
+      "files": {
+        "canonical-payload.json": "e5c73a0e5d581ffad9783a8cda4e403cbcfba72c33c44527765c37d434721c65",
+        "guide-CMS-PT-ES-DRAFT.json": "4618902e4d8213b92a7686baa0c2be64cb34574be8ea9e9ff445a4a2ad8ed9a0",
+        "plantao_es.json": "363cbdac6fe18780dc5b030b63432f336d5fdf7ebed0accdf78c0cc9c99d4bfa",
+        "plantao_pt.json": "5e5ff5e052989c696fdfa7b692da7330d85d3ee1dc9c2a0a204513aaebd45e5a",
+        "study_es.json": "dade77d827a4115884cb51e781cf1a7b1e6993f098b87ee022e7db5851e1a045",
+        "study_pt.json": "b6718b9ab16f3e25ab18d74a7918ad501b173e5d75c260f02415db820196a074"
+      }
+    },
+    {
+      "rank": 37,
+      "queueRank": 146,
+      "title": {
+        "pt": "Granuloma anular",
+        "es": "Granuloma anular"
+      },
+      "ownerCandidate": "granuloma_anular",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "47cb4faed905f9ebda2308ca5e582fef0362d0cf3c8c7b88791b68e1ef5220f5",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "47cb4faed905f9ebda2308ca5e582fef0362d0cf3c8c7b88791b68e1ef5220f5",
+        "guide-CMS-PT-ES-DRAFT.json": "1f6c7956d2d118e72d64a268d97eddac32453d03af4f59c3259114be497ddba0",
+        "plantao_es.json": "b9dc7272aeb562b5bca4ad9aa705189beff821a67142d3b123b9bfa09a44e219",
+        "plantao_pt.json": "3289eb93fbc8aab7c994af89a6a94c37e9d4729a80e588e86be73f5687828d9d",
+        "study_es.json": "e5edf51bb0eafa2bb1f461c2dae5b8b8e3bec6dbe455b8e1a51a9085134591ae",
+        "study_pt.json": "ec9f4fde34d920f094625e3f6f33280c7f392a7503cb3f025dabe5886f4ef964"
+      }
+    },
+    {
+      "rank": 38,
+      "queueRank": 147,
+      "title": {
+        "pt": "Dermatite herpetiforme",
+        "es": "Dermatitis herpetiforme"
+      },
+      "ownerCandidate": "dermatite_herpetiforme",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "0632bbc57a87ac358b6df5d938b05810d0ed1914afee97a254968d2386e851e8",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "0632bbc57a87ac358b6df5d938b05810d0ed1914afee97a254968d2386e851e8",
+        "guide-CMS-PT-ES-DRAFT.json": "f941bc2a0b18d232d887ed0ce0e6f340b4293a80d5d7707d7cee9e2382969216",
+        "plantao_es.json": "95509511f794c7807c01920101fe087ad6da4307c90af53b3eed77eca121d7b6",
+        "plantao_pt.json": "eadb478a6c30f01db5ad4d54da1ac8a4cc1dc68466a82a0525694b8a830ee652",
+        "study_es.json": "d533c0d75d0f7d7cf80f4949ca7fc2f7e2b0bf4ff32dd730285027956fbf1aa2",
+        "study_pt.json": "ebb139605427426075b9fcba16230f69b0413ce631d56f015a9783790f985559"
+      }
+    },
+    {
+      "rank": 39,
+      "queueRank": 148,
+      "title": {
+        "pt": "Eritrodermia",
+        "es": "Eritrodermia"
+      },
+      "ownerCandidate": "eritrodermia",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "49ad6cec9b9df5eb4b7f8556beb2d8f1c52778cf98c495891f351b3b089ff599",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "49ad6cec9b9df5eb4b7f8556beb2d8f1c52778cf98c495891f351b3b089ff599",
+        "guide-CMS-PT-ES-DRAFT.json": "6e14b23ec868d71bb5086425359f84b407667296a6a35ed963488885f9c26438",
+        "plantao_es.json": "bb5012fea886233b76c054c37f10c189bdfadb7b498c68e18520ff09dfbe5461",
+        "plantao_pt.json": "b0982cc64b9b0177d51d6e29ee0ee9f3c57b7bc58c8fedc7bb1012e70c59bd42",
+        "study_es.json": "ef24966376829ee1349684e77be9de6401905498be8437c921a937d297cbf28b",
+        "study_pt.json": "25badbe528bcfbbe1008049ada4b5f48ee0a62ecdcf6bc0a176912b30ced0bec"
+      }
+    },
+    {
+      "rank": 40,
+      "queueRank": 149,
+      "title": {
+        "pt": "Vasculite cutânea de pequenos vasos",
+        "es": "Vasculitis cutánea de pequeños vasos"
+      },
+      "ownerCandidate": "vasculite_cutanea_de_pequenos_vasos",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "bbb44f6db974b62ce5a0055141034d4e5fef7dfc4815d1f9a13b85c47fd61663",
+      "optionRelation": "SUPPORTIVE_FIRST_LIMITED_EVIDENCE_SPECIALIST_OPTIONS",
+      "files": {
+        "canonical-payload.json": "bbb44f6db974b62ce5a0055141034d4e5fef7dfc4815d1f9a13b85c47fd61663",
+        "guide-CMS-PT-ES-DRAFT.json": "9d78c7fb39d9e94ba43f0a43f0eb614130e96afef4c598b3e04a08642e10d14d",
+        "plantao_es.json": "d924cb49f59b971cd67fb1ea7fc9f956cc3f705462e5386023b598477aa19697",
+        "plantao_pt.json": "df5f9dfd91e3a4bb8f9f7ee1a008dae863feaf2de64a9f04e2c916839ee65af3",
+        "study_es.json": "6d0f40ec2d9fe2f2e09eb1cbed36f5d77a59dfa2265dc119f5fad1eefab6261f",
+        "study_pt.json": "0212e0187d342bdb09f4e4531fdff8485cab6a52d4b35ced64e6daf91afc2849"
+      }
+    },
+    {
+      "rank": 41,
+      "queueRank": 150,
+      "title": {
+        "pt": "Eritema pernio",
+        "es": "Perniosis (eritema pernio)"
+      },
+      "ownerCandidate": "eritema_pernio",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "e1f67ac4aa7dd0ad314e41caffad4f077e55ebf23c88d8c92aa26fdfe988a25d",
+      "optionRelation": "NONPHARMACOLOGIC_FIRST_DRUG_EVIDENCE_UNCERTAIN",
+      "files": {
+        "canonical-payload.json": "e1f67ac4aa7dd0ad314e41caffad4f077e55ebf23c88d8c92aa26fdfe988a25d",
+        "guide-CMS-PT-ES-DRAFT.json": "7d5881534f58eff5bc0480b1c43197d1d648873fb244034ab8e7e87420187319",
+        "plantao_es.json": "88e6250462b0e51a266cc070703d6912e51703c9ce6434ecba5c4620c80a1c8c",
+        "plantao_pt.json": "c8883ea6e24140bd3108992be34be9e1d85415cad6d05e8250665886444fc4ba",
+        "study_es.json": "3ec79f7bc2011e8424fd46a260428c916a90fe51c4ebdfc6fe5a43f271ae69ca",
+        "study_pt.json": "f94535cbc801676f772a6751f5399070eb5c968f060bae5ffe8d4787631d87e5"
+      }
+    },
+    {
+      "rank": 42,
+      "queueRank": 151,
+      "title": {
+        "pt": "Uveíte",
+        "es": "Uveítis"
+      },
+      "ownerCandidate": "uveite",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "feccbeba97e67083082d615d6f278e59ed6eff87ecca4090795497ba05524706",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "feccbeba97e67083082d615d6f278e59ed6eff87ecca4090795497ba05524706",
+        "guide-CMS-PT-ES-DRAFT.json": "6faeb36eea5600cbe7f5f6c0cba615632a4c41adeb8eacaeedbacc3ae4d44d9c",
+        "plantao_es.json": "48b861f14635a6c09a03493634573e2b75c237a9bab660255b139ce89b4da7a7",
+        "plantao_pt.json": "9bf45e3ca681cf3d159fa6f0cf76152b6171f8aba31f41ab6a788b5c190f40f2",
+        "study_es.json": "62526afd4056f59901e94c395f7d9a2ff0de0d9d9a983b3f628a63ed2fae7e32",
+        "study_pt.json": "427c0f92b8b354b050eab477595bdfec96ea9948bfd15224ef6f1dbfbebcaa73"
+      }
+    },
+    {
+      "rank": 43,
+      "queueRank": 152,
+      "title": {
+        "pt": "Esclerite",
+        "es": "Escleritis"
+      },
+      "ownerCandidate": "esclerite",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "34f775c6468b94e66015fd582f2dc96ad0c32579846f4c11b7004da9a1008b9e",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "34f775c6468b94e66015fd582f2dc96ad0c32579846f4c11b7004da9a1008b9e",
+        "guide-CMS-PT-ES-DRAFT.json": "061b91ecd6038d6e2dd002a31d11fd51d79cdaf56f44e0cc41b28236c856e2bd",
+        "plantao_es.json": "96b3a064edad76de7b2a0db3fdb983794e2b986440e330b86fa7587d33f3ddf9",
+        "plantao_pt.json": "d9c958f05c91e277f36c52896f9f1cc034eb991f53e387545068651ff8659823",
+        "study_es.json": "5993a253aa49507c40daaf9852fee35821f87150c9b42d715c29944ff102dd2c",
+        "study_pt.json": "e8462a28973182bf243172f7a2e805feb1ef1669c3f5723c3709077e253f99a0"
+      }
+    },
+    {
+      "rank": 44,
+      "queueRank": 153,
+      "title": {
+        "pt": "Episclerite",
+        "es": "Episcleritis"
+      },
+      "ownerCandidate": "episclerite",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "e8d6a6a36e29dee925e1e3832075d2e87c795ca60e7374091aa11f9a8bb7f365",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "e8d6a6a36e29dee925e1e3832075d2e87c795ca60e7374091aa11f9a8bb7f365",
+        "guide-CMS-PT-ES-DRAFT.json": "c9024c8f53513eef2c6060b2741469245ee57a8ab6aea77f31f285ac732cd5c6",
+        "plantao_es.json": "38cf6b41098b2d50ff45c26311377e049474bb93cad25f65fdbc05732af75f4f",
+        "plantao_pt.json": "c2deb4d8376508673d5f4bee2708e68b6f18d905b9b968d7fd76d33e8c1c18a3",
+        "study_es.json": "d73e8b061effed0576219625767ffe68d45cc7664e469180e9581163b342859d",
+        "study_pt.json": "4e22655d1651fe76c3d5a96299808a568072cc776f3240e9d034c170c0deece3"
+      }
+    },
+    {
+      "rank": 45,
+      "queueRank": 154,
+      "title": {
+        "pt": "Dacriocistite",
+        "es": "Dacriocistitis"
+      },
+      "ownerCandidate": "dacriocistite",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "195f98265a95efc9fd7127eedbb82c44cee0c47348b6553b6469b08b6b2f7577",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "195f98265a95efc9fd7127eedbb82c44cee0c47348b6553b6469b08b6b2f7577",
+        "guide-CMS-PT-ES-DRAFT.json": "c499d1c5a91bb1115f8fbdc6f953ce15ed3350f96a67dd70d3a4b347d65ee64d",
+        "plantao_es.json": "d7ea1dee785b200e26af1c62f5beb9672296007a63662abc0d184bfadff98987",
+        "plantao_pt.json": "62eab2c2120b033067b42030c51c61fd4069b8973366f2ad6428f93cacb04b40",
+        "study_es.json": "67270eeedcae0ab646199c2744451055416fa8377bbdecff2c0a82c0d962eb6e",
+        "study_pt.json": "c7c14db3f923969b3cb100b12c18c034e71c501f2e88fb53dbc0a353e1c2a27e"
+      }
+    },
+    {
+      "rank": 46,
+      "queueRank": 155,
+      "title": {
+        "pt": "Endoftalmite",
+        "es": "Endoftalmitis"
+      },
+      "ownerCandidate": "endoftalmite",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "613123be368944b3b350ba8aa6f78ab5fb80861ecdfe7ee08ca0a8c5d928740a",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "613123be368944b3b350ba8aa6f78ab5fb80861ecdfe7ee08ca0a8c5d928740a",
+        "guide-CMS-PT-ES-DRAFT.json": "dcdc7031484bc5e1f60ab36a12664740eea843f1f1bacd555e7861c214a078f9",
+        "plantao_es.json": "b3dcb7ad29b5d0061a5d2a5300721cd9c5ae78c08d82c2cd3bbeaecb52108846",
+        "plantao_pt.json": "171715b4e22f562de9df5c8dc0a6fb4c1d363c8bc72f8dc0c29652379c39940e",
+        "study_es.json": "a3d1f237f4437f6b991bb2beaed4ce8948116d8bb546afb2b088e64e25721fcb",
+        "study_pt.json": "d503e0cfca1d36d3879ab8f5651d4a50fbc156ffc8db1a22c02251212ed899da"
+      }
+    },
+    {
+      "rank": 47,
+      "queueRank": 156,
+      "title": {
+        "pt": "Glaucoma primário de ângulo aberto",
+        "es": "Glaucoma primario de ángulo abierto"
+      },
+      "ownerCandidate": "glaucoma_primario_de_angulo_aberto",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "83362b2e3ec1c43a413ae930572ccc8af54e5130753739f5ba6a4bc62bfbe116",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "83362b2e3ec1c43a413ae930572ccc8af54e5130753739f5ba6a4bc62bfbe116",
+        "guide-CMS-PT-ES-DRAFT.json": "79ce8cccf8ab234e3972f3b022b76ee94e3496e36800b1287125b5381c57df90",
+        "plantao_es.json": "4b7c7a4e843b95b2b364db685f6ba7c564e6dbfdcad187878327d3873f6f848e",
+        "plantao_pt.json": "7b892ceb168d6dd087a6a8cef1e017959cdab2426c3d68937d8afe3c0f78c11f",
+        "study_es.json": "b5082fd5fdfc675fa976d1b3abf35477625ace3f4f64d9fc5e515823dd7f224a",
+        "study_pt.json": "354edfa5838612fa488bd4b61cffa1ff81542f3a88bcbb46e12f0d11f9a07e38"
+      }
+    },
+    {
+      "rank": 48,
+      "queueRank": 157,
+      "title": {
+        "pt": "Catarata",
+        "es": "Catarata"
+      },
+      "ownerCandidate": "catarata",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "23a1ceb259bc882539d94cede1ad1266392faf45c0a87c8e67b3701364bec39b",
+      "optionRelation": "OPTICAL_SUPPORT_OR_SURGERY_NO_CURATIVE_DRUG",
+      "files": {
+        "canonical-payload.json": "23a1ceb259bc882539d94cede1ad1266392faf45c0a87c8e67b3701364bec39b",
+        "guide-CMS-PT-ES-DRAFT.json": "dc1b5f4d4ed81f334fba7b03c2f6986b7d2d37623a573de592abe38bbdfab994",
+        "plantao_es.json": "22439d2f5e209010d7ff854822a7033d38fe7681d2a3b2d0963562823d4e524d",
+        "plantao_pt.json": "52ede2c8367494b0018439f89aba12443a5008039259af438003ccc4a9a4a65c",
+        "study_es.json": "ac5a40408c7a9781d36d49d35df7db08b21a95179fc09f2ef34264a6bd36deb5",
+        "study_pt.json": "61b3c0e38dc46bc177ee6330f89c955b57133fe1c19e8edb5220704fcb8bb3cc"
+      }
+    },
+    {
+      "rank": 49,
+      "queueRank": 158,
+      "title": {
+        "pt": "Pterígio",
+        "es": "Pterigión"
+      },
+      "ownerCandidate": "pterigio",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "92ba775d48dc72e906e976d69f812aa4b5501bad22a04566cfd505512c6985b8",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "92ba775d48dc72e906e976d69f812aa4b5501bad22a04566cfd505512c6985b8",
+        "guide-CMS-PT-ES-DRAFT.json": "57688f5856c7f0f897417fd795fe24180feb602122cb747cb81bfae70df17a38",
+        "plantao_es.json": "35588a6243ed2f5fe5b2396b0139ec6437190ed5caab34271efe0dac8811dee3",
+        "plantao_pt.json": "cb9800e16f762089b18920be8939cc2bde20a09d10bdf294b76905d083ed8f8d",
+        "study_es.json": "be8bf2d2f7d21fa7ab664b7e2024b743748bc38b422abfe08b86e3d3acd22a70",
+        "study_pt.json": "a04730ba64cc817f507716c60fc5ff2dc256bdca830ec165ce9a61c71995aab1"
+      }
+    },
+    {
+      "rank": 50,
+      "queueRank": 159,
+      "title": {
+        "pt": "Sialolitíase",
+        "es": "Sialolitiasis"
+      },
+      "ownerCandidate": "sialolitiase",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "99d448009b43b900e813532f46cff5d56eb35752f7a10a6668eb9dc2d35a461f",
+      "optionRelation": "OBSTRUCTION_CONSERVATIVE_OR_PROCEDURAL",
+      "files": {
+        "canonical-payload.json": "99d448009b43b900e813532f46cff5d56eb35752f7a10a6668eb9dc2d35a461f",
+        "guide-CMS-PT-ES-DRAFT.json": "aae961eb1b42b2a5e2bf9554e64b53abfc4c1e9d772f25fe9e775b1aa506b718",
+        "plantao_es.json": "dbc527cf5e40fa2779d685426b6d1af6287e2a6999e9fc06bec33f836ad2cd20",
+        "plantao_pt.json": "9483d35494527339cb831ef525cd1223415768567889a29072e614b751a6d853",
+        "study_es.json": "7c42c1e401070cf86fced99f813c190034ae9e3002f440054b329daa7ace0cdb",
+        "study_pt.json": "5aea12864219d913c0722c70886823d8850522e77fa4129b303b63a636265c13"
+      }
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Esclerite",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "34f775c6468b94e66015fd582f2dc96ad0c32579846f4c11b7004da9a1008b9e",
+  "ownerCandidate": "esclerite",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_043_f01",
+    "b03_043_f02",
+    "b03_043_f03",
+    "b03_043_f04",
+    "b03_043_f05",
+    "b03_043_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Inflamação profunda da esclera, potencialmente ameaçadora à visão; dor intensa e associação sistêmica são frequentes, mas forma necrosante pode ser pouco dolorosa."
+      ],
+      "factIds": [
+        "b03_043_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Profundidade e necrose mudam risco e escolha terapêutica. A atualização pública de janeiro de 2026 reforça cautela com anti-inflamatórios em pacientes com risco de efeitos adversos."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Acuidade e exame especializado para formas anterior, posterior e necrosante; investigar autoimunidade, trauma/cirurgia e infecção. Diferenciar episclerite, ceratite e uveíte."
+      ],
+      "factIds": [
+        "b03_043_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Encaminhamento oftalmológico como emergência; baixa visual, afinamento ou necrose exige tratamento hospitalar conforme avaliação. Não reduzir a doença a conjuntivite."
+      ],
+      "factIds": [
+        "b03_043_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Forma não infecciosa não necrosante selecionada: anti-inflamatório oral como primeira estratégia especializada. Alternativa se grave/refratária ou contraindicação: corticoide sistêmico e, quando necessário, imunomodulador. Infecciosa requer terapia antimicrobiana específica, por vezes cirurgia."
+      ],
+      "factIds": [
+        "b03_043_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Anti-inflamatório exige avaliar rim, sangramento, coração e gestação; imunossupressão exige excluir infecção e monitorização. Colírio isolado não substitui tratamento da inflamação profunda."
+      ],
+      "factIds": [
+        "b03_043_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Seguimento oftalmológico e da doença sistêmica; piora da visão/dor requer retorno imediato. Alta somente após plano especializado e estabilidade ocular."
+      ],
+      "factIds": [
+        "b03_043_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_152",
+      "title": "EYES — Scleritis",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/scleritis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_GUIDELINE_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "web-verification-record.json:topic_152",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "scleritis_nei",
+      "title": "American Academy of Ophthalmology EyeWiki — Scleritis",
+      "url": "https://eyewiki.aao.org/Scleritis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Usar somente os cenários e formulações do documento consultado.",
+      "sourceEvidenceRecord": "source-readback.json:scleritis_nei",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

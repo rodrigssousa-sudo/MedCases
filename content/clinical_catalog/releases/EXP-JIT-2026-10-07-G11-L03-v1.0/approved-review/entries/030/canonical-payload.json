@@ -1,0 +1,180 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "encefalite_infecciosa",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Encefalite infecciosa",
+    "es": "Encefalitis infecciosa"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "TIME_CRITICAL_STANDARD_ETIOLOGY_SPECIFIC_ALTERNATIVES",
+  "facts": [
+    {
+      "id": "b03_030_f01",
+      "section": "concept",
+      "pt": "Inflamação encefálica por infecção com alteração mental, convulsões ou déficits; herpes é causa tratável que não pode aguardar confirmação.",
+      "es": "Inflamación encefálica infecciosa con alteración mental, convulsiones/déficits; herpes es tratable y no debe esperar confirmación.",
+      "sources": [
+        "enceph_nhs",
+        "enceph_nhs_patient",
+        "topic_139",
+        "aciclovir_label"
+      ]
+    },
+    {
+      "id": "b03_030_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar glicemia, eletrólitos, toxinas e causas vasculares; ressonância e líquor/PCR se seguros, EEG conforme indicação. Neuroimagem precede punção quando risco de efeito de massa/contraindicação; PCR precoce negativo não exclui herpes em alta suspeita.",
+      "es": "Glucemia, electrolitos, tóxicos y causas vasculares; resonancia/LCR-PCR si seguro, EEG cuando corresponde. Imagen antes de punción ante riesgo de masa/contraindicación; PCR temprano negativo no excluye herpes si alta sospecha.",
+      "sources": [
+        "enceph_nhs",
+        "enceph_nhs_patient",
+        "topic_139",
+        "aciclovir_label"
+      ]
+    },
+    {
+      "id": "b03_030_f03",
+      "section": "initial",
+      "pt": "Internar, proteger via aérea e tratar convulsões/sepse. Iniciar aciclovir quando herpes for possível, sem esperar exame atrasado; antibiótico adicional se meningoencefalite bacteriana não estiver excluída.",
+      "es": "Internar, proteger vía aérea/tratar convulsiones/sepsis. Iniciar aciclovir ante posible herpes sin esperar prueba tardía; antibiótico adicional si no se excluye meningoencefalitis bacteriana.",
+      "sources": [
+        "enceph_nhs",
+        "enceph_nhs_patient",
+        "topic_139",
+        "aciclovir_label"
+      ]
+    },
+    {
+      "id": "b03_030_f04",
+      "section": "doses",
+      "pt": "Adulto com função renal normal: aciclovir 10 mg/kg intravenoso a cada 8 horas; infundir por pelo menos 1 hora, nunca bolus. Usar peso apropriado ao protocolo, especialmente em obesidade; ajustar intervalo à função renal.",
+      "es": "Adulto con riñón normal: aciclovir 10 mg/kg intravenoso cada 8 horas; infundir al menos 1 hora, nunca bolo. Peso según protocolo, especialmente obesidad; ajustar intervalo al riñón.",
+      "sources": [
+        "enceph_nhs",
+        "aciclovir_label"
+      ]
+    },
+    {
+      "id": "b03_030_f05",
+      "section": "options",
+      "pt": "Herpes confirmado costuma exigir 14–21 dias conforme população/evolução. Outra etiologia requer terapia própria: antibacteriano ou antifúngico quando indicado; encefalite autoimune segue avaliação distinta. Não há segundo antiviral empiricamente equivalente ao aciclovir para toda encefalite.",
+      "es": "Herpes confirmado suele requerir 14–21 días según población/evolución. Otra causa requiere terapia propia: antibacteriano/antifúngico si corresponde; autoinmune sigue evaluación distinta. No existe segundo antiviral empírico equivalente para toda encefalitis.",
+      "sources": [
+        "enceph_nhs",
+        "enceph_nhs_patient",
+        "topic_139",
+        "aciclovir_label"
+      ]
+    },
+    {
+      "id": "b03_030_f06",
+      "section": "safety",
+      "pt": "Monitorizar creatinina, diurese, hidratação e neurotoxicidade; dose acumulada inadequada na insuficiência renal pode causar confusão. Neonatos/crianças têm esquema próprio; não copiar dose adulta.",
+      "es": "Vigilar creatinina, diuresis, hidratación/neurotoxicidad; acumulación renal puede causar confusión. Neonatos/niños requieren esquema propio; no copiar dosis adulta.",
+      "sources": [
+        "enceph_nhs",
+        "enceph_nhs_patient",
+        "topic_139",
+        "aciclovir_label"
+      ]
+    },
+    {
+      "id": "b03_030_f07",
+      "section": "followup",
+      "pt": "Seguimento neurológico/infectológico e reabilitação; não dar alta enquanto persistirem instabilidade ou alteração mental sem plano. Rever duração com PCR/curso clínico em protocolo especializado.",
+      "es": "Seguimiento neurológico/infectológico y rehabilitación; no dar alta con inestabilidad/confusión sin plan. Revisar duración con PCR/evolución especializada.",
+      "sources": [
+        "enceph_nhs",
+        "enceph_nhs_patient",
+        "topic_139",
+        "aciclovir_label"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "O benefício de terapia precoce para herpes justifica iniciar empiricamente enquanto se investiga. Fármacos imunossupressores para autoimunidade não substituem antimicrobiano quando infecção é provável.",
+      "es": "El beneficio temprano en herpes justifica tratamiento empírico mientras se investiga. Inmunosupresión para autoinmunidad no sustituye antimicrobiano ante infección probable.",
+      "sources": [
+        "enceph_nhs",
+        "enceph_nhs_patient",
+        "topic_139",
+        "aciclovir_label"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "enceph_nhs",
+      "title": "NHS Dumfries/Galloway — Adult empiric antibiotics, 2025",
+      "url": "https://www.rightdecisions.scot.nhs.uk/media/rzkhf1o2/20251023-full-document-dg-empirical-antibiotics-guidelines-for-secondary-care-adult-v82-docx.pdf",
+      "authorityStatus": "OFFICIAL_REGIONAL_CLINICAL_PROTOCOL",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published ",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:enceph_nhs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "enceph_nhs_patient",
+      "title": "NHS — Encephalitis treatment",
+      "url": "https://www.nhs.uk/conditions/encephalitis/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 15 May 2023",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:enceph_nhs_patient",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_139",
+      "title": "NHS — Encephalitis",
+      "url": "https://www.nhs.uk/conditions/encephalitis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 15 May 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_139",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "aciclovir_label",
+      "title": "DailyMed — Acyclovir injection regulatory label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b1bb347d-74f4-4976-8450-a375a271718f",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:aciclovir_label",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

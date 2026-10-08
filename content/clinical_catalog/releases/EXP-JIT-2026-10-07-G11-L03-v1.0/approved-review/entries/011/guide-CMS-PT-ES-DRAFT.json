@@ -1,0 +1,204 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação do lote; Guia deverá permanecer DRAFT no Admin após futura publicação dos modos.",
+  "canonical_payload_sha256": "c0cf7e6129de3d1c20e52b6d54165ceeecaf7790bb8c2214c43d57cf977c3905",
+  "owner_candidate": "insuficiencia_pancreatica_exocrina",
+  "pt": {
+    "title": "Insuficiência pancreática exócrina",
+    "subtitle": "Primeira escolha e alternativas por cenário",
+    "summary": "Produção/entrega insuficiente de enzimas pancreáticas causa má digestão, esteatorreia, perda de peso e carências nutricionais.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Produção/entrega insuficiente de enzimas pancreáticas causa má digestão, esteatorreia, perda de peso e carências nutricionais."
+        ],
+        "factIds": [
+          "b03_011_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "As enzimas precisam estar no intestino junto com o alimento. Falha aparente pode refletir momento errado de tomada, dose insuficiente ou outro mecanismo de má absorção; alternativas comerciais não são princípios terapêuticos diferentes."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Pesquisar pancreatite, cirurgia pancreática e doença subjacente. Elastase fecal em fezes formadas é teste inicial; resposta empírica a enzimas não confirma diagnóstico. Diferenciar doença celíaca e outras causas de má absorção."
+        ],
+        "factIds": [
+          "b03_011_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "No Plantão, corrigir desidratação e distúrbios metabólicos; dor aguda importante, febre ou icterícia exigem investigar doença aguda associada. Avaliar peso e ingestão."
+        ],
+        "factIds": [
+          "b03_011_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Alternativa de formulação: outro produto enzimático com quantidade equivalente de lipase, conferindo bula; produtos não revestidos podem exigir supressão ácida. Se resposta insuficiente, verificar tomada/adesão, titular e procurar outra causa; não substituir por probiótico."
+        ],
+        "factIds": [
+          "b03_011_f05"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Primeira escolha adulta: reposição enzimática pancreática durante a refeição, inicialmente pelo menos 40.000 unidades USP de lipase por refeição; metade dessa quantidade nos lanches. Titular à composição da refeição, sintomas e estado nutricional; unidades de lipase não equivalem a mg do produto."
+        ],
+        "factIds": [
+          "b03_011_f04"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Monitorizar peso, vitaminas lipossolúveis e saúde óssea; evitar restrição extrema de gordura. Crianças requerem cálculo próprio por peso e limites específicos da formulação. Cautela com alergia a origem porcina; não triturar microgrânulos revestidos."
+        ],
+        "factIds": [
+          "b03_011_f06"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Seguimento gastroenterológico/nutricional, com ajuste de enzimas e tratamento etiológico. Internar instabilidade, incapacidade de alimentação ou desnutrição com complicações."
+        ],
+        "factIds": [
+          "b03_011_f07"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Insuficiencia pancreática exocrina",
+    "subtitle": "Primera elección y alternativas por escenario",
+    "summary": "Producción/entrega insuficiente de enzimas pancreáticas causa maldigestión, esteatorrea, pérdida de peso y carencias nutricionales.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Producción/entrega insuficiente de enzimas pancreáticas causa maldigestión, esteatorrea, pérdida de peso y carencias nutricionales."
+        ],
+        "factIds": [
+          "b03_011_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Las enzimas deben coincidir con el alimento en el intestino. El fracaso puede reflejar toma mal sincronizada, dosis insuficiente u otra malabsorción; alternativas comerciales no son terapias diferentes."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Buscar pancreatitis, cirugía y enfermedad subyacente. Elastasa fecal en heces formadas es prueba inicial; responder a enzimas no confirma el diagnóstico. Diferenciar celiaquía y otras malabsorciones."
+        ],
+        "factIds": [
+          "b03_011_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "En guardia, corregir deshidratación/trastornos metabólicos; dolor agudo importante, fiebre o ictericia exige evaluar enfermedad aguda asociada. Revisar peso e ingesta."
+        ],
+        "factIds": [
+          "b03_011_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Alternativa de formulación: otro producto enzimático con lipasa equivalente, revisando ficha; productos no recubiertos pueden requerir supresión ácida. Ante mala respuesta, revisar toma/adherencia, titular y buscar otra causa; no sustituir por probióticos."
+        ],
+        "factIds": [
+          "b03_011_f05"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Primera elección adulta: enzimas pancreáticas durante la comida, inicialmente al menos 40.000 unidades USP de lipasa por comida; la mitad en colaciones. Ajustar a composición, síntomas y nutrición; unidades de lipasa no equivalen a mg del producto."
+        ],
+        "factIds": [
+          "b03_011_f04"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Monitorizar peso, vitaminas liposolubles y hueso; evitar restricción extrema de grasas. Niños requieren cálculo por peso y límites de formulación. Revisar alergia porcina; no triturar microgránulos recubiertos."
+        ],
+        "factIds": [
+          "b03_011_f06"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Seguimiento gastroenterológico/nutricional para ajustar enzimas y tratar causa. Internar ante inestabilidad, imposibilidad de alimentarse o desnutrición complicada."
+        ],
+        "factIds": [
+          "b03_011_f07"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "epi2023",
+      "title": "AGA — Exocrine pancreatic insufficiency, 2023",
+      "url": "https://gastro.org/clinical-guidance/epidemiology-evaluation-management-exocrine-pancreatic-insufficiency/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2023,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "AGA 2023, recomendações públicas: elastase fecal, reposição inicialmente ≥40.000 unidades USP/ refeição, metade nos lanches e durante comida. Conferido com guideline europeu 2025.",
+      "sourceEvidenceRecord": "web-verification-record.json:epi2023",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_115",
+      "title": "NIDDK — Exocrine Pancreatic Insufficiency (EPI)",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/exocrine-pancreatic-insufficiency",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed January 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_115",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "epi2025",
+      "title": "UEG/EPC/ESPEN and partner societies — Exocrine pancreatic insufficiency, 2025",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11866322/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published studies no longer fit the new concept.",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:epi2025",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

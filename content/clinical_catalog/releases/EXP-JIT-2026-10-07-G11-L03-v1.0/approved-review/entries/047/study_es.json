@@ -1,0 +1,132 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Glaucoma primario de ángulo abierto",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "83362b2e3ec1c43a413ae930572ccc8af54e5130753739f5ba6a4bc62bfbe116",
+  "ownerCandidate": "glaucoma_primario_de_angulo_aberto",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_047_f01",
+    "b03_047_f02",
+    "b03_047_f03",
+    "b03_047_f04",
+    "b03_047_f05",
+    "b03_047_f06",
+    "b03_047_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Neuropatía óptica progresiva de ángulo abierto; puede ocurrir sin presión muy alta. Distinta de glaucoma agudo de ángulo cerrado."
+      ],
+      "factIds": [
+        "b03_047_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Bajar presión reduce progresión, pero meta individual. Láser/colirio son opciones según elegibilidad; más frecuencia de latanoprost no aumenta eficacia."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Nervio óptico, campos, presión, espesor corneal/gonioscopia por especialista. Presión sola no define glaucoma/meta universal."
+      ],
+      "factIds": [
+        "b03_047_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Dolor agudo, halos, náuseas/baja visual súbita: excluir cierre angular/otra emergencia, no atribuir al glaucoma crónico. Estable: plan de preservar visión."
+      ],
+      "factIds": [
+        "b03_047_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Nuevo glaucoma no avanzado elegible: NICE recomienda trabeculoplastia selectiva de 360 grados. Alternativa si rechazada/inadecuada o mientras espera: prostaglandina como latanoprost. Control insuficiente: combinación, otro láser/cirugía; avanzado cambia estrategia."
+      ],
+      "factIds": [
+        "b03_047_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Latanoprost oftálmico 0,005%: 1 gota en ojo afectado una vez al día por la noche; no aumentar frecuencia. Separar colirios al menos 5 minutos; retirar lentes/esperar 15 minutos para recolocar según ficha."
+      ],
+      "factIds": [
+        "b03_047_f05"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Pigmentación, inflamación/edema macular; no combinar dos prostaglandinas rutinariamente. Beta-bloqueante ocular: evaluar asma/bradicardia; embarazo requiere especialista."
+      ],
+      "factIds": [
+        "b03_047_f06"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguir presión, campo/nervio según riesgo/progresión; adherencia/técnica centrales. No suspender porque no hay síntomas."
+      ],
+      "factIds": [
+        "b03_047_f07"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "ng81",
+      "title": "NICE NG81 — Glaucoma recommendations, updated 2022",
+      "url": "https://www.nice.org.uk/guidance/ng81/chapter/Recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2022,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE 2022, itens 1.4.17–1.4.19: SLT de 360 graus em novo COAG não avançado elegível; PGA se inadequado/recusado/aguardando. Não aplicar regra ao glaucoma avançado.",
+      "sourceEvidenceRecord": "web-verification-record.json:ng81",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "latano",
+      "title": "DailyMed — Latanoprost ophthalmic 0.005% regulatory label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5f1987e0-b0ce-47b2-998b-97453a7db5c3",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:latano",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "glaucoma_college",
+      "title": "College of Optometrists — Primary open-angle glaucoma",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/glaucomeopenangle_poag",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_GUIDELINE_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "web-verification-record.json:glaucoma_college",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

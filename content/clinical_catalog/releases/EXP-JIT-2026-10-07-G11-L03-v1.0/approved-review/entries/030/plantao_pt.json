@@ -1,0 +1,138 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Encefalite infecciosa",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "f96db7ed50f7e15525e1d3d2774752a32af56788ba622337347f399cd76acb37",
+  "ownerCandidate": "encefalite_infecciosa",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_030_f01",
+    "b03_030_f02",
+    "b03_030_f03",
+    "b03_030_f04",
+    "b03_030_f05",
+    "b03_030_f06",
+    "b03_030_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Internar, proteger via aérea e tratar convulsões/sepse. Iniciar aciclovir quando herpes for possível, sem esperar exame atrasado; antibiótico adicional se meningoencefalite bacteriana não estiver excluída."
+      ],
+      "factIds": [
+        "b03_030_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar glicemia, eletrólitos, toxinas e causas vasculares; ressonância e líquor/PCR se seguros, EEG conforme indicação. Neuroimagem precede punção quando risco de efeito de massa/contraindicação; PCR precoce negativo não exclui herpes em alta suspeita."
+      ],
+      "factIds": [
+        "b03_030_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Herpes confirmado costuma exigir 14–21 dias conforme população/evolução. Outra etiologia requer terapia própria: antibacteriano ou antifúngico quando indicado; encefalite autoimune segue avaliação distinta. Não há segundo antiviral empiricamente equivalente ao aciclovir para toda encefalite."
+      ],
+      "factIds": [
+        "b03_030_f05"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Adulto com função renal normal: aciclovir 10 mg/kg intravenoso a cada 8 horas; infundir por pelo menos 1 hora, nunca bolus. Usar peso apropriado ao protocolo, especialmente em obesidade; ajustar intervalo à função renal."
+      ],
+      "factIds": [
+        "b03_030_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Monitorizar creatinina, diurese, hidratação e neurotoxicidade; dose acumulada inadequada na insuficiência renal pode causar confusão. Neonatos/crianças têm esquema próprio; não copiar dose adulta."
+      ],
+      "factIds": [
+        "b03_030_f06"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Seguimento neurológico/infectológico e reabilitação; não dar alta enquanto persistirem instabilidade ou alteração mental sem plano. Rever duração com PCR/curso clínico em protocolo especializado."
+      ],
+      "factIds": [
+        "b03_030_f07"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Inflamação encefálica por infecção com alteração mental, convulsões ou déficits; herpes é causa tratável que não pode aguardar confirmação."
+      ],
+      "factIds": [
+        "b03_030_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "enceph_nhs",
+      "title": "NHS Dumfries/Galloway — Adult empiric antibiotics, 2025",
+      "url": "https://www.rightdecisions.scot.nhs.uk/media/rzkhf1o2/20251023-full-document-dg-empirical-antibiotics-guidelines-for-secondary-care-adult-v82-docx.pdf",
+      "authorityStatus": "OFFICIAL_REGIONAL_CLINICAL_PROTOCOL",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published ",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:enceph_nhs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "enceph_nhs_patient",
+      "title": "NHS — Encephalitis treatment",
+      "url": "https://www.nhs.uk/conditions/encephalitis/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 15 May 2023",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:enceph_nhs_patient",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_139",
+      "title": "NHS — Encephalitis",
+      "url": "https://www.nhs.uk/conditions/encephalitis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 15 May 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_139",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "aciclovir_label",
+      "title": "DailyMed — Acyclovir injection regulatory label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=b1bb347d-74f4-4976-8450-a375a271718f",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:aciclovir_label",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

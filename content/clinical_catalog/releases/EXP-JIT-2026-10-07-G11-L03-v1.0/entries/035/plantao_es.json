@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Panadizo herpético",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "54d0826cb2e5caf366cd9bedb5288040028db3f54798883eff81e2d645b5b85c",
+  "ownerCandidate": "panaricio_herpetico",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_035_f01",
+    "b03_035_f02",
+    "b03_035_f03",
+    "b03_035_f04",
+    "b03_035_f05",
+    "b03_035_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Cubrir con apósito seco, evitar contacto con mucosas; analgesia/higiene. No incidir ni drenar vesículas como absceso bacteriano."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vesículas agrupadas, exposición oral/genital/inmunidad; PCR si duda. Pus/sepsis o curso atípico: considerar infección bacteriana simultánea."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Leve: soporte/curso autolimitado. Antiviral temprano, especialmente primeras 48 horas, puede reducir síntomas: aciclovir oral o valaciclovir, con esquema HSV según episodio, riñón/población. Inmunosuprimido/grave: especialista."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Antibiótico no trata herpes, solo infección bacteriana adicional. Antivirales: riñón/hidratación; no copiar esquema de zóster/encefalitis al dedo. Embarazo/niños: evaluación propia."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Volver por fiebre, extensión, pus/dolor progresivo; recurrencia puede requerir supresión especializada. Cubrir/prevenir contagio hasta cicatrización."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Infección digital por herpes simple con vesículas dolorosas; puede confundirse con paroniquia bacteriana/absceso."
+    }
+  ],
+  "references": [
+    {
+      "key": "whitlow_derm",
+      "title": "DermNet — Herpetic whitlow",
+      "url": "https://dermnetnz.org/topics/herpetic-whitlow",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last reviewed: April 2023",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:whitlow_derm",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "whitlow_nhs",
+      "title": "NHS — Herpetic whitlow",
+      "url": "https://www.nhs.uk/conditions/herpetic-whitlow/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 03 August 2023",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:whitlow_nhs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Cubrir con apósito seco, evitar contacto con mucosas; analgesia/higiene. No incidir ni drenar vesículas como absceso bacteriano."
+      ],
+      "factIds": [
+        "b03_035_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Vesículas agrupadas, exposición oral/genital/inmunidad; PCR si duda. Pus/sepsis o curso atípico: considerar infección bacteriana simultánea."
+      ],
+      "factIds": [
+        "b03_035_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Leve: soporte/curso autolimitado. Antiviral temprano, especialmente primeras 48 horas, puede reducir síntomas: aciclovir oral o valaciclovir, con esquema HSV según episodio, riñón/población. Inmunosuprimido/grave: especialista."
+      ],
+      "factIds": [
+        "b03_035_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Antibiótico no trata herpes, solo infección bacteriana adicional. Antivirales: riñón/hidratación; no copiar esquema de zóster/encefalitis al dedo. Embarazo/niños: evaluación propia."
+      ],
+      "factIds": [
+        "b03_035_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Volver por fiebre, extensión, pus/dolor progresivo; recurrencia puede requerir supresión especializada. Cubrir/prevenir contagio hasta cicatrización."
+      ],
+      "factIds": [
+        "b03_035_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Infección digital por herpes simple con vesículas dolorosas; puede confundirse con paroniquia bacteriana/absceso."
+      ],
+      "factIds": [
+        "b03_035_f01"
+      ]
+    }
+  ],
+  "markdown": "# Panadizo herpético\n\n## Abordaje inicial y urgencias\n\nCubrir con apósito seco, evitar contacto con mucosas; analgesia/higiene. No incidir ni drenar vesículas como absceso bacteriano.\n\n## Diagnóstico y diferenciales\n\nVesículas agrupadas, exposición oral/genital/inmunidad; PCR si duda. Pus/sepsis o curso atípico: considerar infección bacteriana simultánea.\n\n## Tratamiento: primera elección y alternativas\n\nLeve: soporte/curso autolimitado. Antiviral temprano, especialmente primeras 48 horas, puede reducir síntomas: aciclovir oral o valaciclovir, con esquema HSV según episodio, riñón/población. Inmunosuprimido/grave: especialista.\n\n## Seguridad y monitorización\n\nAntibiótico no trata herpes, solo infección bacteriana adicional. Antivirales: riñón/hidratación; no copiar esquema de zóster/encefalitis al dedo. Embarazo/niños: evaluación propia.\n\n## Reevaluación, internación y alta\n\nVolver por fiebre, extensión, pus/dolor progresivo; recurrencia puede requerir supresión especializada. Cubrir/prevenir contagio hasta cicatrización.\n\n## Reconocimiento rápido\n\nInfección digital por herpes simple con vesículas dolorosas; puede confundirse con paroniquia bacteriana/absceso.\n\n## Referencias\n\n1. [DermNet — Herpetic whitlow](https://dermnetnz.org/topics/herpetic-whitlow)\n2. [NHS — Herpetic whitlow](https://www.nhs.uk/conditions/herpetic-whitlow/)",
+  "approvedReviewCanonicalFileSha256": "cad4777f42735d3354546337c4a1e10d691c72209ee272458caaae73027c0c43",
+  "approvedReviewProjectionFileSha256": "20a63b57ffb4f2d03d61c8cf0ee54104f68e775ecae702ca3d3ed6d89d93490b"
+}

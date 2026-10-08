@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Vasculitis cutánea de pequeños vasos",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "c03f818e84d9e2bac65ba0f312f12baa7eb56c34cad157f0b97044d4737c3a6d",
+  "ownerCandidate": "vasculite_cutanea_de_pequenos_vasos",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_040_f01",
+    "b03_040_f02",
+    "b03_040_f03",
+    "b03_040_f04",
+    "b03_040_f05",
+    "b03_040_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hematuria, dolor abdominal intenso, hemoptisis, neuropatía/inestabilidad: hospital/estudio sistémico. Púrpura febril puede ser sepsis; no inmunosuprimir a ciegas."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Distribución/biopsia reciente con estudio adecuado; hemograma, creatinina/orina para riñón. Historia/pruebas según infección, autoinmunidad/órganos. Diferenciar IgA, trombocitopenia/sepsis."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Limitada a piel/primer episodio: retirar gatillo cuando seguro, reposo relativo, elevación/cuidado local. Recurrente/ulcerada: colchicina o dapsona por especialista; corticoide solo con indicación. Evidencia limitada, no universal."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Colchicina: riñón/hígado/interacciones; dapsona: G6PD/hemograma. No confundir owner cutáneo con vasculitis IgA sistémica existente; el órgano cambia urgencia/terapia."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Revisar orina, riñón/evolución; nuevos signos sistémicos requieren reclasificar. Alta si limitada/estable, con retorno/etiología asegurados."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Inflamación de vasos pequeños con púrpura palpable; limitada a piel o manifestación sistémica, infección/medicamento."
+    }
+  ],
+  "references": [
+    {
+      "key": "vasculitis",
+      "title": "DermNet — Cutaneous small vessel vasculitis",
+      "url": "https://dermnetnz.org/topics/cutaneous-small-vessel-vasculitis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:vasculitis",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "vasculitis2022",
+      "title": "Micheletti — Treatment of cutaneous vasculitis, 2022",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9716566/",
+      "authorityStatus": "AUTHOR_THERAPEUTIC_LADDER_EXPERT_EVIDENCE_LIMITED",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2022,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published studies and expert opinion.",
+      "scope": "Usar somente os cenários e formulações do documento consultado.",
+      "sourceEvidenceRecord": "source-readback.json:vasculitis2022",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Hematuria, dolor abdominal intenso, hemoptisis, neuropatía/inestabilidad: hospital/estudio sistémico. Púrpura febril puede ser sepsis; no inmunosuprimir a ciegas."
+      ],
+      "factIds": [
+        "b03_040_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Distribución/biopsia reciente con estudio adecuado; hemograma, creatinina/orina para riñón. Historia/pruebas según infección, autoinmunidad/órganos. Diferenciar IgA, trombocitopenia/sepsis."
+      ],
+      "factIds": [
+        "b03_040_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Limitada a piel/primer episodio: retirar gatillo cuando seguro, reposo relativo, elevación/cuidado local. Recurrente/ulcerada: colchicina o dapsona por especialista; corticoide solo con indicación. Evidencia limitada, no universal."
+      ],
+      "factIds": [
+        "b03_040_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Colchicina: riñón/hígado/interacciones; dapsona: G6PD/hemograma. No confundir owner cutáneo con vasculitis IgA sistémica existente; el órgano cambia urgencia/terapia."
+      ],
+      "factIds": [
+        "b03_040_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Revisar orina, riñón/evolución; nuevos signos sistémicos requieren reclasificar. Alta si limitada/estable, con retorno/etiología asegurados."
+      ],
+      "factIds": [
+        "b03_040_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Inflamación de vasos pequeños con púrpura palpable; limitada a piel o manifestación sistémica, infección/medicamento."
+      ],
+      "factIds": [
+        "b03_040_f01"
+      ]
+    }
+  ],
+  "markdown": "# Vasculitis cutánea de pequeños vasos\n\n## Abordaje inicial y urgencias\n\nHematuria, dolor abdominal intenso, hemoptisis, neuropatía/inestabilidad: hospital/estudio sistémico. Púrpura febril puede ser sepsis; no inmunosuprimir a ciegas.\n\n## Diagnóstico y diferenciales\n\nDistribución/biopsia reciente con estudio adecuado; hemograma, creatinina/orina para riñón. Historia/pruebas según infección, autoinmunidad/órganos. Diferenciar IgA, trombocitopenia/sepsis.\n\n## Tratamiento: primera elección y alternativas\n\nLimitada a piel/primer episodio: retirar gatillo cuando seguro, reposo relativo, elevación/cuidado local. Recurrente/ulcerada: colchicina o dapsona por especialista; corticoide solo con indicación. Evidencia limitada, no universal.\n\n## Seguridad y monitorización\n\nColchicina: riñón/hígado/interacciones; dapsona: G6PD/hemograma. No confundir owner cutáneo con vasculitis IgA sistémica existente; el órgano cambia urgencia/terapia.\n\n## Reevaluación, internación y alta\n\nRevisar orina, riñón/evolución; nuevos signos sistémicos requieren reclasificar. Alta si limitada/estable, con retorno/etiología asegurados.\n\n## Reconocimiento rápido\n\nInflamación de vasos pequeños con púrpura palpable; limitada a piel o manifestación sistémica, infección/medicamento.\n\n## Referencias\n\n1. [DermNet — Cutaneous small vessel vasculitis](https://dermnetnz.org/topics/cutaneous-small-vessel-vasculitis)\n2. [Micheletti — Treatment of cutaneous vasculitis, 2022](https://pmc.ncbi.nlm.nih.gov/articles/PMC9716566/)",
+  "approvedReviewCanonicalFileSha256": "bbb44f6db974b62ce5a0055141034d4e5fef7dfc4815d1f9a13b85c47fd61663",
+  "approvedReviewProjectionFileSha256": "d924cb49f59b971cd67fb1ea7fc9f956cc3f705462e5386023b598477aa19697"
+}

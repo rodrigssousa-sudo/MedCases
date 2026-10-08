@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Granuloma piógeno",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "e30d8f8ea958d21ec251187431e5f3408b6e0951278c068321cd0f6d5362956e",
+  "ownerCandidate": "granuloma_piogenico",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_036_f01",
+    "b03_036_f02",
+    "b03_036_f03",
+    "b03_036_f04",
+    "b03_036_f05",
+    "b03_036_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sangrado: presión directa/apósito; persistencia importante exige atención/procedimiento. No cauterizar lesión sospechosa sin plan histológico."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dermatología; lesión atípica, pigmentada o recurrente exige histología para excluir melanoma amelanótico/otro tumor. Trauma, medicamentos/embarazo según contexto."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opción frecuente: curetaje/cauterización o excisión con histología. Alternativa seleccionada: láser o tópico como timolol por dermatología, especialmente para evitar procedimiento en elegibles. No equivalen en control/diagnóstico."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Timolol tópico requiere valorar absorción, bradicardia/broncoespasmo; no copiar fórmula/dosis ocular a piel. Antibiótico no es tratamiento rutinario."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Revisar histología, cicatrización/recurrencia; embarazo puede cambiar evolución. Alta con sangrado controlado/retorno; persistencia: dermatología."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Proliferación vascular benigna/frágil, frecuentemente sangrante; pese al nombre, no es absceso por definición."
+    }
+  ],
+  "references": [
+    {
+      "key": "pyogenic_bad",
+      "title": "British Association of Dermatologists — Pyogenic granulomas",
+      "url": "https://www.bad.org.uk/pils/pyogenic-granulomas",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "REVIEW DATE | OCTOBER 2025",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:pyogenic_bad",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_145",
+      "title": "DERMNET — Pyogenic granuloma",
+      "url": "https://dermnetnz.org/topics/pyogenic-granuloma",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_145",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Sangrado: presión directa/apósito; persistencia importante exige atención/procedimiento. No cauterizar lesión sospechosa sin plan histológico."
+      ],
+      "factIds": [
+        "b03_036_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Dermatología; lesión atípica, pigmentada o recurrente exige histología para excluir melanoma amelanótico/otro tumor. Trauma, medicamentos/embarazo según contexto."
+      ],
+      "factIds": [
+        "b03_036_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opción frecuente: curetaje/cauterización o excisión con histología. Alternativa seleccionada: láser o tópico como timolol por dermatología, especialmente para evitar procedimiento en elegibles. No equivalen en control/diagnóstico."
+      ],
+      "factIds": [
+        "b03_036_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Timolol tópico requiere valorar absorción, bradicardia/broncoespasmo; no copiar fórmula/dosis ocular a piel. Antibiótico no es tratamiento rutinario."
+      ],
+      "factIds": [
+        "b03_036_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Revisar histología, cicatrización/recurrencia; embarazo puede cambiar evolución. Alta con sangrado controlado/retorno; persistencia: dermatología."
+      ],
+      "factIds": [
+        "b03_036_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Proliferación vascular benigna/frágil, frecuentemente sangrante; pese al nombre, no es absceso por definición."
+      ],
+      "factIds": [
+        "b03_036_f01"
+      ]
+    }
+  ],
+  "markdown": "# Granuloma piógeno\n\n## Abordaje inicial y urgencias\n\nSangrado: presión directa/apósito; persistencia importante exige atención/procedimiento. No cauterizar lesión sospechosa sin plan histológico.\n\n## Diagnóstico y diferenciales\n\nDermatología; lesión atípica, pigmentada o recurrente exige histología para excluir melanoma amelanótico/otro tumor. Trauma, medicamentos/embarazo según contexto.\n\n## Tratamiento: primera elección y alternativas\n\nOpción frecuente: curetaje/cauterización o excisión con histología. Alternativa seleccionada: láser o tópico como timolol por dermatología, especialmente para evitar procedimiento en elegibles. No equivalen en control/diagnóstico.\n\n## Seguridad y monitorización\n\nTimolol tópico requiere valorar absorción, bradicardia/broncoespasmo; no copiar fórmula/dosis ocular a piel. Antibiótico no es tratamiento rutinario.\n\n## Reevaluación, internación y alta\n\nRevisar histología, cicatrización/recurrencia; embarazo puede cambiar evolución. Alta con sangrado controlado/retorno; persistencia: dermatología.\n\n## Reconocimiento rápido\n\nProliferación vascular benigna/frágil, frecuentemente sangrante; pese al nombre, no es absceso por definición.\n\n## Referencias\n\n1. [British Association of Dermatologists — Pyogenic granulomas](https://www.bad.org.uk/pils/pyogenic-granulomas)\n2. [DERMNET — Pyogenic granuloma](https://dermnetnz.org/topics/pyogenic-granuloma)",
+  "approvedReviewCanonicalFileSha256": "e5c73a0e5d581ffad9783a8cda4e403cbcfba72c33c44527765c37d434721c65",
+  "approvedReviewProjectionFileSha256": "363cbdac6fe18780dc5b030b63432f336d5fdf7ebed0accdf78c0cc9c99d4bfa"
+}

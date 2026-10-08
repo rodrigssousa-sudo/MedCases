@@ -1,0 +1,170 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Brucelose",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "9d7f15c831faec37d73ce8f137c3626456c06cf51712f7f469e5a8d632bae1e9",
+  "ownerCandidate": "brucelose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_028_f01",
+    "b03_028_f02",
+    "b03_028_f03",
+    "b03_028_f04",
+    "b03_028_f05",
+    "b03_028_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Zoonose por Brucella, ligada a lácteos não pasteurizados e animais, com febre, sudorese e possível acometimento focal."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "A localização intracelular e a possibilidade de foco explicam terapia combinada/prolongada. Os regimes OMS e CDC têm unidades de tempo explícitas; nenhuma profilaxia curta substitui tratamento."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Culturas e sorologia conforme exposição/espécie; avisar laboratório antes de amostras suspeitas pelo risco ocupacional. Investigar endocardite, foco osteoarticular e neurológico se indicados."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sepse, endocardite ou sinais neurológicos: internação/especialista. Não confundir profilaxia de exposição laboratorial com tratamento da doença confirmada."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Adulto não gestante sem foco complicado: opção oral, doxiciclina 100 mg a cada 12 horas MAIS rifampicina 600–900 mg uma vez ao dia, por pelo menos 6 semanas, ajustando contexto/peso. Alternativa OMS: doxiciclina 100 mg a cada 12 horas por 45 dias MAIS estreptomicina 1 g intramuscular uma vez ao dia por 15 dias."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Brucella abortus RB51 é resistente a rifampicina: selecionar alternativa, como cotrimoxazol combinado, com infectologia. Aminoglicosídeo exige função renal/audição; rifampicina tem interações e hepatotoxicidade. Gestantes/crianças e focos complicados precisam esquema próprio."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Monitorizar resposta, adesão, toxicidade e recaída; recorrência exige culturas e pesquisa de foco. Alta com estabilidade e plano longo de acompanhamento."
+    }
+  ],
+  "references": [
+    {
+      "key": "bruc_cdc",
+      "title": "CDC — Brucellosis clinical overview, June 2026",
+      "url": "https://www.cdc.gov/brucellosis/hcp/clinical-overview/index.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC junho de 2026: combinação doxiciclina/rifampicina ≥6 semanas em espécies sensíveis; RB51 resistente à rifampicina. Não confundir tratamento com profilaxia ocupacional.",
+      "sourceEvidenceRecord": "web-verification-record.json:bruc_cdc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "bruc_who",
+      "title": "WHO — Brucellosis clinical fact sheet",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/brucellosis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2020,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:bruc_who",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Zoonose por Brucella, ligada a lácteos não pasteurizados e animais, com febre, sudorese e possível acometimento focal."
+      ],
+      "factIds": [
+        "b03_028_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A localização intracelular e a possibilidade de foco explicam terapia combinada/prolongada. Os regimes OMS e CDC têm unidades de tempo explícitas; nenhuma profilaxia curta substitui tratamento."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Culturas e sorologia conforme exposição/espécie; avisar laboratório antes de amostras suspeitas pelo risco ocupacional. Investigar endocardite, foco osteoarticular e neurológico se indicados."
+      ],
+      "factIds": [
+        "b03_028_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Sepse, endocardite ou sinais neurológicos: internação/especialista. Não confundir profilaxia de exposição laboratorial com tratamento da doença confirmada."
+      ],
+      "factIds": [
+        "b03_028_f03"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Adulto não gestante sem foco complicado: opção oral, doxiciclina 100 mg a cada 12 horas MAIS rifampicina 600–900 mg uma vez ao dia, por pelo menos 6 semanas, ajustando contexto/peso. Alternativa OMS: doxiciclina 100 mg a cada 12 horas por 45 dias MAIS estreptomicina 1 g intramuscular uma vez ao dia por 15 dias."
+      ],
+      "factIds": [
+        "b03_028_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Brucella abortus RB51 é resistente a rifampicina: selecionar alternativa, como cotrimoxazol combinado, com infectologia. Aminoglicosídeo exige função renal/audição; rifampicina tem interações e hepatotoxicidade. Gestantes/crianças e focos complicados precisam esquema próprio."
+      ],
+      "factIds": [
+        "b03_028_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Monitorizar resposta, adesão, toxicidade e recaída; recorrência exige culturas e pesquisa de foco. Alta com estabilidade e plano longo de acompanhamento."
+      ],
+      "factIds": [
+        "b03_028_f06"
+      ]
+    }
+  ],
+  "markdown": "# Brucelose\n\n## Conceito e mecanismo\n\nZoonose por Brucella, ligada a lácteos não pasteurizados e animais, com febre, sudorese e possível acometimento focal.\n\n## Raciocínio e escolha terapêutica\n\nA localização intracelular e a possibilidade de foco explicam terapia combinada/prolongada. Os regimes OMS e CDC têm unidades de tempo explícitas; nenhuma profilaxia curta substitui tratamento.\n\n## Diagnóstico e diferenciais\n\nCulturas e sorologia conforme exposição/espécie; avisar laboratório antes de amostras suspeitas pelo risco ocupacional. Investigar endocardite, foco osteoarticular e neurológico se indicados.\n\n## Abordagem inicial e urgências\n\nSepse, endocardite ou sinais neurológicos: internação/especialista. Não confundir profilaxia de exposição laboratorial com tratamento da doença confirmada.\n\n## Fármacos, doses e intervalos\n\nAdulto não gestante sem foco complicado: opção oral, doxiciclina 100 mg a cada 12 horas MAIS rifampicina 600–900 mg uma vez ao dia, por pelo menos 6 semanas, ajustando contexto/peso. Alternativa OMS: doxiciclina 100 mg a cada 12 horas por 45 dias MAIS estreptomicina 1 g intramuscular uma vez ao dia por 15 dias.\n\n## Segurança e monitorização\n\nBrucella abortus RB51 é resistente a rifampicina: selecionar alternativa, como cotrimoxazol combinado, com infectologia. Aminoglicosídeo exige função renal/audição; rifampicina tem interações e hepatotoxicidade. Gestantes/crianças e focos complicados precisam esquema próprio.\n\n## Reavaliação, internação e alta\n\nMonitorizar resposta, adesão, toxicidade e recaída; recorrência exige culturas e pesquisa de foco. Alta com estabilidade e plano longo de acompanhamento.\n\n## Referências\n\n1. [CDC — Brucellosis clinical overview, June 2026](https://www.cdc.gov/brucellosis/hcp/clinical-overview/index.html)\n2. [WHO — Brucellosis clinical fact sheet](https://www.who.int/news-room/fact-sheets/detail/brucellosis)",
+  "approvedReviewCanonicalFileSha256": "84271f3739874a0ea0302d6e61bec721edc13aad3e119dd85df6f929c5591f8e",
+  "approvedReviewProjectionFileSha256": "01210dc8a957690d72868c9d0c6408ac1a5416b70ff3a795c2b63d70099e48b4"
+}

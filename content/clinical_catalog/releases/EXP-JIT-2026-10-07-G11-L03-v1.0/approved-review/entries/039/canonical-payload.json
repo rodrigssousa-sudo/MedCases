@@ -1,0 +1,110 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "eritrodermia",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Eritrodermia",
+    "es": "Eritrodermia"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_039_f01",
+      "section": "concept",
+      "pt": "Eritema e descamação generalizados por dermatose, reação a medicamento ou neoplasia; síndrome com perda de barreira e risco sistêmico.",
+      "es": "Eritema/descamación generalizados por dermatosis, medicamento/neoplasia; pérdida de barrera con riesgo sistémico.",
+      "sources": [
+        "topic_148"
+      ]
+    },
+    {
+      "id": "b03_039_f02",
+      "section": "diagnosis",
+      "pt": "História de fármacos e doença cutânea, exame de mucosas/linfonodos, hemograma, eletrólitos, rim/fígado; biópsia conforme dermatologia. Diferenciar reações graves como DRESS/Stevens-Johnson.",
+      "es": "Medicamentos, dermatosis, mucosas/ganglios, hemograma, electrolitos, riñón/hígado; biopsia dermatológica. Diferenciar DRESS/Stevens-Johnson.",
+      "sources": [
+        "topic_148"
+      ]
+    },
+    {
+      "id": "b03_039_f03",
+      "section": "initial",
+      "pt": "Instabilidade, hipotermia, desidratação, infecção ou extensão importante: hospital. Suspender possível desencadeante seguro, manter ambiente térmico, reposição monitorizada e cuidado suave da pele.",
+      "es": "Inestabilidad, hipotermia, deshidratación, infección/extensión importante: hospital. Retirar desencadenante cuando seguro, ambiente térmico, reposición monitorizada/cuidado suave.",
+      "sources": [
+        "topic_148"
+      ]
+    },
+    {
+      "id": "b03_039_f04",
+      "section": "options",
+      "pt": "Primeira estratégia: suporte de barreira com emolientes e tratamento da causa. Corticoide tópico apropriado pode ajudar dermatite; na psoríase grave, ciclosporina ou biológico são opções especializadas conforme risco. Linfoma ou reação medicamentosa requerem plano diferente.",
+      "es": "Primera estrategia: barrera con emolientes y causa. Corticoide tópico apropiado en dermatitis; psoriasis grave: ciclosporina o biológico según especialista/riesgo. Linfoma o reacción medicamentosa: otro plan.",
+      "sources": [
+        "topic_148"
+      ]
+    },
+    {
+      "id": "b03_039_f05",
+      "section": "safety",
+      "pt": "Não iniciar corticoide sistêmico universal, especialmente se psoríase possível; pode agravar/rebater e mascarar infecção. Perda de barreira aumenta absorção de tópicos; evitar combinações irritantes e monitorizar órgãos.",
+      "es": "No dar corticoide sistémico universal, especialmente posible psoriasis; puede agravar/rebotar/ocultar infección. Barrera dañada aumenta absorción tópica; evitar irritantes y vigilar órganos.",
+      "sources": [
+        "topic_148"
+      ]
+    },
+    {
+      "id": "b03_039_f06",
+      "section": "followup",
+      "pt": "Internação até estabilidade e diagnóstico/plano; seguimento próximo de temperatura, volemia, nutrição e pele. Persistência exige repetir investigação etiológica.",
+      "es": "Internación hasta estabilidad/plan; temperatura, volumen, nutrición/piel. Persistencia: repetir evaluación etiológica.",
+      "sources": [
+        "topic_148"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A pele extensa inflamada atua como perda de barreira térmica e hídrica. Escolher imunossupressor sem identificar causa pode piorar infecção; suporte e etiologia precedem escalonamento.",
+      "es": "La inflamación extensa pierde barrera térmica/hídrica. Inmunosuprimir sin causa puede empeorar infección; soporte/etiología preceden escalada.",
+      "sources": [
+        "topic_148"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_148",
+      "title": "DERMNET — Erythroderma",
+      "url": "https://dermnetnz.org/topics/erythroderma",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_148",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

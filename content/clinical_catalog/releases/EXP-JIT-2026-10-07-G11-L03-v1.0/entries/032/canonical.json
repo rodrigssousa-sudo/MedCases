@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "infeccao_de_sitio_cirurgico",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Infecção de sítio cirúrgico",
+    "es": "Infección del sitio quirúrgico"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_032_f01",
+      "section": "concept",
+      "pt": "Infecção superficial, profunda ou de órgão/espaço associada a cirurgia; profundidade e material implantado alteram manejo.",
+      "es": "Infección superficial, profunda o de órgano/espacio tras cirugía; profundidad/implante cambian manejo.",
+      "sources": [
+        "ng125",
+        "ssti_idsa"
+      ]
+    },
+    {
+      "id": "b03_032_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar ferida, drenagem, deiscência, dor progressiva e sinais sistêmicos; cultura de pus/tecido e imagem se coleção profunda. Diferenciar hematoma, reação a material e infecção necrosante.",
+      "es": "Herida, drenaje, dehiscencia, dolor progresivo/signos sistémicos; cultivo de pus/tejido e imagen si colección profunda. Diferenciar hematoma, reacción y necrosante.",
+      "sources": [
+        "ng125",
+        "ssti_idsa"
+      ]
+    },
+    {
+      "id": "b03_032_f03",
+      "section": "initial",
+      "pt": "Sepse, progressão rápida, dor desproporcional ou suspeita de órgão/espaço: cirurgia urgente e antibiótico sem atraso. Abrir/drenar coleção por equipe adequada; não tratar abscesso apenas com comprimidos.",
+      "es": "Sepsis, progresión rápida, dolor desproporcionado u órgano/espacio: cirugía urgente/antibiótico. Abrir/drenar por equipo; no tratar absceso solo con comprimidos.",
+      "sources": [
+        "ng125",
+        "ssti_idsa"
+      ]
+    },
+    {
+      "id": "b03_032_f04",
+      "section": "options",
+      "pt": "Primeira estratégia: controle de foco e cuidado da ferida. Se antibiótico indicado: cirurgia limpa com flora cutânea pode usar cefazolina/penicilina antiestafilocócica; MRSA requer alternativa como vancomicina. Cirurgia intestinal/perineal exige gram-negativos e anaeróbios, por exemplo ceftriaxona com metronidazol, conforme microbiologia/local.",
+      "es": "Primera estrategia: foco/cuidado de herida. Si antibiótico indicado: cirugía limpia/flora cutánea, cefazolina o penicilina antiestafilocócica; MRSA, alternativa como vancomicina. Cirugía intestinal/perineal exige gramnegativos/anaerobios, como ceftriaxona más metronidazol, según microbiología/local.",
+      "sources": [
+        "ng125",
+        "ssti_idsa"
+      ]
+    },
+    {
+      "id": "b03_032_f05",
+      "section": "safety",
+      "pt": "Não indicar antibiótico sistêmico automaticamente a toda coleção superficial drenada sem sinais de disseminação. Dose, via e duração dependem de profundidade/foco, peso, rim e alergia; evitar esquemas de profilaxia como tratamento de infecção estabelecida.",
+      "es": "No dar antibiótico sistémico automáticamente a toda colección superficial drenada sin diseminación. Dosis/vía/duración según profundidad/foco, peso, riñón/alergia; profilaxis no trata infección establecida.",
+      "sources": [
+        "ng125",
+        "ssti_idsa"
+      ]
+    },
+    {
+      "id": "b03_032_f06",
+      "section": "followup",
+      "pt": "Rever ferida, resposta e culturas; febre persistente exige procurar coleção/implante infectado. Alta com foco controlado, estabilidade e plano de curativo/retorno.",
+      "es": "Revisar herida, respuesta/cultivos; fiebre persistente exige buscar colección/implante. Alta con foco controlado, estabilidad y curaciones/retorno.",
+      "sources": [
+        "ng125",
+        "ssti_idsa"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Origem cirúrgica e profundidade determinam necessidade de drenagem/cobertura. Alternativas antibióticas são condicionadas à flora, sem transformar todo paciente em candidato à cobertura máxima.",
+      "es": "Origen/profundidad determinan drenaje/cobertura. Las opciones antibióticas dependen de flora; no todos requieren cobertura máxima.",
+      "sources": [
+        "ng125",
+        "ssti_idsa"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "ng125",
+      "title": "NICE NG125 — Surgical site infections",
+      "url": "https://www.nice.org.uk/guidance/ng125/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE: controle do foco cirúrgico e antibiótico conforme organismos/resistência; não universalizar profilaxia como tratamento de infecção estabelecida.",
+      "sourceEvidenceRecord": "web-verification-record.json:ng125",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "ssti_idsa",
+      "title": "IDSA — Skin and soft tissue infections, surgical site section",
+      "url": "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published [229].",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:ssti_idsa",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

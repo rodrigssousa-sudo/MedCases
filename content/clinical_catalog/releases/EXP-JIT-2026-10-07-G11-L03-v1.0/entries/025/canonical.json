@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "leishmaniose",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Leishmaniose",
+    "es": "Leishmaniasis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_025_f01",
+      "section": "concept",
+      "pt": "Infecção por Leishmania com formas cutânea, mucosa e visceral; forma, espécie, região e imunidade determinam tratamento.",
+      "es": "Infección por Leishmania cutánea, mucosa o visceral; forma, especie, región e inmunidad determinan tratamiento.",
+      "sources": [
+        "leish2022",
+        "leish_cdc"
+      ]
+    },
+    {
+      "id": "b03_025_f02",
+      "section": "diagnosis",
+      "pt": "História epidemiológica, exame cutâneo/mucoso e sinais de doença visceral; confirmação parasitológica/molecular conforme forma. Febre prolongada com esplenomegalia/citopenias exige investigar forma visceral.",
+      "es": "Epidemiología, piel/mucosas y signos viscerales; confirmación parasitológica/molecular según forma. Fiebre prolongada, esplenomegalia/citopenias: evaluar visceral.",
+      "sources": [
+        "leish2022",
+        "leish_cdc"
+      ]
+    },
+    {
+      "id": "b03_025_f03",
+      "section": "initial",
+      "pt": "Sangramento, infecção secundária grave, disfunção orgânica ou obstrução mucosa requerem hospital/especialista. Avaliar hemograma, rim, fígado e ECG antes de medicamentos tóxicos.",
+      "es": "Sangrado, infección secundaria grave, fallo orgánico u obstrucción mucosa: hospital/especialista. Hemograma, riñón, hígado y ECG antes de fármacos tóxicos.",
+      "sources": [
+        "leish2022",
+        "leish_cdc"
+      ]
+    },
+    {
+      "id": "b03_025_f04",
+      "section": "options",
+      "pt": "Visceral: anfotericina B lipossomal é opção preferida em cenários elegíveis; antimonial pentavalente é alternativa restrita pelo risco e protocolo regional. Cutânea localizada elegível: terapia local, incluindo antimonial intralesional; alternativa sistêmica como miltefosina somente para espécie/população com evidência. Mucosa demanda tratamento sistêmico especializado.",
+      "es": "Visceral: anfotericina B liposomal preferida en escenarios elegibles; antimonial pentavalente es alternativa limitada por riesgo/protocolo regional. Cutánea localizada elegible: terapia local, incluido antimonial intralesional; miltefosina sistémica solo para especie/población con evidencia. Mucosa exige terapia sistémica especializada.",
+      "sources": [
+        "leish2022",
+        "leish_cdc"
+      ]
+    },
+    {
+      "id": "b03_025_f05",
+      "section": "safety",
+      "pt": "Não transferir dose de anfotericina de outra micose para leishmaniose. Miltefosina é contraindicada na gestação e não serve indiscriminadamente para L. infantum; imunossupressão altera recomendações. Monitorizar toxicidade renal/eletrólitos, hepática e cardíaca conforme agente.",
+      "es": "No copiar dosis de anfotericina de otra micosis. Miltefosina está contraindicada en embarazo y no sirve indiscriminadamente para L. infantum; inmunosupresión cambia recomendaciones. Vigilar riñón/electrolitos, hígado y corazón según agente.",
+      "sources": [
+        "leish2022",
+        "leish_cdc"
+      ]
+    },
+    {
+      "id": "b03_025_f06",
+      "section": "followup",
+      "pt": "Acompanhar resposta e recidiva; forma mucosa/visceral necessita especialista. Alta depende de estabilidade, acesso a tratamento e monitorização, sem presumir cura pela cicatrização precoce.",
+      "es": "Seguir respuesta/recidiva; mucosa/visceral requieren especialista. Alta con estabilidad, acceso a terapia/monitorización; cicatrización temprana no prueba curación.",
+      "sources": [
+        "leish2022",
+        "leish_cdc"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Antimoniais, miltefosina e anfotericina não são alternativas universais: eficácia e toxicidade variam por espécie e forma. A OPAS 2022 retirou cetoconazol e restringe escolhas conforme população.",
+      "es": "Antimoniales, miltefosina y anfotericina no son alternativas universales: eficacia/toxicidad dependen de especie/forma. OPS 2022 retiró ketoconazol y diferencia población.",
+      "sources": [
+        "leish2022",
+        "leish_cdc"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "leish2022",
+      "title": "PAHO — Guideline for Treatment of Leishmaniasis, second edition 2022: public recommendation summary",
+      "url": "https://www.paho.org/en/documents/guideline-treatment-leishmaniasis-americas-second-edition",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "OFFICIAL_RECOMMENDATION_SUMMARY_READ",
+      "publicationYear": 2022,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Resumo oficial OPAS 2022 lido por busca: intralesional antimonial fortalecido, miltefosina por espécie, ketoconazol removido. Texto completo não lido; o endpoint PDF retornou DSpace vazio.",
+      "sourceEvidenceRecord": "web-verification-record.json:leish2022",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "leish_cdc",
+      "title": "CDC — Clinical care of leishmaniasis",
+      "url": "https://www.cdc.gov/leishmaniasis/hcp/clinical-care/index.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC: individualizar por forma, espécie, região e hospedeiro; anfotericina lipossomal para visceral, miltefosina em elegíveis, contraindicação gestacional. Não copiar aprovação comercial dos EUA a outro país.",
+      "sourceEvidenceRecord": "web-verification-record.json:leish_cdc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

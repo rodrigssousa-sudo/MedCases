@@ -1,0 +1,159 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "gastroparesia",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Gastroparesia",
+    "es": "Gastroparesia"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_012_f01",
+      "section": "concept",
+      "pt": "Esvaziamento gástrico retardado com sintomas compatíveis e sem obstrução mecânica; diabetes, cirurgia e medicamentos podem contribuir.",
+      "es": "Vaciamiento gástrico lento con síntomas compatibles y sin obstrucción mecánica; diabetes, cirugía y medicamentos pueden contribuir.",
+      "sources": [
+        "gastro2025",
+        "metoclop_label",
+        "topic_116"
+      ]
+    },
+    {
+      "id": "b03_012_f02",
+      "section": "diagnosis",
+      "pt": "Excluir obstrução e confirmar esvaziamento gástrico por teste adequado, preferindo avaliação de 4 horas. Rever opioides e fármacos que reduzem motilidade; diferenciar dispepsia, vômitos cíclicos e hiperêmese canabinoide.",
+      "es": "Excluir obstrucción y confirmar vaciamiento con prueba adecuada, prefiriendo evaluación de 4 horas. Revisar opioides/fármacos que reducen motilidad; diferenciar dispepsia, vómitos cíclicos e hiperémesis cannabinoide.",
+      "sources": [
+        "gastro2025",
+        "metoclop_label",
+        "topic_116"
+      ]
+    },
+    {
+      "id": "b03_012_f03",
+      "section": "initial",
+      "pt": "Vômitos persistentes: hidratação, eletrólitos, glicemia e avaliação nutricional. Dor intensa, sangramento ou distensão significativa exigem investigação; hospitalizar desidratação grave/incapacidade de alimentação.",
+      "es": "Vómitos persistentes: hidratación, electrolitos, glucemia y nutrición. Dolor intenso, sangrado o distensión importante exige evaluación; hospitalizar deshidratación grave/intolerancia alimentaria.",
+      "sources": [
+        "gastro2025",
+        "metoclop_label",
+        "topic_116"
+      ]
+    },
+    {
+      "id": "b03_012_f04",
+      "section": "options",
+      "pt": "Dieta de pequenas partículas e controle glicêmico são base. AGA 2025 sugere metoclopramida; eritromicina é alternativa selecionada de curto prazo, com risco de taquifilaxia, QT e interações. Domperidona e prucaloprida não são escolhas rotineiras de primeira linha nessa guideline.",
+      "es": "Dieta de partículas pequeñas y control glucémico son la base. AGA 2025 sugiere metoclopramida; eritromicina es alternativa seleccionada breve, por taquifilaxia, QT e interacciones. Domperidona/prucaloprida no son primeras opciones rutinarias de esa guía.",
+      "sources": [
+        "gastro2025",
+        "metoclop_label",
+        "topic_116"
+      ]
+    },
+    {
+      "id": "b03_012_f05",
+      "section": "doses",
+      "pt": "Referência de bula para gastroparesia diabética em adulto: metoclopramida 10 mg oral, 30 minutos antes de cada refeição e ao deitar, 4 vezes ao dia, máximo 40 mg ao dia, por 2–8 semanas conforme resposta. Evitar tratamento além de 12 semanas; idosos e disfunção renal/hepática necessitam redução segundo bula.",
+      "es": "Referencia de ficha para gastroparesia diabética adulta: metoclopramida 10 mg oral, 30 minutos antes de cada comida y al acostarse, 4 veces al día, máximo 40 mg al día, durante 2–8 semanas según respuesta. Evitar más de 12 semanas; ancianos/disfunción renal o hepática requieren reducción según ficha.",
+      "sources": [
+        "metoclop_label"
+      ]
+    },
+    {
+      "id": "b03_012_f06",
+      "section": "safety",
+      "pt": "Suspender diante de discinesia/distonia; avaliar Parkinson, obstrução e interações. Não extrapolar dose adulta à pediatria/gestação. Casos refratários precisam de especialista para suporte enteral e eventual procedimento selecionado.",
+      "es": "Suspender ante discinesia/distonía; revisar Parkinson, obstrucción e interacciones. No extrapolar dosis adulta a pediatría/embarazo. Refractarios: especialista para soporte enteral y procedimientos seleccionados.",
+      "sources": [
+        "gastro2025",
+        "metoclop_label",
+        "topic_116"
+      ]
+    },
+    {
+      "id": "b03_012_f07",
+      "section": "followup",
+      "pt": "Reavaliar ingestão, peso, glicemia e efeitos adversos; alta com tolerância e acompanhamento. Não manter procinético indefinidamente sem revisar benefício e risco.",
+      "es": "Reevaluar ingesta, peso, glucemia y efectos adversos; alta con tolerancia y seguimiento. No mantener procinético indefinidamente sin revisar beneficio/riesgo.",
+      "sources": [
+        "gastro2025",
+        "metoclop_label",
+        "topic_116"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Náusea e vômito não provam atraso do esvaziamento. Metoclopramida combina ação procinética/antiemética, mas o risco neurológico limita exposição; alternativas não dispensam confirmação diagnóstica.",
+      "es": "Náusea/vómito no prueban vaciamiento lento. Metoclopramida es procinética/antiemética, pero el riesgo neurológico limita exposición; alternativas no evitan confirmar diagnóstico.",
+      "sources": [
+        "gastro2025",
+        "metoclop_label",
+        "topic_116"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "gastro2025",
+      "title": "AGA — Gastroparesis guideline, 2025",
+      "url": "https://gastro.org/clinical-guidance/clinical-guidance-on-the-management-of-gastroparesis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "AGA final 2025: esvaziamento em 4 horas, metoclopramida/eritromicina condicionais; domperidona/prucaloprida não primeira linha. Dose rastreada à bula específica de gastroparesia diabética.",
+      "sourceEvidenceRecord": "web-verification-record.json:gastro2025",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "metoclop_label",
+      "title": "DailyMed — Metoclopramide tablet, adult diabetic gastroparesis dosing",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=ff067ac5-6efc-3e86-e6d5-590b2779491c",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:metoclop_label",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_116",
+      "title": "NHS — Gastroparesis",
+      "url": "https://www.nhs.uk/conditions/gastroparesis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 22 July 2026",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_116",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

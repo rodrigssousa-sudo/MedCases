@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Pneumoconioses (incluindo silicose e asbestose)",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "6eccf23c17a1eb239773d6c5129eb808aa7210571ae598973b3e37339d7dbc93",
+  "ownerCandidate": "pneumoconioses_incluindo_silicose_e_asbestose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_009_f01",
+    "b03_009_f02",
+    "b03_009_f03",
+    "b03_009_f04",
+    "b03_009_f05",
+    "b03_009_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Fibrose pulmonar relacionada à inalação ocupacional de poeiras minerais. Silicose e asbestose têm exposições, latência e complicações diferentes."
+      ],
+      "factIds": [
+        "b03_009_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A exposição cumulativa e a inflamação persistente explicam progressão mesmo após afastamento. Tratamento de complicações e prevenção de nova exposição são distintos de uma cura farmacológica inexistente."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "História ocupacional detalhada, imagem torácica e função pulmonar; avaliar hipoxemia e diagnósticos alternativos. Sílica aumenta risco de tuberculose; asbestos também se associa a neoplasias pleuropulmonares."
+      ],
+      "factIds": [
+        "b03_009_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Dispneia aguda, febre ou queda de saturação: investigar infecção, embolia, pneumotórax e exacerbação de doença associada, sem atribuir tudo à fibrose crônica."
+      ],
+      "factIds": [
+        "b03_009_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira medida: interromper exposição, apoio ocupacional e cessar tabagismo. Reabilitação pulmonar e vacinação; oxigênio quando indicado por avaliação de hipoxemia. Alternativa em doença avançada elegível: avaliação de transplante pulmonar."
+      ],
+      "factIds": [
+        "b03_009_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não existe fármaco que reverta rotineiramente essas cicatrizes. Broncodilatador apenas se houver obstrução/indicação associada; antibiótico somente para infecção. Não prometer benefício universal de corticoide ou antifibrótico."
+      ],
+      "factIds": [
+        "b03_009_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Monitorização pneumológica/ocupacional de função, oxigenação e complicações. Internar insuficiência respiratória; estabilidade não elimina risco de progressão após cessar exposição."
+      ],
+      "factIds": [
+        "b03_009_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "silica2026",
+      "title": "CDC/NIOSH — Silicosis symptoms and monitoring, 2026",
+      "url": "https://www.cdc.gov/niosh/silica/symptoms/index.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC/NIOSH 2026: silicose sem cura, cessar exposição, risco de tuberculose e acompanhamento ocupacional. Não extrapolar para todos os tipos de pneumoconiose.",
+      "sourceEvidenceRecord": "web-verification-record.json:silica2026",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_109",
+      "title": "NHS — Asbestosis",
+      "url": "https://www.nhs.uk/conditions/asbestosis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 31 July 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_109",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

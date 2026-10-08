@@ -1,0 +1,170 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Cirrosis hepática",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "5a28cc289ea5d51be7dde79dde6c6e6bc5e166ec0ca96a4ce881aded62097ba5",
+  "ownerCandidate": "cirrose_hepatica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_018_f01",
+    "b03_018_f02",
+    "b03_018_f03",
+    "b03_018_f04",
+    "b03_018_f05",
+    "b03_018_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Fibrosis/distorsión hepática con hipertensión portal y pérdida funcional; compensada/descompensada difieren en pronóstico/manejo."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "La hipertensión portal explica ascitis/varices; la pérdida funcional contribuye a encefalopatía/infecciones. Integrar causa, prevención y complicaciones, conservando protocolos específicos existentes."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Investigar causa, función hepática/renal, coagulación, hemograma e imagen; ascitis, varices, encefalopatía y carcinoma. Diferenciar descompensación crónica de fallo hepático agudo sin cirrosis."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sangrado digestivo, confusión, fiebre con ascitis, hipotensión o lesión renal requiere hospitalización/búsqueda de desencadenantes. Ascitis nueva/descompensada puede requerir paracentesis; no atribuir toda confusión al hígado."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primera estrategia: tratar causa/prevenir descompensación. Ascitis: moderar sodio y diuréticos como espironolactona con/sin furosemida según riñón; refractaria: paracentesis con albúmina/TIPS. Encefalopatía: lactulosa; rifaximina adjunta en recurrencia/control insuficiente."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Estas opciones tratan complicaciones diferentes, no se sustituyen. Vigilar creatinina, sodio, potasio, peso y presión. Evitar antiinflamatorios no esteroideos; revisar sedantes/hepatotóxicos. No restringir proteínas indiscriminadamente."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vigilancia de carcinoma, generalmente ecografía/AFP cada 6 meses en elegibles; varices, vacunación/nutrición. Descompensación: discutir trasplante; alta con causa tratada y seguimiento."
+    }
+  ],
+  "references": [
+    {
+      "key": "cirrhosis",
+      "title": "AASLD — Outpatient cirrhosis management, 2024",
+      "url": "https://www.aasld.org/liver-fellow-network/core-series/back-basics/back-basics-outpatient-management-cirrhosis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:cirrhosis",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_122",
+      "title": "NHS — Cirrhosis",
+      "url": "https://www.nhs.uk/conditions/cirrhosis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 10 February 2025",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_122",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Fibrosis/distorsión hepática con hipertensión portal y pérdida funcional; compensada/descompensada difieren en pronóstico/manejo."
+      ],
+      "factIds": [
+        "b03_018_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "La hipertensión portal explica ascitis/varices; la pérdida funcional contribuye a encefalopatía/infecciones. Integrar causa, prevención y complicaciones, conservando protocolos específicos existentes."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Investigar causa, función hepática/renal, coagulación, hemograma e imagen; ascitis, varices, encefalopatía y carcinoma. Diferenciar descompensación crónica de fallo hepático agudo sin cirrosis."
+      ],
+      "factIds": [
+        "b03_018_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Sangrado digestivo, confusión, fiebre con ascitis, hipotensión o lesión renal requiere hospitalización/búsqueda de desencadenantes. Ascitis nueva/descompensada puede requerir paracentesis; no atribuir toda confusión al hígado."
+      ],
+      "factIds": [
+        "b03_018_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera estrategia: tratar causa/prevenir descompensación. Ascitis: moderar sodio y diuréticos como espironolactona con/sin furosemida según riñón; refractaria: paracentesis con albúmina/TIPS. Encefalopatía: lactulosa; rifaximina adjunta en recurrencia/control insuficiente."
+      ],
+      "factIds": [
+        "b03_018_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Estas opciones tratan complicaciones diferentes, no se sustituyen. Vigilar creatinina, sodio, potasio, peso y presión. Evitar antiinflamatorios no esteroideos; revisar sedantes/hepatotóxicos. No restringir proteínas indiscriminadamente."
+      ],
+      "factIds": [
+        "b03_018_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Vigilancia de carcinoma, generalmente ecografía/AFP cada 6 meses en elegibles; varices, vacunación/nutrición. Descompensación: discutir trasplante; alta con causa tratada y seguimiento."
+      ],
+      "factIds": [
+        "b03_018_f06"
+      ]
+    }
+  ],
+  "markdown": "# Cirrosis hepática\n\n## Concepto y mecanismo\n\nFibrosis/distorsión hepática con hipertensión portal y pérdida funcional; compensada/descompensada difieren en pronóstico/manejo.\n\n## Razonamiento y elección terapéutica\n\nLa hipertensión portal explica ascitis/varices; la pérdida funcional contribuye a encefalopatía/infecciones. Integrar causa, prevención y complicaciones, conservando protocolos específicos existentes.\n\n## Diagnóstico y diferenciales\n\nInvestigar causa, función hepática/renal, coagulación, hemograma e imagen; ascitis, varices, encefalopatía y carcinoma. Diferenciar descompensación crónica de fallo hepático agudo sin cirrosis.\n\n## Abordaje inicial y urgencias\n\nSangrado digestivo, confusión, fiebre con ascitis, hipotensión o lesión renal requiere hospitalización/búsqueda de desencadenantes. Ascitis nueva/descompensada puede requerir paracentesis; no atribuir toda confusión al hígado.\n\n## Tratamiento: primera elección y alternativas\n\nPrimera estrategia: tratar causa/prevenir descompensación. Ascitis: moderar sodio y diuréticos como espironolactona con/sin furosemida según riñón; refractaria: paracentesis con albúmina/TIPS. Encefalopatía: lactulosa; rifaximina adjunta en recurrencia/control insuficiente.\n\n## Seguridad y monitorización\n\nEstas opciones tratan complicaciones diferentes, no se sustituyen. Vigilar creatinina, sodio, potasio, peso y presión. Evitar antiinflamatorios no esteroideos; revisar sedantes/hepatotóxicos. No restringir proteínas indiscriminadamente.\n\n## Reevaluación, internación y alta\n\nVigilancia de carcinoma, generalmente ecografía/AFP cada 6 meses en elegibles; varices, vacunación/nutrición. Descompensación: discutir trasplante; alta con causa tratada y seguimiento.\n\n## Referencias\n\n1. [AASLD — Outpatient cirrhosis management, 2024](https://www.aasld.org/liver-fellow-network/core-series/back-basics/back-basics-outpatient-management-cirrhosis)\n2. [NHS — Cirrhosis](https://www.nhs.uk/conditions/cirrhosis/)",
+  "approvedReviewCanonicalFileSha256": "a4c71d826d40407a35854a74ebf58733765c8a9f65fb48efed97e15379d52e0d",
+  "approvedReviewProjectionFileSha256": "635b4f01acf2ac88fd718c1c043bd121e8a1ac96b20d791b75c1b97535b478e3"
+}

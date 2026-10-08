@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "estenose_mitral",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Estenose mitral",
+    "es": "Estenosis mitral"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_001_f01",
+      "section": "concept",
+      "pt": "Obstrução ao enchimento ventricular pela valva mitral, reumática ou degenerativa/calcificada; eleva pressão atrial e pulmonar.",
+      "es": "Obstrucción al llenado ventricular por la válvula mitral, reumática o degenerativa/calcificada; eleva la presión auricular y pulmonar.",
+      "sources": [
+        "vhdslides",
+        "vhd2021",
+        "topic_101"
+      ]
+    },
+    {
+      "id": "b03_001_f02",
+      "section": "diagnosis",
+      "pt": "Ecocardiograma define área, gradiente, regurgitação associada e pressão pulmonar; interpretar gradiente com frequência cardíaca e fluxo. ECG pesquisa fibrilação atrial; excluir insuficiência mitral e outras causas de dispneia.",
+      "es": "Ecocardiograma: área, gradiente, regurgitación asociada y presión pulmonar; interpretar el gradiente con frecuencia cardíaca y flujo. ECG para fibrilación auricular; excluir regurgitación mitral y otras causas de disnea.",
+      "sources": [
+        "vhdslides",
+        "vhd2021",
+        "topic_101"
+      ]
+    },
+    {
+      "id": "b03_001_f03",
+      "section": "initial",
+      "pt": "Edema pulmonar, hipoxemia, hipotensão ou taquiarritmia mal tolerada exigem hospitalização. Monitorizar ritmo, oxigenação, perfusão e diurese; suporte respiratório e descongestão conforme quadro.",
+      "es": "Edema pulmonar, hipoxemia, hipotensión o taquiarritmia mal tolerada requieren hospitalización. Monitorizar ritmo, oxigenación, perfusión y diuresis; soporte respiratorio y descongestión según el cuadro.",
+      "sources": [
+        "vhdslides",
+        "vhd2021",
+        "topic_101"
+      ]
+    },
+    {
+      "id": "b03_001_f04",
+      "section": "options",
+      "pt": "Diurético de alça, como furosemida, alivia congestão; controle da frequência com beta-bloqueador em paciente estável pode melhorar enchimento. Nenhum desfaz a estenose. Na estenose reumática sintomática com anatomia favorável, considerar comissurotomia percutânea; cirurgia se inelegível ou com lesões associadas.",
+      "es": "Diurético de asa, como furosemida, alivia congestión; un beta-bloqueante para controlar frecuencia en paciente estable puede mejorar llenado. Ninguno elimina la estenosis. En estenosis reumática sintomática con anatomía favorable: comisurotomía percutánea; cirugía si no es elegible o hay lesiones asociadas.",
+      "sources": [
+        "vhdslides",
+        "vhd2021",
+        "topic_101"
+      ]
+    },
+    {
+      "id": "b03_001_f05",
+      "section": "safety",
+      "pt": "Na estenose mitral reumática relevante com fibrilação atrial, anticoagulação com antagonista da vitamina K, como varfarina, exige controle de INR; não substituir por anticoagulante oral direto. Excluir trombo atrial e regurgitação significativa antes de comissurotomia. Gestação requer cardio-obstetrícia.",
+      "es": "En estenosis mitral reumática relevante con fibrilación auricular, anticoagulación con antagonista de vitamina K, como warfarina, requiere control de INR; no sustituir por anticoagulante oral directo. Excluir trombo auricular y regurgitación significativa antes de comisurotomía. Embarazo: cardio-obstetricia.",
+      "sources": [
+        "vhdslides",
+        "vhd2021",
+        "topic_101"
+      ]
+    },
+    {
+      "id": "b03_001_f06",
+      "section": "followup",
+      "pt": "Encaminhar a equipe valvar; periodicidade de ecocardiograma e intervenção depende de gravidade e sintomas. Alta somente após estabilização e plano de reavaliação; dispneia em repouso, síncope ou hemoptise exigem retorno urgente.",
+      "es": "Derivar al equipo valvular; ecocardiograma e intervención dependen de gravedad y síntomas. Alta tras estabilización y plan de seguimiento; disnea en reposo, síncope o hemoptisis requieren atención urgente.",
+      "sources": [
+        "vhdslides",
+        "vhd2021",
+        "topic_101"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Na lesão reumática, fusão comissural pode responder à intervenção percutânea; na calcificação degenerativa esse mecanismo não se aplica. O tratamento sintomático não deve atrasar avaliação da lesão mecânica.",
+      "es": "En la lesión reumática, la fusión comisural puede responder a intervención percutánea; en calcificación degenerativa ese mecanismo no se aplica. El alivio sintomático no debe retrasar la evaluación de la lesión mecánica.",
+      "sources": [
+        "vhdslides",
+        "vhd2021",
+        "topic_101"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "vhdslides",
+      "title": "ESC — Official slides VHD 2025",
+      "url": "https://www.escardio.org/static-file/Escardio/Guidelines/Products/Slide%20sets/2025/2025%20official%20slides_VHD.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Trechos oficiais ESC 2025 verificados no índice: comissurotomia em estenose reumática sintomática elegível; cirurgia se inelegível; TEER na regurgitação primária grave sintomática de alto risco. Não alegar leitura integral do PDF bloqueado.",
+      "sourceEvidenceRecord": "web-verification-record.json:vhdslides",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "vhd2021",
+      "title": "ESC/EACTS — Valvular Heart Disease, 2021 (historical crosscheck)",
+      "url": "https://academic.oup.com/eurheartj/article/43/7/561/6358470",
+      "authorityStatus": "SUPERSEDED_GUIDELINE_BACKGROUND_WITH_2025_CROSSCHECK",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "ESC/EACTS 2021 histórico: fisiopatologia, eco, trombo atrial e anticoagulação VKA na estenose reumática com FA. Princípios intervencionistas conferidos com trechos oficiais de 2025; não apresentado como norma mais nova.",
+      "sourceEvidenceRecord": "web-verification-record.json:vhd2021",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_101",
+      "title": "NHS — Heart valve disease",
+      "url": "https://www.nhs.uk/conditions/heart-valve-disease/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 22 January 2025",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_101",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

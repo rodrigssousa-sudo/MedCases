@@ -1,0 +1,122 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Eritema pernio",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "e1f67ac4aa7dd0ad314e41caffad4f077e55ebf23c88d8c92aa26fdfe988a25d",
+  "ownerCandidate": "eritema_pernio",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_041_f01",
+    "b03_041_f02",
+    "b03_041_f03",
+    "b03_041_f04",
+    "b03_041_f05",
+    "b03_041_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Lesões acras inflamatórias após frio úmido não congelante, com prurido/dor e edema; não confundir com queimadura por congelamento."
+      ],
+      "factIds": [
+        "b03_041_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A recomendação educacional favorável a nifedipina precisa ser contextualizada pelo ensaio primário negativo. Isso impede inflar opções farmacológicas como se todas tivessem eficácia confirmada."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Correlacionar com frio, examinar perfusão e sinais de doença associada. Persistência sem frio, úlceras ou apresentação atípica exige avaliar lúpus/causas vasculares."
+      ],
+      "factIds": [
+        "b03_041_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Isquemia, necrose, dor desproporcional ou infecção exige urgência. Em típico estável, aquecimento gradual, proteção seca e evitar tabagismo."
+      ],
+      "factIds": [
+        "b03_041_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha: proteção térmica e redução de exposição. Tópico anti-inflamatório pode aliviar prurido em selecionados. Nifedipina às vezes é usada por especialista em refratários, mas ensaio controlado não confirmou benefício rotineiro e encontrou efeitos adversos; não apresentar como padrão obrigatório."
+      ],
+      "factIds": [
+        "b03_041_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Vasodilatadores podem causar hipotensão/edema; não inventar duas drogas equivalentes diante de evidência incerta. Lesão atípica/ulcerada necessita diagnóstico, não tratamento empírico prolongado."
+      ],
+      "factIds": [
+        "b03_041_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar resolução com proteção e investigar persistência/recorrência atípica. Alta com perfusão preservada e orientações de retorno."
+      ],
+      "factIds": [
+        "b03_041_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "pernio_derm",
+      "title": "DermNet — Chilblains",
+      "url": "https://dermnetnz.org/topics/chilblains",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:pernio_derm",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "pernio_trial",
+      "title": "Souwer et al — Randomized placebo controlled nifedipine trial, 2016",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/27621162/",
+      "authorityStatus": "PRIMARY_RANDOMIZED_TRIAL",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2016,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Ensaio randomizado 2016, resumo PubMed lido: nifedipina não superior ao placebo e associada à queda pressórica/edema; não recomendada como rotina automática.",
+      "sourceEvidenceRecord": "web-verification-record.json:pernio_trial",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_150",
+      "title": "NHS — Chilblains",
+      "url": "https://www.nhs.uk/conditions/chilblains/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 22 April 2026",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_150",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

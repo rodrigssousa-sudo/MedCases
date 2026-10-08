@@ -1,0 +1,102 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Febre amarela",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "0e2ffae64d8345d80c740d5aaf40c71d13d0769ebaac89d84e20c375532642f9",
+  "ownerCandidate": "febre_amarela",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_022_f01",
+    "b03_022_f02",
+    "b03_022_f03",
+    "b03_022_f04",
+    "b03_022_f05",
+    "b03_022_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Icterícia, sangramento, oligúria, hipotensão ou alteração mental: hospital/UTI. Monitorizar perfusão, glicemia e diurese; hidratação guiada pelo estado hemodinâmico, evitando sobrecarga."
+      ],
+      "factIds": [
+        "b03_022_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Investigar exposição, vacinação, hemograma, função hepática/renal e coagulação; confirmar por teste apropriado à fase e vigilância. Diferenciar dengue, leptospirose, malária e hepatites."
+      ],
+      "factIds": [
+        "b03_022_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira estratégia: suporte e hidratação; forma grave requer suporte de órgãos. Não existe antiviral específico comprovado nem dois esquemas curativos. Analgesia/antitérmico deve respeitar função hepática; vacina é prevenção, não tratamento do episódio."
+      ],
+      "factIds": [
+        "b03_022_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Evitar ácido acetilsalicílico e anti-inflamatórios não esteroides pelo sangramento. Revisar fármacos hepatotóxicos; não usar antibiótico/corticoide sem outra indicação. Notificar suspeita e prevenir picadas durante fase transmissível."
+      ],
+      "factIds": [
+        "b03_022_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Alta somente com estabilidade e evolução segura de órgãos/exames; retorno imediato se icterícia, sangramento ou prostração. Orientar vacinação futura apenas após avaliação das contraindicações."
+      ],
+      "factIds": [
+        "b03_022_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Arbovirose com febre e potencial acometimento hepático, renal e hemorrágico; exposição epidemiológica e vacinação orientam suspeita."
+      ],
+      "factIds": [
+        "b03_022_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "yellow_cdc",
+      "title": "CDC — Yellow fever treatment and prevention",
+      "url": "https://www.cdc.gov/yellow-fever/hcp/treatment-prevention/index.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC: suporte sem antiviral específico; evitar aspirina/anti-inflamatórios por sangramento.",
+      "sourceEvidenceRecord": "web-verification-record.json:yellow_cdc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_131",
+      "title": "NHS — Yellow fever",
+      "url": "https://www.nhs.uk/conditions/yellow-fever/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 25 July 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_131",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

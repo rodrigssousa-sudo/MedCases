@@ -1,0 +1,168 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Absceso cerebral",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "644837e34f21774419ab1f4e14e1cbe103d5ef7ec2da87604f827a38e73e97ae",
+  "ownerCandidate": "abscesso_cerebral",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_031_f01",
+    "b03_031_f02",
+    "b03_031_f03",
+    "b03_031_f04",
+    "b03_031_f05",
+    "b03_031_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hospital/neurocirugía/infectología urgentes; vía aérea, convulsiones/presión intracraneal según cuadro. Obtener material sin retrasar antibiótico en grave."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Resonancia con difusión si disponible; TC para urgencia. Hemocultivos/material aspirado y fuente dental/ORL/endocarditis. Evitar punción lumbar ante masa por riesgo de herniación."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Comunitario: cefalosporina de tercera generación como ceftriaxona MÁS metronidazol según ESCMID; ajustar al cultivo. Posneurocirugía: cobertura diferente, como carbapenémico y antiestafilocócico resistente por equipo. Aspiración/exéresis si viable; solo medicamentos en elegibles."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "ESCMID: generalmente 6–8 semanas, según drenaje, agente/respuesta. No usar curso corto de meningitis; corticoide solo en edema grave/riesgo de herniación por especialista. Dosis hospitalarias según peso/riñón."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Imágenes/examen neurológico seriados; cefalea intensa nueva, déficit/convulsión: reevaluar. Alta estable con antimicrobianos/monitorización asegurados."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Colección infecciosa intracerebral por foco contiguo, sangre o neurocirugía; puede causar masa/convulsiones."
+    }
+  ],
+  "references": [
+    {
+      "key": "brain2024",
+      "title": "ESCMID — Brain abscess guideline, 2024",
+      "url": "https://www.clinicalmicrobiologyandinfection.com/article/S1198-743X(23)00399-3/fulltext",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "ESCMID final 2024: aspiração/excisão, cefalosporina de terceira geração + metronidazol em comunidade, carbapenêmico + vancomicina/linezolida no pós-neurocirúrgico; duração usual 6–8 semanas individualizada. Trechos primários consultados, não acesso integral restrito.",
+      "sourceEvidenceRecord": "web-verification-record.json:brain2024",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "brain_nhs",
+      "title": "NHS — Brain abscess treatment",
+      "url": "https://www.nhs.uk/conditions/brain-abscess/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 18 October 2022",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:brain_nhs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_140",
+      "title": "NHS — Brain abscess",
+      "url": "https://www.nhs.uk/conditions/brain-abscess/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 18 October 2022",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_140",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Hospital/neurocirugía/infectología urgentes; vía aérea, convulsiones/presión intracraneal según cuadro. Obtener material sin retrasar antibiótico en grave."
+      ],
+      "factIds": [
+        "b03_031_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Resonancia con difusión si disponible; TC para urgencia. Hemocultivos/material aspirado y fuente dental/ORL/endocarditis. Evitar punción lumbar ante masa por riesgo de herniación."
+      ],
+      "factIds": [
+        "b03_031_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Comunitario: cefalosporina de tercera generación como ceftriaxona MÁS metronidazol según ESCMID; ajustar al cultivo. Posneurocirugía: cobertura diferente, como carbapenémico y antiestafilocócico resistente por equipo. Aspiración/exéresis si viable; solo medicamentos en elegibles."
+      ],
+      "factIds": [
+        "b03_031_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "ESCMID: generalmente 6–8 semanas, según drenaje, agente/respuesta. No usar curso corto de meningitis; corticoide solo en edema grave/riesgo de herniación por especialista. Dosis hospitalarias según peso/riñón."
+      ],
+      "factIds": [
+        "b03_031_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Imágenes/examen neurológico seriados; cefalea intensa nueva, déficit/convulsión: reevaluar. Alta estable con antimicrobianos/monitorización asegurados."
+      ],
+      "factIds": [
+        "b03_031_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Colección infecciosa intracerebral por foco contiguo, sangre o neurocirugía; puede causar masa/convulsiones."
+      ],
+      "factIds": [
+        "b03_031_f01"
+      ]
+    }
+  ],
+  "markdown": "# Absceso cerebral\n\n## Abordaje inicial y urgencias\n\nHospital/neurocirugía/infectología urgentes; vía aérea, convulsiones/presión intracraneal según cuadro. Obtener material sin retrasar antibiótico en grave.\n\n## Diagnóstico y diferenciales\n\nResonancia con difusión si disponible; TC para urgencia. Hemocultivos/material aspirado y fuente dental/ORL/endocarditis. Evitar punción lumbar ante masa por riesgo de herniación.\n\n## Tratamiento: primera elección y alternativas\n\nComunitario: cefalosporina de tercera generación como ceftriaxona MÁS metronidazol según ESCMID; ajustar al cultivo. Posneurocirugía: cobertura diferente, como carbapenémico y antiestafilocócico resistente por equipo. Aspiración/exéresis si viable; solo medicamentos en elegibles.\n\n## Seguridad y monitorización\n\nESCMID: generalmente 6–8 semanas, según drenaje, agente/respuesta. No usar curso corto de meningitis; corticoide solo en edema grave/riesgo de herniación por especialista. Dosis hospitalarias según peso/riñón.\n\n## Reevaluación, internación y alta\n\nImágenes/examen neurológico seriados; cefalea intensa nueva, déficit/convulsión: reevaluar. Alta estable con antimicrobianos/monitorización asegurados.\n\n## Reconocimiento rápido\n\nColección infecciosa intracerebral por foco contiguo, sangre o neurocirugía; puede causar masa/convulsiones.\n\n## Referencias\n\n1. [ESCMID — Brain abscess guideline, 2024](https://www.clinicalmicrobiologyandinfection.com/article/S1198-743X(23)00399-3/fulltext)\n2. [NHS — Brain abscess treatment](https://www.nhs.uk/conditions/brain-abscess/treatment/)\n3. [NHS — Brain abscess](https://www.nhs.uk/conditions/brain-abscess/)",
+  "approvedReviewCanonicalFileSha256": "e34aef7a7221b4765b44240551fa9f5b52827f3261bcdee5408eedf07ae6a6fe",
+  "approvedReviewProjectionFileSha256": "b96022caa261f81ccc55d6c7b82cf7ec2d34875778a7fc3a73c18e8b36d3d23b"
+}

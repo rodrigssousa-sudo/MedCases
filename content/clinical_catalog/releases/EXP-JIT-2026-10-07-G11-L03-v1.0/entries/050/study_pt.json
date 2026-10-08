@@ -1,0 +1,170 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Sialolitíase",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "a2b309a4b24ad7089fdb89b808e1d7ab59966bee1ddd1f71f7b860495e6ca57a",
+  "ownerCandidate": "sialolitiase",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_050_f01",
+    "b03_050_f02",
+    "b03_050_f03",
+    "b03_050_f04",
+    "b03_050_f05",
+    "b03_050_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Cálculo no ducto/glândula salivar causa obstrução, dor e edema relacionados a refeições; pode existir sem infecção, distinta da sialadenite já cadastrada."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "A sialadenite descreve inflamação/infecção; sialolitíase descreve a causa mecânica, que pode existir isoladamente. A distinção mantém o owner de infecção e evita prescrição antimicrobiana desnecessária."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examinar ductos e palpação cuidadosa; ultrassom conforme dúvida/persistência. Febre/pus sugerem infecção adicional; massa fixa/progressiva exige excluir neoplasia."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hidratar, massagem suave e estímulo salivar se seguro; avaliar via aérea e extensão cervical em grave. Não usar objeto pontiagudo para retirar cálculo."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira estratégia em pequeno e não complicado: medidas conservadoras e analgesia. Alternativa em obstrução persistente: remoção por profissional, sialendoscopia ou cirurgia conforme localização. Antibiótico somente se infecção associada, seguindo owner de sialadenite."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não há dois fármacos que dissolvam universalmente cálculos salivares. Analgesia pode usar paracetamol ou anti-inflamatório se elegível, revisando rim, sangramento e gestação. Sepse/ameaça aérea exige hospital."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Persistência exige especialista, sem prolongar antibiótico no cálculo não infectado. Alta com via aérea segura, hidratação e plano de remoção/retorno; recorrência exige reavaliação."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_159",
+      "title": "NHS — Salivary gland stones",
+      "url": "https://www.nhs.uk/conditions/salivary-gland-stones/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 14 August 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_159",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "sial_gcc",
+      "title": "NHS GGC — Salivary gland pathology, stones and sialadenitis",
+      "url": "https://www.rightdecisions.scot.nhs.uk/ggc-primary-care/ear-nose-and-throat-ent/ear-nose-and-throat-ent-referral-guidance/throat-conditions/neck-lump/salivary-gland-pathology-sialadenitis-stones-cancer/",
+      "authorityStatus": "OFFICIAL_REGIONAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "review date:",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:sial_gcc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Cálculo no ducto/glândula salivar causa obstrução, dor e edema relacionados a refeições; pode existir sem infecção, distinta da sialadenite já cadastrada."
+      ],
+      "factIds": [
+        "b03_050_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A sialadenite descreve inflamação/infecção; sialolitíase descreve a causa mecânica, que pode existir isoladamente. A distinção mantém o owner de infecção e evita prescrição antimicrobiana desnecessária."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar ductos e palpação cuidadosa; ultrassom conforme dúvida/persistência. Febre/pus sugerem infecção adicional; massa fixa/progressiva exige excluir neoplasia."
+      ],
+      "factIds": [
+        "b03_050_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Hidratar, massagem suave e estímulo salivar se seguro; avaliar via aérea e extensão cervical em grave. Não usar objeto pontiagudo para retirar cálculo."
+      ],
+      "factIds": [
+        "b03_050_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira estratégia em pequeno e não complicado: medidas conservadoras e analgesia. Alternativa em obstrução persistente: remoção por profissional, sialendoscopia ou cirurgia conforme localização. Antibiótico somente se infecção associada, seguindo owner de sialadenite."
+      ],
+      "factIds": [
+        "b03_050_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não há dois fármacos que dissolvam universalmente cálculos salivares. Analgesia pode usar paracetamol ou anti-inflamatório se elegível, revisando rim, sangramento e gestação. Sepse/ameaça aérea exige hospital."
+      ],
+      "factIds": [
+        "b03_050_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Persistência exige especialista, sem prolongar antibiótico no cálculo não infectado. Alta com via aérea segura, hidratação e plano de remoção/retorno; recorrência exige reavaliação."
+      ],
+      "factIds": [
+        "b03_050_f06"
+      ]
+    }
+  ],
+  "markdown": "# Sialolitíase\n\n## Conceito e mecanismo\n\nCálculo no ducto/glândula salivar causa obstrução, dor e edema relacionados a refeições; pode existir sem infecção, distinta da sialadenite já cadastrada.\n\n## Raciocínio e escolha terapêutica\n\nA sialadenite descreve inflamação/infecção; sialolitíase descreve a causa mecânica, que pode existir isoladamente. A distinção mantém o owner de infecção e evita prescrição antimicrobiana desnecessária.\n\n## Diagnóstico e diferenciais\n\nExaminar ductos e palpação cuidadosa; ultrassom conforme dúvida/persistência. Febre/pus sugerem infecção adicional; massa fixa/progressiva exige excluir neoplasia.\n\n## Abordagem inicial e urgências\n\nHidratar, massagem suave e estímulo salivar se seguro; avaliar via aérea e extensão cervical em grave. Não usar objeto pontiagudo para retirar cálculo.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira estratégia em pequeno e não complicado: medidas conservadoras e analgesia. Alternativa em obstrução persistente: remoção por profissional, sialendoscopia ou cirurgia conforme localização. Antibiótico somente se infecção associada, seguindo owner de sialadenite.\n\n## Segurança e monitorização\n\nNão há dois fármacos que dissolvam universalmente cálculos salivares. Analgesia pode usar paracetamol ou anti-inflamatório se elegível, revisando rim, sangramento e gestação. Sepse/ameaça aérea exige hospital.\n\n## Reavaliação, internação e alta\n\nPersistência exige especialista, sem prolongar antibiótico no cálculo não infectado. Alta com via aérea segura, hidratação e plano de remoção/retorno; recorrência exige reavaliação.\n\n## Referências\n\n1. [NHS — Salivary gland stones](https://www.nhs.uk/conditions/salivary-gland-stones/)\n2. [NHS GGC — Salivary gland pathology, stones and sialadenitis](https://www.rightdecisions.scot.nhs.uk/ggc-primary-care/ear-nose-and-throat-ent/ear-nose-and-throat-ent-referral-guidance/throat-conditions/neck-lump/salivary-gland-pathology-sialadenitis-stones-cancer/)",
+  "approvedReviewCanonicalFileSha256": "99d448009b43b900e813532f46cff5d56eb35752f7a10a6668eb9dc2d35a461f",
+  "approvedReviewProjectionFileSha256": "5aea12864219d913c0722c70886823d8850522e77fa4129b303b63a636265c13"
+}

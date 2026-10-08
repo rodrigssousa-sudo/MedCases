@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Pterigión",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "92ba775d48dc72e906e976d69f812aa4b5501bad22a04566cfd505512c6985b8",
+  "ownerCandidate": "pterigio",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_049_f01",
+    "b03_049_f02",
+    "b03_049_f03",
+    "b03_049_f04",
+    "b03_049_f05",
+    "b03_049_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Crecimiento fibrovascular conjuntival sobre córnea, asociado a ambiente/ultravioleta; causa irritación/astigmatismo."
+      ],
+      "factIds": [
+        "b03_049_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Protección limita exposición y lubricante mejora superficie; resección trata crecimiento formado. Ponderar beneficio con recurrencia/cicatrización."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examen, agudeza/extensión/progresión; atipia o crecimiento rápido: excluir neoplasia de superficie. Diferenciar pinguécula/infección."
+      ],
+      "factIds": [
+        "b03_049_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Dolor intenso, fotofobia/baja visual súbita no es simple: evaluar urgencia ocular. Leve: proteger superficie/exposición."
+      ],
+      "factIds": [
+        "b03_049_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección conservadora: protección ultravioleta/lágrimas artificiales. Si progresa, amenaza eje, astigmatismo relevante o persiste: excisión especializada, frecuentemente injerto conjuntival. Corticoide tópico solo en inflamación seleccionada/supervisada."
+      ],
+      "factIds": [
+        "b03_049_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Lubricante alivia, no elimina tejido. Cirugía puede recurrir; mitomicina/adyuvantes solo con indicación/preparación especializada, no receta casera. No antibiótico sin infección."
+      ],
+      "factIds": [
+        "b03_049_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguir crecimiento/visión y necesidad quirúrgica. Alta de guardia sin signos peligrosos y con seguimiento."
+      ],
+      "factIds": [
+        "b03_049_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_158",
+      "title": "EYES — Pterygium",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/pterygium",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_GUIDELINE_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "web-verification-record.json:topic_158",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "pterygium_nhs",
+      "title": "University Hospitals Sussex NHS — Pterygium surgery",
+      "url": "https://www.uhsussex.nhs.uk/resources/your-guide-to-pterygium-surgery-2/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2023,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published 2018 Jun 12. doi:10.1186/s40662-018-0107-0",
+      "scope": "NHS Sussex página revista em outubro 2023: lubrificação/proteção ambiental, cirurgia selecionada e enxerto conjuntival; risco de recorrência. Texto oficial lido na busca.",
+      "sourceEvidenceRecord": "web-verification-record.json:pterygium_nhs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Granuloma piogênico",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "e5c73a0e5d581ffad9783a8cda4e403cbcfba72c33c44527765c37d434721c65",
+  "ownerCandidate": "granuloma_piogenico",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_036_f01",
+    "b03_036_f02",
+    "b03_036_f03",
+    "b03_036_f04",
+    "b03_036_f05",
+    "b03_036_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Proliferação vascular benigna e friável, frequentemente sangrante; apesar do nome, não é abscesso por definição."
+      ],
+      "factIds": [
+        "b03_036_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A escolha de destruir ou excisar envolve certeza diagnóstica e necessidade de amostra. Tratar suposta lesão benigna sem excluir tumor é uma armadilha mais relevante que ampliar lista de fármacos."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliação dermatológica; lesão atípica, pigmentada ou recorrente exige histologia para excluir melanoma amelanótico/outro tumor. Investigar trauma, medicamentos e gestação quando pertinentes."
+      ],
+      "factIds": [
+        "b03_036_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Sangramento: compressão direta e curativo; persistência importante exige atendimento/procedimento. Não cauterizar lesão suspeita sem estratégia de diagnóstico histológico."
+      ],
+      "factIds": [
+        "b03_036_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira opção frequente: curetagem e cauterização ou excisão com histologia. Alternativa selecionada: laser ou tratamento tópico como timolol em contexto dermatológico, especialmente para evitar procedimento em casos elegíveis. Não equivalem em controle/diagnóstico."
+      ],
+      "factIds": [
+        "b03_036_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Timolol tópico nesse uso exige avaliação de absorção, bradicardia e broncoespasmo; não usar formulação/dose ocular como prescrição cutânea automática. Antibiótico não é tratamento de rotina."
+      ],
+      "factIds": [
+        "b03_036_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Rever histologia, cicatrização e recorrência; gestação pode alterar evolução. Alta com sangramento controlado e retorno; persistência requer dermatologia."
+      ],
+      "factIds": [
+        "b03_036_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "pyogenic_bad",
+      "title": "British Association of Dermatologists — Pyogenic granulomas",
+      "url": "https://www.bad.org.uk/pils/pyogenic-granulomas",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "REVIEW DATE | OCTOBER 2025",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:pyogenic_bad",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_145",
+      "title": "DERMNET — Pyogenic granuloma",
+      "url": "https://dermnetnz.org/topics/pyogenic-granuloma",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_145",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

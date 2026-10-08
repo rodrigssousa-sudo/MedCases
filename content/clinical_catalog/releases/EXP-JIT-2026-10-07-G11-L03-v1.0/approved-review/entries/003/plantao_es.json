@@ -1,0 +1,128 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Miocardiopatía dilatada",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "462e54e69f60645451e4053499e8bc23eb11e54428f196488e996bd6c65475ee",
+  "ownerCandidate": "cardiomiopatia_dilatada",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_003_f01",
+    "b03_003_f02",
+    "b03_003_f03",
+    "b03_003_f04",
+    "b03_003_f05",
+    "b03_003_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Shock, arritmia sostenida, síncope sospechoso o congestión con hipoxemia requieren hospitalización. Tratar desencadenante y congestión, monitorizando perfusión, ritmo y diuresis; no iniciar beta-bloqueante en shock."
+      ],
+      "factIds": [
+        "b03_003_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "ECG, ecocardiograma, función renal/electrolitos e investigación etiológica; resonancia para cicatriz/inflamación. Diferenciar cardiopatía isquémica, valvulopatía, taquicardiomiopatía y miocarditis. Historia familiar y genética orientan evaluación de familiares."
+      ],
+      "factIds": [
+        "b03_003_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "En fracción reducida estable, combinar terapias pronósticas según elegibilidad: sacubitrilo/valsartán o IECA/ARA-II, beta-bloqueante con evidencia, antagonista mineralocorticoide e inhibidor SGLT2. Ejemplos: bisoprolol/carvedilol, espironolactona/eplerenona y dapagliflozina/empagliflozina. No son cuatro alternativas excluyentes."
+      ],
+      "factIds": [
+        "b03_003_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Diurético para congestión con titulación individual. Revisar hipotensión, potasio, función renal, interacciones y contraindicaciones; no combinar IECA con sacubitrilo/valsartán. El eje renina-angiotensina requiere alternativas específicas en embarazo. Desfibrilador/resincronización según riesgo, función y criterios especializados."
+      ],
+      "factIds": [
+        "b03_003_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar tolerancia y análisis al iniciar/titular; mantener terapia tras recuperación de función salvo indicación especializada. Enfermedad avanzada refractaria puede requerir asistencia ventricular/trasplante."
+      ],
+      "factIds": [
+        "b03_003_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Dilatación ventricular con disfunción sistólica no explicada solo por carga anormal o enfermedad coronaria; investigar causas genéticas, tóxicas, inflamatorias y metabólicas."
+      ],
+      "factIds": [
+        "b03_003_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "cm2023",
+      "title": "ESC — Cardiomyopathies 2023",
+      "url": "https://academic.oup.com/eurheartj/article/44/37/3503/7246608",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2023,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "ESC 2023: investigação fenotípica/etiológica, imagem, genética e rastreio familiar; recomendações terapêuticas da insuficiência cardíaca cruzadas com slides oficiais ESC 2026 efetivamente lidos.",
+      "sourceEvidenceRecord": "web-verification-record.json:cm2023",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "hfslides2026",
+      "title": "ESC — Heart failure guideline official slide set, 2026",
+      "url": "https://dam-assets.escardio.org/download/b2e587389baa11f185de06bdfb3e4be9",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published on 28/08/26.",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:hfslides2026",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "ng106",
+      "title": "NICE NG106 — Heart failure, updated 2025",
+      "url": "https://www.nice.org.uk/guidance/ng106/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE atualizado em setembro de 2025: terapia por classes na IC com fração reduzida e monitorização de função renal/potássio. Recomendações específicas consultadas por busca oficial.",
+      "sourceEvidenceRecord": "web-verification-record.json:ng106",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_103",
+      "title": "NHS — Cardiomyopathy",
+      "url": "https://www.nhs.uk/conditions/cardiomyopathy/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 25 May 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_103",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

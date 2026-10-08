@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "catarata",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Catarata",
+    "es": "Catarata"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "OPTICAL_SUPPORT_OR_SURGERY_NO_CURATIVE_DRUG",
+  "facts": [
+    {
+      "id": "b03_048_f01",
+      "section": "concept",
+      "pt": "Opacificação do cristalino com redução visual gradual, ofuscamento e alteração de contraste; catarata típica não causa olho vermelho doloroso agudo.",
+      "es": "Opacidad del cristalino con baja visual gradual, deslumbramiento/menor contraste; típica no causa ojo rojo doloroso agudo.",
+      "sources": [
+        "ng77",
+        "topic_157"
+      ]
+    },
+    {
+      "id": "b03_048_f02",
+      "section": "diagnosis",
+      "pt": "Acuidade e exame ocular confirmam opacidade e outras causas de baixa visual; avaliar repercussão funcional e comorbidades retinianas. Não atribuir perda súbita à catarata sem investigação.",
+      "es": "Agudeza/examen confirman opacidad/otras causas; impacto funcional y retina. No atribuir pérdida súbita a catarata sin investigar.",
+      "sources": [
+        "ng77",
+        "topic_157"
+      ]
+    },
+    {
+      "id": "b03_048_f03",
+      "section": "initial",
+      "pt": "No Plantão, excluir glaucoma agudo, descolamento, infecção e causas vasculares quando dor/perda súbita. Catarata estável segue avaliação eletiva.",
+      "es": "En guardia, excluir glaucoma agudo, desprendimiento, infección/causas vasculares si dolor/pérdida súbita. Estable: evaluación electiva.",
+      "sources": [
+        "ng77",
+        "topic_157"
+      ]
+    },
+    {
+      "id": "b03_048_f04",
+      "section": "options",
+      "pt": "Leve: atualizar correção óptica, iluminação e medidas de segurança. Alternativa definitiva quando função/qualidade de vida justificam: cirurgia com implante de lente após decisão compartilhada. Não limitar indicação apenas a um corte de acuidade.",
+      "es": "Leve: actualizar corrección óptica, iluminación/seguridad. Definitiva si función/calidad de vida lo justifican: cirugía con lente tras decisión compartida. No limitar por un corte de agudeza solo.",
+      "sources": [
+        "ng77",
+        "topic_157"
+      ]
+    },
+    {
+      "id": "b03_048_f05",
+      "section": "safety",
+      "pt": "Não há colírio/fármaco comprovado que reverta rotineiramente catarata. Avaliar biometrias, risco, consentimento e expectativa; esquemas pós-operatórios pertencem ao cirurgião, não à lista de medicamentos para catarata não operada.",
+      "es": "No hay colirio/fármaco demostrado que revierta rutinariamente catarata. Biometría, riesgos, consentimiento/expectativas; terapia posoperatoria por cirujano, no para catarata sin operar.",
+      "sources": [
+        "ng77",
+        "topic_157"
+      ]
+    },
+    {
+      "id": "b03_048_f06",
+      "section": "followup",
+      "pt": "Acompanhar evolução e funcionalidade; orientar retorno urgente após cirurgia por dor intensa ou queda visual. Crianças com catarata têm urgência e tratamento próprios para evitar ambliopia.",
+      "es": "Seguir evolución/función; tras cirugía, dolor intenso/baja visual: urgencia. Niños requieren manejo urgente propio para evitar ambliopía.",
+      "sources": [
+        "ng77",
+        "topic_157"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A opacidade é estrutural; lentes externas podem compensar parte da função, mas a cirurgia remove o cristalino opaco. Não se fabrica um segundo medicamento curativo.",
+      "es": "La opacidad es estructural; lentes externas compensan función parcialmente, cirugía retira cristalino opaco. No se inventa segundo fármaco curativo.",
+      "sources": [
+        "ng77",
+        "topic_157"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "ng77",
+      "title": "NICE NG77 — Adult cataracts recommendations",
+      "url": "https://www.nice.org.uk/guidance/ng77/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE NG77 com vigilância de maio 2025: decisão compartilhada funcional sobre cirurgia, sem corte isolado de acuidade.",
+      "sourceEvidenceRecord": "web-verification-record.json:ng77",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_157",
+      "title": "NHS — Cataracts in adults",
+      "url": "https://www.nhs.uk/conditions/cataracts/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 12 March 2025",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_157",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

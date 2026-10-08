@@ -1,0 +1,99 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Paracoccidioidomicosis",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "4fa8b8e01f9071b3016ea26769a1d2f271512b8a3a5659ea645a62bc4893fdc0",
+  "ownerCandidate": "paracoccidioidomicose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_027_f01",
+    "b03_027_f02",
+    "b03_027_f03",
+    "b03_027_f04",
+    "b03_027_f05",
+    "b03_027_f06",
+    "b03_027_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Fallo respiratorio, diseminación importante, suprarrenal o neurológica: hospital/infectología. Nutrición, hemograma, riñón/hígado y electrolitos."
+      ],
+      "factIds": [
+        "b03_027_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Confirmar con examen directo/histología/cultivo y serología de apoyo. Evaluar órganos y distinguir tuberculosis, cáncer/otras micosis; secuela fibrosa no equivale a actividad."
+      ],
+      "factIds": [
+        "b03_027_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Leve/moderada elegible: itraconazol preferido; sulfametoxazol/trimetoprima alternativo según disponibilidad/órgano. Grave: inducción con formulación seleccionada de anfotericina B y transición oral tras respuesta; no son equivalentes por gravedad."
+      ],
+      "factIds": [
+        "b03_027_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Referencia adulta del Ministerio de Salud, 2024: forma leve/moderada elegible, itraconazol 200 mg por vía oral una vez al día, duración media 9–18 meses según respuesta. Alternativa: sulfametoxazol 800 mg MÁS trimetoprima 160 mg por vía oral cada 12 horas, duración media 18–24 meses; el protocolo admite otros intervalos en casos seleccionados. No convertir meses en semanas. Sistema nervioso, inmunosupresión, embarazo/gravedad requieren esquema propio; no extrapolar a niños."
+      ],
+      "factIds": [
+        "b03_027_f05"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Tratamiento prolongado individualizado por forma/respuesta; no abreviar meses como semanas. Azol: hígado/interacciones; cotrimoxazol: riñón, potasio/hemograma; anfotericina: riñón/electrolitos. Embarazo/sistema nervioso: especialista."
+      ],
+      "factIds": [
+        "b03_027_f06"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguir respuesta clínica, serológica y secuelas hasta criterio de curación; asegurar adherencia. Fatiga, hipotensión o alteraciones electrolíticas: evaluar insuficiencia suprarrenal."
+      ],
+      "factIds": [
+        "b03_027_f07"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Micosis sistémica endémica inhalada, crónica adulta o aguda/subaguda; puede afectar pulmón, mucosas, ganglios y suprarrenales."
+      ],
+      "factIds": [
+        "b03_027_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "pcm2024",
+      "title": "Ministério da Saúde — Guia de vigilância em saúde, 6a edição revisada, volume 2",
+      "url": "https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/vigilancia/guia-de-vigilancia-em-saude-volume-2-6a-edicao",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published ",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:pcm2024",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

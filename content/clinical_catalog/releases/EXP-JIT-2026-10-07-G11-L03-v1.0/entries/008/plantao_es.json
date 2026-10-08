@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Absceso pulmonar",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "5f65e5daf06f6d97c0f87eaf335ab16686cc6a4b1cee6a5333257e885bbf342d",
+  "ownerCandidate": "abscesso_pulmonar",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_008_f01",
+    "b03_008_f02",
+    "b03_008_f03",
+    "b03_008_f04",
+    "b03_008_f05",
+    "b03_008_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sepsis, hipoxemia, hemoptisis importante o intolerancia oral requieren internación. Consultar neumología/infectología; soporte respiratorio, tratar aspiración y ajustar antibiótico a microbiología."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "TC/radiografía, esputo y hemocultivos según gravedad; evaluar dientes, aspiración, obstrucción e inmunosupresión. Broncoscopia si obstrucción o diagnóstico incierto."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Referencia adulta NHS Grampian: amoxicilina/clavulanato 1,2 g intravenoso cada 8 horas. Ante alergia a penicilina: sulfametoxazol/trimetoprima 960 mg intravenoso cada 12 horas MÁS metronidazol 500 mg intravenoso cada 8 horas; confirmar composición, función renal y adecuación local."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Duración y transición oral según especialista y respuesta clínica/imágenes; no usar duración de neumonía simple. Drenaje/cirugía en casos seleccionados o fracaso. Pediatría/embarazo requieren esquema propio; no extrapolar cotrimoxazol."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguimiento clínico/radiológico hasta resolución; cavidad persistente obliga a revisar obstrucción, tumor, micobacteria y resistencia."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Necrosis infecciosa parenquimatosa con cavitación, frecuentemente por aspiración; distinguir de empiema y cavitación tumoral/tuberculosa."
+    }
+  ],
+  "references": [
+    {
+      "key": "lungabs",
+      "title": "NHS Grampian — Lung abscess antimicrobial protocol",
+      "url": "https://www.rightdecisions.scot.nhs.uk/antimicrobial-prescribing-nhs-grampian-orkney-shetland/hospital-guidance-for-adults/respiratory-system/lung-abscess/",
+      "authorityStatus": "OFFICIAL_REGIONAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:lungabs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "lungabs2025",
+      "title": "Buckinghamshire NHS — Respiratory antimicrobial guideline 133FM.18.2, 2025",
+      "url": "https://www.bucksformulary.nhs.uk/docs/Guideline_133FM.pdf?uid=881982042&uid2=2025522165412314",
+      "authorityStatus": "OFFICIAL_REGIONAL_CLINICAL_PROTOCOL",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Review Date October 2029 ",
+      "scope": "Usar somente os cenários e formulações do documento consultado.",
+      "sourceEvidenceRecord": "source-readback.json:lungabs2025",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Sepsis, hipoxemia, hemoptisis importante o intolerancia oral requieren internación. Consultar neumología/infectología; soporte respiratorio, tratar aspiración y ajustar antibiótico a microbiología."
+      ],
+      "factIds": [
+        "b03_008_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "TC/radiografía, esputo y hemocultivos según gravedad; evaluar dientes, aspiración, obstrucción e inmunosupresión. Broncoscopia si obstrucción o diagnóstico incierto."
+      ],
+      "factIds": [
+        "b03_008_f02"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Referencia adulta NHS Grampian: amoxicilina/clavulanato 1,2 g intravenoso cada 8 horas. Ante alergia a penicilina: sulfametoxazol/trimetoprima 960 mg intravenoso cada 12 horas MÁS metronidazol 500 mg intravenoso cada 8 horas; confirmar composición, función renal y adecuación local."
+      ],
+      "factIds": [
+        "b03_008_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Duración y transición oral según especialista y respuesta clínica/imágenes; no usar duración de neumonía simple. Drenaje/cirugía en casos seleccionados o fracaso. Pediatría/embarazo requieren esquema propio; no extrapolar cotrimoxazol."
+      ],
+      "factIds": [
+        "b03_008_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguimiento clínico/radiológico hasta resolución; cavidad persistente obliga a revisar obstrucción, tumor, micobacteria y resistencia."
+      ],
+      "factIds": [
+        "b03_008_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Necrosis infecciosa parenquimatosa con cavitación, frecuentemente por aspiración; distinguir de empiema y cavitación tumoral/tuberculosa."
+      ],
+      "factIds": [
+        "b03_008_f01"
+      ]
+    }
+  ],
+  "markdown": "# Absceso pulmonar\n\n## Abordaje inicial y urgencias\n\nSepsis, hipoxemia, hemoptisis importante o intolerancia oral requieren internación. Consultar neumología/infectología; soporte respiratorio, tratar aspiración y ajustar antibiótico a microbiología.\n\n## Diagnóstico y diferenciales\n\nTC/radiografía, esputo y hemocultivos según gravedad; evaluar dientes, aspiración, obstrucción e inmunosupresión. Broncoscopia si obstrucción o diagnóstico incierto.\n\n## Fármacos, dosis e intervalos\n\nReferencia adulta NHS Grampian: amoxicilina/clavulanato 1,2 g intravenoso cada 8 horas. Ante alergia a penicilina: sulfametoxazol/trimetoprima 960 mg intravenoso cada 12 horas MÁS metronidazol 500 mg intravenoso cada 8 horas; confirmar composición, función renal y adecuación local.\n\n## Seguridad y monitorización\n\nDuración y transición oral según especialista y respuesta clínica/imágenes; no usar duración de neumonía simple. Drenaje/cirugía en casos seleccionados o fracaso. Pediatría/embarazo requieren esquema propio; no extrapolar cotrimoxazol.\n\n## Reevaluación, internación y alta\n\nSeguimiento clínico/radiológico hasta resolución; cavidad persistente obliga a revisar obstrucción, tumor, micobacteria y resistencia.\n\n## Reconocimiento rápido\n\nNecrosis infecciosa parenquimatosa con cavitación, frecuentemente por aspiración; distinguir de empiema y cavitación tumoral/tuberculosa.\n\n## Referencias\n\n1. [NHS Grampian — Lung abscess antimicrobial protocol](https://www.rightdecisions.scot.nhs.uk/antimicrobial-prescribing-nhs-grampian-orkney-shetland/hospital-guidance-for-adults/respiratory-system/lung-abscess/)\n2. [Buckinghamshire NHS — Respiratory antimicrobial guideline 133FM.18.2, 2025](https://www.bucksformulary.nhs.uk/docs/Guideline_133FM.pdf?uid=881982042&uid2=2025522165412314)",
+  "approvedReviewCanonicalFileSha256": "763b2a6727a342a2db04d8e313369ee662db052376992eec1110228d75da0c4c",
+  "approvedReviewProjectionFileSha256": "c21c96be74097456ff8cfa6652cb7108c8b1fd0260b39a24c5bf1bbb44acac45"
+}

@@ -1,0 +1,418 @@
+{
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "humanApproval": "PASS",
+  "clinicalApproval": "PASS",
+  "clinicalAuditRequiredAgain": false,
+  "approvalText": "PAROVADO INTEGRALMENTE EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewer": "Owner — aprovação explícita no chat",
+  "approvedAt": "2026-10-07T23:56:19.867604+00:00",
+  "approvedCanonicalHashes": {
+    "estenose_mitral": "522c6126b0ce52eb0a9c4ee13f27435c9cebe26857f591e79749f1123f5df5c5",
+    "insuficiencia_mitral_cronica_primaria": "0e4d11ec210ad5402f0a9298b582265b63d38e43cd2d9e4fbbed9fa5c321da08",
+    "cardiomiopatia_dilatada": "39119ea6ee97e1d72ffc29dacb24fe417b355f0c2cdb6e1e2c10bff4e5485c76",
+    "hipertensao_pulmonar": "7ff3859b51c083b3a976a4f5c2e0ca42b101f20741364c5b0ff679104ebfacb8",
+    "bronquiectasias": "5c9511ab0eb0bdf982f14b2438bc8d97e1767e404e9fa6815a9faca63be9445f",
+    "derrame_pleural": "4df2a25b253fbda68dcc8d9f9104b0f1dd4d1f4cddcfb526eb752e7dc99fc826",
+    "empiema_pleural": "18ed3b84b67cdfed7675e71ad1bc7773769d22013bfdbcfd844d1aace0bbccc1",
+    "abscesso_pulmonar": "5f65e5daf06f6d97c0f87eaf335ab16686cc6a4b1cee6a5333257e885bbf342d",
+    "pneumoconioses_incluindo_silicose_e_asbestose": "b0f89a22d3d0617e628cb4225d37eabdd467a2b4d69f1141745f06551c6dbd78",
+    "sindrome_de_hipoventilacao_da_obesidade": "0c624e39bf7033ae1dabba2b63a4484044ef68d605757ba628f39a6399e6429a",
+    "insuficiencia_pancreatica_exocrina": "d2a84426b39f9bb6e609180fdd37a299e34d28b8afc7e4c945367a1276936213",
+    "gastroparesia": "26e826c90fe7e6d4da3a5d538e6e7000287ee4524644d0c415b5edaddcea6436",
+    "sindrome_de_vomitos_ciclicos": "b28b45f08cdab084be624e72c2be260512430e1927d2121127899d40e957a16a",
+    "sindrome_de_hiperemese_canabinoide": "75c6ab613cd0dfabbeee4b110647bfa2ed154516e827c24ff0486a64d2bc7457",
+    "sindrome_de_dumping": "4e168a4e565b110b3079019bf9ffe310f1954ea7fe2b21c4860ce981f2dc740a",
+    "incontinencia_fecal_no_adulto": "c1b7253add5db148dbb9fa5100b0d7f23ba9c91a86b981f3fdbdc2862b047d44",
+    "prolapso_retal": "b701326a6cf29b9ef9ead5dba34b485b00165cd8e8c8dbab871e65c38f6c66de",
+    "cirrose_hepatica": "5a28cc289ea5d51be7dde79dde6c6e6bc5e166ec0ca96a4ce881aded62097ba5",
+    "hepatite_alcoolica": "d4266212be6955a4e6ba6a84ab93d22be80366be10493616a6040ae3a53d7362",
+    "insuficiencia_hepatica_aguda_nao_cirrotica": "28aaf5fa6912c8b617455c53dea996b8eba8ffbabb6dcd103f630731f948d1a2",
+    "polipos_colorretais": "3da923befd926e0bb6225d349a92bbc544de9119db1eee8e3c3afc995253a2bf",
+    "febre_amarela": "609b902c6b4ffac67b4da087af3a54dcf4a60ed9e0c126c5cc125d12516c412e",
+    "febre_de_oropouche": "8cf46e4e4cf14c916136f4234ed0d73acde3565c7fa660ea1d53888ab43c69d6",
+    "hantavirose": "d15959a7bdf8790919ad83ad93c378683049f45995c9966e16cadba14d8a0f1e",
+    "leishmaniose": "3c9f232d564a4c10602afe7df78b35ce3c30f6d2a2d7768ee4b60fda9c775679",
+    "histoplasmose": "0d796f358a03908d751d316b1a9179d1c5a6a8d364d1c7d2bce148e0e740129f",
+    "paracoccidioidomicose": "7d59f77d014e6ea90c5a0238eab869f0e28314a1fce0d9b2dbe0c527d42c6fe3",
+    "brucelose": "9d7f15c831faec37d73ce8f137c3626456c06cf51712f7f469e5a8d632bae1e9",
+    "febre_tifoide_e_paratifoide": "acb129d4088e5e86bcd348557d9e8b7044293551582bb5d20e5e6959994450cb",
+    "encefalite_infecciosa": "9e12eaa9c53b274e3229f47bf972cd15eac44c0d6aa02883e5ecf3e4500a5204",
+    "abscesso_cerebral": "644837e34f21774419ab1f4e14e1cbe103d5ef7ec2da87604f827a38e73e97ae",
+    "infeccao_de_sitio_cirurgico": "17d58299657e50adc0c1a6d6be019c422309661e4ec0d61813ef2948aee12b6b",
+    "infeccao_relacionada_a_cateter_intravascular": "b4ffa416b3285ff09775059d4b4e84fd8a4ae12f0ff7353e84be620b790a0034",
+    "infeccao_de_protese_articular": "7ef1638b33e38ebe388caf56bfa6c481f70203d198e1468673147a4f993e6f23",
+    "panaricio_herpetico": "54d0826cb2e5caf366cd9bedb5288040028db3f54798883eff81e2d645b5b85c",
+    "granuloma_piogenico": "e30d8f8ea958d21ec251187431e5f3408b6e0951278c068321cd0f6d5362956e",
+    "granuloma_anular": "1c238c2a5b38e528e5e8c686af787db477d9264947f01596d232b23ca4c9c4fa",
+    "dermatite_herpetiforme": "c4a690b0921e0cae1f67431e083fdc9f61702a84949509ee534cfe98be7e2cef",
+    "eritrodermia": "d34ecf058162bf6be4b0826bde127c828c9fbabfd6c65dcb95de4a22fc733c51",
+    "vasculite_cutanea_de_pequenos_vasos": "c03f818e84d9e2bac65ba0f312f12baa7eb56c34cad157f0b97044d4737c3a6d",
+    "eritema_pernio": "a05b13c9a586b6134067a6d3b40aa0bae4eb0d3b5f808fd0feb7cad5bd3f9c68",
+    "uveite": "b63ae5f4c1ce00b5e72d30112623dbfd3b5f857a49242bfb8300f119739b09c8",
+    "esclerite": "0ea1ff4d828170370edc0695dca05be1b6348bd7356e8dc8fe75fcb3b53113bf",
+    "episclerite": "400df704ab257e95403226f87bae427ff631b3c813dc415ce81ca09e15393a6e",
+    "dacriocistite": "784b12c269bd25e3dc6d06b404572499cde2bf5a12d65262d2fd5b6ad0ec6525",
+    "endoftalmite": "380504e317e30c86decc3a8ff2e319c124fae87a1bb34128f61bd17982e39d5f",
+    "glaucoma_primario_de_angulo_aberto": "1cc781d72a78be6b910ae62e7611f8cf62077c34df72cf94a27ef7a01253f2f1",
+    "catarata": "804493639bebec45bfa0cc39c27dc516e5a7a96f779e51efb8a848321554a79e",
+    "pterigio": "122a8d1705161704db58ebbfb8804b66f2a9149841e2441a68a81f8302111505",
+    "sialolitiase": "a2b309a4b24ad7089fdb89b808e1d7ab59966bee1ddd1f71f7b860495e6ca57a"
+  },
+  "approvedCanonicalFileHashes": {
+    "estenose_mitral": "78739ece9f92d708d867458c9bdd2aa7ee613622862f191dcc9ee95f3d5e9c84",
+    "insuficiencia_mitral_cronica_primaria": "1c8acb05c0903851078029c793b5dd8363898a7b3dff0c8a0146dcc0ee93e643",
+    "cardiomiopatia_dilatada": "462e54e69f60645451e4053499e8bc23eb11e54428f196488e996bd6c65475ee",
+    "hipertensao_pulmonar": "bdea303b61cd38a1bb31e407429ff70896fbac02e40539480958edbd06c51fc1",
+    "bronquiectasias": "70912a9180dfeb27bdd3db4d79cb0bc2e479d93b1a6e05c3daf040d21fc98cab",
+    "derrame_pleural": "ec0be0539421be361e13f7f04580da7e84381b08210c46699e2cf22334a5ffba",
+    "empiema_pleural": "a899f24bdf38c922853b118b25203621cdb2ddfb542a44a3f0f4457ae271aeb8",
+    "abscesso_pulmonar": "763b2a6727a342a2db04d8e313369ee662db052376992eec1110228d75da0c4c",
+    "pneumoconioses_incluindo_silicose_e_asbestose": "6eccf23c17a1eb239773d6c5129eb808aa7210571ae598973b3e37339d7dbc93",
+    "sindrome_de_hipoventilacao_da_obesidade": "58840bd815afe65547d3e62ca7c44997fd08a914235abc31daa649352f47b036",
+    "insuficiencia_pancreatica_exocrina": "c0cf7e6129de3d1c20e52b6d54165ceeecaf7790bb8c2214c43d57cf977c3905",
+    "gastroparesia": "7b556455ec29d7dad0271b8fcfc4bac2e37e24957b3ecad3ea1c5a1aefcfc8d1",
+    "sindrome_de_vomitos_ciclicos": "33541b2ca9492dc1b34d06347c0a98d9349b347d472781d5af71ce7b00bb6410",
+    "sindrome_de_hiperemese_canabinoide": "ed24920a91d740ebf117d2116d588e657dc4bc90ca2f6cac54447662e9e01b75",
+    "sindrome_de_dumping": "3702812f9c4c1e4d3983bcd68e4bb46d06787a872c16c886bf0aab2d0e9b07fe",
+    "incontinencia_fecal_no_adulto": "136226a86545c69ac3b191bfa85528de47ce8179a2a33b05861a6499bf7988e3",
+    "prolapso_retal": "e8ee03e585314465486be9a607c78cea530e2b8f5be11ce6fbb25b0c4cc3d382",
+    "cirrose_hepatica": "a4c71d826d40407a35854a74ebf58733765c8a9f65fb48efed97e15379d52e0d",
+    "hepatite_alcoolica": "871406f8634253c16ff4bdceb826f907a11922cc8e37630f7ecfc63115b6f3a2",
+    "insuficiencia_hepatica_aguda_nao_cirrotica": "4d9d3a317d5951ed08056c342011356a2d0a3a8fe83335b69c27d0d615ee154e",
+    "polipos_colorretais": "c7f2a6d3b81757d382b70af0aa9ae667c35392068c5dd244380818cdcc457ebc",
+    "febre_amarela": "0e2ffae64d8345d80c740d5aaf40c71d13d0769ebaac89d84e20c375532642f9",
+    "febre_de_oropouche": "ddb519bd4580a3fbfa73b60ff71d4211249e98f9cbd563733af667b638a3ba43",
+    "hantavirose": "ce2607af48993f0aeb0e030fe9d22c386ceed8cd6155a120002934bbd4afdd29",
+    "leishmaniose": "248dc8524fdbdea591560e052c70e5c2c1b35648b17bbe9e30a5dd0cdda2e1f0",
+    "histoplasmose": "b9bcdf51174b73b6c28ae68a9ae235d3ce38b458b7adf90b517c9c38fba932ac",
+    "paracoccidioidomicose": "4fa8b8e01f9071b3016ea26769a1d2f271512b8a3a5659ea645a62bc4893fdc0",
+    "brucelose": "84271f3739874a0ea0302d6e61bec721edc13aad3e119dd85df6f929c5591f8e",
+    "febre_tifoide_e_paratifoide": "3e605c0fa272ee23057c9105f53648624b7dd7eed43c7b3195fa1f5f5cd295c4",
+    "encefalite_infecciosa": "f96db7ed50f7e15525e1d3d2774752a32af56788ba622337347f399cd76acb37",
+    "abscesso_cerebral": "e34aef7a7221b4765b44240551fa9f5b52827f3261bcdee5408eedf07ae6a6fe",
+    "infeccao_de_sitio_cirurgico": "e78829287a1793e5a3f9790bce5741eb7ab6b3501d89d163186028213233fb80",
+    "infeccao_relacionada_a_cateter_intravascular": "e0706a82b0ff67f6fdc89b381caa6a99f802ae27eb746404a7b18270f08d7526",
+    "infeccao_de_protese_articular": "38ef28cdc65e5d9f17c78a0097dc0417da5821a15dc2cfaf2a9206347be53bc1",
+    "panaricio_herpetico": "cad4777f42735d3354546337c4a1e10d691c72209ee272458caaae73027c0c43",
+    "granuloma_piogenico": "e5c73a0e5d581ffad9783a8cda4e403cbcfba72c33c44527765c37d434721c65",
+    "granuloma_anular": "47cb4faed905f9ebda2308ca5e582fef0362d0cf3c8c7b88791b68e1ef5220f5",
+    "dermatite_herpetiforme": "0632bbc57a87ac358b6df5d938b05810d0ed1914afee97a254968d2386e851e8",
+    "eritrodermia": "49ad6cec9b9df5eb4b7f8556beb2d8f1c52778cf98c495891f351b3b089ff599",
+    "vasculite_cutanea_de_pequenos_vasos": "bbb44f6db974b62ce5a0055141034d4e5fef7dfc4815d1f9a13b85c47fd61663",
+    "eritema_pernio": "e1f67ac4aa7dd0ad314e41caffad4f077e55ebf23c88d8c92aa26fdfe988a25d",
+    "uveite": "feccbeba97e67083082d615d6f278e59ed6eff87ecca4090795497ba05524706",
+    "esclerite": "34f775c6468b94e66015fd582f2dc96ad0c32579846f4c11b7004da9a1008b9e",
+    "episclerite": "e8d6a6a36e29dee925e1e3832075d2e87c795ca60e7374091aa11f9a8bb7f365",
+    "dacriocistite": "195f98265a95efc9fd7127eedbb82c44cee0c47348b6553b6469b08b6b2f7577",
+    "endoftalmite": "613123be368944b3b350ba8aa6f78ab5fb80861ecdfe7ee08ca0a8c5d928740a",
+    "glaucoma_primario_de_angulo_aberto": "83362b2e3ec1c43a413ae930572ccc8af54e5130753739f5ba6a4bc62bfbe116",
+    "catarata": "23a1ceb259bc882539d94cede1ad1266392faf45c0a87c8e67b3701364bec39b",
+    "pterigio": "92ba775d48dc72e906e976d69f812aa4b5501bad22a04566cfd505512c6985b8",
+    "sialolitiase": "99d448009b43b900e813532f46cff5d56eb35752f7a10a6668eb9dc2d35a461f"
+  },
+  "approvedOriginalProjectionFileHashes": {
+    "estenose_mitral": {
+      "study_pt": "107907bed52c5cd3f4b26079494941cddd20328ddabb214c6ead2ade2fac30d7",
+      "study_es": "6e18a02f11898e0b807c735d1a5320d0483173fa3071155c39ee7d734193c512",
+      "plantao_pt": "6e17d7deb0189ff38f1a49ecf97ce5a3ca057dc93d1ac2902ca799082bb14436",
+      "plantao_es": "9b6a1ec6de1cb618fb3f982cc49f015fd7969f927a8e958b42e63e9da25c0d97"
+    },
+    "insuficiencia_mitral_cronica_primaria": {
+      "study_pt": "d3f1de7d1c2af65c87c26a0cd133f8c1184a6ee7203b7166f635a706af5def83",
+      "study_es": "e2ded40f4d36261b13b7e902aa578528881058f3e7f65b8971425b190e392f6c",
+      "plantao_pt": "604c5bbde6b2721c160f47b18d9fdf3bca5aef905605c1c33d850682a068487f",
+      "plantao_es": "813f71e790874556c714838fd0eb5225b2f9388a516d5e26f7d4c7cccad66454"
+    },
+    "cardiomiopatia_dilatada": {
+      "study_pt": "3ddc1ba2e7cd21dd240357cb13e073ca38557269f9630e96e3a3c9de02171de5",
+      "study_es": "b6239183d124c5c1e61bf78bfa242e66e9dc0aa13492ba605fa1c56ba19549b6",
+      "plantao_pt": "3f9bdd2b6d3b154378a6fe24f21a265e9f2321db81054e5f7f537a41e3278ba8",
+      "plantao_es": "b7ff17531ee3ff56473cb96a029aa2d3c622479c1f614cbd8f797743d07ea2f6"
+    },
+    "hipertensao_pulmonar": {
+      "study_pt": "3cd41aada54a8372239646378997c02c7f97b45971941eddade4a9e58fb341fb",
+      "study_es": "18b07ff64b79a01c9abd2f218f24ca08401e7b1ea65cb4f113c59373764af0f4",
+      "plantao_pt": "332d4767d3c0e470cd07733fd51b48fafd41c7652380d042fb79303b15904590",
+      "plantao_es": "08b9b0bbe777d07b9b8eb809aaacd114edf8f208da6f1e8bfcc008b5ba4786a2"
+    },
+    "bronquiectasias": {
+      "study_pt": "77f9f25f2736413ec4eec45d4d740ee2da2fd3a2ceaf9ebf93a90bc8192af522",
+      "study_es": "7ddd107ac7a55cf534fd4d323d7e8b701fb8d3a31fd9c14749912de6c1f65212",
+      "plantao_pt": "f298cd82a3352cad75358555b2154805b1ae58b05d407a953aa23e3eef87f78f",
+      "plantao_es": "d541840ad1971505ad7bc7255b6aa593869bf59ab855a4affa262d1287d00a50"
+    },
+    "derrame_pleural": {
+      "study_pt": "56eded3bd080bcd9a6b3062aa8bb8be21bdd2923ce1cbddddae6aa6457714856",
+      "study_es": "3853ab92b4a80f3683692592e174cf19109a49ac38ef9490ce2ca0fd75f88cfa",
+      "plantao_pt": "3d926fdcfc9d0d8f08082bcbdd79084b23b069299c954c5abbd69dfadac6170d",
+      "plantao_es": "f1abf1634dfd34ef12912ec9e1009648b698073e498d2b8d740ebe78fd79df40"
+    },
+    "empiema_pleural": {
+      "study_pt": "3d9e66f78d8280e500605fca0ed943317286081173f1deebd8513a16562333f8",
+      "study_es": "68f7d58bb2314e5952def9e9e42ade6e59c80202c3c4df0f15a4b826efb44b45",
+      "plantao_pt": "6a6eaf4e0d153a2f09a6764a23dca9ea3f5869e3dac3ab7be7899a38eabee870",
+      "plantao_es": "4a4418b5098243090f1d55b77dd8ccb947fbb3f47e1520e2d6b19b7a865e5eda"
+    },
+    "abscesso_pulmonar": {
+      "study_pt": "a7f0cd7c99c4e0f2c8812cd69a8b11ccfafbe958e380560772ebade3c328a13d",
+      "study_es": "a73c5bfd640d241cf60d26aa4090e738b65b70d3d9a4e65ce23fb0c9fdf62902",
+      "plantao_pt": "39718181c2654c789edb7e7a0e2cc6bfa9d0ed56106fbff762498aebc9aaad37",
+      "plantao_es": "c21c96be74097456ff8cfa6652cb7108c8b1fd0260b39a24c5bf1bbb44acac45"
+    },
+    "pneumoconioses_incluindo_silicose_e_asbestose": {
+      "study_pt": "02e7f2ee9f705e1b83348349d2cdc6239a7ba8618d783b2cb233484fa85e256e",
+      "study_es": "70d95613c6429b0458139862d2fb5c7fe9c3647f7e2ce412235e06743bd4381e",
+      "plantao_pt": "d6223c271f7e9226ae2ddfb9b0a1005b4c402fa8cb42fdc50ab8129eab29e17f",
+      "plantao_es": "1c82a5d67f75914c80feb7419c4d82c3d7ae2566b9c0dca1a71953f4b9a9a5ec"
+    },
+    "sindrome_de_hipoventilacao_da_obesidade": {
+      "study_pt": "5cab0d320221527d3af16467fe27d3bc856f0caaa34fb346e45b6001f5cab054",
+      "study_es": "7e6f8a29ed3e8bea7d97ea367820a73a76a0322110c65819cd0c3715773d4808",
+      "plantao_pt": "1016cc4a5dee72d692a3c6f779a700da17c2981755bc7438a7001380d21dba2c",
+      "plantao_es": "74fab88e583f0b83ccd3655160b641789fbe081a0e3201c1fd69ef8dd6535af3"
+    },
+    "insuficiencia_pancreatica_exocrina": {
+      "study_pt": "06ff898d6c7a0cd0b5c4c74a8c80e6bb19b900cd3245d1df1b218e8ea6805080",
+      "study_es": "b59b85db8fb97de9306e71de0ad5f403be5efa38dcc66eeb59ab50d86d697fcb",
+      "plantao_pt": "c79cae84ffbf002c62410364db43557623a2fe6f2e0061845bdfba8d60555251",
+      "plantao_es": "a8fcb6a7fd7ee65ca16fd164a2a5b61cadf71392c4e67cadba7ddbe60064a4cd"
+    },
+    "gastroparesia": {
+      "study_pt": "4a35c32c21d20ac970851dbdbb76428fe5635ab8b6ee6f83807cd1cfcb85a72c",
+      "study_es": "0126dcb5b795b0902fbf9006b46d0dc1baae42a6eee18328f9005c5208cd7c98",
+      "plantao_pt": "ead0f3d7a8fc827529fa08726e138ddaafb80818c7edd805562a293c3e0e917b",
+      "plantao_es": "f82bbf252c7a986a2f96ce75629a7df5dcd40dd7c037d89497587bbe3682830b"
+    },
+    "sindrome_de_vomitos_ciclicos": {
+      "study_pt": "39474047a5c5779fbe5e4e55352b69ad4d1cb68f4235176603802cc26d5ee5d9",
+      "study_es": "0bea6965e81e661b8fe881e24380a996e9b4966818dffdb9bada0516b99e0f33",
+      "plantao_pt": "f0305eaf847138c474fefc67674477b7bbfe48ea5cd7a5f3f275c4c07853679f",
+      "plantao_es": "ae69f785ea6b5048533c337aee7174eb2efb8132ebb2df606df87f4b02ccb475"
+    },
+    "sindrome_de_hiperemese_canabinoide": {
+      "study_pt": "4c823636a1b8b23d25616e8b0ac4b4e88839dbf8e5221f47b99d63373c268104",
+      "study_es": "d02cdfdfd9617a0e8d1c50ed84aecaff41cfd2dcb4ed3bbc7eaccb0575be6824",
+      "plantao_pt": "0a0f51f123b59cb4acc0644de7fc6564b02c15d099ef49a1d444b9738f2974ce",
+      "plantao_es": "1ad15861c6057104aea76812a25a35f25de21fdedc78af3d746c4fffef5fad45"
+    },
+    "sindrome_de_dumping": {
+      "study_pt": "8f49c3ea5336e9ec929fdab8dbd62a60741e81fecee9d623f86eb2bba9dfe402",
+      "study_es": "65dce20e20a950a545eec9acf48703314990b6dee4224afa7ec18e936b77625b",
+      "plantao_pt": "d0d72ae3669f195d7fe543614a1d4e94551c8ba97917cc9e53253269228f3632",
+      "plantao_es": "1c8f972491c013cb0d565b08ba339c02e4e76902270cf77e917a77db2c40ab46"
+    },
+    "incontinencia_fecal_no_adulto": {
+      "study_pt": "58c82114cc57d433cb8fb8630731e2d3ad951271912f948aab940a1009598d8e",
+      "study_es": "d01f1633a35460a571ca664d92531fde05792545ba3c2c8775d2d43af63f8cca",
+      "plantao_pt": "56a0e484f600b574227d3392e30bc95c586cf28af42866592cf5ff9c7c20f686",
+      "plantao_es": "baa691b66b444da0330ae4875666cbef0fb1d1e786867143b9ef47d7977dfe9c"
+    },
+    "prolapso_retal": {
+      "study_pt": "641758489ab9c229ffc98467f928af8bc4d3bacba9bd07b7ce0758b18ef4420a",
+      "study_es": "4839fb5df5932b750db9e653f0e6c68218b01b4a84b3108343e201841e5f1c13",
+      "plantao_pt": "c6a850bbc432088358bd7130c042a5924aa1f2fc342b4801d40f9bf703a69eb7",
+      "plantao_es": "5f5cc94731301e09ef3d787fddb210ddc646e49905c6b3541f916d2094860e52"
+    },
+    "cirrose_hepatica": {
+      "study_pt": "d6e1341232b17d938b0fce8fee0f7f6a2c4f50237dff8f9f91857220f7912ad6",
+      "study_es": "635b4f01acf2ac88fd718c1c043bd121e8a1ac96b20d791b75c1b97535b478e3",
+      "plantao_pt": "ee6f28f5c350d20c9d51194c517cf15ca012a78002669706e36a70b3089728a0",
+      "plantao_es": "06a2eabd457a7d2281493d853ea136a44d65776300eab88fe62d80d14cd07e40"
+    },
+    "hepatite_alcoolica": {
+      "study_pt": "cee11eea3c80f3df9c3668338d2adc3b9a7a843a270cc29c706b63700fd71842",
+      "study_es": "e9ecfb653caba758076bcdec72238b6d67fe84ebcdb6821f8f692b6f854ad73d",
+      "plantao_pt": "56399210234ce7b0f38283573f27918a615ae1a7d833a9da49a719406019c504",
+      "plantao_es": "1ef3ec213e1c2af985e30ec61681d23ed74a2ed2c25e841a6a756b48eb374588"
+    },
+    "insuficiencia_hepatica_aguda_nao_cirrotica": {
+      "study_pt": "b0f9aa1dd6b5f2877fc2138573aedce921947cb3de158464430fb09662edcdd6",
+      "study_es": "812b08639108a9f89eac5870cb7122ff0a83b103d1b433276ad03bea9f2cbee3",
+      "plantao_pt": "3b9dbc46ace8085fa363e8498e66b49ab7aca33a2ce7dae4acbe9d36484c5464",
+      "plantao_es": "7cc655bc14910413a447d8b1e26cc98c8a0d3c4aab328a84fd7bfa8dcbd30929"
+    },
+    "polipos_colorretais": {
+      "study_pt": "788e9361882334e38b8e0f43e4d38e0951effd8899154314943c081839efba55",
+      "study_es": "9202125bf87578b2a6c81588d17c7bea0432b96b8a436338fa2f1636c65bd1e1",
+      "plantao_pt": "484d673df33695312fc7c896a6db3b9de6e42a2933dced787107fc5fdc1ea40d",
+      "plantao_es": "9675a37d9f23a2f3af2c3699272c17aeefd1344550eec30ad9d50ffb861c9a82"
+    },
+    "febre_amarela": {
+      "study_pt": "529a022273dcf345d2450464d22d8e768fb4e58a9c12515b8a7e0faa8f7d8c81",
+      "study_es": "ff1d133d1be16d0a755c0e66cc8f9d7938eb1683624bbaa0bd962d1f2b9df617",
+      "plantao_pt": "0905250743222f51ff583afaa1ca4d480ee4537c427d707389e3cc36695ee3f1",
+      "plantao_es": "5b5b6f312436340dd4d176b821ff15ca020aec5273c18d9daf4c64e327a592e5"
+    },
+    "febre_de_oropouche": {
+      "study_pt": "b296e966d6f220c46e4113ae2eb7bf8437d46757d60e39ce1c3c22331556390c",
+      "study_es": "c168de261b6b0854a147c65ced802f18bda5805f00fe7045b952660d3e0dfbc3",
+      "plantao_pt": "ea87f76a2469f79a049e7dca5581b9bdde8752228566089a328243f6faa74826",
+      "plantao_es": "ebdd1c77c8483bc8db91b69e154421266515703bdc9e63f2a8fa535316863bac"
+    },
+    "hantavirose": {
+      "study_pt": "db341a88844d8394383164e58dd2b67753cb53e4c6f1c912070f0694eb8afbb8",
+      "study_es": "2f11fb6b5c0a403e7c2797063dbb53a3dc3e2357674b0d9d6fdfccd9b7c188d9",
+      "plantao_pt": "18d043ee3caa34f86ef461fcc9ffbc412114b4f80903eaa32e46680b4f967429",
+      "plantao_es": "469b882d83dd9c0fddb7ba9e0be582d95a938ea962c37d2362f187f79a60559d"
+    },
+    "leishmaniose": {
+      "study_pt": "7d6bc5f08373588ee24cc6a74028491e5c42334c3a62179e9255ee16e31bc78d",
+      "study_es": "d4e3a7b3baab008e71ce3778c4009f7ed478e7785e26c0437f3ea5eee5d27f25",
+      "plantao_pt": "74c0008cf7d7a5f855ce78123123db1772dc537fd6ce24e1ad399e5603f928d6",
+      "plantao_es": "79d96667c6cc29ee4166a25cf129a5a0a975e6f0308146f94e1b53acec0481bb"
+    },
+    "histoplasmose": {
+      "study_pt": "f6505e17071f0c62bdf07f47c713950dfdd066256bc2539b0a79aa206f9f17ee",
+      "study_es": "90483849b32b3336f3560ee4e3366c351bdffd82d4e6da9c6141559443d2c9c0",
+      "plantao_pt": "060be978c97b8d594cb99879b987ec34cc58503062daa3f09e2bdfe8f1675bec",
+      "plantao_es": "d3508963c47466036bdffe5f7ba093701ff54740d7af2db05eb36caa6ca88455"
+    },
+    "paracoccidioidomicose": {
+      "study_pt": "5761f2ef8b775e9047ce50788e49fe46e4a380ce1e372d4e7e9bb9593f8618df",
+      "study_es": "639997078d033f279ee15ae202d475e8415e8fd8f390e661bddaf9582d7db348",
+      "plantao_pt": "7e74c1fffdcecd972931f8388aa548a8c7a62adde5d6113b64c37b77e31f4f1c",
+      "plantao_es": "610d7cff91314573f34e15c60684c09bffcce5c6939905abc3625623d02c093b"
+    },
+    "brucelose": {
+      "study_pt": "01210dc8a957690d72868c9d0c6408ac1a5416b70ff3a795c2b63d70099e48b4",
+      "study_es": "ffe4c5efe9106203ade3819a99e7bd2985eb2601ea2971d090350a17f7abf00f",
+      "plantao_pt": "8dd6be251f28631e1ea92c25c37b063689c4006816c9ca1baa2672934ce3882a",
+      "plantao_es": "072616e106ff90910c09b57d03d4ecdc1ab98ddb22cab299955eb7b114365752"
+    },
+    "febre_tifoide_e_paratifoide": {
+      "study_pt": "69c251d73531729f11e52bf34d473d52d169db798011e033bc666a8983ea2cf4",
+      "study_es": "bda875de9979ecf3bbc1b20ac59d8e2a03ae622a9894c0e62670ff796a3ebb4e",
+      "plantao_pt": "b57576bc7b6943da69b6762486ae2a11680fe380f51e2090ee8a35f3dc7aae4b",
+      "plantao_es": "de1afbb7986ff941594fc825f01bdff6180f628a7f3f20f94af0072ae58073a4"
+    },
+    "encefalite_infecciosa": {
+      "study_pt": "6c80ccb3e0c519a597021f906fe4e8191f47c8bb7c3415b9cceab9bc198a753a",
+      "study_es": "0ade23b292600b0df1746beb1a9fb8e7c3165d837cb1e59ee6a46c7927c75435",
+      "plantao_pt": "4c126b7a783e708ee3678713ec70fe0c82458d1d5ec8ad1459654a910c72e939",
+      "plantao_es": "47e76f4c30f2c5ec98112d7e17f5fcfb4c88ab37f8881a960c6a655caf4c6a35"
+    },
+    "abscesso_cerebral": {
+      "study_pt": "5a5ecfc6dd9f190803b7548802a5da6f28a8de6c69e80ff7ed8371a60f84284a",
+      "study_es": "232f84e3523eef09ed960782fcdddb2f064725785c006a0430fd00b4b9b246b0",
+      "plantao_pt": "e21a677d431754962f8bc196e52624eaea7ba094162c778d09c63b88047742b3",
+      "plantao_es": "b96022caa261f81ccc55d6c7b82cf7ec2d34875778a7fc3a73c18e8b36d3d23b"
+    },
+    "infeccao_de_sitio_cirurgico": {
+      "study_pt": "e262742f2a8a166ba48237a75a59bf20caba86040bda781a0333609a341f39ea",
+      "study_es": "d9696a4a80e66e6835da391e2bbbb5eda7c9ab8b8aafbda6876a013ac508886b",
+      "plantao_pt": "5d9594b260eab3b1470a68c0e4640e1c63373718bff4802ca656cc6eddea640b",
+      "plantao_es": "1d4cb48bffb8acb4873e97d284b4b3f707cfe1e75f9219cc25e00ea23119d1cc"
+    },
+    "infeccao_relacionada_a_cateter_intravascular": {
+      "study_pt": "1c98cd3c7ed9f8011157a6bb555c303b6e90d2eec5487fb734a612253f36f14b",
+      "study_es": "a8414a9d7f041c3401b07d71e78548f9be09559064eb4666768fcb73afc5d7e4",
+      "plantao_pt": "d37a47b4f482a07fe2792d30e9938cd59825a2f0df9078e087ac3bf0c865a390",
+      "plantao_es": "384211213a89c910ac5e523314c2b491fa324eb5f82c4b2ae72293be112ea4db"
+    },
+    "infeccao_de_protese_articular": {
+      "study_pt": "1f7e0fabff4f8daca0277d3eb4bb996720da33ff1d11fb5fa19a644cd75221bf",
+      "study_es": "0d91647c426e86e97001f5372873d71146db1ba399b7415a4798282ca401a92e",
+      "plantao_pt": "be5b51384adc23b199d7ccd16031e15f4165cb5a87ad5bed46e924447ef1785d",
+      "plantao_es": "d26474ae27dc16fd2441015c88ac9ad8b1897ac276d367f949b9782101e2016d"
+    },
+    "panaricio_herpetico": {
+      "study_pt": "326ae8da635dc35bcd5c422d8d59c5f490dc00caf5324777cd35e0ffca35cdd6",
+      "study_es": "86439e2c29c53be75df3b38ec0519d90d0469fe96978ececb7b21b38743a923c",
+      "plantao_pt": "511d10193c6e8555df458cc897ee562e1e925608daf4dde6e9001c83ba2cc1d4",
+      "plantao_es": "20a63b57ffb4f2d03d61c8cf0ee54104f68e775ecae702ca3d3ed6d89d93490b"
+    },
+    "granuloma_piogenico": {
+      "study_pt": "b6718b9ab16f3e25ab18d74a7918ad501b173e5d75c260f02415db820196a074",
+      "study_es": "dade77d827a4115884cb51e781cf1a7b1e6993f098b87ee022e7db5851e1a045",
+      "plantao_pt": "5e5ff5e052989c696fdfa7b692da7330d85d3ee1dc9c2a0a204513aaebd45e5a",
+      "plantao_es": "363cbdac6fe18780dc5b030b63432f336d5fdf7ebed0accdf78c0cc9c99d4bfa"
+    },
+    "granuloma_anular": {
+      "study_pt": "ec9f4fde34d920f094625e3f6f33280c7f392a7503cb3f025dabe5886f4ef964",
+      "study_es": "e5edf51bb0eafa2bb1f461c2dae5b8b8e3bec6dbe455b8e1a51a9085134591ae",
+      "plantao_pt": "3289eb93fbc8aab7c994af89a6a94c37e9d4729a80e588e86be73f5687828d9d",
+      "plantao_es": "b9dc7272aeb562b5bca4ad9aa705189beff821a67142d3b123b9bfa09a44e219"
+    },
+    "dermatite_herpetiforme": {
+      "study_pt": "ebb139605427426075b9fcba16230f69b0413ce631d56f015a9783790f985559",
+      "study_es": "d533c0d75d0f7d7cf80f4949ca7fc2f7e2b0bf4ff32dd730285027956fbf1aa2",
+      "plantao_pt": "eadb478a6c30f01db5ad4d54da1ac8a4cc1dc68466a82a0525694b8a830ee652",
+      "plantao_es": "95509511f794c7807c01920101fe087ad6da4307c90af53b3eed77eca121d7b6"
+    },
+    "eritrodermia": {
+      "study_pt": "25badbe528bcfbbe1008049ada4b5f48ee0a62ecdcf6bc0a176912b30ced0bec",
+      "study_es": "ef24966376829ee1349684e77be9de6401905498be8437c921a937d297cbf28b",
+      "plantao_pt": "b0982cc64b9b0177d51d6e29ee0ee9f3c57b7bc58c8fedc7bb1012e70c59bd42",
+      "plantao_es": "bb5012fea886233b76c054c37f10c189bdfadb7b498c68e18520ff09dfbe5461"
+    },
+    "vasculite_cutanea_de_pequenos_vasos": {
+      "study_pt": "0212e0187d342bdb09f4e4531fdff8485cab6a52d4b35ced64e6daf91afc2849",
+      "study_es": "6d0f40ec2d9fe2f2e09eb1cbed36f5d77a59dfa2265dc119f5fad1eefab6261f",
+      "plantao_pt": "df5f9dfd91e3a4bb8f9f7ee1a008dae863feaf2de64a9f04e2c916839ee65af3",
+      "plantao_es": "d924cb49f59b971cd67fb1ea7fc9f956cc3f705462e5386023b598477aa19697"
+    },
+    "eritema_pernio": {
+      "study_pt": "f94535cbc801676f772a6751f5399070eb5c968f060bae5ffe8d4787631d87e5",
+      "study_es": "3ec79f7bc2011e8424fd46a260428c916a90fe51c4ebdfc6fe5a43f271ae69ca",
+      "plantao_pt": "c8883ea6e24140bd3108992be34be9e1d85415cad6d05e8250665886444fc4ba",
+      "plantao_es": "88e6250462b0e51a266cc070703d6912e51703c9ce6434ecba5c4620c80a1c8c"
+    },
+    "uveite": {
+      "study_pt": "427c0f92b8b354b050eab477595bdfec96ea9948bfd15224ef6f1dbfbebcaa73",
+      "study_es": "62526afd4056f59901e94c395f7d9a2ff0de0d9d9a983b3f628a63ed2fae7e32",
+      "plantao_pt": "9bf45e3ca681cf3d159fa6f0cf76152b6171f8aba31f41ab6a788b5c190f40f2",
+      "plantao_es": "48b861f14635a6c09a03493634573e2b75c237a9bab660255b139ce89b4da7a7"
+    },
+    "esclerite": {
+      "study_pt": "e8462a28973182bf243172f7a2e805feb1ef1669c3f5723c3709077e253f99a0",
+      "study_es": "5993a253aa49507c40daaf9852fee35821f87150c9b42d715c29944ff102dd2c",
+      "plantao_pt": "d9c958f05c91e277f36c52896f9f1cc034eb991f53e387545068651ff8659823",
+      "plantao_es": "96b3a064edad76de7b2a0db3fdb983794e2b986440e330b86fa7587d33f3ddf9"
+    },
+    "episclerite": {
+      "study_pt": "4e22655d1651fe76c3d5a96299808a568072cc776f3240e9d034c170c0deece3",
+      "study_es": "d73e8b061effed0576219625767ffe68d45cc7664e469180e9581163b342859d",
+      "plantao_pt": "c2deb4d8376508673d5f4bee2708e68b6f18d905b9b968d7fd76d33e8c1c18a3",
+      "plantao_es": "38cf6b41098b2d50ff45c26311377e049474bb93cad25f65fdbc05732af75f4f"
+    },
+    "dacriocistite": {
+      "study_pt": "c7c14db3f923969b3cb100b12c18c034e71c501f2e88fb53dbc0a353e1c2a27e",
+      "study_es": "67270eeedcae0ab646199c2744451055416fa8377bbdecff2c0a82c0d962eb6e",
+      "plantao_pt": "62eab2c2120b033067b42030c51c61fd4069b8973366f2ad6428f93cacb04b40",
+      "plantao_es": "d7ea1dee785b200e26af1c62f5beb9672296007a63662abc0d184bfadff98987"
+    },
+    "endoftalmite": {
+      "study_pt": "d503e0cfca1d36d3879ab8f5651d4a50fbc156ffc8db1a22c02251212ed899da",
+      "study_es": "a3d1f237f4437f6b991bb2beaed4ce8948116d8bb546afb2b088e64e25721fcb",
+      "plantao_pt": "171715b4e22f562de9df5c8dc0a6fb4c1d363c8bc72f8dc0c29652379c39940e",
+      "plantao_es": "b3dcb7ad29b5d0061a5d2a5300721cd9c5ae78c08d82c2cd3bbeaecb52108846"
+    },
+    "glaucoma_primario_de_angulo_aberto": {
+      "study_pt": "354edfa5838612fa488bd4b61cffa1ff81542f3a88bcbb46e12f0d11f9a07e38",
+      "study_es": "b5082fd5fdfc675fa976d1b3abf35477625ace3f4f64d9fc5e515823dd7f224a",
+      "plantao_pt": "7b892ceb168d6dd087a6a8cef1e017959cdab2426c3d68937d8afe3c0f78c11f",
+      "plantao_es": "4b7c7a4e843b95b2b364db685f6ba7c564e6dbfdcad187878327d3873f6f848e"
+    },
+    "catarata": {
+      "study_pt": "61b3c0e38dc46bc177ee6330f89c955b57133fe1c19e8edb5220704fcb8bb3cc",
+      "study_es": "ac5a40408c7a9781d36d49d35df7db08b21a95179fc09f2ef34264a6bd36deb5",
+      "plantao_pt": "52ede2c8367494b0018439f89aba12443a5008039259af438003ccc4a9a4a65c",
+      "plantao_es": "22439d2f5e209010d7ff854822a7033d38fe7681d2a3b2d0963562823d4e524d"
+    },
+    "pterigio": {
+      "study_pt": "a04730ba64cc817f507716c60fc5ff2dc256bdca830ec165ce9a61c71995aab1",
+      "study_es": "be8bf2d2f7d21fa7ab664b7e2024b743748bc38b422abfe08b86e3d3acd22a70",
+      "plantao_pt": "cb9800e16f762089b18920be8939cc2bde20a09d10bdf294b76905d083ed8f8d",
+      "plantao_es": "35588a6243ed2f5fe5b2396b0139ec6437190ed5caab34271efe0dac8811dee3"
+    },
+    "sialolitiase": {
+      "study_pt": "5aea12864219d913c0722c70886823d8850522e77fa4129b303b63a636265c13",
+      "study_es": "7c42c1e401070cf86fced99f813c190034ae9e3002f440054b329daa7ace0cdb",
+      "plantao_pt": "9483d35494527339cb831ef525cd1223415768567889a29072e614b751a6d853",
+      "plantao_es": "dbc527cf5e40fa2779d685426b6d1af6287e2a6999e9fc06bec33f836ad2cd20"
+    }
+  },
+  "approvedReviewManifestFileSha256": "49f69359c0d7833fc2539160427f087c34e9c08483b4cb402358458a2b40bad1",
+  "approvedReviewHtmlFileSha256": "273bfe9c0098373532b4da6f9266a2b71e7313ce486b5210b1533fcc44819b56",
+  "projectionAdapter": "Representação markdown/flat blocks, mesmos textos clínicos aprovados; payload canônico preservado byte a byte."
+}

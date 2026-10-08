@@ -1,0 +1,150 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "dermatite_herpetiforme",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Dermatite herpetiforme",
+    "es": "Dermatitis herpetiforme"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_038_f01",
+      "section": "concept",
+      "pt": "Dermatose pruriginosa vesicular associada ao glúten/celiaquia, frequentemente em superfícies extensoras; não é infecção herpética.",
+      "es": "Dermatosis vesicular pruriginosa asociada a gluten/celiaquía, frecuentemente extensora; no es herpes infeccioso.",
+      "sources": [
+        "dh2021",
+        "dh_derm",
+        "topic_147"
+      ]
+    },
+    {
+      "id": "b03_038_f02",
+      "section": "diagnosis",
+      "pt": "Biópsia perilesional para imunofluorescência e avaliação celíaca antes de dieta/tratamento quando possível. Diferenciar escabiose, eczema e outras dermatoses bolhosas.",
+      "es": "Biopsia perilesional/inmunofluorescencia y evaluación celíaca antes de dieta/terapia si posible. Diferenciar escabiosis, eczema/otras ampollosas.",
+      "sources": [
+        "dh2021",
+        "dh_derm",
+        "topic_147"
+      ]
+    },
+    {
+      "id": "b03_038_f03",
+      "section": "initial",
+      "pt": "Avaliar extensão, prurido, infecção secundária e estado nutricional. Febre, lesão mucosa importante ou toxicidade sistêmica exige descartar outro diagnóstico/reação medicamentosa.",
+      "es": "Extensión, prurito, infección secundaria/nutrición. Fiebre, mucosa importante/toxicidad sistémica: descartar otro diagnóstico/reacción medicamentosa.",
+      "sources": [
+        "dh2021",
+        "dh_derm",
+        "topic_147"
+      ]
+    },
+    {
+      "id": "b03_038_f04",
+      "section": "options",
+      "pt": "Base causal: dieta sem glúten sustentada com acompanhamento. Dapsona controla rapidamente pele/prurido, mas não trata a enteropatia; alternativa em intolerância/contraindicação: sulfassalazina ou outro sulfonamídico selecionado pelo especialista.",
+      "es": "Base causal: dieta sin gluten sostenida y seguimiento. Dapsona controla piel/prurito rápidamente pero no enteropatía; alternativa si intolerancia/contraindicación: sulfasalazina u otra sulfonamida por especialista.",
+      "sources": [
+        "dh2021",
+        "dh_derm",
+        "topic_147"
+      ]
+    },
+    {
+      "id": "b03_038_f05",
+      "section": "safety",
+      "pt": "Antes de dapsona: G6PD, hemograma, rim e fígado; monitorizar hemólise, metemoglobinemia, agranulocitose e hipersensibilidade. Dispneia/cianose após início exige urgência. Dose/titulação depende da resposta e tolerância; gestação exige avaliação materno-fetal, sem copiar dose geral.",
+      "es": "Antes de dapsona: G6PD, hemograma, riñón/hígado; vigilar hemólisis, metahemoglobinemia, agranulocitosis/hipersensibilidad. Disnea/cianosis tras inicio: urgencia. Dosis según respuesta/tolerancia; embarazo exige evaluación específica.",
+      "sources": [
+        "dh2021",
+        "dh_derm",
+        "topic_147"
+      ]
+    },
+    {
+      "id": "b03_038_f06",
+      "section": "followup",
+      "pt": "Dermatologia e gastroenterologia/nutrição; exames periódicos e adesão à dieta. Não suspender dieta porque pele melhorou com dapsona; rever necessidade do fármaco à medida que a dieta faz efeito.",
+      "es": "Dermatología/gastroenterología-nutrición; análisis/adherencia. No suspender dieta por mejoría cutánea con dapsona; revisar necesidad del fármaco cuando dieta actúa.",
+      "sources": [
+        "dh2021",
+        "dh_derm",
+        "topic_147"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Dieta e dapsona têm alvos diferentes: a primeira trata o gatilho intestinal, a segunda sintomas cutâneos. A avaliação de G6PD e sangue é central para prevenir toxicidade, não detalhe opcional.",
+      "es": "Dieta/dapsona tienen blancos distintos: disparador intestinal y síntomas cutáneos. G6PD/hemograma son centrales para prevenir toxicidad.",
+      "sources": [
+        "dh2021",
+        "dh_derm",
+        "topic_147"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "dh2021",
+      "title": "EADV — Dermatitis herpetiformis consensus guideline, 2021",
+      "url": "https://www.husc.es/archivos/cms/dermatologia/archivos/publico/Unidad%20de%20DAI/Guia%20europea%20de%20manejo%20de%20dermatitis%20herpetiforme%202021.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published dosage in dangerous range (5-7 mg/kg body weight) ",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:dh2021",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "dh_derm",
+      "title": "DermNet — Dermatitis herpetiformis",
+      "url": "https://dermnetnz.org/topics/dermatitis-herpetiformis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:dh_derm",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_147",
+      "title": "NIDDK — Dermatitis Herpetiformis",
+      "url": "https://www.niddk.nih.gov/health-information/professionals/clinical-tools-patient-management/digestive-diseases/dermatitis-herpetiformis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed February 2014",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_147",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

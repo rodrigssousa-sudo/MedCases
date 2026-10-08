@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "dacriocistite",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Dacriocistite",
+    "es": "Dacriocistitis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_045_f01",
+      "section": "concept",
+      "pt": "Infecção do saco lacrimal, geralmente por obstrução de drenagem; pode causar abscesso e celulite adjacente.",
+      "es": "Infección del saco lagrimal, generalmente por obstrucción; puede causar absceso/celulitis.",
+      "sources": [
+        "topic_154",
+        "dacry_nhs"
+      ]
+    },
+    {
+      "id": "b03_045_f02",
+      "section": "diagnosis",
+      "pt": "Dor/edema próximo ao canto medial, secreção e febre; examinar visão, motilidade e proptose. Dor ao mover olhos ou baixa visual exige excluir celulite orbital; criança pode progredir rapidamente.",
+      "es": "Dolor/edema en canto medial, secreción/fiebre; visión, motilidad/proptosis. Dolor al mover ojos o baja visual: excluir celulitis orbitaria; niños pueden progresar rápido.",
+      "sources": [
+        "topic_154",
+        "dacry_nhs"
+      ]
+    },
+    {
+      "id": "b03_045_f03",
+      "section": "initial",
+      "pt": "Oftalmologia no mesmo dia em grave/criança; hospital se sepse, extensão orbital, intolerância oral ou necessidade de drenagem. Não sondar/espremê-lo sem orientação durante fase infectada.",
+      "es": "Oftalmología el mismo día en grave/niño; hospital si sepsis, extensión orbitaria, intolerancia oral/drenaje. No sondar/exprimir sin indicación durante infección.",
+      "sources": [
+        "topic_154",
+        "dacry_nhs"
+      ]
+    },
+    {
+      "id": "b03_045_f04",
+      "section": "options",
+      "pt": "Antibiótico sistêmico dirigido à flora/gravidade: opção oral como amoxicilina/clavulanato em adulto leve elegível; alternativa intravenosa especializada quando grave ou oral inviável. Abscesso pode requerer drenagem; correção da obstrução por cirurgia lacrimal após avaliação evita recorrência.",
+      "es": "Antibiótico sistémico según flora/gravedad: oral como amoxicilina/clavulanato en adulto leve elegible; intravenoso especializado si grave/oral inviable. Absceso puede requerir drenaje; cirugía de obstrucción tras evaluación previene recurrencia.",
+      "sources": [
+        "topic_154",
+        "dacry_nhs"
+      ]
+    },
+    {
+      "id": "b03_045_f05",
+      "section": "safety",
+      "pt": "Colírio sozinho não trata infecção do saco lacrimal. Alergia/resistência, rim, gestação e idade determinam regime; não reutilizar dose adulta no recém-nascido nem adiar hospitalização neonatal.",
+      "es": "Colirio solo no trata el saco lagrimal. Alergia/resistencia, riñón, embarazo/edad determinan esquema; no copiar dosis adulta al recién nacido ni retrasar hospitalización neonatal.",
+      "sources": [
+        "topic_154",
+        "dacry_nhs"
+      ]
+    },
+    {
+      "id": "b03_045_f06",
+      "section": "followup",
+      "pt": "Revisão precoce de resposta; piora, febre ou sinais orbitais exigem internação. Após controle, avaliar via lacrimal e necessidade de cirurgia.",
+      "es": "Revisión temprana; peor evolución, fiebre/signos orbitarios: internar. Tras control, evaluar vía lagrimal/cirugía.",
+      "sources": [
+        "topic_154",
+        "dacry_nhs"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Antibiótico controla infecção, mas a obstrução pode manter estase. Procedimento definitivo e drenagem aguda têm objetivos/momentos diferentes, não substituem avaliação da órbita.",
+      "es": "Antibiótico controla infección, pero obstrucción mantiene estasis. Cirugía definitiva/drenaje agudo tienen objetivos/tiempos distintos; no sustituyen evaluar órbita.",
+      "sources": [
+        "topic_154",
+        "dacry_nhs"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_154",
+      "title": "EYES — Dacryocystitis (acute)",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/dacryocystitis_acute",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_GUIDELINE_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "web-verification-record.json:topic_154",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "dacry_nhs",
+      "title": "American Academy of Ophthalmology EyeWiki — Dacryocystitis",
+      "url": "https://eyewiki.org/Dacryocystitis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published September 11, 2023. Accessed March 25, 2025. https://www.ncbi.nlm.nih.gov/books/NBK470565/",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:dacry_nhs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

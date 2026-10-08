@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "prolapso_retal",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Prolapso retal",
+    "es": "Prolapso rectal"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "SURGICAL_OPTIONS_NO_CURATIVE_DRUG",
+  "facts": [
+    {
+      "id": "b03_017_f01",
+      "section": "concept",
+      "pt": "Exteriorização do reto, distinta de prolapso hemorroidário; pode causar muco, sangramento e incontinência.",
+      "es": "Exteriorización del recto, distinta del prolapso hemorroidal; puede causar moco, sangrado e incontinencia.",
+      "sources": [
+        "rectal_ascrs",
+        "topic_121"
+      ]
+    },
+    {
+      "id": "b03_017_f02",
+      "section": "diagnosis",
+      "pt": "Exame em esforço quando seguro e avaliação coloproctológica; diferenciar hemorroida e massa. Avaliar constipação, incontinência e outras disfunções pélvicas; investigação colônica conforme contexto.",
+      "es": "Examen con esfuerzo si es seguro y evaluación coloproctológica; distinguir hemorroides/masa. Evaluar estreñimiento, incontinencia y disfunción pélvica; estudio colónico según contexto.",
+      "sources": [
+        "rectal_ascrs",
+        "topic_121"
+      ]
+    },
+    {
+      "id": "b03_017_f03",
+      "section": "initial",
+      "pt": "Tecido escuro, dor intensa, sangramento importante ou prolapso irredutível exige cirurgia urgente. Redução suave somente por profissional após excluir isquemia, sem manipulação forçada.",
+      "es": "Tejido oscuro, dolor intenso, sangrado importante o prolapso irreductible exige cirugía urgente. Reducción suave por profesional tras excluir isquemia, sin forzar.",
+      "sources": [
+        "rectal_ascrs",
+        "topic_121"
+      ]
+    },
+    {
+      "id": "b03_017_f04",
+      "section": "options",
+      "pt": "Tratamento definitivo do prolapso completo adulto é cirúrgico. Opções: reparo abdominal/retopéxia em elegíveis ou abordagem perineal conforme fragilidade/anatomia. Regularizar fezes e evitar esforço é apoio, não cura da protrusão completa.",
+      "es": "Tratamiento definitivo del prolapso completo adulto es quirúrgico. Opciones: reparación abdominal/rectopexia o vía perineal según fragilidad/anatomía. Regular heces y evitar esfuerzo ayuda, pero no cura el prolapso completo.",
+      "sources": [
+        "rectal_ascrs",
+        "topic_121"
+      ]
+    },
+    {
+      "id": "b03_017_f05",
+      "section": "safety",
+      "pt": "Não substituir cirurgia por dois fármacos. Material isquêmico não deve ser reduzido de forma cega. Crianças têm causas/conduta próprias; avaliar riscos anestésicos e comorbidades antes de procedimento eletivo.",
+      "es": "No sustituir cirugía por dos fármacos. No reducir tejido isquémico a ciegas. Niños: causas/manejo propios; evaluar anestesia/comorbilidades antes de cirugía electiva.",
+      "sources": [
+        "rectal_ascrs",
+        "topic_121"
+      ]
+    },
+    {
+      "id": "b03_017_f06",
+      "section": "followup",
+      "pt": "Se reduzido, viável e estável, encaminhamento rápido e orientações de retorno; internação em isquemia/irredutibilidade ou complicação. Monitorizar continência/constipação após reparo.",
+      "es": "Si reducido, viable y estable: derivación pronta y alarmas; internar ante isquemia/irreductibilidad o complicación. Revisar continencia/estreñimiento tras reparación.",
+      "sources": [
+        "rectal_ascrs",
+        "topic_121"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A escolha abdominal ou perineal envolve durabilidade, função intestinal e risco operatório. Tratar constipação reduz esforço, mas não restaura sozinho os suportes anatômicos.",
+      "es": "Elegir vía abdominal/perineal implica durabilidad, función y riesgo quirúrgico. Tratar estreñimiento reduce esfuerzo pero no restaura soportes anatómicos.",
+      "sources": [
+        "rectal_ascrs",
+        "topic_121"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "rectal_ascrs",
+      "title": "ASCRS — Rectal prolapse clinical guideline, 2017",
+      "url": "https://fascrs.org/ascrs/media/files/downloads/Clinical%20Practice%20Guidelines/clinical_practice_guidelines_for_the_treatment_of-3.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2017,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "ASCRS 2017: prolapso retal completo, tratamento cirúrgico abdominal ou perineal conforme paciente. Documento final identificado e recomendações públicas conferidas; não apresentado como edição 2026.",
+      "sourceEvidenceRecord": "web-verification-record.json:rectal_ascrs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_121",
+      "title": "NIDDK — Rectal prolapse",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/anatomic-problems-lower-gi-tract/rectal-prolapse",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed August 2019",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_121",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Insuficiencia hepática aguda no cirrótica",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "4d9d3a317d5951ed08056c342011356a2d0a3a8fe83335b69c27d0d615ee154e",
+  "ownerCandidate": "insuficiencia_hepatica_aguda_nao_cirrotica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_020_f01",
+    "b03_020_f02",
+    "b03_020_f03",
+    "b03_020_f04",
+    "b03_020_f05",
+    "b03_020_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Fallo hepático agudo con coagulopatía y encefalopatía sin cirrosis previa; emergencia distinta de descompensación cirrótica."
+      ],
+      "factIds": [
+        "b03_020_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "NAC y trasplante no son alternativas equivalentes: tratamiento causal/adjunto puede coexistir con rescate definitivo. La población pediátrica tiene evidencia diferente."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Revisar medicamentos, paracetamol, suplementos, virus, isquemia y causas autoinmunes/metabólicas; INR, glucemia, riñón, electrolitos y etiología. Nivel bajo tardío de paracetamol no excluye toxicidad."
+      ],
+      "factIds": [
+        "b03_020_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "UCI/centro de trasplante temprano: proteger vía aérea en encefalopatía grave, corregir hipoglucemia y vigilar neurología, perfusión y diuresis. No esperar criterios finales para discutir traslado."
+      ],
+      "factIds": [
+        "b03_020_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "N-acetilcisteína es prioritaria ante posible toxicidad por paracetamol; en adulto seleccionado sin paracetamol puede usarse según protocolo especializado. Tratar causa específica, como antiviral en herpes; trasplante si fallo irreversible elegible."
+      ],
+      "factIds": [
+        "b03_020_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No extrapolar NAC adulta no-paracetamol a niños. Dosis/infusión según etiología/peso; no crear esquema universal. No corregir INR con plasma solo por el número sin sangrado/procedimiento, pues puede ocultar evolución."
+      ],
+      "factIds": [
+        "b03_020_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Monitorización intensiva hasta mejoría consistente o trasplante; no dar alta ambulatoria con encefalopatía/coagulopatía progresiva. Seguimiento causal tras recuperación."
+      ],
+      "factIds": [
+        "b03_020_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "alf",
+      "title": "AASLD — Defining and managing acute liver failure",
+      "url": "https://www.aasld.org/liver-fellow-network/core-series/back-basics/defining-and-managing-acute-liver-failure",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:alf",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "alf_ped",
+      "title": "AASLD — Pediatric acute liver failure, NAC limitations",
+      "url": "https://www.aasld.org/liver-fellow-network/core-series/clinical-pearls/pediatric-acute-liver-failure-prompt-recognition",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:alf_ped",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

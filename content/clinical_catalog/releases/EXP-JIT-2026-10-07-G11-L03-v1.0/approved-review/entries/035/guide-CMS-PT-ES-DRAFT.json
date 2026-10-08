@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação do lote; Guia deverá permanecer DRAFT no Admin após futura publicação dos modos.",
+  "canonical_payload_sha256": "cad4777f42735d3354546337c4a1e10d691c72209ee272458caaae73027c0c43",
+  "owner_candidate": "panaricio_herpetico",
+  "pt": {
+    "title": "Panarício herpético",
+    "subtitle": "Primeira escolha e alternativas por cenário",
+    "summary": "Infecção digital por herpes simples com vesículas dolorosas; pode ser confundida com paroníquia bacteriana ou abscesso.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Infecção digital por herpes simples com vesículas dolorosas; pode ser confundida com paroníquia bacteriana ou abscesso."
+        ],
+        "factIds": [
+          "b03_035_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "A palavra panarício não autoriza drenagem: a lesão herpética é viral e uma incisão pode causar disseminação/infecção secundária. A janela precoce favorece benefício antiviral."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Examinar vesículas agrupadas, exposição oral/genital e imunidade; PCR da lesão em dúvida. Pus/sepse ou evolução atípica exige considerar infecção bacteriana concomitante."
+        ],
+        "factIds": [
+          "b03_035_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Proteger lesão com curativo seco e evitar contato com mucosas; analgesia e higiene. Não incisar nem drenar vesículas como abscesso bacteriano."
+        ],
+        "factIds": [
+          "b03_035_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Quadro leve pode ter suporte e evolução autolimitada. Antiviral iniciado cedo, especialmente nas primeiras 48 horas, pode reduzir sintomas: aciclovir oral ou alternativa valaciclovir, escolhendo regime HSV conforme episódio, rim e população. Imunossuprimido/doença grave exige avaliação especializada."
+        ],
+        "factIds": [
+          "b03_035_f04"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Antibiótico não trata herpes; usar apenas em infecção bacteriana adicional. Dose renal e hidratação importam para antivirais; não copiar esquema de zoster ou encefalite para lesão digital. Gestação/crianças exigem avaliação própria."
+        ],
+        "factIds": [
+          "b03_035_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Retornar por febre, extensão, pus ou dor progressiva; recorrência pode exigir plano supressivo especializado. Manter cobertura e evitar transmissão até cicatrização."
+        ],
+        "factIds": [
+          "b03_035_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Panadizo herpético",
+    "subtitle": "Primera elección y alternativas por escenario",
+    "summary": "Infección digital por herpes simple con vesículas dolorosas; puede confundirse con paroniquia bacteriana/absceso.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Infección digital por herpes simple con vesículas dolorosas; puede confundirse con paroniquia bacteriana/absceso."
+        ],
+        "factIds": [
+          "b03_035_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "La palabra panadizo no autoriza drenaje: es viral y una incisión favorece diseminación/infección secundaria. El inicio temprano favorece beneficio antiviral."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Vesículas agrupadas, exposición oral/genital/inmunidad; PCR si duda. Pus/sepsis o curso atípico: considerar infección bacteriana simultánea."
+        ],
+        "factIds": [
+          "b03_035_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Cubrir con apósito seco, evitar contacto con mucosas; analgesia/higiene. No incidir ni drenar vesículas como absceso bacteriano."
+        ],
+        "factIds": [
+          "b03_035_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Leve: soporte/curso autolimitado. Antiviral temprano, especialmente primeras 48 horas, puede reducir síntomas: aciclovir oral o valaciclovir, con esquema HSV según episodio, riñón/población. Inmunosuprimido/grave: especialista."
+        ],
+        "factIds": [
+          "b03_035_f04"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Antibiótico no trata herpes, solo infección bacteriana adicional. Antivirales: riñón/hidratación; no copiar esquema de zóster/encefalitis al dedo. Embarazo/niños: evaluación propia."
+        ],
+        "factIds": [
+          "b03_035_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Volver por fiebre, extensión, pus/dolor progresivo; recurrencia puede requerir supresión especializada. Cubrir/prevenir contagio hasta cicatrización."
+        ],
+        "factIds": [
+          "b03_035_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "whitlow_derm",
+      "title": "DermNet — Herpetic whitlow",
+      "url": "https://dermnetnz.org/topics/herpetic-whitlow",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last reviewed: April 2023",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:whitlow_derm",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "whitlow_nhs",
+      "title": "NHS — Herpetic whitlow",
+      "url": "https://www.nhs.uk/conditions/herpetic-whitlow/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 03 August 2023",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:whitlow_nhs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

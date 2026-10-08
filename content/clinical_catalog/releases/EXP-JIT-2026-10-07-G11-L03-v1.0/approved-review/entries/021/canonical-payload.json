@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "polipos_colorretais",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Pólipos colorretais",
+    "es": "Pólipos colorrectales"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "PROCEDURAL_OPTIONS_NO_CURATIVE_DRUG",
+  "facts": [
+    {
+      "id": "b03_021_f01",
+      "section": "concept",
+      "pt": "Lesões da mucosa colorretal, adenomatosas, serrilhadas ou outras; risco maligno depende de histologia, tamanho e características.",
+      "es": "Lesiones de mucosa colorrectal, adenomatosas, serradas u otras; riesgo maligno según histología, tamaño y características.",
+      "sources": [
+        "polyps2024",
+        "topic_130"
+      ]
+    },
+    {
+      "id": "b03_021_f02",
+      "section": "diagnosis",
+      "pt": "Colonoscopia com caracterização e histologia da lesão removida; avaliar sinais de invasão e história familiar. Não confundir pólipo benigno com carcinoma invasivo nem atribuir todo sangramento ao pólipo.",
+      "es": "Colonoscopia con caracterización e histología; evaluar invasión e historia familiar. No confundir pólipo benigno con carcinoma invasivo ni atribuir todo sangrado al pólipo.",
+      "sources": [
+        "polyps2024",
+        "topic_130"
+      ]
+    },
+    {
+      "id": "b03_021_f03",
+      "section": "initial",
+      "pt": "Em Plantão, sangramento importante ou dor/peritonismo após ressecção exige avaliar hemorragia/perfuração; estabilizar e consultar endoscopia/cirurgia. Pólipo incidental estável tem avaliação programada.",
+      "es": "En guardia, sangrado importante o dolor/peritonismo tras resección: evaluar hemorragia/perforación; estabilizar y consultar endoscopia/cirugía. Pólipo incidental estable: evaluación programada.",
+      "sources": [
+        "polyps2024",
+        "topic_130"
+      ]
+    },
+    {
+      "id": "b03_021_f04",
+      "section": "options",
+      "pt": "Primeira estratégia em lesão endoscopicamente ressecável: polipectomia apropriada ao tamanho/morfologia; alça fria para pequenas lesões elegíveis. Lesões grandes podem exigir ressecção mucosa ou submucosa especializada; alternativa cirúrgica quando invasão/profundidade impedir cura endoscópica.",
+      "es": "Primera estrategia en lesión resecable: polipectomía según tamaño/morfología; asa fría en pequeñas elegibles. Lesiones grandes: resección mucosa/submucosa especializada; cirugía si invasión/profundidad impide curación endoscópica.",
+      "sources": [
+        "polyps2024",
+        "topic_130"
+      ]
+    },
+    {
+      "id": "b03_021_f05",
+      "section": "safety",
+      "pt": "Não existe fármaco que substitua remoção de lesão indicada. Avaliar anticoagulantes e risco hemorrágico sem suspensão indiscriminada; não tentar ressecção inadequada de lesão suspeita de invasão.",
+      "es": "Ningún fármaco sustituye la resección indicada. Revisar anticoagulantes/sangrado sin suspensión indiscriminada; no intentar resección inadecuada ante invasión sospechosa.",
+      "sources": [
+        "polyps2024",
+        "topic_130"
+      ]
+    },
+    {
+      "id": "b03_021_f06",
+      "section": "followup",
+      "pt": "Intervalo de vigilância depende de histologia, número, tamanho, qualidade e completude da ressecção; não fixar o mesmo prazo para todos. Síndrome hereditária suspeita exige genética/rastreio específico.",
+      "es": "Vigilancia según histología, número, tamaño, calidad y resección completa; no imponer el mismo plazo a todos. Sospecha hereditaria: genética/cribado específico.",
+      "sources": [
+        "polyps2024",
+        "topic_130"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A remoção permite diagnóstico histológico e prevenção oncológica. A técnica precisa preservar avaliação adequada de invasão; cirurgia e endoscopia são escolhas anatômicas/oncológicas, não dois medicamentos substitutos.",
+      "es": "Resecar permite histología y prevención oncológica. La técnica debe permitir evaluar invasión; cirugía/endoscopia son elecciones anatómicas/oncológicas, no dos fármacos.",
+      "sources": [
+        "polyps2024",
+        "topic_130"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "polyps2024",
+      "title": "ESGE — Colorectal polypectomy guideline update 2024",
+      "url": "https://www.esge.com/assets/downloads/pdfs/guidelines/2024_a-2304-3219.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published, de-",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:polyps2024",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_130",
+      "title": "NHS — Bowel polyps",
+      "url": "https://www.nhs.uk/conditions/bowel-polyps/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 28 July 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_130",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

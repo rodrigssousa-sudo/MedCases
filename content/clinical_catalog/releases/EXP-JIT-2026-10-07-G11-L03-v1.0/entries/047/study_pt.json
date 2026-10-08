@@ -1,0 +1,201 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Glaucoma primário de ângulo aberto",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "1cc781d72a78be6b910ae62e7611f8cf62077c34df72cf94a27ef7a01253f2f1",
+  "ownerCandidate": "glaucoma_primario_de_angulo_aberto",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_047_f01",
+    "b03_047_f02",
+    "b03_047_f03",
+    "b03_047_f04",
+    "b03_047_f05",
+    "b03_047_f06",
+    "b03_047_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Neuropatia óptica progressiva com ângulo aberto; pode ocorrer sem pressão muito elevada. Diferente de glaucoma agudo de ângulo fechado."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Baixar pressão reduz risco de progressão, mas a meta é individual. Laser e colírio são alternativas iniciais condicionadas à elegibilidade; aumentar frequência de latanoprosta não aumenta eficácia."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar nervo óptico, campos visuais, pressão, espessura corneana e gonioscopia por especialista. Pressão isolada não define glaucoma nem meta para todos."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor aguda, halos, náusea ou perda visual súbita exige excluir fechamento angular/outra emergência, sem atribuir ao glaucoma crônico. Doença estável requer plano de preservação visual."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Novo glaucoma não avançado elegível: NICE recomenda trabeculoplastia seletiva a laser de 360 graus. Alternativa se recusada/inadequada ou enquanto se aguarda: análogo de prostaglandina, como latanoprosta. Controle insuficiente pode exigir combinação, outro laser ou cirurgia; doença avançada muda estratégia."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Latanoprosta oftálmica 0,005%: 1 gota no olho afetado uma vez ao dia à noite; não aumentar frequência. Separar colírios por pelo menos 5 minutos; retirar lentes e aguardar 15 minutos para recolocar conforme bula."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Rever pigmentação, inflamação e risco de edema macular; não associar dois análogos de prostaglandina rotineiramente. Alternativas como beta-bloqueador ocular exigem avaliar asma/bradicardia; gestação requer escolha especializada."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguimento com pressão, campo e nervo, ajustado ao risco/progressão; adesão e técnica de instilação são centrais. Não interromper tratamento porque não há sintomas."
+    }
+  ],
+  "references": [
+    {
+      "key": "ng81",
+      "title": "NICE NG81 — Glaucoma recommendations, updated 2022",
+      "url": "https://www.nice.org.uk/guidance/ng81/chapter/Recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2022,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE 2022, itens 1.4.17–1.4.19: SLT de 360 graus em novo COAG não avançado elegível; PGA se inadequado/recusado/aguardando. Não aplicar regra ao glaucoma avançado.",
+      "sourceEvidenceRecord": "web-verification-record.json:ng81",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "latano",
+      "title": "DailyMed — Latanoprost ophthalmic 0.005% regulatory label",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5f1987e0-b0ce-47b2-998b-97453a7db5c3",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:latano",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "glaucoma_college",
+      "title": "College of Optometrists — Primary open-angle glaucoma",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/glaucomeopenangle_poag",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_GUIDELINE_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "web-verification-record.json:glaucoma_college",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Neuropatia óptica progressiva com ângulo aberto; pode ocorrer sem pressão muito elevada. Diferente de glaucoma agudo de ângulo fechado."
+      ],
+      "factIds": [
+        "b03_047_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Baixar pressão reduz risco de progressão, mas a meta é individual. Laser e colírio são alternativas iniciais condicionadas à elegibilidade; aumentar frequência de latanoprosta não aumenta eficácia."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar nervo óptico, campos visuais, pressão, espessura corneana e gonioscopia por especialista. Pressão isolada não define glaucoma nem meta para todos."
+      ],
+      "factIds": [
+        "b03_047_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Dor aguda, halos, náusea ou perda visual súbita exige excluir fechamento angular/outra emergência, sem atribuir ao glaucoma crônico. Doença estável requer plano de preservação visual."
+      ],
+      "factIds": [
+        "b03_047_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Novo glaucoma não avançado elegível: NICE recomenda trabeculoplastia seletiva a laser de 360 graus. Alternativa se recusada/inadequada ou enquanto se aguarda: análogo de prostaglandina, como latanoprosta. Controle insuficiente pode exigir combinação, outro laser ou cirurgia; doença avançada muda estratégia."
+      ],
+      "factIds": [
+        "b03_047_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Latanoprosta oftálmica 0,005%: 1 gota no olho afetado uma vez ao dia à noite; não aumentar frequência. Separar colírios por pelo menos 5 minutos; retirar lentes e aguardar 15 minutos para recolocar conforme bula."
+      ],
+      "factIds": [
+        "b03_047_f05"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Rever pigmentação, inflamação e risco de edema macular; não associar dois análogos de prostaglandina rotineiramente. Alternativas como beta-bloqueador ocular exigem avaliar asma/bradicardia; gestação requer escolha especializada."
+      ],
+      "factIds": [
+        "b03_047_f06"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Seguimento com pressão, campo e nervo, ajustado ao risco/progressão; adesão e técnica de instilação são centrais. Não interromper tratamento porque não há sintomas."
+      ],
+      "factIds": [
+        "b03_047_f07"
+      ]
+    }
+  ],
+  "markdown": "# Glaucoma primário de ângulo aberto\n\n## Conceito e mecanismo\n\nNeuropatia óptica progressiva com ângulo aberto; pode ocorrer sem pressão muito elevada. Diferente de glaucoma agudo de ângulo fechado.\n\n## Raciocínio e escolha terapêutica\n\nBaixar pressão reduz risco de progressão, mas a meta é individual. Laser e colírio são alternativas iniciais condicionadas à elegibilidade; aumentar frequência de latanoprosta não aumenta eficácia.\n\n## Diagnóstico e diferenciais\n\nAvaliar nervo óptico, campos visuais, pressão, espessura corneana e gonioscopia por especialista. Pressão isolada não define glaucoma nem meta para todos.\n\n## Abordagem inicial e urgências\n\nDor aguda, halos, náusea ou perda visual súbita exige excluir fechamento angular/outra emergência, sem atribuir ao glaucoma crônico. Doença estável requer plano de preservação visual.\n\n## Tratamento: primeira escolha e alternativas\n\nNovo glaucoma não avançado elegível: NICE recomenda trabeculoplastia seletiva a laser de 360 graus. Alternativa se recusada/inadequada ou enquanto se aguarda: análogo de prostaglandina, como latanoprosta. Controle insuficiente pode exigir combinação, outro laser ou cirurgia; doença avançada muda estratégia.\n\n## Fármacos, doses e intervalos\n\nLatanoprosta oftálmica 0,005%: 1 gota no olho afetado uma vez ao dia à noite; não aumentar frequência. Separar colírios por pelo menos 5 minutos; retirar lentes e aguardar 15 minutos para recolocar conforme bula.\n\n## Segurança e monitorização\n\nRever pigmentação, inflamação e risco de edema macular; não associar dois análogos de prostaglandina rotineiramente. Alternativas como beta-bloqueador ocular exigem avaliar asma/bradicardia; gestação requer escolha especializada.\n\n## Reavaliação, internação e alta\n\nSeguimento com pressão, campo e nervo, ajustado ao risco/progressão; adesão e técnica de instilação são centrais. Não interromper tratamento porque não há sintomas.\n\n## Referências\n\n1. [NICE NG81 — Glaucoma recommendations, updated 2022](https://www.nice.org.uk/guidance/ng81/chapter/Recommendations)\n2. [DailyMed — Latanoprost ophthalmic 0.005% regulatory label](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5f1987e0-b0ce-47b2-998b-97453a7db5c3)\n3. [College of Optometrists — Primary open-angle glaucoma](https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/glaucomeopenangle_poag)",
+  "approvedReviewCanonicalFileSha256": "83362b2e3ec1c43a413ae930572ccc8af54e5130753739f5ba6a4bc62bfbe116",
+  "approvedReviewProjectionFileSha256": "354edfa5838612fa488bd4b61cffa1ff81542f3a88bcbb46e12f0d11f9a07e38"
+}

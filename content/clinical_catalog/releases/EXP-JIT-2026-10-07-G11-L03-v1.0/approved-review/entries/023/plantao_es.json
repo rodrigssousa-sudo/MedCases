@@ -1,0 +1,89 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Fiebre de Oropouche",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "ddb519bd4580a3fbfa73b60ff71d4211249e98f9cbd563733af667b638a3ba43",
+  "ownerCandidate": "febre_de_oropouche",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_023_f01",
+    "b03_023_f02",
+    "b03_023_f03",
+    "b03_023_f04",
+    "b03_023_f05",
+    "b03_023_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Hidratar/evaluar tolerancia oral; meningismo, confusión, sangrado, inestabilidad o vómitos persistentes: hospital. Embarazada: seguimiento obstétrico e investigación/notificación específica."
+      ],
+      "factIds": [
+        "b03_023_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Exposición regional y pruebas coordinadas con vigilancia; se superpone a dengue/otras arbovirosis. Evaluar gravedad/embarazo; no confirmar solo por síntomas."
+      ],
+      "factIds": [
+        "b03_023_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera estrategia: soporte, reposo y paracetamol para fiebre/dolor si elegible. Si no tolera hidratación oral: soporte hospitalario. No hay vacuna/antiviral específico establecido; no inventar dos tratamientos causales."
+      ],
+      "factIds": [
+        "b03_023_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "En fiebre de Oropouche, evitar aspirina/antiinflamatorios no esteroideos por riesgo de sangrado, incluso tras excluir dengue. Revisar hígado/embarazo antes de antitérmico; no extrapolar a niños. Prevenir picaduras con protección compatible con embarazo."
+      ],
+      "factIds": [
+        "b03_023_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Alta estable con plan de retorno; explicar recurrencia/alarmas neurológicas. Seguimiento obstétrico cuando corresponde y coordinación con vigilancia."
+      ],
+      "factIds": [
+        "b03_023_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Arbovirosis por Oropouche con fiebre, cefalea, mialgia y posible recurrencia; complicaciones neurológicas/riesgo gestacional requieren atención."
+      ],
+      "factIds": [
+        "b03_023_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "oro_cdc",
+      "title": "CDC — About Oropouche, 2025",
+      "url": "https://www.cdc.gov/oropouche/about/index.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC setembro de 2025: repouso, fluidos, paracetamol elegível; evitar aspirina e anti-inflamatórios no Oropouche, não apenas até excluir dengue.",
+      "sourceEvidenceRecord": "web-verification-record.json:oro_cdc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

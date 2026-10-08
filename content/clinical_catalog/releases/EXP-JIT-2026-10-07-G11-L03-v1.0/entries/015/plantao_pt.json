@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Síndrome de dumping",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "4e168a4e565b110b3079019bf9ffe310f1954ea7fe2b21c4860ce981f2dc740a",
+  "ownerCandidate": "sindrome_de_dumping",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_015_f01",
+    "b03_015_f02",
+    "b03_015_f03",
+    "b03_015_f04",
+    "b03_015_f05",
+    "b03_015_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tratar hipoglicemia ou instabilidade imediatamente; avaliar hidratação e nutrição. Sintomas persistentes sem cirurgia/diagnóstico confirmado exigem investigar alternativas."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Correlacionar sintomas, refeição e cirurgia; medir glicemia durante suspeita de hipoglicemia e investigar outras causas de síncope/diarreia. Exames provocativos somente em protocolo especializado."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira escolha: refeições pequenas e ajustadas por nutricionista, reduzindo açúcares rapidamente absorvidos. Acarbose pode ajudar dumping tardio; alternativa em refratário, octreotida de ação curta ou longa, selecionada por especialista. Cirurgia revisional somente em casos excepcionais."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Acarbose pode causar flatulência/diarreia; octreotida pode causar cálculos, esteatorreia e alterações glicêmicas. Formas curta subcutânea e longa intramuscular não têm intervalos intercambiáveis; não copiar intervalo mensal para uso pré-refeição."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reavaliar sintomas, peso e episódios de hipoglicemia; orientar segurança para dirigir e acesso a resgate se hipoglicemia. Internar instabilidade ou perdas importantes."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sintomas após refeição por esvaziamento rápido, usualmente após cirurgia gástrica; forma precoce é hemodinâmica/osmótica e tardia envolve hipoglicemia reativa."
+    }
+  ],
+  "references": [
+    {
+      "key": "dumping",
+      "title": "NIDDK — Dumping syndrome treatment",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/dumping-syndrome/treatment",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed January 2019",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:dumping",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_119",
+      "title": "NIDDK — Dumping Syndrome",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/dumping-syndrome",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed January 2019",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_119",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Tratar hipoglicemia ou instabilidade imediatamente; avaliar hidratação e nutrição. Sintomas persistentes sem cirurgia/diagnóstico confirmado exigem investigar alternativas."
+      ],
+      "factIds": [
+        "b03_015_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Correlacionar sintomas, refeição e cirurgia; medir glicemia durante suspeita de hipoglicemia e investigar outras causas de síncope/diarreia. Exames provocativos somente em protocolo especializado."
+      ],
+      "factIds": [
+        "b03_015_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha: refeições pequenas e ajustadas por nutricionista, reduzindo açúcares rapidamente absorvidos. Acarbose pode ajudar dumping tardio; alternativa em refratário, octreotida de ação curta ou longa, selecionada por especialista. Cirurgia revisional somente em casos excepcionais."
+      ],
+      "factIds": [
+        "b03_015_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Acarbose pode causar flatulência/diarreia; octreotida pode causar cálculos, esteatorreia e alterações glicêmicas. Formas curta subcutânea e longa intramuscular não têm intervalos intercambiáveis; não copiar intervalo mensal para uso pré-refeição."
+      ],
+      "factIds": [
+        "b03_015_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar sintomas, peso e episódios de hipoglicemia; orientar segurança para dirigir e acesso a resgate se hipoglicemia. Internar instabilidade ou perdas importantes."
+      ],
+      "factIds": [
+        "b03_015_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Sintomas após refeição por esvaziamento rápido, usualmente após cirurgia gástrica; forma precoce é hemodinâmica/osmótica e tardia envolve hipoglicemia reativa."
+      ],
+      "factIds": [
+        "b03_015_f01"
+      ]
+    }
+  ],
+  "markdown": "# Síndrome de dumping\n\n## Abordagem inicial e urgências\n\nTratar hipoglicemia ou instabilidade imediatamente; avaliar hidratação e nutrição. Sintomas persistentes sem cirurgia/diagnóstico confirmado exigem investigar alternativas.\n\n## Diagnóstico e diferenciais\n\nCorrelacionar sintomas, refeição e cirurgia; medir glicemia durante suspeita de hipoglicemia e investigar outras causas de síncope/diarreia. Exames provocativos somente em protocolo especializado.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira escolha: refeições pequenas e ajustadas por nutricionista, reduzindo açúcares rapidamente absorvidos. Acarbose pode ajudar dumping tardio; alternativa em refratário, octreotida de ação curta ou longa, selecionada por especialista. Cirurgia revisional somente em casos excepcionais.\n\n## Segurança e monitorização\n\nAcarbose pode causar flatulência/diarreia; octreotida pode causar cálculos, esteatorreia e alterações glicêmicas. Formas curta subcutânea e longa intramuscular não têm intervalos intercambiáveis; não copiar intervalo mensal para uso pré-refeição.\n\n## Reavaliação, internação e alta\n\nReavaliar sintomas, peso e episódios de hipoglicemia; orientar segurança para dirigir e acesso a resgate se hipoglicemia. Internar instabilidade ou perdas importantes.\n\n## Reconhecimento rápido\n\nSintomas após refeição por esvaziamento rápido, usualmente após cirurgia gástrica; forma precoce é hemodinâmica/osmótica e tardia envolve hipoglicemia reativa.\n\n## Referências\n\n1. [NIDDK — Dumping syndrome treatment](https://www.niddk.nih.gov/health-information/digestive-diseases/dumping-syndrome/treatment)\n2. [NIDDK — Dumping Syndrome](https://www.niddk.nih.gov/health-information/digestive-diseases/dumping-syndrome)",
+  "approvedReviewCanonicalFileSha256": "3702812f9c4c1e4d3983bcd68e4bb46d06787a872c16c886bf0aab2d0e9b07fe",
+  "approvedReviewProjectionFileSha256": "d0d72ae3669f195d7fe543614a1d4e94551c8ba97917cc9e53253269228f3632"
+}

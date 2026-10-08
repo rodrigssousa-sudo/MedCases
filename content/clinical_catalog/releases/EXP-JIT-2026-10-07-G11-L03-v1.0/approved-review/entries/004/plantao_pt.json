@@ -1,0 +1,102 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Hipertensão pulmonar",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "bdea303b61cd38a1bb31e407429ff70896fbac02e40539480958edbd06c51fc1",
+  "ownerCandidate": "hipertensao_pulmonar",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_004_f01",
+    "b03_004_f02",
+    "b03_004_f03",
+    "b03_004_f04",
+    "b03_004_f05",
+    "b03_004_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Síncope, hipotensão, hipoxemia ou falência direita: urgência hospitalar/centro especializado. Monitorizar perfusão, ritmo e volemia; evitar sobrecarga de fluidos e interrupção de prostaciclina contínua."
+      ],
+      "factIds": [
+        "b03_004_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Ecocardiograma estima probabilidade; confirmação e classificação hemodinâmica por cateterismo direito quando indicado. Investigar coração esquerdo, pulmão e tromboembolismo crônico; dispneia isolada não identifica grupo."
+      ],
+      "factIds": [
+        "b03_004_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Grupo arterial confirmado: combinar antagonista de endotelina, como macitentana/ambrisentana, e inibidor de PDE5, como tadalafila/sildenafila, em elegíveis; alto risco pode exigir prostaciclina parenteral. Grupo cardíaco esquerdo ou pulmonar: tratar causa, não aplicar automaticamente esquema de hipertensão arterial pulmonar."
+      ],
+      "factIds": [
+        "b03_004_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Tromboembolismo crônico exige anticoagulação e avaliação de endarterectomia, angioplastia ou riociguate conforme operabilidade. Não combinar riociguate com inibidor de PDE5. Vasodilatadores específicos e doses exigem centro especializado; gestação tem alto risco e restrições medicamentosas."
+      ],
+      "factIds": [
+        "b03_004_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Seguimento multiparamétrico com capacidade funcional, função direita e biomarcadores. Não dar alta com sinais de baixo débito; definir contato com centro e disponibilidade dos medicamentos antes da alta."
+      ],
+      "factIds": [
+        "b03_004_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Aumento da pressão na circulação pulmonar por mecanismos diferentes: arterial, cardíaco esquerdo, pulmonar/hipóxico, tromboembólico crônico ou multifatorial."
+      ],
+      "factIds": [
+        "b03_004_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "ph2022",
+      "title": "ESC/ERS — Pulmonary hypertension 2022",
+      "url": "https://academic.oup.com/eurheartj/article/43/38/3618/6673929",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2022,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "ESC/ERS final 2022: cateterismo, classificação por mecanismo, abordagem especializada e cautela em extrapolar vasodilatadores da HAP para outras classes.",
+      "sourceEvidenceRecord": "web-verification-record.json:ph2022",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_104",
+      "title": "NHS — Pulmonary hypertension",
+      "url": "https://www.nhs.uk/conditions/pulmonary-hypertension/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 02 May 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_104",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

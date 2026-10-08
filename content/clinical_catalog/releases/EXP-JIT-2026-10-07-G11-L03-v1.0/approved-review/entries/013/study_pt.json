@@ -1,0 +1,122 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Síndrome de vômitos cíclicos",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "33541b2ca9492dc1b34d06347c0a98d9349b347d472781d5af71ce7b00bb6410",
+  "ownerCandidate": "sindrome_de_vomitos_ciclicos",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_013_f01",
+    "b03_013_f02",
+    "b03_013_f03",
+    "b03_013_f04",
+    "b03_013_f05",
+    "b03_013_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Episódios estereotipados de vômitos intensos separados por períodos de melhora, associados a interação intestino–cérebro; não é diagnóstico de qualquer vômito recorrente."
+      ],
+      "factIds": [
+        "b03_013_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "O tratamento muda conforme fase: abortar pródromo, sustentar a fase emética e prevenir recorrência. Uma opção profilática não substitui reposição de perdas numa crise desidratante."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Documentar padrão, gatilhos, migrânea, cannabis e medicamentos. Excluir obstrução, gestação, doença metabólica/neurológica e outras causas conforme sinais; cannabis crônica exige avaliar hiperêmese canabinoide."
+      ],
+      "factIds": [
+        "b03_013_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Crise: hidratar, corrigir eletrólitos, verificar glicemia e controlar náusea; sinais peritoneais, sangramento ou alteração neurológica exigem investigação. Plano de urgência individual evita medicação repetida sem avaliar QT."
+      ],
+      "factIds": [
+        "b03_013_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Profilaxia adulta moderada/grave: primeira escolha, tricíclico como amitriptilina; alternativas selecionadas, topiramato ou aprepitanto. Na fase prodrômica, ondansetrona e, em elegíveis, triptano como sumatriptana podem abortar crise; distinguir resgate de profilaxia."
+      ],
+      "factIds": [
+        "b03_013_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Titulação e dose dependem de protocolo especializado; ECG/QT para tricíclico e antiemético, contraindicação cardiovascular para triptano e risco gestacional de topiramato. Pediatria tem manejo próprio; não usar esquema adulto automaticamente."
+      ],
+      "factIds": [
+        "b03_013_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Alta após cessar vômitos e recuperar ingestão/eletrólitos; hospitalizar se persistência ou instabilidade. Diário de crises, regularidade de sono e manejo de ansiedade/migrânea integram prevenção."
+      ],
+      "factIds": [
+        "b03_013_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "cvs2024",
+      "title": "AGA — Cyclic vomiting syndrome, 2024",
+      "url": "https://gastro.org/clinical-guidance/diagnosis-and-management-of-cyclic-vomiting-syndrome/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLICATION_METADATA_WITH_FINAL_GUIDELINE_CROSSCHECK",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "AGA Clinical Practice Update 2024 identificado; medidas clínicas apoiadas no guideline público ANMS/CVSA 2019 integralmente acessível. Não declarar leitura integral de conteúdo restrito.",
+      "sourceEvidenceRecord": "web-verification-record.json:cvs2024",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "cvs2019",
+      "title": "ANMS/CVSA — Adult cyclic vomiting syndrome guideline, 2019",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6899751/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2019,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published data pertaining to approach.",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:cvs2019",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_117",
+      "title": "NHS — Cyclical vomiting syndrome",
+      "url": "https://www.nhs.uk/conditions/cyclical-vomiting-syndrome/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 31 May 2024",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_117",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

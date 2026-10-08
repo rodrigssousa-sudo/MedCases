@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Abscesso pulmonar",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "763b2a6727a342a2db04d8e313369ee662db052376992eec1110228d75da0c4c",
+  "ownerCandidate": "abscesso_pulmonar",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_008_f01",
+    "b03_008_f02",
+    "b03_008_f03",
+    "b03_008_f04",
+    "b03_008_f05",
+    "b03_008_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Necrose infecciosa do parênquima com cavitação, frequentemente associada à aspiração; distinguir de empiema e de cavitação tumoral/tuberculosa."
+      ],
+      "factIds": [
+        "b03_008_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "O controle do foco pulmonar e a investigação de aspiração/obstrução evitam recorrência. O esquema citado é um protocolo regional adulto, não prova de susceptibilidade universal."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "TC/radiografia, escarro e hemoculturas conforme gravidade; investigar dentes, aspiração, obstrução e imunossupressão. Broncoscopia pode ser necessária para obstrução ou diagnóstico não esclarecido."
+      ],
+      "factIds": [
+        "b03_008_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Sepse, hipoxemia, hemoptise importante ou incapacidade oral exigem internação. Consultar pneumologia/infectologia; dar suporte respiratório, tratar fonte de aspiração e ajustar antibiótico à microbiologia."
+      ],
+      "factIds": [
+        "b03_008_f03"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Referência adulta do NHS Grampian: amoxicilina/clavulanato 1,2 g intravenoso a cada 8 horas. Em alergia à penicilina, protocolo admite sulfametoxazol/trimetoprima 960 mg intravenoso a cada 12 horas MAIS metronidazol 500 mg intravenoso a cada 8 horas; confirmar composição do produto, função renal e adequação local."
+      ],
+      "factIds": [
+        "b03_008_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Duração e transição oral são definidas com especialista pela resposta clínica/imagem; não usar prazo de pneumonia simples. Drenagem ou cirurgia somente em casos selecionados/falha. Pediatria/gestação exigem regime próprio; não extrapolar alternativa de cotrimoxazol."
+      ],
+      "factIds": [
+        "b03_008_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Seguimento clínico e radiológico até resolução; persistência de cavidade exige revisar obstrução, tumor, micobactéria e resistência."
+      ],
+      "factIds": [
+        "b03_008_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "lungabs",
+      "title": "NHS Grampian — Lung abscess antimicrobial protocol",
+      "url": "https://www.rightdecisions.scot.nhs.uk/antimicrobial-prescribing-nhs-grampian-orkney-shetland/hospital-guidance-for-adults/respiratory-system/lung-abscess/",
+      "authorityStatus": "OFFICIAL_REGIONAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:lungabs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "lungabs2025",
+      "title": "Buckinghamshire NHS — Respiratory antimicrobial guideline 133FM.18.2, 2025",
+      "url": "https://www.bucksformulary.nhs.uk/docs/Guideline_133FM.pdf?uid=881982042&uid2=2025522165412314",
+      "authorityStatus": "OFFICIAL_REGIONAL_CLINICAL_PROTOCOL",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Review Date October 2029 ",
+      "scope": "Usar somente os cenários e formulações do documento consultado.",
+      "sourceEvidenceRecord": "source-readback.json:lungabs2025",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

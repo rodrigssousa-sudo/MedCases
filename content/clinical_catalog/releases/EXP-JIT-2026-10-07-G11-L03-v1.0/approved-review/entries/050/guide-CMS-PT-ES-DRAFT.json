@@ -1,0 +1,173 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação do lote; Guia deverá permanecer DRAFT no Admin após futura publicação dos modos.",
+  "canonical_payload_sha256": "99d448009b43b900e813532f46cff5d56eb35752f7a10a6668eb9dc2d35a461f",
+  "owner_candidate": "sialolitiase",
+  "pt": {
+    "title": "Sialolitíase",
+    "subtitle": "Primeira escolha e alternativas por cenário",
+    "summary": "Cálculo no ducto/glândula salivar causa obstrução, dor e edema relacionados a refeições; pode existir sem infecção, distinta da sialadenite já cadastrada.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Cálculo no ducto/glândula salivar causa obstrução, dor e edema relacionados a refeições; pode existir sem infecção, distinta da sialadenite já cadastrada."
+        ],
+        "factIds": [
+          "b03_050_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "A sialadenite descreve inflamação/infecção; sialolitíase descreve a causa mecânica, que pode existir isoladamente. A distinção mantém o owner de infecção e evita prescrição antimicrobiana desnecessária."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Examinar ductos e palpação cuidadosa; ultrassom conforme dúvida/persistência. Febre/pus sugerem infecção adicional; massa fixa/progressiva exige excluir neoplasia."
+        ],
+        "factIds": [
+          "b03_050_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Hidratar, massagem suave e estímulo salivar se seguro; avaliar via aérea e extensão cervical em grave. Não usar objeto pontiagudo para retirar cálculo."
+        ],
+        "factIds": [
+          "b03_050_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Primeira estratégia em pequeno e não complicado: medidas conservadoras e analgesia. Alternativa em obstrução persistente: remoção por profissional, sialendoscopia ou cirurgia conforme localização. Antibiótico somente se infecção associada, seguindo owner de sialadenite."
+        ],
+        "factIds": [
+          "b03_050_f04"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Não há dois fármacos que dissolvam universalmente cálculos salivares. Analgesia pode usar paracetamol ou anti-inflamatório se elegível, revisando rim, sangramento e gestação. Sepse/ameaça aérea exige hospital."
+        ],
+        "factIds": [
+          "b03_050_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Persistência exige especialista, sem prolongar antibiótico no cálculo não infectado. Alta com via aérea segura, hidratação e plano de remoção/retorno; recorrência exige reavaliação."
+        ],
+        "factIds": [
+          "b03_050_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Sialolitiasis",
+    "subtitle": "Primera elección y alternativas por escenario",
+    "summary": "Cálculo salival obstruye y causa dolor/edema con comidas; puede no infectarse, distinto de sialadenitis existente.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Cálculo salival obstruye y causa dolor/edema con comidas; puede no infectarse, distinto de sialadenitis existente."
+        ],
+        "factIds": [
+          "b03_050_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Sialadenitis es inflamación/infección; sialolitiasis es causa mecánica que puede existir sola. Distinguir conserva el owner infeccioso/evita antibióticos innecesarios."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Examinar conductos/palpar con cuidado; ecografía si duda/persistencia. Fiebre/pus: infección adicional; masa fija/progresiva: excluir neoplasia."
+        ],
+        "factIds": [
+          "b03_050_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Hidratar, masaje suave/estimular saliva si seguro; vía aérea/extensión cervical en grave. No usar objetos punzantes para extraer."
+        ],
+        "factIds": [
+          "b03_050_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Pequeño no complicado: conservación/analgesia. Persistente: extracción profesional, sialendoscopia/cirugía según sitio. Antibiótico solo ante infección, siguiendo owner de sialadenitis."
+        ],
+        "factIds": [
+          "b03_050_f04"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "No hay dos fármacos que disuelvan universalmente cálculos. Analgesia: paracetamol o antiinflamatorio si elegible, revisando riñón, sangrado/embarazo. Sepsis/amenaza aérea: hospital."
+        ],
+        "factIds": [
+          "b03_050_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Persistencia: especialista, no prolongar antibiótico si no infectado. Alta con vía aérea segura, hidratación y extracción/retorno; recurrencia: reevaluar."
+        ],
+        "factIds": [
+          "b03_050_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_159",
+      "title": "NHS — Salivary gland stones",
+      "url": "https://www.nhs.uk/conditions/salivary-gland-stones/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 14 August 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_159",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "sial_gcc",
+      "title": "NHS GGC — Salivary gland pathology, stones and sialadenitis",
+      "url": "https://www.rightdecisions.scot.nhs.uk/ggc-primary-care/ear-nose-and-throat-ent/ear-nose-and-throat-ent-referral-guidance/throat-conditions/neck-lump/salivary-gland-pathology-sialadenitis-stones-cancer/",
+      "authorityStatus": "OFFICIAL_REGIONAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "review date:",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:sial_gcc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

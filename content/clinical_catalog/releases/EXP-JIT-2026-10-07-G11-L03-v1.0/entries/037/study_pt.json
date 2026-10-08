@@ -1,0 +1,183 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Granuloma anular",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "1c238c2a5b38e528e5e8c686af787db477d9264947f01596d232b23ca4c9c4fa",
+  "ownerCandidate": "granuloma_anular",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_037_f01",
+    "b03_037_f02",
+    "b03_037_f03",
+    "b03_037_f04",
+    "b03_037_f05",
+    "b03_037_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dermatose inflamatória benigna com pápulas em anel, geralmente sem descamação; não é micose por definição."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "A ausência de descamação ajuda a distinguir de tinha; inflamação granulomatosa pode resolver espontaneamente. O risco de tratamento pode superar o de uma doença assintomática."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Exame clínico; biópsia se dúvida/apresentação atípica. Diferenciar tinha, sarcoidose e outras dermatoses; investigar doenças associadas conforme sinais, sem rastreio indiscriminado."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não costuma ser emergência. Ulceração, febre, dor intensa ou crescimento atípico exige reconsiderar diagnóstico; orientar benignidade quando confirmado."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira escolha em localizado assintomático: observação. Se incômodo, corticoide tópico ou intralesional selecionado por dermatologia; alternativa para disseminado persistente, fototerapia. Terapias sistêmicas são excepcionais, com benefício/risco individual."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não prescrever antifúngico só pelo formato em anel. Corticoide pode causar atrofia; potência, local e duração individualizados. Não prometer cura permanente com tratamento sistêmico potencialmente tóxico."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Acompanhar evolução se diagnóstico seguro; recorrência é possível. Encaminhar disseminação, dúvida ou repercussão relevante."
+    }
+  ],
+  "references": [
+    {
+      "key": "granuloma_derm",
+      "title": "DermNet — Granuloma annulare",
+      "url": "https://dermnetnz.org/topics/granuloma-annulare",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed: February, 2025",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:granuloma_derm",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_146",
+      "title": "NHS — Granuloma annulare",
+      "url": "https://www.nhs.uk/conditions/granuloma-annulare/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 11 July 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_146",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "granuloma_college",
+      "title": "Australasian College of Dermatologists — Granuloma annulare",
+      "url": "https://www.dermcoll.edu.au/wp-content/uploads/2021/10/Granuloma-Annulare-A-Z-of-Skin.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:granuloma_college",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Dermatose inflamatória benigna com pápulas em anel, geralmente sem descamação; não é micose por definição."
+      ],
+      "factIds": [
+        "b03_037_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A ausência de descamação ajuda a distinguir de tinha; inflamação granulomatosa pode resolver espontaneamente. O risco de tratamento pode superar o de uma doença assintomática."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Exame clínico; biópsia se dúvida/apresentação atípica. Diferenciar tinha, sarcoidose e outras dermatoses; investigar doenças associadas conforme sinais, sem rastreio indiscriminado."
+      ],
+      "factIds": [
+        "b03_037_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Não costuma ser emergência. Ulceração, febre, dor intensa ou crescimento atípico exige reconsiderar diagnóstico; orientar benignidade quando confirmado."
+      ],
+      "factIds": [
+        "b03_037_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha em localizado assintomático: observação. Se incômodo, corticoide tópico ou intralesional selecionado por dermatologia; alternativa para disseminado persistente, fototerapia. Terapias sistêmicas são excepcionais, com benefício/risco individual."
+      ],
+      "factIds": [
+        "b03_037_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não prescrever antifúngico só pelo formato em anel. Corticoide pode causar atrofia; potência, local e duração individualizados. Não prometer cura permanente com tratamento sistêmico potencialmente tóxico."
+      ],
+      "factIds": [
+        "b03_037_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Acompanhar evolução se diagnóstico seguro; recorrência é possível. Encaminhar disseminação, dúvida ou repercussão relevante."
+      ],
+      "factIds": [
+        "b03_037_f06"
+      ]
+    }
+  ],
+  "markdown": "# Granuloma anular\n\n## Conceito e mecanismo\n\nDermatose inflamatória benigna com pápulas em anel, geralmente sem descamação; não é micose por definição.\n\n## Raciocínio e escolha terapêutica\n\nA ausência de descamação ajuda a distinguir de tinha; inflamação granulomatosa pode resolver espontaneamente. O risco de tratamento pode superar o de uma doença assintomática.\n\n## Diagnóstico e diferenciais\n\nExame clínico; biópsia se dúvida/apresentação atípica. Diferenciar tinha, sarcoidose e outras dermatoses; investigar doenças associadas conforme sinais, sem rastreio indiscriminado.\n\n## Abordagem inicial e urgências\n\nNão costuma ser emergência. Ulceração, febre, dor intensa ou crescimento atípico exige reconsiderar diagnóstico; orientar benignidade quando confirmado.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira escolha em localizado assintomático: observação. Se incômodo, corticoide tópico ou intralesional selecionado por dermatologia; alternativa para disseminado persistente, fototerapia. Terapias sistêmicas são excepcionais, com benefício/risco individual.\n\n## Segurança e monitorização\n\nNão prescrever antifúngico só pelo formato em anel. Corticoide pode causar atrofia; potência, local e duração individualizados. Não prometer cura permanente com tratamento sistêmico potencialmente tóxico.\n\n## Reavaliação, internação e alta\n\nAcompanhar evolução se diagnóstico seguro; recorrência é possível. Encaminhar disseminação, dúvida ou repercussão relevante.\n\n## Referências\n\n1. [DermNet — Granuloma annulare](https://dermnetnz.org/topics/granuloma-annulare)\n2. [NHS — Granuloma annulare](https://www.nhs.uk/conditions/granuloma-annulare/)\n3. [Australasian College of Dermatologists — Granuloma annulare](https://www.dermcoll.edu.au/wp-content/uploads/2021/10/Granuloma-Annulare-A-Z-of-Skin.pdf)",
+  "approvedReviewCanonicalFileSha256": "47cb4faed905f9ebda2308ca5e582fef0362d0cf3c8c7b88791b68e1ef5220f5",
+  "approvedReviewProjectionFileSha256": "ec9f4fde34d920f094625e3f6f33280c7f392a7503cb3f025dabe5886f4ef964"
+}

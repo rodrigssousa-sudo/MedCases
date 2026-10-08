@@ -1,0 +1,183 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Fiebre tifoidea y paratifoidea",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "acb129d4088e5e86bcd348557d9e8b7044293551582bb5d20e5e6959994450cb",
+  "ownerCandidate": "febre_tifoide_e_paratifoide",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_029_f01",
+    "b03_029_f02",
+    "b03_029_f03",
+    "b03_029_f04",
+    "b03_029_f05",
+    "b03_029_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Infección sistémica por S. Typhi/Paratyphi, distinta de gastroenteritis no tifoidea; puede causar bacteriemia/complicaciones intestinales."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Elegir antibiótico exige epidemiología reciente; disponibilidad comercial no garantiza eficacia en cepa extensamente resistente. Cultivo dirige ajuste/reducción."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Viaje/exposición, hemocultivos antes de antibiótico cuando posible y pruebas dirigidas; Widal aislado no confirma. Diferenciar sepsis, hepatitis, malaria/otras fiebres."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Shock, encefalopatía, sangrado o peritonismo: hospital/cirugía. Hidratar con monitorización e iniciar terapia sin demora peligrosa."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Azitromicina oral en no complicada elegible o ceftriaxona en escenario susceptible son opciones; elegir por origen/resistencia, gravedad y vía. Irak/Pakistán cambia empirismo: resistencia a ceftriaxona, con carbapenémico para complicada según especialista."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No aplicar esquema breve de diarrea del viajero a fiebre entérica. Fluoroquinolonas no son empirismo universal por resistencia; dosis/duración según protocolo/cultivo. Revisar QT, riñón/hígado, edad/embarazo."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar fiebre persistente/susceptibilidad; investigar recaída/portación según vigilancia. Alta estable/tolerante, con adherencia, retorno y prevención alimentaria."
+    }
+  ],
+  "references": [
+    {
+      "key": "typh_cdc",
+      "title": "CDC — Clinical guidance typhoid/paratyphoid fever",
+      "url": "https://www.cdc.gov/typhoid-fever/hcp/clinical-guidance/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC: culturas/sensibilidade, azitromicina ou ceftriaxona conforme viagem/resistência; carbapenêmico em grave de contexto resistente, sem fluoroquinolona empírica universal.",
+      "sourceEvidenceRecord": "web-verification-record.json:typh_cdc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "typh_book",
+      "title": "CDC Yellow Book 2026 — Typhoid and Paratyphoid Fever",
+      "url": "https://www.cdc.gov/yellow-book/hcp/travel-associated-infections-diseases/typhoid-and-paratyphoid-fever.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC Yellow Book edição 2026, capítulo publicado em abril de 2025 lido: febre entérica versus Salmonella não tifoide, terapêutica por resistência/viagem e reavaliação da falha.",
+      "sourceEvidenceRecord": "web-verification-record.json:typh_book",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_138",
+      "title": "NHS — Typhoid fever",
+      "url": "https://www.nhs.uk/conditions/typhoid-fever/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 02 July 2025",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_138",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Infección sistémica por S. Typhi/Paratyphi, distinta de gastroenteritis no tifoidea; puede causar bacteriemia/complicaciones intestinales."
+      ],
+      "factIds": [
+        "b03_029_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Elegir antibiótico exige epidemiología reciente; disponibilidad comercial no garantiza eficacia en cepa extensamente resistente. Cultivo dirige ajuste/reducción."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Viaje/exposición, hemocultivos antes de antibiótico cuando posible y pruebas dirigidas; Widal aislado no confirma. Diferenciar sepsis, hepatitis, malaria/otras fiebres."
+      ],
+      "factIds": [
+        "b03_029_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Shock, encefalopatía, sangrado o peritonismo: hospital/cirugía. Hidratar con monitorización e iniciar terapia sin demora peligrosa."
+      ],
+      "factIds": [
+        "b03_029_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Azitromicina oral en no complicada elegible o ceftriaxona en escenario susceptible son opciones; elegir por origen/resistencia, gravedad y vía. Irak/Pakistán cambia empirismo: resistencia a ceftriaxona, con carbapenémico para complicada según especialista."
+      ],
+      "factIds": [
+        "b03_029_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No aplicar esquema breve de diarrea del viajero a fiebre entérica. Fluoroquinolonas no son empirismo universal por resistencia; dosis/duración según protocolo/cultivo. Revisar QT, riñón/hígado, edad/embarazo."
+      ],
+      "factIds": [
+        "b03_029_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar fiebre persistente/susceptibilidad; investigar recaída/portación según vigilancia. Alta estable/tolerante, con adherencia, retorno y prevención alimentaria."
+      ],
+      "factIds": [
+        "b03_029_f06"
+      ]
+    }
+  ],
+  "markdown": "# Fiebre tifoidea y paratifoidea\n\n## Concepto y mecanismo\n\nInfección sistémica por S. Typhi/Paratyphi, distinta de gastroenteritis no tifoidea; puede causar bacteriemia/complicaciones intestinales.\n\n## Razonamiento y elección terapéutica\n\nElegir antibiótico exige epidemiología reciente; disponibilidad comercial no garantiza eficacia en cepa extensamente resistente. Cultivo dirige ajuste/reducción.\n\n## Diagnóstico y diferenciales\n\nViaje/exposición, hemocultivos antes de antibiótico cuando posible y pruebas dirigidas; Widal aislado no confirma. Diferenciar sepsis, hepatitis, malaria/otras fiebres.\n\n## Abordaje inicial y urgencias\n\nShock, encefalopatía, sangrado o peritonismo: hospital/cirugía. Hidratar con monitorización e iniciar terapia sin demora peligrosa.\n\n## Tratamiento: primera elección y alternativas\n\nAzitromicina oral en no complicada elegible o ceftriaxona en escenario susceptible son opciones; elegir por origen/resistencia, gravedad y vía. Irak/Pakistán cambia empirismo: resistencia a ceftriaxona, con carbapenémico para complicada según especialista.\n\n## Seguridad y monitorización\n\nNo aplicar esquema breve de diarrea del viajero a fiebre entérica. Fluoroquinolonas no son empirismo universal por resistencia; dosis/duración según protocolo/cultivo. Revisar QT, riñón/hígado, edad/embarazo.\n\n## Reevaluación, internación y alta\n\nReevaluar fiebre persistente/susceptibilidad; investigar recaída/portación según vigilancia. Alta estable/tolerante, con adherencia, retorno y prevención alimentaria.\n\n## Referencias\n\n1. [CDC — Clinical guidance typhoid/paratyphoid fever](https://www.cdc.gov/typhoid-fever/hcp/clinical-guidance/)\n2. [CDC Yellow Book 2026 — Typhoid and Paratyphoid Fever](https://www.cdc.gov/yellow-book/hcp/travel-associated-infections-diseases/typhoid-and-paratyphoid-fever.html)\n3. [NHS — Typhoid fever](https://www.nhs.uk/conditions/typhoid-fever/)",
+  "approvedReviewCanonicalFileSha256": "3e605c0fa272ee23057c9105f53648624b7dd7eed43c7b3195fa1f5f5cd295c4",
+  "approvedReviewProjectionFileSha256": "bda875de9979ecf3bbc1b20ac59d8e2a03ae622a9894c0e62670ff796a3ebb4e"
+}

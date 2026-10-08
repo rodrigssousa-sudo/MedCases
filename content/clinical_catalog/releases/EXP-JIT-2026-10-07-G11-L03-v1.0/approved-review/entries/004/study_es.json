@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Hipertensión pulmonar",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "bdea303b61cd38a1bb31e407429ff70896fbac02e40539480958edbd06c51fc1",
+  "ownerCandidate": "hipertensao_pulmonar",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_004_f01",
+    "b03_004_f02",
+    "b03_004_f03",
+    "b03_004_f04",
+    "b03_004_f05",
+    "b03_004_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Elevación de presión pulmonar por mecanismos diferentes: arterial, cardiopatía izquierda, enfermedad pulmonar/hipoxia, tromboembolismo crónico o causas multifactoriales."
+      ],
+      "factIds": [
+        "b03_004_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "La misma presión elevada puede provenir de mecanismos opuestos. La vasodilatación empírica puede ser inadecuada en enfermedad izquierda; elegir según grupo hemodinámico y riesgo, no solo ecocardiograma."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Ecocardiograma estima probabilidad; confirmar/clasificar con cateterismo derecho cuando corresponde. Investigar corazón izquierdo, pulmón y tromboembolismo crónico; la disnea sola no identifica el grupo."
+      ],
+      "factIds": [
+        "b03_004_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Síncope, hipotensión, hipoxemia o fallo derecho: urgencia hospitalaria/centro especializado. Monitorizar perfusión, ritmo y volemia; evitar sobrecarga de líquidos e interrupción de prostaciclina continua."
+      ],
+      "factIds": [
+        "b03_004_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Grupo arterial confirmado: combinar antagonista de endotelina, como macitentán/ambrisentán, e inhibidor PDE5, como tadalafilo/sildenafilo, en elegibles; alto riesgo puede requerir prostaciclina parenteral. Grupo cardíaco izquierdo o pulmonar: tratar la causa, sin aplicar automáticamente el esquema arterial."
+      ],
+      "factIds": [
+        "b03_004_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Tromboembolismo crónico: anticoagulación y evaluación de endarterectomía, angioplastia o riociguat según operabilidad. No combinar riociguat con inhibidor PDE5. Vasodilatadores/dosis requieren centro especializado; embarazo implica alto riesgo y restricciones."
+      ],
+      "factIds": [
+        "b03_004_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguimiento multiparamétrico: capacidad funcional, función derecha y biomarcadores. No dar alta con bajo gasto; asegurar contacto con centro y disponibilidad de medicamentos."
+      ],
+      "factIds": [
+        "b03_004_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "ph2022",
+      "title": "ESC/ERS — Pulmonary hypertension 2022",
+      "url": "https://academic.oup.com/eurheartj/article/43/38/3618/6673929",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2022,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "ESC/ERS final 2022: cateterismo, classificação por mecanismo, abordagem especializada e cautela em extrapolar vasodilatadores da HAP para outras classes.",
+      "sourceEvidenceRecord": "web-verification-record.json:ph2022",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_104",
+      "title": "NHS — Pulmonary hypertension",
+      "url": "https://www.nhs.uk/conditions/pulmonary-hypertension/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 02 May 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_104",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

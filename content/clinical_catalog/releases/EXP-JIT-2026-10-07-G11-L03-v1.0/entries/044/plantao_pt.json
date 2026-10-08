@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Episclerite",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "400df704ab257e95403226f87bae427ff631b3c813dc415ce81ca09e15393a6e",
+  "ownerCandidate": "episclerite",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_044_f01",
+    "b03_044_f02",
+    "b03_044_f03",
+    "b03_044_f04",
+    "b03_044_f05",
+    "b03_044_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Se típico leve e visão preservada: orientação e conforto. Encaminhamento urgente se sinais que ameaçam visão; não assumir benignidade só pela vermelhidão."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Exame ocular confirma localização; avaliar acuidade, dor e fotofobia. Dor forte, perda visual ou achados atípicos exigem excluir esclerite, uveíte e ceratite."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira escolha: observação, compressas frias e lágrimas artificiais. Alternativa em maior inflamação: corticoide tópico curto ou anti-inflamatório oral selecionado por profissional ocular; não é necessário antibiótico de rotina."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Corticoide pode aumentar pressão/máscarar infecção; exige diagnóstico e acompanhamento. Anti-inflamatório oral tem riscos renais/gastrointestinais/gestacionais. Não tratar com colírio combinado por conta própria."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reavaliar se não melhorar ou recorrer; recorrências podem exigir investigação sistêmica dirigida. Alta com visão normal, diagnóstico seguro e alarmes."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Inflamação superficial da episclera, geralmente autolimitada e sem perda visual; distinta de esclerite profunda."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_153",
+      "title": "EYES — Episcleritis",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/episcleritis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_GUIDELINE_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "web-verification-record.json:topic_153",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "episcleritis_nhs",
+      "title": "Moorfields NHS — Episcleritis diagnosis and treatment",
+      "url": "https://www.moorfields.nhs.uk/eye-conditions/episcleritis/diagnosis-and-treatment",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Usar somente os cenários e formulações do documento consultado.",
+      "sourceEvidenceRecord": "source-readback.json:episcleritis_nhs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Se típico leve e visão preservada: orientação e conforto. Encaminhamento urgente se sinais que ameaçam visão; não assumir benignidade só pela vermelhidão."
+      ],
+      "factIds": [
+        "b03_044_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Exame ocular confirma localização; avaliar acuidade, dor e fotofobia. Dor forte, perda visual ou achados atípicos exigem excluir esclerite, uveíte e ceratite."
+      ],
+      "factIds": [
+        "b03_044_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha: observação, compressas frias e lágrimas artificiais. Alternativa em maior inflamação: corticoide tópico curto ou anti-inflamatório oral selecionado por profissional ocular; não é necessário antibiótico de rotina."
+      ],
+      "factIds": [
+        "b03_044_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Corticoide pode aumentar pressão/máscarar infecção; exige diagnóstico e acompanhamento. Anti-inflamatório oral tem riscos renais/gastrointestinais/gestacionais. Não tratar com colírio combinado por conta própria."
+      ],
+      "factIds": [
+        "b03_044_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar se não melhorar ou recorrer; recorrências podem exigir investigação sistêmica dirigida. Alta com visão normal, diagnóstico seguro e alarmes."
+      ],
+      "factIds": [
+        "b03_044_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Inflamação superficial da episclera, geralmente autolimitada e sem perda visual; distinta de esclerite profunda."
+      ],
+      "factIds": [
+        "b03_044_f01"
+      ]
+    }
+  ],
+  "markdown": "# Episclerite\n\n## Abordagem inicial e urgências\n\nSe típico leve e visão preservada: orientação e conforto. Encaminhamento urgente se sinais que ameaçam visão; não assumir benignidade só pela vermelhidão.\n\n## Diagnóstico e diferenciais\n\nExame ocular confirma localização; avaliar acuidade, dor e fotofobia. Dor forte, perda visual ou achados atípicos exigem excluir esclerite, uveíte e ceratite.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira escolha: observação, compressas frias e lágrimas artificiais. Alternativa em maior inflamação: corticoide tópico curto ou anti-inflamatório oral selecionado por profissional ocular; não é necessário antibiótico de rotina.\n\n## Segurança e monitorização\n\nCorticoide pode aumentar pressão/máscarar infecção; exige diagnóstico e acompanhamento. Anti-inflamatório oral tem riscos renais/gastrointestinais/gestacionais. Não tratar com colírio combinado por conta própria.\n\n## Reavaliação, internação e alta\n\nReavaliar se não melhorar ou recorrer; recorrências podem exigir investigação sistêmica dirigida. Alta com visão normal, diagnóstico seguro e alarmes.\n\n## Reconhecimento rápido\n\nInflamação superficial da episclera, geralmente autolimitada e sem perda visual; distinta de esclerite profunda.\n\n## Referências\n\n1. [EYES — Episcleritis](https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/episcleritis)\n2. [Moorfields NHS — Episcleritis diagnosis and treatment](https://www.moorfields.nhs.uk/eye-conditions/episcleritis/diagnosis-and-treatment)",
+  "approvedReviewCanonicalFileSha256": "e8d6a6a36e29dee925e1e3832075d2e87c795ca60e7374091aa11f9a8bb7f365",
+  "approvedReviewProjectionFileSha256": "c2deb4d8376508673d5f4bee2708e68b6f18d905b9b968d7fd76d33e8c1c18a3"
+}

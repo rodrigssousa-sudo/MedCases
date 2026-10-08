@@ -1,0 +1,168 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Dermatitis herpetiforme",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "c4a690b0921e0cae1f67431e083fdc9f61702a84949509ee534cfe98be7e2cef",
+  "ownerCandidate": "dermatite_herpetiforme",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_038_f01",
+    "b03_038_f02",
+    "b03_038_f03",
+    "b03_038_f04",
+    "b03_038_f05",
+    "b03_038_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Extensión, prurito, infección secundaria/nutrición. Fiebre, mucosa importante/toxicidad sistémica: descartar otro diagnóstico/reacción medicamentosa."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Biopsia perilesional/inmunofluorescencia y evaluación celíaca antes de dieta/terapia si posible. Diferenciar escabiosis, eczema/otras ampollosas."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Base causal: dieta sin gluten sostenida y seguimiento. Dapsona controla piel/prurito rápidamente pero no enteropatía; alternativa si intolerancia/contraindicación: sulfasalazina u otra sulfonamida por especialista."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Antes de dapsona: G6PD, hemograma, riñón/hígado; vigilar hemólisis, metahemoglobinemia, agranulocitosis/hipersensibilidad. Disnea/cianosis tras inicio: urgencia. Dosis según respuesta/tolerancia; embarazo exige evaluación específica."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dermatología/gastroenterología-nutrición; análisis/adherencia. No suspender dieta por mejoría cutánea con dapsona; revisar necesidad del fármaco cuando dieta actúa."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dermatosis vesicular pruriginosa asociada a gluten/celiaquía, frecuentemente extensora; no es herpes infeccioso."
+    }
+  ],
+  "references": [
+    {
+      "key": "dh2021",
+      "title": "EADV — Dermatitis herpetiformis consensus guideline, 2021",
+      "url": "https://www.husc.es/archivos/cms/dermatologia/archivos/publico/Unidad%20de%20DAI/Guia%20europea%20de%20manejo%20de%20dermatitis%20herpetiforme%202021.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published dosage in dangerous range (5-7 mg/kg body weight) ",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:dh2021",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "dh_derm",
+      "title": "DermNet — Dermatitis herpetiformis",
+      "url": "https://dermnetnz.org/topics/dermatitis-herpetiformis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:dh_derm",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_147",
+      "title": "NIDDK — Dermatitis Herpetiformis",
+      "url": "https://www.niddk.nih.gov/health-information/professionals/clinical-tools-patient-management/digestive-diseases/dermatitis-herpetiformis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed February 2014",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_147",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Extensión, prurito, infección secundaria/nutrición. Fiebre, mucosa importante/toxicidad sistémica: descartar otro diagnóstico/reacción medicamentosa."
+      ],
+      "factIds": [
+        "b03_038_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Biopsia perilesional/inmunofluorescencia y evaluación celíaca antes de dieta/terapia si posible. Diferenciar escabiosis, eczema/otras ampollosas."
+      ],
+      "factIds": [
+        "b03_038_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Base causal: dieta sin gluten sostenida y seguimiento. Dapsona controla piel/prurito rápidamente pero no enteropatía; alternativa si intolerancia/contraindicación: sulfasalazina u otra sulfonamida por especialista."
+      ],
+      "factIds": [
+        "b03_038_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Antes de dapsona: G6PD, hemograma, riñón/hígado; vigilar hemólisis, metahemoglobinemia, agranulocitosis/hipersensibilidad. Disnea/cianosis tras inicio: urgencia. Dosis según respuesta/tolerancia; embarazo exige evaluación específica."
+      ],
+      "factIds": [
+        "b03_038_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Dermatología/gastroenterología-nutrición; análisis/adherencia. No suspender dieta por mejoría cutánea con dapsona; revisar necesidad del fármaco cuando dieta actúa."
+      ],
+      "factIds": [
+        "b03_038_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Dermatosis vesicular pruriginosa asociada a gluten/celiaquía, frecuentemente extensora; no es herpes infeccioso."
+      ],
+      "factIds": [
+        "b03_038_f01"
+      ]
+    }
+  ],
+  "markdown": "# Dermatitis herpetiforme\n\n## Abordaje inicial y urgencias\n\nExtensión, prurito, infección secundaria/nutrición. Fiebre, mucosa importante/toxicidad sistémica: descartar otro diagnóstico/reacción medicamentosa.\n\n## Diagnóstico y diferenciales\n\nBiopsia perilesional/inmunofluorescencia y evaluación celíaca antes de dieta/terapia si posible. Diferenciar escabiosis, eczema/otras ampollosas.\n\n## Tratamiento: primera elección y alternativas\n\nBase causal: dieta sin gluten sostenida y seguimiento. Dapsona controla piel/prurito rápidamente pero no enteropatía; alternativa si intolerancia/contraindicación: sulfasalazina u otra sulfonamida por especialista.\n\n## Seguridad y monitorización\n\nAntes de dapsona: G6PD, hemograma, riñón/hígado; vigilar hemólisis, metahemoglobinemia, agranulocitosis/hipersensibilidad. Disnea/cianosis tras inicio: urgencia. Dosis según respuesta/tolerancia; embarazo exige evaluación específica.\n\n## Reevaluación, internación y alta\n\nDermatología/gastroenterología-nutrición; análisis/adherencia. No suspender dieta por mejoría cutánea con dapsona; revisar necesidad del fármaco cuando dieta actúa.\n\n## Reconocimiento rápido\n\nDermatosis vesicular pruriginosa asociada a gluten/celiaquía, frecuentemente extensora; no es herpes infeccioso.\n\n## Referencias\n\n1. [EADV — Dermatitis herpetiformis consensus guideline, 2021](https://www.husc.es/archivos/cms/dermatologia/archivos/publico/Unidad%20de%20DAI/Guia%20europea%20de%20manejo%20de%20dermatitis%20herpetiforme%202021.pdf)\n2. [DermNet — Dermatitis herpetiformis](https://dermnetnz.org/topics/dermatitis-herpetiformis)\n3. [NIDDK — Dermatitis Herpetiformis](https://www.niddk.nih.gov/health-information/professionals/clinical-tools-patient-management/digestive-diseases/dermatitis-herpetiformis)",
+  "approvedReviewCanonicalFileSha256": "0632bbc57a87ac358b6df5d938b05810d0ed1914afee97a254968d2386e851e8",
+  "approvedReviewProjectionFileSha256": "95509511f794c7807c01920101fe087ad6da4307c90af53b3eed77eca121d7b6"
+}

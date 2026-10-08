@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "episclerite",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Episclerite",
+    "es": "Episcleritis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_044_f01",
+      "section": "concept",
+      "pt": "Inflamação superficial da episclera, geralmente autolimitada e sem perda visual; distinta de esclerite profunda.",
+      "es": "Inflamación superficial episcleral, generalmente autolimitada/sin pérdida visual; distinta de escleritis profunda.",
+      "sources": [
+        "topic_153",
+        "episcleritis_nhs"
+      ]
+    },
+    {
+      "id": "b03_044_f02",
+      "section": "diagnosis",
+      "pt": "Exame ocular confirma localização; avaliar acuidade, dor e fotofobia. Dor forte, perda visual ou achados atípicos exigem excluir esclerite, uveíte e ceratite.",
+      "es": "Examen confirma localización; agudeza, dolor/fotofobia. Dolor fuerte, baja visual/atipia: excluir escleritis, uveítis/queratitis.",
+      "sources": [
+        "topic_153",
+        "episcleritis_nhs"
+      ]
+    },
+    {
+      "id": "b03_044_f03",
+      "section": "initial",
+      "pt": "Se típico leve e visão preservada: orientação e conforto. Encaminhamento urgente se sinais que ameaçam visão; não assumir benignidade só pela vermelhidão.",
+      "es": "Típico leve/visión conservada: orientación/confort. Derivar urgente ante amenaza visual; enrojecimiento solo no prueba benignidad.",
+      "sources": [
+        "topic_153",
+        "episcleritis_nhs"
+      ]
+    },
+    {
+      "id": "b03_044_f04",
+      "section": "options",
+      "pt": "Primeira escolha: observação, compressas frias e lágrimas artificiais. Alternativa em maior inflamação: corticoide tópico curto ou anti-inflamatório oral selecionado por profissional ocular; não é necessário antibiótico de rotina.",
+      "es": "Primera elección: observar, compresas frías/lágrimas artificiales. Mayor inflamación: corticoide tópico breve o antiinflamatorio oral por profesional ocular; no requiere antibiótico rutinario.",
+      "sources": [
+        "topic_153",
+        "episcleritis_nhs"
+      ]
+    },
+    {
+      "id": "b03_044_f05",
+      "section": "safety",
+      "pt": "Corticoide pode aumentar pressão/máscarar infecção; exige diagnóstico e acompanhamento. Anti-inflamatório oral tem riscos renais/gastrointestinais/gestacionais. Não tratar com colírio combinado por conta própria.",
+      "es": "Corticoide aumenta presión/oculta infección; requiere diagnóstico/seguimiento. Antiinflamatorio oral: riesgos renales, digestivos/gestacionales. No usar colirio combinado por cuenta propia.",
+      "sources": [
+        "topic_153",
+        "episcleritis_nhs"
+      ]
+    },
+    {
+      "id": "b03_044_f06",
+      "section": "followup",
+      "pt": "Reavaliar se não melhorar ou recorrer; recorrências podem exigir investigação sistêmica dirigida. Alta com visão normal, diagnóstico seguro e alarmes.",
+      "es": "Reevaluar persistencia/recurrencia; recurrencias pueden exigir investigación sistémica dirigida. Alta con visión normal, diagnóstico seguro/alarmas.",
+      "sources": [
+        "topic_153",
+        "episcleritis_nhs"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A localização superficial explica curso frequentemente benigno; visão reduzida ou dor intensa não combina com episclerite simples. Medidas de conforto devem preceder exposição a esteroide em casos leves.",
+      "es": "La superficialidad explica curso benigno; baja visual/dolor intenso no encajan con episcleritis simple. Confort precede esteroides en leves.",
+      "sources": [
+        "topic_153",
+        "episcleritis_nhs"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_153",
+      "title": "EYES — Episcleritis",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/episcleritis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_GUIDELINE_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "web-verification-record.json:topic_153",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "episcleritis_nhs",
+      "title": "Moorfields NHS — Episcleritis diagnosis and treatment",
+      "url": "https://www.moorfields.nhs.uk/eye-conditions/episcleritis/diagnosis-and-treatment",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Usar somente os cenários e formulações do documento consultado.",
+      "sourceEvidenceRecord": "source-readback.json:episcleritis_nhs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

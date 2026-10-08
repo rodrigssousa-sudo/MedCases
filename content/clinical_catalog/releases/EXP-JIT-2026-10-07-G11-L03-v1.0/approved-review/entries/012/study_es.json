@@ -1,0 +1,132 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Gastroparesia",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "7b556455ec29d7dad0271b8fcfc4bac2e37e24957b3ecad3ea1c5a1aefcfc8d1",
+  "ownerCandidate": "gastroparesia",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_012_f01",
+    "b03_012_f02",
+    "b03_012_f03",
+    "b03_012_f04",
+    "b03_012_f05",
+    "b03_012_f06",
+    "b03_012_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Vaciamiento gástrico lento con síntomas compatibles y sin obstrucción mecánica; diabetes, cirugía y medicamentos pueden contribuir."
+      ],
+      "factIds": [
+        "b03_012_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Náusea/vómito no prueban vaciamiento lento. Metoclopramida es procinética/antiemética, pero el riesgo neurológico limita exposición; alternativas no evitan confirmar diagnóstico."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Excluir obstrucción y confirmar vaciamiento con prueba adecuada, prefiriendo evaluación de 4 horas. Revisar opioides/fármacos que reducen motilidad; diferenciar dispepsia, vómitos cíclicos e hiperémesis cannabinoide."
+      ],
+      "factIds": [
+        "b03_012_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Vómitos persistentes: hidratación, electrolitos, glucemia y nutrición. Dolor intenso, sangrado o distensión importante exige evaluación; hospitalizar deshidratación grave/intolerancia alimentaria."
+      ],
+      "factIds": [
+        "b03_012_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Dieta de partículas pequeñas y control glucémico son la base. AGA 2025 sugiere metoclopramida; eritromicina es alternativa seleccionada breve, por taquifilaxia, QT e interacciones. Domperidona/prucaloprida no son primeras opciones rutinarias de esa guía."
+      ],
+      "factIds": [
+        "b03_012_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Referencia de ficha para gastroparesia diabética adulta: metoclopramida 10 mg oral, 30 minutos antes de cada comida y al acostarse, 4 veces al día, máximo 40 mg al día, durante 2–8 semanas según respuesta. Evitar más de 12 semanas; ancianos/disfunción renal o hepática requieren reducción según ficha."
+      ],
+      "factIds": [
+        "b03_012_f05"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Suspender ante discinesia/distonía; revisar Parkinson, obstrucción e interacciones. No extrapolar dosis adulta a pediatría/embarazo. Refractarios: especialista para soporte enteral y procedimientos seleccionados."
+      ],
+      "factIds": [
+        "b03_012_f06"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar ingesta, peso, glucemia y efectos adversos; alta con tolerancia y seguimiento. No mantener procinético indefinidamente sin revisar beneficio/riesgo."
+      ],
+      "factIds": [
+        "b03_012_f07"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "gastro2025",
+      "title": "AGA — Gastroparesis guideline, 2025",
+      "url": "https://gastro.org/clinical-guidance/clinical-guidance-on-the-management-of-gastroparesis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "AGA final 2025: esvaziamento em 4 horas, metoclopramida/eritromicina condicionais; domperidona/prucaloprida não primeira linha. Dose rastreada à bula específica de gastroparesia diabética.",
+      "sourceEvidenceRecord": "web-verification-record.json:gastro2025",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "metoclop_label",
+      "title": "DailyMed — Metoclopramide tablet, adult diabetic gastroparesis dosing",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=ff067ac5-6efc-3e86-e6d5-590b2779491c",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:metoclop_label",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_116",
+      "title": "NHS — Gastroparesis",
+      "url": "https://www.nhs.uk/conditions/gastroparesis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 22 July 2026",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_116",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

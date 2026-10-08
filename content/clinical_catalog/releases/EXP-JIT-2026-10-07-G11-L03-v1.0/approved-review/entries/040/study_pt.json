@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Vasculite cutânea de pequenos vasos",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "bbb44f6db974b62ce5a0055141034d4e5fef7dfc4815d1f9a13b85c47fd61663",
+  "ownerCandidate": "vasculite_cutanea_de_pequenos_vasos",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_040_f01",
+    "b03_040_f02",
+    "b03_040_f03",
+    "b03_040_f04",
+    "b03_040_f05",
+    "b03_040_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Inflamação de pequenos vasos com púrpura palpável; pode limitar-se à pele ou sinalizar doença sistêmica, infecção ou medicamento."
+      ],
+      "factIds": [
+        "b03_040_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A histologia leucocitoclástica descreve padrão, não causa nem extensão. Confirmar que é limitada à pele evita perder doença renal ou aplicar esquema sistêmico inadequado."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar distribuição e biópsia de lesão recente com estudo apropriado; hemograma, creatinina e urina pesquisam acometimento renal. História/exames orientam infecção, autoimunidade e outros órgãos. Diferenciar vasculite IgA, plaquetopenia e sepse."
+      ],
+      "factIds": [
+        "b03_040_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Hematuria, dor abdominal intensa, hemoptise, neuropatia ou instabilidade exige hospital/investigação sistêmica. Púrpura febril pode ser sepse; não iniciar imunossupressão cega."
+      ],
+      "factIds": [
+        "b03_040_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Limitada à pele, primeira ocorrência: retirar gatilho quando seguro, repouso relativo, elevação e cuidado local. Recorrente/ulcerada: especialista pode selecionar colchicina ou dapsona; corticoide sistêmico apenas em indicação definida. Evidência é limitada e escolhas não são universais."
+      ],
+      "factIds": [
+        "b03_040_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Colchicina exige avaliação renal/hepática e interações; dapsona exige G6PD/hemograma. Não confundir owner cutâneo com vasculite sistêmica por IgA já existente; órgão acometido muda urgência e terapia."
+      ],
+      "factIds": [
+        "b03_040_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Rever urina, função renal e evolução; sinais sistêmicos novos exigem reclassificação. Alta se restrita/estável, com retorno e investigação etiológica assegurada."
+      ],
+      "factIds": [
+        "b03_040_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "vasculitis",
+      "title": "DermNet — Cutaneous small vessel vasculitis",
+      "url": "https://dermnetnz.org/topics/cutaneous-small-vessel-vasculitis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:vasculitis",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "vasculitis2022",
+      "title": "Micheletti — Treatment of cutaneous vasculitis, 2022",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9716566/",
+      "authorityStatus": "AUTHOR_THERAPEUTIC_LADDER_EXPERT_EVIDENCE_LIMITED",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2022,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published studies and expert opinion.",
+      "scope": "Usar somente os cenários e formulações do documento consultado.",
+      "sourceEvidenceRecord": "source-readback.json:vasculitis2022",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Insuficiência hepática aguda não cirrótica",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "28aaf5fa6912c8b617455c53dea996b8eba8ffbabb6dcd103f630731f948d1a2",
+  "ownerCandidate": "insuficiencia_hepatica_aguda_nao_cirrotica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_020_f01",
+    "b03_020_f02",
+    "b03_020_f03",
+    "b03_020_f04",
+    "b03_020_f05",
+    "b03_020_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Disfunção hepática aguda com coagulopatia e encefalopatia sem cirrose prévia; é emergência distinta de descompensação de cirrose."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "N-acetilcisteína e transplante não são duas alternativas equivalentes: um tratamento etiológico/adjuvante pode coexistir com avaliação de resgate definitivo. População pediátrica possui evidência diferente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Rever medicamentos, paracetamol, suplementos, vírus, isquemia e causas autoimunes/metabólicas; dosar INR, glicemia, função renal, eletrólitos e investigação etiológica. Valor baixo de paracetamol tardio não exclui toxicidade."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "UTI/centro de transplante precocemente: proteger via aérea em encefalopatia grave, corrigir hipoglicemia e monitorizar neurologia, perfusão e diurese. Não aguardar critérios prognósticos finais para discutir transferência."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "N-acetilcisteína é prioritária em toxicidade possível por paracetamol; em adulto selecionado sem paracetamol, pode ser usada conforme protocolo especializado. Tratar causa específica quando identificada, como antiviral em herpes; transplante é opção em falha irreversível elegível."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não extrapolar benefício de N-acetilcisteína em adulto não-paracetamol para crianças. Dose/infusão seguem o protocolo específico da etiologia/peso; não criar esquema universal. Não corrigir INR com plasma apenas pelo número sem sangramento/procedimento indicado, pois pode mascarar evolução."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Monitorização intensiva até melhora consistente ou decisão de transplante; não é caso de alta ambulatorial com encefalopatia/coagulopatia progressiva. Seguimento etiológico após recuperação."
+    }
+  ],
+  "references": [
+    {
+      "key": "alf",
+      "title": "AASLD — Defining and managing acute liver failure",
+      "url": "https://www.aasld.org/liver-fellow-network/core-series/back-basics/defining-and-managing-acute-liver-failure",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:alf",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "alf_ped",
+      "title": "AASLD — Pediatric acute liver failure, NAC limitations",
+      "url": "https://www.aasld.org/liver-fellow-network/core-series/clinical-pearls/pediatric-acute-liver-failure-prompt-recognition",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:alf_ped",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Disfunção hepática aguda com coagulopatia e encefalopatia sem cirrose prévia; é emergência distinta de descompensação de cirrose."
+      ],
+      "factIds": [
+        "b03_020_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "N-acetilcisteína e transplante não são duas alternativas equivalentes: um tratamento etiológico/adjuvante pode coexistir com avaliação de resgate definitivo. População pediátrica possui evidência diferente."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Rever medicamentos, paracetamol, suplementos, vírus, isquemia e causas autoimunes/metabólicas; dosar INR, glicemia, função renal, eletrólitos e investigação etiológica. Valor baixo de paracetamol tardio não exclui toxicidade."
+      ],
+      "factIds": [
+        "b03_020_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "UTI/centro de transplante precocemente: proteger via aérea em encefalopatia grave, corrigir hipoglicemia e monitorizar neurologia, perfusão e diurese. Não aguardar critérios prognósticos finais para discutir transferência."
+      ],
+      "factIds": [
+        "b03_020_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "N-acetilcisteína é prioritária em toxicidade possível por paracetamol; em adulto selecionado sem paracetamol, pode ser usada conforme protocolo especializado. Tratar causa específica quando identificada, como antiviral em herpes; transplante é opção em falha irreversível elegível."
+      ],
+      "factIds": [
+        "b03_020_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não extrapolar benefício de N-acetilcisteína em adulto não-paracetamol para crianças. Dose/infusão seguem o protocolo específico da etiologia/peso; não criar esquema universal. Não corrigir INR com plasma apenas pelo número sem sangramento/procedimento indicado, pois pode mascarar evolução."
+      ],
+      "factIds": [
+        "b03_020_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Monitorização intensiva até melhora consistente ou decisão de transplante; não é caso de alta ambulatorial com encefalopatia/coagulopatia progressiva. Seguimento etiológico após recuperação."
+      ],
+      "factIds": [
+        "b03_020_f06"
+      ]
+    }
+  ],
+  "markdown": "# Insuficiência hepática aguda não cirrótica\n\n## Conceito e mecanismo\n\nDisfunção hepática aguda com coagulopatia e encefalopatia sem cirrose prévia; é emergência distinta de descompensação de cirrose.\n\n## Raciocínio e escolha terapêutica\n\nN-acetilcisteína e transplante não são duas alternativas equivalentes: um tratamento etiológico/adjuvante pode coexistir com avaliação de resgate definitivo. População pediátrica possui evidência diferente.\n\n## Diagnóstico e diferenciais\n\nRever medicamentos, paracetamol, suplementos, vírus, isquemia e causas autoimunes/metabólicas; dosar INR, glicemia, função renal, eletrólitos e investigação etiológica. Valor baixo de paracetamol tardio não exclui toxicidade.\n\n## Abordagem inicial e urgências\n\nUTI/centro de transplante precocemente: proteger via aérea em encefalopatia grave, corrigir hipoglicemia e monitorizar neurologia, perfusão e diurese. Não aguardar critérios prognósticos finais para discutir transferência.\n\n## Tratamento: primeira escolha e alternativas\n\nN-acetilcisteína é prioritária em toxicidade possível por paracetamol; em adulto selecionado sem paracetamol, pode ser usada conforme protocolo especializado. Tratar causa específica quando identificada, como antiviral em herpes; transplante é opção em falha irreversível elegível.\n\n## Segurança e monitorização\n\nNão extrapolar benefício de N-acetilcisteína em adulto não-paracetamol para crianças. Dose/infusão seguem o protocolo específico da etiologia/peso; não criar esquema universal. Não corrigir INR com plasma apenas pelo número sem sangramento/procedimento indicado, pois pode mascarar evolução.\n\n## Reavaliação, internação e alta\n\nMonitorização intensiva até melhora consistente ou decisão de transplante; não é caso de alta ambulatorial com encefalopatia/coagulopatia progressiva. Seguimento etiológico após recuperação.\n\n## Referências\n\n1. [AASLD — Defining and managing acute liver failure](https://www.aasld.org/liver-fellow-network/core-series/back-basics/defining-and-managing-acute-liver-failure)\n2. [AASLD — Pediatric acute liver failure, NAC limitations](https://www.aasld.org/liver-fellow-network/core-series/clinical-pearls/pediatric-acute-liver-failure-prompt-recognition)",
+  "approvedReviewCanonicalFileSha256": "4d9d3a317d5951ed08056c342011356a2d0a3a8fe83335b69c27d0d615ee154e",
+  "approvedReviewProjectionFileSha256": "b0f9aa1dd6b5f2877fc2138573aedce921947cb3de158464430fb09662edcdd6"
+}

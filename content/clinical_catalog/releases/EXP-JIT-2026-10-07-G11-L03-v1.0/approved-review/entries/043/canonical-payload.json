@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "esclerite",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Esclerite",
+    "es": "Escleritis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_043_f01",
+      "section": "concept",
+      "pt": "Inflamação profunda da esclera, potencialmente ameaçadora à visão; dor intensa e associação sistêmica são frequentes, mas forma necrosante pode ser pouco dolorosa.",
+      "es": "Inflamación escleral profunda, potencialmente grave; dolor intenso/asociación sistémica frecuentes, pero necrosante puede doler poco.",
+      "sources": [
+        "topic_152",
+        "scleritis_nei"
+      ]
+    },
+    {
+      "id": "b03_043_f02",
+      "section": "diagnosis",
+      "pt": "Acuidade e exame especializado para formas anterior, posterior e necrosante; investigar autoimunidade, trauma/cirurgia e infecção. Diferenciar episclerite, ceratite e uveíte.",
+      "es": "Agudeza/examen especializado para anterior, posterior/necrosante; autoimunidad, trauma/cirugía/infección. Diferenciar episcleritis, queratitis/uveítis.",
+      "sources": [
+        "topic_152",
+        "scleritis_nei"
+      ]
+    },
+    {
+      "id": "b03_043_f03",
+      "section": "initial",
+      "pt": "Encaminhamento oftalmológico como emergência; baixa visual, afinamento ou necrose exige tratamento hospitalar conforme avaliação. Não reduzir a doença a conjuntivite.",
+      "es": "Derivación oftalmológica de emergencia; baja visual, adelgazamiento/necrosis requiere tratamiento hospitalario según evaluación. No tratar como conjuntivitis.",
+      "sources": [
+        "topic_152",
+        "scleritis_nei"
+      ]
+    },
+    {
+      "id": "b03_043_f04",
+      "section": "options",
+      "pt": "Forma não infecciosa não necrosante selecionada: anti-inflamatório oral como primeira estratégia especializada. Alternativa se grave/refratária ou contraindicação: corticoide sistêmico e, quando necessário, imunomodulador. Infecciosa requer terapia antimicrobiana específica, por vezes cirurgia.",
+      "es": "No infecciosa/no necrosante seleccionada: antiinflamatorio oral por especialista. Grave/refractaria o contraindicación: corticoide sistémico y, si precisa, inmunomodulador. Infecciosa: antimicrobiano específico, a veces cirugía.",
+      "sources": [
+        "topic_152",
+        "scleritis_nei"
+      ]
+    },
+    {
+      "id": "b03_043_f05",
+      "section": "safety",
+      "pt": "Anti-inflamatório exige avaliar rim, sangramento, coração e gestação; imunossupressão exige excluir infecção e monitorização. Colírio isolado não substitui tratamento da inflamação profunda.",
+      "es": "Antiinflamatorio: riñón, sangrado, corazón/embarazo; inmunosupresión: excluir infección/monitorizar. Colirio solo no sustituye tratamiento profundo.",
+      "sources": [
+        "topic_152",
+        "scleritis_nei"
+      ]
+    },
+    {
+      "id": "b03_043_f06",
+      "section": "followup",
+      "pt": "Seguimento oftalmológico e da doença sistêmica; piora da visão/dor requer retorno imediato. Alta somente após plano especializado e estabilidade ocular.",
+      "es": "Seguimiento oftalmológico/sistémico; peor visión/dolor exige retorno inmediato. Alta con plan especializado/estabilidad.",
+      "sources": [
+        "topic_152",
+        "scleritis_nei"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Profundidade e necrose mudam risco e escolha terapêutica. A atualização pública de janeiro de 2026 reforça cautela com anti-inflamatórios em pacientes com risco de efeitos adversos.",
+      "es": "Profundidad/necrosis cambian riesgo/terapia. La actualización pública de enero 2026 destaca cautela con antiinflamatorios en pacientes de riesgo.",
+      "sources": [
+        "topic_152",
+        "scleritis_nei"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_152",
+      "title": "EYES — Scleritis",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/scleritis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_GUIDELINE_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "web-verification-record.json:topic_152",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "scleritis_nei",
+      "title": "American Academy of Ophthalmology EyeWiki — Scleritis",
+      "url": "https://eyewiki.aao.org/Scleritis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Usar somente os cenários e formulações do documento consultado.",
+      "sourceEvidenceRecord": "source-readback.json:scleritis_nei",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

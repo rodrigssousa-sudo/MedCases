@@ -1,0 +1,102 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Hantavirose",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "ce2607af48993f0aeb0e030fe9d22c386ceed8cd6155a120002934bbd4afdd29",
+  "ownerCandidate": "hantavirose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_024_f01",
+    "b03_024_f02",
+    "b03_024_f03",
+    "b03_024_f04",
+    "b03_024_f05",
+    "b03_024_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Suspeita de síndrome cardiopulmonar: transferência precoce a UTI mesmo antes de confirmar. Monitorizar perfusão/oxigenação continuamente; expansão de fluidos deve ser cautelosa devido a extravasamento e edema pulmonar."
+      ],
+      "factIds": [
+        "b03_024_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Febre, exposição e sintomas respiratórios; hemograma, oxigenação e imagem, com confirmação sorológica/molecular. Diferenciar pneumonia, dengue, leptospirose e insuficiência cardíaca."
+      ],
+      "factIds": [
+        "b03_024_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira estratégia: suporte intensivo respiratório/hemodinâmico. Alternativa de resgate em falência grave elegível: avaliar ECMO em centro experiente. Não existe antiviral específico comprovado para essa síndrome; antibiótico apenas enquanto infecção bacteriana relevante não for excluída."
+      ],
+      "factIds": [
+        "b03_024_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não usar ribavirina como cura padrão da síndrome cardiopulmonar americana. Precauções dependem do vírus/contexto: considerar transmissão interpessoal do vírus Andes e orientação da vigilância."
+      ],
+      "factIds": [
+        "b03_024_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Piora pode ser muito rápida; não dar alta de suspeita cardiopulmonar progressiva. Após recuperação, acompanhamento funcional e orientação sobre limpeza segura de locais com roedores."
+      ],
+      "factIds": [
+        "b03_024_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Infecção por hantavírus associada a exposição a roedores; nas Américas pode causar síndrome cardiopulmonar com rápida deterioração."
+      ],
+      "factIds": [
+        "b03_024_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "hanta_cdc",
+      "title": "CDC — Hantavirus pulmonary syndrome clinical brief",
+      "url": "https://www.cdc.gov/hantavirus/hcp/clinical-overview/hps.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC 2026: UTI precoce para suspeita cardiopulmonar, não aguardar confirmação; cautela com fluidos, suporte e ECMO selecionada; não há cura antiviral comprovada.",
+      "sourceEvidenceRecord": "web-verification-record.json:hanta_cdc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_133",
+      "title": "NHS — Hantavirus",
+      "url": "https://www.nhs.uk/conditions/hantavirus/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 12 May 2026",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_133",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

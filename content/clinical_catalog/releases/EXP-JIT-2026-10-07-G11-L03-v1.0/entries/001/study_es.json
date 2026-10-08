@@ -1,0 +1,183 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Estenosis mitral",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "522c6126b0ce52eb0a9c4ee13f27435c9cebe26857f591e79749f1123f5df5c5",
+  "ownerCandidate": "estenose_mitral",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_001_f01",
+    "b03_001_f02",
+    "b03_001_f03",
+    "b03_001_f04",
+    "b03_001_f05",
+    "b03_001_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Obstrucción al llenado ventricular por la válvula mitral, reumática o degenerativa/calcificada; eleva la presión auricular y pulmonar."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "En la lesión reumática, la fusión comisural puede responder a intervención percutánea; en calcificación degenerativa ese mecanismo no se aplica. El alivio sintomático no debe retrasar la evaluación de la lesión mecánica."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ecocardiograma: área, gradiente, regurgitación asociada y presión pulmonar; interpretar el gradiente con frecuencia cardíaca y flujo. ECG para fibrilación auricular; excluir regurgitación mitral y otras causas de disnea."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Edema pulmonar, hipoxemia, hipotensión o taquiarritmia mal tolerada requieren hospitalización. Monitorizar ritmo, oxigenación, perfusión y diuresis; soporte respiratorio y descongestión según el cuadro."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Diurético de asa, como furosemida, alivia congestión; un beta-bloqueante para controlar frecuencia en paciente estable puede mejorar llenado. Ninguno elimina la estenosis. En estenosis reumática sintomática con anatomía favorable: comisurotomía percutánea; cirugía si no es elegible o hay lesiones asociadas."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "En estenosis mitral reumática relevante con fibrilación auricular, anticoagulación con antagonista de vitamina K, como warfarina, requiere control de INR; no sustituir por anticoagulante oral directo. Excluir trombo auricular y regurgitación significativa antes de comisurotomía. Embarazo: cardio-obstetricia."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Derivar al equipo valvular; ecocardiograma e intervención dependen de gravedad y síntomas. Alta tras estabilización y plan de seguimiento; disnea en reposo, síncope o hemoptisis requieren atención urgente."
+    }
+  ],
+  "references": [
+    {
+      "key": "vhdslides",
+      "title": "ESC — Official slides VHD 2025",
+      "url": "https://www.escardio.org/static-file/Escardio/Guidelines/Products/Slide%20sets/2025/2025%20official%20slides_VHD.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Trechos oficiais ESC 2025 verificados no índice: comissurotomia em estenose reumática sintomática elegível; cirurgia se inelegível; TEER na regurgitação primária grave sintomática de alto risco. Não alegar leitura integral do PDF bloqueado.",
+      "sourceEvidenceRecord": "web-verification-record.json:vhdslides",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "vhd2021",
+      "title": "ESC/EACTS — Valvular Heart Disease, 2021 (historical crosscheck)",
+      "url": "https://academic.oup.com/eurheartj/article/43/7/561/6358470",
+      "authorityStatus": "SUPERSEDED_GUIDELINE_BACKGROUND_WITH_2025_CROSSCHECK",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "ESC/EACTS 2021 histórico: fisiopatologia, eco, trombo atrial e anticoagulação VKA na estenose reumática com FA. Princípios intervencionistas conferidos com trechos oficiais de 2025; não apresentado como norma mais nova.",
+      "sourceEvidenceRecord": "web-verification-record.json:vhd2021",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_101",
+      "title": "NHS — Heart valve disease",
+      "url": "https://www.nhs.uk/conditions/heart-valve-disease/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 22 January 2025",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_101",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Obstrucción al llenado ventricular por la válvula mitral, reumática o degenerativa/calcificada; eleva la presión auricular y pulmonar."
+      ],
+      "factIds": [
+        "b03_001_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "En la lesión reumática, la fusión comisural puede responder a intervención percutánea; en calcificación degenerativa ese mecanismo no se aplica. El alivio sintomático no debe retrasar la evaluación de la lesión mecánica."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Ecocardiograma: área, gradiente, regurgitación asociada y presión pulmonar; interpretar el gradiente con frecuencia cardíaca y flujo. ECG para fibrilación auricular; excluir regurgitación mitral y otras causas de disnea."
+      ],
+      "factIds": [
+        "b03_001_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Edema pulmonar, hipoxemia, hipotensión o taquiarritmia mal tolerada requieren hospitalización. Monitorizar ritmo, oxigenación, perfusión y diuresis; soporte respiratorio y descongestión según el cuadro."
+      ],
+      "factIds": [
+        "b03_001_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Diurético de asa, como furosemida, alivia congestión; un beta-bloqueante para controlar frecuencia en paciente estable puede mejorar llenado. Ninguno elimina la estenosis. En estenosis reumática sintomática con anatomía favorable: comisurotomía percutánea; cirugía si no es elegible o hay lesiones asociadas."
+      ],
+      "factIds": [
+        "b03_001_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "En estenosis mitral reumática relevante con fibrilación auricular, anticoagulación con antagonista de vitamina K, como warfarina, requiere control de INR; no sustituir por anticoagulante oral directo. Excluir trombo auricular y regurgitación significativa antes de comisurotomía. Embarazo: cardio-obstetricia."
+      ],
+      "factIds": [
+        "b03_001_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Derivar al equipo valvular; ecocardiograma e intervención dependen de gravedad y síntomas. Alta tras estabilización y plan de seguimiento; disnea en reposo, síncope o hemoptisis requieren atención urgente."
+      ],
+      "factIds": [
+        "b03_001_f06"
+      ]
+    }
+  ],
+  "markdown": "# Estenosis mitral\n\n## Concepto y mecanismo\n\nObstrucción al llenado ventricular por la válvula mitral, reumática o degenerativa/calcificada; eleva la presión auricular y pulmonar.\n\n## Razonamiento y elección terapéutica\n\nEn la lesión reumática, la fusión comisural puede responder a intervención percutánea; en calcificación degenerativa ese mecanismo no se aplica. El alivio sintomático no debe retrasar la evaluación de la lesión mecánica.\n\n## Diagnóstico y diferenciales\n\nEcocardiograma: área, gradiente, regurgitación asociada y presión pulmonar; interpretar el gradiente con frecuencia cardíaca y flujo. ECG para fibrilación auricular; excluir regurgitación mitral y otras causas de disnea.\n\n## Abordaje inicial y urgencias\n\nEdema pulmonar, hipoxemia, hipotensión o taquiarritmia mal tolerada requieren hospitalización. Monitorizar ritmo, oxigenación, perfusión y diuresis; soporte respiratorio y descongestión según el cuadro.\n\n## Tratamiento: primera elección y alternativas\n\nDiurético de asa, como furosemida, alivia congestión; un beta-bloqueante para controlar frecuencia en paciente estable puede mejorar llenado. Ninguno elimina la estenosis. En estenosis reumática sintomática con anatomía favorable: comisurotomía percutánea; cirugía si no es elegible o hay lesiones asociadas.\n\n## Seguridad y monitorización\n\nEn estenosis mitral reumática relevante con fibrilación auricular, anticoagulación con antagonista de vitamina K, como warfarina, requiere control de INR; no sustituir por anticoagulante oral directo. Excluir trombo auricular y regurgitación significativa antes de comisurotomía. Embarazo: cardio-obstetricia.\n\n## Reevaluación, internación y alta\n\nDerivar al equipo valvular; ecocardiograma e intervención dependen de gravedad y síntomas. Alta tras estabilización y plan de seguimiento; disnea en reposo, síncope o hemoptisis requieren atención urgente.\n\n## Referencias\n\n1. [ESC — Official slides VHD 2025](https://www.escardio.org/static-file/Escardio/Guidelines/Products/Slide%20sets/2025/2025%20official%20slides_VHD.pdf)\n2. [ESC/EACTS — Valvular Heart Disease, 2021 (historical crosscheck)](https://academic.oup.com/eurheartj/article/43/7/561/6358470)\n3. [NHS — Heart valve disease](https://www.nhs.uk/conditions/heart-valve-disease/)",
+  "approvedReviewCanonicalFileSha256": "78739ece9f92d708d867458c9bdd2aa7ee613622862f191dcc9ee95f3d5e9c84",
+  "approvedReviewProjectionFileSha256": "6e18a02f11898e0b807c735d1a5320d0483173fa3071155c39ee7d734193c512"
+}

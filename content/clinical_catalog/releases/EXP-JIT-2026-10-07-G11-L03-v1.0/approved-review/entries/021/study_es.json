@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Pólipos colorrectales",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "c7f2a6d3b81757d382b70af0aa9ae667c35392068c5dd244380818cdcc457ebc",
+  "ownerCandidate": "polipos_colorretais",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_021_f01",
+    "b03_021_f02",
+    "b03_021_f03",
+    "b03_021_f04",
+    "b03_021_f05",
+    "b03_021_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Lesiones de mucosa colorrectal, adenomatosas, serradas u otras; riesgo maligno según histología, tamaño y características."
+      ],
+      "factIds": [
+        "b03_021_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Resecar permite histología y prevención oncológica. La técnica debe permitir evaluar invasión; cirugía/endoscopia son elecciones anatómicas/oncológicas, no dos fármacos."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Colonoscopia con caracterización e histología; evaluar invasión e historia familiar. No confundir pólipo benigno con carcinoma invasivo ni atribuir todo sangrado al pólipo."
+      ],
+      "factIds": [
+        "b03_021_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "En guardia, sangrado importante o dolor/peritonismo tras resección: evaluar hemorragia/perforación; estabilizar y consultar endoscopia/cirugía. Pólipo incidental estable: evaluación programada."
+      ],
+      "factIds": [
+        "b03_021_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera estrategia en lesión resecable: polipectomía según tamaño/morfología; asa fría en pequeñas elegibles. Lesiones grandes: resección mucosa/submucosa especializada; cirugía si invasión/profundidad impide curación endoscópica."
+      ],
+      "factIds": [
+        "b03_021_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Ningún fármaco sustituye la resección indicada. Revisar anticoagulantes/sangrado sin suspensión indiscriminada; no intentar resección inadecuada ante invasión sospechosa."
+      ],
+      "factIds": [
+        "b03_021_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Vigilancia según histología, número, tamaño, calidad y resección completa; no imponer el mismo plazo a todos. Sospecha hereditaria: genética/cribado específico."
+      ],
+      "factIds": [
+        "b03_021_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "polyps2024",
+      "title": "ESGE — Colorectal polypectomy guideline update 2024",
+      "url": "https://www.esge.com/assets/downloads/pdfs/guidelines/2024_a-2304-3219.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published, de-",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:polyps2024",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_130",
+      "title": "NHS — Bowel polyps",
+      "url": "https://www.nhs.uk/conditions/bowel-polyps/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 28 July 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_130",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

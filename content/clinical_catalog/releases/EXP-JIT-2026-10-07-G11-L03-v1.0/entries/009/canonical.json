@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "pneumoconioses_incluindo_silicose_e_asbestose",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Pneumoconioses (incluindo silicose e asbestose)",
+    "es": "Neumoconiosis (incluidas silicosis y asbestosis)"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "NONPHARMACOLOGIC_FIRST_NO_CURATIVE_DRUG",
+  "facts": [
+    {
+      "id": "b03_009_f01",
+      "section": "concept",
+      "pt": "Fibrose pulmonar relacionada à inalação ocupacional de poeiras minerais. Silicose e asbestose têm exposições, latência e complicações diferentes.",
+      "es": "Fibrosis pulmonar por inhalación ocupacional de polvo mineral. Silicosis y asbestosis difieren en exposición, latencia y complicaciones.",
+      "sources": [
+        "silica2026",
+        "topic_109"
+      ]
+    },
+    {
+      "id": "b03_009_f02",
+      "section": "diagnosis",
+      "pt": "História ocupacional detalhada, imagem torácica e função pulmonar; avaliar hipoxemia e diagnósticos alternativos. Sílica aumenta risco de tuberculose; asbestos também se associa a neoplasias pleuropulmonares.",
+      "es": "Historia laboral detallada, imágenes y función pulmonar; evaluar hipoxemia y diagnósticos alternativos. Sílice aumenta riesgo de tuberculosis; asbesto se asocia a neoplasias pleuropulmonares.",
+      "sources": [
+        "silica2026",
+        "topic_109"
+      ]
+    },
+    {
+      "id": "b03_009_f03",
+      "section": "initial",
+      "pt": "Dispneia aguda, febre ou queda de saturação: investigar infecção, embolia, pneumotórax e exacerbação de doença associada, sem atribuir tudo à fibrose crônica.",
+      "es": "Disnea aguda, fiebre o desaturación: investigar infección, embolia, neumotórax y enfermedad asociada; no atribuir todo a fibrosis crónica.",
+      "sources": [
+        "silica2026",
+        "topic_109"
+      ]
+    },
+    {
+      "id": "b03_009_f04",
+      "section": "options",
+      "pt": "Primeira medida: interromper exposição, apoio ocupacional e cessar tabagismo. Reabilitação pulmonar e vacinação; oxigênio quando indicado por avaliação de hipoxemia. Alternativa em doença avançada elegível: avaliação de transplante pulmonar.",
+      "es": "Primera medida: detener exposición, apoyo laboral y dejar tabaco. Rehabilitación y vacunación; oxígeno si evaluación de hipoxemia lo indica. Alternativa ante enfermedad avanzada elegible: evaluación de trasplante.",
+      "sources": [
+        "silica2026",
+        "topic_109"
+      ]
+    },
+    {
+      "id": "b03_009_f05",
+      "section": "safety",
+      "pt": "Não existe fármaco que reverta rotineiramente essas cicatrizes. Broncodilatador apenas se houver obstrução/indicação associada; antibiótico somente para infecção. Não prometer benefício universal de corticoide ou antifibrótico.",
+      "es": "Ningún fármaco revierte rutinariamente estas cicatrices. Broncodilatador solo ante obstrucción/indicación asociada; antibiótico para infección. No prometer beneficio universal de corticoides/antifibróticos.",
+      "sources": [
+        "silica2026",
+        "topic_109"
+      ]
+    },
+    {
+      "id": "b03_009_f06",
+      "section": "followup",
+      "pt": "Monitorização pneumológica/ocupacional de função, oxigenação e complicações. Internar insuficiência respiratória; estabilidade não elimina risco de progressão após cessar exposição.",
+      "es": "Seguimiento neumológico/laboral de función, oxigenación y complicaciones. Internar insuficiencia respiratoria; puede progresar aun después de cesar exposición.",
+      "sources": [
+        "silica2026",
+        "topic_109"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A exposição cumulativa e a inflamação persistente explicam progressão mesmo após afastamento. Tratamento de complicações e prevenção de nova exposição são distintos de uma cura farmacológica inexistente.",
+      "es": "La exposición acumulada y la inflamación explican progresión aun tras alejamiento. Tratar complicaciones/prevenir exposición no equivale a una cura farmacológica inexistente.",
+      "sources": [
+        "silica2026",
+        "topic_109"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "silica2026",
+      "title": "CDC/NIOSH — Silicosis symptoms and monitoring, 2026",
+      "url": "https://www.cdc.gov/niosh/silica/symptoms/index.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC/NIOSH 2026: silicose sem cura, cessar exposição, risco de tuberculose e acompanhamento ocupacional. Não extrapolar para todos os tipos de pneumoconiose.",
+      "sourceEvidenceRecord": "web-verification-record.json:silica2026",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_109",
+      "title": "NHS — Asbestosis",
+      "url": "https://www.nhs.uk/conditions/asbestosis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 31 July 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_109",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Síndrome de dumping",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "3702812f9c4c1e4d3983bcd68e4bb46d06787a872c16c886bf0aab2d0e9b07fe",
+  "ownerCandidate": "sindrome_de_dumping",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_015_f01",
+    "b03_015_f02",
+    "b03_015_f03",
+    "b03_015_f04",
+    "b03_015_f05",
+    "b03_015_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Síntomas posprandiales por vaciamiento rápido, usualmente tras cirugía gástrica; forma temprana: hemodinámica/osmótica; tardía: hipoglucemia reactiva."
+      ],
+      "factIds": [
+        "b03_015_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "La dieta modifica carga osmótica y absorción de carbohidratos. Acarbosa actúa sobre todo en el componente tardío; octreótida no es alternativa oral equivalente y exige evaluar tolerancia."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Relacionar síntomas, comida y cirugía; medir glucemia durante sospecha de hipoglucemia y buscar otras causas de síncope/diarrea. Pruebas provocativas solo en protocolo especializado."
+      ],
+      "factIds": [
+        "b03_015_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Tratar hipoglucemia/inestabilidad de inmediato; valorar hidratación/nutrición. Síntomas persistentes sin cirugía/diagnóstico confirmado exigen investigar alternativas."
+      ],
+      "factIds": [
+        "b03_015_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera elección: comidas pequeñas y ajustadas por nutrición, reduciendo azúcares de absorción rápida. Acarbosa puede ayudar dumping tardío; alternativa refractaria: octreótida corta o prolongada por especialista. Cirugía revisional en casos excepcionales."
+      ],
+      "factIds": [
+        "b03_015_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Acarbosa: gases/diarrea; octreótida: cálculos, esteatorrea y cambios glucémicos. Formas corta subcutánea y prolongada intramuscular no tienen intervalos intercambiables; no copiar un intervalo mensual al uso precomida."
+      ],
+      "factIds": [
+        "b03_015_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar síntomas, peso e hipoglucemias; orientar conducción segura y rescate si hay hipoglucemia. Internar inestabilidad o pérdidas importantes."
+      ],
+      "factIds": [
+        "b03_015_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "dumping",
+      "title": "NIDDK — Dumping syndrome treatment",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/dumping-syndrome/treatment",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed January 2019",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:dumping",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_119",
+      "title": "NIDDK — Dumping Syndrome",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/dumping-syndrome",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed January 2019",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_119",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

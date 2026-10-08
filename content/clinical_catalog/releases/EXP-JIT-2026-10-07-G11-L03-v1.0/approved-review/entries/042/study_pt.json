@@ -1,0 +1,122 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Uveíte",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "feccbeba97e67083082d615d6f278e59ed6eff87ecca4090795497ba05524706",
+  "ownerCandidate": "uveite",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_042_f01",
+    "b03_042_f02",
+    "b03_042_f03",
+    "b03_042_f04",
+    "b03_042_f05",
+    "b03_042_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Inflamação da úvea, anterior, intermediária, posterior ou difusa; pode ser infecciosa ou imune. Olho vermelho doloroso com fotofobia exige distinguir de conjuntivite simples."
+      ],
+      "factIds": [
+        "b03_042_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "O padrão anatômico orienta via terapêutica. Esteroide controla inflamação imune, mas pode agravar infecção não tratada; diagnóstico especializado precede prescrição e desmame."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Medir acuidade, pupilas e pressão quando seguro; exame em lâmpada de fenda/fundo por equipe ocular. Avaliar trauma, herpes e doenças sistêmicas; excluir ceratite e glaucoma agudo."
+      ],
+      "factIds": [
+        "b03_042_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Baixa visual, dor intensa ou suspeita posterior: oftalmologia urgente. Não iniciar corticoide ocular empiricamente em olho vermelho sem excluir infecção corneana."
+      ],
+      "factIds": [
+        "b03_042_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Anterior não infecciosa confirmada: corticoide oftálmico e cicloplégico para dor/sinéquias, prescritos e titulados pela oftalmologia. Alternativa/escalonamento em doença posterior, recorrente ou resistente: terapia sistêmica/local especializada e poupador de corticoide. Uveíte infecciosa exige antimicrobiano etiológico."
+      ],
+      "factIds": [
+        "b03_042_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Colírios não são intercambiáveis sem indicação; frequência/desmame dependem de atividade. Monitorizar pressão, catarata e infecção; cicloplégicos podem ter efeitos sistêmicos, especialmente em crianças. Gestação e imunossupressão exigem escolha própria."
+      ],
+      "factIds": [
+        "b03_042_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Revisão ocular precoce e busca dirigida de causa nas recorrências. Alta somente com visão/pressão avaliadas, tratamento e retorno; piora visual é alarme imediato."
+      ],
+      "factIds": [
+        "b03_042_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_151",
+      "title": "EYES — Uveitis (anterior)",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/uveitis_anterior",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_GUIDELINE_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "web-verification-record.json:topic_151",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "uveitis_nhs",
+      "title": "NHS — Uveitis",
+      "url": "https://www.nhs.uk/conditions/uveitis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 20 March 2024",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:uveitis_nhs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "uveitis_moor",
+      "title": "Moorfields NHS — Uveitis diagnosis and treatment",
+      "url": "https://moorfields.nhs.uk/eye-conditions/uveitis/diagnosis-and-treatment",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Usar somente os cenários e formulações do documento consultado.",
+      "sourceEvidenceRecord": "source-readback.json:uveitis_moor",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

@@ -1,0 +1,157 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Eritrodermia",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "d34ecf058162bf6be4b0826bde127c828c9fbabfd6c65dcb95de4a22fc733c51",
+  "ownerCandidate": "eritrodermia",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_039_f01",
+    "b03_039_f02",
+    "b03_039_f03",
+    "b03_039_f04",
+    "b03_039_f05",
+    "b03_039_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Eritema/descamación generalizados por dermatosis, medicamento/neoplasia; pérdida de barrera con riesgo sistémico."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "La inflamación extensa pierde barrera térmica/hídrica. Inmunosuprimir sin causa puede empeorar infección; soporte/etiología preceden escalada."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Medicamentos, dermatosis, mucosas/ganglios, hemograma, electrolitos, riñón/hígado; biopsia dermatológica. Diferenciar DRESS/Stevens-Johnson."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Inestabilidad, hipotermia, deshidratación, infección/extensión importante: hospital. Retirar desencadenante cuando seguro, ambiente térmico, reposición monitorizada/cuidado suave."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primera estrategia: barrera con emolientes y causa. Corticoide tópico apropiado en dermatitis; psoriasis grave: ciclosporina o biológico según especialista/riesgo. Linfoma o reacción medicamentosa: otro plan."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No dar corticoide sistémico universal, especialmente posible psoriasis; puede agravar/rebotar/ocultar infección. Barrera dañada aumenta absorción tópica; evitar irritantes y vigilar órganos."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Internación hasta estabilidad/plan; temperatura, volumen, nutrición/piel. Persistencia: repetir evaluación etiológica."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_148",
+      "title": "DERMNET — Erythroderma",
+      "url": "https://dermnetnz.org/topics/erythroderma",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_148",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Eritema/descamación generalizados por dermatosis, medicamento/neoplasia; pérdida de barrera con riesgo sistémico."
+      ],
+      "factIds": [
+        "b03_039_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "La inflamación extensa pierde barrera térmica/hídrica. Inmunosuprimir sin causa puede empeorar infección; soporte/etiología preceden escalada."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Medicamentos, dermatosis, mucosas/ganglios, hemograma, electrolitos, riñón/hígado; biopsia dermatológica. Diferenciar DRESS/Stevens-Johnson."
+      ],
+      "factIds": [
+        "b03_039_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Inestabilidad, hipotermia, deshidratación, infección/extensión importante: hospital. Retirar desencadenante cuando seguro, ambiente térmico, reposición monitorizada/cuidado suave."
+      ],
+      "factIds": [
+        "b03_039_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera estrategia: barrera con emolientes y causa. Corticoide tópico apropiado en dermatitis; psoriasis grave: ciclosporina o biológico según especialista/riesgo. Linfoma o reacción medicamentosa: otro plan."
+      ],
+      "factIds": [
+        "b03_039_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No dar corticoide sistémico universal, especialmente posible psoriasis; puede agravar/rebotar/ocultar infección. Barrera dañada aumenta absorción tópica; evitar irritantes y vigilar órganos."
+      ],
+      "factIds": [
+        "b03_039_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Internación hasta estabilidad/plan; temperatura, volumen, nutrición/piel. Persistencia: repetir evaluación etiológica."
+      ],
+      "factIds": [
+        "b03_039_f06"
+      ]
+    }
+  ],
+  "markdown": "# Eritrodermia\n\n## Concepto y mecanismo\n\nEritema/descamación generalizados por dermatosis, medicamento/neoplasia; pérdida de barrera con riesgo sistémico.\n\n## Razonamiento y elección terapéutica\n\nLa inflamación extensa pierde barrera térmica/hídrica. Inmunosuprimir sin causa puede empeorar infección; soporte/etiología preceden escalada.\n\n## Diagnóstico y diferenciales\n\nMedicamentos, dermatosis, mucosas/ganglios, hemograma, electrolitos, riñón/hígado; biopsia dermatológica. Diferenciar DRESS/Stevens-Johnson.\n\n## Abordaje inicial y urgencias\n\nInestabilidad, hipotermia, deshidratación, infección/extensión importante: hospital. Retirar desencadenante cuando seguro, ambiente térmico, reposición monitorizada/cuidado suave.\n\n## Tratamiento: primera elección y alternativas\n\nPrimera estrategia: barrera con emolientes y causa. Corticoide tópico apropiado en dermatitis; psoriasis grave: ciclosporina o biológico según especialista/riesgo. Linfoma o reacción medicamentosa: otro plan.\n\n## Seguridad y monitorización\n\nNo dar corticoide sistémico universal, especialmente posible psoriasis; puede agravar/rebotar/ocultar infección. Barrera dañada aumenta absorción tópica; evitar irritantes y vigilar órganos.\n\n## Reevaluación, internación y alta\n\nInternación hasta estabilidad/plan; temperatura, volumen, nutrición/piel. Persistencia: repetir evaluación etiológica.\n\n## Referencias\n\n1. [DERMNET — Erythroderma](https://dermnetnz.org/topics/erythroderma)",
+  "approvedReviewCanonicalFileSha256": "49ad6cec9b9df5eb4b7f8556beb2d8f1c52778cf98c495891f351b3b089ff599",
+  "approvedReviewProjectionFileSha256": "ef24966376829ee1349684e77be9de6401905498be8437c921a937d297cbf28b"
+}

@@ -1,0 +1,168 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Febre tifoide e paratifoide",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "acb129d4088e5e86bcd348557d9e8b7044293551582bb5d20e5e6959994450cb",
+  "ownerCandidate": "febre_tifoide_e_paratifoide",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_029_f01",
+    "b03_029_f02",
+    "b03_029_f03",
+    "b03_029_f04",
+    "b03_029_f05",
+    "b03_029_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Choque, encefalopatia, sangramento ou peritonismo exigem hospital/avaliação cirúrgica. Hidratar de forma monitorizada e iniciar terapia sem atraso perigoso."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "História de viagem/exposição, hemoculturas preferencialmente antes de antibiótico e testes dirigidos; Widal isolado não confirma. Investigar sepse, hepatite, malária e outras febres conforme contexto."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Azitromicina oral em doença não complicada elegível ou ceftriaxona em cenário susceptível são opções; primeira escolha depende de origem/resistência, gravidade e via. Viagem ao Iraque/Paquistão altera empirismo: resistência à ceftriaxona, com carbapenêmico em doença complicada conforme especialista."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não aplicar regime curto de diarreia do viajante à febre entérica. Fluoroquinolonas não são empirismo universal por resistência; doses/duração seguem protocolo específico e cultura. Revisar QT, rim/fígado, idade e gestação."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reavaliar febre persistente e susceptibilidade; investigar recaída e portador conforme vigilância. Alta se estável/tolerante, com adesão, retorno e prevenção de transmissão alimentar."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Infecção sistêmica por Salmonella Typhi/Paratyphi, distinta da gastroenterite por Salmonella não tifoide; pode causar bacteremia e complicações intestinais."
+    }
+  ],
+  "references": [
+    {
+      "key": "typh_cdc",
+      "title": "CDC — Clinical guidance typhoid/paratyphoid fever",
+      "url": "https://www.cdc.gov/typhoid-fever/hcp/clinical-guidance/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC: culturas/sensibilidade, azitromicina ou ceftriaxona conforme viagem/resistência; carbapenêmico em grave de contexto resistente, sem fluoroquinolona empírica universal.",
+      "sourceEvidenceRecord": "web-verification-record.json:typh_cdc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "typh_book",
+      "title": "CDC Yellow Book 2026 — Typhoid and Paratyphoid Fever",
+      "url": "https://www.cdc.gov/yellow-book/hcp/travel-associated-infections-diseases/typhoid-and-paratyphoid-fever.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC Yellow Book edição 2026, capítulo publicado em abril de 2025 lido: febre entérica versus Salmonella não tifoide, terapêutica por resistência/viagem e reavaliação da falha.",
+      "sourceEvidenceRecord": "web-verification-record.json:typh_book",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_138",
+      "title": "NHS — Typhoid fever",
+      "url": "https://www.nhs.uk/conditions/typhoid-fever/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 02 July 2025",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_138",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Choque, encefalopatia, sangramento ou peritonismo exigem hospital/avaliação cirúrgica. Hidratar de forma monitorizada e iniciar terapia sem atraso perigoso."
+      ],
+      "factIds": [
+        "b03_029_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "História de viagem/exposição, hemoculturas preferencialmente antes de antibiótico e testes dirigidos; Widal isolado não confirma. Investigar sepse, hepatite, malária e outras febres conforme contexto."
+      ],
+      "factIds": [
+        "b03_029_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Azitromicina oral em doença não complicada elegível ou ceftriaxona em cenário susceptível são opções; primeira escolha depende de origem/resistência, gravidade e via. Viagem ao Iraque/Paquistão altera empirismo: resistência à ceftriaxona, com carbapenêmico em doença complicada conforme especialista."
+      ],
+      "factIds": [
+        "b03_029_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não aplicar regime curto de diarreia do viajante à febre entérica. Fluoroquinolonas não são empirismo universal por resistência; doses/duração seguem protocolo específico e cultura. Revisar QT, rim/fígado, idade e gestação."
+      ],
+      "factIds": [
+        "b03_029_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar febre persistente e susceptibilidade; investigar recaída e portador conforme vigilância. Alta se estável/tolerante, com adesão, retorno e prevenção de transmissão alimentar."
+      ],
+      "factIds": [
+        "b03_029_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Infecção sistêmica por Salmonella Typhi/Paratyphi, distinta da gastroenterite por Salmonella não tifoide; pode causar bacteremia e complicações intestinais."
+      ],
+      "factIds": [
+        "b03_029_f01"
+      ]
+    }
+  ],
+  "markdown": "# Febre tifoide e paratifoide\n\n## Abordagem inicial e urgências\n\nChoque, encefalopatia, sangramento ou peritonismo exigem hospital/avaliação cirúrgica. Hidratar de forma monitorizada e iniciar terapia sem atraso perigoso.\n\n## Diagnóstico e diferenciais\n\nHistória de viagem/exposição, hemoculturas preferencialmente antes de antibiótico e testes dirigidos; Widal isolado não confirma. Investigar sepse, hepatite, malária e outras febres conforme contexto.\n\n## Tratamento: primeira escolha e alternativas\n\nAzitromicina oral em doença não complicada elegível ou ceftriaxona em cenário susceptível são opções; primeira escolha depende de origem/resistência, gravidade e via. Viagem ao Iraque/Paquistão altera empirismo: resistência à ceftriaxona, com carbapenêmico em doença complicada conforme especialista.\n\n## Segurança e monitorização\n\nNão aplicar regime curto de diarreia do viajante à febre entérica. Fluoroquinolonas não são empirismo universal por resistência; doses/duração seguem protocolo específico e cultura. Revisar QT, rim/fígado, idade e gestação.\n\n## Reavaliação, internação e alta\n\nReavaliar febre persistente e susceptibilidade; investigar recaída e portador conforme vigilância. Alta se estável/tolerante, com adesão, retorno e prevenção de transmissão alimentar.\n\n## Reconhecimento rápido\n\nInfecção sistêmica por Salmonella Typhi/Paratyphi, distinta da gastroenterite por Salmonella não tifoide; pode causar bacteremia e complicações intestinais.\n\n## Referências\n\n1. [CDC — Clinical guidance typhoid/paratyphoid fever](https://www.cdc.gov/typhoid-fever/hcp/clinical-guidance/)\n2. [CDC Yellow Book 2026 — Typhoid and Paratyphoid Fever](https://www.cdc.gov/yellow-book/hcp/travel-associated-infections-diseases/typhoid-and-paratyphoid-fever.html)\n3. [NHS — Typhoid fever](https://www.nhs.uk/conditions/typhoid-fever/)",
+  "approvedReviewCanonicalFileSha256": "3e605c0fa272ee23057c9105f53648624b7dd7eed43c7b3195fa1f5f5cd295c4",
+  "approvedReviewProjectionFileSha256": "b57576bc7b6943da69b6762486ae2a11680fe380f51e2090ee8a35f3dc7aae4b"
+}

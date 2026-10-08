@@ -1,0 +1,168 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Estenose mitral",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "522c6126b0ce52eb0a9c4ee13f27435c9cebe26857f591e79749f1123f5df5c5",
+  "ownerCandidate": "estenose_mitral",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_001_f01",
+    "b03_001_f02",
+    "b03_001_f03",
+    "b03_001_f04",
+    "b03_001_f05",
+    "b03_001_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Edema pulmonar, hipoxemia, hipotensão ou taquiarritmia mal tolerada exigem hospitalização. Monitorizar ritmo, oxigenação, perfusão e diurese; suporte respiratório e descongestão conforme quadro."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ecocardiograma define área, gradiente, regurgitação associada e pressão pulmonar; interpretar gradiente com frequência cardíaca e fluxo. ECG pesquisa fibrilação atrial; excluir insuficiência mitral e outras causas de dispneia."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Diurético de alça, como furosemida, alivia congestão; controle da frequência com beta-bloqueador em paciente estável pode melhorar enchimento. Nenhum desfaz a estenose. Na estenose reumática sintomática com anatomia favorável, considerar comissurotomia percutânea; cirurgia se inelegível ou com lesões associadas."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Na estenose mitral reumática relevante com fibrilação atrial, anticoagulação com antagonista da vitamina K, como varfarina, exige controle de INR; não substituir por anticoagulante oral direto. Excluir trombo atrial e regurgitação significativa antes de comissurotomia. Gestação requer cardio-obstetrícia."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Encaminhar a equipe valvar; periodicidade de ecocardiograma e intervenção depende de gravidade e sintomas. Alta somente após estabilização e plano de reavaliação; dispneia em repouso, síncope ou hemoptise exigem retorno urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Obstrução ao enchimento ventricular pela valva mitral, reumática ou degenerativa/calcificada; eleva pressão atrial e pulmonar."
+    }
+  ],
+  "references": [
+    {
+      "key": "vhdslides",
+      "title": "ESC — Official slides VHD 2025",
+      "url": "https://www.escardio.org/static-file/Escardio/Guidelines/Products/Slide%20sets/2025/2025%20official%20slides_VHD.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Trechos oficiais ESC 2025 verificados no índice: comissurotomia em estenose reumática sintomática elegível; cirurgia se inelegível; TEER na regurgitação primária grave sintomática de alto risco. Não alegar leitura integral do PDF bloqueado.",
+      "sourceEvidenceRecord": "web-verification-record.json:vhdslides",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "vhd2021",
+      "title": "ESC/EACTS — Valvular Heart Disease, 2021 (historical crosscheck)",
+      "url": "https://academic.oup.com/eurheartj/article/43/7/561/6358470",
+      "authorityStatus": "SUPERSEDED_GUIDELINE_BACKGROUND_WITH_2025_CROSSCHECK",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "ESC/EACTS 2021 histórico: fisiopatologia, eco, trombo atrial e anticoagulação VKA na estenose reumática com FA. Princípios intervencionistas conferidos com trechos oficiais de 2025; não apresentado como norma mais nova.",
+      "sourceEvidenceRecord": "web-verification-record.json:vhd2021",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_101",
+      "title": "NHS — Heart valve disease",
+      "url": "https://www.nhs.uk/conditions/heart-valve-disease/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 22 January 2025",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_101",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Edema pulmonar, hipoxemia, hipotensão ou taquiarritmia mal tolerada exigem hospitalização. Monitorizar ritmo, oxigenação, perfusão e diurese; suporte respiratório e descongestão conforme quadro."
+      ],
+      "factIds": [
+        "b03_001_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Ecocardiograma define área, gradiente, regurgitação associada e pressão pulmonar; interpretar gradiente com frequência cardíaca e fluxo. ECG pesquisa fibrilação atrial; excluir insuficiência mitral e outras causas de dispneia."
+      ],
+      "factIds": [
+        "b03_001_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Diurético de alça, como furosemida, alivia congestão; controle da frequência com beta-bloqueador em paciente estável pode melhorar enchimento. Nenhum desfaz a estenose. Na estenose reumática sintomática com anatomia favorável, considerar comissurotomia percutânea; cirurgia se inelegível ou com lesões associadas."
+      ],
+      "factIds": [
+        "b03_001_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Na estenose mitral reumática relevante com fibrilação atrial, anticoagulação com antagonista da vitamina K, como varfarina, exige controle de INR; não substituir por anticoagulante oral direto. Excluir trombo atrial e regurgitação significativa antes de comissurotomia. Gestação requer cardio-obstetrícia."
+      ],
+      "factIds": [
+        "b03_001_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Encaminhar a equipe valvar; periodicidade de ecocardiograma e intervenção depende de gravidade e sintomas. Alta somente após estabilização e plano de reavaliação; dispneia em repouso, síncope ou hemoptise exigem retorno urgente."
+      ],
+      "factIds": [
+        "b03_001_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Obstrução ao enchimento ventricular pela valva mitral, reumática ou degenerativa/calcificada; eleva pressão atrial e pulmonar."
+      ],
+      "factIds": [
+        "b03_001_f01"
+      ]
+    }
+  ],
+  "markdown": "# Estenose mitral\n\n## Abordagem inicial e urgências\n\nEdema pulmonar, hipoxemia, hipotensão ou taquiarritmia mal tolerada exigem hospitalização. Monitorizar ritmo, oxigenação, perfusão e diurese; suporte respiratório e descongestão conforme quadro.\n\n## Diagnóstico e diferenciais\n\nEcocardiograma define área, gradiente, regurgitação associada e pressão pulmonar; interpretar gradiente com frequência cardíaca e fluxo. ECG pesquisa fibrilação atrial; excluir insuficiência mitral e outras causas de dispneia.\n\n## Tratamento: primeira escolha e alternativas\n\nDiurético de alça, como furosemida, alivia congestão; controle da frequência com beta-bloqueador em paciente estável pode melhorar enchimento. Nenhum desfaz a estenose. Na estenose reumática sintomática com anatomia favorável, considerar comissurotomia percutânea; cirurgia se inelegível ou com lesões associadas.\n\n## Segurança e monitorização\n\nNa estenose mitral reumática relevante com fibrilação atrial, anticoagulação com antagonista da vitamina K, como varfarina, exige controle de INR; não substituir por anticoagulante oral direto. Excluir trombo atrial e regurgitação significativa antes de comissurotomia. Gestação requer cardio-obstetrícia.\n\n## Reavaliação, internação e alta\n\nEncaminhar a equipe valvar; periodicidade de ecocardiograma e intervenção depende de gravidade e sintomas. Alta somente após estabilização e plano de reavaliação; dispneia em repouso, síncope ou hemoptise exigem retorno urgente.\n\n## Reconhecimento rápido\n\nObstrução ao enchimento ventricular pela valva mitral, reumática ou degenerativa/calcificada; eleva pressão atrial e pulmonar.\n\n## Referências\n\n1. [ESC — Official slides VHD 2025](https://www.escardio.org/static-file/Escardio/Guidelines/Products/Slide%20sets/2025/2025%20official%20slides_VHD.pdf)\n2. [ESC/EACTS — Valvular Heart Disease, 2021 (historical crosscheck)](https://academic.oup.com/eurheartj/article/43/7/561/6358470)\n3. [NHS — Heart valve disease](https://www.nhs.uk/conditions/heart-valve-disease/)",
+  "approvedReviewCanonicalFileSha256": "78739ece9f92d708d867458c9bdd2aa7ee613622862f191dcc9ee95f3d5e9c84",
+  "approvedReviewProjectionFileSha256": "6e17d7deb0189ff38f1a49ecf97ce5a3ca057dc93d1ac2902ca799082bb14436"
+}

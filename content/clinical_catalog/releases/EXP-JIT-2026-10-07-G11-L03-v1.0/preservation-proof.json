@@ -1,0 +1,610 @@
+{
+  "baselineClinicalRowsPreserved": true,
+  "g08Preserved": true,
+  "g09Preserved": true,
+  "g10Preserved": true,
+  "entries": [
+    {
+      "owner": "estenose_mitral",
+      "canonicalHash": "522c6126b0ce52eb0a9c4ee13f27435c9cebe26857f591e79749f1123f5df5c5",
+      "projectionHashes": {
+        "study_pt": "8ded1ed71f72fdd3a867fd0c75c812662fb5b2aaac2c96363b766d0d2d0f33b3",
+        "study_es": "cee42b2117c912f7e1ba915770edadd46b34520b341ccb91c302b7b2913cf7cb",
+        "plantao_pt": "14602e788d5831b605365bb9bea9569e3638eec748d8a189a8363389e7f4d766",
+        "plantao_es": "6da9d7e7e03c4e668d0554240c25dba3f6553fb14dc16ebeb50641deb0f4b60b"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "78739ece9f92d708d867458c9bdd2aa7ee613622862f191dcc9ee95f3d5e9c84"
+    },
+    {
+      "owner": "insuficiencia_mitral_cronica_primaria",
+      "canonicalHash": "0e4d11ec210ad5402f0a9298b582265b63d38e43cd2d9e4fbbed9fa5c321da08",
+      "projectionHashes": {
+        "study_pt": "9abef76203f8ba2ec3dc7124a247dfe707d3915f619e62b2a3e5d8a230dc22b0",
+        "study_es": "68ebd29a4ca16616a1a7180e33717a1638919bf828a7b5a626e6e517e3e68abf",
+        "plantao_pt": "86b72d22ded3babcc51eb5999df165afb5276f89662007bb86769af720f90ff5",
+        "plantao_es": "90c37fc508c605e47cc87e66a212224cc835d5edd89116659100c9c9a00fe87d"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "1c8acb05c0903851078029c793b5dd8363898a7b3dff0c8a0146dcc0ee93e643"
+    },
+    {
+      "owner": "cardiomiopatia_dilatada",
+      "canonicalHash": "39119ea6ee97e1d72ffc29dacb24fe417b355f0c2cdb6e1e2c10bff4e5485c76",
+      "projectionHashes": {
+        "study_pt": "76036de8bc34d9a922707e4500e8ad1ec777325612f1c4773c27653349490375",
+        "study_es": "461c6eae8b854117e2f7756af3b89fb221c06c23cbf56c725a7bac5be2ae7e07",
+        "plantao_pt": "6d8c6e064929c86375389425ce3e2ebbacc83ca9a1e0afec05d50641ce645611",
+        "plantao_es": "d6fa86d304e10ed97ee103d863d3d931fc6298929ded312520c567564d260e24"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "462e54e69f60645451e4053499e8bc23eb11e54428f196488e996bd6c65475ee"
+    },
+    {
+      "owner": "hipertensao_pulmonar",
+      "canonicalHash": "7ff3859b51c083b3a976a4f5c2e0ca42b101f20741364c5b0ff679104ebfacb8",
+      "projectionHashes": {
+        "study_pt": "26f8bf272afee60cba6dcdd11a6b2f0ad68a8783c554e77a14418d2fced31d30",
+        "study_es": "c12643db9ea8c565fc2d64b50dec10d875d9dbebfffabdde6f50b2fa91b57392",
+        "plantao_pt": "95ca09f0754d136b1ee6272c3df636605b12ff8f3fa5e9ff46083986f0a57e58",
+        "plantao_es": "21c346101c3381ed5d1ddd63c866958fd467b1bdcd734eeceb4c5ddd270db40e"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "bdea303b61cd38a1bb31e407429ff70896fbac02e40539480958edbd06c51fc1"
+    },
+    {
+      "owner": "bronquiectasias",
+      "canonicalHash": "5c9511ab0eb0bdf982f14b2438bc8d97e1767e404e9fa6815a9faca63be9445f",
+      "projectionHashes": {
+        "study_pt": "7821d70e14e33e8af708370b77ed6c15f19a9138f000fbaef2fe44cfb0a3a727",
+        "study_es": "bb61ab096a4634fb09f66f63079ad7528d5ce29d92c2af701c7a8332d2cdff12",
+        "plantao_pt": "fef887df91dd2e5cc86d3ee50adeed30cb84304350425f0b2e7a7cf76dbeaee6",
+        "plantao_es": "a9ef80f9bdb5ff73ffcf6a05fbec33c0fcc49112e8644fd3d15eab36c858075e"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "70912a9180dfeb27bdd3db4d79cb0bc2e479d93b1a6e05c3daf040d21fc98cab"
+    },
+    {
+      "owner": "derrame_pleural",
+      "canonicalHash": "4df2a25b253fbda68dcc8d9f9104b0f1dd4d1f4cddcfb526eb752e7dc99fc826",
+      "projectionHashes": {
+        "study_pt": "d0f4003aa690e7ed8dd5d27b1d4123ddb1cfbd7fc09cecc2a0ca882590bdce2d",
+        "study_es": "8a8818501459c3bcc4ecb5fa51720a87c7334c3c757b44835a15937db46bb110",
+        "plantao_pt": "9ff2ce2999b5ebb1e3f84f02e79001400a07400a956ca9a6dbcfe3f94fc5b17f",
+        "plantao_es": "9533bc468f23ad3b977cd779fc76c076a3f1af4dd20d5eeb833aaa23acfe62a3"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "ec0be0539421be361e13f7f04580da7e84381b08210c46699e2cf22334a5ffba"
+    },
+    {
+      "owner": "empiema_pleural",
+      "canonicalHash": "18ed3b84b67cdfed7675e71ad1bc7773769d22013bfdbcfd844d1aace0bbccc1",
+      "projectionHashes": {
+        "study_pt": "16b9e307ac64374d93ac5ba1dbe483f1e93ea92601205832e8fe23d14b1409ed",
+        "study_es": "6ec2c53f339658a31823e798fca3d061dd1e0752344ba8b1fad4f8a1a82a9b6a",
+        "plantao_pt": "d9573f60ea34fbbfe041e3920d11bffe1fb97d7b81f11561abf2f7a5aa4c2430",
+        "plantao_es": "66e2902d0b105e7283526ec26d51d95e5f00640f0abd2bda85f1dc61f0d826b7"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "a899f24bdf38c922853b118b25203621cdb2ddfb542a44a3f0f4457ae271aeb8"
+    },
+    {
+      "owner": "abscesso_pulmonar",
+      "canonicalHash": "5f65e5daf06f6d97c0f87eaf335ab16686cc6a4b1cee6a5333257e885bbf342d",
+      "projectionHashes": {
+        "study_pt": "31b908c5205f4fa80f2269f464441652b866ad95a28008ccfe987ddac3587158",
+        "study_es": "47b33fb2addcdf4a0aecb9e8fc270a92cd16487f12860af8e2b3d929b81dedb6",
+        "plantao_pt": "05f4eb27ae86e22cd07b9790d7207a6328dc472a1178f44fc4432cc4298b75c8",
+        "plantao_es": "c7f18843fa4ed46fcb4b599677763588e87daa30f11c97cc6099d4b9c303755c"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "763b2a6727a342a2db04d8e313369ee662db052376992eec1110228d75da0c4c"
+    },
+    {
+      "owner": "pneumoconioses_incluindo_silicose_e_asbestose",
+      "canonicalHash": "b0f89a22d3d0617e628cb4225d37eabdd467a2b4d69f1141745f06551c6dbd78",
+      "projectionHashes": {
+        "study_pt": "8586b37efe728c4473abb7aecc35f94d4ca06336cb14eeef233bb878742ed379",
+        "study_es": "04f063cefd1733cb7719140f813e2df012ae6e4846915a41f9c2693e70cb58d6",
+        "plantao_pt": "954466c7d1b87ffdc79c2dc3cca7e4b215235c5155056ea15f123e1c1065ac5f",
+        "plantao_es": "b89920fbaa0ff6011aee528294a9318c3dc212e10afac2accd61c639fd1a972f"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "6eccf23c17a1eb239773d6c5129eb808aa7210571ae598973b3e37339d7dbc93"
+    },
+    {
+      "owner": "sindrome_de_hipoventilacao_da_obesidade",
+      "canonicalHash": "0c624e39bf7033ae1dabba2b63a4484044ef68d605757ba628f39a6399e6429a",
+      "projectionHashes": {
+        "study_pt": "6e07650ed498c56306cc37615b587677607d120ebb33452e2d968b8ea4b23eec",
+        "study_es": "82afc40bbf965c3da2d63aadf8a86eeaabfef932b17a9154b1a5ef454de242d9",
+        "plantao_pt": "7a85036c5b6c42c3c2fc7962d225d0df301376f7d3af2f9ee9f3847245cbc4ae",
+        "plantao_es": "6728acba7f18dead46c0648ef4e1b21f90ccf59c35c8b46554d3082626261152"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "58840bd815afe65547d3e62ca7c44997fd08a914235abc31daa649352f47b036"
+    },
+    {
+      "owner": "insuficiencia_pancreatica_exocrina",
+      "canonicalHash": "d2a84426b39f9bb6e609180fdd37a299e34d28b8afc7e4c945367a1276936213",
+      "projectionHashes": {
+        "study_pt": "8626cd16f97b187969f3e08cc0dfbc1501ad9a9fad3fdf5f530848e402838186",
+        "study_es": "b736a2e5483eb7df1fa3d1bac7ce590896685d9d3254418fefcdf919b9a02784",
+        "plantao_pt": "65d8b14176d978d1f1de07104ee4f5b1230052aecde689393e89753bc11bb998",
+        "plantao_es": "8150800e809ae27ac691162d417cc37b318480904f1a520c11d1811059c3ce47"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "c0cf7e6129de3d1c20e52b6d54165ceeecaf7790bb8c2214c43d57cf977c3905"
+    },
+    {
+      "owner": "gastroparesia",
+      "canonicalHash": "26e826c90fe7e6d4da3a5d538e6e7000287ee4524644d0c415b5edaddcea6436",
+      "projectionHashes": {
+        "study_pt": "0a26deb0e1c16c1f47df0a4bcfaf30fd16f778b5a9b574fa5e1fda0dde2f7f86",
+        "study_es": "c2caaeaef4b6bcbfc6e0afb33b0ac23327be34d1e6959bb9d659d6e150dcad38",
+        "plantao_pt": "d145f11c8f14c4b379bc7ed39d8f19dfcc6417d6cc1e739410a8c31dcad8c41c",
+        "plantao_es": "e26749f4b5583847d5c2682e6f3394facfd16356ee0b71c746ba0d699d82512e"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "7b556455ec29d7dad0271b8fcfc4bac2e37e24957b3ecad3ea1c5a1aefcfc8d1"
+    },
+    {
+      "owner": "sindrome_de_vomitos_ciclicos",
+      "canonicalHash": "b28b45f08cdab084be624e72c2be260512430e1927d2121127899d40e957a16a",
+      "projectionHashes": {
+        "study_pt": "1bc5d6d811b10bbf52216b3b2ad19cec66591bb8c9a7b784b08eaa3c8c66c09c",
+        "study_es": "43633740e9066c4c2fc5d0595adf3d760471b06d768756f398accc6327e29511",
+        "plantao_pt": "cf7a4a1c14157eed3a7be4c1740cc1ab9dc38c2e5b510dd6200ccacaba612aee",
+        "plantao_es": "d48f2e19df243c0c3a3bf1f13440c9a9fbe6873fd30769f8c711146040f73f37"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "33541b2ca9492dc1b34d06347c0a98d9349b347d472781d5af71ce7b00bb6410"
+    },
+    {
+      "owner": "sindrome_de_hiperemese_canabinoide",
+      "canonicalHash": "75c6ab613cd0dfabbeee4b110647bfa2ed154516e827c24ff0486a64d2bc7457",
+      "projectionHashes": {
+        "study_pt": "81861362a38a45394c4876c619a679762f91cd5778a6946225806138a13e18a8",
+        "study_es": "acad4876420facffc0be45cc65fa98e4598c3bbc641206ec89b65de6c19f7c44",
+        "plantao_pt": "4c61004e2d5085745a8c71129ff78bbf34960399034d600dd7892fd732bc5f31",
+        "plantao_es": "1bfdc0b6cacc38169b0ba3043acaf4fb6172e24d3c6121ca181731dbe441c91a"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "ed24920a91d740ebf117d2116d588e657dc4bc90ca2f6cac54447662e9e01b75"
+    },
+    {
+      "owner": "sindrome_de_dumping",
+      "canonicalHash": "4e168a4e565b110b3079019bf9ffe310f1954ea7fe2b21c4860ce981f2dc740a",
+      "projectionHashes": {
+        "study_pt": "9e4e1ccaa15a99c5e780c8418e80629b068b548030b6de542e8c00e49d4d58c0",
+        "study_es": "3bfda9dc4b4d89fd6df1d777c8f33e6c7fcc7ab0f3e9b42afee6f7fbe05ebfbc",
+        "plantao_pt": "453d70ddeee032bd9280748cb52b7279b72300675673e56c4a1b73dbba0da93f",
+        "plantao_es": "1d835a6073dabda1dc072170b1f9cd877b87e6d0d404282f9083a08161c7b98f"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "3702812f9c4c1e4d3983bcd68e4bb46d06787a872c16c886bf0aab2d0e9b07fe"
+    },
+    {
+      "owner": "incontinencia_fecal_no_adulto",
+      "canonicalHash": "c1b7253add5db148dbb9fa5100b0d7f23ba9c91a86b981f3fdbdc2862b047d44",
+      "projectionHashes": {
+        "study_pt": "0ebe9ae8b201b97baec6263a52eacb28274b423a2198ea9db18597fd5c7c4edd",
+        "study_es": "e38155b24b926b4f86c4ec4d845c757d3dbc83eaf93b71113f386759a43f6b06",
+        "plantao_pt": "4f321c2cc7c0772b77ddf55d5e4b868272309dd8cf72a2183275aa974eb3ced3",
+        "plantao_es": "753242fd48e0a929bac9c382b495beb157bdd038dbff5bb01785cd680ab777ba"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "136226a86545c69ac3b191bfa85528de47ce8179a2a33b05861a6499bf7988e3"
+    },
+    {
+      "owner": "prolapso_retal",
+      "canonicalHash": "b701326a6cf29b9ef9ead5dba34b485b00165cd8e8c8dbab871e65c38f6c66de",
+      "projectionHashes": {
+        "study_pt": "7aa84c1b7455e055756f65270ab0beb0f11f622fcb98b9cda3d95ffa6a3b8963",
+        "study_es": "f628cbbd99b3210a478004b38b17babd5f4ebcf95cdd21bb602e028fe9f81904",
+        "plantao_pt": "cbc8db7b1a19ab01a5d7577dfdecbe9122b1911ca6fcbe9ad38e0b003ee00216",
+        "plantao_es": "d0ca5aebfa2b5a654d6c7a1aa66d37124c89579baa638cf3ac7028dfc6853edd"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "e8ee03e585314465486be9a607c78cea530e2b8f5be11ce6fbb25b0c4cc3d382"
+    },
+    {
+      "owner": "cirrose_hepatica",
+      "canonicalHash": "5a28cc289ea5d51be7dde79dde6c6e6bc5e166ec0ca96a4ce881aded62097ba5",
+      "projectionHashes": {
+        "study_pt": "02663f880ec04ac7edce7eb4da19a4383e743db234ac156e5e5caccf36db8751",
+        "study_es": "e988c35dd216a241c30647e3596d77fe0c7f503259fd4ab21b6c952296abbaff",
+        "plantao_pt": "5b48ab4ea19a3b7402b7afcfdc98c2e83e13eca2873f8ed2f90f3dfe8e58c131",
+        "plantao_es": "2c2b5767a90078788511d6971662579f42f486bd7e1c8ffd92281167f528b6c7"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "a4c71d826d40407a35854a74ebf58733765c8a9f65fb48efed97e15379d52e0d"
+    },
+    {
+      "owner": "hepatite_alcoolica",
+      "canonicalHash": "d4266212be6955a4e6ba6a84ab93d22be80366be10493616a6040ae3a53d7362",
+      "projectionHashes": {
+        "study_pt": "92f2790bc3fae374df786782951966a2d67d7771ba85fee08eb2d8e3824dd876",
+        "study_es": "123fe02b30b9edb0ca2cd8fd102c175667ca103e80ed96d2ac2268b4d241afe0",
+        "plantao_pt": "a66f0053bb9906b8c693afdad36ab21365c2239bc3ecaf5bbae103fca99e27f0",
+        "plantao_es": "1416e9f25b5fc5aaa150a6097c81567b089cf8817b707247a0b409f06e8d8512"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "871406f8634253c16ff4bdceb826f907a11922cc8e37630f7ecfc63115b6f3a2"
+    },
+    {
+      "owner": "insuficiencia_hepatica_aguda_nao_cirrotica",
+      "canonicalHash": "28aaf5fa6912c8b617455c53dea996b8eba8ffbabb6dcd103f630731f948d1a2",
+      "projectionHashes": {
+        "study_pt": "8cee3955f0becefd4f221df8441e050dc12ea4a010f29706b148d8b4dec1302c",
+        "study_es": "02caac574f600cbdacb4c267099f47481c8f7c84c96397026a0184c797b2ba27",
+        "plantao_pt": "1659433cae3f0cfee0cd45a92bbceb9f505518f32f51db88d4b62160a8b705ad",
+        "plantao_es": "ff1345f4effb3858acac26222596ac222a3f4836c718ef9790146a6b6d57586d"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "4d9d3a317d5951ed08056c342011356a2d0a3a8fe83335b69c27d0d615ee154e"
+    },
+    {
+      "owner": "polipos_colorretais",
+      "canonicalHash": "3da923befd926e0bb6225d349a92bbc544de9119db1eee8e3c3afc995253a2bf",
+      "projectionHashes": {
+        "study_pt": "5474d061d65c4a0bba60fbaf3e981f5517bea8022c179d2dc7fce564fe402c67",
+        "study_es": "0007e5b8789529673e7ab715d84ada4598d6cc70a6501487e26608e04c077dd4",
+        "plantao_pt": "6dcbd1de8d68e7eb81c87b63b81d77b8f2451097f45b0f7dea514ba74a00db1b",
+        "plantao_es": "b3d4ced7208495794328d85b8af137f42c04b772cccae7b4985620ec6dd8f897"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "c7f2a6d3b81757d382b70af0aa9ae667c35392068c5dd244380818cdcc457ebc"
+    },
+    {
+      "owner": "febre_amarela",
+      "canonicalHash": "609b902c6b4ffac67b4da087af3a54dcf4a60ed9e0c126c5cc125d12516c412e",
+      "projectionHashes": {
+        "study_pt": "d1733da67e04a8fe3d2507985f90bb3d45ef4cc3178bdf42da160b461830cfac",
+        "study_es": "d4046841ff1fee74f313955e04c2103e261d6cca71aae7298a53f1a83a365f51",
+        "plantao_pt": "aea18eabfce9d4b43a404dafeabc2ebd6d2cadfb72b119d518760399c757b910",
+        "plantao_es": "90e2a6c35c43337f907920659031f830091e9f08deb83c07e319b820536e2c9b"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "0e2ffae64d8345d80c740d5aaf40c71d13d0769ebaac89d84e20c375532642f9"
+    },
+    {
+      "owner": "febre_de_oropouche",
+      "canonicalHash": "8cf46e4e4cf14c916136f4234ed0d73acde3565c7fa660ea1d53888ab43c69d6",
+      "projectionHashes": {
+        "study_pt": "e70c92849d31e84a067cce27fb55f2a4dcabc5541a1c34eddc67fa043b84ac70",
+        "study_es": "21565d25c143580092b44112950c8800194d513dfc7f119d130ee35fa9c0018e",
+        "plantao_pt": "e002cfb6b3b8ab4086388959165383b8c1ac6663eee06eaa3e0009bad144da7d",
+        "plantao_es": "97e1865b6deba6ad40b87cefc1b1e5bbf1d3e2568d4ca93ffa3c486c358f85f7"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "ddb519bd4580a3fbfa73b60ff71d4211249e98f9cbd563733af667b638a3ba43"
+    },
+    {
+      "owner": "hantavirose",
+      "canonicalHash": "d15959a7bdf8790919ad83ad93c378683049f45995c9966e16cadba14d8a0f1e",
+      "projectionHashes": {
+        "study_pt": "96b8ce86a73f66a5514794c77e3c9947d33785bf0b727352a16dca32c9ccf931",
+        "study_es": "3a6bbbfd7f01d9d1216c8f0a5126624502e98caa666ae0d92603db4f2174b685",
+        "plantao_pt": "fe9c642459e2ea8fdd6dacfb08aab88e2c95e8d79ae7ec6c4c369ab6906369e9",
+        "plantao_es": "dd56956bd57a954f1e6c7f870123e057c258bc040b77a7943b954a8f92a30393"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "ce2607af48993f0aeb0e030fe9d22c386ceed8cd6155a120002934bbd4afdd29"
+    },
+    {
+      "owner": "leishmaniose",
+      "canonicalHash": "3c9f232d564a4c10602afe7df78b35ce3c30f6d2a2d7768ee4b60fda9c775679",
+      "projectionHashes": {
+        "study_pt": "5cdbe55c295e854401427d678c96f4d3bffade750e26cf9fcdaf2f97dcc96d3f",
+        "study_es": "73a40f3aacd864447c92da10284cd31d92421bb8b87903414a50648bd8a3b35a",
+        "plantao_pt": "7c43d8c79f54187f05cd1d1b735b893a3c5b9b59809ef3cad11f046a2cbec232",
+        "plantao_es": "8d1aa3e67b62b8a403e3a5c7e7ace5cb3c5aa7632729f3a99451a68132214417"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "248dc8524fdbdea591560e052c70e5c2c1b35648b17bbe9e30a5dd0cdda2e1f0"
+    },
+    {
+      "owner": "histoplasmose",
+      "canonicalHash": "0d796f358a03908d751d316b1a9179d1c5a6a8d364d1c7d2bce148e0e740129f",
+      "projectionHashes": {
+        "study_pt": "c07653a522f83fe1ad67e0b71069c18c9d12f92b2561249b964e72e5c19ef09c",
+        "study_es": "f4a1bdb3f4825d3cd262ace73c3785785e3ba74a22510be5f9aa0d8815143a31",
+        "plantao_pt": "80a12af7de4e5bf41f44fde54781d1bdc8ebe921e419795b7d8b45035f505d33",
+        "plantao_es": "03dcb1bc9281108e58e87cc57e053490b2813fb960d751254e846c12bb1b4c27"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "b9bcdf51174b73b6c28ae68a9ae235d3ce38b458b7adf90b517c9c38fba932ac"
+    },
+    {
+      "owner": "paracoccidioidomicose",
+      "canonicalHash": "7d59f77d014e6ea90c5a0238eab869f0e28314a1fce0d9b2dbe0c527d42c6fe3",
+      "projectionHashes": {
+        "study_pt": "8759c426e98d48b10a01b9ad84bf77e09aa69e8dba6a9f7c86fc582481ed255d",
+        "study_es": "7c27ee8e1a9da9a7fb79bf6c8c7fa1b12b5c6a19cdecd703843a41721981394c",
+        "plantao_pt": "39d63439ff87917aa11ee5e61fff5091815ee93de502f961480e758ed4966e1c",
+        "plantao_es": "dd772766cff0b1a02cf2475247f7215c2af9c13cf3b0f71154c0fd4b13adf719"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "4fa8b8e01f9071b3016ea26769a1d2f271512b8a3a5659ea645a62bc4893fdc0"
+    },
+    {
+      "owner": "brucelose",
+      "canonicalHash": "9d7f15c831faec37d73ce8f137c3626456c06cf51712f7f469e5a8d632bae1e9",
+      "projectionHashes": {
+        "study_pt": "bca32684935c5c4321c8aa39e358262a41b633997172a7e746e32595f3ed1a0c",
+        "study_es": "6372a87e7e3ac2eff8d58b5d9bf606b63f0494cacfa8b9a719c9b579f87fe49a",
+        "plantao_pt": "1b519cfd3ff8c7b93840d594b092393df273542416e2d4a95bc9276c0c447849",
+        "plantao_es": "adb4c49857d98b02c9fb4929cbb7dd5f60d9a63ef95cfd266005b82e0a068b48"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "84271f3739874a0ea0302d6e61bec721edc13aad3e119dd85df6f929c5591f8e"
+    },
+    {
+      "owner": "febre_tifoide_e_paratifoide",
+      "canonicalHash": "acb129d4088e5e86bcd348557d9e8b7044293551582bb5d20e5e6959994450cb",
+      "projectionHashes": {
+        "study_pt": "d08c8590e67d9187829f4b9a456289a23b65633ad4ff697684f35132795f7785",
+        "study_es": "829324ae51c7085f724a5cb9ec9e29543448ca8687af3a40cf459a7e504d8697",
+        "plantao_pt": "39bb2fc1348cd49c5d7c01ba5701a23a924036cc4e1a76195ac188694bd1f392",
+        "plantao_es": "646807106efb271d1c62bb18025750f8a9da29c5e81a46330fd3453b533fc745"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "3e605c0fa272ee23057c9105f53648624b7dd7eed43c7b3195fa1f5f5cd295c4"
+    },
+    {
+      "owner": "encefalite_infecciosa",
+      "canonicalHash": "9e12eaa9c53b274e3229f47bf972cd15eac44c0d6aa02883e5ecf3e4500a5204",
+      "projectionHashes": {
+        "study_pt": "25979abf40e41001267dea6993079df1058781dfc1c4747171ceed2afe665771",
+        "study_es": "3134f2d6612da018fd499026718d232da9c66a47017d6e1e157a148d1a9654e8",
+        "plantao_pt": "3fcf84361026ec622277cb78d1471c260ebc019c707a958818708cd0f6b8e49d",
+        "plantao_es": "55fb9be1f7b7920b991ecbe9e81a9a33bab9e9d4d0b6bf9d6de223f740f4aea8"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "f96db7ed50f7e15525e1d3d2774752a32af56788ba622337347f399cd76acb37"
+    },
+    {
+      "owner": "abscesso_cerebral",
+      "canonicalHash": "644837e34f21774419ab1f4e14e1cbe103d5ef7ec2da87604f827a38e73e97ae",
+      "projectionHashes": {
+        "study_pt": "94bbe69949fe1427dd65317e7b82b84462fd6d3ccdd44d4626b954d20a0cb5ef",
+        "study_es": "89e5b4a61640eedf7f43f339e35d32c0ca5561aed4dbec6af21a5bed15071163",
+        "plantao_pt": "74d2ddf8b68181193b04c9117714c75cf4d034ed0fe5f5cb11c8faea84b4f016",
+        "plantao_es": "21e6ea4ec889ad93226cce01c7a8d8079fee4fe5c27cbba25f15f07a19ce95c3"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "e34aef7a7221b4765b44240551fa9f5b52827f3261bcdee5408eedf07ae6a6fe"
+    },
+    {
+      "owner": "infeccao_de_sitio_cirurgico",
+      "canonicalHash": "17d58299657e50adc0c1a6d6be019c422309661e4ec0d61813ef2948aee12b6b",
+      "projectionHashes": {
+        "study_pt": "b264f7da343d8a8f2b4ae014aa417638c9bdea3dcd4db29b16d4710415ad39b6",
+        "study_es": "d477cd734cd09d7ca13ba37169bde5e35aff154c11cd7cb3738dbbecbb68ff71",
+        "plantao_pt": "473bb7eb77fa74ba2e500875f684e5b523e2fff1b86cacf3d491a2d145db7379",
+        "plantao_es": "b42fdb61837c6b51c322c3dbf4a21c6a0ddd26cdb48d7345ae09721f09a704ac"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "e78829287a1793e5a3f9790bce5741eb7ab6b3501d89d163186028213233fb80"
+    },
+    {
+      "owner": "infeccao_relacionada_a_cateter_intravascular",
+      "canonicalHash": "b4ffa416b3285ff09775059d4b4e84fd8a4ae12f0ff7353e84be620b790a0034",
+      "projectionHashes": {
+        "study_pt": "1579fbc816982997a66901b08cda49e69ae89e9c694bbc343147608517e3de8c",
+        "study_es": "7a6e9adb242cee08dd023b32e77a659e49f66069e05ea1b446e0ef44a13724bc",
+        "plantao_pt": "3e35202d0781880767a137d5b10f5cb10b9497de14df1c897c066bea0fcbb245",
+        "plantao_es": "012d91cc4578ff5e24b61983574d50458620a23963e9d4726428f6b38b0d2b70"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "e0706a82b0ff67f6fdc89b381caa6a99f802ae27eb746404a7b18270f08d7526"
+    },
+    {
+      "owner": "infeccao_de_protese_articular",
+      "canonicalHash": "7ef1638b33e38ebe388caf56bfa6c481f70203d198e1468673147a4f993e6f23",
+      "projectionHashes": {
+        "study_pt": "d00fb758a71431496bd81b2bdba3b460f242013f1a1019bddef3fd5c83b304c2",
+        "study_es": "e01ac6254821665c09de35eb5acec5cdc83051ff657ebcf66d846bb01231e14d",
+        "plantao_pt": "8f5f951ab4f5652c0c06be6ba4c548d4415010e10f3820c0aeefefb5c6c4eeed",
+        "plantao_es": "13e7c9e9941ca03031b75f80272cf386a83059bed2f3e95c8b684e295324c841"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "38ef28cdc65e5d9f17c78a0097dc0417da5821a15dc2cfaf2a9206347be53bc1"
+    },
+    {
+      "owner": "panaricio_herpetico",
+      "canonicalHash": "54d0826cb2e5caf366cd9bedb5288040028db3f54798883eff81e2d645b5b85c",
+      "projectionHashes": {
+        "study_pt": "90ca441f4ac9d1675edbb767012d02d98e7b90f413c3b1478c13453f0f4ba672",
+        "study_es": "f38794a894c56e98b8dd44a27fda7caab067bc52396cedef7b80b83a8221b974",
+        "plantao_pt": "3fa44af6df32e63bfe61c43232756261448812522d54a9a6b524443c9222e8e8",
+        "plantao_es": "6a2fda27364bcaf2b66d293718681b451d6950c927c87d5d370e89e5489c7fe2"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "cad4777f42735d3354546337c4a1e10d691c72209ee272458caaae73027c0c43"
+    },
+    {
+      "owner": "granuloma_piogenico",
+      "canonicalHash": "e30d8f8ea958d21ec251187431e5f3408b6e0951278c068321cd0f6d5362956e",
+      "projectionHashes": {
+        "study_pt": "c53f2198a25657c3185c6beebe50416c83ed1ecaf4bc97d0c7b046aa876c3ef8",
+        "study_es": "83bedbd2fdcd16f6ff571f1e6f928d0b334a6e8abb1562859388b65cb7eabb76",
+        "plantao_pt": "6b7fb0a684a7cc265e161b42316fc8fdc6a7374411680da461944f95f7775a15",
+        "plantao_es": "6feeb2974096fd960da407cfb34292c68ac51e23072f045fc0f77e86bc8f213f"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "e5c73a0e5d581ffad9783a8cda4e403cbcfba72c33c44527765c37d434721c65"
+    },
+    {
+      "owner": "granuloma_anular",
+      "canonicalHash": "1c238c2a5b38e528e5e8c686af787db477d9264947f01596d232b23ca4c9c4fa",
+      "projectionHashes": {
+        "study_pt": "77f7f7c9dcccbbffed2f4533975b9ccdac69fef9592f2c72a8e5c90bec4f4b0e",
+        "study_es": "13104cd4ab247b2b35b347a8a755b1cb62f74a828f0a06a972e813ef8827b0a1",
+        "plantao_pt": "c90fcc18fcb8b12b1d46fc64e8128b781244791e780dffdc208e37098037535a",
+        "plantao_es": "e0cee7859b7fb5249557082f777fa36fc9ebfc34eed85850b2f74ab0ea9a6a82"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "47cb4faed905f9ebda2308ca5e582fef0362d0cf3c8c7b88791b68e1ef5220f5"
+    },
+    {
+      "owner": "dermatite_herpetiforme",
+      "canonicalHash": "c4a690b0921e0cae1f67431e083fdc9f61702a84949509ee534cfe98be7e2cef",
+      "projectionHashes": {
+        "study_pt": "47e430c490eeeb7021cf70b527b27b66b024e51e583bfbdde99937cbbc6e1af1",
+        "study_es": "e2d62e1ca64132ee627e63817b42a6c62e7da04470e86dca649e0ae69029c61a",
+        "plantao_pt": "9689f23074fc7a569ba18c5423c08f54e54ea2b2d8bc0bb174243e73aa29b63c",
+        "plantao_es": "06156d2938214b34aaed395d11ad0c2712db6ce91eb96edf8d025cb182fee9fa"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "0632bbc57a87ac358b6df5d938b05810d0ed1914afee97a254968d2386e851e8"
+    },
+    {
+      "owner": "eritrodermia",
+      "canonicalHash": "d34ecf058162bf6be4b0826bde127c828c9fbabfd6c65dcb95de4a22fc733c51",
+      "projectionHashes": {
+        "study_pt": "c8ca24e83b0ed64b69687351ae596291203c159d846bb062a26a4ab0f0e03683",
+        "study_es": "fa808cb0e16d9f7eb765f15452445a0dd1fd8d0feb7a2b6d9fb9d6d4f7334fb5",
+        "plantao_pt": "00f8dde74f9ea5109fed3a44fe2321d6da6ef9b566a6553f481f554cb77a9f7b",
+        "plantao_es": "8f646771b8a9d458c0938febfb4c3d9bd8375207e7e8ad697a3c0f69b2b83cb5"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "49ad6cec9b9df5eb4b7f8556beb2d8f1c52778cf98c495891f351b3b089ff599"
+    },
+    {
+      "owner": "vasculite_cutanea_de_pequenos_vasos",
+      "canonicalHash": "c03f818e84d9e2bac65ba0f312f12baa7eb56c34cad157f0b97044d4737c3a6d",
+      "projectionHashes": {
+        "study_pt": "f41e857ff4844498f931c9c4b937a21d0a10572fbdfc380de9af769b91b221ef",
+        "study_es": "4d7cfa353861013d3b347983fc36e46139e3783b5b2ddfdd730877cc0ad74547",
+        "plantao_pt": "8c688502f47cf5a2dde92fc95d3337c60254a183581b1453254b081e01238a4b",
+        "plantao_es": "bfd77363d5b20bb0d09baf41dc7e41b00c5fefb286e20eeb8b00033280e54b22"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "bbb44f6db974b62ce5a0055141034d4e5fef7dfc4815d1f9a13b85c47fd61663"
+    },
+    {
+      "owner": "eritema_pernio",
+      "canonicalHash": "a05b13c9a586b6134067a6d3b40aa0bae4eb0d3b5f808fd0feb7cad5bd3f9c68",
+      "projectionHashes": {
+        "study_pt": "e0379f4ad604e8fa0690424ee8e69120f2b9c5a9a8f00f86620220bb95d8084a",
+        "study_es": "ccc580b107edfb3e5393c67ac90a74d7d73df5d5ab0b438fdb6b157f4d11e1b0",
+        "plantao_pt": "3afc628e6f6e9e7a75ca343fd9e17ac6752fd7431c9b62b747a583b05815b5b6",
+        "plantao_es": "fff87d0da543fbbc5da84e81ef501cf4a3085611ec2ea215c575834e3c31c531"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "e1f67ac4aa7dd0ad314e41caffad4f077e55ebf23c88d8c92aa26fdfe988a25d"
+    },
+    {
+      "owner": "uveite",
+      "canonicalHash": "b63ae5f4c1ce00b5e72d30112623dbfd3b5f857a49242bfb8300f119739b09c8",
+      "projectionHashes": {
+        "study_pt": "42f43ff5be692ad22f4b196ef92b951263e4203a4ea82b8665b37539b438a6d5",
+        "study_es": "8aa51d0f06646a74d2d763278d40c351d5e171b9e57406e3a6bbc796f3065c0a",
+        "plantao_pt": "7742d233f7cbcc00cf7635eb843866847c7eca791a55c10451be89284cd0deed",
+        "plantao_es": "0efdd438cced4624178632d60a6592c4483a60580a1c2e3b797c3c1499a148d3"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "feccbeba97e67083082d615d6f278e59ed6eff87ecca4090795497ba05524706"
+    },
+    {
+      "owner": "esclerite",
+      "canonicalHash": "0ea1ff4d828170370edc0695dca05be1b6348bd7356e8dc8fe75fcb3b53113bf",
+      "projectionHashes": {
+        "study_pt": "a084351f3ed0cfebc11db822761eb18ac960b45259516e0d8fea838f13c1137a",
+        "study_es": "7506695219ca127f7bd977c486f8c0e774495903f367e3fa86785e6d59664bcc",
+        "plantao_pt": "baeb3308edf0e38fcc0e787a48aecbeff4dfebb37e59b50def5793f87622bf99",
+        "plantao_es": "d45a47f87a6dd052e5ab5c5eadbb184bfe0ab2194903595be599c188b2435995"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "34f775c6468b94e66015fd582f2dc96ad0c32579846f4c11b7004da9a1008b9e"
+    },
+    {
+      "owner": "episclerite",
+      "canonicalHash": "400df704ab257e95403226f87bae427ff631b3c813dc415ce81ca09e15393a6e",
+      "projectionHashes": {
+        "study_pt": "8b22172512d0727ba68f3aeed95671a9d6400beaf35a40eef09c24985d570540",
+        "study_es": "b49b4cd96a844984c2f7f733d6556b3e43d418ccc6297dd8d56dd867895ea936",
+        "plantao_pt": "5fd4be480cb08b7cdbc62a7aa83a5c49434b86221c7920423d33f630d8287737",
+        "plantao_es": "deab50ea45c304ef35bdaa249aa3f26c6cb6f9a127d8f48e95569ba35867446d"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "e8d6a6a36e29dee925e1e3832075d2e87c795ca60e7374091aa11f9a8bb7f365"
+    },
+    {
+      "owner": "dacriocistite",
+      "canonicalHash": "784b12c269bd25e3dc6d06b404572499cde2bf5a12d65262d2fd5b6ad0ec6525",
+      "projectionHashes": {
+        "study_pt": "819e5db7766cbf2fd2736a52f4f420cdca5417c2f0d448905e7d8eb423b8ec1e",
+        "study_es": "abe359a68001d6bae4caa145c661c7ead5cb4e50e5ecfac14ad8a50df31ef792",
+        "plantao_pt": "d0a78652552f111e26130ddef139bd8a4ba0a8b4cbbab7dc58f11954d23d06e3",
+        "plantao_es": "9c1ef80e238e251e0fd15772c8a3ae3338a2bddda9a34048f20e7c7ee36ec7ee"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "195f98265a95efc9fd7127eedbb82c44cee0c47348b6553b6469b08b6b2f7577"
+    },
+    {
+      "owner": "endoftalmite",
+      "canonicalHash": "380504e317e30c86decc3a8ff2e319c124fae87a1bb34128f61bd17982e39d5f",
+      "projectionHashes": {
+        "study_pt": "91024e19fc8b051a8f3b750a43bb69bd8179a6cd220439a5e742a3f2246a2876",
+        "study_es": "f65bad398cc419ec8a4c0c2c9ce198c912b0cd32aaa5d171fd45b8c270a697f9",
+        "plantao_pt": "bf6b09c17ab2d30700539086274f1a250ffa856088bc51e7c66e6911d3d4cf8d",
+        "plantao_es": "3696c4e1d70c12f1d40ee602538e4d5003bb021a9ebfc253853d887b2b29b1ac"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "613123be368944b3b350ba8aa6f78ab5fb80861ecdfe7ee08ca0a8c5d928740a"
+    },
+    {
+      "owner": "glaucoma_primario_de_angulo_aberto",
+      "canonicalHash": "1cc781d72a78be6b910ae62e7611f8cf62077c34df72cf94a27ef7a01253f2f1",
+      "projectionHashes": {
+        "study_pt": "92e74c9c2fbb0fc85de9e64fecab958a23bc42e905d84bbd64d427c7865b306d",
+        "study_es": "c2ffde14f65080e8626cc11841594e84619a66610448c484864ce513369d48e9",
+        "plantao_pt": "415a2bd0dc57cec4fedda4f52fe2ad01f00abadbd0e332ab6c69262868c16c1a",
+        "plantao_es": "a8ade7bfe4612703a40f707bbc68091e966053344ab2d96483835bd70be451ed"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "83362b2e3ec1c43a413ae930572ccc8af54e5130753739f5ba6a4bc62bfbe116"
+    },
+    {
+      "owner": "catarata",
+      "canonicalHash": "804493639bebec45bfa0cc39c27dc516e5a7a96f779e51efb8a848321554a79e",
+      "projectionHashes": {
+        "study_pt": "c6a45bc8a7d5f429efe2e2ff078ed70723a045d2b09070358c828ab3eb45fa7e",
+        "study_es": "949795c9c2855f2e9fca8d7cb3f4002b76edeecc50ffffd80f574dda39cd61dd",
+        "plantao_pt": "8a2b33a41ef1afa5d526834066ce26790964bd741c68599d7efb0917ec0f1e07",
+        "plantao_es": "027800337cd00f4217fbe3744f2e0c07fb63cdf575490b7bb6375a3dcfffe912"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "23a1ceb259bc882539d94cede1ad1266392faf45c0a87c8e67b3701364bec39b"
+    },
+    {
+      "owner": "pterigio",
+      "canonicalHash": "122a8d1705161704db58ebbfb8804b66f2a9149841e2441a68a81f8302111505",
+      "projectionHashes": {
+        "study_pt": "9c930371cb0c0614dc16961a325c01b4d39e54992a46fb2f895df98240574032",
+        "study_es": "1e749ece12bfc2ceab1379031acf02f1bccff1b80e85f331de8d236774c4e98c",
+        "plantao_pt": "94d291d78e0f15aaebd7ac54bf40cfcbcfe9cbeaba4ca2dcd4cd9f161b793463",
+        "plantao_es": "8f080dd5561912f15b47437542d55da989d3d8e81f6317ee03b9495c76dad8c8"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "92ba775d48dc72e906e976d69f812aa4b5501bad22a04566cfd505512c6985b8"
+    },
+    {
+      "owner": "sialolitiase",
+      "canonicalHash": "a2b309a4b24ad7089fdb89b808e1d7ab59966bee1ddd1f71f7b860495e6ca57a",
+      "projectionHashes": {
+        "study_pt": "35e80572974be56e3cb466426997b2e7bcb2a33b24c86ff4a9389805cafaacca",
+        "study_es": "a8bbecadc7f86637f33f2c16ccbdbbe6cc5b59bc6ab61f5298dfb4cf2c4e3cb9",
+        "plantao_pt": "c7ad1d7191255bfcb265bfaccf00cf02d137f977715b857aed24f6f05230f3e2",
+        "plantao_es": "5be54d6206ccc5110328a2d6c2dc16ef9fcea870e7051188c8469ef8277817cf"
+      },
+      "operation": "NEW_OWNER_CANDIDATE",
+      "approvedCanonicalFileHash": "99d448009b43b900e813532f46cff5d56eb35752f7a10a6668eb9dc2d35a461f"
+    }
+  ],
+  "indexRepresentationChanges": "Nine exact duplicates converted to existing schema-2 index links; original rows reconstruct exactly from unchanged projection payloads.",
+  "losslessCompactionProof": "lossless-compaction-proof.json"
+}

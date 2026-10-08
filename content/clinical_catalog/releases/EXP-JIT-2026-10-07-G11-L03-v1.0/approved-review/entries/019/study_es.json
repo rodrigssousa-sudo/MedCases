@@ -1,0 +1,132 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Hepatitis asociada al alcohol",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "871406f8634253c16ff4bdceb826f907a11922cc8e37630f7ecfc63115b6f3a2",
+  "ownerCandidate": "hepatite_alcoolica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_019_f01",
+    "b03_019_f02",
+    "b03_019_f03",
+    "b03_019_f04",
+    "b03_019_f05",
+    "b03_019_f06",
+    "b03_019_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Síndrome inflamatorio hepático por alcohol, frecuentemente con ictericia reciente; no equivale a cualquier elevación en quien consume alcohol."
+      ],
+      "factIds": [
+        "b03_019_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Corticoide beneficia una población grave seleccionada; Lille evita exposición prolongada sin respuesta. Abstinencia, nutrición y control infeccioso siguen siendo esenciales."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Historia de consumo, bilirrubina, transaminasas, INR, creatinina y MELD; excluir hepatitis viral, obstrucción, toxicidad e infección. Incertidumbre puede exigir biopsia especializada."
+      ],
+      "factIds": [
+        "b03_019_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Ictericia con coagulopatía, encefalopatía, infección o lesión renal requiere internación. Nutrición, abstinencia asistida y manejo de abstinencia según hígado; investigar infección antes de inmunosupresión."
+      ],
+      "factIds": [
+        "b03_019_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "ACG recomienda N-acetilcisteína intravenosa adjunta al corticoide en enfermedad grave; no sustituto universal ni recomendación idéntica de todas las sociedades. Si inelegible/no responde: soporte y evaluación de trasplante seleccionado. No presentar pentoxifilina como alternativa eficaz demostrada."
+      ],
+      "factIds": [
+        "b03_019_f05"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Enfermedad grave elegible: prednisolona 40 mg oral una vez al día durante 4 semanas; no para todos. Calcular Lille el día 4 o 7 y suspender ante no respuesta según equipo. Controlar infección, sangrado y otras contraindicaciones antes."
+      ],
+      "factIds": [
+        "b03_019_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Vigilar infección, glucemia, sangrado, riñón y respuesta; no completar corticoide automáticamente si fracasa. Trastorno por uso de alcohol: elegir opción compatible con función hepática."
+      ],
+      "factIds": [
+        "b03_019_f06"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Tras estabilizar: hepatología, nutrición y tratamiento de dependencia; atención urgente por fiebre, confusión o sangrado."
+      ],
+      "factIds": [
+        "b03_019_f07"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "ah2024",
+      "title": "ACG — Alcohol-associated liver disease, 2024",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11040545/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published in 1971 (204). A Cochrane review of 16 randomized controlled studies showed no difference between c",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:ah2024",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "ah2024summary",
+      "title": "ACG — Alcohol-associated liver disease highlights, 2024",
+      "url": "https://webfiles.gi.org/links/journals/ACG-Alcohol-Associated-Liver-Disease-Guidelines-Highlights-2024.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:ah2024summary",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_123",
+      "title": "NHS — Alcohol-related liver disease (ARLD)",
+      "url": "https://www.nhs.uk/conditions/alcohol-related-liver-disease-arld/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 15 July 2026",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_123",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

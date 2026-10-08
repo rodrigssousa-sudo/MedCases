@@ -1,0 +1,112 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Empiema pleural",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "a899f24bdf38c922853b118b25203621cdb2ddfb542a44a3f0f4457ae271aeb8",
+  "ownerCandidate": "empiema_pleural",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_007_f01",
+    "b03_007_f02",
+    "b03_007_f03",
+    "b03_007_f04",
+    "b03_007_f05",
+    "b03_007_f06",
+    "b03_007_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Internar, tratar sepse e iniciar antibiótico com cobertura de agentes prováveis/anaeróbios; infecção hospitalar exige avaliar resistência. Drenagem pleural guiada por imagem é parte central do controle de foco."
+      ],
+      "factIds": [
+        "b03_007_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Ultrassom/TC avaliam coleção. Pus confirma necessidade de drenagem; em líquido não purulento, pH ≤7,2 indica alto risco de infecção complicada e drenagem quando tecnicamente segura. Colher culturas do líquido e sangue."
+      ],
+      "factIds": [
+        "b03_007_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Se persistir coleção após drenagem inicial: combinação intrapleural de alteplase e dornase alfa, em serviço especializado; alternativa em falha/inadequação: cirurgia torácica, frequentemente videotoracoscopia. Não usar um agente isolado como equivalente da combinação."
+      ],
+      "factIds": [
+        "b03_007_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Regime BTS para adulto selecionado: alteplase 10 mg intrapleural 2 vezes ao dia MAIS dornase alfa 5 mg intrapleural 2 vezes ao dia, por 3 dias. Não é dose intravenosa; preparo, administração pelo dreno e avaliação de sangramento são exclusivos do protocolo especializado."
+      ],
+      "factIds": [
+        "b03_007_f05"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Discutir risco hemorrágico, anticoagulantes e consentimento; não usar estreptoquinase rotineiramente. Reavaliar patência do dreno, febre, marcadores e imagem; duração antibiótica depende de controle do foco/resposta, não de intervalo fixo inventado."
+      ],
+      "factIds": [
+        "b03_007_f06"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Alta após controle de foco, estabilidade e plano antibiótico/seguimento; piora respiratória ou sepse persistente exige reavaliação imediata do dreno e cirurgia."
+      ],
+      "factIds": [
+        "b03_007_f07"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Infecção do espaço pleural com pus ou microbiologia compatível; pode evoluir a loculações e encarceramento pulmonar."
+      ],
+      "factIds": [
+        "b03_007_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "bts2023",
+      "title": "BTS — Pleural disease guideline 2023",
+      "url": "https://www.brit-thoracic.org.uk/document-library/guidelines/pleural-disease/pleural-disease-full-supplement/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2023,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published monthly (subscribers receive all supplements)",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:bts2023",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_107",
+      "title": "RCH — Parapneumonic effusion",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Parapneumonic_effusion/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated August 2022",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_107",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

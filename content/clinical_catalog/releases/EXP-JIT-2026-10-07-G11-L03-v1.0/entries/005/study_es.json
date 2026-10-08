@@ -1,0 +1,214 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Bronquiectasias",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "5c9511ab0eb0bdf982f14b2438bc8d97e1767e404e9fa6815a9faca63be9445f",
+  "ownerCandidate": "bronquiectasias",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_005_f01",
+    "b03_005_f02",
+    "b03_005_f03",
+    "b03_005_f04",
+    "b03_005_f05",
+    "b03_005_f06",
+    "b03_005_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dilatación bronquial permanente con retención de secreciones, infección e inflamación; este contenido aborda enfermedad sin fibrosis quística."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "El ciclo secreción–infección–inflamación requiere limpieza además de antibióticos. ERS 2025 distingue prevención prolongada y tratamiento de exacerbación; los esquemas empíricos NICE no sustituyen un cultivo resistente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tomografía confirma el patrón; cultivo de esputo, etiología y función pulmonar orientan manejo. Exacerbación: empeoramiento sostenido de tos, secreción, disnea o estado general. Excluir neumonía, embolia y descompensación cardíaca."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hipoxemia, sepsis, insuficiencia respiratoria o hemoptisis importante requieren hospitalización. Obtener esputo sin retrasar terapia; limpieza de vías aéreas, hidratación y rehabilitación según contexto."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Prevención en alto riesgo según ERS 2025: macrólido prolongado o antibiótico inhalado en infección crónica por Pseudomonas, por especialista. No usar corticoide inhalado rutinario sin otra indicación; excluir micobacteria no tuberculosa antes de macrólido."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Adulto sin resistencia conocida: amoxicilina 500 mg oral cada 8 horas durante 7–14 días; alternativa, doxiciclina 200 mg el primer día, luego 100 mg una vez al día, total 7–14 días. Mayor riesgo de fracaso: amoxicilina/clavulanato 500/125 mg cada 8 horas durante 7–14 días. Cultivo previo, especialmente Pseudomonas, puede exigir otro esquema especializado."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Revisar alergias, función renal e interacciones; doxiciclina no es alternativa automática en embarazo/pediatría. Macrólidos: QT, audición e hígado. Fluoroquinolona solo cuando corresponde, revisando restricciones de seguridad."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Revisar antibiótico con cultivos/respuesta; si es intravenoso, valorar transición oral en 48 horas. Alta con estabilidad respiratoria, tolerancia oral y plan de fisioterapia/seguimiento."
+    }
+  ],
+  "references": [
+    {
+      "key": "ers2025",
+      "title": "ERS — Adult bronchiectasis guideline 2025",
+      "url": "https://publications.ersnet.org/content/erj/66/6/2501126",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "ERS final 2025: limpeza das vias aéreas; antibiótico preventivo em alto risco; macrolídeo ou antibiótico inalado em Pseudomonas crônica conforme elegibilidade. Recomendações específicas consultadas; PDF integral indisponível.",
+      "sourceEvidenceRecord": "web-verification-record.json:ers2025",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "ers2026",
+      "title": "ERS — Implementing bronchiectasis guideline, 2026",
+      "url": "https://publications.ersnet.org/content/breathe/22/2/260001",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Implementação ERS 2026: revisão das indicações e monitorização dos tratamentos da bronquiectasia; não é guideline independente da final 2025.",
+      "sourceEvidenceRecord": "web-verification-record.json:ers2026",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "ng117",
+      "title": "NICE NG117 — Bronchiectasis antimicrobial prescribing",
+      "url": "https://www.nice.org.uk/guidance/ng117/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2018,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE tabela adulta: amoxicilina 500 mg 3 vezes ao dia; doxiciclina 200 mg primeiro dia, depois 100 mg por dia; co-amoxiclav 500/125 mg 3 vezes ao dia, 7–14 dias. Cultura/gravidade guiam escolha.",
+      "sourceEvidenceRecord": "web-verification-record.json:ng117",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_105",
+      "title": "NHS — Bronchiectasis",
+      "url": "https://www.nhs.uk/conditions/bronchiectasis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 11 June 2025",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_105",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Dilatación bronquial permanente con retención de secreciones, infección e inflamación; este contenido aborda enfermedad sin fibrosis quística."
+      ],
+      "factIds": [
+        "b03_005_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "El ciclo secreción–infección–inflamación requiere limpieza además de antibióticos. ERS 2025 distingue prevención prolongada y tratamiento de exacerbación; los esquemas empíricos NICE no sustituyen un cultivo resistente."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Tomografía confirma el patrón; cultivo de esputo, etiología y función pulmonar orientan manejo. Exacerbación: empeoramiento sostenido de tos, secreción, disnea o estado general. Excluir neumonía, embolia y descompensación cardíaca."
+      ],
+      "factIds": [
+        "b03_005_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Hipoxemia, sepsis, insuficiencia respiratoria o hemoptisis importante requieren hospitalización. Obtener esputo sin retrasar terapia; limpieza de vías aéreas, hidratación y rehabilitación según contexto."
+      ],
+      "factIds": [
+        "b03_005_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Prevención en alto riesgo según ERS 2025: macrólido prolongado o antibiótico inhalado en infección crónica por Pseudomonas, por especialista. No usar corticoide inhalado rutinario sin otra indicación; excluir micobacteria no tuberculosa antes de macrólido."
+      ],
+      "factIds": [
+        "b03_005_f05"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Adulto sin resistencia conocida: amoxicilina 500 mg oral cada 8 horas durante 7–14 días; alternativa, doxiciclina 200 mg el primer día, luego 100 mg una vez al día, total 7–14 días. Mayor riesgo de fracaso: amoxicilina/clavulanato 500/125 mg cada 8 horas durante 7–14 días. Cultivo previo, especialmente Pseudomonas, puede exigir otro esquema especializado."
+      ],
+      "factIds": [
+        "b03_005_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Revisar alergias, función renal e interacciones; doxiciclina no es alternativa automática en embarazo/pediatría. Macrólidos: QT, audición e hígado. Fluoroquinolona solo cuando corresponde, revisando restricciones de seguridad."
+      ],
+      "factIds": [
+        "b03_005_f06"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Revisar antibiótico con cultivos/respuesta; si es intravenoso, valorar transición oral en 48 horas. Alta con estabilidad respiratoria, tolerancia oral y plan de fisioterapia/seguimiento."
+      ],
+      "factIds": [
+        "b03_005_f07"
+      ]
+    }
+  ],
+  "markdown": "# Bronquiectasias\n\n## Concepto y mecanismo\n\nDilatación bronquial permanente con retención de secreciones, infección e inflamación; este contenido aborda enfermedad sin fibrosis quística.\n\n## Razonamiento y elección terapéutica\n\nEl ciclo secreción–infección–inflamación requiere limpieza además de antibióticos. ERS 2025 distingue prevención prolongada y tratamiento de exacerbación; los esquemas empíricos NICE no sustituyen un cultivo resistente.\n\n## Diagnóstico y diferenciales\n\nTomografía confirma el patrón; cultivo de esputo, etiología y función pulmonar orientan manejo. Exacerbación: empeoramiento sostenido de tos, secreción, disnea o estado general. Excluir neumonía, embolia y descompensación cardíaca.\n\n## Abordaje inicial y urgencias\n\nHipoxemia, sepsis, insuficiencia respiratoria o hemoptisis importante requieren hospitalización. Obtener esputo sin retrasar terapia; limpieza de vías aéreas, hidratación y rehabilitación según contexto.\n\n## Tratamiento: primera elección y alternativas\n\nPrevención en alto riesgo según ERS 2025: macrólido prolongado o antibiótico inhalado en infección crónica por Pseudomonas, por especialista. No usar corticoide inhalado rutinario sin otra indicación; excluir micobacteria no tuberculosa antes de macrólido.\n\n## Fármacos, dosis e intervalos\n\nAdulto sin resistencia conocida: amoxicilina 500 mg oral cada 8 horas durante 7–14 días; alternativa, doxiciclina 200 mg el primer día, luego 100 mg una vez al día, total 7–14 días. Mayor riesgo de fracaso: amoxicilina/clavulanato 500/125 mg cada 8 horas durante 7–14 días. Cultivo previo, especialmente Pseudomonas, puede exigir otro esquema especializado.\n\n## Seguridad y monitorización\n\nRevisar alergias, función renal e interacciones; doxiciclina no es alternativa automática en embarazo/pediatría. Macrólidos: QT, audición e hígado. Fluoroquinolona solo cuando corresponde, revisando restricciones de seguridad.\n\n## Reevaluación, internación y alta\n\nRevisar antibiótico con cultivos/respuesta; si es intravenoso, valorar transición oral en 48 horas. Alta con estabilidad respiratoria, tolerancia oral y plan de fisioterapia/seguimiento.\n\n## Referencias\n\n1. [ERS — Adult bronchiectasis guideline 2025](https://publications.ersnet.org/content/erj/66/6/2501126)\n2. [ERS — Implementing bronchiectasis guideline, 2026](https://publications.ersnet.org/content/breathe/22/2/260001)\n3. [NICE NG117 — Bronchiectasis antimicrobial prescribing](https://www.nice.org.uk/guidance/ng117/chapter/recommendations)\n4. [NHS — Bronchiectasis](https://www.nhs.uk/conditions/bronchiectasis/)",
+  "approvedReviewCanonicalFileSha256": "70912a9180dfeb27bdd3db4d79cb0bc2e479d93b1a6e05c3daf040d21fc98cab",
+  "approvedReviewProjectionFileSha256": "7ddd107ac7a55cf534fd4d323d7e8b701fb8d3a31fd9c14749912de6c1f65212"
+}

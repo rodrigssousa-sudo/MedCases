@@ -1,0 +1,170 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Síndrome de hiperémesis cannabinoide",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "75c6ab613cd0dfabbeee4b110647bfa2ed154516e827c24ff0486a64d2bc7457",
+  "ownerCandidate": "sindrome_de_hiperemese_canabinoide",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_014_f01",
+    "b03_014_f02",
+    "b03_014_f03",
+    "b03_014_f04",
+    "b03_014_f05",
+    "b03_014_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vómitos recurrentes asociados a cannabis prolongado; baños calientes pueden aliviar pero no confirman diagnóstico. La abstinencia sostenida es la prevención definitiva."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "La refractariedad es frecuente pero no permite descartar otras urgencias. RCEM utiliza haloperidol intramuscular y la concentración estudiada de capsaicina; la prevención depende de dejar cannabis."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Preguntar consumo/patrón sin juzgar; evaluar electrolitos, creatinina, glucemia y embarazo cuando corresponde. Excluir obstrucción, pancreatitis y otras causas; diferenciar vómitos cíclicos."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hidratar, corregir trastornos y antiemético habitual según evaluación. Si refractario, considerar opciones RCEM tras ECG/contraindicaciones; no tratar dolor/distensión importante sin investigar."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Adulto seleccionado refractario: haloperidol 0,05 mg/kg intramuscular, máximo 5 mg, con monitorización; alternativa: capsaicina tópica 0,1%, 5 g en abdomen. No cambiar concentración/vía por inferencia; no aplicar capsaicina en mucosa/piel lesionada."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No dar haloperidol con QT prolongado; corregir electrolitos, revisar Parkinson/demencia con cuerpos de Lewy y vigilar distonía. No indicar uso domiciliario rutinario. Opciones sintomáticas no curan; embarazo/pediatría requieren evaluación propia."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alta con tolerancia oral, función renal/electrolitos seguros y apoyo para abstinencia. Persistencia, lesión renal o intolerancia oral exige observación/internación."
+    }
+  ],
+  "references": [
+    {
+      "key": "rcem_chs",
+      "title": "RCEM — Cannabinoid hyperemesis guideline, 2024",
+      "url": "https://rcem.ac.uk/wp-content/uploads/2024/02/RCEM_Cannabinoid_Hyperemesis_Syndrome_v5.0.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:rcem_chs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_118",
+      "title": "RCEM — Suspected cannabinoid hyperemesis syndrome",
+      "url": "https://rcem.ac.uk/clinical-guidelines/suspected-cannabinoid-hyperemesis-syndrome/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_118",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Vómitos recurrentes asociados a cannabis prolongado; baños calientes pueden aliviar pero no confirman diagnóstico. La abstinencia sostenida es la prevención definitiva."
+      ],
+      "factIds": [
+        "b03_014_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "La refractariedad es frecuente pero no permite descartar otras urgencias. RCEM utiliza haloperidol intramuscular y la concentración estudiada de capsaicina; la prevención depende de dejar cannabis."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Preguntar consumo/patrón sin juzgar; evaluar electrolitos, creatinina, glucemia y embarazo cuando corresponde. Excluir obstrucción, pancreatitis y otras causas; diferenciar vómitos cíclicos."
+      ],
+      "factIds": [
+        "b03_014_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Hidratar, corregir trastornos y antiemético habitual según evaluación. Si refractario, considerar opciones RCEM tras ECG/contraindicaciones; no tratar dolor/distensión importante sin investigar."
+      ],
+      "factIds": [
+        "b03_014_f03"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Adulto seleccionado refractario: haloperidol 0,05 mg/kg intramuscular, máximo 5 mg, con monitorización; alternativa: capsaicina tópica 0,1%, 5 g en abdomen. No cambiar concentración/vía por inferencia; no aplicar capsaicina en mucosa/piel lesionada."
+      ],
+      "factIds": [
+        "b03_014_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No dar haloperidol con QT prolongado; corregir electrolitos, revisar Parkinson/demencia con cuerpos de Lewy y vigilar distonía. No indicar uso domiciliario rutinario. Opciones sintomáticas no curan; embarazo/pediatría requieren evaluación propia."
+      ],
+      "factIds": [
+        "b03_014_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Alta con tolerancia oral, función renal/electrolitos seguros y apoyo para abstinencia. Persistencia, lesión renal o intolerancia oral exige observación/internación."
+      ],
+      "factIds": [
+        "b03_014_f06"
+      ]
+    }
+  ],
+  "markdown": "# Síndrome de hiperémesis cannabinoide\n\n## Concepto y mecanismo\n\nVómitos recurrentes asociados a cannabis prolongado; baños calientes pueden aliviar pero no confirman diagnóstico. La abstinencia sostenida es la prevención definitiva.\n\n## Razonamiento y elección terapéutica\n\nLa refractariedad es frecuente pero no permite descartar otras urgencias. RCEM utiliza haloperidol intramuscular y la concentración estudiada de capsaicina; la prevención depende de dejar cannabis.\n\n## Diagnóstico y diferenciales\n\nPreguntar consumo/patrón sin juzgar; evaluar electrolitos, creatinina, glucemia y embarazo cuando corresponde. Excluir obstrucción, pancreatitis y otras causas; diferenciar vómitos cíclicos.\n\n## Abordaje inicial y urgencias\n\nHidratar, corregir trastornos y antiemético habitual según evaluación. Si refractario, considerar opciones RCEM tras ECG/contraindicaciones; no tratar dolor/distensión importante sin investigar.\n\n## Fármacos, dosis e intervalos\n\nAdulto seleccionado refractario: haloperidol 0,05 mg/kg intramuscular, máximo 5 mg, con monitorización; alternativa: capsaicina tópica 0,1%, 5 g en abdomen. No cambiar concentración/vía por inferencia; no aplicar capsaicina en mucosa/piel lesionada.\n\n## Seguridad y monitorización\n\nNo dar haloperidol con QT prolongado; corregir electrolitos, revisar Parkinson/demencia con cuerpos de Lewy y vigilar distonía. No indicar uso domiciliario rutinario. Opciones sintomáticas no curan; embarazo/pediatría requieren evaluación propia.\n\n## Reevaluación, internación y alta\n\nAlta con tolerancia oral, función renal/electrolitos seguros y apoyo para abstinencia. Persistencia, lesión renal o intolerancia oral exige observación/internación.\n\n## Referencias\n\n1. [RCEM — Cannabinoid hyperemesis guideline, 2024](https://rcem.ac.uk/wp-content/uploads/2024/02/RCEM_Cannabinoid_Hyperemesis_Syndrome_v5.0.pdf)\n2. [RCEM — Suspected cannabinoid hyperemesis syndrome](https://rcem.ac.uk/clinical-guidelines/suspected-cannabinoid-hyperemesis-syndrome/)",
+  "approvedReviewCanonicalFileSha256": "ed24920a91d740ebf117d2116d588e657dc4bc90ca2f6cac54447662e9e01b75",
+  "approvedReviewProjectionFileSha256": "d02cdfdfd9617a0e8d1c50ed84aecaff41cfd2dcb4ed3bbc7eaccb0575be6824"
+}

@@ -1,0 +1,132 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "sialolitiase",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Sialolitíase",
+    "es": "Sialolitiasis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed. Obstrução por cálculo salivar pode ocorrer sem infecção; distinta da sialadenite.",
+  "relatedExistingOwners": [
+    "sialadenite"
+  ],
+  "optionRelation": "OBSTRUCTION_CONSERVATIVE_OR_PROCEDURAL",
+  "facts": [
+    {
+      "id": "b03_050_f01",
+      "section": "concept",
+      "pt": "Cálculo no ducto/glândula salivar causa obstrução, dor e edema relacionados a refeições; pode existir sem infecção, distinta da sialadenite já cadastrada.",
+      "es": "Cálculo salival obstruye y causa dolor/edema con comidas; puede no infectarse, distinto de sialadenitis existente.",
+      "sources": [
+        "topic_159",
+        "sial_gcc"
+      ]
+    },
+    {
+      "id": "b03_050_f02",
+      "section": "diagnosis",
+      "pt": "Examinar ductos e palpação cuidadosa; ultrassom conforme dúvida/persistência. Febre/pus sugerem infecção adicional; massa fixa/progressiva exige excluir neoplasia.",
+      "es": "Examinar conductos/palpar con cuidado; ecografía si duda/persistencia. Fiebre/pus: infección adicional; masa fija/progresiva: excluir neoplasia.",
+      "sources": [
+        "topic_159",
+        "sial_gcc"
+      ]
+    },
+    {
+      "id": "b03_050_f03",
+      "section": "initial",
+      "pt": "Hidratar, massagem suave e estímulo salivar se seguro; avaliar via aérea e extensão cervical em grave. Não usar objeto pontiagudo para retirar cálculo.",
+      "es": "Hidratar, masaje suave/estimular saliva si seguro; vía aérea/extensión cervical en grave. No usar objetos punzantes para extraer.",
+      "sources": [
+        "topic_159",
+        "sial_gcc"
+      ]
+    },
+    {
+      "id": "b03_050_f04",
+      "section": "options",
+      "pt": "Primeira estratégia em pequeno e não complicado: medidas conservadoras e analgesia. Alternativa em obstrução persistente: remoção por profissional, sialendoscopia ou cirurgia conforme localização. Antibiótico somente se infecção associada, seguindo owner de sialadenite.",
+      "es": "Pequeño no complicado: conservación/analgesia. Persistente: extracción profesional, sialendoscopia/cirugía según sitio. Antibiótico solo ante infección, siguiendo owner de sialadenitis.",
+      "sources": [
+        "topic_159",
+        "sial_gcc"
+      ]
+    },
+    {
+      "id": "b03_050_f05",
+      "section": "safety",
+      "pt": "Não há dois fármacos que dissolvam universalmente cálculos salivares. Analgesia pode usar paracetamol ou anti-inflamatório se elegível, revisando rim, sangramento e gestação. Sepse/ameaça aérea exige hospital.",
+      "es": "No hay dos fármacos que disuelvan universalmente cálculos. Analgesia: paracetamol o antiinflamatorio si elegible, revisando riñón, sangrado/embarazo. Sepsis/amenaza aérea: hospital.",
+      "sources": [
+        "topic_159",
+        "sial_gcc"
+      ]
+    },
+    {
+      "id": "b03_050_f06",
+      "section": "followup",
+      "pt": "Persistência exige especialista, sem prolongar antibiótico no cálculo não infectado. Alta com via aérea segura, hidratação e plano de remoção/retorno; recorrência exige reavaliação.",
+      "es": "Persistencia: especialista, no prolongar antibiótico si no infectado. Alta con vía aérea segura, hidratación y extracción/retorno; recurrencia: reevaluar.",
+      "sources": [
+        "topic_159",
+        "sial_gcc"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A sialadenite descreve inflamação/infecção; sialolitíase descreve a causa mecânica, que pode existir isoladamente. A distinção mantém o owner de infecção e evita prescrição antimicrobiana desnecessária.",
+      "es": "Sialadenitis es inflamación/infección; sialolitiasis es causa mecánica que puede existir sola. Distinguir conserva el owner infeccioso/evita antibióticos innecesarios.",
+      "sources": [
+        "topic_159",
+        "sial_gcc"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_159",
+      "title": "NHS — Salivary gland stones",
+      "url": "https://www.nhs.uk/conditions/salivary-gland-stones/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 14 August 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_159",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "sial_gcc",
+      "title": "NHS GGC — Salivary gland pathology, stones and sialadenitis",
+      "url": "https://www.rightdecisions.scot.nhs.uk/ggc-primary-care/ear-nose-and-throat-ent/ear-nose-and-throat-ent-referral-guidance/throat-conditions/neck-lump/salivary-gland-pathology-sialadenitis-stones-cancer/",
+      "authorityStatus": "OFFICIAL_REGIONAL_CLINICAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "review date:",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:sial_gcc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

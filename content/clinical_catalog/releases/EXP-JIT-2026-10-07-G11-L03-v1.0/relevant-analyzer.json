@@ -1,0 +1,7 @@
+{
+  "RESULT": "PASS",
+  "command": "CI=true DART_SUPPRESS_ANALYTICS=true dart --packages=<1717-package-config> analyze canary.dart",
+  "exitCode": 0,
+  "output": "No issues found!",
+  "sourceCodeChanged": false
+}

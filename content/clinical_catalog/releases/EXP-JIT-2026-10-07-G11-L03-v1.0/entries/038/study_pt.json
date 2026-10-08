@@ -1,0 +1,183 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Dermatite herpetiforme",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "c4a690b0921e0cae1f67431e083fdc9f61702a84949509ee534cfe98be7e2cef",
+  "ownerCandidate": "dermatite_herpetiforme",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_038_f01",
+    "b03_038_f02",
+    "b03_038_f03",
+    "b03_038_f04",
+    "b03_038_f05",
+    "b03_038_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dermatose pruriginosa vesicular associada ao glúten/celiaquia, frequentemente em superfícies extensoras; não é infecção herpética."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dieta e dapsona têm alvos diferentes: a primeira trata o gatilho intestinal, a segunda sintomas cutâneos. A avaliação de G6PD e sangue é central para prevenir toxicidade, não detalhe opcional."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Biópsia perilesional para imunofluorescência e avaliação celíaca antes de dieta/tratamento quando possível. Diferenciar escabiose, eczema e outras dermatoses bolhosas."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar extensão, prurido, infecção secundária e estado nutricional. Febre, lesão mucosa importante ou toxicidade sistêmica exige descartar outro diagnóstico/reação medicamentosa."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Base causal: dieta sem glúten sustentada com acompanhamento. Dapsona controla rapidamente pele/prurido, mas não trata a enteropatia; alternativa em intolerância/contraindicação: sulfassalazina ou outro sulfonamídico selecionado pelo especialista."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Antes de dapsona: G6PD, hemograma, rim e fígado; monitorizar hemólise, metemoglobinemia, agranulocitose e hipersensibilidade. Dispneia/cianose após início exige urgência. Dose/titulação depende da resposta e tolerância; gestação exige avaliação materno-fetal, sem copiar dose geral."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dermatologia e gastroenterologia/nutrição; exames periódicos e adesão à dieta. Não suspender dieta porque pele melhorou com dapsona; rever necessidade do fármaco à medida que a dieta faz efeito."
+    }
+  ],
+  "references": [
+    {
+      "key": "dh2021",
+      "title": "EADV — Dermatitis herpetiformis consensus guideline, 2021",
+      "url": "https://www.husc.es/archivos/cms/dermatologia/archivos/publico/Unidad%20de%20DAI/Guia%20europea%20de%20manejo%20de%20dermatitis%20herpetiforme%202021.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Published dosage in dangerous range (5-7 mg/kg body weight) ",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:dh2021",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "dh_derm",
+      "title": "DermNet — Dermatitis herpetiformis",
+      "url": "https://dermnetnz.org/topics/dermatitis-herpetiformis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:dh_derm",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_147",
+      "title": "NIDDK — Dermatitis Herpetiformis",
+      "url": "https://www.niddk.nih.gov/health-information/professionals/clinical-tools-patient-management/digestive-diseases/dermatitis-herpetiformis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed February 2014",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_147",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Dermatose pruriginosa vesicular associada ao glúten/celiaquia, frequentemente em superfícies extensoras; não é infecção herpética."
+      ],
+      "factIds": [
+        "b03_038_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Dieta e dapsona têm alvos diferentes: a primeira trata o gatilho intestinal, a segunda sintomas cutâneos. A avaliação de G6PD e sangue é central para prevenir toxicidade, não detalhe opcional."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Biópsia perilesional para imunofluorescência e avaliação celíaca antes de dieta/tratamento quando possível. Diferenciar escabiose, eczema e outras dermatoses bolhosas."
+      ],
+      "factIds": [
+        "b03_038_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Avaliar extensão, prurido, infecção secundária e estado nutricional. Febre, lesão mucosa importante ou toxicidade sistêmica exige descartar outro diagnóstico/reação medicamentosa."
+      ],
+      "factIds": [
+        "b03_038_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Base causal: dieta sem glúten sustentada com acompanhamento. Dapsona controla rapidamente pele/prurido, mas não trata a enteropatia; alternativa em intolerância/contraindicação: sulfassalazina ou outro sulfonamídico selecionado pelo especialista."
+      ],
+      "factIds": [
+        "b03_038_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Antes de dapsona: G6PD, hemograma, rim e fígado; monitorizar hemólise, metemoglobinemia, agranulocitose e hipersensibilidade. Dispneia/cianose após início exige urgência. Dose/titulação depende da resposta e tolerância; gestação exige avaliação materno-fetal, sem copiar dose geral."
+      ],
+      "factIds": [
+        "b03_038_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Dermatologia e gastroenterologia/nutrição; exames periódicos e adesão à dieta. Não suspender dieta porque pele melhorou com dapsona; rever necessidade do fármaco à medida que a dieta faz efeito."
+      ],
+      "factIds": [
+        "b03_038_f06"
+      ]
+    }
+  ],
+  "markdown": "# Dermatite herpetiforme\n\n## Conceito e mecanismo\n\nDermatose pruriginosa vesicular associada ao glúten/celiaquia, frequentemente em superfícies extensoras; não é infecção herpética.\n\n## Raciocínio e escolha terapêutica\n\nDieta e dapsona têm alvos diferentes: a primeira trata o gatilho intestinal, a segunda sintomas cutâneos. A avaliação de G6PD e sangue é central para prevenir toxicidade, não detalhe opcional.\n\n## Diagnóstico e diferenciais\n\nBiópsia perilesional para imunofluorescência e avaliação celíaca antes de dieta/tratamento quando possível. Diferenciar escabiose, eczema e outras dermatoses bolhosas.\n\n## Abordagem inicial e urgências\n\nAvaliar extensão, prurido, infecção secundária e estado nutricional. Febre, lesão mucosa importante ou toxicidade sistêmica exige descartar outro diagnóstico/reação medicamentosa.\n\n## Tratamento: primeira escolha e alternativas\n\nBase causal: dieta sem glúten sustentada com acompanhamento. Dapsona controla rapidamente pele/prurido, mas não trata a enteropatia; alternativa em intolerância/contraindicação: sulfassalazina ou outro sulfonamídico selecionado pelo especialista.\n\n## Segurança e monitorização\n\nAntes de dapsona: G6PD, hemograma, rim e fígado; monitorizar hemólise, metemoglobinemia, agranulocitose e hipersensibilidade. Dispneia/cianose após início exige urgência. Dose/titulação depende da resposta e tolerância; gestação exige avaliação materno-fetal, sem copiar dose geral.\n\n## Reavaliação, internação e alta\n\nDermatologia e gastroenterologia/nutrição; exames periódicos e adesão à dieta. Não suspender dieta porque pele melhorou com dapsona; rever necessidade do fármaco à medida que a dieta faz efeito.\n\n## Referências\n\n1. [EADV — Dermatitis herpetiformis consensus guideline, 2021](https://www.husc.es/archivos/cms/dermatologia/archivos/publico/Unidad%20de%20DAI/Guia%20europea%20de%20manejo%20de%20dermatitis%20herpetiforme%202021.pdf)\n2. [DermNet — Dermatitis herpetiformis](https://dermnetnz.org/topics/dermatitis-herpetiformis)\n3. [NIDDK — Dermatitis Herpetiformis](https://www.niddk.nih.gov/health-information/professionals/clinical-tools-patient-management/digestive-diseases/dermatitis-herpetiformis)",
+  "approvedReviewCanonicalFileSha256": "0632bbc57a87ac358b6df5d938b05810d0ed1914afee97a254968d2386e851e8",
+  "approvedReviewProjectionFileSha256": "ebb139605427426075b9fcba16230f69b0413ce631d56f015a9783790f985559"
+}

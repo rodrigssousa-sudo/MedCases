@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Catarata",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "804493639bebec45bfa0cc39c27dc516e5a7a96f779e51efb8a848321554a79e",
+  "ownerCandidate": "catarata",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_048_f01",
+    "b03_048_f02",
+    "b03_048_f03",
+    "b03_048_f04",
+    "b03_048_f05",
+    "b03_048_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "En guardia, excluir glaucoma agudo, desprendimiento, infección/causas vasculares si dolor/pérdida súbita. Estable: evaluación electiva."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Agudeza/examen confirman opacidad/otras causas; impacto funcional y retina. No atribuir pérdida súbita a catarata sin investigar."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Leve: actualizar corrección óptica, iluminación/seguridad. Definitiva si función/calidad de vida lo justifican: cirugía con lente tras decisión compartida. No limitar por un corte de agudeza solo."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No hay colirio/fármaco demostrado que revierta rutinariamente catarata. Biometría, riesgos, consentimiento/expectativas; terapia posoperatoria por cirujano, no para catarata sin operar."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguir evolución/función; tras cirugía, dolor intenso/baja visual: urgencia. Niños requieren manejo urgente propio para evitar ambliopía."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opacidad del cristalino con baja visual gradual, deslumbramiento/menor contraste; típica no causa ojo rojo doloroso agudo."
+    }
+  ],
+  "references": [
+    {
+      "key": "ng77",
+      "title": "NICE NG77 — Adult cataracts recommendations",
+      "url": "https://www.nice.org.uk/guidance/ng77/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE NG77 com vigilância de maio 2025: decisão compartilhada funcional sobre cirurgia, sem corte isolado de acuidade.",
+      "sourceEvidenceRecord": "web-verification-record.json:ng77",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_157",
+      "title": "NHS — Cataracts in adults",
+      "url": "https://www.nhs.uk/conditions/cataracts/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 12 March 2025",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_157",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "En guardia, excluir glaucoma agudo, desprendimiento, infección/causas vasculares si dolor/pérdida súbita. Estable: evaluación electiva."
+      ],
+      "factIds": [
+        "b03_048_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Agudeza/examen confirman opacidad/otras causas; impacto funcional y retina. No atribuir pérdida súbita a catarata sin investigar."
+      ],
+      "factIds": [
+        "b03_048_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Leve: actualizar corrección óptica, iluminación/seguridad. Definitiva si función/calidad de vida lo justifican: cirugía con lente tras decisión compartida. No limitar por un corte de agudeza solo."
+      ],
+      "factIds": [
+        "b03_048_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No hay colirio/fármaco demostrado que revierta rutinariamente catarata. Biometría, riesgos, consentimiento/expectativas; terapia posoperatoria por cirujano, no para catarata sin operar."
+      ],
+      "factIds": [
+        "b03_048_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguir evolución/función; tras cirugía, dolor intenso/baja visual: urgencia. Niños requieren manejo urgente propio para evitar ambliopía."
+      ],
+      "factIds": [
+        "b03_048_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Opacidad del cristalino con baja visual gradual, deslumbramiento/menor contraste; típica no causa ojo rojo doloroso agudo."
+      ],
+      "factIds": [
+        "b03_048_f01"
+      ]
+    }
+  ],
+  "markdown": "# Catarata\n\n## Abordaje inicial y urgencias\n\nEn guardia, excluir glaucoma agudo, desprendimiento, infección/causas vasculares si dolor/pérdida súbita. Estable: evaluación electiva.\n\n## Diagnóstico y diferenciales\n\nAgudeza/examen confirman opacidad/otras causas; impacto funcional y retina. No atribuir pérdida súbita a catarata sin investigar.\n\n## Tratamiento: primera elección y alternativas\n\nLeve: actualizar corrección óptica, iluminación/seguridad. Definitiva si función/calidad de vida lo justifican: cirugía con lente tras decisión compartida. No limitar por un corte de agudeza solo.\n\n## Seguridad y monitorización\n\nNo hay colirio/fármaco demostrado que revierta rutinariamente catarata. Biometría, riesgos, consentimiento/expectativas; terapia posoperatoria por cirujano, no para catarata sin operar.\n\n## Reevaluación, internación y alta\n\nSeguir evolución/función; tras cirugía, dolor intenso/baja visual: urgencia. Niños requieren manejo urgente propio para evitar ambliopía.\n\n## Reconocimiento rápido\n\nOpacidad del cristalino con baja visual gradual, deslumbramiento/menor contraste; típica no causa ojo rojo doloroso agudo.\n\n## Referencias\n\n1. [NICE NG77 — Adult cataracts recommendations](https://www.nice.org.uk/guidance/ng77/chapter/recommendations)\n2. [NHS — Cataracts in adults](https://www.nhs.uk/conditions/cataracts/)",
+  "approvedReviewCanonicalFileSha256": "23a1ceb259bc882539d94cede1ad1266392faf45c0a87c8e67b3701364bec39b",
+  "approvedReviewProjectionFileSha256": "22439d2f5e209010d7ff854822a7033d38fe7681d2a3b2d0963562823d4e524d"
+}

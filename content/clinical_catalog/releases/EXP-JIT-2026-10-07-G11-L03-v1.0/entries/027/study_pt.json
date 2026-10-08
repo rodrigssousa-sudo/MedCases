@@ -1,0 +1,175 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Paracoccidioidomicose",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "7d59f77d014e6ea90c5a0238eab869f0e28314a1fce0d9b2dbe0c527d42c6fe3",
+  "ownerCandidate": "paracoccidioidomicose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_027_f01",
+    "b03_027_f02",
+    "b03_027_f03",
+    "b03_027_f04",
+    "b03_027_f05",
+    "b03_027_f06",
+    "b03_027_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Micose sistêmica endêmica, adquirida por inalação, com formas crônica adulta e aguda/subaguda; pode envolver pulmão, mucosas, linfonodos e adrenais."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "A extensão e a imunidade determinam indução versus terapia oral; fibrose residual pode persistir após controle do fungo. Referência ministerial recente incorpora o consenso brasileiro, sem transformar doença antiga em guideline nova inexistente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Confirmar por exame direto/histologia/cultura conforme material e sorologia de apoio. Avaliar órgãos e diferenciar tuberculose, câncer e outras micoses; sequela fibrosa não significa atividade."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Falência respiratória, doença disseminada importante, adrenal ou neurológica exige hospital/infectologia. Avaliar nutrição, hemograma, rim/fígado e eletrólitos."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Leve/moderada elegível: itraconazol é opção preferida; sulfametoxazol/trimetoprima é alternativa, incluindo situações específicas de disponibilidade/órgão. Grave: indução com anfotericina B na formulação selecionada e transição oral após resposta; escolhas não são equivalentes por gravidade."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Referência adulta do Ministério da Saúde, 2024: na forma leve/moderada elegível, itraconazol 200 mg por via oral uma vez ao dia, duração média de 9–18 meses, ajustada à resposta. Alternativa: sulfametoxazol 800 mg MAIS trimetoprima 160 mg por via oral a cada 12 horas, duração média de 18–24 meses; o protocolo admite outros intervalos em cenários selecionados. Não converter meses em semanas. Comprometimento neurológico, imunossupressão, gestação e doença grave exigem regime próprio; não extrapolar estas doses a crianças."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tratamento é prolongado, individualizado por forma/resposta, sem abreviar meses como semanas. Monitorizar fígado/interações no azol; rim, potássio e hemograma no cotrimoxazol; rim/eletrólitos na anfotericina. Gestação e sistema nervoso requerem escolha especializada."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguir resposta clínica, sorológica e sequelas até critério de cura; garantir adesão. Piora de fadiga, hipotensão ou alterações eletrolíticas exige avaliar insuficiência adrenal."
+    }
+  ],
+  "references": [
+    {
+      "key": "pcm2024",
+      "title": "Ministério da Saúde — Guia de vigilância em saúde, 6a edição revisada, volume 2",
+      "url": "https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/vigilancia/guia-de-vigilancia-em-saude-volume-2-6a-edicao",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published ",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:pcm2024",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Micose sistêmica endêmica, adquirida por inalação, com formas crônica adulta e aguda/subaguda; pode envolver pulmão, mucosas, linfonodos e adrenais."
+      ],
+      "factIds": [
+        "b03_027_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A extensão e a imunidade determinam indução versus terapia oral; fibrose residual pode persistir após controle do fungo. Referência ministerial recente incorpora o consenso brasileiro, sem transformar doença antiga em guideline nova inexistente."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Confirmar por exame direto/histologia/cultura conforme material e sorologia de apoio. Avaliar órgãos e diferenciar tuberculose, câncer e outras micoses; sequela fibrosa não significa atividade."
+      ],
+      "factIds": [
+        "b03_027_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Falência respiratória, doença disseminada importante, adrenal ou neurológica exige hospital/infectologia. Avaliar nutrição, hemograma, rim/fígado e eletrólitos."
+      ],
+      "factIds": [
+        "b03_027_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Leve/moderada elegível: itraconazol é opção preferida; sulfametoxazol/trimetoprima é alternativa, incluindo situações específicas de disponibilidade/órgão. Grave: indução com anfotericina B na formulação selecionada e transição oral após resposta; escolhas não são equivalentes por gravidade."
+      ],
+      "factIds": [
+        "b03_027_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Referência adulta do Ministério da Saúde, 2024: na forma leve/moderada elegível, itraconazol 200 mg por via oral uma vez ao dia, duração média de 9–18 meses, ajustada à resposta. Alternativa: sulfametoxazol 800 mg MAIS trimetoprima 160 mg por via oral a cada 12 horas, duração média de 18–24 meses; o protocolo admite outros intervalos em cenários selecionados. Não converter meses em semanas. Comprometimento neurológico, imunossupressão, gestação e doença grave exigem regime próprio; não extrapolar estas doses a crianças."
+      ],
+      "factIds": [
+        "b03_027_f05"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Tratamento é prolongado, individualizado por forma/resposta, sem abreviar meses como semanas. Monitorizar fígado/interações no azol; rim, potássio e hemograma no cotrimoxazol; rim/eletrólitos na anfotericina. Gestação e sistema nervoso requerem escolha especializada."
+      ],
+      "factIds": [
+        "b03_027_f06"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Seguir resposta clínica, sorológica e sequelas até critério de cura; garantir adesão. Piora de fadiga, hipotensão ou alterações eletrolíticas exige avaliar insuficiência adrenal."
+      ],
+      "factIds": [
+        "b03_027_f07"
+      ]
+    }
+  ],
+  "markdown": "# Paracoccidioidomicose\n\n## Conceito e mecanismo\n\nMicose sistêmica endêmica, adquirida por inalação, com formas crônica adulta e aguda/subaguda; pode envolver pulmão, mucosas, linfonodos e adrenais.\n\n## Raciocínio e escolha terapêutica\n\nA extensão e a imunidade determinam indução versus terapia oral; fibrose residual pode persistir após controle do fungo. Referência ministerial recente incorpora o consenso brasileiro, sem transformar doença antiga em guideline nova inexistente.\n\n## Diagnóstico e diferenciais\n\nConfirmar por exame direto/histologia/cultura conforme material e sorologia de apoio. Avaliar órgãos e diferenciar tuberculose, câncer e outras micoses; sequela fibrosa não significa atividade.\n\n## Abordagem inicial e urgências\n\nFalência respiratória, doença disseminada importante, adrenal ou neurológica exige hospital/infectologia. Avaliar nutrição, hemograma, rim/fígado e eletrólitos.\n\n## Tratamento: primeira escolha e alternativas\n\nLeve/moderada elegível: itraconazol é opção preferida; sulfametoxazol/trimetoprima é alternativa, incluindo situações específicas de disponibilidade/órgão. Grave: indução com anfotericina B na formulação selecionada e transição oral após resposta; escolhas não são equivalentes por gravidade.\n\n## Fármacos, doses e intervalos\n\nReferência adulta do Ministério da Saúde, 2024: na forma leve/moderada elegível, itraconazol 200 mg por via oral uma vez ao dia, duração média de 9–18 meses, ajustada à resposta. Alternativa: sulfametoxazol 800 mg MAIS trimetoprima 160 mg por via oral a cada 12 horas, duração média de 18–24 meses; o protocolo admite outros intervalos em cenários selecionados. Não converter meses em semanas. Comprometimento neurológico, imunossupressão, gestação e doença grave exigem regime próprio; não extrapolar estas doses a crianças.\n\n## Segurança e monitorização\n\nTratamento é prolongado, individualizado por forma/resposta, sem abreviar meses como semanas. Monitorizar fígado/interações no azol; rim, potássio e hemograma no cotrimoxazol; rim/eletrólitos na anfotericina. Gestação e sistema nervoso requerem escolha especializada.\n\n## Reavaliação, internação e alta\n\nSeguir resposta clínica, sorológica e sequelas até critério de cura; garantir adesão. Piora de fadiga, hipotensão ou alterações eletrolíticas exige avaliar insuficiência adrenal.\n\n## Referências\n\n1. [Ministério da Saúde — Guia de vigilância em saúde, 6a edição revisada, volume 2](https://www.gov.br/saude/pt-br/centrais-de-conteudo/publicacoes/svsa/vigilancia/guia-de-vigilancia-em-saude-volume-2-6a-edicao)",
+  "approvedReviewCanonicalFileSha256": "4fa8b8e01f9071b3016ea26769a1d2f271512b8a3a5659ea645a62bc4893fdc0",
+  "approvedReviewProjectionFileSha256": "5761f2ef8b775e9047ce50788e49fe46e4a380ce1e372d4e7e9bb9593f8618df"
+}

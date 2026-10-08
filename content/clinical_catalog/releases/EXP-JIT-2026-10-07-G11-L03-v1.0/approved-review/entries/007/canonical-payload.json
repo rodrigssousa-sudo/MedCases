@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "empiema_pleural",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Empiema pleural",
+    "es": "Empiema pleural"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_007_f01",
+      "section": "concept",
+      "pt": "Infecção do espaço pleural com pus ou microbiologia compatível; pode evoluir a loculações e encarceramento pulmonar.",
+      "es": "Infección pleural con pus o microbiología compatible; puede evolucionar a tabicaciones y atrapamiento pulmonar.",
+      "sources": [
+        "bts2023",
+        "topic_107"
+      ]
+    },
+    {
+      "id": "b03_007_f02",
+      "section": "diagnosis",
+      "pt": "Ultrassom/TC avaliam coleção. Pus confirma necessidade de drenagem; em líquido não purulento, pH ≤7,2 indica alto risco de infecção complicada e drenagem quando tecnicamente segura. Colher culturas do líquido e sangue.",
+      "es": "Ecografía/TC evalúan colección. Pus indica drenaje; en líquido no purulento, pH ≤7,2 indica alto riesgo de infección complicada y drenaje si es técnicamente seguro. Cultivos de líquido y sangre.",
+      "sources": [
+        "bts2023",
+        "topic_107"
+      ]
+    },
+    {
+      "id": "b03_007_f03",
+      "section": "initial",
+      "pt": "Internar, tratar sepse e iniciar antibiótico com cobertura de agentes prováveis/anaeróbios; infecção hospitalar exige avaliar resistência. Drenagem pleural guiada por imagem é parte central do controle de foco.",
+      "es": "Internar, tratar sepsis e iniciar antibióticos para agentes probables/anaerobios; infección hospitalaria exige valorar resistencia. Drenaje ecoguiado es central para controlar el foco.",
+      "sources": [
+        "bts2023",
+        "topic_107"
+      ]
+    },
+    {
+      "id": "b03_007_f04",
+      "section": "options",
+      "pt": "Se persistir coleção após drenagem inicial: combinação intrapleural de alteplase e dornase alfa, em serviço especializado; alternativa em falha/inadequação: cirurgia torácica, frequentemente videotoracoscopia. Não usar um agente isolado como equivalente da combinação.",
+      "es": "Si persiste colección tras drenaje inicial: alteplasa y dornasa alfa intrapleurales en servicio especializado; alternativa ante fracaso/inadecuación: cirugía torácica, frecuentemente videotoracoscopia. Un agente aislado no equivale a la combinación.",
+      "sources": [
+        "bts2023",
+        "topic_107"
+      ]
+    },
+    {
+      "id": "b03_007_f05",
+      "section": "doses",
+      "pt": "Regime BTS para adulto selecionado: alteplase 10 mg intrapleural 2 vezes ao dia MAIS dornase alfa 5 mg intrapleural 2 vezes ao dia, por 3 dias. Não é dose intravenosa; preparo, administração pelo dreno e avaliação de sangramento são exclusivos do protocolo especializado.",
+      "es": "Esquema BTS en adulto seleccionado: alteplasa 10 mg intrapleural 2 veces al día MÁS dornasa alfa 5 mg intrapleural 2 veces al día durante 3 días. No es dosis intravenosa; preparación, administración por drenaje y valoración hemorrágica requieren protocolo especializado.",
+      "sources": [
+        "bts2023"
+      ]
+    },
+    {
+      "id": "b03_007_f06",
+      "section": "safety",
+      "pt": "Discutir risco hemorrágico, anticoagulantes e consentimento; não usar estreptoquinase rotineiramente. Reavaliar patência do dreno, febre, marcadores e imagem; duração antibiótica depende de controle do foco/resposta, não de intervalo fixo inventado.",
+      "es": "Valorar sangrado, anticoagulantes y consentimiento; no usar estreptoquinasa rutinaria. Revisar drenaje, fiebre, marcadores e imágenes; duración antibiótica según control del foco/respuesta, sin plazo fijo inventado.",
+      "sources": [
+        "bts2023",
+        "topic_107"
+      ]
+    },
+    {
+      "id": "b03_007_f07",
+      "section": "followup",
+      "pt": "Alta após controle de foco, estabilidade e plano antibiótico/seguimento; piora respiratória ou sepse persistente exige reavaliação imediata do dreno e cirurgia.",
+      "es": "Alta tras controlar foco, estabilidad y plan antibiótico/seguimiento; deterioro respiratorio o sepsis persistente exige reevaluar drenaje y cirugía.",
+      "sources": [
+        "bts2023",
+        "topic_107"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Antibiótico sem esvaziamento adequado pode falhar numa cavidade loculada. A alteplase atua na fibrina e a dornase reduz viscosidade; a indicação é residual após drenagem e não substitui cirurgia em falha.",
+      "es": "Los antibióticos pueden fracasar sin evacuación de una cavidad tabicada. Alteplasa actúa en fibrina y dornasa reduce viscosidad; se indican ante residuo tras drenaje y no sustituyen cirugía si fracasan.",
+      "sources": [
+        "bts2023",
+        "topic_107"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "bts2023",
+      "title": "BTS — Pleural disease guideline 2023",
+      "url": "https://www.brit-thoracic.org.uk/document-library/guidelines/pleural-disease/pleural-disease-full-supplement/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2023,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published monthly (subscribers receive all supplements)",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:bts2023",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_107",
+      "title": "RCH — Parapneumonic effusion",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Parapneumonic_effusion/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated August 2022",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_107",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

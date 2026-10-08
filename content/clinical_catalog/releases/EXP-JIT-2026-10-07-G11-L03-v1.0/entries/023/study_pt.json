@@ -1,0 +1,157 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Febre de Oropouche",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "8cf46e4e4cf14c916136f4234ed0d73acde3565c7fa660ea1d53888ab43c69d6",
+  "ownerCandidate": "febre_de_oropouche",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_023_f01",
+    "b03_023_f02",
+    "b03_023_f03",
+    "b03_023_f04",
+    "b03_023_f05",
+    "b03_023_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Arbovirose por Oropouche com febre, cefaleia, mialgia e possível recorrência de sintomas; eventos neurológicos e riscos gestacionais exigem atenção."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "A semelhança com dengue torna a exclusão de risco hemorrágico parte da escolha sintomática. Atualizações de vigilância gestacional não equivalem à descoberta de tratamento antiviral."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar exposição regional e testes articulados com vigilância; apresentação se sobrepõe a dengue e outras arboviroses. Investigar gravidade e gestação, sem confirmar somente por sintomas."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hidratar e avaliar tolerância oral; meningismo, alteração mental, sangramento, instabilidade ou vômitos persistentes exigem hospital. Gestante precisa acompanhamento obstétrico e investigação/notificação específica."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira estratégia: suporte, repouso e paracetamol para febre/dor quando elegível. Alternativa ao manejo oral em incapacidade de hidratação: suporte hospitalar. Não há vacina ou antiviral específico estabelecido; não fabricar dois tratamentos etiológicos."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Na febre de Oropouche, evitar ácido acetilsalicílico e anti-inflamatórios não esteroides pelo risco de sangramento, mesmo após excluir dengue. Avaliar fígado/risco gestacional antes de antitérmico; não extrapolar esquema adulto para crianças. Reduzir picadas com proteção compatível com gestação."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alta com estabilidade e plano de retorno; orientar recorrência e alarmes neurológicos. Manter acompanhamento obstétrico quando aplicável e coordenação com vigilância."
+    }
+  ],
+  "references": [
+    {
+      "key": "oro_cdc",
+      "title": "CDC — About Oropouche, 2025",
+      "url": "https://www.cdc.gov/oropouche/about/index.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC setembro de 2025: repouso, fluidos, paracetamol elegível; evitar aspirina e anti-inflamatórios no Oropouche, não apenas até excluir dengue.",
+      "sourceEvidenceRecord": "web-verification-record.json:oro_cdc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Arbovirose por Oropouche com febre, cefaleia, mialgia e possível recorrência de sintomas; eventos neurológicos e riscos gestacionais exigem atenção."
+      ],
+      "factIds": [
+        "b03_023_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A semelhança com dengue torna a exclusão de risco hemorrágico parte da escolha sintomática. Atualizações de vigilância gestacional não equivalem à descoberta de tratamento antiviral."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar exposição regional e testes articulados com vigilância; apresentação se sobrepõe a dengue e outras arboviroses. Investigar gravidade e gestação, sem confirmar somente por sintomas."
+      ],
+      "factIds": [
+        "b03_023_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Hidratar e avaliar tolerância oral; meningismo, alteração mental, sangramento, instabilidade ou vômitos persistentes exigem hospital. Gestante precisa acompanhamento obstétrico e investigação/notificação específica."
+      ],
+      "factIds": [
+        "b03_023_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira estratégia: suporte, repouso e paracetamol para febre/dor quando elegível. Alternativa ao manejo oral em incapacidade de hidratação: suporte hospitalar. Não há vacina ou antiviral específico estabelecido; não fabricar dois tratamentos etiológicos."
+      ],
+      "factIds": [
+        "b03_023_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Na febre de Oropouche, evitar ácido acetilsalicílico e anti-inflamatórios não esteroides pelo risco de sangramento, mesmo após excluir dengue. Avaliar fígado/risco gestacional antes de antitérmico; não extrapolar esquema adulto para crianças. Reduzir picadas com proteção compatível com gestação."
+      ],
+      "factIds": [
+        "b03_023_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Alta com estabilidade e plano de retorno; orientar recorrência e alarmes neurológicos. Manter acompanhamento obstétrico quando aplicável e coordenação com vigilância."
+      ],
+      "factIds": [
+        "b03_023_f06"
+      ]
+    }
+  ],
+  "markdown": "# Febre de Oropouche\n\n## Conceito e mecanismo\n\nArbovirose por Oropouche com febre, cefaleia, mialgia e possível recorrência de sintomas; eventos neurológicos e riscos gestacionais exigem atenção.\n\n## Raciocínio e escolha terapêutica\n\nA semelhança com dengue torna a exclusão de risco hemorrágico parte da escolha sintomática. Atualizações de vigilância gestacional não equivalem à descoberta de tratamento antiviral.\n\n## Diagnóstico e diferenciais\n\nAvaliar exposição regional e testes articulados com vigilância; apresentação se sobrepõe a dengue e outras arboviroses. Investigar gravidade e gestação, sem confirmar somente por sintomas.\n\n## Abordagem inicial e urgências\n\nHidratar e avaliar tolerância oral; meningismo, alteração mental, sangramento, instabilidade ou vômitos persistentes exigem hospital. Gestante precisa acompanhamento obstétrico e investigação/notificação específica.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira estratégia: suporte, repouso e paracetamol para febre/dor quando elegível. Alternativa ao manejo oral em incapacidade de hidratação: suporte hospitalar. Não há vacina ou antiviral específico estabelecido; não fabricar dois tratamentos etiológicos.\n\n## Segurança e monitorização\n\nNa febre de Oropouche, evitar ácido acetilsalicílico e anti-inflamatórios não esteroides pelo risco de sangramento, mesmo após excluir dengue. Avaliar fígado/risco gestacional antes de antitérmico; não extrapolar esquema adulto para crianças. Reduzir picadas com proteção compatível com gestação.\n\n## Reavaliação, internação e alta\n\nAlta com estabilidade e plano de retorno; orientar recorrência e alarmes neurológicos. Manter acompanhamento obstétrico quando aplicável e coordenação com vigilância.\n\n## Referências\n\n1. [CDC — About Oropouche, 2025](https://www.cdc.gov/oropouche/about/index.html)",
+  "approvedReviewCanonicalFileSha256": "ddb519bd4580a3fbfa73b60ff71d4211249e98f9cbd563733af667b638a3ba43",
+  "approvedReviewProjectionFileSha256": "b296e966d6f220c46e4113ae2eb7bf8437d46757d60e39ce1c3c22331556390c"
+}

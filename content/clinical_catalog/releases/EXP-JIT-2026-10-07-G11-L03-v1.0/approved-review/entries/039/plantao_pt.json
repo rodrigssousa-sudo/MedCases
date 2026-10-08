@@ -1,0 +1,89 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Eritrodermia",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "49ad6cec9b9df5eb4b7f8556beb2d8f1c52778cf98c495891f351b3b089ff599",
+  "ownerCandidate": "eritrodermia",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_039_f01",
+    "b03_039_f02",
+    "b03_039_f03",
+    "b03_039_f04",
+    "b03_039_f05",
+    "b03_039_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Instabilidade, hipotermia, desidratação, infecção ou extensão importante: hospital. Suspender possível desencadeante seguro, manter ambiente térmico, reposição monitorizada e cuidado suave da pele."
+      ],
+      "factIds": [
+        "b03_039_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "História de fármacos e doença cutânea, exame de mucosas/linfonodos, hemograma, eletrólitos, rim/fígado; biópsia conforme dermatologia. Diferenciar reações graves como DRESS/Stevens-Johnson."
+      ],
+      "factIds": [
+        "b03_039_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira estratégia: suporte de barreira com emolientes e tratamento da causa. Corticoide tópico apropriado pode ajudar dermatite; na psoríase grave, ciclosporina ou biológico são opções especializadas conforme risco. Linfoma ou reação medicamentosa requerem plano diferente."
+      ],
+      "factIds": [
+        "b03_039_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não iniciar corticoide sistêmico universal, especialmente se psoríase possível; pode agravar/rebater e mascarar infecção. Perda de barreira aumenta absorção de tópicos; evitar combinações irritantes e monitorizar órgãos."
+      ],
+      "factIds": [
+        "b03_039_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Internação até estabilidade e diagnóstico/plano; seguimento próximo de temperatura, volemia, nutrição e pele. Persistência exige repetir investigação etiológica."
+      ],
+      "factIds": [
+        "b03_039_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Eritema e descamação generalizados por dermatose, reação a medicamento ou neoplasia; síndrome com perda de barreira e risco sistêmico."
+      ],
+      "factIds": [
+        "b03_039_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_148",
+      "title": "DERMNET — Erythroderma",
+      "url": "https://dermnetnz.org/topics/erythroderma",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_148",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

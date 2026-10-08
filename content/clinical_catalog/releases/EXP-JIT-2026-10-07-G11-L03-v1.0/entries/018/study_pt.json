@@ -1,0 +1,170 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Cirrose hepática",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "5a28cc289ea5d51be7dde79dde6c6e6bc5e166ec0ca96a4ce881aded62097ba5",
+  "ownerCandidate": "cirrose_hepatica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_018_f01",
+    "b03_018_f02",
+    "b03_018_f03",
+    "b03_018_f04",
+    "b03_018_f05",
+    "b03_018_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Fibrose e distorção hepática com hipertensão portal e perda funcional; compensada e descompensada têm prognóstico/manejo diferentes."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "A hipertensão portal explica ascite e varizes; a perda funcional contribui para encefalopatia e infecções. O plano deve integrar causa, prevenção e complicações, preservando os protocolos específicos já existentes."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Investigar etiologia, função hepática/renal, coagulação, hemograma e imagem; avaliar ascite, varizes, encefalopatia e risco de carcinoma. Diferenciar descompensação crônica de insuficiência hepática aguda sem cirrose."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sangramento digestivo, confusão, febre com ascite, hipotensão ou lesão renal exigem hospitalização e investigação de precipitantes. Ascite nova/descompensada pode exigir paracentese diagnóstica; não atribuir alteração mental automaticamente ao fígado."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira estratégia: tratar etiologia e prevenir descompensação. Ascite: restrição moderada de sódio e diuréticos, como espironolactona com ou sem furosemida, conforme função renal; refratária pode exigir paracentese com albumina/TIPS. Encefalopatia: lactulose; rifaximina como adjuvante em recorrência/controle insuficiente."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Essas opções tratam complicações diferentes, não são substitutas entre si. Monitorizar creatinina, sódio, potássio, peso e pressão. Evitar anti-inflamatórios não esteroides; avaliar sedativos e fármacos hepatotóxicos. Não restringir proteínas indiscriminadamente."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vigilância de carcinoma hepático, geralmente ultrassom e AFP a cada 6 meses em elegíveis; avaliação de varizes e vacinação/nutrição. Descompensação requer discutir transplante; alta com causa tratada e plano de acompanhamento."
+    }
+  ],
+  "references": [
+    {
+      "key": "cirrhosis",
+      "title": "AASLD — Outpatient cirrhosis management, 2024",
+      "url": "https://www.aasld.org/liver-fellow-network/core-series/back-basics/back-basics-outpatient-management-cirrhosis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:cirrhosis",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_122",
+      "title": "NHS — Cirrhosis",
+      "url": "https://www.nhs.uk/conditions/cirrhosis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 10 February 2025",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_122",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Fibrose e distorção hepática com hipertensão portal e perda funcional; compensada e descompensada têm prognóstico/manejo diferentes."
+      ],
+      "factIds": [
+        "b03_018_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A hipertensão portal explica ascite e varizes; a perda funcional contribui para encefalopatia e infecções. O plano deve integrar causa, prevenção e complicações, preservando os protocolos específicos já existentes."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Investigar etiologia, função hepática/renal, coagulação, hemograma e imagem; avaliar ascite, varizes, encefalopatia e risco de carcinoma. Diferenciar descompensação crônica de insuficiência hepática aguda sem cirrose."
+      ],
+      "factIds": [
+        "b03_018_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Sangramento digestivo, confusão, febre com ascite, hipotensão ou lesão renal exigem hospitalização e investigação de precipitantes. Ascite nova/descompensada pode exigir paracentese diagnóstica; não atribuir alteração mental automaticamente ao fígado."
+      ],
+      "factIds": [
+        "b03_018_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira estratégia: tratar etiologia e prevenir descompensação. Ascite: restrição moderada de sódio e diuréticos, como espironolactona com ou sem furosemida, conforme função renal; refratária pode exigir paracentese com albumina/TIPS. Encefalopatia: lactulose; rifaximina como adjuvante em recorrência/controle insuficiente."
+      ],
+      "factIds": [
+        "b03_018_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Essas opções tratam complicações diferentes, não são substitutas entre si. Monitorizar creatinina, sódio, potássio, peso e pressão. Evitar anti-inflamatórios não esteroides; avaliar sedativos e fármacos hepatotóxicos. Não restringir proteínas indiscriminadamente."
+      ],
+      "factIds": [
+        "b03_018_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Vigilância de carcinoma hepático, geralmente ultrassom e AFP a cada 6 meses em elegíveis; avaliação de varizes e vacinação/nutrição. Descompensação requer discutir transplante; alta com causa tratada e plano de acompanhamento."
+      ],
+      "factIds": [
+        "b03_018_f06"
+      ]
+    }
+  ],
+  "markdown": "# Cirrose hepática\n\n## Conceito e mecanismo\n\nFibrose e distorção hepática com hipertensão portal e perda funcional; compensada e descompensada têm prognóstico/manejo diferentes.\n\n## Raciocínio e escolha terapêutica\n\nA hipertensão portal explica ascite e varizes; a perda funcional contribui para encefalopatia e infecções. O plano deve integrar causa, prevenção e complicações, preservando os protocolos específicos já existentes.\n\n## Diagnóstico e diferenciais\n\nInvestigar etiologia, função hepática/renal, coagulação, hemograma e imagem; avaliar ascite, varizes, encefalopatia e risco de carcinoma. Diferenciar descompensação crônica de insuficiência hepática aguda sem cirrose.\n\n## Abordagem inicial e urgências\n\nSangramento digestivo, confusão, febre com ascite, hipotensão ou lesão renal exigem hospitalização e investigação de precipitantes. Ascite nova/descompensada pode exigir paracentese diagnóstica; não atribuir alteração mental automaticamente ao fígado.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira estratégia: tratar etiologia e prevenir descompensação. Ascite: restrição moderada de sódio e diuréticos, como espironolactona com ou sem furosemida, conforme função renal; refratária pode exigir paracentese com albumina/TIPS. Encefalopatia: lactulose; rifaximina como adjuvante em recorrência/controle insuficiente.\n\n## Segurança e monitorização\n\nEssas opções tratam complicações diferentes, não são substitutas entre si. Monitorizar creatinina, sódio, potássio, peso e pressão. Evitar anti-inflamatórios não esteroides; avaliar sedativos e fármacos hepatotóxicos. Não restringir proteínas indiscriminadamente.\n\n## Reavaliação, internação e alta\n\nVigilância de carcinoma hepático, geralmente ultrassom e AFP a cada 6 meses em elegíveis; avaliação de varizes e vacinação/nutrição. Descompensação requer discutir transplante; alta com causa tratada e plano de acompanhamento.\n\n## Referências\n\n1. [AASLD — Outpatient cirrhosis management, 2024](https://www.aasld.org/liver-fellow-network/core-series/back-basics/back-basics-outpatient-management-cirrhosis)\n2. [NHS — Cirrhosis](https://www.nhs.uk/conditions/cirrhosis/)",
+  "approvedReviewCanonicalFileSha256": "a4c71d826d40407a35854a74ebf58733765c8a9f65fb48efed97e15379d52e0d",
+  "approvedReviewProjectionFileSha256": "d6e1341232b17d938b0fce8fee0f7f6a2c4f50237dff8f9f91857220f7912ad6"
+}

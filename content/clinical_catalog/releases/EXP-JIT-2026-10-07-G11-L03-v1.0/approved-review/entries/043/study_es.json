@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Escleritis",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "34f775c6468b94e66015fd582f2dc96ad0c32579846f4c11b7004da9a1008b9e",
+  "ownerCandidate": "esclerite",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_043_f01",
+    "b03_043_f02",
+    "b03_043_f03",
+    "b03_043_f04",
+    "b03_043_f05",
+    "b03_043_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Inflamación escleral profunda, potencialmente grave; dolor intenso/asociación sistémica frecuentes, pero necrosante puede doler poco."
+      ],
+      "factIds": [
+        "b03_043_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Profundidad/necrosis cambian riesgo/terapia. La actualización pública de enero 2026 destaca cautela con antiinflamatorios en pacientes de riesgo."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Agudeza/examen especializado para anterior, posterior/necrosante; autoimunidad, trauma/cirugía/infección. Diferenciar episcleritis, queratitis/uveítis."
+      ],
+      "factIds": [
+        "b03_043_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Derivación oftalmológica de emergencia; baja visual, adelgazamiento/necrosis requiere tratamiento hospitalario según evaluación. No tratar como conjuntivitis."
+      ],
+      "factIds": [
+        "b03_043_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "No infecciosa/no necrosante seleccionada: antiinflamatorio oral por especialista. Grave/refractaria o contraindicación: corticoide sistémico y, si precisa, inmunomodulador. Infecciosa: antimicrobiano específico, a veces cirugía."
+      ],
+      "factIds": [
+        "b03_043_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Antiinflamatorio: riñón, sangrado, corazón/embarazo; inmunosupresión: excluir infección/monitorizar. Colirio solo no sustituye tratamiento profundo."
+      ],
+      "factIds": [
+        "b03_043_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguimiento oftalmológico/sistémico; peor visión/dolor exige retorno inmediato. Alta con plan especializado/estabilidad."
+      ],
+      "factIds": [
+        "b03_043_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_152",
+      "title": "EYES — Scleritis",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/scleritis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_GUIDELINE_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "web-verification-record.json:topic_152",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "scleritis_nei",
+      "title": "American Academy of Ophthalmology EyeWiki — Scleritis",
+      "url": "https://eyewiki.aao.org/Scleritis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Usar somente os cenários e formulações do documento consultado.",
+      "sourceEvidenceRecord": "source-readback.json:scleritis_nei",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

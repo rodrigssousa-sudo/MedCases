@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Prolapso rectal",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "e8ee03e585314465486be9a607c78cea530e2b8f5be11ce6fbb25b0c4cc3d382",
+  "ownerCandidate": "prolapso_retal",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_017_f01",
+    "b03_017_f02",
+    "b03_017_f03",
+    "b03_017_f04",
+    "b03_017_f05",
+    "b03_017_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Exteriorización del recto, distinta del prolapso hemorroidal; puede causar moco, sangrado e incontinencia."
+      ],
+      "factIds": [
+        "b03_017_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Elegir vía abdominal/perineal implica durabilidad, función y riesgo quirúrgico. Tratar estreñimiento reduce esfuerzo pero no restaura soportes anatómicos."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examen con esfuerzo si es seguro y evaluación coloproctológica; distinguir hemorroides/masa. Evaluar estreñimiento, incontinencia y disfunción pélvica; estudio colónico según contexto."
+      ],
+      "factIds": [
+        "b03_017_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Tejido oscuro, dolor intenso, sangrado importante o prolapso irreductible exige cirugía urgente. Reducción suave por profesional tras excluir isquemia, sin forzar."
+      ],
+      "factIds": [
+        "b03_017_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Tratamiento definitivo del prolapso completo adulto es quirúrgico. Opciones: reparación abdominal/rectopexia o vía perineal según fragilidad/anatomía. Regular heces y evitar esfuerzo ayuda, pero no cura el prolapso completo."
+      ],
+      "factIds": [
+        "b03_017_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No sustituir cirugía por dos fármacos. No reducir tejido isquémico a ciegas. Niños: causas/manejo propios; evaluar anestesia/comorbilidades antes de cirugía electiva."
+      ],
+      "factIds": [
+        "b03_017_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Si reducido, viable y estable: derivación pronta y alarmas; internar ante isquemia/irreductibilidad o complicación. Revisar continencia/estreñimiento tras reparación."
+      ],
+      "factIds": [
+        "b03_017_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "rectal_ascrs",
+      "title": "ASCRS — Rectal prolapse clinical guideline, 2017",
+      "url": "https://fascrs.org/ascrs/media/files/downloads/Clinical%20Practice%20Guidelines/clinical_practice_guidelines_for_the_treatment_of-3.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2017,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "ASCRS 2017: prolapso retal completo, tratamento cirúrgico abdominal ou perineal conforme paciente. Documento final identificado e recomendações públicas conferidas; não apresentado como edição 2026.",
+      "sourceEvidenceRecord": "web-verification-record.json:rectal_ascrs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_121",
+      "title": "NIDDK — Rectal prolapse",
+      "url": "https://www.niddk.nih.gov/health-information/digestive-diseases/anatomic-problems-lower-gi-tract/rectal-prolapse",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last Reviewed August 2019",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_121",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

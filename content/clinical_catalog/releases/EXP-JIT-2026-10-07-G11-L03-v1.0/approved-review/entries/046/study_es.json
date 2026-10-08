@@ -1,0 +1,119 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Endoftalmitis",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "613123be368944b3b350ba8aa6f78ab5fb80861ecdfe7ee08ca0a8c5d928740a",
+  "ownerCandidate": "endoftalmite",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_046_f01",
+    "b03_046_f02",
+    "b03_046_f03",
+    "b03_046_f04",
+    "b03_046_f05",
+    "b03_046_f06",
+    "b03_046_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Infección intraocular tras cirugía/inyección, trauma o sangre; emergencia visual, distinta de conjuntivitis."
+      ],
+      "factIds": [
+        "b03_046_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "La barrera ocular limita terapia superficial/sistémica. El esquema numérico pertenece a protocolo local identificado; no es concentración universal/equivalencia de formulaciones."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Dolor, baja visual, inflamación/hipopión: examen inmediato; muestra intraocular por equipo. Ecografía si no se ve fondo; endógena: hemocultivos/foco sistémico."
+      ],
+      "factIds": [
+        "b03_046_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Derivar inmediatamente a retina/cirugía ocular; no esperar cultivo ni tratar solo con colirio. Muestra/antibiótico intravítreo sin demora evitable."
+      ],
+      "factIds": [
+        "b03_046_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Alternativa/complemento por gravedad/retina: vitrectomía con terapia intravítrea dirigida. Fúngica/endógena: terapia específica, incluida sistémica según agente; la combinación antibacteriana no trata hongos."
+      ],
+      "factIds": [
+        "b03_046_f05"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Ejemplo NHS GGC, protocolo 2025: vancomicina 1 mg en 0,1 mL MÁS ceftazidima 2 mg en 0,1 mL, intravítreas, por oftalmólogo con preparación aséptica validada. No son dosis intravenosas; otros protocolos difieren, sin intercambio/preparación improvisada."
+      ],
+      "factIds": [
+        "b03_046_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Preparación/aplicación exclusivamente especializada; verificar independientemente masa, concentración, volumen/vía. Oral/colirio no sustituyen intravítreo. Repetición/cirugía según retina, cultivo/respuesta."
+      ],
+      "factIds": [
+        "b03_046_f06"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Generalmente hospital/seguimiento estrecho; visión, inflamación/foco sistémico. No dar alta sin acceso al tratamiento urgente."
+      ],
+      "factIds": [
+        "b03_046_f07"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_155",
+      "title": "EYES — Endophthalmitis (post-operative) (exogenous endophthalmitis)",
+      "url": "https://www.college-optometrists.org/clinical-guidance/clinical-management-guidelines/endophthalmitis_post-operative_exogenousendophthal",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_GUIDELINE_SUMMARY_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Last updated",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "web-verification-record.json:topic_155",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "endoph_nhs",
+      "title": "NHS GGC — Postoperative endophthalmitis protocol, version 6",
+      "url": "https://www.rightdecisions.scot.nhs.uk/media/pygkeola/125-postoperative-endophthalmitis-ver6.pdf",
+      "authorityStatus": "OFFICIAL_REGIONAL_CLINICAL_PROTOCOL",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Review Date: September 2028 ",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:endoph_nhs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

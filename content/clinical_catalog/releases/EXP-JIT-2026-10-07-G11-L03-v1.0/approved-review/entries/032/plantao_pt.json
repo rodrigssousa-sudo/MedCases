@@ -1,0 +1,102 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Infecção de sítio cirúrgico",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "e78829287a1793e5a3f9790bce5741eb7ab6b3501d89d163186028213233fb80",
+  "ownerCandidate": "infeccao_de_sitio_cirurgico",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_032_f01",
+    "b03_032_f02",
+    "b03_032_f03",
+    "b03_032_f04",
+    "b03_032_f05",
+    "b03_032_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Sepse, progressão rápida, dor desproporcional ou suspeita de órgão/espaço: cirurgia urgente e antibiótico sem atraso. Abrir/drenar coleção por equipe adequada; não tratar abscesso apenas com comprimidos."
+      ],
+      "factIds": [
+        "b03_032_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar ferida, drenagem, deiscência, dor progressiva e sinais sistêmicos; cultura de pus/tecido e imagem se coleção profunda. Diferenciar hematoma, reação a material e infecção necrosante."
+      ],
+      "factIds": [
+        "b03_032_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira estratégia: controle de foco e cuidado da ferida. Se antibiótico indicado: cirurgia limpa com flora cutânea pode usar cefazolina/penicilina antiestafilocócica; MRSA requer alternativa como vancomicina. Cirurgia intestinal/perineal exige gram-negativos e anaeróbios, por exemplo ceftriaxona com metronidazol, conforme microbiologia/local."
+      ],
+      "factIds": [
+        "b03_032_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não indicar antibiótico sistêmico automaticamente a toda coleção superficial drenada sem sinais de disseminação. Dose, via e duração dependem de profundidade/foco, peso, rim e alergia; evitar esquemas de profilaxia como tratamento de infecção estabelecida."
+      ],
+      "factIds": [
+        "b03_032_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Rever ferida, resposta e culturas; febre persistente exige procurar coleção/implante infectado. Alta com foco controlado, estabilidade e plano de curativo/retorno."
+      ],
+      "factIds": [
+        "b03_032_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Infecção superficial, profunda ou de órgão/espaço associada a cirurgia; profundidade e material implantado alteram manejo."
+      ],
+      "factIds": [
+        "b03_032_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "ng125",
+      "title": "NICE NG125 — Surgical site infections",
+      "url": "https://www.nice.org.uk/guidance/ng125/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE: controle do foco cirúrgico e antibiótico conforme organismos/resistência; não universalizar profilaxia como tratamento de infecção estabelecida.",
+      "sourceEvidenceRecord": "web-verification-record.json:ng125",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "ssti_idsa",
+      "title": "IDSA — Skin and soft tissue infections, surgical site section",
+      "url": "https://www.idsociety.org/practice-guideline/skin-and-soft-tissue-infections/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published [229].",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:ssti_idsa",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

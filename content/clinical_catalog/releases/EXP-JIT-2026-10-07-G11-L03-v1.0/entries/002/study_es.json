@@ -1,0 +1,183 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Insuficiencia mitral crónica primaria",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "0e4d11ec210ad5402f0a9298b582265b63d38e43cd2d9e4fbbed9fa5c321da08",
+  "ownerCandidate": "insuficiencia_mitral_cronica_primaria",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_002_f01",
+    "b03_002_f02",
+    "b03_002_f03",
+    "b03_002_f04",
+    "b03_002_f05",
+    "b03_002_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Regurgitación crónica por lesión del aparato mitral; distinta de la secundaria a miocardiopatía y de la rotura aguda. La sobrecarga de volumen dilata aurícula y ventrículo."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "La fracción de eyección puede parecer conservada pese a deterioro contráctil, porque parte de la eyección va a la aurícula de menor impedancia. Síntomas, dimensiones y evolución orientan la intervención."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ecocardiograma integra mecanismo, gravedad, tamaño y función ventricular, presión pulmonar y otras válvulas; no basta una medición aislada. Disnea, menor capacidad física y nueva fibrilación auricular exigen reevaluación."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Congestión aguda: valorar oxigenación, perfusión, ECG y radiografía, tratar descompensación y excluir rotura/endocarditis. Inestabilidad o edema pulmonar requiere internación y cardiología."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primera estrategia definitiva en enfermedad grave operable: reparación quirúrgica duradera por equipo experto. Alternativa ante alto riesgo quirúrgico y anatomía elegible: reparación transcatéter borde a borde tras Heart Team. Sustitución valvular si la reparación no es adecuada."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Furosemida puede aliviar congestión; tratar hipertensión e insuficiencia cardíaca cuando existan. No presentar vasodilatadores como cura con función preservada. Monitorizar presión, creatinina y electrolitos; la intervención requiere evaluación integrada, también en asintomáticos."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguimiento valvular seriado; discutir intervención antes de disfunción irreversible. Alta tras estabilidad, sin disnea de reposo/hipoperfusión y con seguimiento; embarazo y anticoagulación tras prótesis requieren planes específicos."
+    }
+  ],
+  "references": [
+    {
+      "key": "vhdslides",
+      "title": "ESC — Official slides VHD 2025",
+      "url": "https://www.escardio.org/static-file/Escardio/Guidelines/Products/Slide%20sets/2025/2025%20official%20slides_VHD.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Trechos oficiais ESC 2025 verificados no índice: comissurotomia em estenose reumática sintomática elegível; cirurgia se inelegível; TEER na regurgitação primária grave sintomática de alto risco. Não alegar leitura integral do PDF bloqueado.",
+      "sourceEvidenceRecord": "web-verification-record.json:vhdslides",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "vhd2021",
+      "title": "ESC/EACTS — Valvular Heart Disease, 2021 (historical crosscheck)",
+      "url": "https://academic.oup.com/eurheartj/article/43/7/561/6358470",
+      "authorityStatus": "SUPERSEDED_GUIDELINE_BACKGROUND_WITH_2025_CROSSCHECK",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "ESC/EACTS 2021 histórico: fisiopatologia, eco, trombo atrial e anticoagulação VKA na estenose reumática com FA. Princípios intervencionistas conferidos com trechos oficiais de 2025; não apresentado como norma mais nova.",
+      "sourceEvidenceRecord": "web-verification-record.json:vhd2021",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_102",
+      "title": "NHS — Heart valve disease",
+      "url": "https://www.nhs.uk/conditions/heart-valve-disease/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 22 January 2025",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_102",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Regurgitación crónica por lesión del aparato mitral; distinta de la secundaria a miocardiopatía y de la rotura aguda. La sobrecarga de volumen dilata aurícula y ventrículo."
+      ],
+      "factIds": [
+        "b03_002_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "La fracción de eyección puede parecer conservada pese a deterioro contráctil, porque parte de la eyección va a la aurícula de menor impedancia. Síntomas, dimensiones y evolución orientan la intervención."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Ecocardiograma integra mecanismo, gravedad, tamaño y función ventricular, presión pulmonar y otras válvulas; no basta una medición aislada. Disnea, menor capacidad física y nueva fibrilación auricular exigen reevaluación."
+      ],
+      "factIds": [
+        "b03_002_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Congestión aguda: valorar oxigenación, perfusión, ECG y radiografía, tratar descompensación y excluir rotura/endocarditis. Inestabilidad o edema pulmonar requiere internación y cardiología."
+      ],
+      "factIds": [
+        "b03_002_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera estrategia definitiva en enfermedad grave operable: reparación quirúrgica duradera por equipo experto. Alternativa ante alto riesgo quirúrgico y anatomía elegible: reparación transcatéter borde a borde tras Heart Team. Sustitución valvular si la reparación no es adecuada."
+      ],
+      "factIds": [
+        "b03_002_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Furosemida puede aliviar congestión; tratar hipertensión e insuficiencia cardíaca cuando existan. No presentar vasodilatadores como cura con función preservada. Monitorizar presión, creatinina y electrolitos; la intervención requiere evaluación integrada, también en asintomáticos."
+      ],
+      "factIds": [
+        "b03_002_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguimiento valvular seriado; discutir intervención antes de disfunción irreversible. Alta tras estabilidad, sin disnea de reposo/hipoperfusión y con seguimiento; embarazo y anticoagulación tras prótesis requieren planes específicos."
+      ],
+      "factIds": [
+        "b03_002_f06"
+      ]
+    }
+  ],
+  "markdown": "# Insuficiencia mitral crónica primaria\n\n## Concepto y mecanismo\n\nRegurgitación crónica por lesión del aparato mitral; distinta de la secundaria a miocardiopatía y de la rotura aguda. La sobrecarga de volumen dilata aurícula y ventrículo.\n\n## Razonamiento y elección terapéutica\n\nLa fracción de eyección puede parecer conservada pese a deterioro contráctil, porque parte de la eyección va a la aurícula de menor impedancia. Síntomas, dimensiones y evolución orientan la intervención.\n\n## Diagnóstico y diferenciales\n\nEcocardiograma integra mecanismo, gravedad, tamaño y función ventricular, presión pulmonar y otras válvulas; no basta una medición aislada. Disnea, menor capacidad física y nueva fibrilación auricular exigen reevaluación.\n\n## Abordaje inicial y urgencias\n\nCongestión aguda: valorar oxigenación, perfusión, ECG y radiografía, tratar descompensación y excluir rotura/endocarditis. Inestabilidad o edema pulmonar requiere internación y cardiología.\n\n## Tratamiento: primera elección y alternativas\n\nPrimera estrategia definitiva en enfermedad grave operable: reparación quirúrgica duradera por equipo experto. Alternativa ante alto riesgo quirúrgico y anatomía elegible: reparación transcatéter borde a borde tras Heart Team. Sustitución valvular si la reparación no es adecuada.\n\n## Seguridad y monitorización\n\nFurosemida puede aliviar congestión; tratar hipertensión e insuficiencia cardíaca cuando existan. No presentar vasodilatadores como cura con función preservada. Monitorizar presión, creatinina y electrolitos; la intervención requiere evaluación integrada, también en asintomáticos.\n\n## Reevaluación, internación y alta\n\nSeguimiento valvular seriado; discutir intervención antes de disfunción irreversible. Alta tras estabilidad, sin disnea de reposo/hipoperfusión y con seguimiento; embarazo y anticoagulación tras prótesis requieren planes específicos.\n\n## Referencias\n\n1. [ESC — Official slides VHD 2025](https://www.escardio.org/static-file/Escardio/Guidelines/Products/Slide%20sets/2025/2025%20official%20slides_VHD.pdf)\n2. [ESC/EACTS — Valvular Heart Disease, 2021 (historical crosscheck)](https://academic.oup.com/eurheartj/article/43/7/561/6358470)\n3. [NHS — Heart valve disease](https://www.nhs.uk/conditions/heart-valve-disease/)",
+  "approvedReviewCanonicalFileSha256": "1c8acb05c0903851078029c793b5dd8363898a7b3dff0c8a0146dcc0ee93e643",
+  "approvedReviewProjectionFileSha256": "e2ded40f4d36261b13b7e902aa578528881058f3e7f65b8971425b190e392f6c"
+}

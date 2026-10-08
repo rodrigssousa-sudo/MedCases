@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Síndrome de hiperêmese canabinoide",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "75c6ab613cd0dfabbeee4b110647bfa2ed154516e827c24ff0486a64d2bc7457",
+  "ownerCandidate": "sindrome_de_hiperemese_canabinoide",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_014_f01",
+    "b03_014_f02",
+    "b03_014_f03",
+    "b03_014_f04",
+    "b03_014_f05",
+    "b03_014_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hidratação, correção de distúrbios e antiemético habitual conforme avaliação. Se refratário, considerar opções RCEM após ECG e revisão de contraindicações; não tratar dor/distensão importante sem investigar."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Perguntar uso e padrão sem julgamento; avaliar eletrólitos, creatinina, glicemia e gestação quando aplicável. Excluir obstrução, pancreatite e outras causas; diferenciar vômitos cíclicos."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Refratário em adulto selecionado: haloperidol 0,05 mg/kg intramuscular, máximo 5 mg, com monitorização; alternativa, capsaicina tópica 0,1%, 5 g sobre abdome. Não trocar a concentração nem a via por inferência; não aplicar capsaicina em mucosa/pele lesada."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não dar haloperidol com QT prolongado; corrigir eletrólitos, revisar Parkinson/demência por corpos de Lewy e monitorizar distonia. Não prescrever para uso domiciliar rotineiro. Opções sintomáticas não curam a síndrome; gestação/pediatria exigem avaliação própria."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alta com tolerância oral, função renal/eletrólitos seguros e apoio para cessação. Persistência, lesão renal ou impossibilidade oral exige observação/internação."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vômitos recorrentes associados a exposição prolongada à cannabis; banho quente pode aliviar, mas não confirma diagnóstico. Cessação sustentada é a prevenção definitiva."
+    }
+  ],
+  "references": [
+    {
+      "key": "rcem_chs",
+      "title": "RCEM — Cannabinoid hyperemesis guideline, 2024",
+      "url": "https://rcem.ac.uk/wp-content/uploads/2024/02/RCEM_Cannabinoid_Hyperemesis_Syndrome_v5.0.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:rcem_chs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_118",
+      "title": "RCEM — Suspected cannabinoid hyperemesis syndrome",
+      "url": "https://rcem.ac.uk/clinical-guidelines/suspected-cannabinoid-hyperemesis-syndrome/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_118",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Hidratação, correção de distúrbios e antiemético habitual conforme avaliação. Se refratário, considerar opções RCEM após ECG e revisão de contraindicações; não tratar dor/distensão importante sem investigar."
+      ],
+      "factIds": [
+        "b03_014_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Perguntar uso e padrão sem julgamento; avaliar eletrólitos, creatinina, glicemia e gestação quando aplicável. Excluir obstrução, pancreatite e outras causas; diferenciar vômitos cíclicos."
+      ],
+      "factIds": [
+        "b03_014_f02"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Refratário em adulto selecionado: haloperidol 0,05 mg/kg intramuscular, máximo 5 mg, com monitorização; alternativa, capsaicina tópica 0,1%, 5 g sobre abdome. Não trocar a concentração nem a via por inferência; não aplicar capsaicina em mucosa/pele lesada."
+      ],
+      "factIds": [
+        "b03_014_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não dar haloperidol com QT prolongado; corrigir eletrólitos, revisar Parkinson/demência por corpos de Lewy e monitorizar distonia. Não prescrever para uso domiciliar rotineiro. Opções sintomáticas não curam a síndrome; gestação/pediatria exigem avaliação própria."
+      ],
+      "factIds": [
+        "b03_014_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Alta com tolerância oral, função renal/eletrólitos seguros e apoio para cessação. Persistência, lesão renal ou impossibilidade oral exige observação/internação."
+      ],
+      "factIds": [
+        "b03_014_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Vômitos recorrentes associados a exposição prolongada à cannabis; banho quente pode aliviar, mas não confirma diagnóstico. Cessação sustentada é a prevenção definitiva."
+      ],
+      "factIds": [
+        "b03_014_f01"
+      ]
+    }
+  ],
+  "markdown": "# Síndrome de hiperêmese canabinoide\n\n## Abordagem inicial e urgências\n\nHidratação, correção de distúrbios e antiemético habitual conforme avaliação. Se refratário, considerar opções RCEM após ECG e revisão de contraindicações; não tratar dor/distensão importante sem investigar.\n\n## Diagnóstico e diferenciais\n\nPerguntar uso e padrão sem julgamento; avaliar eletrólitos, creatinina, glicemia e gestação quando aplicável. Excluir obstrução, pancreatite e outras causas; diferenciar vômitos cíclicos.\n\n## Fármacos, doses e intervalos\n\nRefratário em adulto selecionado: haloperidol 0,05 mg/kg intramuscular, máximo 5 mg, com monitorização; alternativa, capsaicina tópica 0,1%, 5 g sobre abdome. Não trocar a concentração nem a via por inferência; não aplicar capsaicina em mucosa/pele lesada.\n\n## Segurança e monitorização\n\nNão dar haloperidol com QT prolongado; corrigir eletrólitos, revisar Parkinson/demência por corpos de Lewy e monitorizar distonia. Não prescrever para uso domiciliar rotineiro. Opções sintomáticas não curam a síndrome; gestação/pediatria exigem avaliação própria.\n\n## Reavaliação, internação e alta\n\nAlta com tolerância oral, função renal/eletrólitos seguros e apoio para cessação. Persistência, lesão renal ou impossibilidade oral exige observação/internação.\n\n## Reconhecimento rápido\n\nVômitos recorrentes associados a exposição prolongada à cannabis; banho quente pode aliviar, mas não confirma diagnóstico. Cessação sustentada é a prevenção definitiva.\n\n## Referências\n\n1. [RCEM — Cannabinoid hyperemesis guideline, 2024](https://rcem.ac.uk/wp-content/uploads/2024/02/RCEM_Cannabinoid_Hyperemesis_Syndrome_v5.0.pdf)\n2. [RCEM — Suspected cannabinoid hyperemesis syndrome](https://rcem.ac.uk/clinical-guidelines/suspected-cannabinoid-hyperemesis-syndrome/)",
+  "approvedReviewCanonicalFileSha256": "ed24920a91d740ebf117d2116d588e657dc4bc90ca2f6cac54447662e9e01b75",
+  "approvedReviewProjectionFileSha256": "0a0f51f123b59cb4acc0644de7fc6564b02c15d099ef49a1d444b9738f2974ce"
+}

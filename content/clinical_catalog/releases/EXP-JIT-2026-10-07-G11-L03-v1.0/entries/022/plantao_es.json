@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Fiebre amarilla",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "609b902c6b4ffac67b4da087af3a54dcf4a60ed9e0c126c5cc125d12516c412e",
+  "ownerCandidate": "febre_amarela",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_022_f01",
+    "b03_022_f02",
+    "b03_022_f03",
+    "b03_022_f04",
+    "b03_022_f05",
+    "b03_022_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ictericia, sangrado, oliguria, hipotensión o alteración mental: hospital/UCI. Vigilar perfusión, glucemia y diuresis; líquidos según hemodinamia, evitando sobrecarga."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Exposición, vacunación, hemograma, hígado/riñón y coagulación; confirmar con prueba según fase/vigilancia. Diferenciar dengue, leptospirosis, malaria y hepatitis."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primera estrategia: soporte/hidratación; grave: soporte orgánico. No hay antiviral específico demostrado ni dos regímenes curativos. Analgesia/antitérmico según hígado; vacuna previene, no trata el episodio."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evitar aspirina/antiinflamatorios no esteroideos por sangrado. Revisar hepatotóxicos; no antibiótico/corticoide sin otra indicación. Notificar sospecha/prevenir picaduras en fase transmisible."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alta con estabilidad/evolución segura de órganos/análisis; retorno inmediato por ictericia, sangrado o decaimiento. Vacunación futura tras evaluar contraindicaciones."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Arbovirosis febril con posible afectación hepática, renal y hemorrágica; epidemiología/vacunación orientan sospecha."
+    }
+  ],
+  "references": [
+    {
+      "key": "yellow_cdc",
+      "title": "CDC — Yellow fever treatment and prevention",
+      "url": "https://www.cdc.gov/yellow-fever/hcp/treatment-prevention/index.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC: suporte sem antiviral específico; evitar aspirina/anti-inflamatórios por sangramento.",
+      "sourceEvidenceRecord": "web-verification-record.json:yellow_cdc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_131",
+      "title": "NHS — Yellow fever",
+      "url": "https://www.nhs.uk/conditions/yellow-fever/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 25 July 2023",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_131",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Ictericia, sangrado, oliguria, hipotensión o alteración mental: hospital/UCI. Vigilar perfusión, glucemia y diuresis; líquidos según hemodinamia, evitando sobrecarga."
+      ],
+      "factIds": [
+        "b03_022_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Exposición, vacunación, hemograma, hígado/riñón y coagulación; confirmar con prueba según fase/vigilancia. Diferenciar dengue, leptospirosis, malaria y hepatitis."
+      ],
+      "factIds": [
+        "b03_022_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Primera estrategia: soporte/hidratación; grave: soporte orgánico. No hay antiviral específico demostrado ni dos regímenes curativos. Analgesia/antitérmico según hígado; vacuna previene, no trata el episodio."
+      ],
+      "factIds": [
+        "b03_022_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Evitar aspirina/antiinflamatorios no esteroideos por sangrado. Revisar hepatotóxicos; no antibiótico/corticoide sin otra indicación. Notificar sospecha/prevenir picaduras en fase transmisible."
+      ],
+      "factIds": [
+        "b03_022_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Alta con estabilidad/evolución segura de órganos/análisis; retorno inmediato por ictericia, sangrado o decaimiento. Vacunación futura tras evaluar contraindicaciones."
+      ],
+      "factIds": [
+        "b03_022_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Arbovirosis febril con posible afectación hepática, renal y hemorrágica; epidemiología/vacunación orientan sospecha."
+      ],
+      "factIds": [
+        "b03_022_f01"
+      ]
+    }
+  ],
+  "markdown": "# Fiebre amarilla\n\n## Abordaje inicial y urgencias\n\nIctericia, sangrado, oliguria, hipotensión o alteración mental: hospital/UCI. Vigilar perfusión, glucemia y diuresis; líquidos según hemodinamia, evitando sobrecarga.\n\n## Diagnóstico y diferenciales\n\nExposición, vacunación, hemograma, hígado/riñón y coagulación; confirmar con prueba según fase/vigilancia. Diferenciar dengue, leptospirosis, malaria y hepatitis.\n\n## Tratamiento: primera elección y alternativas\n\nPrimera estrategia: soporte/hidratación; grave: soporte orgánico. No hay antiviral específico demostrado ni dos regímenes curativos. Analgesia/antitérmico según hígado; vacuna previene, no trata el episodio.\n\n## Seguridad y monitorización\n\nEvitar aspirina/antiinflamatorios no esteroideos por sangrado. Revisar hepatotóxicos; no antibiótico/corticoide sin otra indicación. Notificar sospecha/prevenir picaduras en fase transmisible.\n\n## Reevaluación, internación y alta\n\nAlta con estabilidad/evolución segura de órganos/análisis; retorno inmediato por ictericia, sangrado o decaimiento. Vacunación futura tras evaluar contraindicaciones.\n\n## Reconocimiento rápido\n\nArbovirosis febril con posible afectación hepática, renal y hemorrágica; epidemiología/vacunación orientan sospecha.\n\n## Referencias\n\n1. [CDC — Yellow fever treatment and prevention](https://www.cdc.gov/yellow-fever/hcp/treatment-prevention/index.html)\n2. [NHS — Yellow fever](https://www.nhs.uk/conditions/yellow-fever/)",
+  "approvedReviewCanonicalFileSha256": "0e2ffae64d8345d80c740d5aaf40c71d13d0769ebaac89d84e20c375532642f9",
+  "approvedReviewProjectionFileSha256": "5b5b6f312436340dd4d176b821ff15ca020aec5273c18d9daf4c64e327a592e5"
+}

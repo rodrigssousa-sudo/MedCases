@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "sindrome_de_hiperemese_canabinoide",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Síndrome de hiperêmese canabinoide",
+    "es": "Síndrome de hiperémesis cannabinoide"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_014_f01",
+      "section": "concept",
+      "pt": "Vômitos recorrentes associados a exposição prolongada à cannabis; banho quente pode aliviar, mas não confirma diagnóstico. Cessação sustentada é a prevenção definitiva.",
+      "es": "Vómitos recurrentes asociados a cannabis prolongado; baños calientes pueden aliviar pero no confirman diagnóstico. La abstinencia sostenida es la prevención definitiva.",
+      "sources": [
+        "rcem_chs",
+        "topic_118"
+      ]
+    },
+    {
+      "id": "b03_014_f02",
+      "section": "diagnosis",
+      "pt": "Perguntar uso e padrão sem julgamento; avaliar eletrólitos, creatinina, glicemia e gestação quando aplicável. Excluir obstrução, pancreatite e outras causas; diferenciar vômitos cíclicos.",
+      "es": "Preguntar consumo/patrón sin juzgar; evaluar electrolitos, creatinina, glucemia y embarazo cuando corresponde. Excluir obstrucción, pancreatitis y otras causas; diferenciar vómitos cíclicos.",
+      "sources": [
+        "rcem_chs",
+        "topic_118"
+      ]
+    },
+    {
+      "id": "b03_014_f03",
+      "section": "initial",
+      "pt": "Hidratação, correção de distúrbios e antiemético habitual conforme avaliação. Se refratário, considerar opções RCEM após ECG e revisão de contraindicações; não tratar dor/distensão importante sem investigar.",
+      "es": "Hidratar, corregir trastornos y antiemético habitual según evaluación. Si refractario, considerar opciones RCEM tras ECG/contraindicaciones; no tratar dolor/distensión importante sin investigar.",
+      "sources": [
+        "rcem_chs",
+        "topic_118"
+      ]
+    },
+    {
+      "id": "b03_014_f04",
+      "section": "doses",
+      "pt": "Refratário em adulto selecionado: haloperidol 0,05 mg/kg intramuscular, máximo 5 mg, com monitorização; alternativa, capsaicina tópica 0,1%, 5 g sobre abdome. Não trocar a concentração nem a via por inferência; não aplicar capsaicina em mucosa/pele lesada.",
+      "es": "Adulto seleccionado refractario: haloperidol 0,05 mg/kg intramuscular, máximo 5 mg, con monitorización; alternativa: capsaicina tópica 0,1%, 5 g en abdomen. No cambiar concentración/vía por inferencia; no aplicar capsaicina en mucosa/piel lesionada.",
+      "sources": [
+        "rcem_chs"
+      ]
+    },
+    {
+      "id": "b03_014_f05",
+      "section": "safety",
+      "pt": "Não dar haloperidol com QT prolongado; corrigir eletrólitos, revisar Parkinson/demência por corpos de Lewy e monitorizar distonia. Não prescrever para uso domiciliar rotineiro. Opções sintomáticas não curam a síndrome; gestação/pediatria exigem avaliação própria.",
+      "es": "No dar haloperidol con QT prolongado; corregir electrolitos, revisar Parkinson/demencia con cuerpos de Lewy y vigilar distonía. No indicar uso domiciliario rutinario. Opciones sintomáticas no curan; embarazo/pediatría requieren evaluación propia.",
+      "sources": [
+        "rcem_chs",
+        "topic_118"
+      ]
+    },
+    {
+      "id": "b03_014_f06",
+      "section": "followup",
+      "pt": "Alta com tolerância oral, função renal/eletrólitos seguros e apoio para cessação. Persistência, lesão renal ou impossibilidade oral exige observação/internação.",
+      "es": "Alta con tolerancia oral, función renal/electrolitos seguros y apoyo para abstinencia. Persistencia, lesión renal o intolerancia oral exige observación/internación.",
+      "sources": [
+        "rcem_chs",
+        "topic_118"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Refratariedade a antieméticos comuns é frequente, porém não autoriza excluir outras urgências. A recomendação RCEM usa haloperidol intramuscular e capsaicina na concentração estudada; prevenção depende de cessar cannabis.",
+      "es": "La refractariedad es frecuente pero no permite descartar otras urgencias. RCEM utiliza haloperidol intramuscular y la concentración estudiada de capsaicina; la prevención depende de dejar cannabis.",
+      "sources": [
+        "rcem_chs",
+        "topic_118"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "rcem_chs",
+      "title": "RCEM — Cannabinoid hyperemesis guideline, 2024",
+      "url": "https://rcem.ac.uk/wp-content/uploads/2024/02/RCEM_Cannabinoid_Hyperemesis_Syndrome_v5.0.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PDF_TEXT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:rcem_chs",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_118",
+      "title": "RCEM — Suspected cannabinoid hyperemesis syndrome",
+      "url": "https://rcem.ac.uk/clinical-guidelines/suspected-cannabinoid-hyperemesis-syndrome/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_118",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

@@ -1,0 +1,109 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Incontinência fecal no adulto",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "136226a86545c69ac3b191bfa85528de47ce8179a2a33b05861a6499bf7988e3",
+  "ownerCandidate": "incontinencia_fecal_no_adulto",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_016_f01",
+    "b03_016_f02",
+    "b03_016_f03",
+    "b03_016_f04",
+    "b03_016_f05",
+    "b03_016_f06"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Perda involuntária de fezes é sintoma de causas diversas: diarreia, impactação com transbordamento, lesão esfincteriana ou doença neurológica."
+      ],
+      "factIds": [
+        "b03_016_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Fezes líquidas e transbordamento podem parecer iguais, mas exigem intervenções opostas. A continência depende de consistência, sensibilidade e esfíncter; aumentar medicamentos sem esclarecer o mecanismo pode piorar."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar consistência/frequência, obstetrícia/cirurgias, medicamentos e exame abdominal, perineal/retal conforme indicação. Sangue, perda de peso, início abrupto ou sinais neurológicos requerem investigação."
+      ],
+      "factIds": [
+        "b03_016_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Nova incontinência com retenção urinária, anestesia em sela ou déficit de membros exige excluir cauda equina urgentemente. Fecaloma requer desimpactação; não iniciar antidiarreico para transbordamento."
+      ],
+      "factIds": [
+        "b03_016_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira escolha: regular consistência, rotina intestinal, proteção da pele e tratar causa. Loperamida pode ser opção se fezes soltas, após excluir infecção/causas contraindicatórias. Alternativa/complemento: treino de assoalho pélvico/biofeedback; neuromodulação sacral ou cirurgia em elegíveis após avaliação especializada."
+      ],
+      "factIds": [
+        "b03_016_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não usar loperamida em constipação, diarreia sanguinolenta infecciosa ou suspeita de obstrução. Titular conforme consistência, sem transformar dose de diarreia aguda em tratamento crônico universal."
+      ],
+      "factIds": [
+        "b03_016_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Seguimento com diário intestinal e impacto funcional; encaminhar falha, lesão estrutural ou diagnóstico incerto. Alta apenas após excluir causas urgentes e definir plano."
+      ],
+      "factIds": [
+        "b03_016_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "cg49",
+      "title": "NICE CG49 — Faecal incontinence adult recommendations",
+      "url": "https://www.nice.org.uk/guidance/cg49/chapter/Recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE CG49: tratar causas e consistência; loperamida se fezes soltas; não usar em impactação. Reabilitação e opções especializadas individualizadas.",
+      "sourceEvidenceRecord": "web-verification-record.json:cg49",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_120",
+      "title": "NHS — Bowel incontinence",
+      "url": "https://www.nhs.uk/conditions/bowel-incontinence/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 15 August 2024",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_120",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Leishmaniasis",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "3c9f232d564a4c10602afe7df78b35ce3c30f6d2a2d7768ee4b60fda9c775679",
+  "ownerCandidate": "leishmaniose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_025_f01",
+    "b03_025_f02",
+    "b03_025_f03",
+    "b03_025_f04",
+    "b03_025_f05",
+    "b03_025_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sangrado, infección secundaria grave, fallo orgánico u obstrucción mucosa: hospital/especialista. Hemograma, riñón, hígado y ECG antes de fármacos tóxicos."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Epidemiología, piel/mucosas y signos viscerales; confirmación parasitológica/molecular según forma. Fiebre prolongada, esplenomegalia/citopenias: evaluar visceral."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Visceral: anfotericina B liposomal preferida en escenarios elegibles; antimonial pentavalente es alternativa limitada por riesgo/protocolo regional. Cutánea localizada elegible: terapia local, incluido antimonial intralesional; miltefosina sistémica solo para especie/población con evidencia. Mucosa exige terapia sistémica especializada."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No copiar dosis de anfotericina de otra micosis. Miltefosina está contraindicada en embarazo y no sirve indiscriminadamente para L. infantum; inmunosupresión cambia recomendaciones. Vigilar riñón/electrolitos, hígado y corazón según agente."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguir respuesta/recidiva; mucosa/visceral requieren especialista. Alta con estabilidad, acceso a terapia/monitorización; cicatrización temprana no prueba curación."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Infección por Leishmania cutánea, mucosa o visceral; forma, especie, región e inmunidad determinan tratamiento."
+    }
+  ],
+  "references": [
+    {
+      "key": "leish2022",
+      "title": "PAHO — Guideline for Treatment of Leishmaniasis, second edition 2022: public recommendation summary",
+      "url": "https://www.paho.org/en/documents/guideline-treatment-leishmaniasis-americas-second-edition",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "OFFICIAL_RECOMMENDATION_SUMMARY_READ",
+      "publicationYear": 2022,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Resumo oficial OPAS 2022 lido por busca: intralesional antimonial fortalecido, miltefosina por espécie, ketoconazol removido. Texto completo não lido; o endpoint PDF retornou DSpace vazio.",
+      "sourceEvidenceRecord": "web-verification-record.json:leish2022",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "leish_cdc",
+      "title": "CDC — Clinical care of leishmaniasis",
+      "url": "https://www.cdc.gov/leishmaniasis/hcp/clinical-care/index.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC: individualizar por forma, espécie, região e hospedeiro; anfotericina lipossomal para visceral, miltefosina em elegíveis, contraindicação gestacional. Não copiar aprovação comercial dos EUA a outro país.",
+      "sourceEvidenceRecord": "web-verification-record.json:leish_cdc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Sangrado, infección secundaria grave, fallo orgánico u obstrucción mucosa: hospital/especialista. Hemograma, riñón, hígado y ECG antes de fármacos tóxicos."
+      ],
+      "factIds": [
+        "b03_025_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Epidemiología, piel/mucosas y signos viscerales; confirmación parasitológica/molecular según forma. Fiebre prolongada, esplenomegalia/citopenias: evaluar visceral."
+      ],
+      "factIds": [
+        "b03_025_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Visceral: anfotericina B liposomal preferida en escenarios elegibles; antimonial pentavalente es alternativa limitada por riesgo/protocolo regional. Cutánea localizada elegible: terapia local, incluido antimonial intralesional; miltefosina sistémica solo para especie/población con evidencia. Mucosa exige terapia sistémica especializada."
+      ],
+      "factIds": [
+        "b03_025_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No copiar dosis de anfotericina de otra micosis. Miltefosina está contraindicada en embarazo y no sirve indiscriminadamente para L. infantum; inmunosupresión cambia recomendaciones. Vigilar riñón/electrolitos, hígado y corazón según agente."
+      ],
+      "factIds": [
+        "b03_025_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguir respuesta/recidiva; mucosa/visceral requieren especialista. Alta con estabilidad, acceso a terapia/monitorización; cicatrización temprana no prueba curación."
+      ],
+      "factIds": [
+        "b03_025_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Infección por Leishmania cutánea, mucosa o visceral; forma, especie, región e inmunidad determinan tratamiento."
+      ],
+      "factIds": [
+        "b03_025_f01"
+      ]
+    }
+  ],
+  "markdown": "# Leishmaniasis\n\n## Abordaje inicial y urgencias\n\nSangrado, infección secundaria grave, fallo orgánico u obstrucción mucosa: hospital/especialista. Hemograma, riñón, hígado y ECG antes de fármacos tóxicos.\n\n## Diagnóstico y diferenciales\n\nEpidemiología, piel/mucosas y signos viscerales; confirmación parasitológica/molecular según forma. Fiebre prolongada, esplenomegalia/citopenias: evaluar visceral.\n\n## Tratamiento: primera elección y alternativas\n\nVisceral: anfotericina B liposomal preferida en escenarios elegibles; antimonial pentavalente es alternativa limitada por riesgo/protocolo regional. Cutánea localizada elegible: terapia local, incluido antimonial intralesional; miltefosina sistémica solo para especie/población con evidencia. Mucosa exige terapia sistémica especializada.\n\n## Seguridad y monitorización\n\nNo copiar dosis de anfotericina de otra micosis. Miltefosina está contraindicada en embarazo y no sirve indiscriminadamente para L. infantum; inmunosupresión cambia recomendaciones. Vigilar riñón/electrolitos, hígado y corazón según agente.\n\n## Reevaluación, internación y alta\n\nSeguir respuesta/recidiva; mucosa/visceral requieren especialista. Alta con estabilidad, acceso a terapia/monitorización; cicatrización temprana no prueba curación.\n\n## Reconocimiento rápido\n\nInfección por Leishmania cutánea, mucosa o visceral; forma, especie, región e inmunidad determinan tratamiento.\n\n## Referencias\n\n1. [PAHO — Guideline for Treatment of Leishmaniasis, second edition 2022: public recommendation summary](https://www.paho.org/en/documents/guideline-treatment-leishmaniasis-americas-second-edition)\n2. [CDC — Clinical care of leishmaniasis](https://www.cdc.gov/leishmaniasis/hcp/clinical-care/index.html)",
+  "approvedReviewCanonicalFileSha256": "248dc8524fdbdea591560e052c70e5c2c1b35648b17bbe9e30a5dd0cdda2e1f0",
+  "approvedReviewProjectionFileSha256": "79d96667c6cc29ee4166a25cf129a5a0a975e6f0308146f94e1b53acec0481bb"
+}

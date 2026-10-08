@@ -1,0 +1,170 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Brucelosis",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "9d7f15c831faec37d73ce8f137c3626456c06cf51712f7f469e5a8d632bae1e9",
+  "ownerCandidate": "brucelose",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_028_f01",
+    "b03_028_f02",
+    "b03_028_f03",
+    "b03_028_f04",
+    "b03_028_f05",
+    "b03_028_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Zoonosis por Brucella, lácteos no pasteurizados/animales, con fiebre, sudoración y afectación focal posible."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "La localización intracelular/focos explican combinación prolongada. Regímenes OMS/CDC tienen tiempos explícitos; ninguna profilaxis corta sustituye tratamiento."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Cultivos/serología según exposición/especie; avisar al laboratorio por riesgo ocupacional. Buscar endocarditis, foco osteoarticular y neurológico si corresponde."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sepsis, endocarditis o signos neurológicos: internación/especialista. No confundir profilaxis ocupacional con tratamiento de enfermedad confirmada."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Adulto no embarazado sin foco complicado: doxiciclina 100 mg oral cada 12 horas MÁS rifampicina 600–900 mg una vez al día, al menos 6 semanas según contexto/peso. Alternativa OMS: doxiciclina 100 mg cada 12 horas durante 45 días MÁS estreptomicina 1 g intramuscular una vez al día durante 15 días."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "B. abortus RB51 resiste rifampicina: alternativa como cotrimoxazol combinado por infectología. Aminoglucósido: riñón/audición; rifampicina: interacciones/hepatotoxicidad. Embarazo, niños/focos complicados requieren esquema propio."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vigilar respuesta, adherencia, toxicidad/recidiva; recurrencia exige cultivos/búsqueda de foco. Alta estable con seguimiento prolongado."
+    }
+  ],
+  "references": [
+    {
+      "key": "bruc_cdc",
+      "title": "CDC — Brucellosis clinical overview, June 2026",
+      "url": "https://www.cdc.gov/brucellosis/hcp/clinical-overview/index.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC junho de 2026: combinação doxiciclina/rifampicina ≥6 semanas em espécies sensíveis; RB51 resistente à rifampicina. Não confundir tratamento com profilaxia ocupacional.",
+      "sourceEvidenceRecord": "web-verification-record.json:bruc_cdc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "bruc_who",
+      "title": "WHO — Brucellosis clinical fact sheet",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/brucellosis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2020,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:bruc_who",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Zoonosis por Brucella, lácteos no pasteurizados/animales, con fiebre, sudoración y afectación focal posible."
+      ],
+      "factIds": [
+        "b03_028_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "La localización intracelular/focos explican combinación prolongada. Regímenes OMS/CDC tienen tiempos explícitos; ninguna profilaxis corta sustituye tratamiento."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Cultivos/serología según exposición/especie; avisar al laboratorio por riesgo ocupacional. Buscar endocarditis, foco osteoarticular y neurológico si corresponde."
+      ],
+      "factIds": [
+        "b03_028_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Sepsis, endocarditis o signos neurológicos: internación/especialista. No confundir profilaxis ocupacional con tratamiento de enfermedad confirmada."
+      ],
+      "factIds": [
+        "b03_028_f03"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Adulto no embarazado sin foco complicado: doxiciclina 100 mg oral cada 12 horas MÁS rifampicina 600–900 mg una vez al día, al menos 6 semanas según contexto/peso. Alternativa OMS: doxiciclina 100 mg cada 12 horas durante 45 días MÁS estreptomicina 1 g intramuscular una vez al día durante 15 días."
+      ],
+      "factIds": [
+        "b03_028_f04"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "B. abortus RB51 resiste rifampicina: alternativa como cotrimoxazol combinado por infectología. Aminoglucósido: riñón/audición; rifampicina: interacciones/hepatotoxicidad. Embarazo, niños/focos complicados requieren esquema propio."
+      ],
+      "factIds": [
+        "b03_028_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Vigilar respuesta, adherencia, toxicidad/recidiva; recurrencia exige cultivos/búsqueda de foco. Alta estable con seguimiento prolongado."
+      ],
+      "factIds": [
+        "b03_028_f06"
+      ]
+    }
+  ],
+  "markdown": "# Brucelosis\n\n## Concepto y mecanismo\n\nZoonosis por Brucella, lácteos no pasteurizados/animales, con fiebre, sudoración y afectación focal posible.\n\n## Razonamiento y elección terapéutica\n\nLa localización intracelular/focos explican combinación prolongada. Regímenes OMS/CDC tienen tiempos explícitos; ninguna profilaxis corta sustituye tratamiento.\n\n## Diagnóstico y diferenciales\n\nCultivos/serología según exposición/especie; avisar al laboratorio por riesgo ocupacional. Buscar endocarditis, foco osteoarticular y neurológico si corresponde.\n\n## Abordaje inicial y urgencias\n\nSepsis, endocarditis o signos neurológicos: internación/especialista. No confundir profilaxis ocupacional con tratamiento de enfermedad confirmada.\n\n## Fármacos, dosis e intervalos\n\nAdulto no embarazado sin foco complicado: doxiciclina 100 mg oral cada 12 horas MÁS rifampicina 600–900 mg una vez al día, al menos 6 semanas según contexto/peso. Alternativa OMS: doxiciclina 100 mg cada 12 horas durante 45 días MÁS estreptomicina 1 g intramuscular una vez al día durante 15 días.\n\n## Seguridad y monitorización\n\nB. abortus RB51 resiste rifampicina: alternativa como cotrimoxazol combinado por infectología. Aminoglucósido: riñón/audición; rifampicina: interacciones/hepatotoxicidad. Embarazo, niños/focos complicados requieren esquema propio.\n\n## Reevaluación, internación y alta\n\nVigilar respuesta, adherencia, toxicidad/recidiva; recurrencia exige cultivos/búsqueda de foco. Alta estable con seguimiento prolongado.\n\n## Referencias\n\n1. [CDC — Brucellosis clinical overview, June 2026](https://www.cdc.gov/brucellosis/hcp/clinical-overview/index.html)\n2. [WHO — Brucellosis clinical fact sheet](https://www.who.int/news-room/fact-sheets/detail/brucellosis)",
+  "approvedReviewCanonicalFileSha256": "84271f3739874a0ea0302d6e61bec721edc13aad3e119dd85df6f929c5591f8e",
+  "approvedReviewProjectionFileSha256": "ffe4c5efe9106203ade3819a99e7bd2985eb2601ea2971d090350a17f7abf00f"
+}

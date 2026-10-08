@@ -1,0 +1,155 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Infecção relacionada a cateter intravascular",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "b4ffa416b3285ff09775059d4b4e84fd8a4ae12f0ff7353e84be620b790a0034",
+  "ownerCandidate": "infeccao_relacionada_a_cateter_intravascular",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_033_f01",
+    "b03_033_f02",
+    "b03_033_f03",
+    "b03_033_f04",
+    "b03_033_f05",
+    "b03_033_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sepse: tratamento imediato e novo acesso seguro quando necessário. Retirar cateter infectado em cenários de alto risco, especialmente S. aureus, Candida, infecção de túnel ou persistência, conforme equipe."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Colher hemoculturas periféricas e do cateter antes de antimicrobiano quando não atrasar tratamento; comparar organismo e tempo de positividade conforme protocolo. Procurar outro foco, infecção do túnel e trombose séptica."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Empirismo: vancomicina quando risco de gram-positivo resistente; acrescentar cobertura gram-negativa em gravidade/risco local. Cultura MSSA favorece beta-lactâmico como cefazolina; alternativa por contraindicação/organismo é escolhida pela infectologia. Salvamento com lock e terapia sistêmica apenas em cateter/organismo elegível."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não tratar Candida com antibacteriano nem usar lock isolado como terapia de bacteremia. Duração depende do organismo, negativação e complicações; monitorizar culturas, rim e níveis/exposição de vancomicina. IDSA 2009 está arquivada/em atualização; protocolo Michigan 2023 fornece apoio operacional atual."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Bacteremia persistente exige pesquisar endocardite/foco metastático e revisar cateter. Alta com estabilidade, culturas/plano apropriados e acesso definido; não recolocar indiscriminadamente no mesmo local."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Infecção local ou da corrente sanguínea atribuível a cateter vascular; presença de cateter em bacteremia não prova causalidade."
+    }
+  ],
+  "references": [
+    {
+      "key": "catheter2023",
+      "title": "Michigan Medicine — Catheter-related bloodstream infection, 2023",
+      "url": "https://www.ncbi.nlm.nih.gov/books/NBK589895/",
+      "authorityStatus": "OFFICIAL_REGIONAL_CLINICAL_PROTOCOL",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2023,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Michigan Medicine 2023: recomendações específicas verificadas por busca primária: culturas periféricas/cateter, vancomicina empírica conforme risco, retirada do cateter nas indicações e salvage excepcional. Resposta direta NCBI foi captcha, não leitura integral.",
+      "sourceEvidenceRecord": "web-verification-record.json:catheter2023",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "catheter2009",
+      "title": "IDSA — Catheter guideline 2009, ARCHIVED, update underway",
+      "url": "https://www.idsociety.org/practice-guideline/iv-catheter",
+      "authorityStatus": "ARCHIVED_GUIDELINE_HISTORICAL_NOT_CURRENT",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2009,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "published in 2001. The guidelines are intended for use by health care providers who care for patients who eit",
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:catheter2009",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Sepse: tratamento imediato e novo acesso seguro quando necessário. Retirar cateter infectado em cenários de alto risco, especialmente S. aureus, Candida, infecção de túnel ou persistência, conforme equipe."
+      ],
+      "factIds": [
+        "b03_033_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Colher hemoculturas periféricas e do cateter antes de antimicrobiano quando não atrasar tratamento; comparar organismo e tempo de positividade conforme protocolo. Procurar outro foco, infecção do túnel e trombose séptica."
+      ],
+      "factIds": [
+        "b03_033_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Empirismo: vancomicina quando risco de gram-positivo resistente; acrescentar cobertura gram-negativa em gravidade/risco local. Cultura MSSA favorece beta-lactâmico como cefazolina; alternativa por contraindicação/organismo é escolhida pela infectologia. Salvamento com lock e terapia sistêmica apenas em cateter/organismo elegível."
+      ],
+      "factIds": [
+        "b03_033_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não tratar Candida com antibacteriano nem usar lock isolado como terapia de bacteremia. Duração depende do organismo, negativação e complicações; monitorizar culturas, rim e níveis/exposição de vancomicina. IDSA 2009 está arquivada/em atualização; protocolo Michigan 2023 fornece apoio operacional atual."
+      ],
+      "factIds": [
+        "b03_033_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Bacteremia persistente exige pesquisar endocardite/foco metastático e revisar cateter. Alta com estabilidade, culturas/plano apropriados e acesso definido; não recolocar indiscriminadamente no mesmo local."
+      ],
+      "factIds": [
+        "b03_033_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Infecção local ou da corrente sanguínea atribuível a cateter vascular; presença de cateter em bacteremia não prova causalidade."
+      ],
+      "factIds": [
+        "b03_033_f01"
+      ]
+    }
+  ],
+  "markdown": "# Infecção relacionada a cateter intravascular\n\n## Abordagem inicial e urgências\n\nSepse: tratamento imediato e novo acesso seguro quando necessário. Retirar cateter infectado em cenários de alto risco, especialmente S. aureus, Candida, infecção de túnel ou persistência, conforme equipe.\n\n## Diagnóstico e diferenciais\n\nColher hemoculturas periféricas e do cateter antes de antimicrobiano quando não atrasar tratamento; comparar organismo e tempo de positividade conforme protocolo. Procurar outro foco, infecção do túnel e trombose séptica.\n\n## Tratamento: primeira escolha e alternativas\n\nEmpirismo: vancomicina quando risco de gram-positivo resistente; acrescentar cobertura gram-negativa em gravidade/risco local. Cultura MSSA favorece beta-lactâmico como cefazolina; alternativa por contraindicação/organismo é escolhida pela infectologia. Salvamento com lock e terapia sistêmica apenas em cateter/organismo elegível.\n\n## Segurança e monitorização\n\nNão tratar Candida com antibacteriano nem usar lock isolado como terapia de bacteremia. Duração depende do organismo, negativação e complicações; monitorizar culturas, rim e níveis/exposição de vancomicina. IDSA 2009 está arquivada/em atualização; protocolo Michigan 2023 fornece apoio operacional atual.\n\n## Reavaliação, internação e alta\n\nBacteremia persistente exige pesquisar endocardite/foco metastático e revisar cateter. Alta com estabilidade, culturas/plano apropriados e acesso definido; não recolocar indiscriminadamente no mesmo local.\n\n## Reconhecimento rápido\n\nInfecção local ou da corrente sanguínea atribuível a cateter vascular; presença de cateter em bacteremia não prova causalidade.\n\n## Referências\n\n1. [Michigan Medicine — Catheter-related bloodstream infection, 2023](https://www.ncbi.nlm.nih.gov/books/NBK589895/)\n2. [IDSA — Catheter guideline 2009, ARCHIVED, update underway](https://www.idsociety.org/practice-guideline/iv-catheter)",
+  "approvedReviewCanonicalFileSha256": "e0706a82b0ff67f6fdc89b381caa6a99f802ae27eb746404a7b18270f08d7526",
+  "approvedReviewProjectionFileSha256": "d37a47b4f482a07fe2792d30e9938cd59825a2f0df9078e087ac3bf0c865a390"
+}

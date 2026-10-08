@@ -1,0 +1,168 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Insuficiência mitral crônica primária",
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "canonicalPayloadSha256": "0e4d11ec210ad5402f0a9298b582265b63d38e43cd2d9e4fbbed9fa5c321da08",
+  "ownerCandidate": "insuficiencia_mitral_cronica_primaria",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b03_002_f01",
+    "b03_002_f02",
+    "b03_002_f03",
+    "b03_002_f04",
+    "b03_002_f05",
+    "b03_002_f06"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Congestão aguda: avaliar oxigenação, perfusão, ECG e radiografia, tratar descompensação e excluir ruptura/endocardite. Instabilidade ou edema pulmonar demanda internação e equipe cardiológica."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ecocardiograma integra mecanismo, gravidade, tamanho e função ventricular, pressão pulmonar e outras valvas; medidas isoladas não bastam. Dispneia, queda de capacidade física e nova fibrilação atrial indicam reavaliação."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira estratégia definitiva na doença grave operável: reparo cirúrgico durável por equipe experiente. Alternativa em alto risco cirúrgico e anatomia elegível: reparo transcateter borda a borda, após Heart Team. Substituição valvar se reparo não for adequado."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Furosemida pode aliviar congestão; tratar hipertensão e insuficiência cardíaca quando presentes. Não prescrever vasodilatador como cura de regurgitação primária com função preservada. Monitorizar pressão, creatinina e eletrólitos; indicação de procedimento depende de avaliação integrada, inclusive pacientes assintomáticos."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguimento valvar seriado; discutir intervenção antes de disfunção irreversível. Alta após estabilidade, sem dispneia de repouso/hipoperfusão, com acompanhamento; gestação e anticoagulação após prótese exigem planos específicos."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Regurgitação crônica por alteração do próprio aparelho mitral; diferente da insuficiência secundária à cardiomiopatia e da ruptura aguda. Sobrecarga de volume causa dilatação atrial/ventricular."
+    }
+  ],
+  "references": [
+    {
+      "key": "vhdslides",
+      "title": "ESC — Official slides VHD 2025",
+      "url": "https://www.escardio.org/static-file/Escardio/Guidelines/Products/Slide%20sets/2025/2025%20official%20slides_VHD.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_SOCIETY_RECOMMENDATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Trechos oficiais ESC 2025 verificados no índice: comissurotomia em estenose reumática sintomática elegível; cirurgia se inelegível; TEER na regurgitação primária grave sintomática de alto risco. Não alegar leitura integral do PDF bloqueado.",
+      "sourceEvidenceRecord": "web-verification-record.json:vhdslides",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "vhd2021",
+      "title": "ESC/EACTS — Valvular Heart Disease, 2021 (historical crosscheck)",
+      "url": "https://academic.oup.com/eurheartj/article/43/7/561/6358470",
+      "authorityStatus": "SUPERSEDED_GUIDELINE_BACKGROUND_WITH_2025_CROSSCHECK",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "ESC/EACTS 2021 histórico: fisiopatologia, eco, trombo atrial e anticoagulação VKA na estenose reumática com FA. Princípios intervencionistas conferidos com trechos oficiais de 2025; não apresentado como norma mais nova.",
+      "sourceEvidenceRecord": "web-verification-record.json:vhd2021",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "topic_102",
+      "title": "NHS — Heart valve disease",
+      "url": "https://www.nhs.uk/conditions/heart-valve-disease/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": "Page last reviewed: 22 January 2025",
+      "scope": "Informação pública específica; identificação isolada não sustenta doses.",
+      "sourceEvidenceRecord": "source-readback.json:topic_102",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Congestão aguda: avaliar oxigenação, perfusão, ECG e radiografia, tratar descompensação e excluir ruptura/endocardite. Instabilidade ou edema pulmonar demanda internação e equipe cardiológica."
+      ],
+      "factIds": [
+        "b03_002_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Ecocardiograma integra mecanismo, gravidade, tamanho e função ventricular, pressão pulmonar e outras valvas; medidas isoladas não bastam. Dispneia, queda de capacidade física e nova fibrilação atrial indicam reavaliação."
+      ],
+      "factIds": [
+        "b03_002_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira estratégia definitiva na doença grave operável: reparo cirúrgico durável por equipe experiente. Alternativa em alto risco cirúrgico e anatomia elegível: reparo transcateter borda a borda, após Heart Team. Substituição valvar se reparo não for adequado."
+      ],
+      "factIds": [
+        "b03_002_f04"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Furosemida pode aliviar congestão; tratar hipertensão e insuficiência cardíaca quando presentes. Não prescrever vasodilatador como cura de regurgitação primária com função preservada. Monitorizar pressão, creatinina e eletrólitos; indicação de procedimento depende de avaliação integrada, inclusive pacientes assintomáticos."
+      ],
+      "factIds": [
+        "b03_002_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Seguimento valvar seriado; discutir intervenção antes de disfunção irreversível. Alta após estabilidade, sem dispneia de repouso/hipoperfusão, com acompanhamento; gestação e anticoagulação após prótese exigem planos específicos."
+      ],
+      "factIds": [
+        "b03_002_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Regurgitação crônica por alteração do próprio aparelho mitral; diferente da insuficiência secundária à cardiomiopatia e da ruptura aguda. Sobrecarga de volume causa dilatação atrial/ventricular."
+      ],
+      "factIds": [
+        "b03_002_f01"
+      ]
+    }
+  ],
+  "markdown": "# Insuficiência mitral crônica primária\n\n## Abordagem inicial e urgências\n\nCongestão aguda: avaliar oxigenação, perfusão, ECG e radiografia, tratar descompensação e excluir ruptura/endocardite. Instabilidade ou edema pulmonar demanda internação e equipe cardiológica.\n\n## Diagnóstico e diferenciais\n\nEcocardiograma integra mecanismo, gravidade, tamanho e função ventricular, pressão pulmonar e outras valvas; medidas isoladas não bastam. Dispneia, queda de capacidade física e nova fibrilação atrial indicam reavaliação.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira estratégia definitiva na doença grave operável: reparo cirúrgico durável por equipe experiente. Alternativa em alto risco cirúrgico e anatomia elegível: reparo transcateter borda a borda, após Heart Team. Substituição valvar se reparo não for adequado.\n\n## Segurança e monitorização\n\nFurosemida pode aliviar congestão; tratar hipertensão e insuficiência cardíaca quando presentes. Não prescrever vasodilatador como cura de regurgitação primária com função preservada. Monitorizar pressão, creatinina e eletrólitos; indicação de procedimento depende de avaliação integrada, inclusive pacientes assintomáticos.\n\n## Reavaliação, internação e alta\n\nSeguimento valvar seriado; discutir intervenção antes de disfunção irreversível. Alta após estabilidade, sem dispneia de repouso/hipoperfusão, com acompanhamento; gestação e anticoagulação após prótese exigem planos específicos.\n\n## Reconhecimento rápido\n\nRegurgitação crônica por alteração do próprio aparelho mitral; diferente da insuficiência secundária à cardiomiopatia e da ruptura aguda. Sobrecarga de volume causa dilatação atrial/ventricular.\n\n## Referências\n\n1. [ESC — Official slides VHD 2025](https://www.escardio.org/static-file/Escardio/Guidelines/Products/Slide%20sets/2025/2025%20official%20slides_VHD.pdf)\n2. [ESC/EACTS — Valvular Heart Disease, 2021 (historical crosscheck)](https://academic.oup.com/eurheartj/article/43/7/561/6358470)\n3. [NHS — Heart valve disease](https://www.nhs.uk/conditions/heart-valve-disease/)",
+  "approvedReviewCanonicalFileSha256": "1c8acb05c0903851078029c793b5dd8363898a7b3dff0c8a0146dcc0ee93e643",
+  "approvedReviewProjectionFileSha256": "604c5bbde6b2721c160f47b18d9fdf3bca5aef905605c1c33d850682a068487f"
+}

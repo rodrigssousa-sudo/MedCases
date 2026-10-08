@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L03-v1.0",
+  "reviewDate": "2026-10-07",
+  "reviewer": null,
+  "ownerCandidate": "brucelose",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Brucelose",
+    "es": "Brucelosis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L02",
+  "identityDecision": "NEW_CANDIDATE; no equivalent ID, available PT/ES title or alias in 767 active owners or 502 CMS records. Manual clinical scope crosscheck completed; final registration is not executed.",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "facts": [
+    {
+      "id": "b03_028_f01",
+      "section": "concept",
+      "pt": "Zoonose por Brucella, ligada a lácteos não pasteurizados e animais, com febre, sudorese e possível acometimento focal.",
+      "es": "Zoonosis por Brucella, lácteos no pasteurizados/animales, con fiebre, sudoración y afectación focal posible.",
+      "sources": [
+        "bruc_cdc",
+        "bruc_who"
+      ]
+    },
+    {
+      "id": "b03_028_f02",
+      "section": "diagnosis",
+      "pt": "Culturas e sorologia conforme exposição/espécie; avisar laboratório antes de amostras suspeitas pelo risco ocupacional. Investigar endocardite, foco osteoarticular e neurológico se indicados.",
+      "es": "Cultivos/serología según exposición/especie; avisar al laboratorio por riesgo ocupacional. Buscar endocarditis, foco osteoarticular y neurológico si corresponde.",
+      "sources": [
+        "bruc_cdc",
+        "bruc_who"
+      ]
+    },
+    {
+      "id": "b03_028_f03",
+      "section": "initial",
+      "pt": "Sepse, endocardite ou sinais neurológicos: internação/especialista. Não confundir profilaxia de exposição laboratorial com tratamento da doença confirmada.",
+      "es": "Sepsis, endocarditis o signos neurológicos: internación/especialista. No confundir profilaxis ocupacional con tratamiento de enfermedad confirmada.",
+      "sources": [
+        "bruc_cdc",
+        "bruc_who"
+      ]
+    },
+    {
+      "id": "b03_028_f04",
+      "section": "doses",
+      "pt": "Adulto não gestante sem foco complicado: opção oral, doxiciclina 100 mg a cada 12 horas MAIS rifampicina 600–900 mg uma vez ao dia, por pelo menos 6 semanas, ajustando contexto/peso. Alternativa OMS: doxiciclina 100 mg a cada 12 horas por 45 dias MAIS estreptomicina 1 g intramuscular uma vez ao dia por 15 dias.",
+      "es": "Adulto no embarazado sin foco complicado: doxiciclina 100 mg oral cada 12 horas MÁS rifampicina 600–900 mg una vez al día, al menos 6 semanas según contexto/peso. Alternativa OMS: doxiciclina 100 mg cada 12 horas durante 45 días MÁS estreptomicina 1 g intramuscular una vez al día durante 15 días.",
+      "sources": [
+        "bruc_cdc",
+        "bruc_who"
+      ]
+    },
+    {
+      "id": "b03_028_f05",
+      "section": "safety",
+      "pt": "Brucella abortus RB51 é resistente a rifampicina: selecionar alternativa, como cotrimoxazol combinado, com infectologia. Aminoglicosídeo exige função renal/audição; rifampicina tem interações e hepatotoxicidade. Gestantes/crianças e focos complicados precisam esquema próprio.",
+      "es": "B. abortus RB51 resiste rifampicina: alternativa como cotrimoxazol combinado por infectología. Aminoglucósido: riñón/audición; rifampicina: interacciones/hepatotoxicidad. Embarazo, niños/focos complicados requieren esquema propio.",
+      "sources": [
+        "bruc_cdc",
+        "bruc_who"
+      ]
+    },
+    {
+      "id": "b03_028_f06",
+      "section": "followup",
+      "pt": "Monitorizar resposta, adesão, toxicidade e recaída; recorrência exige culturas e pesquisa de foco. Alta com estabilidade e plano longo de acompanhamento.",
+      "es": "Vigilar respuesta, adherencia, toxicidad/recidiva; recurrencia exige cultivos/búsqueda de foco. Alta estable con seguimiento prolongado.",
+      "sources": [
+        "bruc_cdc",
+        "bruc_who"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A localização intracelular e a possibilidade de foco explicam terapia combinada/prolongada. Os regimes OMS e CDC têm unidades de tempo explícitas; nenhuma profilaxia curta substitui tratamento.",
+      "es": "La localización intracelular/focos explican combinación prolongada. Regímenes OMS/CDC tienen tiempos explícitos; ninguna profilaxis corta sustituye tratamiento.",
+      "sources": [
+        "bruc_cdc",
+        "bruc_who"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "bruc_cdc",
+      "title": "CDC — Brucellosis clinical overview, June 2026",
+      "url": "https://www.cdc.gov/brucellosis/hcp/clinical-overview/index.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "WEB_INDEXED_SPECIFIC_RECOMMENDATIONS",
+      "publicationYear": null,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC junho de 2026: combinação doxiciclina/rifampicina ≥6 semanas em espécies sensíveis; RB51 resistente à rifampicina. Não confundir tratamento com profilaxia ocupacional.",
+      "sourceEvidenceRecord": "web-verification-record.json:bruc_cdc",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    },
+    {
+      "key": "bruc_who",
+      "title": "WHO — Brucellosis clinical fact sheet",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/brucellosis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_CLINICAL_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2020,
+      "checkedAt": "2026-10-07",
+      "lastReviewAsDisplayed": null,
+      "scope": "Aplicar somente ao cenário consultado; formulações e populações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback.json:bruc_who",
+      "recencyAssessment": "Data de consulta não é data de publicação. Protocolo regional ou bula não define tratamento universal; recomendações antigas não são renomeadas como atualização 2026."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Regimes especializados sem dose numérica universal exigem individualização. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}
