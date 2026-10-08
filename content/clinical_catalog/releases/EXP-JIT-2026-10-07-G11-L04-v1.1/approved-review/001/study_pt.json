@@ -1,0 +1,161 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Perda auditiva neurossensorial súbita",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "99f53f1a9eb9456b3f6701050d23f2bc745714aa2fcfdbe3f743067a97c61a77",
+  "ownerCandidate": "perda_auditiva_neurossensorial_subita",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_001_f01",
+    "b04_001_f02",
+    "b04_001_f03",
+    "b04_001_f04",
+    "b04_001_f05",
+    "b04_001_f06",
+    "b04_001_f07",
+    "b04_001_f08"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Perda auditiva aguda por disfunção coclear/retrocochlear; frequentemente unilateral e idiopática. Zumbido ou vertigem podem coexistir."
+      ],
+      "factIds": [
+        "b04_001_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "As opções dependem da janela temporal, gravidade e contraindicações; injeção intratimpânica não é equivalente a prescrição oral domiciliar."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Otoscopia e testes auditivos distinguem cerume/otite da perda neurossensorial; confirmar por audiometria. Investigar causa retrocochlear com ressonância ou potencial evocado conforme especialista."
+      ],
+      "factIds": [
+        "b04_001_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Perda súbita não explicada por ouvido externo/médio exige avaliação urgente; se surgida em até 3 dias nos últimos 30 dias, atendimento em até 24 horas. Déficit focal demanda investigação de AVC."
+      ],
+      "factIds": [
+        "b04_001_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Em adulto com perda idiopática elegível, oferecer prednisona na janela inicial; dexametasona intratimpânica é alternativa ou resgate com otorrino. Oxigenoterapia hiperbárica pode complementar o corticoide em selecionados. Benefício não é garantido."
+      ],
+      "factIds": [
+        "b04_001_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Prednisona, adulto: 1 mg por kg por dia por via oral, em dose única, máximo usual 60 mg por dia, durante 7–14 dias; depois redução ao longo de período semelhante, individualizada. Iniciar idealmente nos primeiros 14 dias. Monitorizar glicemia, pressão e efeitos do corticoide.",
+        "Dexametasona intratimpânica: solução 24 mg por mL, ou 10 mg por mL quando a concentração manipulada não estiver disponível; otorrino injeta 0,4–0,8 mL no ouvido médio, até 4 aplicações em 2 semanas. Resgate recomendado na recuperação incompleta entre 2 e 6 semanas do início. Procedimento especializado; não são gotas no conduto auditivo."
+      ],
+      "factIds": [
+        "b04_001_f07",
+        "b04_001_f08"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não usar antivirais ou vasodilatadores rotineiramente. Seleção, dose e técnica do corticoide requerem protocolo otológico; avaliar diabetes, pressão arterial e riscos da via escolhida."
+      ],
+      "factIds": [
+        "b04_001_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Audiometria ao final do tratamento e em até 6 meses; persistência exige reabilitação auditiva e suporte para zumbido. Não atrasar encaminhamento aguardando exames eletivos."
+      ],
+      "factIds": [
+        "b04_001_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_160",
+      "title": "NHS — Perda auditiva neurossensorial súbita",
+      "url": "https://www.nhs.uk/conditions/hearing-loss/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 30 May 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_160",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "hearing_guideline",
+      "title": "AAO-HNS 2019 — guideline original",
+      "url": "https://aao-hnsfjournals.onlinelibrary.wiley.com/doi/abs/10.1177/0194599819859885",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2019,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Guideline final AAO-HNS 2019 substitui 2012; resumo executivo oficial: resgate intratimpânico 2–6 semanas; audiometria ao final e em até 6 meses. Leitura de recomendações específicas, sem alegar acesso integral ao texto restrito.",
+      "sourceEvidenceRecord": "web-verification-record.json:hearing_guideline",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "hearing_nice",
+      "title": "NICE NG98 — hearing loss assessment",
+      "url": "https://www.nice.org.uk/guidance/ng98/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2018,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE NG98: perda em até 3 dias nos últimos 30 dias, não explicada por ouvido externo/médio: avaliação em até 24 horas; recomendação oficial específica consultada.",
+      "sourceEvidenceRecord": "web-verification-record.json:hearing_nice",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "aaohnsfaq",
+      "title": "AAO-HNS — Sudden Hearing Loss: patient information accompanying final guideline 2019",
+      "url": "https://www.entnet.org/wp-content/uploads/2021/04/Sudden-Hearing-Loss-FAQs-Physician.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2019,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Informação pública da AAO-HNS: opções iniciais em 2 semanas. PDF não acessível diretamente; trechos oficiais consultados. Não é uma tabela de doses.",
+      "sourceEvidenceRecord": "web-verification-record.json:aaohnsfaq",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "ssnhl_doses",
+      "title": "AAO-HNS — Sudden Hearing Loss, final guideline 2019, Table 10",
+      "url": "https://www.rcot.org/2021/pdf/Clinical%20Practice%20Guideline%20Sudden%20Hearing%20Loss%20(Update).pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published online",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:ssnhl_doses",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

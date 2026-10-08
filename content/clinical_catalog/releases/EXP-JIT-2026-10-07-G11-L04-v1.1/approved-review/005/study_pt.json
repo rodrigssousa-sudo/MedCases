@@ -1,0 +1,138 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Luxação temporomandibular",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "fb90a0f8c1389c9f3a86436ba7b2bab0b6b6b5381333cd8c971bd30193fa31c5",
+  "ownerCandidate": "luxacao_temporomandibular",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_005_f01",
+    "b04_005_f02",
+    "b04_005_f03",
+    "b04_005_f04",
+    "b04_005_f05",
+    "b04_005_f06",
+    "b04_005_f07",
+    "b04_005_f08",
+    "b04_005_f09"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Deslocamento do côndilo mandibular provoca boca travada aberta, dor e dificuldade para mastigar ou falar."
+      ],
+      "factIds": [
+        "b04_005_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "O tratamento corrige deslocamento mecânico; analgésicos são auxiliares e não substituem redução."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar mecanismo, oclusão, trauma e déficit neurológico; suspeita de fratura exige imagem e abordagem maxilofacial antes de redução."
+      ],
+      "factIds": [
+        "b04_005_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Priorizar via aérea, sangramento e aspiração; redução precoce por profissional treinado, com analgesia e ambiente apropriado."
+      ],
+      "factIds": [
+        "b04_005_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Redução fechada é primeira estratégia em luxação simples. Anestesia local ou sedação monitorizada pode facilitar; alternativa para falha, fratura ou recorrência: avaliação maxilofacial e procedimento especializado."
+      ],
+      "factIds": [
+        "b04_005_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Primeira escolha: redução fechada por profissional treinado, após excluir fratura. Falha ou recorrência: abordagem maxilofacial. Analgesia abaixo é apoio após avaliação; anestesia local/sedação para redução exige plano do procedimento, peso, monitorização e equipe de via aérea, sem esquema domiciliar universal.",
+        "Dor, somente em adulto com pelo menos 50 kg e sem risco hepático: paracetamol 500–1.000 mg por via oral a cada 6 horas se necessário, máximo 4.000 mg em 24 horas somando todas as apresentações. Uso breve; reavaliar se precisar por mais de 3 dias. Peso menor, hepatopatia, alcoolismo ou fragilidade exigem limite menor individualizado. Não trata a causa.",
+        "Alternativa para dor inflamatória em adulto elegível: ibuprofeno 200–400 mg por via oral a cada 8 horas se necessário, com alimento, máximo 1.200 mg por dia neste esquema de curta duração. Não associar a outro anti-inflamatório. Evitar em lesão renal, sangramento/úlcera, insuficiência cardíaca descompensada ou gestação; reavaliar necessidade e risco digestivo."
+      ],
+      "factIds": [
+        "b04_005_f07",
+        "b04_005_f08",
+        "b04_005_f09"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não instruir redução domiciliar. Sedação requer avaliação de risco respiratório e monitorização; proteger dedos/equipe e não forçar articulação traumática."
+      ],
+      "factIds": [
+        "b04_005_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Após redução: dieta macia, evitar abertura excessiva e apoio mandibular ao bocejar; seguimento para recorrência ou dor persistente."
+      ],
+      "factIds": [
+        "b04_005_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_164",
+      "title": "NIH/NLM — Luxação temporomandibular",
+      "url": "https://www.medlineplus.gov/ency/article/000019.htm",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Review Date 4/3/2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_164",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "paracetamol_nhs",
+      "title": "NHS — Paracetamol for adults: dosing and precautions",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:paracetamol_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "ibuprofen_nhs",
+      "title": "NHS — Ibuprofen for adults: dose, maximum and precautions",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:ibuprofen_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

@@ -1,0 +1,214 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "reviewer": null,
+  "ownerCandidate": "intoxicacao_por_fenitoina",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Intoxicação por fenitoína",
+    "es": "Intoxicación por fenitoína"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L03",
+  "identityDecision": "NEW_DISTINCT_SCOPE_CANDIDATE; NO_OWNER_REGISTERED",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "treatmentApplicability": "TOXICOLOGY_SUPPORT_WITH_INDICATED_COMPLICATION_RESCUE",
+  "regimens": [
+    {
+      "drug": "lorazepam / midazolam",
+      "role": "COMPLICATION_RESCUE_SEIZURE",
+      "pt": "Convulsão prolongada no adulto: lorazepam 4 mg intravenosos lentamente, sem exceder 2 mg por minuto; se persistir/recorrer, pode repetir 4 mg após 10–15 minutos, com equipe de reanimação e controle respiratório. Referência pediátrica separada: midazolam 0,15 mg por kg intravenosos (máximo 10 mg por dose) ou 0,3 mg por kg por via bucal/intranasal (máximo 10 mg); no máximo 2 doses de benzodiazepínico, contando as pré-hospitalares. Não administrar preventivamente ao intoxicado assintomático.",
+      "es": "Convulsión prolongada en adulto: lorazepam 4 mg intravenosos lentamente, sin superar 2 mg por minuto; si persiste/recurre, puede repetirse 4 mg después de 10–15 minutos, con equipo de reanimación y control respiratorio. Referencia pediátrica separada: midazolam 0,15 mg por kg intravenosos (máximo 10 mg por dosis) o 0,3 mg por kg por vía bucal/intranasal (máximo 10 mg); como máximo 2 dosis de benzodiazepina, contando las prehospitalarias. No administrar preventivamente al intoxicado asintomático.",
+      "sources": [
+        "loraz_label",
+        "midazolam_rch"
+      ]
+    },
+    {
+      "drug": null,
+      "role": "NO_ROUTINE_ANTIDOTE",
+      "pt": "Fenitoína: suspender exposição e dar suporte; não há antídoto específico. Não administrar nova carga de fenitoína para convulsão provocada pela própria intoxicação. Carvão e remoção extracorpórea são decisões toxicológicas selecionadas, não tratamento obrigatório. Monitorizar nível total/livre conforme albumina/rim, ECG, consciência e deglutição.",
+      "es": "Fenitoína: suspender exposición y dar soporte; no hay antídoto específico. No administrar nueva carga de fenitoína para convulsión causada por la propia intoxicación. Carbón y eliminación extracorpórea son decisiones toxicológicas seleccionadas, no obligatorias. Controlar nivel total/libre según albúmina/riñón, ECG, conciencia y deglución.",
+      "sources": [
+        "topic_207",
+        "extrip_pht"
+      ]
+    }
+  ],
+  "treatmentRevision": "ALL_50_REVIEWED_V1.1",
+  "facts": [
+    {
+      "id": "b04_048_f01",
+      "section": "concept",
+      "pt": "Exposição excessiva causa nistagmo, ataxia e depressão neurológica; cinética não linear.",
+      "es": "Exposición excesiva causa nistagmo, ataxia y depresión neurológica; cinética no lineal.",
+      "sources": [
+        "topic_207",
+        "extrip_pht",
+        "loraz_label",
+        "midazolam_rch"
+      ]
+    },
+    {
+      "id": "b04_048_f02",
+      "section": "diagnosis",
+      "pt": "História, nível sérico interpretado com albumina/função renal, ECG e coingestões.",
+      "es": "Historia, nivel sérico interpretado con albúmina/función renal, ECG y coingestas.",
+      "sources": [
+        "topic_207",
+        "extrip_pht",
+        "loraz_label",
+        "midazolam_rch"
+      ]
+    },
+    {
+      "id": "b04_048_f03",
+      "section": "initial",
+      "pt": "Suporte de via aérea e perfusão; diferenciar toxicidade da administração intravenosa rápida.",
+      "es": "Soporte de vía aérea y perfusión; distinguir toxicidad por administración intravenosa rápida.",
+      "sources": [
+        "topic_207",
+        "extrip_pht",
+        "loraz_label",
+        "midazolam_rch"
+      ]
+    },
+    {
+      "id": "b04_048_f04",
+      "section": "options",
+      "pt": "Suporte e suspensão temporária supervisionada são principais. Hemodiálise pode ser considerada em coma/ataxia incapacitante prolongados, conforme toxicologia/EXTRIP.",
+      "es": "Soporte y suspensión temporal supervisada principales. Hemodiálisis puede considerarse ante coma/ataxia incapacitante prolongados según toxicología/EXTRIP.",
+      "sources": [
+        "topic_207",
+        "extrip_pht",
+        "loraz_label",
+        "midazolam_rch"
+      ]
+    },
+    {
+      "id": "b04_048_f05",
+      "section": "safety",
+      "pt": "Não indicar terapia extracorpórea só pela dose ingerida ou nível sérico. Carvão não é descontaminação rotineira deste cenário.",
+      "es": "No indicar terapia extracorpórea solo por dosis ingerida o nivel sérico. Carbón no es descontaminación rutinaria en este escenario.",
+      "sources": [
+        "topic_207",
+        "extrip_pht",
+        "loraz_label",
+        "midazolam_rch"
+      ]
+    },
+    {
+      "id": "b04_048_f06",
+      "section": "followup",
+      "pt": "Monitorizar evolução e níveis quando indicados; alta após recuperação funcional e plano anticonvulsivante.",
+      "es": "Controlar evolución y niveles cuando indicados; alta tras recuperación funcional y plan anticonvulsivo.",
+      "sources": [
+        "topic_207",
+        "extrip_pht",
+        "loraz_label",
+        "midazolam_rch"
+      ]
+    },
+    {
+      "id": "b04_048_f07",
+      "section": "doses",
+      "pt": "Convulsão prolongada no adulto: lorazepam 4 mg intravenosos lentamente, sem exceder 2 mg por minuto; se persistir/recorrer, pode repetir 4 mg após 10–15 minutos, com equipe de reanimação e controle respiratório. Referência pediátrica separada: midazolam 0,15 mg por kg intravenosos (máximo 10 mg por dose) ou 0,3 mg por kg por via bucal/intranasal (máximo 10 mg); no máximo 2 doses de benzodiazepínico, contando as pré-hospitalares. Não administrar preventivamente ao intoxicado assintomático.",
+      "es": "Convulsión prolongada en adulto: lorazepam 4 mg intravenosos lentamente, sin superar 2 mg por minuto; si persiste/recurre, puede repetirse 4 mg después de 10–15 minutos, con equipo de reanimación y control respiratorio. Referencia pediátrica separada: midazolam 0,15 mg por kg intravenosos (máximo 10 mg por dosis) o 0,3 mg por kg por vía bucal/intranasal (máximo 10 mg); como máximo 2 dosis de benzodiazepina, contando las prehospitalarias. No administrar preventivamente al intoxicado asintomático.",
+      "sources": [
+        "loraz_label",
+        "midazolam_rch"
+      ]
+    },
+    {
+      "id": "b04_048_f08",
+      "section": "doses",
+      "pt": "Fenitoína: suspender exposição e dar suporte; não há antídoto específico. Não administrar nova carga de fenitoína para convulsão provocada pela própria intoxicação. Carvão e remoção extracorpórea são decisões toxicológicas selecionadas, não tratamento obrigatório. Monitorizar nível total/livre conforme albumina/rim, ECG, consciência e deglutição.",
+      "es": "Fenitoína: suspender exposición y dar soporte; no hay antídoto específico. No administrar nueva carga de fenitoína para convulsión causada por la propia intoxicación. Carbón y eliminación extracorpórea son decisiones toxicológicas seleccionadas, no obligatorias. Controlar nivel total/libre según albúmina/riñón, ECG, conciencia y deglución.",
+      "sources": [
+        "topic_207",
+        "extrip_pht"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A duração da toxicidade não é prevista por um único nível; monitorização clínica é essencial.",
+      "es": "La duración de toxicidad no se predice por un nivel único; control clínico esencial.",
+      "sources": [
+        "topic_207",
+        "extrip_pht",
+        "loraz_label",
+        "midazolam_rch"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_207",
+      "title": "RCH — Intoxicação por fenitoína",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Phenytoin_poisoning/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated January 2018",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_207",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "extrip_pht",
+      "title": "EXTRIP — Phenytoin",
+      "url": "https://www.extrip-workgroup.org/phenytoin",
+      "authorityStatus": "SOCIETY_TOXICOLOGY_RECOMMENDATIONS",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:extrip_pht",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "loraz_label",
+      "title": "DailyMed — Lorazepam injection: adult status epilepticus regimen",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5a02c97d-637d-43f7-803c-afe4381ccc59",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:loraz_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "midazolam_rch",
+      "title": "RCH — Seizures, acute management: pediatric benzodiazepine doses",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Seizures_-_acute_management/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published: 27 April 2022. https://www.nice.org.uk/guidance/ng217 (viewed October 2024).",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:midazolam_rch",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Medicamentos, doses e alternativas identificados por cenário; procedimentos e ausência de fármaco específico explicitados. Regimes sem intervalo universal validado permanecem calculados pelo especialista. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

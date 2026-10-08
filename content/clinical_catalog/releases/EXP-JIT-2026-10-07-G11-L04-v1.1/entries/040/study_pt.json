@@ -1,0 +1,227 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Neuralgia do trigêmeo",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "2ff39b2db728514606d0ee02366ea64862550f3476a2874317f7040c02967e86",
+  "ownerCandidate": "neuralgia_do_trigemeo",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_040_f01",
+    "b04_040_f02",
+    "b04_040_f03",
+    "b04_040_f04",
+    "b04_040_f05",
+    "b04_040_f06",
+    "b04_040_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor facial paroxística em choque no território trigeminal, frequentemente desencadeada por toque."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "A recomendação da neuropatia dolorosa geral não se aplica automaticamente à neuralgia trigeminal."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar padrão e exame neurológico; déficit sensitivo ou apresentação atípica exige investigação estrutural."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor com lesão ocular, febre ou déficit novo exige excluir outras urgências."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opções especificadas neste tema: carbamazepina / oxcarbazepina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Carbamazepina é opção inicial recomendada; oxcarbazepina ou outras opções sob especialista se inadequada. Descompressão/procedimentos em refratariedade ou intolerância."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Carbamazepina em comprimido, adulto: 100 mg por via oral a cada 12 horas inicialmente, titular para menor dose eficaz; máximo 1.200 mg por dia na bula para neuralgia trigeminal. Alternativa com neurologia: oxcarbazepina 150 mg por via oral pela manhã e à noite nos primeiros 3 dias; o protocolo NHS facial permite 150 mg 3 vezes ao dia entre os dias 4 e 14 e titulação posterior conforme resposta. Monitorizar sódio, hemograma, fígado, rash e interações; formulações não intercambiáveis. Duração por resposta, com retirada gradual, não como analgésico eventual."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Titular gradualmente e revisar sódio, hemograma, fígado, interações e risco reprodutivo. Analgésico comum não substitui terapia específica."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Neurologia e plano de seguimento; retirar gradualmente quando indicado, não durante crise sem orientação."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_199",
+      "title": "NHS — Neuralgia do trigêmeo",
+      "url": "https://www.nhs.uk/conditions/trigeminal-neuralgia/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 January 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_199",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "topic_199_treatment",
+      "title": "NHS — Neuralgia do trigêmeo — treatment",
+      "url": "https://www.nhs.uk/conditions/trigeminal-neuralgia/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 January 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_199_treatment",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "neuropathic",
+      "title": "NICE CG173 — Neuropathic pain",
+      "url": "https://www.nice.org.uk/guidance/cg173/chapter/Recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE CG173: amitriptilina/duloxetina/gabapentina/pregabalina na neuropatia dolorosa; carbamazepina para neuralgia trigeminal. Não confundir os dois algoritmos.",
+      "sourceEvidenceRecord": "web-verification-record.json:neuropathic",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "carbam_label",
+      "title": "DailyMed — carbamazepine tablets, trigeminal neuralgia",
+      "url": "https://www.dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=62d38b93-7dd0-48e7-bd59-a434d52520f6&type=display",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:carbam_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "oxcarb_tn",
+      "title": "Guy’s and St Thomas’ NHS — Oxcarbazepine for facial pain: adult titration table",
+      "url": "https://www.guysandstthomas.nhs.uk/health-information/oxcarbazepine-facial-pain",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last reviewed: June 2026",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:oxcarb_tn",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Dor facial paroxística em choque no território trigeminal, frequentemente desencadeada por toque."
+      ],
+      "factIds": [
+        "b04_040_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A recomendação da neuropatia dolorosa geral não se aplica automaticamente à neuralgia trigeminal."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar padrão e exame neurológico; déficit sensitivo ou apresentação atípica exige investigação estrutural."
+      ],
+      "factIds": [
+        "b04_040_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Dor com lesão ocular, febre ou déficit novo exige excluir outras urgências."
+      ],
+      "factIds": [
+        "b04_040_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: carbamazepina / oxcarbazepina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Carbamazepina é opção inicial recomendada; oxcarbazepina ou outras opções sob especialista se inadequada. Descompressão/procedimentos em refratariedade ou intolerância."
+      ],
+      "factIds": [
+        "b04_040_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Carbamazepina em comprimido, adulto: 100 mg por via oral a cada 12 horas inicialmente, titular para menor dose eficaz; máximo 1.200 mg por dia na bula para neuralgia trigeminal. Alternativa com neurologia: oxcarbazepina 150 mg por via oral pela manhã e à noite nos primeiros 3 dias; o protocolo NHS facial permite 150 mg 3 vezes ao dia entre os dias 4 e 14 e titulação posterior conforme resposta. Monitorizar sódio, hemograma, fígado, rash e interações; formulações não intercambiáveis. Duração por resposta, com retirada gradual, não como analgésico eventual."
+      ],
+      "factIds": [
+        "b04_040_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Titular gradualmente e revisar sódio, hemograma, fígado, interações e risco reprodutivo. Analgésico comum não substitui terapia específica."
+      ],
+      "factIds": [
+        "b04_040_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Neurologia e plano de seguimento; retirar gradualmente quando indicado, não durante crise sem orientação."
+      ],
+      "factIds": [
+        "b04_040_f06"
+      ]
+    }
+  ],
+  "markdown": "# Neuralgia do trigêmeo\n\n## Conceito e mecanismo\n\nDor facial paroxística em choque no território trigeminal, frequentemente desencadeada por toque.\n\n## Raciocínio e escolha terapêutica\n\nA recomendação da neuropatia dolorosa geral não se aplica automaticamente à neuralgia trigeminal.\n\n## Diagnóstico e diferenciais\n\nAvaliar padrão e exame neurológico; déficit sensitivo ou apresentação atípica exige investigação estrutural.\n\n## Abordagem inicial e urgências\n\nDor com lesão ocular, febre ou déficit novo exige excluir outras urgências.\n\n## Tratamento: primeira escolha e alternativas\n\nOpções especificadas neste tema: carbamazepina / oxcarbazepina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Carbamazepina é opção inicial recomendada; oxcarbazepina ou outras opções sob especialista se inadequada. Descompressão/procedimentos em refratariedade ou intolerância.\n\n## Fármacos, doses e intervalos\n\nCarbamazepina em comprimido, adulto: 100 mg por via oral a cada 12 horas inicialmente, titular para menor dose eficaz; máximo 1.200 mg por dia na bula para neuralgia trigeminal. Alternativa com neurologia: oxcarbazepina 150 mg por via oral pela manhã e à noite nos primeiros 3 dias; o protocolo NHS facial permite 150 mg 3 vezes ao dia entre os dias 4 e 14 e titulação posterior conforme resposta. Monitorizar sódio, hemograma, fígado, rash e interações; formulações não intercambiáveis. Duração por resposta, com retirada gradual, não como analgésico eventual.\n\n## Segurança e monitorização\n\nTitular gradualmente e revisar sódio, hemograma, fígado, interações e risco reprodutivo. Analgésico comum não substitui terapia específica.\n\n## Reavaliação, internação e alta\n\nNeurologia e plano de seguimento; retirar gradualmente quando indicado, não durante crise sem orientação.\n\n## Referências\n\n1. [NHS — Neuralgia do trigêmeo](https://www.nhs.uk/conditions/trigeminal-neuralgia/)\n2. [NHS — Neuralgia do trigêmeo — treatment](https://www.nhs.uk/conditions/trigeminal-neuralgia/treatment/)\n3. [NICE CG173 — Neuropathic pain](https://www.nice.org.uk/guidance/cg173/chapter/Recommendations)\n4. [DailyMed — carbamazepine tablets, trigeminal neuralgia](https://www.dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=62d38b93-7dd0-48e7-bd59-a434d52520f6&type=display)\n5. [Guy’s and St Thomas’ NHS — Oxcarbazepine for facial pain: adult titration table](https://www.guysandstthomas.nhs.uk/health-information/oxcarbazepine-facial-pain)",
+  "approvedReviewCanonicalFileSha256": "baf431d64b3bdc8491f5e9152fd112b4afc30a73fe7eaac1851fd93e2eef2729",
+  "approvedReviewProjectionFileSha256": "c43c5db3d467db1b973f89bb5888213ba73e18b2dfb46378f966e7eef049b94a"
+}

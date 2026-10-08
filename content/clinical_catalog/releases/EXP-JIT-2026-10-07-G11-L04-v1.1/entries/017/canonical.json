@@ -1,0 +1,212 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "reviewer": null,
+  "ownerCandidate": "doenca_de_peyronie",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Doença de Peyronie",
+    "es": "Enfermedad de Peyronie"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L03",
+  "identityDecision": "NEW_DISTINCT_SCOPE_CANDIDATE; NO_OWNER_REGISTERED",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "treatmentApplicability": "SCENARIO_SPECIFIC_PHARMACOTHERAPY",
+  "regimens": [
+    {
+      "drug": "ibuprofeno",
+      "role": "ALTERNATIVE_SYMPTOMATIC",
+      "pt": "Alternativa para dor inflamatória em adulto elegível: ibuprofeno 200–400 mg por via oral a cada 8 horas se necessário, com alimento, máximo 1.200 mg por dia neste esquema de curta duração. Não associar a outro anti-inflamatório. Evitar em lesão renal, sangramento/úlcera, insuficiência cardíaca descompensada ou gestação; reavaliar necessidade e risco digestivo.",
+      "es": "Alternativa para dolor inflamatorio en adulto elegible: ibuprofeno 200–400 mg por vía oral cada 8 horas si es necesario, con comida, máximo 1.200 mg al día en este esquema breve. No combinar con otro antiinflamatorio. Evitar en lesión renal, sangrado/úlcera, insuficiencia cardíaca descompensada o embarazo; reevaluar necesidad y riesgo digestivo.",
+      "sources": [
+        "ibuprofen_nhs"
+      ]
+    },
+    {
+      "drug": "tadalafila",
+      "role": "ONLY_COEXISTING_ERECTILE_DYSFUNCTION",
+      "pt": "Se disfunção erétil coexistente em adulto elegível: tadalafila 5 mg por via oral uma vez ao dia, no mesmo horário; pode reduzir para 2,5 mg conforme tolerância. Não corrige a placa/curvatura. Contraindicada com nitratos/riociguate; avaliar risco cardiovascular, hipotensão e interações. Regime diário não recomendado em insuficiência renal grave; reavaliar necessidade, sem duração fixa universal.",
+      "es": "Si disfunción eréctil coexistente en adulto elegible: tadalafilo 5 mg por vía oral una vez al día, a la misma hora; puede reducirse a 2,5 mg según tolerancia. No corrige placa/curvatura. Contraindicado con nitratos/riociguat; valorar riesgo cardiovascular, hipotensión e interacciones. Régimen diario no recomendado en insuficiencia renal grave; reevaluar necesidad, sin duración fija universal.",
+      "sources": [
+        "tadalafil_label",
+        "eaumale"
+      ]
+    }
+  ],
+  "treatmentRevision": "ALL_50_REVIEWED_V1.1",
+  "facts": [
+    {
+      "id": "b04_017_f01",
+      "section": "concept",
+      "pt": "Fibrose da túnica albugínea causa placa, curvatura e possível disfunção erétil.",
+      "es": "Fibrosis de túnica albugínea causa placa, curvatura y posible disfunción eréctil.",
+      "sources": [
+        "topic_176",
+        "eaumale",
+        "ibuprofen_nhs",
+        "tadalafil_label"
+      ]
+    },
+    {
+      "id": "b04_017_f02",
+      "section": "diagnosis",
+      "pt": "Caracterizar fase ativa/estável, curvatura, dor e capacidade sexual; distinguir fratura aguda.",
+      "es": "Caracterizar fase activa/estable, curvatura, dolor y función sexual; distinguir fractura aguda.",
+      "sources": [
+        "topic_176",
+        "eaumale",
+        "ibuprofen_nhs",
+        "tadalafil_label"
+      ]
+    },
+    {
+      "id": "b04_017_f03",
+      "section": "initial",
+      "pt": "Trauma com estalo e detumescência exige via de fratura peniana.",
+      "es": "Trauma con chasquido y detumescencia requiere vía de fractura de pene.",
+      "sources": [
+        "topic_176",
+        "eaumale",
+        "ibuprofen_nhs",
+        "tadalafil_label"
+      ]
+    },
+    {
+      "id": "b04_017_f04",
+      "section": "options",
+      "pt": "Opções especificadas neste tema: ibuprofeno; tadalafila. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Vigilância em doença leve. Tração/dispositivos ou tratamentos locais especializados podem ser discutidos; cirurgia em doença estável com prejuízo funcional. Tratar disfunção erétil associada separadamente.",
+      "es": "Opciones especificadas en este tema: ibuprofeno; tadalafilo. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Vigilancia en enfermedad leve. Tracción/dispositivos o tratamientos locales especializados pueden discutirse; cirugía en enfermedad estable con deterioro funcional. Tratar disfunción eréctil asociada por separado.",
+      "sources": [
+        "topic_176",
+        "eaumale",
+        "ibuprofen_nhs",
+        "tadalafil_label"
+      ]
+    },
+    {
+      "id": "b04_017_f05",
+      "section": "safety",
+      "pt": "Não prometer retificação por vitaminas ou comprimidos. Ondas de choque não devem ser apresentadas como correção comprovada da curvatura.",
+      "es": "No prometer enderezamiento con vitaminas o comprimidos. Ondas de choque no deben presentarse como corrección comprobada de curvatura.",
+      "sources": [
+        "topic_176",
+        "eaumale",
+        "ibuprofen_nhs",
+        "tadalafil_label"
+      ]
+    },
+    {
+      "id": "b04_017_f06",
+      "section": "followup",
+      "pt": "Urologia/andrologia: evolução, função e expectativas; apoio ao impacto emocional.",
+      "es": "Urología/andrología: evolución, función y expectativas; apoyo emocional.",
+      "sources": [
+        "topic_176",
+        "eaumale",
+        "ibuprofen_nhs",
+        "tadalafil_label"
+      ]
+    },
+    {
+      "id": "b04_017_f07",
+      "section": "doses",
+      "pt": "Alternativa para dor inflamatória em adulto elegível: ibuprofeno 200–400 mg por via oral a cada 8 horas se necessário, com alimento, máximo 1.200 mg por dia neste esquema de curta duração. Não associar a outro anti-inflamatório. Evitar em lesão renal, sangramento/úlcera, insuficiência cardíaca descompensada ou gestação; reavaliar necessidade e risco digestivo.",
+      "es": "Alternativa para dolor inflamatorio en adulto elegible: ibuprofeno 200–400 mg por vía oral cada 8 horas si es necesario, con comida, máximo 1.200 mg al día en este esquema breve. No combinar con otro antiinflamatorio. Evitar en lesión renal, sangrado/úlcera, insuficiencia cardíaca descompensada o embarazo; reevaluar necesidad y riesgo digestivo.",
+      "sources": [
+        "ibuprofen_nhs"
+      ]
+    },
+    {
+      "id": "b04_017_f08",
+      "section": "doses",
+      "pt": "Se disfunção erétil coexistente em adulto elegível: tadalafila 5 mg por via oral uma vez ao dia, no mesmo horário; pode reduzir para 2,5 mg conforme tolerância. Não corrige a placa/curvatura. Contraindicada com nitratos/riociguate; avaliar risco cardiovascular, hipotensão e interações. Regime diário não recomendado em insuficiência renal grave; reavaliar necessidade, sem duração fixa universal.",
+      "es": "Si disfunción eréctil coexistente en adulto elegible: tadalafilo 5 mg por vía oral una vez al día, a la misma hora; puede reducirse a 2,5 mg según tolerancia. No corrige placa/curvatura. Contraindicado con nitratos/riociguat; valorar riesgo cardiovascular, hipotensión e interacciones. Régimen diario no recomendado en insuficiencia renal grave; reevaluar necesidad, sin duración fija universal.",
+      "sources": [
+        "tadalafil_label",
+        "eaumale"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A opção depende de estabilidade, anatomia e rigidez erétil; as técnicas não são intercambiáveis.",
+      "es": "La opción depende de estabilidad, anatomía y rigidez eréctil; las técnicas no son intercambiables.",
+      "sources": [
+        "topic_176",
+        "eaumale",
+        "ibuprofen_nhs",
+        "tadalafil_label"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_176",
+      "title": "NHS — Doença de Peyronie",
+      "url": "https://www.nhs.uk/conditions/peyronies-disease/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 03 June 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_176",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "eaumale",
+      "title": "EAU — Sexual and reproductive health, penile curvature",
+      "url": "https://uroweb.org/guidelines/sexual-and-reproductive-health/chapter/penile-curvature",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published RCTs analysing data from the same cohort, intralesional injections of IFN-α2b significantly improve",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:eaumale",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "ibuprofen_nhs",
+      "title": "NHS — Ibuprofen for adults: dose, maximum and precautions",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:ibuprofen_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "tadalafil_label",
+      "title": "emc — Tadalafil: daily erectile dysfunction dosing and contraindications",
+      "url": "https://www.medicines.org.uk/emc/product/15261/smpc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated on emc: 23 Apr 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:tadalafil_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Medicamentos, doses e alternativas identificados por cenário; procedimentos e ausência de fármaco específico explicitados. Regimes sem intervalo universal validado permanecem calculados pelo especialista. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

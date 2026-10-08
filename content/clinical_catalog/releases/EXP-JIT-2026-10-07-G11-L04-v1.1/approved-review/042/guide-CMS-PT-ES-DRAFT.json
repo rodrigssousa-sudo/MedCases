@@ -1,0 +1,230 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação do lote; Guia deverá permanecer DRAFT no Admin após futura publicação dos modos.",
+  "canonical_payload_sha256": "0875e046faa8d3e65ddcf14dab32cbc690c9214782dbd85e3bece1c78c767430",
+  "owner_candidate": "demencia_e_transtorno_neurocognitivo_maior",
+  "pt": {
+    "title": "Demência e transtorno neurocognitivo maior",
+    "subtitle": "Primeira escolha e alternativas por cenário",
+    "summary": "Declínio cognitivo persistente com prejuízo funcional; etiologia precisa ser caracterizada.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Declínio cognitivo persistente com prejuízo funcional; etiologia precisa ser caracterizada."
+        ],
+        "factIds": [
+          "b04_042_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "Benefício sintomático não equivale a cura; o subtipo orienta seleção farmacológica."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "História com informante, função, teste cognitivo e causas reversíveis; distinguir delirium agudo."
+        ],
+        "factIds": [
+          "b04_042_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Mudança aguda exige procurar infecção, fármacos e causas metabólicas, não atribuir automaticamente à demência."
+        ],
+        "factIds": [
+          "b04_042_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Opções especificadas neste tema: donepezila / memantina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Ambiente seguro, estimulação cognitiva e apoio ao cuidador. Alzheimer elegível: donepezila, rivastigmina ou galantamina; memantina conforme gravidade/intolerância. Demência frontotemporal: não oferecer esses inibidores de acetilcolinesterase nem memantina rotineiramente. Outros subtipos exigem plano específico."
+        ],
+        "factIds": [
+          "b04_042_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Alzheimer leve/moderado elegível: donepezila 5 mg por via oral à noite uma vez ao dia; subir para 10 mg por dia apenas após 4–6 semanas e conforme tolerância, máximo 10 mg por dia neste cenário. Alzheimer moderado com contraindicação/intolerância ao inibidor ou grave: memantina 5 mg por via oral uma vez ao dia, aumentar 5 mg a cada semana até 20 mg por dia, ajustando à função renal. Escolha/associação segundo subtipo e gravidade; não aplicar à demência frontotemporal. Monitorizar pulso, síncope, peso e comportamento; tratamento prolongado com avaliação de benefício."
+        ],
+        "factIds": [
+          "b04_042_f07"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Avaliar bradicardia, perda de peso, rim e interações. Antipsicótico não é solução rotineira; particular cautela em corpos de Lewy."
+        ],
+        "factIds": [
+          "b04_042_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Revisar função, segurança, nutrição, carga do cuidador e capacidade decisória."
+        ],
+        "factIds": [
+          "b04_042_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Demencia y trastorno neurocognitivo mayor",
+    "subtitle": "Primera elección y alternativas por escenario",
+    "summary": "Deterioro cognitivo persistente con pérdida funcional; caracterizar etiología.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Deterioro cognitivo persistente con pérdida funcional; caracterizar etiología."
+        ],
+        "factIds": [
+          "b04_042_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Beneficio sintomático no equivale a cura; subtipo orienta selección farmacológica."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Historia con informante, función, prueba cognitiva y causas reversibles; distinguir delirium agudo."
+        ],
+        "factIds": [
+          "b04_042_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Cambio agudo: buscar infección, fármacos y causas metabólicas; no atribuirlo automáticamente a demencia."
+        ],
+        "factIds": [
+          "b04_042_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Opciones especificadas en este tema: donepezilo / memantina. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Entorno seguro, estimulación cognitiva y apoyo al cuidador. Alzheimer elegible: donepezilo, rivastigmina o galantamina; memantina según gravedad/intolerancia. Demencia frontotemporal: no ofrecer estos inhibidores de acetilcolinesterasa ni memantina rutinariamente. Otros subtipos requieren plan específico."
+        ],
+        "factIds": [
+          "b04_042_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Alzheimer leve/moderado elegible: donepezilo 5 mg por vía oral por la noche una vez al día; aumentar a 10 mg al día solo después de 4–6 semanas y según tolerancia, máximo 10 mg al día en este escenario. Alzheimer moderado con contraindicación/intolerancia al inhibidor o grave: memantina 5 mg por vía oral una vez al día, aumentar 5 mg cada semana hasta 20 mg al día, ajustando a función renal. Elección/combinación según subtipo y gravedad; no aplicar a demencia frontotemporal. Controlar pulso, síncope, peso y conducta; tratamiento prolongado con valoración de beneficio."
+        ],
+        "factIds": [
+          "b04_042_f07"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Evaluar bradicardia, pérdida de peso, riñón e interacciones. Antipsicótico no es solución rutinaria; especial cautela en cuerpos de Lewy."
+        ],
+        "factIds": [
+          "b04_042_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Revisar función, seguridad, nutrición, carga del cuidador y capacidad decisoria."
+        ],
+        "factIds": [
+          "b04_042_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_201",
+      "title": "NHS — Demência e transtorno neurocognitivo maior",
+      "url": "https://www.nhs.uk/conditions/dementia/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_201",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "topic_201_treatment",
+      "title": "NHS — Demência e transtorno neurocognitivo maior — treatment",
+      "url": "https://www.nhs.uk/conditions/dementia/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 July 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_201_treatment",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "dementia",
+      "title": "NICE NG97 — Dementia",
+      "url": "https://www.nice.org.uk/guidance/ng97/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE NG97: Alzheimer elegível e escolha por subtipo; não oferecer inibidor acetilcolinesterase ou memantina na frontotemporal. Recomendação específica lida na web.",
+      "sourceEvidenceRecord": "web-verification-record.json:dementia",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "donepezil_label",
+      "title": "DailyMed — donepezil: bula regulatória",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8138f616-83f3-4c47-84ef-1bce2db339f7",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:donepezil_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "memantine_nhs",
+      "title": "NHS Borders — Dementia drug initiation: memantine titration",
+      "url": "https://www.rightdecisions.scot.nhs.uk/nhs-borders-clinical-guidelines/mental-health-learning-disabilities/treatment-initiation-and-follow-up-of-cholinesterase-inhibitors-in-patients-newly-diagnosed-with-dementia/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "review date:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:memantine_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

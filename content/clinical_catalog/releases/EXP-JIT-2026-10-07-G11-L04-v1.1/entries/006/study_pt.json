@@ -1,0 +1,208 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Alveolite pós-extração dentária",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "e6aa4ba64c3f1008d1c479f664e2d3a19b60ad9d7abc363d8e213cfad3cf02b1",
+  "ownerCandidate": "alveolite_pos_extracao_dentaria",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_006_f01",
+    "b04_006_f02",
+    "b04_006_f03",
+    "b04_006_f04",
+    "b04_006_f05",
+    "b04_006_f06",
+    "b04_006_f07",
+    "b04_006_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Perda do coágulo alveolar com dor após extração; não equivale a abscesso bacteriano."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Controle local e analgesia complementam-se; antibioticoterapia só se justifica por infecção adicional."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examinar alvéolo e excluir fragmento, abscesso e osteomielite se evolução atípica."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Encaminhamento odontológico; edema progressivo, febre ou disfagia exigem avaliar infecção disseminada."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Irrigação e cuidado local odontológico são primeira escolha; paracetamol ou ibuprofeno podem controlar dor em elegíveis. Curativo alveolar é opção pelo dentista. Antibiótico não é rotina na alveolite sem infecção disseminada."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor, somente em adulto com pelo menos 50 kg e sem risco hepático: paracetamol 500–1.000 mg por via oral a cada 6 horas se necessário, máximo 4.000 mg em 24 horas somando todas as apresentações. Uso breve; reavaliar se precisar por mais de 3 dias. Peso menor, hepatopatia, alcoolismo ou fragilidade exigem limite menor individualizado. Não trata a causa."
+    },
+    {
+      "type": "paragraph",
+      "text": "Alternativa para dor inflamatória em adulto elegível: ibuprofeno 200–400 mg por via oral a cada 8 horas se necessário, com alimento, máximo 1.200 mg por dia neste esquema de curta duração. Não associar a outro anti-inflamatório. Evitar em lesão renal, sangramento/úlcera, insuficiência cardíaca descompensada ou gestação; reavaliar necessidade e risco digestivo."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Paracetamol ou ibuprofeno conforme contraindicações; evitar anti-inflamatório em risco renal/hemorrágico e não manipular alvéolo em casa."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Revisão odontológica se dor persistente; cessar tabaco e seguir orientação de higiene."
+    }
+  ],
+  "references": [
+    {
+      "key": "sd_general",
+      "title": "SDCEP — bacterial infections, dry socket distinction",
+      "url": "https://www.sdcepdentalprescribing.nhs.scot/guidance/bacterial-infections/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:sd_general",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "paracetamol_nhs",
+      "title": "NHS — Paracetamol for adults: dosing and precautions",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:paracetamol_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "ibuprofen_nhs",
+      "title": "NHS — Ibuprofen for adults: dose, maximum and precautions",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:ibuprofen_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Perda do coágulo alveolar com dor após extração; não equivale a abscesso bacteriano."
+      ],
+      "factIds": [
+        "b04_006_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Controle local e analgesia complementam-se; antibioticoterapia só se justifica por infecção adicional."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar alvéolo e excluir fragmento, abscesso e osteomielite se evolução atípica."
+      ],
+      "factIds": [
+        "b04_006_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Encaminhamento odontológico; edema progressivo, febre ou disfagia exigem avaliar infecção disseminada."
+      ],
+      "factIds": [
+        "b04_006_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Irrigação e cuidado local odontológico são primeira escolha; paracetamol ou ibuprofeno podem controlar dor em elegíveis. Curativo alveolar é opção pelo dentista. Antibiótico não é rotina na alveolite sem infecção disseminada."
+      ],
+      "factIds": [
+        "b04_006_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Dor, somente em adulto com pelo menos 50 kg e sem risco hepático: paracetamol 500–1.000 mg por via oral a cada 6 horas se necessário, máximo 4.000 mg em 24 horas somando todas as apresentações. Uso breve; reavaliar se precisar por mais de 3 dias. Peso menor, hepatopatia, alcoolismo ou fragilidade exigem limite menor individualizado. Não trata a causa.",
+        "Alternativa para dor inflamatória em adulto elegível: ibuprofeno 200–400 mg por via oral a cada 8 horas se necessário, com alimento, máximo 1.200 mg por dia neste esquema de curta duração. Não associar a outro anti-inflamatório. Evitar em lesão renal, sangramento/úlcera, insuficiência cardíaca descompensada ou gestação; reavaliar necessidade e risco digestivo."
+      ],
+      "factIds": [
+        "b04_006_f07",
+        "b04_006_f08"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Paracetamol ou ibuprofeno conforme contraindicações; evitar anti-inflamatório em risco renal/hemorrágico e não manipular alvéolo em casa."
+      ],
+      "factIds": [
+        "b04_006_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Revisão odontológica se dor persistente; cessar tabaco e seguir orientação de higiene."
+      ],
+      "factIds": [
+        "b04_006_f06"
+      ]
+    }
+  ],
+  "markdown": "# Alveolite pós-extração dentária\n\n## Conceito e mecanismo\n\nPerda do coágulo alveolar com dor após extração; não equivale a abscesso bacteriano.\n\n## Raciocínio e escolha terapêutica\n\nControle local e analgesia complementam-se; antibioticoterapia só se justifica por infecção adicional.\n\n## Diagnóstico e diferenciais\n\nExaminar alvéolo e excluir fragmento, abscesso e osteomielite se evolução atípica.\n\n## Abordagem inicial e urgências\n\nEncaminhamento odontológico; edema progressivo, febre ou disfagia exigem avaliar infecção disseminada.\n\n## Tratamento: primeira escolha e alternativas\n\nIrrigação e cuidado local odontológico são primeira escolha; paracetamol ou ibuprofeno podem controlar dor em elegíveis. Curativo alveolar é opção pelo dentista. Antibiótico não é rotina na alveolite sem infecção disseminada.\n\n## Fármacos, doses e intervalos\n\nDor, somente em adulto com pelo menos 50 kg e sem risco hepático: paracetamol 500–1.000 mg por via oral a cada 6 horas se necessário, máximo 4.000 mg em 24 horas somando todas as apresentações. Uso breve; reavaliar se precisar por mais de 3 dias. Peso menor, hepatopatia, alcoolismo ou fragilidade exigem limite menor individualizado. Não trata a causa.\n\nAlternativa para dor inflamatória em adulto elegível: ibuprofeno 200–400 mg por via oral a cada 8 horas se necessário, com alimento, máximo 1.200 mg por dia neste esquema de curta duração. Não associar a outro anti-inflamatório. Evitar em lesão renal, sangramento/úlcera, insuficiência cardíaca descompensada ou gestação; reavaliar necessidade e risco digestivo.\n\n## Segurança e monitorização\n\nParacetamol ou ibuprofeno conforme contraindicações; evitar anti-inflamatório em risco renal/hemorrágico e não manipular alvéolo em casa.\n\n## Reavaliação, internação e alta\n\nRevisão odontológica se dor persistente; cessar tabaco e seguir orientação de higiene.\n\n## Referências\n\n1. [SDCEP — bacterial infections, dry socket distinction](https://www.sdcepdentalprescribing.nhs.scot/guidance/bacterial-infections/)\n2. [NHS — Paracetamol for adults: dosing and precautions](https://www.nhs.uk/medicines/paracetamol-for-adults/)\n3. [NHS — Ibuprofen for adults: dose, maximum and precautions](https://www.nhs.uk/medicines/ibuprofen-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "5889db16d8787a961fd3edb069026d326ea2524f7dce456e050342d766d9ca17",
+  "approvedReviewProjectionFileSha256": "30476e8a0e1b490ffd15fb5548b67dc39957d8948e8c9c3a9e538d041c2d0aa6"
+}

@@ -1,0 +1,221 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Cefaleia em salvas",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "9573d317ad5e0ea510274190c4cc85d24f1f119518150679a06893a1cc76c61d",
+  "ownerCandidate": "cefaleia_em_salvas",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_039_f01",
+    "b04_039_f02",
+    "b04_039_f03",
+    "b04_039_f04",
+    "b04_039_f05",
+    "b04_039_f06",
+    "b04_039_f07",
+    "b04_039_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Crises de dor unilateral intensa com sintomas autonômicos e inquietação."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor unilateral intensa com manifestações autonômicas exige distinguir cefaleia primária de lesão secundária, sobretudo no primeiro episódio ou quando há mudança de padrão. A velocidade de ação favorece oxigênio ou triptano injetável/nasal, enquanto analgésicos comuns não são resgate adequado. Prevenção com verapamil visa reduzir novas crises e exige monitorização cardíaca; não substitui o tratamento de uma crise em curso."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Caracterizar padrão e exame; excluir causas secundárias se atípica, déficit ou cefaleia súbita máxima."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Red flags neurológicas ou alteração visual exigem avaliação urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opções especificadas neste tema: oxigênio / sumatriptana; verapamil. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Crise: oxigênio em sistema apropriado ou triptano subcutâneo/nasal elegível. Prevenção: verapamil com especialista; outras estratégias, incluindo ponte com corticoide, dependem de avaliação."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Crise: oxigênio 100%, fluxo de pelo menos 12 litros por minuto em máscara sem reinalação com reservatório. Alternativa em adulto elegível: sumatriptana 6 mg por via subcutânea, máximo 12 mg em 24 horas; repetir apenas se alguma resposta à primeira, após pelo menos 1 hora. Excluir doença cardiovascular, hipertensão não controlada e interações; triptano oral e analgésico comum não são resgate adequado."
+    },
+    {
+      "type": "paragraph",
+      "text": "Prevenção especializada em adulto: verapamil de liberação imediata 80 mg por via oral 3 vezes ao dia como início no protocolo NHS consultado; titulação e duração segundo ciclo e tolerância. ECG antes e a cada aumento, com monitorização de pressão/pulso; contraindicações de condução e interações podem impedir uso. Não usar formulação prolongada como substituição automática nem aumentar sem ECG."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Paracetamol/anti-inflamatório não são resgate eficaz usual. Triptano exige revisão cardiovascular; verapamil exige ECG durante titulação."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Plano para crises e prevenção, diário e neurologia; revisar diagnóstico em mudança de padrão."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_198",
+      "title": "NHS — Cefaleia em salvas",
+      "url": "https://www.nhs.uk/conditions/cluster-headaches/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 18 August 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_198",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "headache",
+      "title": "NICE CG150 — Headaches, current recommendations",
+      "url": "https://www.nice.org.uk/guidance/cg150/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE CG150 com atualização junho 2025: oxigênio 100%, pelo menos 12 litros por minuto, máscara não reinalante/reservatório; triptano injetável/nasal; verapamil com ECG. Trechos oficiais específicos consultados.",
+      "sourceEvidenceRecord": "web-verification-record.json:headache",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "suma_label",
+      "title": "DailyMed — sumatriptan injection for cluster headache",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=65147b04-0b6b-4d30-9710-d5cdce85e8f5",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:suma_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "verapamil_nhs",
+      "title": "NHS Scotland — Cluster headache: preventive verapamil starting dose and ECG monitoring",
+      "url": "https://rightdecisions.scot.nhs.uk/neurology-pathways-including-headache/headache/9-cluster-headache-guidance/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NHS Scotland specific cluster-headache primary preventive regimen read through indexed recommendation: verapamil80 mg three times daily initially; regular ECG monitoring. Full direct fetch unavailable; no assertion that entire page was read.",
+      "sourceEvidenceRecord": "web-verification-record.json:verapamil_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Crises de dor unilateral intensa com sintomas autonômicos e inquietação."
+      ],
+      "factIds": [
+        "b04_039_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Dor unilateral intensa com manifestações autonômicas exige distinguir cefaleia primária de lesão secundária, sobretudo no primeiro episódio ou quando há mudança de padrão. A velocidade de ação favorece oxigênio ou triptano injetável/nasal, enquanto analgésicos comuns não são resgate adequado. Prevenção com verapamil visa reduzir novas crises e exige monitorização cardíaca; não substitui o tratamento de uma crise em curso."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Caracterizar padrão e exame; excluir causas secundárias se atípica, déficit ou cefaleia súbita máxima."
+      ],
+      "factIds": [
+        "b04_039_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Red flags neurológicas ou alteração visual exigem avaliação urgente."
+      ],
+      "factIds": [
+        "b04_039_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: oxigênio / sumatriptana; verapamil. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Crise: oxigênio em sistema apropriado ou triptano subcutâneo/nasal elegível. Prevenção: verapamil com especialista; outras estratégias, incluindo ponte com corticoide, dependem de avaliação."
+      ],
+      "factIds": [
+        "b04_039_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Crise: oxigênio 100%, fluxo de pelo menos 12 litros por minuto em máscara sem reinalação com reservatório. Alternativa em adulto elegível: sumatriptana 6 mg por via subcutânea, máximo 12 mg em 24 horas; repetir apenas se alguma resposta à primeira, após pelo menos 1 hora. Excluir doença cardiovascular, hipertensão não controlada e interações; triptano oral e analgésico comum não são resgate adequado.",
+        "Prevenção especializada em adulto: verapamil de liberação imediata 80 mg por via oral 3 vezes ao dia como início no protocolo NHS consultado; titulação e duração segundo ciclo e tolerância. ECG antes e a cada aumento, com monitorização de pressão/pulso; contraindicações de condução e interações podem impedir uso. Não usar formulação prolongada como substituição automática nem aumentar sem ECG."
+      ],
+      "factIds": [
+        "b04_039_f07",
+        "b04_039_f08"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Paracetamol/anti-inflamatório não são resgate eficaz usual. Triptano exige revisão cardiovascular; verapamil exige ECG durante titulação."
+      ],
+      "factIds": [
+        "b04_039_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Plano para crises e prevenção, diário e neurologia; revisar diagnóstico em mudança de padrão."
+      ],
+      "factIds": [
+        "b04_039_f06"
+      ]
+    }
+  ],
+  "markdown": "# Cefaleia em salvas\n\n## Conceito e mecanismo\n\nCrises de dor unilateral intensa com sintomas autonômicos e inquietação.\n\n## Raciocínio e escolha terapêutica\n\nDor unilateral intensa com manifestações autonômicas exige distinguir cefaleia primária de lesão secundária, sobretudo no primeiro episódio ou quando há mudança de padrão. A velocidade de ação favorece oxigênio ou triptano injetável/nasal, enquanto analgésicos comuns não são resgate adequado. Prevenção com verapamil visa reduzir novas crises e exige monitorização cardíaca; não substitui o tratamento de uma crise em curso.\n\n## Diagnóstico e diferenciais\n\nCaracterizar padrão e exame; excluir causas secundárias se atípica, déficit ou cefaleia súbita máxima.\n\n## Abordagem inicial e urgências\n\nRed flags neurológicas ou alteração visual exigem avaliação urgente.\n\n## Tratamento: primeira escolha e alternativas\n\nOpções especificadas neste tema: oxigênio / sumatriptana; verapamil. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Crise: oxigênio em sistema apropriado ou triptano subcutâneo/nasal elegível. Prevenção: verapamil com especialista; outras estratégias, incluindo ponte com corticoide, dependem de avaliação.\n\n## Fármacos, doses e intervalos\n\nCrise: oxigênio 100%, fluxo de pelo menos 12 litros por minuto em máscara sem reinalação com reservatório. Alternativa em adulto elegível: sumatriptana 6 mg por via subcutânea, máximo 12 mg em 24 horas; repetir apenas se alguma resposta à primeira, após pelo menos 1 hora. Excluir doença cardiovascular, hipertensão não controlada e interações; triptano oral e analgésico comum não são resgate adequado.\n\nPrevenção especializada em adulto: verapamil de liberação imediata 80 mg por via oral 3 vezes ao dia como início no protocolo NHS consultado; titulação e duração segundo ciclo e tolerância. ECG antes e a cada aumento, com monitorização de pressão/pulso; contraindicações de condução e interações podem impedir uso. Não usar formulação prolongada como substituição automática nem aumentar sem ECG.\n\n## Segurança e monitorização\n\nParacetamol/anti-inflamatório não são resgate eficaz usual. Triptano exige revisão cardiovascular; verapamil exige ECG durante titulação.\n\n## Reavaliação, internação e alta\n\nPlano para crises e prevenção, diário e neurologia; revisar diagnóstico em mudança de padrão.\n\n## Referências\n\n1. [NHS — Cefaleia em salvas](https://www.nhs.uk/conditions/cluster-headaches/)\n2. [NICE CG150 — Headaches, current recommendations](https://www.nice.org.uk/guidance/cg150/chapter/recommendations)\n3. [DailyMed — sumatriptan injection for cluster headache](https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=65147b04-0b6b-4d30-9710-d5cdce85e8f5)\n4. [NHS Scotland — Cluster headache: preventive verapamil starting dose and ECG monitoring](https://rightdecisions.scot.nhs.uk/neurology-pathways-including-headache/headache/9-cluster-headache-guidance/)",
+  "approvedReviewCanonicalFileSha256": "7126d77fcf815aac97e059a0387547a6988662f1ffe98694869aed85d26a83f1",
+  "approvedReviewProjectionFileSha256": "2b944e4d8e090f9391bba54b0ae60f938328b16a6d9c5760ad73c932d85e4b2a"
+}

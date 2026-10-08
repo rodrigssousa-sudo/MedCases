@@ -1,0 +1,125 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Anemia hemolítica autoimune",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "0fc5b07dcf5b02c519d13f87a199e3acfb7d4c38550917fdd28bac6dd244346c",
+  "ownerCandidate": "anemia_hemolitica_autoimune",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_034_f01",
+    "b04_034_f02",
+    "b04_034_f03",
+    "b04_034_f04",
+    "b04_034_f05",
+    "b04_034_f06",
+    "b04_034_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Instabilidade ou anemia sintomática grave exige hematologia e banco de sangue; não atrasar suporte vital."
+      ],
+      "factIds": [
+        "b04_034_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Hemograma, reticulócitos, bilirrubina, LDH, haptoglobina e teste antiglobulina; investigar causa secundária."
+      ],
+      "factIds": [
+        "b04_034_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: prednisolona / rituximabe. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Forma quente: corticoide frequentemente inicial; rituximabe e outras estratégias conforme resposta. Doença fria: evitar frio e terapia específica; corticoide não é opção equivalente para toda forma fria."
+      ],
+      "factIds": [
+        "b04_034_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Anemia hemolítica autoimune QUENTE primária, adulto: prednisolona 1 mg por kg por dia por via oral na indução, com redução conforme hemoglobina/hemólise e hematologia. Refratariedade ou necessidade de adjuvante: rituximabe 375 mg por m² intravenosos uma vez por semana durante 4 semanas, em serviço de infusão com rastreio de hepatite B e premedicação/protocolo próprios. Monitorizar hemograma, hemólise, infecção e reações de infusão. Não extrapolar corticoide para doença por aglutininas frias; anemia grave exige suporte transfusional sem atraso evitável."
+      ],
+      "factIds": [
+        "b04_034_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Compatibilidade/transfusão precisam de avaliação especializada; rastrear infecção e risco trombótico."
+      ],
+      "factIds": [
+        "b04_034_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Seguir hemólise, hemoglobina e toxicidade; revisar neoplasia, infecção e fármacos associados."
+      ],
+      "factIds": [
+        "b04_034_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Destruição eritrocitária imune; formas quentes e frias requerem terapias distintas."
+      ],
+      "factIds": [
+        "b04_034_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_193",
+      "title": "NHLBI — Anemia hemolítica autoimune",
+      "url": "https://www.nhlbi.nih.gov/health/anemia/hemolytic-anemia",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated on March 24, 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_193",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "aiha",
+      "title": "BSH — Primary autoimmune haemolytic anaemia: final guideline 2016",
+      "url": "https://b-s-h.org.uk/media/2636/aiha_primary_guideline_bsh_website.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2016,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "BSH guideline final 2016, ainda listada pela sociedade; PDF via web páginas 16–17: prednisolona 1 mg por kg por dia na forma quente primária; rituximabe segunda linha; não extrapolar à forma fria.",
+      "sourceEvidenceRecord": "web-verification-record.json:aiha",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "aiha_ash",
+      "title": "ASH — How I treat autoimmune hemolytic anemia, 2017: rituximab adult dosing",
+      "url": "https://ashpublications.org/blood/article/129/22/2971/36045/How-I-treat-autoimmune-hemolytic-anemia",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "ASH primary society publication specific adult regimen read: standard rituximab 375 mg per square metre IV weekly for 4 weeks; BSH guideline supports selected warm AIHA escalation. Infusion rate/premedication remain product-specific.",
+      "sourceEvidenceRecord": "web-verification-record.json:aiha_ash",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

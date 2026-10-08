@@ -1,0 +1,234 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação do lote; Guia deverá permanecer DRAFT no Admin após futura publicação dos modos.",
+  "canonical_payload_sha256": "1ecf8591f6e9b248e787be3fd59b79ac5e01bcc74c77615afd332f446ccdc390",
+  "owner_candidate": "arterite_de_celulas_gigantes",
+  "pt": {
+    "title": "Arterite de células gigantes",
+    "subtitle": "Primeira escolha e alternativas por cenário",
+    "summary": "Vasculite de grandes vasos pode causar isquemia visual e cerebral.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Vasculite de grandes vasos pode causar isquemia visual e cerebral."
+        ],
+        "factIds": [
+          "b04_031_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "A inflamação arterial pode reduzir perfusão e causar cegueira irreversível. A investigação confirmatória deve ocorrer rapidamente, mas não atrasar corticoide em forte suspeita clínica. Alteração visual exige avaliação no mesmo dia. A atualização EULAR inclui bloqueio IL-6 e upadacitinibe como adjuvantes selecionados; infecção, comorbidades e risco individual precisam ser avaliados. Monitorização do tratamento não se limita à melhora da cefaleia."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Cefaleia nova, sensibilidade temporal, claudicação mandibular e exame; marcadores, ultrassom/biópsia conforme via especializada."
+        ],
+        "factIds": [
+          "b04_031_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Suspeita com alteração visual: emergência; não atrasar corticoide por confirmação eletiva."
+        ],
+        "factIds": [
+          "b04_031_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Opções especificadas neste tema: prednisona / metilprednisolona; tocilizumabe. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Corticoide sistêmico imediato conforme gravidade; ameaça visual exige atendimento hospitalar/oftalmológico imediato e pode requerer pulsoterapia intravenosa. Tocilizumabe é opção adjuvante em pacientes selecionados; upadacitinibe também consta nas recomendações atualizadas para elegíveis sob especialista. Nenhum substitui o tratamento urgente para preservar visão."
+        ],
+        "factIds": [
+          "b04_031_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Adulto, sem ameaça visual: prednisona 40–60 mg por via oral uma vez ao dia, iniciada imediatamente quando suspeita clínica forte, com avaliação urgente e redução posterior especializada. Ameaça/perda visual: hospital/oftalmologia no mesmo dia; metilprednisolona 500–1.000 mg intravenosos uma vez ao dia durante 3–5 dias é faixa de pulsoterapia da diretriz ACR, seguida de plano oral. Infusão e monitorização hospitalares conforme apresentação; não aguardar biópsia para proteger visão.",
+          "Tocilizumabe em adulto elegível: 162 mg por via subcutânea uma vez por semana, junto ao plano de redução do corticoide. É adjuvante, não substitui indução urgente; duração com especialista. Excluir infecção ativa, rastrear TB/hepatites e monitorizar neutrófilos, plaquetas, fígado e lipídios; proteína C reativa pode ficar suprimida sem excluir atividade/infecção."
+        ],
+        "factIds": [
+          "b04_031_f07",
+          "b04_031_f08"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Monitorizar visão, glicose, pressão e infecção; não indicar aspirina universalmente sem avaliar motivo vascular e sangramento."
+        ],
+        "factIds": [
+          "b04_031_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Oftalmologia/reumatologia urgentes e seguimento de recaída e doença aórtica."
+        ],
+        "factIds": [
+          "b04_031_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Arteritis de células gigantes",
+    "subtitle": "Primera elección y alternativas por escenario",
+    "summary": "Vasculitis de grandes vasos puede causar isquemia visual y cerebral.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Vasculitis de grandes vasos puede causar isquemia visual y cerebral."
+        ],
+        "factIds": [
+          "b04_031_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "Inflamación arterial puede reducir perfusión y causar ceguera irreversible. Investigación confirmatoria rápida, sin demorar corticoide ante fuerte sospecha clínica. Cambio visual exige evaluación el mismo día. Actualización EULAR incluye bloqueo IL-6 y upadacitinib como adyuvantes seleccionados; evaluar infección, comorbilidades y riesgo individual. Monitorización no se limita a mejoría de cefalea."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Cefalea nueva, sensibilidad temporal, claudicación mandibular y examen; marcadores, ecografía/biopsia según vía especializada."
+        ],
+        "factIds": [
+          "b04_031_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Sospecha con alteración visual: emergencia; no demorar corticoide por confirmación electiva."
+        ],
+        "factIds": [
+          "b04_031_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Opciones especificadas en este tema: prednisona / metilprednisolona; tocilizumab. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Corticoide sistémico inmediato según gravedad; amenaza visual exige atención hospitalaria/oftalmológica inmediata y puede requerir pulsos intravenosos. Tocilizumab es opción adyuvante en pacientes seleccionados; upadacitinib también figura en recomendaciones actualizadas para elegibles con especialista. Ninguno reemplaza el tratamiento urgente para preservar visión."
+        ],
+        "factIds": [
+          "b04_031_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Adulto, sin amenaza visual: prednisona 40–60 mg por vía oral una vez al día, iniciada inmediatamente con sospecha clínica fuerte, con evaluación urgente y descenso posterior especializado. Amenaza/pérdida visual: hospital/oftalmología el mismo día; metilprednisolona 500–1.000 mg intravenosos una vez al día durante 3–5 días es rango de pulsos de guía ACR, seguido de plan oral. Infusión y monitorización hospitalarias según presentación; no esperar biopsia para proteger visión.",
+          "Tocilizumab en adulto elegible: 162 mg por vía subcutánea una vez por semana, junto al plan de descenso del corticoide. Es adyuvante, no reemplaza inducción urgente; duración por especialista. Excluir infección activa, pesquisar TB/hepatitis y controlar neutrófilos, plaquetas, hígado y lípidos; proteína C reactiva puede estar suprimida sin excluir actividad/infección."
+        ],
+        "factIds": [
+          "b04_031_f07",
+          "b04_031_f08"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "Controlar visión, glucosa, presión e infección; no indicar aspirina universalmente sin evaluar motivo vascular y sangrado."
+        ],
+        "factIds": [
+          "b04_031_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Oftalmología/reumatología urgentes y seguimiento de recaída y enfermedad aórtica."
+        ],
+        "factIds": [
+          "b04_031_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_190",
+      "title": "NHS — Arterite de células gigantes",
+      "url": "https://www.nhs.uk/conditions/temporal-arteritis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 14 August 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_190",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "eular_index",
+      "title": "EULAR — Published management recommendations",
+      "url": "https://www.eular.org/recommendations-management",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published in that year:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:eular_index",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "pmr2026_pub",
+      "title": "EULAR — PMR and LVV 2025 recommendations, final primary abstract",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42481270/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "EULAR final publicado 21/07/2026, DOI 10.1016/j.ard.2026.06.009: resumo primário consultado: indução 15–25 mg prednisona equivalente por dia na PMR; 40–60 mg na GCA/TAK; adjuvantes IL-6 e upadacitinibe conforme cenário. Texto completo restrito, sem inferir sequência/dose não apresentada.",
+      "sourceEvidenceRecord": "web-verification-record.json:pmr2026_pub",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "gca_acr",
+      "title": "ACR/Vasculitis Foundation — GCA guideline 2021: urgent glucocorticoid regimens",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12344504/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published in final edited form as: Arthritis Care Res (Hoboken). 2021 Jul 8;73(8):1071–1087. doi: 10.1002/acr",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:gca_acr",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "tocili_label",
+      "title": "FDA — ACTEMRA label 2025: adult GCA and systemic JIA doses",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/125472s059lbl.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published evidence also supports that IL-6 ",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:tocili_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

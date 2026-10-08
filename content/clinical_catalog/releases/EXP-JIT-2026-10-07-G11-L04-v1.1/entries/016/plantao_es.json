@@ -1,0 +1,193 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Trauma y fractura de pene",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "8dfed0efb0e9a6b7079558387f7772eb1a9303bf008c3a0324b1e8f4bed1a885",
+  "ownerCandidate": "trauma_e_fratura_peniana",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_016_f01",
+    "b04_016_f02",
+    "b04_016_f03",
+    "b04_016_f04",
+    "b04_016_f05",
+    "b04_016_f06",
+    "b04_016_f07",
+    "b04_016_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ayuno, analgesia y urología inmediata; imágenes si duda sin demorar reparación probable."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Chasquido, dolor, detumescencia y hematoma; sangre en meato, hematuria o retención sugieren lesión uretral."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reparación quirúrgica temprana es estándar en fractura confirmada. Observación conservadora en trauma superficial sin rotura, no alternativa equivalente a cirugía."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Fractura de pene: reparación quirúrgica temprana; ningún medicamento repara la túnica rota. Trauma superficial sin ruptura puede tener cuidado conservador. Analgesia de apoyo siguiente no debe demorar evaluación urológica. Profilaxis antibiótica y anestesia según procedimiento real, con esquema hospitalario propio."
+    },
+    {
+      "type": "paragraph",
+      "text": "Dolor, solo en adulto de al menos 50 kg y sin riesgo hepático: paracetamol 500–1.000 mg por vía oral cada 6 horas si es necesario, máximo 4.000 mg en 24 horas sumando todas las presentaciones. Uso breve; reevaluar si se necesita por más de 3 días. Menor peso, hepatopatía, alcoholismo o fragilidad requieren un límite menor individualizado. No trata la causa."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sospecha de lesión uretral: evaluación urológica antes de instrumentación; evitar sondaje a ciegas. Monitorización y cuidados perioperatorios individualizados."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguir erección, curvatura, micción e infección; plan individual para retomar actividad sexual."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Rotura de túnica albugínea del cuerpo cavernoso, generalmente en erección; puede lesionar uretra."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_175",
+      "title": "BAUS — Trauma e fratura peniana",
+      "url": "https://www.baus.org.uk/trainees/penile_fracture.aspx",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_175",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "eautrauma",
+      "title": "EAU — Urological trauma",
+      "url": "https://uroweb.org/guidelines/urological-trauma/chapter/urogenital-trauma-guidelines",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:eautrauma",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "paracetamol_nhs",
+      "title": "NHS — Paracetamol for adults: dosing and precautions",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:paracetamol_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Ayuno, analgesia y urología inmediata; imágenes si duda sin demorar reparación probable."
+      ],
+      "factIds": [
+        "b04_016_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Chasquido, dolor, detumescencia y hematoma; sangre en meato, hematuria o retención sugieren lesión uretral."
+      ],
+      "factIds": [
+        "b04_016_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Reparación quirúrgica temprana es estándar en fractura confirmada. Observación conservadora en trauma superficial sin rotura, no alternativa equivalente a cirugía."
+      ],
+      "factIds": [
+        "b04_016_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Fractura de pene: reparación quirúrgica temprana; ningún medicamento repara la túnica rota. Trauma superficial sin ruptura puede tener cuidado conservador. Analgesia de apoyo siguiente no debe demorar evaluación urológica. Profilaxis antibiótica y anestesia según procedimiento real, con esquema hospitalario propio.",
+        "Dolor, solo en adulto de al menos 50 kg y sin riesgo hepático: paracetamol 500–1.000 mg por vía oral cada 6 horas si es necesario, máximo 4.000 mg en 24 horas sumando todas las presentaciones. Uso breve; reevaluar si se necesita por más de 3 días. Menor peso, hepatopatía, alcoholismo o fragilidad requieren un límite menor individualizado. No trata la causa."
+      ],
+      "factIds": [
+        "b04_016_f07",
+        "b04_016_f08"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Sospecha de lesión uretral: evaluación urológica antes de instrumentación; evitar sondaje a ciegas. Monitorización y cuidados perioperatorios individualizados."
+      ],
+      "factIds": [
+        "b04_016_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguir erección, curvatura, micción e infección; plan individual para retomar actividad sexual."
+      ],
+      "factIds": [
+        "b04_016_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Rotura de túnica albugínea del cuerpo cavernoso, generalmente en erección; puede lesionar uretra."
+      ],
+      "factIds": [
+        "b04_016_f01"
+      ]
+    }
+  ],
+  "markdown": "# Trauma y fractura de pene\n\n## Abordaje inicial y urgencias\n\nAyuno, analgesia y urología inmediata; imágenes si duda sin demorar reparación probable.\n\n## Diagnóstico y diferenciales\n\nChasquido, dolor, detumescencia y hematoma; sangre en meato, hematuria o retención sugieren lesión uretral.\n\n## Tratamiento: primera elección y alternativas\n\nReparación quirúrgica temprana es estándar en fractura confirmada. Observación conservadora en trauma superficial sin rotura, no alternativa equivalente a cirugía.\n\n## Fármacos, dosis e intervalos\n\nFractura de pene: reparación quirúrgica temprana; ningún medicamento repara la túnica rota. Trauma superficial sin ruptura puede tener cuidado conservador. Analgesia de apoyo siguiente no debe demorar evaluación urológica. Profilaxis antibiótica y anestesia según procedimiento real, con esquema hospitalario propio.\n\nDolor, solo en adulto de al menos 50 kg y sin riesgo hepático: paracetamol 500–1.000 mg por vía oral cada 6 horas si es necesario, máximo 4.000 mg en 24 horas sumando todas las presentaciones. Uso breve; reevaluar si se necesita por más de 3 días. Menor peso, hepatopatía, alcoholismo o fragilidad requieren un límite menor individualizado. No trata la causa.\n\n## Seguridad y monitorización\n\nSospecha de lesión uretral: evaluación urológica antes de instrumentación; evitar sondaje a ciegas. Monitorización y cuidados perioperatorios individualizados.\n\n## Reevaluación, internación y alta\n\nSeguir erección, curvatura, micción e infección; plan individual para retomar actividad sexual.\n\n## Reconocimiento rápido\n\nRotura de túnica albugínea del cuerpo cavernoso, generalmente en erección; puede lesionar uretra.\n\n## Referencias\n\n1. [BAUS — Trauma e fratura peniana](https://www.baus.org.uk/trainees/penile_fracture.aspx)\n2. [EAU — Urological trauma](https://uroweb.org/guidelines/urological-trauma/chapter/urogenital-trauma-guidelines)\n3. [NHS — Paracetamol for adults: dosing and precautions](https://www.nhs.uk/medicines/paracetamol-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "bcddc16454061ebec009004f0bb1300d8718f1248a4ec7171a32f8baff2c5506",
+  "approvedReviewProjectionFileSha256": "caaf2f2c4cb3478e32c6c50f20958889487e5c3c7d7180a2cfd13d99e814a5b6"
+}

@@ -1,0 +1,154 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Arteritis de células gigantes",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "1ecf8591f6e9b248e787be3fd59b79ac5e01bcc74c77615afd332f446ccdc390",
+  "ownerCandidate": "arterite_de_celulas_gigantes",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_031_f01",
+    "b04_031_f02",
+    "b04_031_f03",
+    "b04_031_f04",
+    "b04_031_f05",
+    "b04_031_f06",
+    "b04_031_f07",
+    "b04_031_f08"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Sospecha con alteración visual: emergencia; no demorar corticoide por confirmación electiva."
+      ],
+      "factIds": [
+        "b04_031_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Cefalea nueva, sensibilidad temporal, claudicación mandibular y examen; marcadores, ecografía/biopsia según vía especializada."
+      ],
+      "factIds": [
+        "b04_031_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: prednisona / metilprednisolona; tocilizumab. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Corticoide sistémico inmediato según gravedad; amenaza visual exige atención hospitalaria/oftalmológica inmediata y puede requerir pulsos intravenosos. Tocilizumab es opción adyuvante en pacientes seleccionados; upadacitinib también figura en recomendaciones actualizadas para elegibles con especialista. Ninguno reemplaza el tratamiento urgente para preservar visión."
+      ],
+      "factIds": [
+        "b04_031_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Adulto, sin amenaza visual: prednisona 40–60 mg por vía oral una vez al día, iniciada inmediatamente con sospecha clínica fuerte, con evaluación urgente y descenso posterior especializado. Amenaza/pérdida visual: hospital/oftalmología el mismo día; metilprednisolona 500–1.000 mg intravenosos una vez al día durante 3–5 días es rango de pulsos de guía ACR, seguido de plan oral. Infusión y monitorización hospitalarias según presentación; no esperar biopsia para proteger visión.",
+        "Tocilizumab en adulto elegible: 162 mg por vía subcutánea una vez por semana, junto al plan de descenso del corticoide. Es adyuvante, no reemplaza inducción urgente; duración por especialista. Excluir infección activa, pesquisar TB/hepatitis y controlar neutrófilos, plaquetas, hígado y lípidos; proteína C reactiva puede estar suprimida sin excluir actividad/infección."
+      ],
+      "factIds": [
+        "b04_031_f07",
+        "b04_031_f08"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Controlar visión, glucosa, presión e infección; no indicar aspirina universalmente sin evaluar motivo vascular y sangrado."
+      ],
+      "factIds": [
+        "b04_031_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Oftalmología/reumatología urgentes y seguimiento de recaída y enfermedad aórtica."
+      ],
+      "factIds": [
+        "b04_031_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Vasculitis de grandes vasos puede causar isquemia visual y cerebral."
+      ],
+      "factIds": [
+        "b04_031_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_190",
+      "title": "NHS — Arterite de células gigantes",
+      "url": "https://www.nhs.uk/conditions/temporal-arteritis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 14 August 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_190",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "eular_index",
+      "title": "EULAR — Published management recommendations",
+      "url": "https://www.eular.org/recommendations-management",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published in that year:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:eular_index",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "pmr2026_pub",
+      "title": "EULAR — PMR and LVV 2025 recommendations, final primary abstract",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42481270/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "EULAR final publicado 21/07/2026, DOI 10.1016/j.ard.2026.06.009: resumo primário consultado: indução 15–25 mg prednisona equivalente por dia na PMR; 40–60 mg na GCA/TAK; adjuvantes IL-6 e upadacitinibe conforme cenário. Texto completo restrito, sem inferir sequência/dose não apresentada.",
+      "sourceEvidenceRecord": "web-verification-record.json:pmr2026_pub",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "gca_acr",
+      "title": "ACR/Vasculitis Foundation — GCA guideline 2021: urgent glucocorticoid regimens",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12344504/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published in final edited form as: Arthritis Care Res (Hoboken). 2021 Jul 8;73(8):1071–1087. doi: 10.1002/acr",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:gca_acr",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "tocili_label",
+      "title": "FDA — ACTEMRA label 2025: adult GCA and systemic JIA doses",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/125472s059lbl.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published evidence also supports that IL-6 ",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:tocili_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

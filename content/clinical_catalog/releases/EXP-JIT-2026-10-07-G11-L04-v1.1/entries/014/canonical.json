@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "reviewer": null,
+  "ownerCandidate": "hidrocele",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Hidrocele",
+    "es": "Hidrocele"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L03",
+  "identityDecision": "NEW_DISTINCT_SCOPE_CANDIDATE; NO_OWNER_REGISTERED",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "treatmentApplicability": "NO_ROUTINE_DISEASE_SPECIFIC_DRUG",
+  "regimens": [
+    {
+      "drug": null,
+      "role": "PROCEDURE_OR_REHABILITATION",
+      "pt": "Hidrocele sem causa infecciosa não tem medicamento curativo: observação nas pequenas/pouco sintomáticas ou cirurgia em persistência/incômodo. Não prescrever diurético ou antibiótico para eliminar o líquido. Aspiração isolada recorre e não equivale à cirurgia; tratar separadamente a causa se houver.",
+      "es": "Hidrocele sin causa infecciosa no tiene medicamento curativo: observación en pequeñas/poco sintomáticas o cirugía ante persistencia/molestias. No prescribir diurético ni antibiótico para eliminar líquido. Aspiración aislada recurre y no equivale a cirugía; tratar la causa por separado si existe.",
+      "sources": [
+        "topic_173",
+        "hydrocele_baus"
+      ]
+    }
+  ],
+  "treatmentRevision": "ALL_50_REVIEWED_V1.1",
+  "facts": [
+    {
+      "id": "b04_014_f01",
+      "section": "concept",
+      "pt": "Acúmulo de líquido ao redor do testículo; pode ser congênito ou adquirido.",
+      "es": "Acumulación de líquido alrededor del testículo; congénita o adquirida.",
+      "sources": [
+        "topic_173",
+        "hydrocele_baus"
+      ]
+    },
+    {
+      "id": "b04_014_f02",
+      "section": "diagnosis",
+      "pt": "Examinar volume, dor e testículo; ultrassom se diagnóstico incerto, sem atrasar exploração em suspeita de torção.",
+      "es": "Examinar volumen, dolor y testículo; ecografía si diagnóstico incierto, sin demorar exploración ante sospecha de torsión.",
+      "sources": [
+        "topic_173",
+        "hydrocele_baus"
+      ]
+    },
+    {
+      "id": "b04_014_f03",
+      "section": "initial",
+      "pt": "Dor escrotal súbita ou hérnia irredutível exige avaliação cirúrgica urgente.",
+      "es": "Dolor escrotal súbito o hernia irreductible requiere evaluación quirúrgica urgente.",
+      "sources": [
+        "topic_173",
+        "hydrocele_baus"
+      ]
+    },
+    {
+      "id": "b04_014_f04",
+      "section": "options",
+      "pt": "Criança pequena elegível: observação com avaliação pediátrica. Adulto com hidrocele pequena e pouco sintomática: vigilância após excluir causa associada. Persistência ou incômodo relevante: cirurgia. Aspiração isolada tem recorrência rápida e não é tratamento curativo padrão.",
+      "es": "Niño pequeño elegible: observación con evaluación pediátrica. Adulto con hidrocele pequeña y poco sintomática: vigilancia tras excluir causa asociada. Persistencia o molestias relevantes: cirugía. La aspiración aislada recurre pronto y no es tratamiento curativo estándar.",
+      "sources": [
+        "topic_173",
+        "hydrocele_baus"
+      ]
+    },
+    {
+      "id": "b04_014_f05",
+      "section": "safety",
+      "pt": "Não puncionar rotineiramente no pronto atendimento; líquido não exclui tumor, infecção ou torção.",
+      "es": "No puncionar rutinariamente en urgencias; líquido no excluye tumor, infección o torsión.",
+      "sources": [
+        "topic_173",
+        "hydrocele_baus"
+      ]
+    },
+    {
+      "id": "b04_014_f06",
+      "section": "followup",
+      "pt": "Seguimento por idade e evolução; retorno se dor, febre, endurecimento ou aumento rápido.",
+      "es": "Seguimiento por edad y evolución; volver ante dolor, fiebre, endurecimiento o aumento rápido.",
+      "sources": [
+        "topic_173",
+        "hydrocele_baus"
+      ]
+    },
+    {
+      "id": "b04_014_f07",
+      "section": "doses",
+      "pt": "Hidrocele sem causa infecciosa não tem medicamento curativo: observação nas pequenas/pouco sintomáticas ou cirurgia em persistência/incômodo. Não prescrever diurético ou antibiótico para eliminar o líquido. Aspiração isolada recorre e não equivale à cirurgia; tratar separadamente a causa se houver.",
+      "es": "Hidrocele sin causa infecciosa no tiene medicamento curativo: observación en pequeñas/poco sintomáticas o cirugía ante persistencia/molestias. No prescribir diurético ni antibiótico para eliminar líquido. Aspiración aislada recurre y no equivale a cirugía; tratar la causa por separado si existe.",
+      "sources": [
+        "topic_173",
+        "hydrocele_baus"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Vigilância e cirurgia são opções por contexto; não há medicamento que elimine toda hidrocele.",
+      "es": "Vigilancia y cirugía dependen del contexto; no existe fármaco que elimine todo hidrocele.",
+      "sources": [
+        "topic_173",
+        "hydrocele_baus"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_173",
+      "title": "RCH — Hidrocele",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_scrotal_pain_or_swelling/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated January 2026",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_173",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "hydrocele_baus",
+      "title": "BAUS — Repair of an adult hydrocele: clinical alternatives",
+      "url": "https://www.baus.org.uk/_userfiles/pages/files/Patients/Leaflets/Hydrocele.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "BAUS: observação se pequena/pouco incômoda; cirurgia selecionada; aspiração recorre e não é cura padrão. Folheto oficial consultado por trechos indexados.",
+      "sourceEvidenceRecord": "web-verification-record.json:hydrocele_baus",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Medicamentos, doses e alternativas identificados por cenário; procedimentos e ausência de fármaco específico explicitados. Regimes sem intervalo universal validado permanecem calculados pelo especialista. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

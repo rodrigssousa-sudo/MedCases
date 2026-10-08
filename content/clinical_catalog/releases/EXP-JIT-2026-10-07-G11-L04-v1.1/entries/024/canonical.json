@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "reviewer": null,
+  "ownerCandidate": "artrite_psoriasica",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Artrite psoriásica",
+    "es": "Artritis psoriásica"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L03",
+  "identityDecision": "NEW_DISTINCT_SCOPE_CANDIDATE; NO_OWNER_REGISTERED",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "treatmentApplicability": "SCENARIO_SPECIFIC_PHARMACOTHERAPY",
+  "regimens": [
+    {
+      "drug": "metotrexato / leflunomida",
+      "role": "PERIPHERAL_ARTHRITIS_DMARD_OPTIONS",
+      "pt": "Artrite psoriásica periférica em adulto: metotrexato, dose-alvo usual 20–25 mg por via oral ou subcutânea UMA VEZ POR SEMANA, alcançada por titulação especializada, com folato; nunca diariamente. Alternativa leflunomida 20 mg por via oral uma vez ao dia, com especialista, sem associação automática ao metotrexato. Tratamento prolongado com revisão de atividade, hemograma, fígado e rins. Ambos exigem prevenção de gestação e avaliação de hepatotoxicidade; metotrexato não é opção eficaz para acometimento axial isolado.",
+      "es": "Artritis psoriásica periférica en adulto: metotrexato, dosis objetivo habitual 20–25 mg por vía oral o subcutánea UNA VEZ POR SEMANA, alcanzada con titulación especializada, con folato; nunca diariamente. Alternativa leflunomida 20 mg por vía oral una vez al día, con especialista, sin combinación automática con metotrexato. Tratamiento prolongado con revisión de actividad, hemograma, hígado y riñones. Ambos requieren prevención del embarazo y evaluación de hepatotoxicidad; metotrexato no es opción eficaz para afectación axial aislada.",
+      "sources": [
+        "psa_mtx",
+        "mtx_safety",
+        "leflun_label"
+      ]
+    },
+    {
+      "drug": "adalimumabe",
+      "role": "SPECIALIST_ESCALATION",
+      "pt": "Adalimumabe, adulto elegível após falha/intolerância à estratégia convencional: 40 mg por via subcutânea a cada 2 semanas para artrite psoriásica ou espondilite anquilosante, conforme indicação. Tratamento de manutenção, reavaliado pela reumatologia. Rastrear tuberculose/hepatite B e infecção; não iniciar com infecção ativa importante, nem associar a outro biológico. Avaliar insuficiência cardíaca e doença desmielinizante.",
+      "es": "Adalimumab, adulto elegible tras fracaso/intolerancia de la estrategia convencional: 40 mg por vía subcutánea cada 2 semanas para artritis psoriásica o espondilitis anquilosante, según indicación. Tratamiento de mantenimiento, reevaluado por reumatología. Pesquisar tuberculosis/hepatitis B e infección; no iniciar con infección activa importante ni combinar con otro biológico. Valorar insuficiencia cardíaca y enfermedad desmielinizante.",
+      "sources": [
+        "adalim_label"
+      ]
+    }
+  ],
+  "treatmentRevision": "ALL_50_REVIEWED_V1.1",
+  "facts": [
+    {
+      "id": "b04_024_f01",
+      "section": "concept",
+      "pt": "Doença inflamatória associada à psoríase, com artrite, entesite, dactilite ou acometimento axial.",
+      "es": "Enfermedad inflamatoria asociada a psoriasis con artritis, entesitis, dactilitis o afectación axial.",
+      "sources": [
+        "topic_183",
+        "eular_index",
+        "mtx_safety",
+        "psa2023",
+        "psa_mtx",
+        "leflun_label",
+        "adalim_label"
+      ]
+    },
+    {
+      "id": "b04_024_f02",
+      "section": "diagnosis",
+      "pt": "Examinar pele/unhas e domínios musculoesqueléticos; excluir artrite séptica e cristais.",
+      "es": "Examinar piel/uñas y dominios musculoesqueléticos; excluir artritis séptica y cristales.",
+      "sources": [
+        "topic_183",
+        "eular_index",
+        "mtx_safety",
+        "psa2023",
+        "psa_mtx",
+        "leflun_label",
+        "adalim_label"
+      ]
+    },
+    {
+      "id": "b04_024_f03",
+      "section": "initial",
+      "pt": "Articulação quente febril ou olho vermelho doloroso exige investigação urgente.",
+      "es": "Articulación caliente febril u ojo rojo doloroso requiere investigación urgente.",
+      "sources": [
+        "topic_183",
+        "eular_index",
+        "mtx_safety",
+        "psa2023",
+        "psa_mtx",
+        "leflun_label",
+        "adalim_label"
+      ]
+    },
+    {
+      "id": "b04_024_f04",
+      "section": "options",
+      "pt": "Opções especificadas neste tema: metotrexato / leflunomida; adalimumabe. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Anti-inflamatório pode aliviar doença leve selecionada. Artrite periférica persistente: DMARD como metotrexato; alternativas incluem leflunomida/sulfassalazina e, conforme domínio/resposta, biológicos.",
+      "es": "Opciones especificadas en este tema: metotrexato / leflunomida; adalimumab. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Antiinflamatorio puede aliviar enfermedad leve seleccionada. Artritis periférica persistente: DMARD como metotrexato; alternativas incluyen leflunomida/sulfasalazina y, según dominio/respuesta, biológicos.",
+      "sources": [
+        "topic_183",
+        "eular_index",
+        "mtx_safety",
+        "psa2023",
+        "psa_mtx",
+        "leflun_label",
+        "adalim_label"
+      ]
+    },
+    {
+      "id": "b04_024_f05",
+      "section": "safety",
+      "pt": "DMARD periférico não é solução universal para doença axial/entesite. Selecionar terapia considerando pele, doença intestinal e uveíte; revisar infecção e risco reprodutivo.",
+      "es": "DMARD periférico no es solución universal para enfermedad axial/entesitis. Considerar piel, enfermedad intestinal y uveítis; revisar infección y riesgo reproductivo.",
+      "sources": [
+        "topic_183",
+        "eular_index",
+        "mtx_safety",
+        "psa2023",
+        "psa_mtx",
+        "leflun_label",
+        "adalim_label"
+      ]
+    },
+    {
+      "id": "b04_024_f06",
+      "section": "followup",
+      "pt": "Tratar por alvo com reumatologia, fisioterapia e monitorização laboratorial.",
+      "es": "Tratamiento por objetivos con reumatología, fisioterapia y laboratorio.",
+      "sources": [
+        "topic_183",
+        "eular_index",
+        "mtx_safety",
+        "psa2023",
+        "psa_mtx",
+        "leflun_label",
+        "adalim_label"
+      ]
+    },
+    {
+      "id": "b04_024_f07",
+      "section": "doses",
+      "pt": "Artrite psoriásica periférica em adulto: metotrexato, dose-alvo usual 20–25 mg por via oral ou subcutânea UMA VEZ POR SEMANA, alcançada por titulação especializada, com folato; nunca diariamente. Alternativa leflunomida 20 mg por via oral uma vez ao dia, com especialista, sem associação automática ao metotrexato. Tratamento prolongado com revisão de atividade, hemograma, fígado e rins. Ambos exigem prevenção de gestação e avaliação de hepatotoxicidade; metotrexato não é opção eficaz para acometimento axial isolado.",
+      "es": "Artritis psoriásica periférica en adulto: metotrexato, dosis objetivo habitual 20–25 mg por vía oral o subcutánea UNA VEZ POR SEMANA, alcanzada con titulación especializada, con folato; nunca diariamente. Alternativa leflunomida 20 mg por vía oral una vez al día, con especialista, sin combinación automática con metotrexato. Tratamiento prolongado con revisión de actividad, hemograma, hígado y riñones. Ambos requieren prevención del embarazo y evaluación de hepatotoxicidad; metotrexato no es opción eficaz para afectación axial aislada.",
+      "sources": [
+        "psa_mtx",
+        "mtx_safety",
+        "leflun_label"
+      ]
+    },
+    {
+      "id": "b04_024_f08",
+      "section": "doses",
+      "pt": "Adalimumabe, adulto elegível após falha/intolerância à estratégia convencional: 40 mg por via subcutânea a cada 2 semanas para artrite psoriásica ou espondilite anquilosante, conforme indicação. Tratamento de manutenção, reavaliado pela reumatologia. Rastrear tuberculose/hepatite B e infecção; não iniciar com infecção ativa importante, nem associar a outro biológico. Avaliar insuficiência cardíaca e doença desmielinizante.",
+      "es": "Adalimumab, adulto elegible tras fracaso/intolerancia de la estrategia convencional: 40 mg por vía subcutánea cada 2 semanas para artritis psoriásica o espondilitis anquilosante, según indicación. Tratamiento de mantenimiento, reevaluado por reumatología. Pesquisar tuberculosis/hepatitis B e infección; no iniciar con infección activa importante ni combinar con otro biológico. Valorar insuficiencia cardíaca y enfermedad desmielinizante.",
+      "sources": [
+        "adalim_label"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Domínios diferentes exigem prioridades distintas; mais opções não significa associar todas.",
+      "es": "Dominios diferentes exigen prioridades distintas; más opciones no significa asociarlas todas.",
+      "sources": [
+        "topic_183",
+        "eular_index",
+        "mtx_safety",
+        "psa2023",
+        "psa_mtx",
+        "leflun_label",
+        "adalim_label"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_183",
+      "title": "NHS — Artrite psoriásica",
+      "url": "https://www.nhs.uk/conditions/psoriatic-arthritis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 06 September 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_183",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "eular_index",
+      "title": "EULAR — Published management recommendations",
+      "url": "https://www.eular.org/recommendations-management",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published in that year:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:eular_index",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "mtx_safety",
+      "title": "MHRA — methotrexate once weekly safety update, 2020",
+      "url": "https://www.gov.uk/drug-safety-update/methotrexate-once-weekly-for-autoimmune-diseases-new-measures-to-reduce-risk-of-fatal-overdose-due-to-inadvertent-daily-instead-of-weekly-dosing",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2020,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:mtx_safety",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "psa2023",
+      "title": "EULAR — Psoriatic arthritis pharmacological management: final update 2023, published 2024",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11103320/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "EULAR final atualização 2023 publicada 2024: DMARD periférico, terapia por domínio, pele/intestino/uveíte influenciam escolha. Resumo primário indexado consultado; não alegar leitura integral captcha.",
+      "sourceEvidenceRecord": "web-verification-record.json:psa2023",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "psa_mtx",
+      "title": "EULAR — Psoriatic arthritis recommendations 2023, published 2024: methotrexate target dose",
+      "url": "https://ard.bmj.com/content/83/6/706",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Final EULAR PsA2023 update, published2024, specific treatment recommendation read from publisher text: methotrexate usual adequate target20–25 mg weekly with folate; peripheral arthritis, not isolated axial disease. Leflunomide alternative; automatic combination discouraged.",
+      "sourceEvidenceRecord": "web-verification-record.json:psa_mtx",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "leflun_label",
+      "title": "DailyMed — Leflunomide: adult maintenance dose and safety",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fc044417-cd9a-42f6-8a3d-a14e7c2f81a2",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:leflun_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "adalim_label",
+      "title": "DailyMed — HUMIRA: adult RA, PsA and ankylosing spondylitis dosing",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=608d4f0d-b19f-46d3-749a-7159aa5f933d",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:adalim_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Medicamentos, doses e alternativas identificados por cenário; procedimentos e ausência de fármaco específico explicitados. Regimes sem intervalo universal validado permanecem calculados pelo especialista. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

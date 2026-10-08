@@ -1,0 +1,217 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação do lote; Guia deverá permanecer DRAFT no Admin após futura publicação dos modos.",
+  "canonical_payload_sha256": "98d7ed3bfa4d75c69cdcf42766604cc9209ead266081d478c7eb6b3b33e0ce30",
+  "owner_candidate": "talassemia",
+  "pt": {
+    "title": "Talassemia",
+    "subtitle": "Primeira escolha e alternativas por cenário",
+    "summary": "Defeito hereditário de síntese globínica causa anemia de gravidade variável.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Defeito hereditário de síntese globínica causa anemia de gravidade variável."
+        ],
+        "factIds": [
+          "b04_036_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "A decisão é por fenótipo; um esquema único não serve ao traço e à doença grave."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Hemograma, estudo de hemoglobina e ferro; diferenciar traço de doença dependente de transfusão."
+        ],
+        "factIds": [
+          "b04_036_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Anemia sintomática grave, febre ou complicação transfusional exige avaliação hospitalar."
+        ],
+        "factIds": [
+          "b04_036_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Opções especificadas neste tema: deferasirox / deferoxamina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Traço geralmente não requer terapia. Formas graves: programa transfusional e quelação, como deferasirox, deferiprona ou deferoxamina conforme perfil; transplante/terapia avançada em elegíveis."
+        ],
+        "factIds": [
+          "b04_036_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Sobrecarga de ferro TRANSFUSIONAL confirmada, não traço talassêmico: deferasirox em comprimido revestido, a partir de 2 anos e com filtração maior de 60 mL por minuto por 1,73 m², início 14 mg por kg por via oral uma vez ao dia; titular por ferritina/carga de ferro e toxicidade, sem exceder 28 mg por kg por dia. Não é equivalente ao comprimido dispersível. Alternativa no ADULTO: deferoxamina 40–50 mg por kg por dia por infusão subcutânea lenta de 8–12 horas, 5–7 dias por semana, em programa hematológico. Monitorizar rins, fígado, hemograma, audição/visão e infecção; não usar ferro empírico."
+        ],
+        "factIds": [
+          "b04_036_f07"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Não dar ferro sem deficiência comprovada; quelantes diferem em apresentação e toxicidade renal/hepática/hematológica."
+        ],
+        "factIds": [
+          "b04_036_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Monitorizar sobrecarga de ferro, órgãos e crescimento; aconselhamento genético."
+        ],
+        "factIds": [
+          "b04_036_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Talasemia",
+    "subtitle": "Primera elección y alternativas por escenario",
+    "summary": "Defecto hereditario de síntesis globínica causa anemia de gravedad variable.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Defecto hereditario de síntesis globínica causa anemia de gravedad variable."
+        ],
+        "factIds": [
+          "b04_036_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "La decisión depende del fenotipo; un esquema único no sirve al rasgo y enfermedad grave."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Hemograma, estudio de hemoglobina y hierro; distinguir rasgo de enfermedad dependiente de transfusión."
+        ],
+        "factIds": [
+          "b04_036_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Anemia sintomática grave, fiebre o complicación transfusional requiere evaluación hospitalaria."
+        ],
+        "factIds": [
+          "b04_036_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Opciones especificadas en este tema: deferasirox / deferoxamina. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Rasgo generalmente sin terapia. Formas graves: transfusiones y quelación como deferasirox, deferiprona o deferoxamina según perfil; trasplante/terapia avanzada si elegible."
+        ],
+        "factIds": [
+          "b04_036_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Sobrecarga de hierro TRANSFUSIONAL confirmada, no rasgo talasémico: deferasirox en comprimido recubierto, desde 2 años y con filtrado mayor de 60 mL por minuto por 1,73 m², inicio 14 mg por kg por vía oral una vez al día; titular por ferritina/carga de hierro y toxicidad, sin superar 28 mg por kg al día. No equivale al comprimido dispersable. Alternativa en ADULTO: deferoxamina 40–50 mg por kg al día en infusión subcutánea lenta de 8–12 horas, 5–7 días por semana, en programa hematológico. Controlar riñones, hígado, hemograma, audición/visión e infección; no dar hierro empírico."
+        ],
+        "factIds": [
+          "b04_036_f07"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "No dar hierro sin déficit comprobado; quelantes difieren en presentación y toxicidad renal/hepática/hematológica."
+        ],
+        "factIds": [
+          "b04_036_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Controlar sobrecarga de hierro, órganos y crecimiento; asesoramiento genético."
+        ],
+        "factIds": [
+          "b04_036_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_195",
+      "title": "NHS — Talassemia",
+      "url": "https://www.nhs.uk/conditions/thalassaemia/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 17 October 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_195",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "topic_195_treatment",
+      "title": "NHS — Talassemia — treatment",
+      "url": "https://www.nhs.uk/conditions/thalassaemia/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 17 October 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_195_treatment",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "deferasirox_label",
+      "title": "DailyMed — Deferasirox film-coated tablets: transfusional iron overload",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0fb210b3-6a3d-4313-83ce-52012e384f9b",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:deferasirox_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "deferox_label",
+      "title": "DailyMed — DESFERAL: adult chronic iron overload slow infusion",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=a7174843-5965-49fc-b842-f7eff7b48bbc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:deferox_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

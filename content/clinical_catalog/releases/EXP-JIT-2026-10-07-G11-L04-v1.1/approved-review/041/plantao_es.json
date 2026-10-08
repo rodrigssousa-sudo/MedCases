@@ -1,0 +1,151 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Enfermedad de Parkinson",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "c6672e4aa3f3835df12301ba49d4d5c5289f4744023e3734b0589e33f9a5ee4e",
+  "ownerCandidate": "doenca_de_parkinson",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_041_f01",
+    "b04_041_f02",
+    "b04_041_f03",
+    "b04_041_f04",
+    "b04_041_f05",
+    "b04_041_f06",
+    "b04_041_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Empeoramiento agudo: investigar infección, falla de administración, aspiración y causas metabólicas."
+      ],
+      "factIds": [
+        "b04_041_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Diagnóstico clínico especializado; excluir parkinsonismo farmacológico/atípico y evaluar cognición, marcha y deglución."
+      ],
+      "factIds": [
+        "b04_041_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: levodopa/carbidopa / levodopa/benserazida. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Levodopa si síntomas motores afectan calidad de vida; otras opciones iniciales elegibles: agonista dopaminérgico o inhibidor MAO-B. Fluctuaciones requieren ajuste especializado y eventual terapia avanzada."
+      ],
+      "factIds": [
+        "b04_041_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Adulto con Parkinson e impacto funcional: levodopa/carbidopa de liberación inmediata 100/25 mg por vía oral 3 veces al día como inicio de ficha, con titulación individual. Alternativa: levodopa/benserazida inmediata 50/12,5 mg por vía oral 3–4 veces al día inicialmente. Primer número aquí es levodopa; comprobar composición del producto, sin cambiar presentación automáticamente ni combinar ambas. Controlar hipotensión, náuseas, discinesia, alucinaciones y somnolencia; mantener horarios y no suspender bruscamente. No es tratamiento para todo parkinsonismo."
+      ],
+      "factIds": [
+        "b04_041_f07"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No suspender dopaminérgico bruscamente; preservar horarios indicados. Evaluar hipotensión, alucinaciones, somnolencia y control de impulsos; evitar bloqueadores dopaminérgicos inadecuados."
+      ],
+      "factIds": [
+        "b04_041_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Neurología, fisioterapia, terapia ocupacional y deglución; plan para internación y vía oral no disponible."
+      ],
+      "factIds": [
+        "b04_041_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Enfermedad neurodegenerativa con bradicinesia, rigidez y/o temblor, además de síntomas no motores."
+      ],
+      "factIds": [
+        "b04_041_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_200",
+      "title": "NHS — Doença de Parkinson",
+      "url": "https://www.nhs.uk/conditions/parkinsons-disease/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 03 November 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_200",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "topic_200_treatment",
+      "title": "NHS — Doença de Parkinson — treatment",
+      "url": "https://www.nhs.uk/conditions/parkinsons-disease/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 03 November 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_200_treatment",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "parkinson",
+      "title": "NICE NG71 — Parkinson disease",
+      "url": "https://www.nice.org.uk/guidance/ng71/chapter/Recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE NG71: levodopa quando sintomas motores afetam qualidade de vida; alternativas dependem do cenário. Horários/formulações são individualizados; sem regime numérico universal.",
+      "sourceEvidenceRecord": "web-verification-record.json:parkinson",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "sinemet_label",
+      "title": "emc — Sinemet: immediate-release carbidopa/levodopa starting doses",
+      "url": "https://www.medicines.org.uk/emc/product/7810/smpc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated on emc: 04 Mar 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:sinemet_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "madopar_label",
+      "title": "emc — Madopar: immediate-release levodopa/benserazide starting regimen",
+      "url": "https://www.medicines.org.uk/emc/product/1110/smpc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated on emc: 08 Apr 2020",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:madopar_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

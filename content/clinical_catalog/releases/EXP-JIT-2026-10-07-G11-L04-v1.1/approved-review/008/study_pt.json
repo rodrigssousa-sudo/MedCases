@@ -1,0 +1,106 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Leucoplasia oral",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "621e5914ca950dcc5acdfdaf5418f13d875a702658590e52fbea369163757e24",
+  "ownerCandidate": "leucoplasia_oral",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_008_f01",
+    "b04_008_f02",
+    "b04_008_f03",
+    "b04_008_f04",
+    "b04_008_f05",
+    "b04_008_f06",
+    "b04_008_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Placa branca oral persistente com potencial de displasia; não é sinônimo de candidíase."
+      ],
+      "factIds": [
+        "b04_008_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A escolha é entre vigilância e intervenção por risco, não dois medicamentos obrigatórios."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar placa não removível, fatores irritantes e biópsia quando indicada; diferenciar leucoplasia pilosa."
+      ],
+      "factIds": [
+        "b04_008_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Ulceração, massa, sangramento, disfagia ou crescimento exigem avaliação prioritária."
+      ],
+      "factIds": [
+        "b04_008_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Cessar tabaco/álcool e seguimento; alternativa em lesão de risco: excisão por bisturi ou laser conforme histologia/equipe."
+      ],
+      "factIds": [
+        "b04_008_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Não há medicamento padrão comprovado que elimine leucoplasia e previna câncer. Primeira conduta: eliminar tabaco/álcool, biópsia conforme risco e vigilância; alternativa em lesão selecionada: excisão cirúrgica/laser. Não prescrever antifúngico, vitamina ou retinoide empiricamente como cura da placa."
+      ],
+      "factIds": [
+        "b04_008_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não prescrever antifúngico como cura de placa não diagnosticada; remoção não elimina todo risco futuro."
+      ],
+      "factIds": [
+        "b04_008_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Exames seriados e nova biópsia se mudança; atenção odontológica especializada."
+      ],
+      "factIds": [
+        "b04_008_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_167",
+      "title": "NHS — Leucoplasia oral",
+      "url": "https://www.nhs.uk/conditions/leukoplakia/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 15 May 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_167",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

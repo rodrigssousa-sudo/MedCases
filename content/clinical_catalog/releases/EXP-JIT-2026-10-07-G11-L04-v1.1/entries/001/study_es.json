@@ -1,0 +1,234 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Hipoacusia neurosensorial súbita",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "92283dd37a6e7c30bd94a99768558ddc79b7feea1d9b3654d0a6a179453ec96b",
+  "ownerCandidate": "perda_auditiva_neurossensorial_subita",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_001_f01",
+    "b04_001_f02",
+    "b04_001_f03",
+    "b04_001_f04",
+    "b04_001_f05",
+    "b04_001_f06",
+    "b04_001_f07",
+    "b04_001_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Pérdida auditiva aguda coclear/retrococlear, a menudo unilateral e idiopática. Puede acompañarse de acúfenos o vértigo."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Las opciones dependen de ventana temporal, gravedad y contraindicaciones; la inyección intratimpánica no equivale a una prescripción oral domiciliaria."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Otoscopia y pruebas auditivas distinguen cerumen/otitis de pérdida neurosensorial; confirmar con audiometría. Investigar causa retrococlear con resonancia o potenciales evocados según especialista."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Pérdida súbita no explicada por oído externo/medio requiere evaluación urgente; si apareció en hasta 3 días durante los últimos 30 días, atención en hasta 24 horas. Déficit focal: investigar ACV."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "En adulto con pérdida idiopática elegible, ofrecer prednisona en la ventana inicial; dexametasona intratimpánica es alternativa o rescate por otorrino. Oxigenoterapia hiperbárica puede complementar el corticoide en seleccionados. El beneficio no está garantizado."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Prednisona, adulto: 1 mg por kg al día por vía oral, en dosis única, máximo habitual 60 mg al día, durante 7–14 días; después descenso durante un período similar, individualizado. Iniciar idealmente durante los primeros 14 días. Controlar glucemia, presión y efectos del corticoide."
+    },
+    {
+      "type": "paragraph",
+      "text": "Dexametasona intratimpánica: solución 24 mg por mL, o 10 mg por mL cuando no se dispone de la concentración preparada; otorrino inyecta 0,4–0,8 mL en oído medio, hasta 4 aplicaciones en 2 semanas. Rescate recomendado ante recuperación incompleta entre 2 y 6 semanas del inicio. Procedimiento especializado; no son gotas en el conducto auditivo."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No usar antivirales ni vasodilatadores rutinariamente. Selección, dosis y técnica del corticoide requieren protocolo otológico; evaluar diabetes, presión arterial y riesgos de la vía."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Audiometría al finalizar tratamiento y dentro de 6 meses; persistencia: rehabilitación auditiva y apoyo por acúfenos. No demorar derivación esperando estudios electivos."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_160",
+      "title": "NHS — Perda auditiva neurossensorial súbita",
+      "url": "https://www.nhs.uk/conditions/hearing-loss/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 30 May 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_160",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "hearing_guideline",
+      "title": "AAO-HNS 2019 — guideline original",
+      "url": "https://aao-hnsfjournals.onlinelibrary.wiley.com/doi/abs/10.1177/0194599819859885",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2019,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Guideline final AAO-HNS 2019 substitui 2012; resumo executivo oficial: resgate intratimpânico 2–6 semanas; audiometria ao final e em até 6 meses. Leitura de recomendações específicas, sem alegar acesso integral ao texto restrito.",
+      "sourceEvidenceRecord": "web-verification-record.json:hearing_guideline",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "hearing_nice",
+      "title": "NICE NG98 — hearing loss assessment",
+      "url": "https://www.nice.org.uk/guidance/ng98/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2018,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE NG98: perda em até 3 dias nos últimos 30 dias, não explicada por ouvido externo/médio: avaliação em até 24 horas; recomendação oficial específica consultada.",
+      "sourceEvidenceRecord": "web-verification-record.json:hearing_nice",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "aaohnsfaq",
+      "title": "AAO-HNS — Sudden Hearing Loss: patient information accompanying final guideline 2019",
+      "url": "https://www.entnet.org/wp-content/uploads/2021/04/Sudden-Hearing-Loss-FAQs-Physician.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2019,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Informação pública da AAO-HNS: opções iniciais em 2 semanas. PDF não acessível diretamente; trechos oficiais consultados. Não é uma tabela de doses.",
+      "sourceEvidenceRecord": "web-verification-record.json:aaohnsfaq",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "ssnhl_doses",
+      "title": "AAO-HNS — Sudden Hearing Loss, final guideline 2019, Table 10",
+      "url": "https://www.rcot.org/2021/pdf/Clinical%20Practice%20Guideline%20Sudden%20Hearing%20Loss%20(Update).pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published online",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:ssnhl_doses",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Pérdida auditiva aguda coclear/retrococlear, a menudo unilateral e idiopática. Puede acompañarse de acúfenos o vértigo."
+      ],
+      "factIds": [
+        "b04_001_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Las opciones dependen de ventana temporal, gravedad y contraindicaciones; la inyección intratimpánica no equivale a una prescripción oral domiciliaria."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Otoscopia y pruebas auditivas distinguen cerumen/otitis de pérdida neurosensorial; confirmar con audiometría. Investigar causa retrococlear con resonancia o potenciales evocados según especialista."
+      ],
+      "factIds": [
+        "b04_001_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Pérdida súbita no explicada por oído externo/medio requiere evaluación urgente; si apareció en hasta 3 días durante los últimos 30 días, atención en hasta 24 horas. Déficit focal: investigar ACV."
+      ],
+      "factIds": [
+        "b04_001_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "En adulto con pérdida idiopática elegible, ofrecer prednisona en la ventana inicial; dexametasona intratimpánica es alternativa o rescate por otorrino. Oxigenoterapia hiperbárica puede complementar el corticoide en seleccionados. El beneficio no está garantizado."
+      ],
+      "factIds": [
+        "b04_001_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Prednisona, adulto: 1 mg por kg al día por vía oral, en dosis única, máximo habitual 60 mg al día, durante 7–14 días; después descenso durante un período similar, individualizado. Iniciar idealmente durante los primeros 14 días. Controlar glucemia, presión y efectos del corticoide.",
+        "Dexametasona intratimpánica: solución 24 mg por mL, o 10 mg por mL cuando no se dispone de la concentración preparada; otorrino inyecta 0,4–0,8 mL en oído medio, hasta 4 aplicaciones en 2 semanas. Rescate recomendado ante recuperación incompleta entre 2 y 6 semanas del inicio. Procedimiento especializado; no son gotas en el conducto auditivo."
+      ],
+      "factIds": [
+        "b04_001_f07",
+        "b04_001_f08"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No usar antivirales ni vasodilatadores rutinariamente. Selección, dosis y técnica del corticoide requieren protocolo otológico; evaluar diabetes, presión arterial y riesgos de la vía."
+      ],
+      "factIds": [
+        "b04_001_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Audiometría al finalizar tratamiento y dentro de 6 meses; persistencia: rehabilitación auditiva y apoyo por acúfenos. No demorar derivación esperando estudios electivos."
+      ],
+      "factIds": [
+        "b04_001_f06"
+      ]
+    }
+  ],
+  "markdown": "# Hipoacusia neurosensorial súbita\n\n## Concepto y mecanismo\n\nPérdida auditiva aguda coclear/retrococlear, a menudo unilateral e idiopática. Puede acompañarse de acúfenos o vértigo.\n\n## Razonamiento y elección terapéutica\n\nLas opciones dependen de ventana temporal, gravedad y contraindicaciones; la inyección intratimpánica no equivale a una prescripción oral domiciliaria.\n\n## Diagnóstico y diferenciales\n\nOtoscopia y pruebas auditivas distinguen cerumen/otitis de pérdida neurosensorial; confirmar con audiometría. Investigar causa retrococlear con resonancia o potenciales evocados según especialista.\n\n## Abordaje inicial y urgencias\n\nPérdida súbita no explicada por oído externo/medio requiere evaluación urgente; si apareció en hasta 3 días durante los últimos 30 días, atención en hasta 24 horas. Déficit focal: investigar ACV.\n\n## Tratamiento: primera elección y alternativas\n\nEn adulto con pérdida idiopática elegible, ofrecer prednisona en la ventana inicial; dexametasona intratimpánica es alternativa o rescate por otorrino. Oxigenoterapia hiperbárica puede complementar el corticoide en seleccionados. El beneficio no está garantizado.\n\n## Fármacos, dosis e intervalos\n\nPrednisona, adulto: 1 mg por kg al día por vía oral, en dosis única, máximo habitual 60 mg al día, durante 7–14 días; después descenso durante un período similar, individualizado. Iniciar idealmente durante los primeros 14 días. Controlar glucemia, presión y efectos del corticoide.\n\nDexametasona intratimpánica: solución 24 mg por mL, o 10 mg por mL cuando no se dispone de la concentración preparada; otorrino inyecta 0,4–0,8 mL en oído medio, hasta 4 aplicaciones en 2 semanas. Rescate recomendado ante recuperación incompleta entre 2 y 6 semanas del inicio. Procedimiento especializado; no son gotas en el conducto auditivo.\n\n## Seguridad y monitorización\n\nNo usar antivirales ni vasodilatadores rutinariamente. Selección, dosis y técnica del corticoide requieren protocolo otológico; evaluar diabetes, presión arterial y riesgos de la vía.\n\n## Reevaluación, internación y alta\n\nAudiometría al finalizar tratamiento y dentro de 6 meses; persistencia: rehabilitación auditiva y apoyo por acúfenos. No demorar derivación esperando estudios electivos.\n\n## Referencias\n\n1. [NHS — Perda auditiva neurossensorial súbita](https://www.nhs.uk/conditions/hearing-loss/)\n2. [AAO-HNS 2019 — guideline original](https://aao-hnsfjournals.onlinelibrary.wiley.com/doi/abs/10.1177/0194599819859885)\n3. [NICE NG98 — hearing loss assessment](https://www.nice.org.uk/guidance/ng98/chapter/recommendations)\n4. [AAO-HNS — Sudden Hearing Loss: patient information accompanying final guideline 2019](https://www.entnet.org/wp-content/uploads/2021/04/Sudden-Hearing-Loss-FAQs-Physician.pdf)\n5. [AAO-HNS — Sudden Hearing Loss, final guideline 2019, Table 10](https://www.rcot.org/2021/pdf/Clinical%20Practice%20Guideline%20Sudden%20Hearing%20Loss%20(Update).pdf)",
+  "approvedReviewCanonicalFileSha256": "99f53f1a9eb9456b3f6701050d23f2bc745714aa2fcfdbe3f743067a97c61a77",
+  "approvedReviewProjectionFileSha256": "a8d926b46d8e98c2b5980f4dad15f0631610c861f15e79c38bd50a4bda394872"
+}

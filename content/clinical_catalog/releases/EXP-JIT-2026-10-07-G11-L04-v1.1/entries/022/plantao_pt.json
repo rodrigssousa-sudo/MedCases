@@ -1,0 +1,219 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Neuropatia diabética periférica",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "bf5a84e28b6e2a116a1e89c906b0b18a43d74cc6cf9584422f91e450f5adac96",
+  "ownerCandidate": "neuropatia_diabetica_periferica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_022_f01",
+    "b04_022_f02",
+    "b04_022_f03",
+    "b04_022_f04",
+    "b04_022_f05",
+    "b04_022_f06",
+    "b04_022_f07",
+    "b04_022_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Úlcera infectada, isquemia, pé quente/deformado ou déficit motor rápido exige avaliação prioritária."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Exame de pés, sensibilidade, pulsos e distribuição; excluir deficiência B12, compressão e outras neuropatias."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opções especificadas neste tema: duloxetina / pregabalina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Controle metabólico e proteção dos pés. Dor: escolha inicial entre duloxetina, amitriptilina, gabapentina ou pregabalina; selecionar pela comorbidade e tolerância, sem combinar todas."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Neuropatia diabética dolorosa no adulto: duloxetina de liberação retardada 60 mg por via oral uma vez ao dia; início menor por tolerância pode ser necessário. Acima de 60 mg por dia não oferece benefício adicional neste cenário. Alternativa: pregabalina 50 mg por via oral a cada 8 horas; aumentar, conforme resposta, até 100 mg a cada 8 horas na primeira semana, máximo 300 mg por dia para esta indicação na bula consultada e com depuração de creatinina de pelo menos 60 mL por minuto. Ajustar pregabalina se função renal menor; não aplicar o máximo de outras indicações à neuropatia diabética."
+    },
+    {
+      "type": "paragraph",
+      "text": "Duloxetina: evitar cirrose/doença hepática crônica e filtração abaixo de 30 mL por minuto. Pregabalina: monitorizar sonolência, quedas, edema e depressão respiratória, especialmente com opioides. Avaliar benefício funcional; não interromper abruptamente. Medicamentos aliviam dor, não restauram sensibilidade nem substituem cuidado dos pés e controle metabólico."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Titulação e retirada graduais; avaliar sedação, quedas, função renal/hepática e interações. Opioide não é primeira estratégia rotineira."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reavaliar dor, sono, função e pés; analgesia não restaura sensibilidade protetora."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Lesão nervosa relacionada ao diabetes, com perda sensitiva ou dor distal; aumenta risco de úlcera."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_181",
+      "title": "NHS — Neuropatia diabética periférica",
+      "url": "https://www.nhs.uk/conditions/peripheral-neuropathy/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 10 October 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_181",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "topic_181_treatment",
+      "title": "NHS — Neuropatia diabética periférica — treatment",
+      "url": "https://www.nhs.uk/conditions/peripheral-neuropathy/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 10 October 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_181_treatment",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "neuropathic",
+      "title": "NICE CG173 — Neuropathic pain",
+      "url": "https://www.nice.org.uk/guidance/cg173/chapter/Recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE CG173: amitriptilina/duloxetina/gabapentina/pregabalina na neuropatia dolorosa; carbamazepina para neuralgia trigeminal. Não confundir os dois algoritmos.",
+      "sourceEvidenceRecord": "web-verification-record.json:neuropathic",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "dulox_label",
+      "title": "DailyMed — duloxetine delayed-release capsules",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e36a6919-568a-4d4a-9920-7a7fe4f3441c",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:dulox_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "pregabalin_dpn",
+      "title": "DailyMed — Pregabalin: specific diabetic neuropathy regimen, 300 mg daily limit",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7d93359c-1849-430d-a922-21d42932d0f3",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:pregabalin_dpn",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Úlcera infectada, isquemia, pé quente/deformado ou déficit motor rápido exige avaliação prioritária."
+      ],
+      "factIds": [
+        "b04_022_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Exame de pés, sensibilidade, pulsos e distribuição; excluir deficiência B12, compressão e outras neuropatias."
+      ],
+      "factIds": [
+        "b04_022_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: duloxetina / pregabalina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Controle metabólico e proteção dos pés. Dor: escolha inicial entre duloxetina, amitriptilina, gabapentina ou pregabalina; selecionar pela comorbidade e tolerância, sem combinar todas."
+      ],
+      "factIds": [
+        "b04_022_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Neuropatia diabética dolorosa no adulto: duloxetina de liberação retardada 60 mg por via oral uma vez ao dia; início menor por tolerância pode ser necessário. Acima de 60 mg por dia não oferece benefício adicional neste cenário. Alternativa: pregabalina 50 mg por via oral a cada 8 horas; aumentar, conforme resposta, até 100 mg a cada 8 horas na primeira semana, máximo 300 mg por dia para esta indicação na bula consultada e com depuração de creatinina de pelo menos 60 mL por minuto. Ajustar pregabalina se função renal menor; não aplicar o máximo de outras indicações à neuropatia diabética.",
+        "Duloxetina: evitar cirrose/doença hepática crônica e filtração abaixo de 30 mL por minuto. Pregabalina: monitorizar sonolência, quedas, edema e depressão respiratória, especialmente com opioides. Avaliar benefício funcional; não interromper abruptamente. Medicamentos aliviam dor, não restauram sensibilidade nem substituem cuidado dos pés e controle metabólico."
+      ],
+      "factIds": [
+        "b04_022_f07",
+        "b04_022_f08"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Titulação e retirada graduais; avaliar sedação, quedas, função renal/hepática e interações. Opioide não é primeira estratégia rotineira."
+      ],
+      "factIds": [
+        "b04_022_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar dor, sono, função e pés; analgesia não restaura sensibilidade protetora."
+      ],
+      "factIds": [
+        "b04_022_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Lesão nervosa relacionada ao diabetes, com perda sensitiva ou dor distal; aumenta risco de úlcera."
+      ],
+      "factIds": [
+        "b04_022_f01"
+      ]
+    }
+  ],
+  "markdown": "# Neuropatia diabética periférica\n\n## Abordagem inicial e urgências\n\nÚlcera infectada, isquemia, pé quente/deformado ou déficit motor rápido exige avaliação prioritária.\n\n## Diagnóstico e diferenciais\n\nExame de pés, sensibilidade, pulsos e distribuição; excluir deficiência B12, compressão e outras neuropatias.\n\n## Tratamento: primeira escolha e alternativas\n\nOpções especificadas neste tema: duloxetina / pregabalina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Controle metabólico e proteção dos pés. Dor: escolha inicial entre duloxetina, amitriptilina, gabapentina ou pregabalina; selecionar pela comorbidade e tolerância, sem combinar todas.\n\n## Fármacos, doses e intervalos\n\nNeuropatia diabética dolorosa no adulto: duloxetina de liberação retardada 60 mg por via oral uma vez ao dia; início menor por tolerância pode ser necessário. Acima de 60 mg por dia não oferece benefício adicional neste cenário. Alternativa: pregabalina 50 mg por via oral a cada 8 horas; aumentar, conforme resposta, até 100 mg a cada 8 horas na primeira semana, máximo 300 mg por dia para esta indicação na bula consultada e com depuração de creatinina de pelo menos 60 mL por minuto. Ajustar pregabalina se função renal menor; não aplicar o máximo de outras indicações à neuropatia diabética.\n\nDuloxetina: evitar cirrose/doença hepática crônica e filtração abaixo de 30 mL por minuto. Pregabalina: monitorizar sonolência, quedas, edema e depressão respiratória, especialmente com opioides. Avaliar benefício funcional; não interromper abruptamente. Medicamentos aliviam dor, não restauram sensibilidade nem substituem cuidado dos pés e controle metabólico.\n\n## Segurança e monitorização\n\nTitulação e retirada graduais; avaliar sedação, quedas, função renal/hepática e interações. Opioide não é primeira estratégia rotineira.\n\n## Reavaliação, internação e alta\n\nReavaliar dor, sono, função e pés; analgesia não restaura sensibilidade protetora.\n\n## Reconhecimento rápido\n\nLesão nervosa relacionada ao diabetes, com perda sensitiva ou dor distal; aumenta risco de úlcera.\n\n## Referências\n\n1. [NHS — Neuropatia diabética periférica](https://www.nhs.uk/conditions/peripheral-neuropathy/)\n2. [NHS — Neuropatia diabética periférica — treatment](https://www.nhs.uk/conditions/peripheral-neuropathy/treatment/)\n3. [NICE CG173 — Neuropathic pain](https://www.nice.org.uk/guidance/cg173/chapter/Recommendations)\n4. [DailyMed — duloxetine delayed-release capsules](https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e36a6919-568a-4d4a-9920-7a7fe4f3441c)\n5. [DailyMed — Pregabalin: specific diabetic neuropathy regimen, 300 mg daily limit](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7d93359c-1849-430d-a922-21d42932d0f3)",
+  "approvedReviewCanonicalFileSha256": "577b3a634ee84da4be5d1255577f40f7e038af1bc452ef8bbef990dc10205953",
+  "approvedReviewProjectionFileSha256": "ab673f4961531b4fa33a3960a2ce93b4f118d56b491c029bd8f8013ed4b380c2"
+}

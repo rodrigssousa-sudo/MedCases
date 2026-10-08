@@ -1,0 +1,208 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Enfermedad de von Willebrand",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "0c33debb9c69e2c1eb1085d9b7c3a1f776878c6a554ea68a79b7b8a42ac64e1b",
+  "ownerCandidate": "doenca_de_von_willebrand",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_037_f01",
+    "b04_037_f02",
+    "b04_037_f03",
+    "b04_037_f04",
+    "b04_037_f05",
+    "b04_037_f06",
+    "b04_037_f07",
+    "b04_037_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Defecto cuantitativo/cualitativo de factor von Willebrand altera hemostasia."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Eficacia y seguridad según subtipo; no sustituir concentrado por desmopresina sin elegibilidad."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Historia hemorrágica, factor von Willebrand y factor VIII; clasificar subtipo con hematología."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hemorragia importante: estabilización, control del foco y hematología urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opciones especificadas en este tema: desmopressina; ácido tranexâmico. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Desmopresina solo en subtipo/paciente respondedor elegible; alternativa: concentrado de factor von Willebrand. Ácido tranexámico complementa escenarios mucosos/procedimientos apropiados."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tipo 1 respondedor, paciente elegible por hematología: desmopresina 0,3 microgramo por kg de peso real intravenosa, máximo 20 microgramos, en infusión de 15–30 minutos. En adulto de al menos 10 kg, diluir en solución de cloruro de sodio 0,9% según ficha, habitualmente 50 mL; comprobar presentación. Repetición según respuesta, sodio y taquifilaxia. Restringir líquidos según protocolo; contraindicada en tipo 2B, no usar en tipo 3, hiponatremia o depuración menor de 50 mL por minuto. No basta como monoterapia en cirugía mayor."
+    },
+    {
+      "type": "paragraph",
+      "text": "Escenario específico posparto en mujer con enfermedad de von Willebrand/factor bajo e indicación hematológica: ácido tranexámico 25 mg por kg por vía oral, habitualmente 1.000–1.300 mg, 3 veces al día durante 10–14 días; prolongar solo si pérdida sigue relevante y equipo indica. No aplicar automáticamente duración a cirugía u otros sangrados. Ajustar con disfunción renal; valorar trombosis y evitar uso sin especialista en hematuria del tracto urinario superior. Sangrado importante puede requerir concentrado de factor de von Willebrand, con producto y dosis calculados por equipo."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Desmopresina exige control hídrico/sodio; está contraindicada en tipo 2B y es ineficaz/contraindicada en tipo 3. Cirugía mayor no debe depender solo de ella. Cirugía/parto requieren metas de laboratorio y plan hematológico; evitar dosis universal."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Plan de sangrado, procedimientos y embarazo; registrar respuesta a prueba terapéutica."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_196",
+      "title": "NHS — Doença de von Willebrand",
+      "url": "https://www.nhs.uk/conditions/von-willebrand-disease/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 08 April 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_196",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "vwd_full",
+      "title": "ASH/ISTH/NHF/WFH — VWD guideline original primary text",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7805326/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published correction appears in PLoS One. 2017;12(2):e0172185]. PLoS One. 2016;11(10):e0164683. [DOI] [PMC fr",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:vwd_full",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "desmo_vwd",
+      "title": "DailyMed — DDAVP injection: type 1 von Willebrand hemostatic infusion",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=651f6fee-a2c7-431b-8d5d-58b156c72244",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:desmo_vwd",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Defecto cuantitativo/cualitativo de factor von Willebrand altera hemostasia."
+      ],
+      "factIds": [
+        "b04_037_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Eficacia y seguridad según subtipo; no sustituir concentrado por desmopresina sin elegibilidad."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Historia hemorrágica, factor von Willebrand y factor VIII; clasificar subtipo con hematología."
+      ],
+      "factIds": [
+        "b04_037_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Hemorragia importante: estabilización, control del foco y hematología urgente."
+      ],
+      "factIds": [
+        "b04_037_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: desmopressina; ácido tranexâmico. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Desmopresina solo en subtipo/paciente respondedor elegible; alternativa: concentrado de factor von Willebrand. Ácido tranexámico complementa escenarios mucosos/procedimientos apropiados."
+      ],
+      "factIds": [
+        "b04_037_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Tipo 1 respondedor, paciente elegible por hematología: desmopresina 0,3 microgramo por kg de peso real intravenosa, máximo 20 microgramos, en infusión de 15–30 minutos. En adulto de al menos 10 kg, diluir en solución de cloruro de sodio 0,9% según ficha, habitualmente 50 mL; comprobar presentación. Repetición según respuesta, sodio y taquifilaxia. Restringir líquidos según protocolo; contraindicada en tipo 2B, no usar en tipo 3, hiponatremia o depuración menor de 50 mL por minuto. No basta como monoterapia en cirugía mayor.",
+        "Escenario específico posparto en mujer con enfermedad de von Willebrand/factor bajo e indicación hematológica: ácido tranexámico 25 mg por kg por vía oral, habitualmente 1.000–1.300 mg, 3 veces al día durante 10–14 días; prolongar solo si pérdida sigue relevante y equipo indica. No aplicar automáticamente duración a cirugía u otros sangrados. Ajustar con disfunción renal; valorar trombosis y evitar uso sin especialista en hematuria del tracto urinario superior. Sangrado importante puede requerir concentrado de factor de von Willebrand, con producto y dosis calculados por equipo."
+      ],
+      "factIds": [
+        "b04_037_f07",
+        "b04_037_f08"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Desmopresina exige control hídrico/sodio; está contraindicada en tipo 2B y es ineficaz/contraindicada en tipo 3. Cirugía mayor no debe depender solo de ella. Cirugía/parto requieren metas de laboratorio y plan hematológico; evitar dosis universal."
+      ],
+      "factIds": [
+        "b04_037_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Plan de sangrado, procedimientos y embarazo; registrar respuesta a prueba terapéutica."
+      ],
+      "factIds": [
+        "b04_037_f06"
+      ]
+    }
+  ],
+  "markdown": "# Enfermedad de von Willebrand\n\n## Concepto y mecanismo\n\nDefecto cuantitativo/cualitativo de factor von Willebrand altera hemostasia.\n\n## Razonamiento y elección terapéutica\n\nEficacia y seguridad según subtipo; no sustituir concentrado por desmopresina sin elegibilidad.\n\n## Diagnóstico y diferenciales\n\nHistoria hemorrágica, factor von Willebrand y factor VIII; clasificar subtipo con hematología.\n\n## Abordaje inicial y urgencias\n\nHemorragia importante: estabilización, control del foco y hematología urgente.\n\n## Tratamiento: primera elección y alternativas\n\nOpciones especificadas en este tema: desmopressina; ácido tranexâmico. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Desmopresina solo en subtipo/paciente respondedor elegible; alternativa: concentrado de factor von Willebrand. Ácido tranexámico complementa escenarios mucosos/procedimientos apropiados.\n\n## Fármacos, dosis e intervalos\n\nTipo 1 respondedor, paciente elegible por hematología: desmopresina 0,3 microgramo por kg de peso real intravenosa, máximo 20 microgramos, en infusión de 15–30 minutos. En adulto de al menos 10 kg, diluir en solución de cloruro de sodio 0,9% según ficha, habitualmente 50 mL; comprobar presentación. Repetición según respuesta, sodio y taquifilaxia. Restringir líquidos según protocolo; contraindicada en tipo 2B, no usar en tipo 3, hiponatremia o depuración menor de 50 mL por minuto. No basta como monoterapia en cirugía mayor.\n\nEscenario específico posparto en mujer con enfermedad de von Willebrand/factor bajo e indicación hematológica: ácido tranexámico 25 mg por kg por vía oral, habitualmente 1.000–1.300 mg, 3 veces al día durante 10–14 días; prolongar solo si pérdida sigue relevante y equipo indica. No aplicar automáticamente duración a cirugía u otros sangrados. Ajustar con disfunción renal; valorar trombosis y evitar uso sin especialista en hematuria del tracto urinario superior. Sangrado importante puede requerir concentrado de factor de von Willebrand, con producto y dosis calculados por equipo.\n\n## Seguridad y monitorización\n\nDesmopresina exige control hídrico/sodio; está contraindicada en tipo 2B y es ineficaz/contraindicada en tipo 3. Cirugía mayor no debe depender solo de ella. Cirugía/parto requieren metas de laboratorio y plan hematológico; evitar dosis universal.\n\n## Reevaluación, internación y alta\n\nPlan de sangrado, procedimientos y embarazo; registrar respuesta a prueba terapéutica.\n\n## Referencias\n\n1. [NHS — Doença de von Willebrand](https://www.nhs.uk/conditions/von-willebrand-disease/)\n2. [ASH/ISTH/NHF/WFH — VWD guideline original primary text](https://pmc.ncbi.nlm.nih.gov/articles/PMC7805326/)\n3. [DailyMed — DDAVP injection: type 1 von Willebrand hemostatic infusion](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=651f6fee-a2c7-431b-8d5d-58b156c72244)",
+  "approvedReviewCanonicalFileSha256": "9ce32e115d306398ca88e8ef48ce671573d5f7f1382a6c89f0febdd0ba4d01ca",
+  "approvedReviewProjectionFileSha256": "bd280bc4e03c3212df1326a664ca510a129e21350679a7b09e270a049e69694d"
+}

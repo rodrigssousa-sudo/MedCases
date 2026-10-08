@@ -1,0 +1,119 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Pericondrite auricular",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "eceb5a994c9b16ecc581908febd5486414ef6f8d5c8be0bb473d429a4464ff15",
+  "ownerCandidate": "pericondrite_auricular",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_003_f01",
+    "b04_003_f02",
+    "b04_003_f03",
+    "b04_003_f04",
+    "b04_003_f05",
+    "b04_003_f06",
+    "b04_003_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Infecção do pericôndrio auricular, frequentemente após piercing/trauma; ameaça a viabilidade da cartilagem."
+      ],
+      "factIds": [
+        "b04_003_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A drenagem preserva cartilagem e complementa antibióticos; escolha antimicrobiana depende do cenário e da susceptibilidade."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Dor, edema e eritema da região cartilaginosa; procurar abscesso e distinguir celulite do lóbulo, otite externa e policondrite. Cultura quando há secreção/coleção."
+      ],
+      "factIds": [
+        "b04_003_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Avaliação otorrinolaringológica precoce; abscesso, necrose, febre sistêmica ou imunossupressão favorecem internação e drenagem."
+      ],
+      "factIds": [
+        "b04_003_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: ciprofloxacino / ceftazidima. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Antibiótico com cobertura adequada, incluindo Pseudomonas conforme risco local. Ciprofloxacino oral é opção em adulto elegível; alternativa em gravidade ou via oral inviável: terapia intravenosa protocolada e controle cirúrgico do foco."
+      ],
+      "factIds": [
+        "b04_003_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Adulto, protocolo regional Forth Valley: ciprofloxacino 750 mg por via oral a cada 12 horas, durante 7 dias, com reavaliação. Via oral inviável: ciprofloxacino 400 mg intravenosos a cada 8 horas; alternativa hospitalar ceftazidima 2 g intravenosos a cada 8 horas. Ajustar à função renal/cultura; abscesso, necrose ou extensão exigem drenagem e duração individualizada. Verificar riscos graves e interações das fluoroquinolonas."
+      ],
+      "factIds": [
+        "b04_003_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não extrapolar protocolo adulto para criança/gestante. Fluoroquinolona exige avaliação de riscos, interações e função renal; duração depende de resposta e extensão. Coleção não se resolve apenas com troca de antibiótico."
+      ],
+      "factIds": [
+        "b04_003_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar resposta e forma da orelha; piora, extensão ou coleção requerem escalonamento urgente. Ajustar após cultura."
+      ],
+      "factIds": [
+        "b04_003_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_162",
+      "title": "NIH/NLM — Pericondrite auricular",
+      "url": "https://medlineplus.gov/ency/article/001253.htm",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Review Date 11/10/2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_162",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "perichondritis",
+      "title": "NHS Forth Valley — perichondritis",
+      "url": "https://www.rightdecisions.scot.nhs.uk/antimicrobial-prescribing-nhs-forth-valley/acute-hospital-guidance/ent/perichondritis/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:perichondritis",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

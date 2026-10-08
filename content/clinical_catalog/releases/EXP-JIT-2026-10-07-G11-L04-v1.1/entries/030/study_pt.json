@@ -1,0 +1,227 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Polimialgia reumática",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "f93307ef916e06caf32d935315b06607d2bb1d01077577023fae895bce8430d5",
+  "ownerCandidate": "polimialgia_reumatica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_030_f01",
+    "b04_030_f02",
+    "b04_030_f03",
+    "b04_030_f04",
+    "b04_030_f05",
+    "b04_030_f06",
+    "b04_030_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Síndrome inflamatória com dor/rigidez proximal em adultos mais velhos; associada à arterite de células gigantes."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor e rigidez de cinturas em adulto mais velho exigem excluir artrite inflamatória, miopatia e infecção. Resposta ao corticoide apoia, mas não comprova sozinha, o diagnóstico. As recomendações EULAR 2025 publicadas em 2026 diferenciam a dose de indução da polimialgia daquela da vasculite de grandes vasos e incluem terapia dirigida adjuvante em selecionados. Cefaleia nova, claudicação mandibular ou alteração visual mudam imediatamente a prioridade para investigação de arterite."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar padrão clínico e marcadores, excluindo infecção, neoplasia, miopatia e artrite."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Cefaleia nova, claudicação mandibular ou alteração visual exige via urgente de arterite."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opções especificadas neste tema: prednisona / sarilumabe. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Prednisona/prednisolona é base da indução, com redução individualizada. Em doença recidivante, refratária ou risco relevante de toxicidade por corticoide, considerar bloqueador do receptor IL-6 com reumatologia; sarilumabe é opção em adulto elegível. Metotrexato pode ser discutido em circunstâncias selecionadas, sem apresentá-lo como equivalente automático à terapia dirigida."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Polimialgia reumática, adulto: prednisona/prednisolona 15–25 mg por via oral uma vez ao dia na indução, com redução individualizada, sem interrupção abrupta. Recidiva, resposta inadequada ou intolerância à redução do corticoide: sarilumabe 200 mg por via subcutânea a cada 2 semanas em elegível, com especialista. Monitorizar glicemia, pressão, osso, infecção/TB, hemograma e fígado. Não usar esta dose de corticoide para arterite de células gigantes."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não suspender corticoide abruptamente; monitorizar glicose, osso, pressão e infecção. Ausência de resposta exige revisar diagnóstico."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reavaliar sintomas, recaídas, toxicidade e sinais de arterite durante seguimento."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_189",
+      "title": "NHS — Polimialgia reumática",
+      "url": "https://www.nhs.uk/conditions/polymyalgia-rheumatica/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 23 April 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_189",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "topic_189_treatment",
+      "title": "NHS — Polimialgia reumática — treatment",
+      "url": "https://www.nhs.uk/conditions/polymyalgia-rheumatica/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 23 April 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_189_treatment",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "eular_index",
+      "title": "EULAR — Published management recommendations",
+      "url": "https://www.eular.org/recommendations-management",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published in that year:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:eular_index",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "pmr2026_pub",
+      "title": "EULAR — PMR and LVV 2025 recommendations, final primary abstract",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/42481270/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "EULAR final publicado 21/07/2026, DOI 10.1016/j.ard.2026.06.009: resumo primário consultado: indução 15–25 mg prednisona equivalente por dia na PMR; 40–60 mg na GCA/TAK; adjuvantes IL-6 e upadacitinibe conforme cenário. Texto completo restrito, sem inferir sequência/dose não apresentada.",
+      "sourceEvidenceRecord": "web-verification-record.json:pmr2026_pub",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "saril_label",
+      "title": "DailyMed — sarilumab, PMR indication",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=827bc01c-d379-4266-a18c-c7f904b76af3",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published evidence also supports that IL-6 signaling through the IL-6 receptor may be involved in pathways th",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:saril_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Síndrome inflamatória com dor/rigidez proximal em adultos mais velhos; associada à arterite de células gigantes."
+      ],
+      "factIds": [
+        "b04_030_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Dor e rigidez de cinturas em adulto mais velho exigem excluir artrite inflamatória, miopatia e infecção. Resposta ao corticoide apoia, mas não comprova sozinha, o diagnóstico. As recomendações EULAR 2025 publicadas em 2026 diferenciam a dose de indução da polimialgia daquela da vasculite de grandes vasos e incluem terapia dirigida adjuvante em selecionados. Cefaleia nova, claudicação mandibular ou alteração visual mudam imediatamente a prioridade para investigação de arterite."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar padrão clínico e marcadores, excluindo infecção, neoplasia, miopatia e artrite."
+      ],
+      "factIds": [
+        "b04_030_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Cefaleia nova, claudicação mandibular ou alteração visual exige via urgente de arterite."
+      ],
+      "factIds": [
+        "b04_030_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: prednisona / sarilumabe. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Prednisona/prednisolona é base da indução, com redução individualizada. Em doença recidivante, refratária ou risco relevante de toxicidade por corticoide, considerar bloqueador do receptor IL-6 com reumatologia; sarilumabe é opção em adulto elegível. Metotrexato pode ser discutido em circunstâncias selecionadas, sem apresentá-lo como equivalente automático à terapia dirigida."
+      ],
+      "factIds": [
+        "b04_030_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Polimialgia reumática, adulto: prednisona/prednisolona 15–25 mg por via oral uma vez ao dia na indução, com redução individualizada, sem interrupção abrupta. Recidiva, resposta inadequada ou intolerância à redução do corticoide: sarilumabe 200 mg por via subcutânea a cada 2 semanas em elegível, com especialista. Monitorizar glicemia, pressão, osso, infecção/TB, hemograma e fígado. Não usar esta dose de corticoide para arterite de células gigantes."
+      ],
+      "factIds": [
+        "b04_030_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não suspender corticoide abruptamente; monitorizar glicose, osso, pressão e infecção. Ausência de resposta exige revisar diagnóstico."
+      ],
+      "factIds": [
+        "b04_030_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar sintomas, recaídas, toxicidade e sinais de arterite durante seguimento."
+      ],
+      "factIds": [
+        "b04_030_f06"
+      ]
+    }
+  ],
+  "markdown": "# Polimialgia reumática\n\n## Conceito e mecanismo\n\nSíndrome inflamatória com dor/rigidez proximal em adultos mais velhos; associada à arterite de células gigantes.\n\n## Raciocínio e escolha terapêutica\n\nDor e rigidez de cinturas em adulto mais velho exigem excluir artrite inflamatória, miopatia e infecção. Resposta ao corticoide apoia, mas não comprova sozinha, o diagnóstico. As recomendações EULAR 2025 publicadas em 2026 diferenciam a dose de indução da polimialgia daquela da vasculite de grandes vasos e incluem terapia dirigida adjuvante em selecionados. Cefaleia nova, claudicação mandibular ou alteração visual mudam imediatamente a prioridade para investigação de arterite.\n\n## Diagnóstico e diferenciais\n\nAvaliar padrão clínico e marcadores, excluindo infecção, neoplasia, miopatia e artrite.\n\n## Abordagem inicial e urgências\n\nCefaleia nova, claudicação mandibular ou alteração visual exige via urgente de arterite.\n\n## Tratamento: primeira escolha e alternativas\n\nOpções especificadas neste tema: prednisona / sarilumabe. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Prednisona/prednisolona é base da indução, com redução individualizada. Em doença recidivante, refratária ou risco relevante de toxicidade por corticoide, considerar bloqueador do receptor IL-6 com reumatologia; sarilumabe é opção em adulto elegível. Metotrexato pode ser discutido em circunstâncias selecionadas, sem apresentá-lo como equivalente automático à terapia dirigida.\n\n## Fármacos, doses e intervalos\n\nPolimialgia reumática, adulto: prednisona/prednisolona 15–25 mg por via oral uma vez ao dia na indução, com redução individualizada, sem interrupção abrupta. Recidiva, resposta inadequada ou intolerância à redução do corticoide: sarilumabe 200 mg por via subcutânea a cada 2 semanas em elegível, com especialista. Monitorizar glicemia, pressão, osso, infecção/TB, hemograma e fígado. Não usar esta dose de corticoide para arterite de células gigantes.\n\n## Segurança e monitorização\n\nNão suspender corticoide abruptamente; monitorizar glicose, osso, pressão e infecção. Ausência de resposta exige revisar diagnóstico.\n\n## Reavaliação, internação e alta\n\nReavaliar sintomas, recaídas, toxicidade e sinais de arterite durante seguimento.\n\n## Referências\n\n1. [NHS — Polimialgia reumática](https://www.nhs.uk/conditions/polymyalgia-rheumatica/)\n2. [NHS — Polimialgia reumática — treatment](https://www.nhs.uk/conditions/polymyalgia-rheumatica/treatment/)\n3. [EULAR — Published management recommendations](https://www.eular.org/recommendations-management)\n4. [EULAR — PMR and LVV 2025 recommendations, final primary abstract](https://pubmed.ncbi.nlm.nih.gov/42481270/)\n5. [DailyMed — sarilumab, PMR indication](https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=827bc01c-d379-4266-a18c-c7f904b76af3)",
+  "approvedReviewCanonicalFileSha256": "7d2a24ff4ab93505591ddc0744792ac5d7f8d66917f7108c3386855f8d604ca3",
+  "approvedReviewProjectionFileSha256": "d1ce9985ffaa5d93629cd180a4a6371ad51d269cdc427d420b73f6a3bd850b34"
+}

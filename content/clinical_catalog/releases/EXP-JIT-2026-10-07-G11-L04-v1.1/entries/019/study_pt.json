@@ -1,0 +1,188 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Refluxo vesicoureteral",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "b9b64933cd14777eba8ecdbc5ef59be4840504966bcc6b3af06a8bb22e9368c3",
+  "ownerCandidate": "refluxo_vesicoureteral",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_019_f01",
+    "b04_019_f02",
+    "b04_019_f03",
+    "b04_019_f04",
+    "b04_019_f05",
+    "b04_019_f06",
+    "b04_019_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Retorno de urina da bexiga ao ureter/rim, primário ou secundário a disfunção/obstrução."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Prevenir infecção e corrigir anatomia são estratégias distintas; refluxo pode melhorar com crescimento."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar infecções febris, função renal e bexiga/intestino; ultrassom e cistouretrografia conforme indicação."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Febre com suspeita urinária requer coleta adequada e tratamento oportuno; sepse/obstrução exigem hospitalização."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opções especificadas neste tema: trimetoprima / cefalexina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Baixo risco: vigilância e tratar constipação/disfunção miccional. Alternativas selecionadas: profilaxia antimicrobiana ou correção endoscópica/cirúrgica conforme grau, recorrência e dano renal."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Refluxo com indicação especializada de profilaxia para infecção urinária recorrente: referência NICE, 3 meses a 11 anos, trimetoprima 2 mg por kg por via oral à noite, máximo 100 mg por dose; 12–15 anos, 100 mg à noite. Alternativa de segunda escolha, 3 meses a 15 anos: cefalexina 12,5 mg por kg por via oral à noite, máximo 125 mg por dose, uso profilático fora de bula. Não confundir profilaxia com tratamento da infecção febril. Escolher pela cultura/resistência e função renal; reavaliar pelo menos a cada 6 meses, sem curso indefinido automático."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não prescrever profilaxia para toda criança; escolha/dose por idade, peso e susceptibilidade com urologia pediátrica."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Acompanhar crescimento, pressão, infecções e cicatriz renal; orientar retorno por febre."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_178",
+      "title": "NIDDK_URO — Refluxo vesicoureteral",
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/hydronephrosis-newborns/vesicoureteral-reflux",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last Reviewed June 2018",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_178",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "uti_prophy_nice",
+      "title": "NICE NG112 — Recurrent UTI prophylaxis: pediatric specialist regimens, updated 2024",
+      "url": "https://www.nice.org.uk/guidance/ng112/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Final NICE NG112 recommendations, not draft: indexed Table 2 read. Specialist pediatric prophylaxis trimethoprim 2 mg/kg at night max100 mg through 11 years; 12–15 years100 mg; cefalexin12.5 mg/kg at night max125 mg, ages3 months–15 years. This is selected recurrent-UTI prophylaxis, not treatment of acute febrile infection and not automatic for all VUR.",
+      "sourceEvidenceRecord": "web-verification-record.json:uti_prophy_nice",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Retorno de urina da bexiga ao ureter/rim, primário ou secundário a disfunção/obstrução."
+      ],
+      "factIds": [
+        "b04_019_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Prevenir infecção e corrigir anatomia são estratégias distintas; refluxo pode melhorar com crescimento."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar infecções febris, função renal e bexiga/intestino; ultrassom e cistouretrografia conforme indicação."
+      ],
+      "factIds": [
+        "b04_019_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Febre com suspeita urinária requer coleta adequada e tratamento oportuno; sepse/obstrução exigem hospitalização."
+      ],
+      "factIds": [
+        "b04_019_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: trimetoprima / cefalexina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Baixo risco: vigilância e tratar constipação/disfunção miccional. Alternativas selecionadas: profilaxia antimicrobiana ou correção endoscópica/cirúrgica conforme grau, recorrência e dano renal."
+      ],
+      "factIds": [
+        "b04_019_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Refluxo com indicação especializada de profilaxia para infecção urinária recorrente: referência NICE, 3 meses a 11 anos, trimetoprima 2 mg por kg por via oral à noite, máximo 100 mg por dose; 12–15 anos, 100 mg à noite. Alternativa de segunda escolha, 3 meses a 15 anos: cefalexina 12,5 mg por kg por via oral à noite, máximo 125 mg por dose, uso profilático fora de bula. Não confundir profilaxia com tratamento da infecção febril. Escolher pela cultura/resistência e função renal; reavaliar pelo menos a cada 6 meses, sem curso indefinido automático."
+      ],
+      "factIds": [
+        "b04_019_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não prescrever profilaxia para toda criança; escolha/dose por idade, peso e susceptibilidade com urologia pediátrica."
+      ],
+      "factIds": [
+        "b04_019_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Acompanhar crescimento, pressão, infecções e cicatriz renal; orientar retorno por febre."
+      ],
+      "factIds": [
+        "b04_019_f06"
+      ]
+    }
+  ],
+  "markdown": "# Refluxo vesicoureteral\n\n## Conceito e mecanismo\n\nRetorno de urina da bexiga ao ureter/rim, primário ou secundário a disfunção/obstrução.\n\n## Raciocínio e escolha terapêutica\n\nPrevenir infecção e corrigir anatomia são estratégias distintas; refluxo pode melhorar com crescimento.\n\n## Diagnóstico e diferenciais\n\nAvaliar infecções febris, função renal e bexiga/intestino; ultrassom e cistouretrografia conforme indicação.\n\n## Abordagem inicial e urgências\n\nFebre com suspeita urinária requer coleta adequada e tratamento oportuno; sepse/obstrução exigem hospitalização.\n\n## Tratamento: primeira escolha e alternativas\n\nOpções especificadas neste tema: trimetoprima / cefalexina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Baixo risco: vigilância e tratar constipação/disfunção miccional. Alternativas selecionadas: profilaxia antimicrobiana ou correção endoscópica/cirúrgica conforme grau, recorrência e dano renal.\n\n## Fármacos, doses e intervalos\n\nRefluxo com indicação especializada de profilaxia para infecção urinária recorrente: referência NICE, 3 meses a 11 anos, trimetoprima 2 mg por kg por via oral à noite, máximo 100 mg por dose; 12–15 anos, 100 mg à noite. Alternativa de segunda escolha, 3 meses a 15 anos: cefalexina 12,5 mg por kg por via oral à noite, máximo 125 mg por dose, uso profilático fora de bula. Não confundir profilaxia com tratamento da infecção febril. Escolher pela cultura/resistência e função renal; reavaliar pelo menos a cada 6 meses, sem curso indefinido automático.\n\n## Segurança e monitorização\n\nNão prescrever profilaxia para toda criança; escolha/dose por idade, peso e susceptibilidade com urologia pediátrica.\n\n## Reavaliação, internação e alta\n\nAcompanhar crescimento, pressão, infecções e cicatriz renal; orientar retorno por febre.\n\n## Referências\n\n1. [NIDDK_URO — Refluxo vesicoureteral](https://www.niddk.nih.gov/health-information/urologic-diseases/hydronephrosis-newborns/vesicoureteral-reflux)\n2. [NICE NG112 — Recurrent UTI prophylaxis: pediatric specialist regimens, updated 2024](https://www.nice.org.uk/guidance/ng112/chapter/recommendations)",
+  "approvedReviewCanonicalFileSha256": "04935cc91b3c00da9b53a9a564e01adc47ed1775423771b70956aa451ec51b1a",
+  "approvedReviewProjectionFileSha256": "4ebec3d73d0c2834651883626feff0a28062c5afa150f2dcd93085b50a10535e"
+}

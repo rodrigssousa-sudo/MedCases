@@ -1,0 +1,173 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Hidrocele",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "9e2769953415180495e7aa0d098977833ba8af25f8513b02fe85d55311e23cab",
+  "ownerCandidate": "hidrocele",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_014_f01",
+    "b04_014_f02",
+    "b04_014_f03",
+    "b04_014_f04",
+    "b04_014_f05",
+    "b04_014_f06",
+    "b04_014_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dolor escrotal súbito o hernia irreductible requiere evaluación quirúrgica urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examinar volumen, dolor y testículo; ecografía si diagnóstico incierto, sin demorar exploración ante sospecha de torsión."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Niño pequeño elegible: observación con evaluación pediátrica. Adulto con hidrocele pequeña y poco sintomática: vigilancia tras excluir causa asociada. Persistencia o molestias relevantes: cirugía. La aspiración aislada recurre pronto y no es tratamiento curativo estándar."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hidrocele sin causa infecciosa no tiene medicamento curativo: observación en pequeñas/poco sintomáticas o cirugía ante persistencia/molestias. No prescribir diurético ni antibiótico para eliminar líquido. Aspiración aislada recurre y no equivale a cirugía; tratar la causa por separado si existe."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No puncionar rutinariamente en urgencias; líquido no excluye tumor, infección o torsión."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguimiento por edad y evolución; volver ante dolor, fiebre, endurecimiento o aumento rápido."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Acumulación de líquido alrededor del testículo; congénita o adquirida."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_173",
+      "title": "RCH — Hidrocele",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Acute_scrotal_pain_or_swelling/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated January 2026",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_173",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "hydrocele_baus",
+      "title": "BAUS — Repair of an adult hydrocele: clinical alternatives",
+      "url": "https://www.baus.org.uk/_userfiles/pages/files/Patients/Leaflets/Hydrocele.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "BAUS: observação se pequena/pouco incômoda; cirurgia selecionada; aspiração recorre e não é cura padrão. Folheto oficial consultado por trechos indexados.",
+      "sourceEvidenceRecord": "web-verification-record.json:hydrocele_baus",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Dolor escrotal súbito o hernia irreductible requiere evaluación quirúrgica urgente."
+      ],
+      "factIds": [
+        "b04_014_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examinar volumen, dolor y testículo; ecografía si diagnóstico incierto, sin demorar exploración ante sospecha de torsión."
+      ],
+      "factIds": [
+        "b04_014_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Niño pequeño elegible: observación con evaluación pediátrica. Adulto con hidrocele pequeña y poco sintomática: vigilancia tras excluir causa asociada. Persistencia o molestias relevantes: cirugía. La aspiración aislada recurre pronto y no es tratamiento curativo estándar."
+      ],
+      "factIds": [
+        "b04_014_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Hidrocele sin causa infecciosa no tiene medicamento curativo: observación en pequeñas/poco sintomáticas o cirugía ante persistencia/molestias. No prescribir diurético ni antibiótico para eliminar líquido. Aspiración aislada recurre y no equivale a cirugía; tratar la causa por separado si existe."
+      ],
+      "factIds": [
+        "b04_014_f07"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No puncionar rutinariamente en urgencias; líquido no excluye tumor, infección o torsión."
+      ],
+      "factIds": [
+        "b04_014_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguimiento por edad y evolución; volver ante dolor, fiebre, endurecimiento o aumento rápido."
+      ],
+      "factIds": [
+        "b04_014_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Acumulación de líquido alrededor del testículo; congénita o adquirida."
+      ],
+      "factIds": [
+        "b04_014_f01"
+      ]
+    }
+  ],
+  "markdown": "# Hidrocele\n\n## Abordaje inicial y urgencias\n\nDolor escrotal súbito o hernia irreductible requiere evaluación quirúrgica urgente.\n\n## Diagnóstico y diferenciales\n\nExaminar volumen, dolor y testículo; ecografía si diagnóstico incierto, sin demorar exploración ante sospecha de torsión.\n\n## Tratamiento: primera elección y alternativas\n\nNiño pequeño elegible: observación con evaluación pediátrica. Adulto con hidrocele pequeña y poco sintomática: vigilancia tras excluir causa asociada. Persistencia o molestias relevantes: cirugía. La aspiración aislada recurre pronto y no es tratamiento curativo estándar.\n\n## Fármacos, dosis e intervalos\n\nHidrocele sin causa infecciosa no tiene medicamento curativo: observación en pequeñas/poco sintomáticas o cirugía ante persistencia/molestias. No prescribir diurético ni antibiótico para eliminar líquido. Aspiración aislada recurre y no equivale a cirugía; tratar la causa por separado si existe.\n\n## Seguridad y monitorización\n\nNo puncionar rutinariamente en urgencias; líquido no excluye tumor, infección o torsión.\n\n## Reevaluación, internación y alta\n\nSeguimiento por edad y evolución; volver ante dolor, fiebre, endurecimiento o aumento rápido.\n\n## Reconocimiento rápido\n\nAcumulación de líquido alrededor del testículo; congénita o adquirida.\n\n## Referencias\n\n1. [RCH — Hidrocele](https://www.rch.org.au/clinicalguide/guideline_index/Acute_scrotal_pain_or_swelling/)\n2. [BAUS — Repair of an adult hydrocele: clinical alternatives](https://www.baus.org.uk/_userfiles/pages/files/Patients/Leaflets/Hydrocele.pdf)",
+  "approvedReviewCanonicalFileSha256": "a6e48a969dd31c1e167a9000bac5412380cb4aaee34adc328f4c291ae5dd7c1c",
+  "approvedReviewProjectionFileSha256": "4c58cc2b283c3e3faf3f9d0ebad79b46b3978fcc0e1c91b29a3eb2e0709b1acb"
+}

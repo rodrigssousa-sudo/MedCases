@@ -1,0 +1,186 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Hematúria sem diagnóstico estabelecido",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "2b7de60dfa5706f33058573afe37b25124913443ae779720d299d845d838a268",
+  "ownerCandidate": "hematuria_sem_diagnostico_estabelecido",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_018_f01",
+    "b04_018_f02",
+    "b04_018_f03",
+    "b04_018_f04",
+    "b04_018_f05",
+    "b04_018_f06",
+    "b04_018_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Retenção por coágulos, sangramento significativo, instabilidade ou lesão renal: hospital/urologia urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Confirmar por microscopia, avaliar proteinúria, creatinina, pressão e contaminação; história de tumor, cálculos, trauma e anticoagulação."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tratar causa confirmada; antibiótico apenas se indicação infecciosa. Adulto com microhematúria exige avaliação por risco; criança com hematúria isolada tem investigação própria."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não existe primeira escolha farmacológica para hematúria sem causa definida. Retenção por coágulos exige urologia e, quando indicado, irrigação vesical com solução de cloreto de sódio 0,9%, ajustada ao retorno/drenagem por equipe treinada; não há velocidade fixa universal. Investigar antes de antibiótico ou hemostático empírico, e tratar a causa identificada."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não dispensar investigação apenas por uso de anticoagulante; não aplicar algoritmo adulto de câncer à pediatria."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Documentar resolução ou encaminhamento; nefrologia se proteinúria/disfunção e urologia conforme risco."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Sangue na urina é um sinal clínico; requer identificar origem, sem atribuir automaticamente à infecção."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_177",
+      "title": "RCH — Hematúria sem diagnóstico estabelecido",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Haematuria/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_177",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "microhematuria",
+      "title": "AUA/SUFU — microhematuria amended 2025",
+      "url": "https://www.auanet.org/documents/Guidelines/PDF/2025%20Guidelines/MH%20Unabridged%2002.2025FINAL.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "AUA/SUFU final 2020, emenda 2025: avaliação de adulto por risco, mesma investigação em usuário de anticoagulante; não extrapolar para hematúria infantil.",
+      "sourceEvidenceRecord": "web-verification-record.json:microhematuria",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "bladder_aci",
+      "title": "NSW ACI — Continuous bladder irrigation, adult toolkit (2026)",
+      "url": "https://aci.health.nsw.gov.au/networks/urology/resources/bladder-irrigation/continuous",
+      "authorityStatus": "OFFICIAL_ADULT_REGIONAL_PROTOCOL",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NSW ACI, toolkit oficial adulto publicado agosto 2026, página Continuous irrigation lida via busca web: cloreto de sódio 0,9%, cateter de 3 vias, equipo estéril, ajustar fluxo à drenagem e monitorizar obstrução/sobredistensão. Sem velocidade universal fixa. Acesso direto urllib bloqueado; não declarado texto integral baixado.",
+      "sourceEvidenceRecord": "web-verification-record.json:bladder_aci",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Retenção por coágulos, sangramento significativo, instabilidade ou lesão renal: hospital/urologia urgente."
+      ],
+      "factIds": [
+        "b04_018_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Confirmar por microscopia, avaliar proteinúria, creatinina, pressão e contaminação; história de tumor, cálculos, trauma e anticoagulação."
+      ],
+      "factIds": [
+        "b04_018_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Tratar causa confirmada; antibiótico apenas se indicação infecciosa. Adulto com microhematúria exige avaliação por risco; criança com hematúria isolada tem investigação própria."
+      ],
+      "factIds": [
+        "b04_018_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Não existe primeira escolha farmacológica para hematúria sem causa definida. Retenção por coágulos exige urologia e, quando indicado, irrigação vesical com solução de cloreto de sódio 0,9%, ajustada ao retorno/drenagem por equipe treinada; não há velocidade fixa universal. Investigar antes de antibiótico ou hemostático empírico, e tratar a causa identificada."
+      ],
+      "factIds": [
+        "b04_018_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não dispensar investigação apenas por uso de anticoagulante; não aplicar algoritmo adulto de câncer à pediatria."
+      ],
+      "factIds": [
+        "b04_018_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Documentar resolução ou encaminhamento; nefrologia se proteinúria/disfunção e urologia conforme risco."
+      ],
+      "factIds": [
+        "b04_018_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Sangue na urina é um sinal clínico; requer identificar origem, sem atribuir automaticamente à infecção."
+      ],
+      "factIds": [
+        "b04_018_f01"
+      ]
+    }
+  ],
+  "markdown": "# Hematúria sem diagnóstico estabelecido\n\n## Abordagem inicial e urgências\n\nRetenção por coágulos, sangramento significativo, instabilidade ou lesão renal: hospital/urologia urgente.\n\n## Diagnóstico e diferenciais\n\nConfirmar por microscopia, avaliar proteinúria, creatinina, pressão e contaminação; história de tumor, cálculos, trauma e anticoagulação.\n\n## Tratamento: primeira escolha e alternativas\n\nTratar causa confirmada; antibiótico apenas se indicação infecciosa. Adulto com microhematúria exige avaliação por risco; criança com hematúria isolada tem investigação própria.\n\n## Fármacos, doses e intervalos\n\nNão existe primeira escolha farmacológica para hematúria sem causa definida. Retenção por coágulos exige urologia e, quando indicado, irrigação vesical com solução de cloreto de sódio 0,9%, ajustada ao retorno/drenagem por equipe treinada; não há velocidade fixa universal. Investigar antes de antibiótico ou hemostático empírico, e tratar a causa identificada.\n\n## Segurança e monitorização\n\nNão dispensar investigação apenas por uso de anticoagulante; não aplicar algoritmo adulto de câncer à pediatria.\n\n## Reavaliação, internação e alta\n\nDocumentar resolução ou encaminhamento; nefrologia se proteinúria/disfunção e urologia conforme risco.\n\n## Reconhecimento rápido\n\nSangue na urina é um sinal clínico; requer identificar origem, sem atribuir automaticamente à infecção.\n\n## Referências\n\n1. [RCH — Hematúria sem diagnóstico estabelecido](https://www.rch.org.au/clinicalguide/guideline_index/Haematuria/)\n2. [AUA/SUFU — microhematuria amended 2025](https://www.auanet.org/documents/Guidelines/PDF/2025%20Guidelines/MH%20Unabridged%2002.2025FINAL.pdf)\n3. [NSW ACI — Continuous bladder irrigation, adult toolkit (2026)](https://aci.health.nsw.gov.au/networks/urology/resources/bladder-irrigation/continuous)",
+  "approvedReviewCanonicalFileSha256": "3bb15278dc5a83cb3eee7d4dc4fcef9bf5b8fde692856576c51f4cd2bab17396",
+  "approvedReviewProjectionFileSha256": "e7e3792ca7b4f768d0cabec76d6101202e2f2969898e9e506bffd22866118806"
+}

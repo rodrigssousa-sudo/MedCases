@@ -1,0 +1,219 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Nefropatia por IgA",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "70a8fe067a7c9e7e35122d48db30a8988dbdfdc23d1b18a479c9b1a53e6d021d",
+  "ownerCandidate": "nefropatia_por_iga",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_011_f01",
+    "b04_011_f02",
+    "b04_011_f03",
+    "b04_011_f04",
+    "b04_011_f05",
+    "b04_011_f06",
+    "b04_011_f07",
+    "b04_011_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Lesão renal rapidamente progressiva, oligúria ou complicação hidroeletrolítica exige nefrologia urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Biópsia renal confirma; quantificar proteinúria, função e pressão, excluindo causas secundárias."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opções especificadas neste tema: losartana; dapagliflozina / budesonida direcionada. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Suporte nefroprotetor: inibidor da ECA ou bloqueador do receptor de angiotensina na maior dose tolerada, quando elegível. Risco de progressão: considerar inibidor SGLT2 e budesonida de liberação direcionada; sparsentana é alternativa selecionada, sem associação com outro bloqueador renina-angiotensina. Corticoide sistêmico em regime reduzido, com profilaxias, é opção especializada quando a formulação direcionada não está disponível."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Losartana em adulto elegível: 50 mg por via oral uma vez ao dia, titulável até 100 mg por dia conforme pressão, potássio e função renal; hipovolemia ou doença hepática pode requerer 25 mg inicialmente. Uso nefroprotetor conforme KDIGO, com monitorização de creatinina/potássio após início e aumento. Não associar a inibidor da ECA nem à sparsentana; contraindicada na gestação."
+    },
+    {
+      "type": "paragraph",
+      "text": "Risco de progressão, adulto selecionado: dapagliflozina 10 mg por via oral uma vez ao dia, conforme elegibilidade para doença renal crônica; não iniciar se filtração inferior a 25 mL por minuto por 1,73 m² na bula consultada. Outra estratégia dirigida: budesonida de liberação direcionada para IgA 16 mg por via oral uma vez ao dia durante 9 meses, reduzindo para 8 mg por dia nas últimas 2 semanas ao interromper. Não substituir por budesonida de outra formulação. Nefrologia avalia combinação, infecção/imunossupressão, cetoacidose, volume e função hepática; não são alternativas automaticamente equivalentes."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não combinar automaticamente bloqueadores renina-angiotensina. Imunossupressão exige seleção especializada, risco infeccioso e plano próprio na gestação; não copiar tratamento de vasculite para toda IgA."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Monitorizar proteinúria, creatinina, pressão e potássio; reavaliar risco ao longo do seguimento."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Depósito glomerular de imunocomplexos com IgA causa hematúria/proteinúria e risco de doença renal crônica."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_170",
+      "title": "NIDDK_KIDNEY — Nefropatia por IgA",
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/iga-nephropathy",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last Reviewed September 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_170",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "iga_final",
+      "title": "KDIGO — 2025 IgAN/IgAV final guideline",
+      "url": "https://kdigo.org/wp-content/uploads/2024/08/KDIGO-2025-IgAN-IgAV-Guideline.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "KDIGO final setembro 2025, substitui capítulo 2021; PDF acessível pela ferramenta web. Seções 1.4.3/1.4.4: nefroproteção, budesonida direcionada, SGLT2 e sparsentana; não combinar sparsentana com outro RASi. Nenhuma dose experimental foi copiada para prescrição geral.",
+      "sourceEvidenceRecord": "web-verification-record.json:iga_final",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "losartan_label",
+      "title": "DailyMed — Losartan: adult dosing and renal/pregnancy safety",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ca012edc-923d-4ada-a261-db82b71b3c4f",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:losartan_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "dapa_ckd",
+      "title": "DailyMed — FARXIGA: chronic kidney disease regimen and limitations",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=72ad22ae-efe6-4cd6-a302-98aaee423d69",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:dapa_ckd",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "budes_iga",
+      "title": "DailyMed — TARPEYO: targeted delayed-release budesonide for primary IgA nephropathy",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=938cada4-d6bf-4252-836f-dd40f9eadb4d",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:budes_iga",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Lesão renal rapidamente progressiva, oligúria ou complicação hidroeletrolítica exige nefrologia urgente."
+      ],
+      "factIds": [
+        "b04_011_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Biópsia renal confirma; quantificar proteinúria, função e pressão, excluindo causas secundárias."
+      ],
+      "factIds": [
+        "b04_011_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: losartana; dapagliflozina / budesonida direcionada. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Suporte nefroprotetor: inibidor da ECA ou bloqueador do receptor de angiotensina na maior dose tolerada, quando elegível. Risco de progressão: considerar inibidor SGLT2 e budesonida de liberação direcionada; sparsentana é alternativa selecionada, sem associação com outro bloqueador renina-angiotensina. Corticoide sistêmico em regime reduzido, com profilaxias, é opção especializada quando a formulação direcionada não está disponível."
+      ],
+      "factIds": [
+        "b04_011_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Losartana em adulto elegível: 50 mg por via oral uma vez ao dia, titulável até 100 mg por dia conforme pressão, potássio e função renal; hipovolemia ou doença hepática pode requerer 25 mg inicialmente. Uso nefroprotetor conforme KDIGO, com monitorização de creatinina/potássio após início e aumento. Não associar a inibidor da ECA nem à sparsentana; contraindicada na gestação.",
+        "Risco de progressão, adulto selecionado: dapagliflozina 10 mg por via oral uma vez ao dia, conforme elegibilidade para doença renal crônica; não iniciar se filtração inferior a 25 mL por minuto por 1,73 m² na bula consultada. Outra estratégia dirigida: budesonida de liberação direcionada para IgA 16 mg por via oral uma vez ao dia durante 9 meses, reduzindo para 8 mg por dia nas últimas 2 semanas ao interromper. Não substituir por budesonida de outra formulação. Nefrologia avalia combinação, infecção/imunossupressão, cetoacidose, volume e função hepática; não são alternativas automaticamente equivalentes."
+      ],
+      "factIds": [
+        "b04_011_f07",
+        "b04_011_f08"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não combinar automaticamente bloqueadores renina-angiotensina. Imunossupressão exige seleção especializada, risco infeccioso e plano próprio na gestação; não copiar tratamento de vasculite para toda IgA."
+      ],
+      "factIds": [
+        "b04_011_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Monitorizar proteinúria, creatinina, pressão e potássio; reavaliar risco ao longo do seguimento."
+      ],
+      "factIds": [
+        "b04_011_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Depósito glomerular de imunocomplexos com IgA causa hematúria/proteinúria e risco de doença renal crônica."
+      ],
+      "factIds": [
+        "b04_011_f01"
+      ]
+    }
+  ],
+  "markdown": "# Nefropatia por IgA\n\n## Abordagem inicial e urgências\n\nLesão renal rapidamente progressiva, oligúria ou complicação hidroeletrolítica exige nefrologia urgente.\n\n## Diagnóstico e diferenciais\n\nBiópsia renal confirma; quantificar proteinúria, função e pressão, excluindo causas secundárias.\n\n## Tratamento: primeira escolha e alternativas\n\nOpções especificadas neste tema: losartana; dapagliflozina / budesonida direcionada. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Suporte nefroprotetor: inibidor da ECA ou bloqueador do receptor de angiotensina na maior dose tolerada, quando elegível. Risco de progressão: considerar inibidor SGLT2 e budesonida de liberação direcionada; sparsentana é alternativa selecionada, sem associação com outro bloqueador renina-angiotensina. Corticoide sistêmico em regime reduzido, com profilaxias, é opção especializada quando a formulação direcionada não está disponível.\n\n## Fármacos, doses e intervalos\n\nLosartana em adulto elegível: 50 mg por via oral uma vez ao dia, titulável até 100 mg por dia conforme pressão, potássio e função renal; hipovolemia ou doença hepática pode requerer 25 mg inicialmente. Uso nefroprotetor conforme KDIGO, com monitorização de creatinina/potássio após início e aumento. Não associar a inibidor da ECA nem à sparsentana; contraindicada na gestação.\n\nRisco de progressão, adulto selecionado: dapagliflozina 10 mg por via oral uma vez ao dia, conforme elegibilidade para doença renal crônica; não iniciar se filtração inferior a 25 mL por minuto por 1,73 m² na bula consultada. Outra estratégia dirigida: budesonida de liberação direcionada para IgA 16 mg por via oral uma vez ao dia durante 9 meses, reduzindo para 8 mg por dia nas últimas 2 semanas ao interromper. Não substituir por budesonida de outra formulação. Nefrologia avalia combinação, infecção/imunossupressão, cetoacidose, volume e função hepática; não são alternativas automaticamente equivalentes.\n\n## Segurança e monitorização\n\nNão combinar automaticamente bloqueadores renina-angiotensina. Imunossupressão exige seleção especializada, risco infeccioso e plano próprio na gestação; não copiar tratamento de vasculite para toda IgA.\n\n## Reavaliação, internação e alta\n\nMonitorizar proteinúria, creatinina, pressão e potássio; reavaliar risco ao longo do seguimento.\n\n## Reconhecimento rápido\n\nDepósito glomerular de imunocomplexos com IgA causa hematúria/proteinúria e risco de doença renal crônica.\n\n## Referências\n\n1. [NIDDK_KIDNEY — Nefropatia por IgA](https://www.niddk.nih.gov/health-information/kidney-disease/iga-nephropathy)\n2. [KDIGO — 2025 IgAN/IgAV final guideline](https://kdigo.org/wp-content/uploads/2024/08/KDIGO-2025-IgAN-IgAV-Guideline.pdf)\n3. [DailyMed — Losartan: adult dosing and renal/pregnancy safety](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=ca012edc-923d-4ada-a261-db82b71b3c4f)\n4. [DailyMed — FARXIGA: chronic kidney disease regimen and limitations](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=72ad22ae-efe6-4cd6-a302-98aaee423d69)\n5. [DailyMed — TARPEYO: targeted delayed-release budesonide for primary IgA nephropathy](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=938cada4-d6bf-4252-836f-dd40f9eadb4d)",
+  "approvedReviewCanonicalFileSha256": "9047ef7377d256052febae8659adeac59f90aad41c1d9dd6989085d82c87bcdc",
+  "approvedReviewProjectionFileSha256": "a8136ef3bc8c4ba8757c6c6913cda8e9de3258bacfac2b06b540a4a0eeb71d3c"
+}

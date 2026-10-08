@@ -1,0 +1,219 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Intoxicação por carbamazepina",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "41d774f08a5b4cb63b73ec675745346c765e27edd3c040a56c172c2afb589950",
+  "ownerCandidate": "intoxicacao_por_carbamazepina",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_047_f01",
+    "b04_047_f02",
+    "b04_047_f03",
+    "b04_047_f04",
+    "b04_047_f05",
+    "b04_047_f06",
+    "b04_047_f07",
+    "b04_047_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "ABCDE, monitor cardíaco e via aérea conforme necessidade; contatar centro toxicológico."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dose/formulação/horário, coingestões, ECG, glicose, eletrólitos e níveis seriados conforme toxicologia."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Suporte é principal; benzodiazepínico para convulsão. Carvão em doses múltiplas em selecionados com via aérea segura; hemodiálise em toxicidade grave conforme EXTRIP."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Convulsão prolongada no adulto: lorazepam 4 mg intravenosos lentamente, sem exceder 2 mg por minuto; se persistir/recorrer, pode repetir 4 mg após 10–15 minutos, com equipe de reanimação e controle respiratório. Referência pediátrica separada: midazolam 0,15 mg por kg intravenosos (máximo 10 mg por dose) ou 0,3 mg por kg por via bucal/intranasal (máximo 10 mg); no máximo 2 doses de benzodiazepínico, contando as pré-hospitalares. Não administrar preventivamente ao intoxicado assintomático."
+    },
+    {
+      "type": "paragraph",
+      "text": "Em ADULTO, somente cardiotoxicidade por bloqueio de canal de sódio, com QRS alargado/instabilidade e orientação toxicológica: bicarbonato de sódio 1 mEq por kg intravenoso em bolus; pode repetir a cada 5 minutos conforme ECG e perfusão, respeitando limite cumulativo de 6 mEq por kg no protocolo Utah. Concentração 8,4% corresponde a 1 mEq por mL; conferir a apresentação. Monitorizar gasometria, sódio, potássio e cálcio, evitando pH acima de 7,55. QT prolongado isolado não é indicação."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não usar fenitoína como escolha usual para convulsão por bloqueio de canal de sódio. Descontaminação exige toxicologista e avaliação de aspiração/íleo."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Internar sintomáticos; vigiar absorção tardia/rebote. Alta só com recuperação e plano de risco intencional."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Superdose causa depressão neurológica, efeitos anticolinérgicos, convulsão e cardiotoxicidade; absorção pode ser tardia."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_206",
+      "title": "RCH — Intoxicação por carbamazepina",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Carbamazepine_poisoning/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last Updated July 2020",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_206",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "extrip_cbz",
+      "title": "EXTRIP — Carbamazepine",
+      "url": "https://www.extrip-workgroup.org/carbamazepine",
+      "authorityStatus": "SOCIETY_TOXICOLOGY_RECOMMENDATIONS",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:extrip_cbz",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "loraz_label",
+      "title": "DailyMed — Lorazepam injection: adult status epilepticus regimen",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5a02c97d-637d-43f7-803c-afe4381ccc59",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:loraz_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "midazolam_rch",
+      "title": "RCH — Seizures, acute management: pediatric benzodiazepine doses",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Seizures_-_acute_management/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published: 27 April 2022. https://www.nice.org.uk/guidance/ng217 (viewed October 2024).",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:midazolam_rch",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "bicarb_utah",
+      "title": "Utah Poison Control — Sodium bicarbonate in toxicology, 2025: sodium-channel blockade",
+      "url": "https://poisoncontrol.utah.edu/news/2025/09/covering-bases-sodium-bicarbonate-use-toxicology",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:bicarb_utah",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "ABCDE, monitor cardíaco e via aérea conforme necessidade; contatar centro toxicológico."
+      ],
+      "factIds": [
+        "b04_047_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Dose/formulação/horário, coingestões, ECG, glicose, eletrólitos e níveis seriados conforme toxicologia."
+      ],
+      "factIds": [
+        "b04_047_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Suporte é principal; benzodiazepínico para convulsão. Carvão em doses múltiplas em selecionados com via aérea segura; hemodiálise em toxicidade grave conforme EXTRIP."
+      ],
+      "factIds": [
+        "b04_047_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Convulsão prolongada no adulto: lorazepam 4 mg intravenosos lentamente, sem exceder 2 mg por minuto; se persistir/recorrer, pode repetir 4 mg após 10–15 minutos, com equipe de reanimação e controle respiratório. Referência pediátrica separada: midazolam 0,15 mg por kg intravenosos (máximo 10 mg por dose) ou 0,3 mg por kg por via bucal/intranasal (máximo 10 mg); no máximo 2 doses de benzodiazepínico, contando as pré-hospitalares. Não administrar preventivamente ao intoxicado assintomático.",
+        "Em ADULTO, somente cardiotoxicidade por bloqueio de canal de sódio, com QRS alargado/instabilidade e orientação toxicológica: bicarbonato de sódio 1 mEq por kg intravenoso em bolus; pode repetir a cada 5 minutos conforme ECG e perfusão, respeitando limite cumulativo de 6 mEq por kg no protocolo Utah. Concentração 8,4% corresponde a 1 mEq por mL; conferir a apresentação. Monitorizar gasometria, sódio, potássio e cálcio, evitando pH acima de 7,55. QT prolongado isolado não é indicação."
+      ],
+      "factIds": [
+        "b04_047_f07",
+        "b04_047_f08"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não usar fenitoína como escolha usual para convulsão por bloqueio de canal de sódio. Descontaminação exige toxicologista e avaliação de aspiração/íleo."
+      ],
+      "factIds": [
+        "b04_047_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Internar sintomáticos; vigiar absorção tardia/rebote. Alta só com recuperação e plano de risco intencional."
+      ],
+      "factIds": [
+        "b04_047_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Superdose causa depressão neurológica, efeitos anticolinérgicos, convulsão e cardiotoxicidade; absorção pode ser tardia."
+      ],
+      "factIds": [
+        "b04_047_f01"
+      ]
+    }
+  ],
+  "markdown": "# Intoxicação por carbamazepina\n\n## Abordagem inicial e urgências\n\nABCDE, monitor cardíaco e via aérea conforme necessidade; contatar centro toxicológico.\n\n## Diagnóstico e diferenciais\n\nDose/formulação/horário, coingestões, ECG, glicose, eletrólitos e níveis seriados conforme toxicologia.\n\n## Tratamento: primeira escolha e alternativas\n\nSuporte é principal; benzodiazepínico para convulsão. Carvão em doses múltiplas em selecionados com via aérea segura; hemodiálise em toxicidade grave conforme EXTRIP.\n\n## Fármacos, doses e intervalos\n\nConvulsão prolongada no adulto: lorazepam 4 mg intravenosos lentamente, sem exceder 2 mg por minuto; se persistir/recorrer, pode repetir 4 mg após 10–15 minutos, com equipe de reanimação e controle respiratório. Referência pediátrica separada: midazolam 0,15 mg por kg intravenosos (máximo 10 mg por dose) ou 0,3 mg por kg por via bucal/intranasal (máximo 10 mg); no máximo 2 doses de benzodiazepínico, contando as pré-hospitalares. Não administrar preventivamente ao intoxicado assintomático.\n\nEm ADULTO, somente cardiotoxicidade por bloqueio de canal de sódio, com QRS alargado/instabilidade e orientação toxicológica: bicarbonato de sódio 1 mEq por kg intravenoso em bolus; pode repetir a cada 5 minutos conforme ECG e perfusão, respeitando limite cumulativo de 6 mEq por kg no protocolo Utah. Concentração 8,4% corresponde a 1 mEq por mL; conferir a apresentação. Monitorizar gasometria, sódio, potássio e cálcio, evitando pH acima de 7,55. QT prolongado isolado não é indicação.\n\n## Segurança e monitorização\n\nNão usar fenitoína como escolha usual para convulsão por bloqueio de canal de sódio. Descontaminação exige toxicologista e avaliação de aspiração/íleo.\n\n## Reavaliação, internação e alta\n\nInternar sintomáticos; vigiar absorção tardia/rebote. Alta só com recuperação e plano de risco intencional.\n\n## Reconhecimento rápido\n\nSuperdose causa depressão neurológica, efeitos anticolinérgicos, convulsão e cardiotoxicidade; absorção pode ser tardia.\n\n## Referências\n\n1. [RCH — Intoxicação por carbamazepina](https://www.rch.org.au/clinicalguide/guideline_index/Carbamazepine_poisoning/)\n2. [EXTRIP — Carbamazepine](https://www.extrip-workgroup.org/carbamazepine)\n3. [DailyMed — Lorazepam injection: adult status epilepticus regimen](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5a02c97d-637d-43f7-803c-afe4381ccc59)\n4. [RCH — Seizures, acute management: pediatric benzodiazepine doses](https://www.rch.org.au/clinicalguide/guideline_index/Seizures_-_acute_management/)\n5. [Utah Poison Control — Sodium bicarbonate in toxicology, 2025: sodium-channel blockade](https://poisoncontrol.utah.edu/news/2025/09/covering-bases-sodium-bicarbonate-use-toxicology)",
+  "approvedReviewCanonicalFileSha256": "e8c51ad97d3afff53ccee7ba61ee37ee87a52289a30fbe5077943b99ad9ec731",
+  "approvedReviewProjectionFileSha256": "93e6b227bdbb26f5220e0f76f19d6d8cfac45654257d70e49920e34c1c5cdedc"
+}

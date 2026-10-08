@@ -1,0 +1,234 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Pericoronaritis",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "ccf64c2d7433849ffafe08a9e29eeca27c762d82116e3e1a3d6bd864a5d47aac",
+  "ownerCandidate": "pericoronarite",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_007_f01",
+    "b04_007_f02",
+    "b04_007_f03",
+    "b04_007_f04",
+    "b04_007_f05",
+    "b04_007_f06",
+    "b04_007_f07",
+    "b04_007_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Inflamación/infección alrededor de diente parcialmente erupcionado."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Eliminar el foco es central; cursos repetidos sin tratamiento local favorecen recurrencia."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Examinar diente, encía, apertura oral y extensión; excluir absceso profundo."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Trismo importante, disfagia, piso bucal elevado o disnea requieren hospital y protección de vía aérea."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opciones especificadas en este tema: clorexidina; metronidazol / amoxicilina. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Primero: irrigación/remoción local de placa y analgesia. Antibiótico solo ante extensión, manifestación sistémica o indicación específica; tratamiento dental definitivo si recurrente."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tras irrigación/desbridamiento, si el dolor impide higiene: clorhexidina 0,2%, 10 mL como enjuague durante 1 minuto, 2 veces al día. Escupir, no tragar; usar mientras la lesión lo requiera, con revisión odontológica. No reemplaza drenaje/higiene ni justifica antibiótico sistémico automático."
+    },
+    {
+      "type": "paragraph",
+      "text": "Solo diseminación o repercusión sistémica en adulto: metronidazol 400 mg por vía oral cada 8 horas durante 3 días; alternativa amoxicilina 500 mg por vía oral cada 8 horas durante 3 días. Reevaluar al final o antes si empeora. No combinar automáticamente; comprobar alergia, interacción con anticoagulantes, función orgánica e instrucciones de la ficha sobre alcohol."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Elección y duración según alergia, gravedad y protocolo; metronidazol o amoxicilina son opciones odontológicas seleccionadas, no combinación automática."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar dolor, apertura oral y edema; empeoramiento exige nuevo examen y control del foco."
+    }
+  ],
+  "references": [
+    {
+      "key": "pericoronitis",
+      "title": "SDCEP — local measures for pericoronitis",
+      "url": "https://www.sdcepdentalprescribing.nhs.scot/guidance/bacterial-infections/acute-periodontal-conditions/local-measures/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:pericoronitis",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "dental",
+      "title": "SDCEP — Acute periodontal conditions updated 2026",
+      "url": "https://www.sdcepdentalprescribing.nhs.scot/guidance/bacterial-infections/acute-periodontal-conditions/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:dental",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "sd_metron",
+      "title": "SDCEP — metronidazole for acute periodontal conditions",
+      "url": "https://www.sdcepdentalprescribing.nhs.scot/guidance/bacterial-infections/acute-periodontal-conditions/metronidazole/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:sd_metron",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "sd_amox",
+      "title": "SDCEP — amoxicillin for acute periodontal conditions",
+      "url": "https://www.sdcepdentalprescribing.nhs.scot/guidance/bacterial-infections/acute-periodontal-conditions/amoxicillin/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:sd_amox",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "chlorhexidine_sd",
+      "title": "SDCEP — Chlorhexidine mouthwash 0.2%: dental regimen",
+      "url": "https://www.sdcepdentalprescribing.nhs.scot/guidance/ulceration-inflammation/antimicrobial-mouthwashes/chlorhexidine-mouthwash/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:chlorhexidine_sd",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Inflamación/infección alrededor de diente parcialmente erupcionado."
+      ],
+      "factIds": [
+        "b04_007_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Eliminar el foco es central; cursos repetidos sin tratamiento local favorecen recurrencia."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examinar diente, encía, apertura oral y extensión; excluir absceso profundo."
+      ],
+      "factIds": [
+        "b04_007_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Trismo importante, disfagia, piso bucal elevado o disnea requieren hospital y protección de vía aérea."
+      ],
+      "factIds": [
+        "b04_007_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: clorexidina; metronidazol / amoxicilina. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Primero: irrigación/remoción local de placa y analgesia. Antibiótico solo ante extensión, manifestación sistémica o indicación específica; tratamiento dental definitivo si recurrente."
+      ],
+      "factIds": [
+        "b04_007_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Tras irrigación/desbridamiento, si el dolor impide higiene: clorhexidina 0,2%, 10 mL como enjuague durante 1 minuto, 2 veces al día. Escupir, no tragar; usar mientras la lesión lo requiera, con revisión odontológica. No reemplaza drenaje/higiene ni justifica antibiótico sistémico automático.",
+        "Solo diseminación o repercusión sistémica en adulto: metronidazol 400 mg por vía oral cada 8 horas durante 3 días; alternativa amoxicilina 500 mg por vía oral cada 8 horas durante 3 días. Reevaluar al final o antes si empeora. No combinar automáticamente; comprobar alergia, interacción con anticoagulantes, función orgánica e instrucciones de la ficha sobre alcohol."
+      ],
+      "factIds": [
+        "b04_007_f07",
+        "b04_007_f08"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Elección y duración según alergia, gravedad y protocolo; metronidazol o amoxicilina son opciones odontológicas seleccionadas, no combinación automática."
+      ],
+      "factIds": [
+        "b04_007_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar dolor, apertura oral y edema; empeoramiento exige nuevo examen y control del foco."
+      ],
+      "factIds": [
+        "b04_007_f06"
+      ]
+    }
+  ],
+  "markdown": "# Pericoronaritis\n\n## Concepto y mecanismo\n\nInflamación/infección alrededor de diente parcialmente erupcionado.\n\n## Razonamiento y elección terapéutica\n\nEliminar el foco es central; cursos repetidos sin tratamiento local favorecen recurrencia.\n\n## Diagnóstico y diferenciales\n\nExaminar diente, encía, apertura oral y extensión; excluir absceso profundo.\n\n## Abordaje inicial y urgencias\n\nTrismo importante, disfagia, piso bucal elevado o disnea requieren hospital y protección de vía aérea.\n\n## Tratamiento: primera elección y alternativas\n\nOpciones especificadas en este tema: clorexidina; metronidazol / amoxicilina. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Primero: irrigación/remoción local de placa y analgesia. Antibiótico solo ante extensión, manifestación sistémica o indicación específica; tratamiento dental definitivo si recurrente.\n\n## Fármacos, dosis e intervalos\n\nTras irrigación/desbridamiento, si el dolor impide higiene: clorhexidina 0,2%, 10 mL como enjuague durante 1 minuto, 2 veces al día. Escupir, no tragar; usar mientras la lesión lo requiera, con revisión odontológica. No reemplaza drenaje/higiene ni justifica antibiótico sistémico automático.\n\nSolo diseminación o repercusión sistémica en adulto: metronidazol 400 mg por vía oral cada 8 horas durante 3 días; alternativa amoxicilina 500 mg por vía oral cada 8 horas durante 3 días. Reevaluar al final o antes si empeora. No combinar automáticamente; comprobar alergia, interacción con anticoagulantes, función orgánica e instrucciones de la ficha sobre alcohol.\n\n## Seguridad y monitorización\n\nElección y duración según alergia, gravedad y protocolo; metronidazol o amoxicilina son opciones odontológicas seleccionadas, no combinación automática.\n\n## Reevaluación, internación y alta\n\nReevaluar dolor, apertura oral y edema; empeoramiento exige nuevo examen y control del foco.\n\n## Referencias\n\n1. [SDCEP — local measures for pericoronitis](https://www.sdcepdentalprescribing.nhs.scot/guidance/bacterial-infections/acute-periodontal-conditions/local-measures/)\n2. [SDCEP — Acute periodontal conditions updated 2026](https://www.sdcepdentalprescribing.nhs.scot/guidance/bacterial-infections/acute-periodontal-conditions/)\n3. [SDCEP — metronidazole for acute periodontal conditions](https://www.sdcepdentalprescribing.nhs.scot/guidance/bacterial-infections/acute-periodontal-conditions/metronidazole/)\n4. [SDCEP — amoxicillin for acute periodontal conditions](https://www.sdcepdentalprescribing.nhs.scot/guidance/bacterial-infections/acute-periodontal-conditions/amoxicillin/)\n5. [SDCEP — Chlorhexidine mouthwash 0.2%: dental regimen](https://www.sdcepdentalprescribing.nhs.scot/guidance/ulceration-inflammation/antimicrobial-mouthwashes/chlorhexidine-mouthwash/)",
+  "approvedReviewCanonicalFileSha256": "0e0ff2f9c53b1908f2841fcd4b2a2bb41a5f9e5538d88de173836618e5709624",
+  "approvedReviewProjectionFileSha256": "c506b3e90df8047b80f74f50c0ece38e1d8d258d29433b9dbb4c3d4f7a07c7f8"
+}

@@ -1,0 +1,135 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Doença de von Willebrand",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "9ce32e115d306398ca88e8ef48ce671573d5f7f1382a6c89f0febdd0ba4d01ca",
+  "ownerCandidate": "doenca_de_von_willebrand",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_037_f01",
+    "b04_037_f02",
+    "b04_037_f03",
+    "b04_037_f04",
+    "b04_037_f05",
+    "b04_037_f06",
+    "b04_037_f07",
+    "b04_037_f08"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Defeito quantitativo/qualitativo do fator von Willebrand prejudica hemostasia."
+      ],
+      "factIds": [
+        "b04_037_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Eficácia e segurança variam pelo subtipo; não substituir concentrado por desmopressina sem elegibilidade."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "História hemorrágica, fator von Willebrand e fator VIII; classificar subtipo com hematologia."
+      ],
+      "factIds": [
+        "b04_037_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Hemorragia importante: estabilização, controle do foco e hematologia urgente."
+      ],
+      "factIds": [
+        "b04_037_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: desmopressina; ácido tranexâmico. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Desmopressina apenas em subtipo/paciente responsivo elegível; alternativa: concentrado de fator von Willebrand. Ácido tranexâmico complementa cenários mucosos/procedimentos apropriados."
+      ],
+      "factIds": [
+        "b04_037_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Tipo 1 responsivo, paciente elegível sob hematologia: desmopressina 0,3 micrograma por kg de peso real intravenosa, máximo 20 microgramas, em infusão de 15–30 minutos. Em adulto de pelo menos 10 kg, diluir na solução de cloreto de sódio 0,9% conforme bula, usualmente 50 mL; verificar apresentação. Repetição depende de resposta, sódio e taquifilaxia. Restringir líquidos conforme protocolo; contraindicada no tipo 2B, não usar no tipo 3, hiponatremia ou depuração abaixo de 50 mL por minuto. Não é monoterapia suficiente para cirurgia maior.",
+        "Cenário específico pós-parto em mulher com doença de von Willebrand/baixo fator e indicação hematológica: ácido tranexâmico 25 mg por kg por via oral, usualmente 1.000–1.300 mg, 3 vezes ao dia durante 10–14 dias; prolongar apenas se perda continuar relevante e equipe indicar. Não aplicar automaticamente esta duração a cirurgia ou outros sangramentos. Ajustar se disfunção renal; avaliar trombose e evitar uso sem especialista na hematúria do trato urinário superior. Sangramento importante pode exigir concentrado de fator de von Willebrand, com produto e dose calculados pela equipe."
+      ],
+      "factIds": [
+        "b04_037_f07",
+        "b04_037_f08"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Desmopressina exige controle hídrico/sódio; é contraindicada no tipo 2B e ineficaz/contraindicada no tipo 3. Cirurgia maior não deve depender apenas dela. Cirurgia/parto exigem metas laboratoriais e plano hematológico; evitar dose universal."
+      ],
+      "factIds": [
+        "b04_037_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Plano de sangramento, procedimentos e gestação; registro de resposta ao teste terapêutico."
+      ],
+      "factIds": [
+        "b04_037_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_196",
+      "title": "NHS — Doença de von Willebrand",
+      "url": "https://www.nhs.uk/conditions/von-willebrand-disease/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 08 April 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_196",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "vwd_full",
+      "title": "ASH/ISTH/NHF/WFH — VWD guideline original primary text",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7805326/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published correction appears in PLoS One. 2017;12(2):e0172185]. PLoS One. 2016;11(10):e0164683. [DOI] [PMC fr",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:vwd_full",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "desmo_vwd",
+      "title": "DailyMed — DDAVP injection: type 1 von Willebrand hemostatic infusion",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=651f6fee-a2c7-431b-8d5d-58b156c72244",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:desmo_vwd",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

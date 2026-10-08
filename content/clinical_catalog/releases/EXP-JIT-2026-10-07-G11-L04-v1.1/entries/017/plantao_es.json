@@ -1,0 +1,206 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Enfermedad de Peyronie",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "44ecd0611b77b17adca9b1ef28cbe36c86f2aab10adca1adc99c1a722f581c8a",
+  "ownerCandidate": "doenca_de_peyronie",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_017_f01",
+    "b04_017_f02",
+    "b04_017_f03",
+    "b04_017_f04",
+    "b04_017_f05",
+    "b04_017_f06",
+    "b04_017_f07",
+    "b04_017_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Trauma con chasquido y detumescencia requiere vía de fractura de pene."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Caracterizar fase activa/estable, curvatura, dolor y función sexual; distinguir fractura aguda."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opciones especificadas en este tema: ibuprofeno; tadalafilo. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Vigilancia en enfermedad leve. Tracción/dispositivos o tratamientos locales especializados pueden discutirse; cirugía en enfermedad estable con deterioro funcional. Tratar disfunción eréctil asociada por separado."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alternativa para dolor inflamatorio en adulto elegible: ibuprofeno 200–400 mg por vía oral cada 8 horas si es necesario, con comida, máximo 1.200 mg al día en este esquema breve. No combinar con otro antiinflamatorio. Evitar en lesión renal, sangrado/úlcera, insuficiencia cardíaca descompensada o embarazo; reevaluar necesidad y riesgo digestivo."
+    },
+    {
+      "type": "paragraph",
+      "text": "Si disfunción eréctil coexistente en adulto elegible: tadalafilo 5 mg por vía oral una vez al día, a la misma hora; puede reducirse a 2,5 mg según tolerancia. No corrige placa/curvatura. Contraindicado con nitratos/riociguat; valorar riesgo cardiovascular, hipotensión e interacciones. Régimen diario no recomendado en insuficiencia renal grave; reevaluar necesidad, sin duración fija universal."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No prometer enderezamiento con vitaminas o comprimidos. Ondas de choque no deben presentarse como corrección comprobada de curvatura."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Urología/andrología: evolución, función y expectativas; apoyo emocional."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Fibrosis de túnica albugínea causa placa, curvatura y posible disfunción eréctil."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_176",
+      "title": "NHS — Doença de Peyronie",
+      "url": "https://www.nhs.uk/conditions/peyronies-disease/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 03 June 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_176",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "eaumale",
+      "title": "EAU — Sexual and reproductive health, penile curvature",
+      "url": "https://uroweb.org/guidelines/sexual-and-reproductive-health/chapter/penile-curvature",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published RCTs analysing data from the same cohort, intralesional injections of IFN-α2b significantly improve",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:eaumale",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "ibuprofen_nhs",
+      "title": "NHS — Ibuprofen for adults: dose, maximum and precautions",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:ibuprofen_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "tadalafil_label",
+      "title": "emc — Tadalafil: daily erectile dysfunction dosing and contraindications",
+      "url": "https://www.medicines.org.uk/emc/product/15261/smpc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated on emc: 23 Apr 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:tadalafil_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Trauma con chasquido y detumescencia requiere vía de fractura de pene."
+      ],
+      "factIds": [
+        "b04_017_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Caracterizar fase activa/estable, curvatura, dolor y función sexual; distinguir fractura aguda."
+      ],
+      "factIds": [
+        "b04_017_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: ibuprofeno; tadalafilo. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Vigilancia en enfermedad leve. Tracción/dispositivos o tratamientos locales especializados pueden discutirse; cirugía en enfermedad estable con deterioro funcional. Tratar disfunción eréctil asociada por separado."
+      ],
+      "factIds": [
+        "b04_017_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Alternativa para dolor inflamatorio en adulto elegible: ibuprofeno 200–400 mg por vía oral cada 8 horas si es necesario, con comida, máximo 1.200 mg al día en este esquema breve. No combinar con otro antiinflamatorio. Evitar en lesión renal, sangrado/úlcera, insuficiencia cardíaca descompensada o embarazo; reevaluar necesidad y riesgo digestivo.",
+        "Si disfunción eréctil coexistente en adulto elegible: tadalafilo 5 mg por vía oral una vez al día, a la misma hora; puede reducirse a 2,5 mg según tolerancia. No corrige placa/curvatura. Contraindicado con nitratos/riociguat; valorar riesgo cardiovascular, hipotensión e interacciones. Régimen diario no recomendado en insuficiencia renal grave; reevaluar necesidad, sin duración fija universal."
+      ],
+      "factIds": [
+        "b04_017_f07",
+        "b04_017_f08"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No prometer enderezamiento con vitaminas o comprimidos. Ondas de choque no deben presentarse como corrección comprobada de curvatura."
+      ],
+      "factIds": [
+        "b04_017_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Urología/andrología: evolución, función y expectativas; apoyo emocional."
+      ],
+      "factIds": [
+        "b04_017_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Fibrosis de túnica albugínea causa placa, curvatura y posible disfunción eréctil."
+      ],
+      "factIds": [
+        "b04_017_f01"
+      ]
+    }
+  ],
+  "markdown": "# Enfermedad de Peyronie\n\n## Abordaje inicial y urgencias\n\nTrauma con chasquido y detumescencia requiere vía de fractura de pene.\n\n## Diagnóstico y diferenciales\n\nCaracterizar fase activa/estable, curvatura, dolor y función sexual; distinguir fractura aguda.\n\n## Tratamiento: primera elección y alternativas\n\nOpciones especificadas en este tema: ibuprofeno; tadalafilo. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Vigilancia en enfermedad leve. Tracción/dispositivos o tratamientos locales especializados pueden discutirse; cirugía en enfermedad estable con deterioro funcional. Tratar disfunción eréctil asociada por separado.\n\n## Fármacos, dosis e intervalos\n\nAlternativa para dolor inflamatorio en adulto elegible: ibuprofeno 200–400 mg por vía oral cada 8 horas si es necesario, con comida, máximo 1.200 mg al día en este esquema breve. No combinar con otro antiinflamatorio. Evitar en lesión renal, sangrado/úlcera, insuficiencia cardíaca descompensada o embarazo; reevaluar necesidad y riesgo digestivo.\n\nSi disfunción eréctil coexistente en adulto elegible: tadalafilo 5 mg por vía oral una vez al día, a la misma hora; puede reducirse a 2,5 mg según tolerancia. No corrige placa/curvatura. Contraindicado con nitratos/riociguat; valorar riesgo cardiovascular, hipotensión e interacciones. Régimen diario no recomendado en insuficiencia renal grave; reevaluar necesidad, sin duración fija universal.\n\n## Seguridad y monitorización\n\nNo prometer enderezamiento con vitaminas o comprimidos. Ondas de choque no deben presentarse como corrección comprobada de curvatura.\n\n## Reevaluación, internación y alta\n\nUrología/andrología: evolución, función y expectativas; apoyo emocional.\n\n## Reconocimiento rápido\n\nFibrosis de túnica albugínea causa placa, curvatura y posible disfunción eréctil.\n\n## Referencias\n\n1. [NHS — Doença de Peyronie](https://www.nhs.uk/conditions/peyronies-disease/)\n2. [EAU — Sexual and reproductive health, penile curvature](https://uroweb.org/guidelines/sexual-and-reproductive-health/chapter/penile-curvature)\n3. [NHS — Ibuprofen for adults: dose, maximum and precautions](https://www.nhs.uk/medicines/ibuprofen-for-adults/)\n4. [emc — Tadalafil: daily erectile dysfunction dosing and contraindications](https://www.medicines.org.uk/emc/product/15261/smpc)",
+  "approvedReviewCanonicalFileSha256": "01dca1b29b7ab7adbc806bf40e2b71b54d7c3b4e974d5362fb32e8a9ec3ed60d",
+  "approvedReviewProjectionFileSha256": "3115bab5c5712e6acf60e3fb5c88bc1c769e2012b24f10446b2c83c80bcf4552"
+}

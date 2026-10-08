@@ -1,0 +1,1064 @@
+{
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "batch": 4,
+  "queueRanks": [
+    160,
+    161,
+    162,
+    163,
+    164,
+    165,
+    166,
+    167,
+    168,
+    169,
+    170,
+    171,
+    172,
+    173,
+    174,
+    175,
+    176,
+    177,
+    178,
+    179,
+    180,
+    181,
+    182,
+    183,
+    184,
+    185,
+    186,
+    187,
+    188,
+    189,
+    190,
+    191,
+    192,
+    193,
+    194,
+    195,
+    196,
+    197,
+    198,
+    199,
+    200,
+    201,
+    202,
+    203,
+    204,
+    205,
+    206,
+    207,
+    208,
+    209
+  ],
+  "baselineOwnerCount": 817,
+  "count": 50,
+  "projections": 200,
+  "guides": 50,
+  "status": "WAITING_HUMAN_APPROVAL",
+  "published": false,
+  "entries": [
+    {
+      "rank": 1,
+      "queueRank": 160,
+      "title": {
+        "pt": "Perda auditiva neurossensorial súbita",
+        "es": "Hipoacusia neurosensorial súbita"
+      },
+      "ownerCandidate": "perda_auditiva_neurossensorial_subita",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "99f53f1a9eb9456b3f6701050d23f2bc745714aa2fcfdbe3f743067a97c61a77",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "99f53f1a9eb9456b3f6701050d23f2bc745714aa2fcfdbe3f743067a97c61a77",
+        "guide-CMS-PT-ES-DRAFT.json": "14b73f42ae2f468ad3acacfe7bdcf0f3921910c48c980684127136c47fa871cd",
+        "plantao_es.json": "074018bce02bc7cb0adfa89b4896447a5bbbe79a72152d363f50eee086c3ba0a",
+        "plantao_pt.json": "1aad44076782feb01044713270d5cba3f3bbfcadb2bbc8aa2a4cad72836193e3",
+        "study_es.json": "a8d926b46d8e98c2b5980f4dad15f0631610c861f15e79c38bd50a4bda394872",
+        "study_pt.json": "3c031ad204fec0ff32c07920a06f8dd8aeb981ebd151df4b94d395d6790a8d2b"
+      }
+    },
+    {
+      "rank": 2,
+      "queueRank": 161,
+      "title": {
+        "pt": "Colesteatoma",
+        "es": "Colesteatoma"
+      },
+      "ownerCandidate": "colesteatoma",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "c521876c288443520a288209349a91302d785cf685124a958a90dc97dad7c20e",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "c521876c288443520a288209349a91302d785cf685124a958a90dc97dad7c20e",
+        "guide-CMS-PT-ES-DRAFT.json": "75188544c6d711b0c66e80bddaec5eb0c6f33fe25c02954d5cc5e146b7fc27ef",
+        "plantao_es.json": "5b23e1edf8fbebe407b631c2e8b700fcbfbefff4f1ef61dd19e768e05c9f1664",
+        "plantao_pt.json": "ebab81e52c5096c914b15c03168ecc64f9987e9c79181d9618686fdd8868e844",
+        "study_es.json": "39385193fdfbb9395bb0e29490c878a88ac5bf0d2e4a85c2d37fa166fac61115",
+        "study_pt.json": "d4966fb9717fd18dd2271190a8dabba7148b63e81263695e03dd3e3a6c2758eb"
+      }
+    },
+    {
+      "rank": 3,
+      "queueRank": 162,
+      "title": {
+        "pt": "Pericondrite auricular",
+        "es": "Pericondritis auricular"
+      },
+      "ownerCandidate": "pericondrite_auricular",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "eceb5a994c9b16ecc581908febd5486414ef6f8d5c8be0bb473d429a4464ff15",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "eceb5a994c9b16ecc581908febd5486414ef6f8d5c8be0bb473d429a4464ff15",
+        "guide-CMS-PT-ES-DRAFT.json": "b5866c3f2db0d36546d86005325f69773047d0098e485caaaff7b532e6f9edce",
+        "plantao_es.json": "7c9e5f968d439af56a04955d356024128d238c35e05213677efc218977ceb325",
+        "plantao_pt.json": "8b00e67d3ee2b9f6d88716adfdcc26d21d82d442ee3b25a3fccddd04c038f393",
+        "study_es.json": "840cd33ca55fbfb26640d847c8b85a8e9032e5b52c2ad62d6298e3784b9af404",
+        "study_pt.json": "950bcbb57c8c3f6dcd18d98930001db9f801bd37c3302b17d04b3c86aa43070d"
+      }
+    },
+    {
+      "rank": 4,
+      "queueRank": 163,
+      "title": {
+        "pt": "Hematoma e abscesso do septo nasal",
+        "es": "Hematoma y absceso del tabique nasal"
+      },
+      "ownerCandidate": "hematoma_e_abscesso_do_septo_nasal",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "abd962ca61a4a8c6d5df58a37377f8e6a0209ad407fda3be584334157c2941fd",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "abd962ca61a4a8c6d5df58a37377f8e6a0209ad407fda3be584334157c2941fd",
+        "guide-CMS-PT-ES-DRAFT.json": "21bb01ceef457b8710864072c6e4d562abdd29c1f84cca308e22cd79088b1c94",
+        "plantao_es.json": "9afcde5e0a1c70236a13cb52431813e025ef6e7c301276f603759b7858c37fc8",
+        "plantao_pt.json": "81f44644d9f9ad1f2eaae186bcccdb9448f2c56bc614044ce173e8aed3d7293c",
+        "study_es.json": "c7d4266da8051600602dbbe4e5a6a82f8ca651799926fb6301acdc53b5c2921c",
+        "study_pt.json": "144b0ef55b726f3fed0254a5f10c17480031533d786ed48dc5be054c5621d50f"
+      }
+    },
+    {
+      "rank": 5,
+      "queueRank": 164,
+      "title": {
+        "pt": "Luxação temporomandibular",
+        "es": "Luxación temporomandibular"
+      },
+      "ownerCandidate": "luxacao_temporomandibular",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "fb90a0f8c1389c9f3a86436ba7b2bab0b6b6b5381333cd8c971bd30193fa31c5",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "fb90a0f8c1389c9f3a86436ba7b2bab0b6b6b5381333cd8c971bd30193fa31c5",
+        "guide-CMS-PT-ES-DRAFT.json": "2f3eed6f4930c04de4ec4771a88ba1f19c5578819e5da7b1f7e8e9ca135fd916",
+        "plantao_es.json": "c7893d94709dc6a62addd820c394105af63420cfc36f018da400ec786e95eaae",
+        "plantao_pt.json": "c02421dbe7d306a532c23652716fb122b585e30308de728f1dd5497ecf17d163",
+        "study_es.json": "75bf775a65d429e36b783d7ac7cc6f4e3cb77d8d57ed2633185ddb6d1863a657",
+        "study_pt.json": "b89ffc7c7e605d02dbc4cbd0e16cc3c4e7bbb8838e542b537089f34c647d0e76"
+      }
+    },
+    {
+      "rank": 6,
+      "queueRank": 165,
+      "title": {
+        "pt": "Alveolite pós-extração dentária",
+        "es": "Alveolitis posextracción dental"
+      },
+      "ownerCandidate": "alveolite_pos_extracao_dentaria",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "5889db16d8787a961fd3edb069026d326ea2524f7dce456e050342d766d9ca17",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "5889db16d8787a961fd3edb069026d326ea2524f7dce456e050342d766d9ca17",
+        "guide-CMS-PT-ES-DRAFT.json": "56e0b68a690a847364f0847f2f3f568181c1fdc9b8de6808d9405d580f956810",
+        "plantao_es.json": "b161be022742a8593a150bcf870b76a4b463bfe0657611b4afb8f4bc726cadec",
+        "plantao_pt.json": "bc39c1a5614053c23741704976325d7487e1a4f1970eea38e80ca9cc60dff15c",
+        "study_es.json": "10ca07cab3586c9dd1f200bb3b504af779cee950b288a0eba71f3628974817e4",
+        "study_pt.json": "30476e8a0e1b490ffd15fb5548b67dc39957d8948e8c9c3a9e538d041c2d0aa6"
+      }
+    },
+    {
+      "rank": 7,
+      "queueRank": 166,
+      "title": {
+        "pt": "Pericoronarite",
+        "es": "Pericoronaritis"
+      },
+      "ownerCandidate": "pericoronarite",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "0e0ff2f9c53b1908f2841fcd4b2a2bb41a5f9e5538d88de173836618e5709624",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "0e0ff2f9c53b1908f2841fcd4b2a2bb41a5f9e5538d88de173836618e5709624",
+        "guide-CMS-PT-ES-DRAFT.json": "36a309dbcad24c80964e4d9b1c807475759281fd6506095b53ca59be3a1a4fd2",
+        "plantao_es.json": "aa7332d7cd8b906dbae229079f66bd447b86393951239e5ca92acf439874a602",
+        "plantao_pt.json": "61b1a47104676d8f280f165bcc9d5f566b6b3b97f960f4cc5c212d43d67f0b4e",
+        "study_es.json": "c506b3e90df8047b80f74f50c0ece38e1d8d258d29433b9dbb4c3d4f7a07c7f8",
+        "study_pt.json": "7898cca9c0e5b228807901f7a6da398eec2ad77a6070b8043baba1d352a2965c"
+      }
+    },
+    {
+      "rank": 8,
+      "queueRank": 167,
+      "title": {
+        "pt": "Leucoplasia oral",
+        "es": "Leucoplasia oral"
+      },
+      "ownerCandidate": "leucoplasia_oral",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "621e5914ca950dcc5acdfdaf5418f13d875a702658590e52fbea369163757e24",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "621e5914ca950dcc5acdfdaf5418f13d875a702658590e52fbea369163757e24",
+        "guide-CMS-PT-ES-DRAFT.json": "699dacdf3642afb3bc118beb5068d61f30275e6a386ff617b5c7ec0ff82f9898",
+        "plantao_es.json": "8d3e4cac8932d1b4c0cdd6a9e9dbff1efc2af49e03f67a4dabe64f8d2841d0d9",
+        "plantao_pt.json": "ef302f9cbff94df3fe622a82395e917eef6b7f032ced78499f971b6a98c6de61",
+        "study_es.json": "7c2fe8848652f955f6a113277aaac5140e0f01506edb9ae328f2f0f22c73fb49",
+        "study_pt.json": "4bf473ce56688f99dfa0a31d1b383ef180fd1eb1b8b388a642399382507192d5"
+      }
+    },
+    {
+      "rank": 9,
+      "queueRank": 168,
+      "title": {
+        "pt": "Nefrite intersticial aguda",
+        "es": "Nefritis intersticial aguda"
+      },
+      "ownerCandidate": "nefrite_intersticial_aguda",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "842a82a0585131ba9d702816e5a906a71f2c59f7c03b9cb3440d6a0960e3ddf3",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "842a82a0585131ba9d702816e5a906a71f2c59f7c03b9cb3440d6a0960e3ddf3",
+        "guide-CMS-PT-ES-DRAFT.json": "4f38a0fb9258913452361123270a338ff8532db04cc40a3e0c39824e3fb32d75",
+        "plantao_es.json": "68060796204f88867706a789817573fbaa00950a3e2222abb51bd3d3d7cb3711",
+        "plantao_pt.json": "825a41e9dd2e442067d251b27f6592c9ceb4663929c6d693fa587755f94b7237",
+        "study_es.json": "5cec57c45a4433f547d90770cff28d2360dc8b8229afcd50e2b4386d1c4d15f5",
+        "study_pt.json": "2393cd06248ca9bc4e16c9d6cf955800f852e133d4c25dd07a90f739080de4b9"
+      }
+    },
+    {
+      "rank": 10,
+      "queueRank": 169,
+      "title": {
+        "pt": "Glomerulonefrite pós-infecciosa",
+        "es": "Glomerulonefritis posinfecciosa"
+      },
+      "ownerCandidate": "glomerulonefrite_pos_infecciosa",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "48f8ad7f051ef97be53ff7e82448097b26e367c1546722744eec3520c32c71fa",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "48f8ad7f051ef97be53ff7e82448097b26e367c1546722744eec3520c32c71fa",
+        "guide-CMS-PT-ES-DRAFT.json": "26f09e9de3c779d0a6eb5f819c5ebbcdb4bae00c83b567253d5349cd908ed681",
+        "plantao_es.json": "846ab986d163cf2c466c25c21645863383c2e2495940b11d27660088600e59b4",
+        "plantao_pt.json": "6539548e904916cacf0c9d1e9aefda6b88bbf69207644511e0c388350b196c7e",
+        "study_es.json": "9bffb4d1735e34973e889e2491a7ba8835c9816096d7a3efae9c3272607cb918",
+        "study_pt.json": "6878a4a56f4d036dd4e829e65eaee1d532dcd4a24e9c3ea8d83d4e2ae67529a0"
+      }
+    },
+    {
+      "rank": 11,
+      "queueRank": 170,
+      "title": {
+        "pt": "Nefropatia por IgA",
+        "es": "Nefropatía por IgA"
+      },
+      "ownerCandidate": "nefropatia_por_iga",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "9047ef7377d256052febae8659adeac59f90aad41c1d9dd6989085d82c87bcdc",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "9047ef7377d256052febae8659adeac59f90aad41c1d9dd6989085d82c87bcdc",
+        "guide-CMS-PT-ES-DRAFT.json": "5b74765409654cd1ea46035720cccf49c55cdd8436bc37608f411609da792bc7",
+        "plantao_es.json": "30a5c71a920ffe665f4103ff4d38a8782bfc77641814349a40706bff0de0e941",
+        "plantao_pt.json": "a8136ef3bc8c4ba8757c6c6913cda8e9de3258bacfac2b06b540a4a0eeb71d3c",
+        "study_es.json": "be0f7a4e96e98fcad181e98ab642bcd69f402ba4f5b1b230c3e62c00860d2017",
+        "study_pt.json": "b39b02bf39a94749c622af8811b2aa58c3eb61a10da75640d15b52c01124a00a"
+      }
+    },
+    {
+      "rank": 12,
+      "queueRank": 171,
+      "title": {
+        "pt": "Acidose tubular renal",
+        "es": "Acidosis tubular renal"
+      },
+      "ownerCandidate": "acidose_tubular_renal",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "aea7934a9870a01fe61425d697209d8565cb4add2b41dc508722837131c4211b",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "aea7934a9870a01fe61425d697209d8565cb4add2b41dc508722837131c4211b",
+        "guide-CMS-PT-ES-DRAFT.json": "b7d157069884d287adfc8dc1968d5eef196f5114a825ad79681de587bf0b4e0a",
+        "plantao_es.json": "4f3816d7d6b27a817f4100a20522786d7d764ba3b5b60508f2c1c45976f18486",
+        "plantao_pt.json": "b830a01f48b25806cb4022315c5d5c4fb21e7a6bbf13c6f6435886a6cfa89323",
+        "study_es.json": "0f4d97bd133da0eef269f90ffe631bbda6ba977fc062efbb3ce90018f9a15474",
+        "study_pt.json": "de0a1fbae7bbe25e5009016ad8935e02502ef0523c80d6cea9517fa2084c061f"
+      }
+    },
+    {
+      "rank": 13,
+      "queueRank": 172,
+      "title": {
+        "pt": "Síndrome de dor pélvica crônica masculina",
+        "es": "Síndrome de dolor pélvico crónico masculino"
+      },
+      "ownerCandidate": "sindrome_de_dor_pelvica_cronica_masculina",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "88a52f4a38e9860e1f95d02867cec9676b244b8c1d16000c197c88a5521b7e55",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "88a52f4a38e9860e1f95d02867cec9676b244b8c1d16000c197c88a5521b7e55",
+        "guide-CMS-PT-ES-DRAFT.json": "9cb70839f613f628e8e9dc60d4712a20178961fca96a3766c15b9642e838bcb6",
+        "plantao_es.json": "e09c93c7b51ca72d4b054d1a704f63aca6922a578a38df14f07d48d210125342",
+        "plantao_pt.json": "181fa4804cf0d987951b453cad24eb22fd748c469e2e006df1eacf584c73f2d6",
+        "study_es.json": "4d30a8cf2dbaaa73b26f91f247b23d4fd9b30c4008c7aab0080edaa5e02a438a",
+        "study_pt.json": "deb13a9c1c79d43eabc1802f73190da6abd412b46f32937e5a4a3381339eb741"
+      }
+    },
+    {
+      "rank": 14,
+      "queueRank": 173,
+      "title": {
+        "pt": "Hidrocele",
+        "es": "Hidrocele"
+      },
+      "ownerCandidate": "hidrocele",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "a6e48a969dd31c1e167a9000bac5412380cb4aaee34adc328f4c291ae5dd7c1c",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "a6e48a969dd31c1e167a9000bac5412380cb4aaee34adc328f4c291ae5dd7c1c",
+        "guide-CMS-PT-ES-DRAFT.json": "b349325f67441b71ab8820a6e0a98da847f856d7de8eacaabeacb4f496c51b74",
+        "plantao_es.json": "4c58cc2b283c3e3faf3f9d0ebad79b46b3978fcc0e1c91b29a3eb2e0709b1acb",
+        "plantao_pt.json": "212f5bbe1e9bb56fe9fb8c69a5302508406739c4c4118688667ed6adf1c032d8",
+        "study_es.json": "75330ddd5b6e78944f87a5eca7aa0e722510d48c7eff354a46666b3b7c709123",
+        "study_pt.json": "3dbe8b3433a462ca321c1423ad95c5949060aa6bc08e5115570f7543eb8d6f2e"
+      }
+    },
+    {
+      "rank": 15,
+      "queueRank": 174,
+      "title": {
+        "pt": "Varicocele",
+        "es": "Varicocele"
+      },
+      "ownerCandidate": "varicocele",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "3f15b89edcc4102235836d909dd4420a5e09266cfff85fb64794f1cb98be0f5f",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "3f15b89edcc4102235836d909dd4420a5e09266cfff85fb64794f1cb98be0f5f",
+        "guide-CMS-PT-ES-DRAFT.json": "973e98b8fd07015ba7b3b6bd91b85ef0e1b30f7c045806d5b1c7ca0a8376e3ea",
+        "plantao_es.json": "3d048e655e8500fbd9c533a17e18b1946e927fe8c741e685fc932a06bb7f0984",
+        "plantao_pt.json": "37d95b8e0fe64fc8c0187bbe8245d59933e6b4f46b0d28f7cb3352e30153f393",
+        "study_es.json": "e942c6e99e08a6d2aa42828eab3624bf807e1d7f2b6c9fc1fe1fcd9883ed1c3b",
+        "study_pt.json": "1b4f0bed5ba2ec8e0172a4d5c1370609e94ecb7a7df7bc0a71a244bc13c35d2a"
+      }
+    },
+    {
+      "rank": 16,
+      "queueRank": 175,
+      "title": {
+        "pt": "Trauma e fratura peniana",
+        "es": "Trauma y fractura de pene"
+      },
+      "ownerCandidate": "trauma_e_fratura_peniana",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "bcddc16454061ebec009004f0bb1300d8718f1248a4ec7171a32f8baff2c5506",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "bcddc16454061ebec009004f0bb1300d8718f1248a4ec7171a32f8baff2c5506",
+        "guide-CMS-PT-ES-DRAFT.json": "d11ac3d6fe2338c3e471f9c20db15b2ff2b4d368c1c502c336d80ded30d1b146",
+        "plantao_es.json": "caaf2f2c4cb3478e32c6c50f20958889487e5c3c7d7180a2cfd13d99e814a5b6",
+        "plantao_pt.json": "7490845ed506773036a91478bf7792ec2a06a52bcfcef19b21f35fb6afa2c1c3",
+        "study_es.json": "8d5f098ae214c6a2e86942b677b678546a5f0f34289c4c26e4a64af8582cd634",
+        "study_pt.json": "0de3964431a4559562b7a4f2425454517537ab6e68196943f9d7b7247df9ce14"
+      }
+    },
+    {
+      "rank": 17,
+      "queueRank": 176,
+      "title": {
+        "pt": "Doença de Peyronie",
+        "es": "Enfermedad de Peyronie"
+      },
+      "ownerCandidate": "doenca_de_peyronie",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "01dca1b29b7ab7adbc806bf40e2b71b54d7c3b4e974d5362fb32e8a9ec3ed60d",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "01dca1b29b7ab7adbc806bf40e2b71b54d7c3b4e974d5362fb32e8a9ec3ed60d",
+        "guide-CMS-PT-ES-DRAFT.json": "0dd890f27889142435fc634489470559066e68b4684dc588f61d9adce07016e3",
+        "plantao_es.json": "3115bab5c5712e6acf60e3fb5c88bc1c769e2012b24f10446b2c83c80bcf4552",
+        "plantao_pt.json": "7114105d4fa96f78769a1ede26d6b4ff4f6f751114e2ef36d0da3e68d0d9d25e",
+        "study_es.json": "51b2b1a24c090b0b5768799adbab8079030692f178ba71fe81396f50c6877136",
+        "study_pt.json": "9cac1cdfa3cfe078886398c62669ec026ed3797a2c0685df70f3c13ba8eca0e2"
+      }
+    },
+    {
+      "rank": 18,
+      "queueRank": 177,
+      "title": {
+        "pt": "Hematúria sem diagnóstico estabelecido",
+        "es": "Hematuria sin diagnóstico establecido"
+      },
+      "ownerCandidate": "hematuria_sem_diagnostico_estabelecido",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "3bb15278dc5a83cb3eee7d4dc4fcef9bf5b8fde692856576c51f4cd2bab17396",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "3bb15278dc5a83cb3eee7d4dc4fcef9bf5b8fde692856576c51f4cd2bab17396",
+        "guide-CMS-PT-ES-DRAFT.json": "ff86e0db8a064b1cd45e162aa8db315fd5a7fe35ee9ea161c7acaf51acfa2466",
+        "plantao_es.json": "32214f2ae1d30b9d83d602542fa553eac16448cd577949f9eda46c9989065967",
+        "plantao_pt.json": "e7e3792ca7b4f768d0cabec76d6101202e2f2969898e9e506bffd22866118806",
+        "study_es.json": "df943d0fa8437fc72bca988e9e167c5c495ac5e4d343d8f45768dafd7a233412",
+        "study_pt.json": "642d2be0145466f56d9eff9681acdbc0354c6f98735ee050a273b3b28e542f57"
+      }
+    },
+    {
+      "rank": 19,
+      "queueRank": 178,
+      "title": {
+        "pt": "Refluxo vesicoureteral",
+        "es": "Reflujo vesicoureteral"
+      },
+      "ownerCandidate": "refluxo_vesicoureteral",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "04935cc91b3c00da9b53a9a564e01adc47ed1775423771b70956aa451ec51b1a",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "04935cc91b3c00da9b53a9a564e01adc47ed1775423771b70956aa451ec51b1a",
+        "guide-CMS-PT-ES-DRAFT.json": "38bd29959023cbd07e520a175966f65f85f1d6eb8f94fe4c409d9986ff5ca779",
+        "plantao_es.json": "2e3e3c7c7820fd51ef2f312995ee6d24dd242624505f7c64aa3b22326b9d466c",
+        "plantao_pt.json": "a6bae261195b4f012e83ee7439a95407146d648f0a87160fccd75c7f2bba5247",
+        "study_es.json": "a15432bb515e95b8a7f440d505d4ede862cda0d843312bc496dc71118fae04e7",
+        "study_pt.json": "4ebec3d73d0c2834651883626feff0a28062c5afa150f2dcd93085b50a10535e"
+      }
+    },
+    {
+      "rank": 20,
+      "queueRank": 179,
+      "title": {
+        "pt": "Diabetes insípido",
+        "es": "Diabetes insípida"
+      },
+      "ownerCandidate": "diabetes_insipido",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "fc04aa364ded7ceb261ccb9ea16b37e5fd63a641ef9ea67c04bf97c9b5bf54fe",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "fc04aa364ded7ceb261ccb9ea16b37e5fd63a641ef9ea67c04bf97c9b5bf54fe",
+        "guide-CMS-PT-ES-DRAFT.json": "b0223c945c32c379b1d039cfb254ad658049b1932d18448c775bd70f08b9e1ba",
+        "plantao_es.json": "6c2997402a2ac94adb22f02815d56b2ab7150a3eef61eca5e2833eef42e740cd",
+        "plantao_pt.json": "05aa0ca55e6339d372682bee5d3e711a5973e0dbbb9cedf5b8cce7edc053fe80",
+        "study_es.json": "e91352f51b99a28a4548f9142684ae979abcd2851da2b93b4e0cd0ef17623a01",
+        "study_pt.json": "4c1092fb31f3af3579814095a50fcbc7d95dec70040adf96b6fbc4ac771cea95"
+      }
+    },
+    {
+      "rank": 21,
+      "queueRank": 180,
+      "title": {
+        "pt": "Hiperaldosteronismo primário",
+        "es": "Hiperaldosteronismo primario"
+      },
+      "ownerCandidate": "hiperaldosteronismo_primario",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "c6806a03e51a51f6d9e03f5c49dfc0af5dcd3979b0c3d9d1b793a84b32d8302b",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "c6806a03e51a51f6d9e03f5c49dfc0af5dcd3979b0c3d9d1b793a84b32d8302b",
+        "guide-CMS-PT-ES-DRAFT.json": "2293591415b2ca6660361e9f60a5573670f3063e43332a454f593692c87805c9",
+        "plantao_es.json": "1e11c0391caf4fd8b3b324891c8e2ded3e921c567bbb14f5e8842ec7fc1ca8d9",
+        "plantao_pt.json": "d5a692100c528bc35ffd20855029aa2599e5d6d98c5ec7b488c5bf438be80f1e",
+        "study_es.json": "0a42a8b51f8c31c134f41c23fef181c3f44c147f765e2d61f9e1781b4b925c62",
+        "study_pt.json": "01f69c4c7c769381aebe360f4e77557288fc796e1e6581ff1d5975b4cdd2cf5f"
+      }
+    },
+    {
+      "rank": 22,
+      "queueRank": 181,
+      "title": {
+        "pt": "Neuropatia diabética periférica",
+        "es": "Neuropatía diabética periférica"
+      },
+      "ownerCandidate": "neuropatia_diabetica_periferica",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "577b3a634ee84da4be5d1255577f40f7e038af1bc452ef8bbef990dc10205953",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "577b3a634ee84da4be5d1255577f40f7e038af1bc452ef8bbef990dc10205953",
+        "guide-CMS-PT-ES-DRAFT.json": "b1a4b92ff80f42db97efe633a10a27ecd00ff5c318c4907260b1b7f30a278fe4",
+        "plantao_es.json": "288749a39e9b7872f9db50dd76aaad490a3fd0c4787c0ed8bb8d83f7c14bb3a2",
+        "plantao_pt.json": "ab673f4961531b4fa33a3960a2ce93b4f118d56b491c029bd8f8013ed4b380c2",
+        "study_es.json": "0d482e245edb2d3404ca52a9376ff3f568fd897cbd437d96c98238c91343058e",
+        "study_pt.json": "e7af238fe101b461907b72249b95d0baaac2ab8e6225a254476f79dc265421fb"
+      }
+    },
+    {
+      "rank": 23,
+      "queueRank": 182,
+      "title": {
+        "pt": "Artrite reumatoide",
+        "es": "Artritis reumatoide"
+      },
+      "ownerCandidate": "artrite_reumatoide",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "11ee7b0b117f77a8b0ede13a1a772d9ea11def73171fa05d659c1be56ab19a7b",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "11ee7b0b117f77a8b0ede13a1a772d9ea11def73171fa05d659c1be56ab19a7b",
+        "guide-CMS-PT-ES-DRAFT.json": "2dd0af80a4eaae42029f125e6255397378d45c2082908bc9a2896d944dc1585c",
+        "plantao_es.json": "a3f3a5bb1dccabb90222d1448909601f15ae0a7a16d24e0cff4f817856c3adf7",
+        "plantao_pt.json": "b7bd21086df960a9c9f91d37979f8e0838a3596574029b32d68ede90642bc2bf",
+        "study_es.json": "c722e9ab12251c52dd41ac8907c49380ae5b0778c654718ace2e01358ad30554",
+        "study_pt.json": "e6de9a6751cf322e951baa1608087535e3da29de96edfea6ef1613a7730de3ad"
+      }
+    },
+    {
+      "rank": 24,
+      "queueRank": 183,
+      "title": {
+        "pt": "Artrite psoriásica",
+        "es": "Artritis psoriásica"
+      },
+      "ownerCandidate": "artrite_psoriasica",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "69730db73523fca0a5cddf20644ecc76f552454fbf04c7140bf90d6e0d9bce20",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "69730db73523fca0a5cddf20644ecc76f552454fbf04c7140bf90d6e0d9bce20",
+        "guide-CMS-PT-ES-DRAFT.json": "0dfa9f2d319f852a67ad209a1ad8b5b30da91ccb49fd354d7525fb68797fefcd",
+        "plantao_es.json": "ed27fac446fa6df461b8628fadd7336e9cbd8c988a44d017caf252fd19624ba7",
+        "plantao_pt.json": "b404fefef45da3f2763689415f4d8ebd43f6e7f45ba138758ce21487746d1ef7",
+        "study_es.json": "1742fb36259bafbdfbfcbc4c33df5a685442a127978cd29387aaef500dcc28e7",
+        "study_pt.json": "49ba39bd39f41123c3b44872a5c0dab438551e865d9feedf2cf4a2809710b492"
+      }
+    },
+    {
+      "rank": 25,
+      "queueRank": 184,
+      "title": {
+        "pt": "Espondiloartrite axial",
+        "es": "Espondiloartritis axial"
+      },
+      "ownerCandidate": "espondiloartrite_axial",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "e7697661f53d0215490568d3d01f6ccba9b52e4d171192be4d125d5938d59161",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "e7697661f53d0215490568d3d01f6ccba9b52e4d171192be4d125d5938d59161",
+        "guide-CMS-PT-ES-DRAFT.json": "d4168dac07cb62900069c2a02d9d20d6ee3550306c54094d0e84851b230ff778",
+        "plantao_es.json": "5106d3fa13e219f3d06d7345e675a846410089ef7b4d60e069b11864182fcc83",
+        "plantao_pt.json": "02de0650b8cfcb2fc9542f83780b19f3e43492918c02299200aee2f814df9620",
+        "study_es.json": "362345a2585231fb2227d2b3d60112e13f674e2400d5eaf5dd92da832931e84b",
+        "study_pt.json": "93d59ff76e11da2842626d1666f753b619a6233bfb543306c702ad195671aeed"
+      }
+    },
+    {
+      "rank": 26,
+      "queueRank": 185,
+      "title": {
+        "pt": "Artrite reativa",
+        "es": "Artritis reactiva"
+      },
+      "ownerCandidate": "artrite_reativa",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "b7f50040b3ae05b8320b21cbeb4115b7a4a473b32f50db703af01e0bfd0f2121",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "b7f50040b3ae05b8320b21cbeb4115b7a4a473b32f50db703af01e0bfd0f2121",
+        "guide-CMS-PT-ES-DRAFT.json": "98932f7992cfacb181b0971a34e63bae5163da527fc85be191844cf9f1761874",
+        "plantao_es.json": "72c24ff86586e8136f0e3dadc954a19f1e8e6d8a6b155075f36dfb34750b0ad1",
+        "plantao_pt.json": "22d359a10086b959c560958973e825dff1e38ce882d6ff2fb1b72329af30c14c",
+        "study_es.json": "0590a08b7d8bed1369d2f2336d334ac83429296a5fa145d49badb0ab559806df",
+        "study_pt.json": "095a630708be41e3b6e141aa9f81f07c8bb5f948ebb2450ebd3d831af44ec78f"
+      }
+    },
+    {
+      "rank": 27,
+      "queueRank": 186,
+      "title": {
+        "pt": "Artrite por cristais de pirofosfato de cálcio",
+        "es": "Artritis por cristales de pirofosfato cálcico"
+      },
+      "ownerCandidate": "artrite_por_cristais_de_pirofosfato_de_calcio",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "114f6a544b839ac9ad591a409c171732257e50cba4bb21dca0a0b739d7b83174",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "114f6a544b839ac9ad591a409c171732257e50cba4bb21dca0a0b739d7b83174",
+        "guide-CMS-PT-ES-DRAFT.json": "93ff37177a70fb9fb941dafbde6472fcc4a693a04652d4971a0c23793b49b3d2",
+        "plantao_es.json": "7cf0b94f57ca8d574050af67ad7c15bf497fe18ec206e43a0ca500d02ac2f979",
+        "plantao_pt.json": "ecf7a1e8550129a62328acac26e43761194d0b9fb406627a2ac559c0076862a9",
+        "study_es.json": "6a5ef1d7b1aee28f5cf3e6ed96a70af00100065c0ef3278bb1a10010a04acd91",
+        "study_pt.json": "a39a9232db67269736e29dc1feb74b1c7334f648e8b5a6e0c9452948672f5689"
+      }
+    },
+    {
+      "rank": 28,
+      "queueRank": 187,
+      "title": {
+        "pt": "Lúpus eritematoso sistêmico",
+        "es": "Lupus eritematoso sistémico"
+      },
+      "ownerCandidate": "lupus_eritematoso_sistemico",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "44ba2ed79de406206ebc79d1c1dba8fd4488b1ea890369a4d22a8d9226af9eec",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "44ba2ed79de406206ebc79d1c1dba8fd4488b1ea890369a4d22a8d9226af9eec",
+        "guide-CMS-PT-ES-DRAFT.json": "d76eb3ebf8e827a5c6e5f578dd56e84aa021e5de2ec60e037a18cd671e8f68db",
+        "plantao_es.json": "4006022343f6cd32b0e6b727323c47aff679d00d653ab9f42a681c6fdcfcb33b",
+        "plantao_pt.json": "f3af390379f6f13090f01f5a5db13ea781a90d32ec6740e8ce77520668baa04a",
+        "study_es.json": "1f6e4385e73c85dafe42e99031f4d51b72bae56f6aeac8089e3abaefdf2a2101",
+        "study_pt.json": "d29d874eee4fff5ef365922c0615cf94165c982fb14ab461dbb41a67f65773d1"
+      }
+    },
+    {
+      "rank": 29,
+      "queueRank": 188,
+      "title": {
+        "pt": "Síndrome de Sjögren",
+        "es": "Síndrome de Sjögren"
+      },
+      "ownerCandidate": "sindrome_de_sjogren",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "1517cae93093ab1ac9fae6052c2f80b44f6c175dfac88733e49a2cc51d81e6a1",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "1517cae93093ab1ac9fae6052c2f80b44f6c175dfac88733e49a2cc51d81e6a1",
+        "guide-CMS-PT-ES-DRAFT.json": "68bcff53a5a3139577e84cf116bab66eaed85710569fa77f37df11b9df175e4b",
+        "plantao_es.json": "cfd34c5be220ba84b842be69338dc66258bfb5ef68246dcdfe88f74442880234",
+        "plantao_pt.json": "745553609a9c7bd0d6be40547eaf110ea6fb6067ff506044dd1975b8065caccd",
+        "study_es.json": "b1f53fc5339f381c3c1f598d7d813fc8b5ec9713ec7ba45a3ae86b5ee0a26f0a",
+        "study_pt.json": "2e9e77082590d130b6485004fa84a25360078e8eb0a7feb0c454600d8817a5ef"
+      }
+    },
+    {
+      "rank": 30,
+      "queueRank": 189,
+      "title": {
+        "pt": "Polimialgia reumática",
+        "es": "Polimialgia reumática"
+      },
+      "ownerCandidate": "polimialgia_reumatica",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "7d2a24ff4ab93505591ddc0744792ac5d7f8d66917f7108c3386855f8d604ca3",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "7d2a24ff4ab93505591ddc0744792ac5d7f8d66917f7108c3386855f8d604ca3",
+        "guide-CMS-PT-ES-DRAFT.json": "bc1c17a3277d3961cd41563ec7e1142134901a944c5e1d6cfd3d7e961845d2fb",
+        "plantao_es.json": "d7248809b3e39e9e3c4d5ce2c328a50cf6ef8025d1e91b719db0b8411a6c4c09",
+        "plantao_pt.json": "9a1967469aadbe49dbcddc10e7ef9c314b89d8cef8d9a80c6f9311f85a96a603",
+        "study_es.json": "68bb35d1f38e366e029efc1ee07d198b61eb9829edf7a90c2cbaf853b8f210e5",
+        "study_pt.json": "d1ce9985ffaa5d93629cd180a4a6371ad51d269cdc427d420b73f6a3bd850b34"
+      }
+    },
+    {
+      "rank": 31,
+      "queueRank": 190,
+      "title": {
+        "pt": "Arterite de células gigantes",
+        "es": "Arteritis de células gigantes"
+      },
+      "ownerCandidate": "arterite_de_celulas_gigantes",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "1ecf8591f6e9b248e787be3fd59b79ac5e01bcc74c77615afd332f446ccdc390",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "1ecf8591f6e9b248e787be3fd59b79ac5e01bcc74c77615afd332f446ccdc390",
+        "guide-CMS-PT-ES-DRAFT.json": "de85ffee6cd7cf4c010f8bfaccfdd4132d4e247e4d427697fa54e825eb05fa85",
+        "plantao_es.json": "a95f0be0908081685c683ce93946f0447f539b8a6a66756115abd9718feb885b",
+        "plantao_pt.json": "7b02ef44b9ae5b018f424e10392c98b392eeb78626593f156d3f25db1db5d88d",
+        "study_es.json": "eff1f0131d8a8db0fc739298a56372da4041f16e929e01984e89d7b9715387a7",
+        "study_pt.json": "b534b9926bc09fa11da27f90603b024dcf56c7369088a847e2663506ad835cd5"
+      }
+    },
+    {
+      "rank": 32,
+      "queueRank": 191,
+      "title": {
+        "pt": "Fenômeno de Raynaud",
+        "es": "Fenómeno de Raynaud"
+      },
+      "ownerCandidate": "fenomeno_de_raynaud",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "0595f37a72e559783ac9d5a35587b49fc9283bdb51b48441204fa1fd877a655f",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "0595f37a72e559783ac9d5a35587b49fc9283bdb51b48441204fa1fd877a655f",
+        "guide-CMS-PT-ES-DRAFT.json": "e106e398ea5ea6ae8786b5aca11567f53c74e4be0a93964325371d2796da34ff",
+        "plantao_es.json": "9779beac79cdb8947add5d06ccd1a8293b235f4f93fb73432e187ccb9a98a280",
+        "plantao_pt.json": "3c3f1ec71b9ae87338a3c82a49ad8ef02a976a735b91fd1d92c3c9496a833d99",
+        "study_es.json": "64ab389144168ae835dd323215e276055c88db6d21f99bbec671a7793445ec82",
+        "study_pt.json": "2b306cf8c5db35e22d0029bd7b7a95bca9f7132d8344013f419a5fa6c8526bb8"
+      }
+    },
+    {
+      "rank": 33,
+      "queueRank": 192,
+      "title": {
+        "pt": "Artrite idiopática juvenil",
+        "es": "Artritis idiopática juvenil"
+      },
+      "ownerCandidate": "artrite_idiopatica_juvenil",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "807830f40fed37748be904716c62ffa15c61e476009b8e79e1e51cc432bf3c30",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "807830f40fed37748be904716c62ffa15c61e476009b8e79e1e51cc432bf3c30",
+        "guide-CMS-PT-ES-DRAFT.json": "eba46c93fdf3f277ed7a5ea2d086bc06bed2bbbae8946f7333f6cb5461707148",
+        "plantao_es.json": "921d2f659b7c3a9db4f813b5c7fd418eb22c196fa282e0033c07f06f406568a3",
+        "plantao_pt.json": "a6224b2b5729fb710c683a997e5f0468d2be0a3ecdf13af92a7349ebd6e0dd7a",
+        "study_es.json": "a442655e27584fbfc6c943c4949652b4de6a958e1937606926b40799dffa36bf",
+        "study_pt.json": "7eb9d8a3b4e86a48368264d836307b45a1529df19703b3504aecc42070fac5a5"
+      }
+    },
+    {
+      "rank": 34,
+      "queueRank": 193,
+      "title": {
+        "pt": "Anemia hemolítica autoimune",
+        "es": "Anemia hemolítica autoinmune"
+      },
+      "ownerCandidate": "anemia_hemolitica_autoimune",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "0fc5b07dcf5b02c519d13f87a199e3acfb7d4c38550917fdd28bac6dd244346c",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "0fc5b07dcf5b02c519d13f87a199e3acfb7d4c38550917fdd28bac6dd244346c",
+        "guide-CMS-PT-ES-DRAFT.json": "16bc8b860a688518d0f19e136cdbe350bece1127cfd4f509f7f8448c071ed2b3",
+        "plantao_es.json": "41559097c5537e910b9728c586d3ad79e63ade993713190fbbce75bca6066a0f",
+        "plantao_pt.json": "498d951845da8abda71ecca8642ab20fac63341e847f7dec6febe196bc10647a",
+        "study_es.json": "d5ea0850788b990c3ec3364a561e62c9c7ca42346b11f22c1fe9de16bccfabdb",
+        "study_pt.json": "66e4e5b1c85b1665c4019918236f440af7307760bf86ade3cf1e08c097bc42da"
+      }
+    },
+    {
+      "rank": 35,
+      "queueRank": 194,
+      "title": {
+        "pt": "Deficiência de glicose-6-fosfato desidrogenase (G6PD)",
+        "es": "Deficiencia de glucosa-6-fosfato deshidrogenasa (G6PD)"
+      },
+      "ownerCandidate": "deficiencia_de_glicose_6_fosfato_desidrogenase_g6pd",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "1925299a854f03a00238c62df0a3de31abd71f7cec066ebb8499f7a109b85bc6",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "1925299a854f03a00238c62df0a3de31abd71f7cec066ebb8499f7a109b85bc6",
+        "guide-CMS-PT-ES-DRAFT.json": "15775ca55cc46c45f79de4d67d036ed3d9cac6eca85dbda20bf75cb12eab909e",
+        "plantao_es.json": "aa09e6425f3d966ed49d82e9422ff6d3086368c6a97109c81dd947b1ae8ac333",
+        "plantao_pt.json": "ead97cc8f637f863f25cf3d353dc1558712c49c44cbc63dfa0ee8f89f54c3e54",
+        "study_es.json": "1febe52a414f9b53eaeee9870ed58c5446a917bb8a59822380e485c20421a2c0",
+        "study_pt.json": "78d24660bfd1daef4eecedd9c2235fd873ea8fba0635b4d62bfeff4c412dea43"
+      }
+    },
+    {
+      "rank": 36,
+      "queueRank": 195,
+      "title": {
+        "pt": "Talassemia",
+        "es": "Talasemia"
+      },
+      "ownerCandidate": "talassemia",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "98d7ed3bfa4d75c69cdcf42766604cc9209ead266081d478c7eb6b3b33e0ce30",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "98d7ed3bfa4d75c69cdcf42766604cc9209ead266081d478c7eb6b3b33e0ce30",
+        "guide-CMS-PT-ES-DRAFT.json": "80bd2e4d6442b694fd09433f30157f41838ae36e4911c2fc8e624025fb3bf94a",
+        "plantao_es.json": "39f43572ac10a8c92b01b505c7f002ffcf76f90cdb2ace2b3da2e9c1096b8b85",
+        "plantao_pt.json": "3b46b31b90572273f59d7bdc238fa4996c065467cc591c6415a39a6335db0a1e",
+        "study_es.json": "7d76363630dcb98921a97f2bbd800e273b376af9d493e2032853b2b716bb3186",
+        "study_pt.json": "f09a78518f397123a9f4c861064442a568fbb71ee84181f7993ff643578460b5"
+      }
+    },
+    {
+      "rank": 37,
+      "queueRank": 196,
+      "title": {
+        "pt": "Doença de von Willebrand",
+        "es": "Enfermedad de von Willebrand"
+      },
+      "ownerCandidate": "doenca_de_von_willebrand",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "9ce32e115d306398ca88e8ef48ce671573d5f7f1382a6c89f0febdd0ba4d01ca",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "9ce32e115d306398ca88e8ef48ce671573d5f7f1382a6c89f0febdd0ba4d01ca",
+        "guide-CMS-PT-ES-DRAFT.json": "f75b966dbe86b94c8f78ecf333cb91d42f4e1c2deb7c16a612a300d8995ee0ff",
+        "plantao_es.json": "f86c247bdc2076903c55c5ba02b82390e2a7ee890200c09a460c99baefc99d5b",
+        "plantao_pt.json": "895d56f9ac9632fcdd43e36617851ce41166a0765984149f682c651c747d31e2",
+        "study_es.json": "bd280bc4e03c3212df1326a664ca510a129e21350679a7b09e270a049e69694d",
+        "study_pt.json": "42c64b081693ff0943a9136ce80f67d53ba17aab99ba182b4bd1281d5beea99a"
+      }
+    },
+    {
+      "rank": 38,
+      "queueRank": 197,
+      "title": {
+        "pt": "Anemia da inflamação e doença crônica",
+        "es": "Anemia de la inflamación y enfermedad crónica"
+      },
+      "ownerCandidate": "anemia_da_inflamacao_e_doenca_cronica",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "e3ecd6bcb0904ebcdf466ae9a5fafa0881983637ce484c7145169c782f2d9761",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "e3ecd6bcb0904ebcdf466ae9a5fafa0881983637ce484c7145169c782f2d9761",
+        "guide-CMS-PT-ES-DRAFT.json": "cfb6d824df50ee430150914cef0a35974c22500ba94e60ec36c8e59952b35960",
+        "plantao_es.json": "27cdf63bddc3b77c24464e0267b84d49fd4987573141fa6d4db9723ba09bd30a",
+        "plantao_pt.json": "1a077bace1295315b5e75eee72d12df98c136604ae0b5ec27c8322bb4a09d980",
+        "study_es.json": "8376a6f14b3c362cd8babcf81ef8965caee2e327b3fde2c7eecb5728b690678a",
+        "study_pt.json": "6a9d311c8b9ac7ab5e45c74d7e978a3a53e8364b7353af5faa334885005d036c"
+      }
+    },
+    {
+      "rank": 39,
+      "queueRank": 198,
+      "title": {
+        "pt": "Cefaleia em salvas",
+        "es": "Cefalea en racimos"
+      },
+      "ownerCandidate": "cefaleia_em_salvas",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "7126d77fcf815aac97e059a0387547a6988662f1ffe98694869aed85d26a83f1",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "7126d77fcf815aac97e059a0387547a6988662f1ffe98694869aed85d26a83f1",
+        "guide-CMS-PT-ES-DRAFT.json": "b5da131e519fc990d3360f267b4fe8e14cc445c10768b1851245417dbec44277",
+        "plantao_es.json": "0cf6151e95da3c3bb32b985d3157d170aff39737be9ca48ea2fd6c4e919463e5",
+        "plantao_pt.json": "fbc60eaa88d134297a4ea3674befe759978172e0639eeabcfdaf4e61f9932ca6",
+        "study_es.json": "83c1320511e4bd83b408d76c422e71c4dc0b73a6b6d07e018ff807835075e556",
+        "study_pt.json": "2b944e4d8e090f9391bba54b0ae60f938328b16a6d9c5760ad73c932d85e4b2a"
+      }
+    },
+    {
+      "rank": 40,
+      "queueRank": 199,
+      "title": {
+        "pt": "Neuralgia do trigêmeo",
+        "es": "Neuralgia del trigémino"
+      },
+      "ownerCandidate": "neuralgia_do_trigemeo",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "baf431d64b3bdc8491f5e9152fd112b4afc30a73fe7eaac1851fd93e2eef2729",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "baf431d64b3bdc8491f5e9152fd112b4afc30a73fe7eaac1851fd93e2eef2729",
+        "guide-CMS-PT-ES-DRAFT.json": "65ee48849de5e5a5f60ed486195059634ef0f88d0cd955a7a55f67866c7aaed7",
+        "plantao_es.json": "efaa4238f1fc12d98ce0680c2045d8cf3cbb07baeede2d7f6874f43a941e8ed3",
+        "plantao_pt.json": "a4190374c13aacbd12f0cc644abcf71856f3f16f34c5e72b00f1cd54ef62540e",
+        "study_es.json": "5e3e5142f0119d213f1d3f793cd6ed261e904c38bbbbedb967179f5fbd49a0a7",
+        "study_pt.json": "c43c5db3d467db1b973f89bb5888213ba73e18b2dfb46378f966e7eef049b94a"
+      }
+    },
+    {
+      "rank": 41,
+      "queueRank": 200,
+      "title": {
+        "pt": "Doença de Parkinson",
+        "es": "Enfermedad de Parkinson"
+      },
+      "ownerCandidate": "doenca_de_parkinson",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "c6672e4aa3f3835df12301ba49d4d5c5289f4744023e3734b0589e33f9a5ee4e",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "c6672e4aa3f3835df12301ba49d4d5c5289f4744023e3734b0589e33f9a5ee4e",
+        "guide-CMS-PT-ES-DRAFT.json": "9d1658d6f57859f6d1209ed10eb93a23e8ee52d1e34cc545b55b13f65be10cf2",
+        "plantao_es.json": "c7f4ff7d8ea85c6f876f149d4deb7e6b59efeb07a8342960db4f9ba72a63aeda",
+        "plantao_pt.json": "5516a3dfe308f940c0f9bd470b4dc1c31e954f246ec730d4d7fafec212aaec0b",
+        "study_es.json": "af8e5e2ef4b166847e657e4e2964b1f6c486a1844af3e5dd6222b5368c6678a5",
+        "study_pt.json": "46d66d2b3246497986c0621b05b3564be9130629ce70c19c36e691139b697873"
+      }
+    },
+    {
+      "rank": 42,
+      "queueRank": 201,
+      "title": {
+        "pt": "Demência e transtorno neurocognitivo maior",
+        "es": "Demencia y trastorno neurocognitivo mayor"
+      },
+      "ownerCandidate": "demencia_e_transtorno_neurocognitivo_maior",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "0875e046faa8d3e65ddcf14dab32cbc690c9214782dbd85e3bece1c78c767430",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "0875e046faa8d3e65ddcf14dab32cbc690c9214782dbd85e3bece1c78c767430",
+        "guide-CMS-PT-ES-DRAFT.json": "7020c8455ec10b0f0c4c9e2fa394726deb256f8319c6346f67561996185dcf5c",
+        "plantao_es.json": "fcd2ba32a0b47c58e39f1b98de92bc479da3cead01f6af9f1859205ece25f75a",
+        "plantao_pt.json": "00d05ba6f3e3bd3f77bd58bec871635c3eeeab8bfa0c3591557541e547c41453",
+        "study_es.json": "4626512cfa0c4a2fa92bc3cd2109d8792544f34b0907d4bf2ea2eebf54873702",
+        "study_pt.json": "3a801e17621fd51fc66fec634c4099e32e3ebdbac0884b2249f8ef36a893a1e1"
+      }
+    },
+    {
+      "rank": 43,
+      "queueRank": 202,
+      "title": {
+        "pt": "Tremor essencial",
+        "es": "Temblor esencial"
+      },
+      "ownerCandidate": "tremor_essencial",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "8af987f5bd06e00a308988deb5fe50cfaa2e6e4d332faf869c34b9d515ea936d",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "8af987f5bd06e00a308988deb5fe50cfaa2e6e4d332faf869c34b9d515ea936d",
+        "guide-CMS-PT-ES-DRAFT.json": "c0397d9e328aeb35969380d3b07c34b24105a2688a81915c4c74dd11c491a682",
+        "plantao_es.json": "03bf4b45b185a9e3aa0925a1bd765da768e99ef29e115d0b145812dec160a082",
+        "plantao_pt.json": "6c6c10406e27d627554304713abaf724b2510505eb0e640edf1957c25b3d7fb1",
+        "study_es.json": "d9bba79a8721e37e9867726f70341e4ca2bde69ff6b9712482e3bf52b4759013",
+        "study_pt.json": "d8710d302d5d08d09501f712532c9d64d9da1e14076a39f2ed8deab6979148e9"
+      }
+    },
+    {
+      "rank": 44,
+      "queueRank": 203,
+      "title": {
+        "pt": "Paralisia de nervo fibular",
+        "es": "Parálisis del nervio fibular"
+      },
+      "ownerCandidate": "paralisia_de_nervo_fibular",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "3ccaee2dc6979c280b740244670604c00fde4a0b6da4c48b1a5cfc6b39ac2875",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "3ccaee2dc6979c280b740244670604c00fde4a0b6da4c48b1a5cfc6b39ac2875",
+        "guide-CMS-PT-ES-DRAFT.json": "349f6e763c564d91f3fe4daee4a50b9bc02fd2c15c548499ab65a5a3f398758d",
+        "plantao_es.json": "ee557265b04a2ee1fab889096676f525dde8671d2b869fefb87a3f483f3fb842",
+        "plantao_pt.json": "74b543580ea2b2c01d802c2dc5a5dd314415e091bb684f7d42ffb8a607a71e51",
+        "study_es.json": "a25a778eecb3b4182857bafdc920b1d6ab8992a9ffda4a51783272f9fa1c0925",
+        "study_pt.json": "10d11cf9d8079d23b0951948445ce251739cbc458030715d1b78677e8e631a0c"
+      }
+    },
+    {
+      "rank": 45,
+      "queueRank": 204,
+      "title": {
+        "pt": "Paralisia de nervo radial",
+        "es": "Parálisis del nervio radial"
+      },
+      "ownerCandidate": "paralisia_de_nervo_radial",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "241eab1a1f33483e9f350c59c384c1ac934cde8b06722007db5d55d883a2821e",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "241eab1a1f33483e9f350c59c384c1ac934cde8b06722007db5d55d883a2821e",
+        "guide-CMS-PT-ES-DRAFT.json": "0a809ed11e9da8effbffaeac16661123f9bce86a4048c4c7dd6f75c4777e42cf",
+        "plantao_es.json": "3e0ad7cd0e49d925468bb1af91893814785a011964301a46296e541eaed163cf",
+        "plantao_pt.json": "209b920fb1b3cbdb9c38bab6bf72d7ff55d83140f315128b8f26fda70753e9c8",
+        "study_es.json": "6a806c0ba07cf7bc0cd022cf6c75bbbf32dccd875e8f7d927a2fbddd9ff6ecd7",
+        "study_pt.json": "f906e140e1d6e86d1c865646e51da45a685742066faab7dc689c88e893059515"
+      }
+    },
+    {
+      "rank": 46,
+      "queueRank": 205,
+      "title": {
+        "pt": "Transtorno neurológico funcional",
+        "es": "Trastorno neurológico funcional"
+      },
+      "ownerCandidate": "transtorno_neurologico_funcional",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "7a785224db57ff398b888a77eb5ae3e89287f7dab4048a72798718c7763200e5",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "7a785224db57ff398b888a77eb5ae3e89287f7dab4048a72798718c7763200e5",
+        "guide-CMS-PT-ES-DRAFT.json": "34d50d67b859c96887a4ad9c253710852c51efb8de2d6e2b587c3318233bf3e2",
+        "plantao_es.json": "1cb2b6e5fc0d75257f5388046466c8714262ce95f19873d42777882e947ce2c8",
+        "plantao_pt.json": "5f44b48c97e360b9e75410e3dea61b3c1a411df0cde0c8c869a3b3e4bb2708b4",
+        "study_es.json": "f20e98e5b01087efd0ffe162db9600f7012e15f40a2b16ef7cacee44ed0e2b24",
+        "study_pt.json": "3ce7fa23550c0720ef6cc967be6128c78f65bdcd335929793dd50beca6cf7302"
+      }
+    },
+    {
+      "rank": 47,
+      "queueRank": 206,
+      "title": {
+        "pt": "Intoxicação por carbamazepina",
+        "es": "Intoxicación por carbamazepina"
+      },
+      "ownerCandidate": "intoxicacao_por_carbamazepina",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "e8c51ad97d3afff53ccee7ba61ee37ee87a52289a30fbe5077943b99ad9ec731",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "e8c51ad97d3afff53ccee7ba61ee37ee87a52289a30fbe5077943b99ad9ec731",
+        "guide-CMS-PT-ES-DRAFT.json": "a6245e4e16512031da8c47d23fb0c2a13766cab10ebb5f32446d5c1ddf2ddeef",
+        "plantao_es.json": "9089c86bfe1ce5a920f81fca7341d033107f2913ae6de338e071654a434c4693",
+        "plantao_pt.json": "93e6b227bdbb26f5220e0f76f19d6d8cfac45654257d70e49920e34c1c5cdedc",
+        "study_es.json": "5ec4cdedecf53cb8a788db6b57b7a7016bc3815c60da7b12be06a29de897496e",
+        "study_pt.json": "e65f6fdc0f8c331dfb2c358f84bfa864441d2871cecd006a4f5f51db93e4a371"
+      }
+    },
+    {
+      "rank": 48,
+      "queueRank": 207,
+      "title": {
+        "pt": "Intoxicação por fenitoína",
+        "es": "Intoxicación por fenitoína"
+      },
+      "ownerCandidate": "intoxicacao_por_fenitoina",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "ab413e5d480a63e3631a725c3e288c13c983e09f46cf2fd44a53fe530d73c601",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "ab413e5d480a63e3631a725c3e288c13c983e09f46cf2fd44a53fe530d73c601",
+        "guide-CMS-PT-ES-DRAFT.json": "1afd35137358610ad33972259773760f025f8bcab0b2d986bae8eac26a183538",
+        "plantao_es.json": "da9ff1c6d8c9ba7757d8b4155891e1995895beadf02ed86eaeb0407fe6a03448",
+        "plantao_pt.json": "51596d1ef2e16ff8f299c08a6ddfb6971a61aa32f353f2924633ede88c18a752",
+        "study_es.json": "3edc58288bfae7ff694842c948464bf4f3407135ae3b217ddbcff1afc2d5b5a2",
+        "study_pt.json": "f48c9f9a9f197e06db96ac8794001355f86049cc1159bc8c10daa30ee98e6525"
+      }
+    },
+    {
+      "rank": 49,
+      "queueRank": 208,
+      "title": {
+        "pt": "Intoxicação por anti-inflamatórios não esteroides",
+        "es": "Intoxicación por antiinflamatorios no esteroideos"
+      },
+      "ownerCandidate": "intoxicacao_por_anti_inflamatorios_nao_esteroides",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "0eaf513fc9c1af5a94c516f7188dd73e6666a95b5cc75c364c82fa6f0fb1e0dd",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "0eaf513fc9c1af5a94c516f7188dd73e6666a95b5cc75c364c82fa6f0fb1e0dd",
+        "guide-CMS-PT-ES-DRAFT.json": "9544670aede8773535c769cefe8690603353ef44ec5c5cf78b88bcfb72507e47",
+        "plantao_es.json": "2f8bf37cd61367587ff4c4ebd03bef5369313401aba70ea7e72a3c6c1361bd0e",
+        "plantao_pt.json": "389339daf19ca2c2c5b44124eb7b450ce0e650a0997cf2708e20d2b0e743c41c",
+        "study_es.json": "3ec988ca674f59bea2f0b9dd1bc47d042d16e2c147f66c911f9d570619fc304d",
+        "study_pt.json": "430b98fb9d2e18cdef63e9c4ed7afdc94f41aada8e77596537c1edf09b269afd"
+      }
+    },
+    {
+      "rank": 50,
+      "queueRank": 209,
+      "title": {
+        "pt": "Intoxicação por anti-histamínicos",
+        "es": "Intoxicación por antihistamínicos"
+      },
+      "ownerCandidate": "intoxicacao_por_anti_histaminicos",
+      "ownerBinding": "PENDING_TECHNICAL_BINDING_AFTER_APPROVAL",
+      "canonicalSha256": "7aff2f09d24f7137dd1dfa4ff70a5ad5113773103698e12cdb00162fbbd152e2",
+      "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+      "files": {
+        "canonical-payload.json": "7aff2f09d24f7137dd1dfa4ff70a5ad5113773103698e12cdb00162fbbd152e2",
+        "guide-CMS-PT-ES-DRAFT.json": "d40032307b31f24384b1ff7847ddd959e6d3e52989c16a7ed05b9de5c1e4454d",
+        "plantao_es.json": "7f75744a2f714d20a192af695dcf1d91a635a45035e69f4b3afe21f7cf0e09b6",
+        "plantao_pt.json": "ca306b44e02ee8802a7499b7e8a25f19003ae725ffbd18c3c94443d2d07a66b5",
+        "study_es.json": "f949be5f4a811d32a969a241142f00825279cfbff49c0980ed7c47803b44731a",
+        "study_pt.json": "a0556e32116412390cce14c8acd13377123f61e22833c4330ae654be522693e9"
+      }
+    }
+  ]
+}

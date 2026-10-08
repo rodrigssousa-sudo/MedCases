@@ -1,0 +1,158 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Hematoma e abscesso do septo nasal",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "abd962ca61a4a8c6d5df58a37377f8e6a0209ad407fda3be584334157c2941fd",
+  "ownerCandidate": "hematoma_e_abscesso_do_septo_nasal",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_004_f01",
+    "b04_004_f02",
+    "b04_004_f03",
+    "b04_004_f04",
+    "b04_004_f05",
+    "b04_004_f06",
+    "b04_004_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Coleção entre cartilagem septal e pericôndrio, geralmente após trauma; compromete nutrição da cartilagem e pode infectar."
+      ],
+      "factIds": [
+        "b04_004_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A cartilagem depende do pericôndrio; atraso na drenagem pode produzir dano permanente, independentemente da fratura óssea."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Inspecionar ambas fossas nasais; abaulamento flutuante e obstrução sugerem hematoma. Febre/dor progressiva favorecem abscesso; excluir lesão craniofacial associada."
+      ],
+      "factIds": [
+        "b04_004_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Suspeita exige avaliação otorrinolaringológica imediata; transferir se não há serviço capaz de drenagem. Não aguardar resolução do edema externo."
+      ],
+      "factIds": [
+        "b04_004_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Drenagem urgente é primeira escolha. No abscesso, iniciar cobertura antimicrobiana hospitalar e colher cultura; amoxicilina/clavulanato é uma opção oral em adulto estável após drenagem e com espectro adequado. Descalonar para amoxicilina somente se o agente for suscetível. Sepse ou extensão exige esquema intravenoso definido pela equipe e microbiologia, sem atrasar drenagem."
+      ],
+      "factIds": [
+        "b04_004_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Exemplo para adulto estável após drenagem, função renal compatível e sem alergia: amoxicilina/clavulanato 500/125 mg por via oral a cada 8 horas. Há relato primário com curso de 14 dias após drenagem; não é duração universal. Se cultura demonstrar estreptococo suscetível e a equipe escolher descalonamento: amoxicilina 500 mg por via oral a cada 8 horas, com duração definida pela resposta e extensão. O manual ENT UK não fixa um antibiótico/dose universal: esses exemplos não substituem o protocolo hospitalar."
+      ],
+      "factIds": [
+        "b04_004_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Evitar punção/manipulação sem estrutura especializada. Vigiar necrose, deformidade, febre e sinais orbitários/neurológicos. Criança requer avaliação do risco para crescimento nasal."
+      ],
+      "factIds": [
+        "b04_004_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Alta apenas após resolução da coleção e plano otorrinolaringológico; reavaliar obstrução ou febre recorrente."
+      ],
+      "factIds": [
+        "b04_004_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_163",
+      "title": "RCH — Hematoma e abscesso do septo nasal",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Nasal_fracture/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated October 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_163",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "septal_entuk",
+      "title": "ENT UK — Nasal septal abscess: drainage and empirical antibiotics",
+      "url": "https://www.entuk.org/_userfiles/pages/files/guidelines/global%20ent%20guidelines/septal_abscess.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:septal_entuk",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "septal_case",
+      "title": "BMJ Case Reports — Nasal septal abscess following septoplasty in adult with diabetes, 2022",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9226863/",
+      "authorityStatus": "PRIMARY_CASE_REPORT_NOT_UNIVERSAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published by BMJ.",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:septal_case",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "coamox_label",
+      "title": "emc — Co-amoxiclav 500/125 mg: adult oral dosing and renal adjustment",
+      "url": "https://www.medicines.org.uk/emc/product/101680/smpc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated on emc: 02 Dec 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:coamox_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "amox_nhs",
+      "title": "NHS — Amoxicillin: adult oral regimen",
+      "url": "https://www.nhs.uk/medicines/amoxicillin/how-and-when-to-take-amoxicillin/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 2 June 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:amox_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

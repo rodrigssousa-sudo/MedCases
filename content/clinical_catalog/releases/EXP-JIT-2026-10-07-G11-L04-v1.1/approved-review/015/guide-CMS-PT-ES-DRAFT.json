@@ -1,0 +1,208 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação do lote; Guia deverá permanecer DRAFT no Admin após futura publicação dos modos.",
+  "canonical_payload_sha256": "3f15b89edcc4102235836d909dd4420a5e09266cfff85fb64794f1cb98be0f5f",
+  "owner_candidate": "varicocele",
+  "pt": {
+    "title": "Varicocele",
+    "subtitle": "Primeira escolha e alternativas por cenário",
+    "summary": "Dilatação venosa do plexo pampiniforme pode causar desconforto e associação com infertilidade.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Dilatação venosa do plexo pampiniforme pode causar desconforto e associação com infertilidade."
+        ],
+        "factIds": [
+          "b04_015_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "O benefício depende da indicação clínica, não apenas do achado ultrassonográfico."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Exame em pé e avaliação testicular; ultrassom conforme dúvida e investigação de apresentação atípica."
+        ],
+        "factIds": [
+          "b04_015_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Dor súbita não deve ser atribuída automaticamente à varicocele; excluir torção."
+        ],
+        "factIds": [
+          "b04_015_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Opções especificadas neste tema: paracetamol; ibuprofeno. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Assintomático: observação. Sintomático: suporte escrotal e avaliação urológica; cirurgia ou embolização em indicações selecionadas, inclusive fertilidade."
+        ],
+        "factIds": [
+          "b04_015_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Dor, somente em adulto com pelo menos 50 kg e sem risco hepático: paracetamol 500–1.000 mg por via oral a cada 6 horas se necessário, máximo 4.000 mg em 24 horas somando todas as apresentações. Uso breve; reavaliar se precisar por mais de 3 dias. Peso menor, hepatopatia, alcoolismo ou fragilidade exigem limite menor individualizado. Não trata a causa.",
+          "Alternativa para dor inflamatória em adulto elegível: ibuprofeno 200–400 mg por via oral a cada 8 horas se necessário, com alimento, máximo 1.200 mg por dia neste esquema de curta duração. Não associar a outro anti-inflamatório. Evitar em lesão renal, sangramento/úlcera, insuficiência cardíaca descompensada ou gestação; reavaliar necessidade e risco digestivo."
+        ],
+        "factIds": [
+          "b04_015_f07",
+          "b04_015_f08"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Não prometer fertilidade após procedimento; comparar recorrência, complicações e objetivos."
+        ],
+        "factIds": [
+          "b04_015_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Seguimento de dor, volume testicular e fertilidade quando pertinente."
+        ],
+        "factIds": [
+          "b04_015_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Varicocele",
+    "subtitle": "Primera elección y alternativas por escenario",
+    "summary": "Dilatación venosa del plexo pampiniforme con posible dolor y asociación con infertilidad.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Dilatación venosa del plexo pampiniforme con posible dolor y asociación con infertilidad."
+        ],
+        "factIds": [
+          "b04_015_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "El beneficio depende de indicación clínica, no solo del hallazgo ecográfico."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Examen de pie y evaluación testicular; ecografía según duda e investigar presentación atípica."
+        ],
+        "factIds": [
+          "b04_015_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "No atribuir dolor súbito automáticamente a varicocele; excluir torsión."
+        ],
+        "factIds": [
+          "b04_015_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Opciones especificadas en este tema: paracetamol; ibuprofeno. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Asintomático: observación. Sintomático: soporte escrotal y urología; cirugía o embolización en indicaciones seleccionadas, incluida fertilidad."
+        ],
+        "factIds": [
+          "b04_015_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "Dolor, solo en adulto de al menos 50 kg y sin riesgo hepático: paracetamol 500–1.000 mg por vía oral cada 6 horas si es necesario, máximo 4.000 mg en 24 horas sumando todas las presentaciones. Uso breve; reevaluar si se necesita por más de 3 días. Menor peso, hepatopatía, alcoholismo o fragilidad requieren un límite menor individualizado. No trata la causa.",
+          "Alternativa para dolor inflamatorio en adulto elegible: ibuprofeno 200–400 mg por vía oral cada 8 horas si es necesario, con comida, máximo 1.200 mg al día en este esquema breve. No combinar con otro antiinflamatorio. Evitar en lesión renal, sangrado/úlcera, insuficiencia cardíaca descompensada o embarazo; reevaluar necesidad y riesgo digestivo."
+        ],
+        "factIds": [
+          "b04_015_f07",
+          "b04_015_f08"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "No prometer fertilidad tras procedimiento; comparar recurrencia, complicaciones y objetivos."
+        ],
+        "factIds": [
+          "b04_015_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Seguimiento del dolor, volumen testicular y fertilidad cuando pertinente."
+        ],
+        "factIds": [
+          "b04_015_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_174",
+      "title": "NIH/NLM — Varicocele",
+      "url": "https://www.medlineplus.gov/ency/article/001284.htm",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Review Date 7/1/2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_174",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "paracetamol_nhs",
+      "title": "NHS — Paracetamol for adults: dosing and precautions",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:paracetamol_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "ibuprofen_nhs",
+      "title": "NHS — Ibuprofen for adults: dose, maximum and precautions",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:ibuprofen_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

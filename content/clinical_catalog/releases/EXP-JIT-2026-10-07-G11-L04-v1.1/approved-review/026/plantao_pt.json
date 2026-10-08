@@ -1,0 +1,144 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Artrite reativa",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "b7f50040b3ae05b8320b21cbeb4115b7a4a473b32f50db703af01e0bfd0f2121",
+  "ownerCandidate": "artrite_reativa",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_026_f01",
+    "b04_026_f02",
+    "b04_026_f03",
+    "b04_026_f04",
+    "b04_026_f05",
+    "b04_026_f06",
+    "b04_026_f07",
+    "b04_026_f08",
+    "b04_026_f09"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Febre e monoartrite intensa exigem excluir artrite séptica; uveíte requer oftalmologia urgente."
+      ],
+      "factIds": [
+        "b04_026_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "História infecciosa, exame e investigação dirigida; líquido sinovial se necessário para excluir sepse/cristais."
+      ],
+      "factIds": [
+        "b04_026_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: naproxeno; sulfassalazina; doxiciclina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Anti-inflamatório elegível é opção inicial; corticoide local/sistêmico selecionado após excluir infecção. Persistência: DMARD/biológico com reumatologia; antibiótico para infecção ainda ativa."
+      ],
+      "factIds": [
+        "b04_026_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Controle sintomático em adulto: naproxeno 250–500 mg por via oral a cada 12 horas, com alimento; máximo 1.000 mg por dia neste esquema. Usar menor dose eficaz pelo menor tempo e reavaliar, sem substituir tratamento modificador da doença. Evitar com outro anti-inflamatório, doença renal significativa, úlcera/sangramento ou gestação; considerar proteção gástrica conforme risco.",
+        "Sulfassalazina em adulto: 500 mg por via oral a cada 12 horas durante 1 semana; se tolerado, aumentar para 1.000 mg a cada 12 horas. Intolerância digestiva permite início mais lento, 500 mg uma vez ao dia, com aumentos semanais. Manutenção usual 2.000 mg por dia; não superar 40 mg por kg por dia no protocolo regional. Hemograma, fígado e função renal antes e durante; evitar alergia a sulfonamidas/salicilatos. Duração prolongada segundo atividade.",
+        "Somente infecção ativa por Chlamydia trachomatis em adulto não gestante: doxiciclina 100 mg por via oral a cada 12 horas durante 7 dias, com abordagem dos parceiros conforme diretriz. Não trata automaticamente a artrite persistente e não indica antibiótico prolongado após infecção intestinal resolvida. Avaliar causa infecciosa e contraindicações antes de usar."
+      ],
+      "factIds": [
+        "b04_026_f07",
+        "b04_026_f08",
+        "b04_026_f09"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Antibiótico não é cura universal da artrite pós-entérica; avaliar IST e parceiros quando aplicável."
+      ],
+      "factIds": [
+        "b04_026_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reabilitação e seguimento; reavaliar cronicidade e outros diagnósticos se não resolve."
+      ],
+      "factIds": [
+        "b04_026_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Artrite após infecção gastrointestinal/geniturinária, geralmente sem bactéria cultivável na articulação."
+      ],
+      "factIds": [
+        "b04_026_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_185",
+      "title": "NHS — Artrite reativa",
+      "url": "https://www.nhs.uk/conditions/reactive-arthritis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 16 December 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_185",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "naproxen_label",
+      "title": "DailyMed — Naproxen tablets: adult rheumatic dosing",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=96601d76-50ea-4dc0-b588-d174f8d8bb51",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:naproxen_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "sulfasalazine_dg",
+      "title": "NHS Dumfries and Galloway — Sulfasalazine: adult rheumatology titration",
+      "url": "https://www.rightdecisions.scot.nhs.uk/dg-refhelp/rheumatology/sulfasalazine/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "review date:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:sulfasalazine_dg",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "chlamydia_cdc",
+      "title": "CDC — Chlamydial infections: first-line doxycycline regimen",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC final STI treatment recommendation read in indexed primary text: doxycycline100 mg twice daily7 days for active chlamydia. No extension to persistent reactive arthritis or resolved enteric infection.",
+      "sourceEvidenceRecord": "web-verification-record.json:chlamydia_cdc",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

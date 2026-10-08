@@ -1,0 +1,175 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Leucoplasia oral",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "3acec3f9dab1134c9573ce84cbb1e5c716f9f7a7cf9e5aae3460fe915f9639b5",
+  "ownerCandidate": "leucoplasia_oral",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_008_f01",
+    "b04_008_f02",
+    "b04_008_f03",
+    "b04_008_f04",
+    "b04_008_f05",
+    "b04_008_f06",
+    "b04_008_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Placa blanca oral persistente con potencial de displasia; no es sinónimo de candidiasis."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "La elección es vigilancia o intervención según riesgo, no dos medicamentos obligatorios."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar placa no removible, irritantes y biopsia cuando indicada; diferenciar leucoplasia vellosa."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Ulceración, masa, sangrado, disfagia o crecimiento requieren evaluación prioritaria."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dejar tabaco/alcohol y seguimiento; alternativa en lesión de riesgo: escisión con bisturí o láser según histología/equipo."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "No hay medicamento estándar demostrado que elimine leucoplasia y prevenga cáncer. Primera conducta: eliminar tabaco/alcohol, biopsia según riesgo y vigilancia; alternativa en lesión seleccionada: exéresis quirúrgica/láser. No prescribir antifúngico, vitamina ni retinoide empíricamente como cura de la placa."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No indicar antifúngico como cura de placa sin diagnóstico; la remoción no elimina todo riesgo futuro."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Exámenes seriados y nueva biopsia si cambia; atención odontológica especializada."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_167",
+      "title": "NHS — Leucoplasia oral",
+      "url": "https://www.nhs.uk/conditions/leukoplakia/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 15 May 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_167",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Placa blanca oral persistente con potencial de displasia; no es sinónimo de candidiasis."
+      ],
+      "factIds": [
+        "b04_008_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "La elección es vigilancia o intervención según riesgo, no dos medicamentos obligatorios."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar placa no removible, irritantes y biopsia cuando indicada; diferenciar leucoplasia vellosa."
+      ],
+      "factIds": [
+        "b04_008_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Ulceración, masa, sangrado, disfagia o crecimiento requieren evaluación prioritaria."
+      ],
+      "factIds": [
+        "b04_008_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Dejar tabaco/alcohol y seguimiento; alternativa en lesión de riesgo: escisión con bisturí o láser según histología/equipo."
+      ],
+      "factIds": [
+        "b04_008_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "No hay medicamento estándar demostrado que elimine leucoplasia y prevenga cáncer. Primera conducta: eliminar tabaco/alcohol, biopsia según riesgo y vigilancia; alternativa en lesión seleccionada: exéresis quirúrgica/láser. No prescribir antifúngico, vitamina ni retinoide empíricamente como cura de la placa."
+      ],
+      "factIds": [
+        "b04_008_f07"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No indicar antifúngico como cura de placa sin diagnóstico; la remoción no elimina todo riesgo futuro."
+      ],
+      "factIds": [
+        "b04_008_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Exámenes seriados y nueva biopsia si cambia; atención odontológica especializada."
+      ],
+      "factIds": [
+        "b04_008_f06"
+      ]
+    }
+  ],
+  "markdown": "# Leucoplasia oral\n\n## Concepto y mecanismo\n\nPlaca blanca oral persistente con potencial de displasia; no es sinónimo de candidiasis.\n\n## Razonamiento y elección terapéutica\n\nLa elección es vigilancia o intervención según riesgo, no dos medicamentos obligatorios.\n\n## Diagnóstico y diferenciales\n\nEvaluar placa no removible, irritantes y biopsia cuando indicada; diferenciar leucoplasia vellosa.\n\n## Abordaje inicial y urgencias\n\nUlceración, masa, sangrado, disfagia o crecimiento requieren evaluación prioritaria.\n\n## Tratamiento: primera elección y alternativas\n\nDejar tabaco/alcohol y seguimiento; alternativa en lesión de riesgo: escisión con bisturí o láser según histología/equipo.\n\n## Fármacos, dosis e intervalos\n\nNo hay medicamento estándar demostrado que elimine leucoplasia y prevenga cáncer. Primera conducta: eliminar tabaco/alcohol, biopsia según riesgo y vigilancia; alternativa en lesión seleccionada: exéresis quirúrgica/láser. No prescribir antifúngico, vitamina ni retinoide empíricamente como cura de la placa.\n\n## Seguridad y monitorización\n\nNo indicar antifúngico como cura de placa sin diagnóstico; la remoción no elimina todo riesgo futuro.\n\n## Reevaluación, internación y alta\n\nExámenes seriados y nueva biopsia si cambia; atención odontológica especializada.\n\n## Referencias\n\n1. [NHS — Leucoplasia oral](https://www.nhs.uk/conditions/leukoplakia/)",
+  "approvedReviewCanonicalFileSha256": "621e5914ca950dcc5acdfdaf5418f13d875a702658590e52fbea369163757e24",
+  "approvedReviewProjectionFileSha256": "7c2fe8848652f955f6a113277aaac5140e0f01506edb9ae328f2f0f22c73fb49"
+}

@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "reviewer": null,
+  "ownerCandidate": "transtorno_neurologico_funcional",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Transtorno neurológico funcional",
+    "es": "Trastorno neurológico funcional"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L03",
+  "identityDecision": "NEW_DISTINCT_SCOPE_CANDIDATE; NO_OWNER_REGISTERED",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "treatmentApplicability": "NO_ROUTINE_DISEASE_SPECIFIC_DRUG",
+  "regimens": [
+    {
+      "drug": null,
+      "role": "PROCEDURE_OR_REHABILITATION",
+      "pt": "Não há medicamento específico comprovado para o transtorno neurológico funcional. Primeira escolha: explicar diagnóstico positivo e reabilitação adaptada; psicoterapia é alternativa/complemento segundo necessidade. Fármacos só para comorbidade diagnosticada, com seu próprio esquema; não usar anticonvulsivantes para crises funcionais sem epilepsia coexistente nem prescrever dois medicamentos apenas para preencher opções.",
+      "es": "No hay medicamento específico demostrado para trastorno neurológico funcional. Primera elección: explicar diagnóstico positivo y rehabilitación adaptada; psicoterapia como alternativa/complemento según necesidad. Fármacos solo para comorbilidad diagnosticada, con esquema propio; no usar anticonvulsivos para crisis funcionales sin epilepsia coexistente ni prescribir dos fármacos para completar opciones.",
+      "sources": [
+        "fnd_nhs",
+        "fnd_washu",
+        "neuro"
+      ]
+    }
+  ],
+  "treatmentRevision": "ALL_50_REVIEWED_V1.1",
+  "facts": [
+    {
+      "id": "b04_046_f01",
+      "section": "concept",
+      "pt": "Sintomas neurológicos reais relacionados ao funcionamento de redes, não equivalentes a simulação.",
+      "es": "Síntomas neurológicos reales relacionados a funcionamiento de redes, no equivalentes a simulación.",
+      "sources": [
+        "fnd_nhs",
+        "fnd_washu",
+        "neuro"
+      ]
+    },
+    {
+      "id": "b04_046_f02",
+      "section": "diagnosis",
+      "pt": "Diagnóstico por sinais positivos compatíveis e avaliação especializada; coexistência com doença orgânica é possível.",
+      "es": "Diagnóstico por signos positivos compatibles y evaluación especializada; puede coexistir enfermedad orgánica.",
+      "sources": [
+        "fnd_nhs",
+        "fnd_washu",
+        "neuro"
+      ]
+    },
+    {
+      "id": "b04_046_f03",
+      "section": "initial",
+      "pt": "Déficit agudo novo exige excluir urgência; não rotular pela história psiquiátrica.",
+      "es": "Déficit agudo nuevo: excluir urgencia; no etiquetar por antecedentes psiquiátricos.",
+      "sources": [
+        "fnd_nhs",
+        "fnd_washu",
+        "neuro"
+      ]
+    },
+    {
+      "id": "b04_046_f04",
+      "section": "options",
+      "pt": "Explicação compartilhada e reabilitação funcional específica; psicoterapia pode complementar, e tratar comorbidades quando presentes. Não há fármaco universal que cure o transtorno.",
+      "es": "Explicación compartida y rehabilitación funcional específica; psicoterapia puede complementar y tratar comorbilidades. No hay fármaco universal curativo.",
+      "sources": [
+        "fnd_nhs",
+        "fnd_washu",
+        "neuro"
+      ]
+    },
+    {
+      "id": "b04_046_f05",
+      "section": "safety",
+      "pt": "Manter vigilância para mudança clínica, evitando procedimentos repetidos sem indicação. Tratamentos físicos e psicológicos são individualizados; não há indicação de duas drogas específicas como regra.",
+      "es": "Mantener vigilancia ante cambios clínicos, evitando procedimientos repetidos sin indicación. Tratamientos físicos y psicológicos individualizados; no se indican dos fármacos específicos como regla.",
+      "sources": [
+        "fnd_nhs",
+        "fnd_washu",
+        "neuro"
+      ]
+    },
+    {
+      "id": "b04_046_f06",
+      "section": "followup",
+      "pt": "Plano multidisciplinar e metas funcionais graduais; retorno se sinais novos.",
+      "es": "Plan multidisciplinario y objetivos funcionales graduales; consultar ante signos nuevos.",
+      "sources": [
+        "fnd_nhs",
+        "fnd_washu",
+        "neuro"
+      ]
+    },
+    {
+      "id": "b04_046_f07",
+      "section": "doses",
+      "pt": "Não há medicamento específico comprovado para o transtorno neurológico funcional. Primeira escolha: explicar diagnóstico positivo e reabilitação adaptada; psicoterapia é alternativa/complemento segundo necessidade. Fármacos só para comorbidade diagnosticada, com seu próprio esquema; não usar anticonvulsivantes para crises funcionais sem epilepsia coexistente nem prescrever dois medicamentos apenas para preencher opções.",
+      "es": "No hay medicamento específico demostrado para trastorno neurológico funcional. Primera elección: explicar diagnóstico positivo y rehabilitación adaptada; psicoterapia como alternativa/complemento según necesidad. Fármacos solo para comorbilidad diagnosticada, con esquema propio; no usar anticonvulsivos para crisis funcionales sin epilepsia coexistente ni prescribir dos fármacos para completar opciones.",
+      "sources": [
+        "fnd_nhs",
+        "fnd_washu",
+        "neuro"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "O diagnóstico é positivo e compartilhado, apoiado em características clínicas típicas; não resulta apenas de exames normais ou antecedentes psiquiátricos. O protocolo NHS específico diferencia explicação diagnóstica, reabilitação e tratamento de comorbidades. A fisioterapia é adaptada ao sintoma e a psicoterapia pode complementar. Doença orgânica pode coexistir, por isso sinais novos merecem avaliação aberta, sem atribuição automática ao diagnóstico anterior.",
+      "es": "Diagnóstico positivo y compartido, apoyado en características clínicas típicas; no surge solo de pruebas normales o antecedentes psiquiátricos. Protocolo NHS específico diferencia explicación diagnóstica, rehabilitación y tratamiento de comorbilidades. Fisioterapia adaptada al síntoma y psicoterapia pueden complementar. Puede coexistir enfermedad orgánica: signos nuevos merecen evaluación abierta, sin atribución automática al diagnóstico anterior.",
+      "sources": [
+        "fnd_nhs",
+        "fnd_washu",
+        "neuro"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "fnd_nhs",
+      "title": "NHS Scotland — Functional Neurological Disorder pathway",
+      "url": "https://www.rightdecisions.scot.nhs.uk/neurology-pathways/functional-neurological-disorder-fnd/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "review date:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:fnd_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "fnd_washu",
+      "title": "Washington University Medicine — functional neurologic disorder rehabilitation",
+      "url": "https://pt.wustl.edu/patient-care/service-lines/multidisciplinary-services/functional-neurologic-disorder/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:fnd_washu",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "neuro",
+      "title": "NICE NG127 — Neurological conditions referral",
+      "url": "https://www.nice.org.uk/guidance/ng127/chapter/Recommendations-for-adults-aged-over-16",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE NG127: sinais novos em diagnóstico prévio de transtorno funcional exigem avaliação; não atribuir automaticamente tudo ao diagnóstico anterior.",
+      "sourceEvidenceRecord": "web-verification-record.json:neuro",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Medicamentos, doses e alternativas identificados por cenário; procedimentos e ausência de fármaco específico explicitados. Regimes sem intervalo universal validado permanecem calculados pelo especialista. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

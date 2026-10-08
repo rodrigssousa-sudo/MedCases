@@ -1,0 +1,214 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Síndrome de Sjögren",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "0e943bfd67cd77224e0e3ce275cd3edd1eff96e09a6fda4f77aab36f936c9bc9",
+  "ownerCandidate": "sindrome_de_sjogren",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_029_f01",
+    "b04_029_f02",
+    "b04_029_f03",
+    "b04_029_f04",
+    "b04_029_f05",
+    "b04_029_f06",
+    "b04_029_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Autoimunidade exócrina causa secura ocular/oral; pode haver doença sistêmica."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Controle de secura não equivale a tratar todo acometimento sistêmico."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar secura, medicamentos e testes glandulares/autoanticorpos; excluir outras causas de xerostomia."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Olho doloroso/fotofobia ou déficit sistêmico agudo exige avaliação direcionada urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opções especificadas neste tema: pilocarpina / cevimelina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Lágrimas artificiais e substitutos salivares são medidas iniciais. Pilocarpina é opção selecionada quando há função glandular residual; tratamento ocular especializado se insuficiente. Imunomodulação depende de manifestação sistêmica específica; corticoide sistêmico não é rotina para toda secura."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Xerostomia em adulto com função glandular residual: pilocarpina 5 mg por via oral 4 vezes ao dia; avaliar benefício ao longo de 6 semanas. Alternativa onde disponível: cevimelina 30 mg por via oral a cada 8 horas. Escolher uma, não associar automaticamente. Evitar asma não controlada e situações em que miose é indesejável; monitorizar sudorese, hidratação e efeitos cardiovasculares. Pilocarpina com insuficiência hepática moderada requer início de 5 mg a cada 12 horas. Não trata toda manifestação sistêmica do Sjögren."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não usar corticoide ocular sem oftalmologia; avaliar cáries, candidíase e contraindicações aos secretagogos."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Odontologia/oftalmologia e reumatologia; investigar aumento glandular persistente ou linfonodos."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_188",
+      "title": "NHS — Síndrome de Sjögren",
+      "url": "https://www.nhs.uk/conditions/sjogrens-syndrome/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 November 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_188",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "sjogren2024",
+      "title": "BSR — Sjögren disease guideline: executive summary 2024",
+      "url": "https://academic.oup.com/rheumatology/article/64/2/396/7681577",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "BSR resumo final 2024: substitutos salivares, pilocarpina em função residual e manifestações sistêmicas individualizadas; corticoide sistêmico não rotineiro. Recomendações específicas acessíveis na web.",
+      "sourceEvidenceRecord": "web-verification-record.json:sjogren2024",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "piloc_label",
+      "title": "DailyMed — Pilocarpine: Sjögren xerostomia regimen",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8db0db4f-55ad-46b2-af50-e71b4a763aaa",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:piloc_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "cevim_label",
+      "title": "DailyMed — Cevimeline: Sjögren xerostomia regimen",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=61dd5ee1-cf89-43ea-ada4-4e4a4d9d133b&type=display",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:cevim_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Autoimunidade exócrina causa secura ocular/oral; pode haver doença sistêmica."
+      ],
+      "factIds": [
+        "b04_029_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Controle de secura não equivale a tratar todo acometimento sistêmico."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar secura, medicamentos e testes glandulares/autoanticorpos; excluir outras causas de xerostomia."
+      ],
+      "factIds": [
+        "b04_029_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Olho doloroso/fotofobia ou déficit sistêmico agudo exige avaliação direcionada urgente."
+      ],
+      "factIds": [
+        "b04_029_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: pilocarpina / cevimelina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Lágrimas artificiais e substitutos salivares são medidas iniciais. Pilocarpina é opção selecionada quando há função glandular residual; tratamento ocular especializado se insuficiente. Imunomodulação depende de manifestação sistêmica específica; corticoide sistêmico não é rotina para toda secura."
+      ],
+      "factIds": [
+        "b04_029_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Xerostomia em adulto com função glandular residual: pilocarpina 5 mg por via oral 4 vezes ao dia; avaliar benefício ao longo de 6 semanas. Alternativa onde disponível: cevimelina 30 mg por via oral a cada 8 horas. Escolher uma, não associar automaticamente. Evitar asma não controlada e situações em que miose é indesejável; monitorizar sudorese, hidratação e efeitos cardiovasculares. Pilocarpina com insuficiência hepática moderada requer início de 5 mg a cada 12 horas. Não trata toda manifestação sistêmica do Sjögren."
+      ],
+      "factIds": [
+        "b04_029_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não usar corticoide ocular sem oftalmologia; avaliar cáries, candidíase e contraindicações aos secretagogos."
+      ],
+      "factIds": [
+        "b04_029_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Odontologia/oftalmologia e reumatologia; investigar aumento glandular persistente ou linfonodos."
+      ],
+      "factIds": [
+        "b04_029_f06"
+      ]
+    }
+  ],
+  "markdown": "# Síndrome de Sjögren\n\n## Conceito e mecanismo\n\nAutoimunidade exócrina causa secura ocular/oral; pode haver doença sistêmica.\n\n## Raciocínio e escolha terapêutica\n\nControle de secura não equivale a tratar todo acometimento sistêmico.\n\n## Diagnóstico e diferenciais\n\nAvaliar secura, medicamentos e testes glandulares/autoanticorpos; excluir outras causas de xerostomia.\n\n## Abordagem inicial e urgências\n\nOlho doloroso/fotofobia ou déficit sistêmico agudo exige avaliação direcionada urgente.\n\n## Tratamento: primeira escolha e alternativas\n\nOpções especificadas neste tema: pilocarpina / cevimelina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Lágrimas artificiais e substitutos salivares são medidas iniciais. Pilocarpina é opção selecionada quando há função glandular residual; tratamento ocular especializado se insuficiente. Imunomodulação depende de manifestação sistêmica específica; corticoide sistêmico não é rotina para toda secura.\n\n## Fármacos, doses e intervalos\n\nXerostomia em adulto com função glandular residual: pilocarpina 5 mg por via oral 4 vezes ao dia; avaliar benefício ao longo de 6 semanas. Alternativa onde disponível: cevimelina 30 mg por via oral a cada 8 horas. Escolher uma, não associar automaticamente. Evitar asma não controlada e situações em que miose é indesejável; monitorizar sudorese, hidratação e efeitos cardiovasculares. Pilocarpina com insuficiência hepática moderada requer início de 5 mg a cada 12 horas. Não trata toda manifestação sistêmica do Sjögren.\n\n## Segurança e monitorização\n\nNão usar corticoide ocular sem oftalmologia; avaliar cáries, candidíase e contraindicações aos secretagogos.\n\n## Reavaliação, internação e alta\n\nOdontologia/oftalmologia e reumatologia; investigar aumento glandular persistente ou linfonodos.\n\n## Referências\n\n1. [NHS — Síndrome de Sjögren](https://www.nhs.uk/conditions/sjogrens-syndrome/)\n2. [BSR — Sjögren disease guideline: executive summary 2024](https://academic.oup.com/rheumatology/article/64/2/396/7681577)\n3. [DailyMed — Pilocarpine: Sjögren xerostomia regimen](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8db0db4f-55ad-46b2-af50-e71b4a763aaa)\n4. [DailyMed — Cevimeline: Sjögren xerostomia regimen](https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=61dd5ee1-cf89-43ea-ada4-4e4a4d9d133b&type=display)",
+  "approvedReviewCanonicalFileSha256": "1517cae93093ab1ac9fae6052c2f80b44f6c175dfac88733e49a2cc51d81e6a1",
+  "approvedReviewProjectionFileSha256": "2e9e77082590d130b6485004fa84a25360078e8eb0a7feb0c454600d8817a5ef"
+}

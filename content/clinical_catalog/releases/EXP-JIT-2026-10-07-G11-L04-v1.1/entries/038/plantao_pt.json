@@ -1,0 +1,186 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Anemia da inflamação e doença crônica",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "6fda73a7d8606be6cb688e2451f21ec1f3d26e5b6dfb43bf7fa078cc87a79fc4",
+  "ownerCandidate": "anemia_da_inflamacao_e_doenca_cronica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_038_f01",
+    "b04_038_f02",
+    "b04_038_f03",
+    "b04_038_f04",
+    "b04_038_f05",
+    "b04_038_f06",
+    "b04_038_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Instabilidade, sangramento ou sintomas graves exigem investigar causa aguda e suporte."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Hemograma, reticulócitos, ferro/ferritina e contexto; ferritina elevada não exclui deficiência combinada."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opções especificadas neste tema: epoetina alfa / darbepoetina alfa. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Tratar doença de base. Ferro se deficiência demonstrada; agente estimulador de eritropoiese somente em indicações específicas, como determinados casos renais/oncológicos. Transfusão conforme gravidade."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeiro tratar inflamação/doença causal; não há fármaco universal para toda anemia inflamatória. Na anemia da doença renal crônica com indicação de estimulador eritropoiético, adulto: epoetina alfa 50–100 unidades por kg intravenosa ou subcutânea 3 vezes por semana; alternativa de referência EMA, darbepoetina alfa 0,45 micrograma por kg intravenosa ou subcutânea uma vez por semana. Início/titulação são especializados, após avaliar ferro e outras causas, usando menor dose para reduzir transfusões. Não normalizar hemoglobina; monitorizar pressão, hemoglobina e risco trombótico. Não extrapolar para câncer/anemia inflamatória sem doença renal."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Não tratar toda anemia com ferro ou eritropoietina; avaliar risco trombótico e objetivos do cenário."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguir hemoglobina e resposta da doença de base; pesquisar outra causa se evolução discordante."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Inflamação altera disponibilidade de ferro e produção eritrocitária; pode coexistir com deficiência de ferro."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_197",
+      "title": "NIDDK — Anemia da inflamação e doença crônica",
+      "url": "https://www.niddk.nih.gov/health-information/blood-diseases/anemia-inflammation-chronic-disease",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last Reviewed September 2018",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_197",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "epo_label",
+      "title": "DailyMed — EPOGEN: adult CKD anemia and cardiovascular warnings",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1f2d0b28-9cc5-4523-80b8-637fdaf3f7a5",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:epo_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "darbepo_label",
+      "title": "EMA — Aranesp: adult CKD dosing and hemoglobin monitoring",
+      "url": "https://www.ema.europa.eu/en/documents/product-information/aranesp-epar-product-information_en.pdf",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published on the European medicines web-portal. ",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:darbepo_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Instabilidade, sangramento ou sintomas graves exigem investigar causa aguda e suporte."
+      ],
+      "factIds": [
+        "b04_038_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Hemograma, reticulócitos, ferro/ferritina e contexto; ferritina elevada não exclui deficiência combinada."
+      ],
+      "factIds": [
+        "b04_038_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: epoetina alfa / darbepoetina alfa. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Tratar doença de base. Ferro se deficiência demonstrada; agente estimulador de eritropoiese somente em indicações específicas, como determinados casos renais/oncológicos. Transfusão conforme gravidade."
+      ],
+      "factIds": [
+        "b04_038_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Primeiro tratar inflamação/doença causal; não há fármaco universal para toda anemia inflamatória. Na anemia da doença renal crônica com indicação de estimulador eritropoiético, adulto: epoetina alfa 50–100 unidades por kg intravenosa ou subcutânea 3 vezes por semana; alternativa de referência EMA, darbepoetina alfa 0,45 micrograma por kg intravenosa ou subcutânea uma vez por semana. Início/titulação são especializados, após avaliar ferro e outras causas, usando menor dose para reduzir transfusões. Não normalizar hemoglobina; monitorizar pressão, hemoglobina e risco trombótico. Não extrapolar para câncer/anemia inflamatória sem doença renal."
+      ],
+      "factIds": [
+        "b04_038_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Não tratar toda anemia com ferro ou eritropoietina; avaliar risco trombótico e objetivos do cenário."
+      ],
+      "factIds": [
+        "b04_038_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Seguir hemoglobina e resposta da doença de base; pesquisar outra causa se evolução discordante."
+      ],
+      "factIds": [
+        "b04_038_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Inflamação altera disponibilidade de ferro e produção eritrocitária; pode coexistir com deficiência de ferro."
+      ],
+      "factIds": [
+        "b04_038_f01"
+      ]
+    }
+  ],
+  "markdown": "# Anemia da inflamação e doença crônica\n\n## Abordagem inicial e urgências\n\nInstabilidade, sangramento ou sintomas graves exigem investigar causa aguda e suporte.\n\n## Diagnóstico e diferenciais\n\nHemograma, reticulócitos, ferro/ferritina e contexto; ferritina elevada não exclui deficiência combinada.\n\n## Tratamento: primeira escolha e alternativas\n\nOpções especificadas neste tema: epoetina alfa / darbepoetina alfa. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Tratar doença de base. Ferro se deficiência demonstrada; agente estimulador de eritropoiese somente em indicações específicas, como determinados casos renais/oncológicos. Transfusão conforme gravidade.\n\n## Fármacos, doses e intervalos\n\nPrimeiro tratar inflamação/doença causal; não há fármaco universal para toda anemia inflamatória. Na anemia da doença renal crônica com indicação de estimulador eritropoiético, adulto: epoetina alfa 50–100 unidades por kg intravenosa ou subcutânea 3 vezes por semana; alternativa de referência EMA, darbepoetina alfa 0,45 micrograma por kg intravenosa ou subcutânea uma vez por semana. Início/titulação são especializados, após avaliar ferro e outras causas, usando menor dose para reduzir transfusões. Não normalizar hemoglobina; monitorizar pressão, hemoglobina e risco trombótico. Não extrapolar para câncer/anemia inflamatória sem doença renal.\n\n## Segurança e monitorização\n\nNão tratar toda anemia com ferro ou eritropoietina; avaliar risco trombótico e objetivos do cenário.\n\n## Reavaliação, internação e alta\n\nSeguir hemoglobina e resposta da doença de base; pesquisar outra causa se evolução discordante.\n\n## Reconhecimento rápido\n\nInflamação altera disponibilidade de ferro e produção eritrocitária; pode coexistir com deficiência de ferro.\n\n## Referências\n\n1. [NIDDK — Anemia da inflamação e doença crônica](https://www.niddk.nih.gov/health-information/blood-diseases/anemia-inflammation-chronic-disease)\n2. [DailyMed — EPOGEN: adult CKD anemia and cardiovascular warnings](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=1f2d0b28-9cc5-4523-80b8-637fdaf3f7a5)\n3. [EMA — Aranesp: adult CKD dosing and hemoglobin monitoring](https://www.ema.europa.eu/en/documents/product-information/aranesp-epar-product-information_en.pdf)",
+  "approvedReviewCanonicalFileSha256": "e3ecd6bcb0904ebcdf466ae9a5fafa0881983637ce484c7145169c782f2d9761",
+  "approvedReviewProjectionFileSha256": "1a077bace1295315b5e75eee72d12df98c136604ae0b5ec27c8322bb4a09d980"
+}

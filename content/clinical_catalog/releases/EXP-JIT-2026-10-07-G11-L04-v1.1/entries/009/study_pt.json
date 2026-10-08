@@ -1,0 +1,188 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Nefrite intersticial aguda",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "48dc6c705827b20b41e0b5a7688c984ceb04f56d9e8587bce098ab48680f96ee",
+  "ownerCandidate": "nefrite_intersticial_aguda",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_009_f01",
+    "b04_009_f02",
+    "b04_009_f03",
+    "b04_009_f04",
+    "b04_009_f05",
+    "b04_009_f06",
+    "b04_009_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Inflamação tubulointersticial, frequentemente medicamentosa, causando lesão renal."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "A retirada precoce do gatilho é distinta de imunossupressão; a evidência não define uma dose universal para todos."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Revisar fármacos, creatinina, urina e causas infecciosas/autoimunes; tríade febre-rash-eosinofilia pode faltar. Biópsia conforme nefrologia."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Oligúria, hipercalemia, acidose ou sobrecarga exigem hospitalização e avaliação de diálise."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primeira medida: retirar o agente causal e tratar a causa. Na forma medicamentosa, persistência com biópsia compatível pode justificar prednisolona com nefrologia; pulsoterapia com metilprednisolona é alternativa especializada em casos selecionados, sem benefício superior sustentado no pequeno ensaio comparativo."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Esquemas do ensaio primário em nefrite intersticial medicamentosa comprovada por biópsia: prednisolona 1 mg por kg por dia por via oral durante 3 semanas, seguida de redução nas 3 semanas seguintes; alternativa estudada metilprednisolona 30 mg por kg (máximo 1 g) intravenosa em infusão lenta de 60 minutos, uma vez ao dia durante 3 dias, seguida de prednisolona 1 mg por kg por dia por 2 semanas e redução nas 3 seguintes. Não são prescrição universal; excluir infecção e avaliar cronicidade/fibrose, glicemia e função renal."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evitar reexposição/nefrotóxicos e ajustar medicamentos à função renal; corticoide não é tratamento universal."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Monitorizar creatinina, eletrólitos e diurese até recuperação; registrar reação medicamentosa."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_168",
+      "title": "NIH/NLM — Nefrite intersticial aguda",
+      "url": "https://medlineplus.gov/ency/article/000464.htm",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Review Date 9/2/2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_168",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "ain_trial",
+      "title": "Ramachandran et al — Biopsy-proven drug-induced AIN: randomized steroid-regimen trial, 2015",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4588323/",
+      "authorityStatus": "PRIMARY_CLINICAL_STUDY_NOT_UNIVERSAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:ain_trial",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Inflamação tubulointersticial, frequentemente medicamentosa, causando lesão renal."
+      ],
+      "factIds": [
+        "b04_009_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A retirada precoce do gatilho é distinta de imunossupressão; a evidência não define uma dose universal para todos."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Revisar fármacos, creatinina, urina e causas infecciosas/autoimunes; tríade febre-rash-eosinofilia pode faltar. Biópsia conforme nefrologia."
+      ],
+      "factIds": [
+        "b04_009_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Oligúria, hipercalemia, acidose ou sobrecarga exigem hospitalização e avaliação de diálise."
+      ],
+      "factIds": [
+        "b04_009_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Primeira medida: retirar o agente causal e tratar a causa. Na forma medicamentosa, persistência com biópsia compatível pode justificar prednisolona com nefrologia; pulsoterapia com metilprednisolona é alternativa especializada em casos selecionados, sem benefício superior sustentado no pequeno ensaio comparativo."
+      ],
+      "factIds": [
+        "b04_009_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Esquemas do ensaio primário em nefrite intersticial medicamentosa comprovada por biópsia: prednisolona 1 mg por kg por dia por via oral durante 3 semanas, seguida de redução nas 3 semanas seguintes; alternativa estudada metilprednisolona 30 mg por kg (máximo 1 g) intravenosa em infusão lenta de 60 minutos, uma vez ao dia durante 3 dias, seguida de prednisolona 1 mg por kg por dia por 2 semanas e redução nas 3 seguintes. Não são prescrição universal; excluir infecção e avaliar cronicidade/fibrose, glicemia e função renal."
+      ],
+      "factIds": [
+        "b04_009_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Evitar reexposição/nefrotóxicos e ajustar medicamentos à função renal; corticoide não é tratamento universal."
+      ],
+      "factIds": [
+        "b04_009_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Monitorizar creatinina, eletrólitos e diurese até recuperação; registrar reação medicamentosa."
+      ],
+      "factIds": [
+        "b04_009_f06"
+      ]
+    }
+  ],
+  "markdown": "# Nefrite intersticial aguda\n\n## Conceito e mecanismo\n\nInflamação tubulointersticial, frequentemente medicamentosa, causando lesão renal.\n\n## Raciocínio e escolha terapêutica\n\nA retirada precoce do gatilho é distinta de imunossupressão; a evidência não define uma dose universal para todos.\n\n## Diagnóstico e diferenciais\n\nRevisar fármacos, creatinina, urina e causas infecciosas/autoimunes; tríade febre-rash-eosinofilia pode faltar. Biópsia conforme nefrologia.\n\n## Abordagem inicial e urgências\n\nOligúria, hipercalemia, acidose ou sobrecarga exigem hospitalização e avaliação de diálise.\n\n## Tratamento: primeira escolha e alternativas\n\nPrimeira medida: retirar o agente causal e tratar a causa. Na forma medicamentosa, persistência com biópsia compatível pode justificar prednisolona com nefrologia; pulsoterapia com metilprednisolona é alternativa especializada em casos selecionados, sem benefício superior sustentado no pequeno ensaio comparativo.\n\n## Fármacos, doses e intervalos\n\nEsquemas do ensaio primário em nefrite intersticial medicamentosa comprovada por biópsia: prednisolona 1 mg por kg por dia por via oral durante 3 semanas, seguida de redução nas 3 semanas seguintes; alternativa estudada metilprednisolona 30 mg por kg (máximo 1 g) intravenosa em infusão lenta de 60 minutos, uma vez ao dia durante 3 dias, seguida de prednisolona 1 mg por kg por dia por 2 semanas e redução nas 3 seguintes. Não são prescrição universal; excluir infecção e avaliar cronicidade/fibrose, glicemia e função renal.\n\n## Segurança e monitorização\n\nEvitar reexposição/nefrotóxicos e ajustar medicamentos à função renal; corticoide não é tratamento universal.\n\n## Reavaliação, internação e alta\n\nMonitorizar creatinina, eletrólitos e diurese até recuperação; registrar reação medicamentosa.\n\n## Referências\n\n1. [NIH/NLM — Nefrite intersticial aguda](https://medlineplus.gov/ency/article/000464.htm)\n2. [Ramachandran et al — Biopsy-proven drug-induced AIN: randomized steroid-regimen trial, 2015](https://pmc.ncbi.nlm.nih.gov/articles/PMC4588323/)",
+  "approvedReviewCanonicalFileSha256": "842a82a0585131ba9d702816e5a906a71f2c59f7c03b9cb3440d6a0960e3ddf3",
+  "approvedReviewProjectionFileSha256": "2393cd06248ca9bc4e16c9d6cf955800f852e133d4c25dd07a90f739080de4b9"
+}

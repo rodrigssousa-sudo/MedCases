@@ -1,0 +1,232 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Artritis idiopática juvenil",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "b2e1500c752a9630c2ff1c7fc7229c09b8456bb2cc3635dfebb0fc3e3b07301a",
+  "ownerCandidate": "artrite_idiopatica_juvenil",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_033_f01",
+    "b04_033_f02",
+    "b04_033_f03",
+    "b04_033_f04",
+    "b04_033_f05",
+    "b04_033_f06",
+    "b04_033_f07",
+    "b04_033_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Fiebre persistente, citopenias o falla orgánica: evaluar activación macrofágica; monoartritis aguda: excluir sepsis."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Excluir infección, neoplasia y otras causas; reumatología pediátrica y cribado oftalmológico."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opciones especificadas en este tema: naproxeno / metotrexato; canakinumab / tocilizumab. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Oligoartritis: terapia local y antiinflamatorio seleccionado; metotrexato/biológico si insuficiente. Forma sistémica: resumen oficial ACR 2026 prioriza inhibición IL-1 o IL-6; no tratar igual todos los fenotipos."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Artritis juvenil poliarticular, referencia pediátrica: naproxeno en suspensión, niño de al menos 2 años, 5 mg por kg por vía oral cada 12 horas para control sintomático, con reevaluación y protección renal/digestiva. Enfermedad que requiere modificador: metotrexato 10 mg por m² por vía oral UNA VEZ POR SEMANA como inicio de formulación XatmeP, ajustado por reumatología pediátrica y folato. Comprobar concentración y cálculo por superficie corporal; nunca diariamente. Controlar hemograma, hígado, riñones y crecimiento."
+    },
+    {
+      "type": "paragraph",
+      "text": "AIJ sistémica, niño elegible de al menos 2 años y peso de al menos 7,5 kg: canakinumab 4 mg por kg por vía subcutánea cada 4 semanas, máximo 300 mg por dosis. Alternativa especializada, tocilizumab intravenoso cada 2 semanas: 12 mg por kg si peso menor de 30 kg u 8 mg por kg si al menos 30 kg, en infusión de 60 minutos. No combinar biológicos. Infección y síndrome de activación macrofágica requieren evaluación específica; pesquisa y monitorización de laboratorio obligatorias. No son esquemas para todo subtipo de AIJ ni para automedicación."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No extrapolar dosis adultas; peso, vacunas, infección, crecimiento y toxicidad determinan régimen pediátrico."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguimiento funcional y ocular aun sin síntomas; fisioterapia y control del tratamiento."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Grupo de artritis inflamatorias pediátricas con fenotipos distintos, incluido sistémico."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_192",
+      "title": "DERMNET — Artrite idiopática juvenil",
+      "url": "https://dermnetnz.org/topics/juvenile-idiopathic-arthritis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_192",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "jia2026",
+      "title": "ACR — JIA 2026 official posted summary",
+      "url": "https://assets.contentstack.io/v3/assets/bltee37abb6b278ab2c/blt4e307b8933591fa5/jia-guidelines-summary-2026.pdf",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Resumo oficial ACR 2026: oligoartrite com terapia local/NSAID, MTX/biológico conforme resposta; sistêmica prioriza IL-1/IL-6. Somente resumo, não leitura dos quatro manuscritos integrais; não reutilizar doses adultas.",
+      "sourceEvidenceRecord": "web-verification-record.json:jia2026",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "naproxen_child",
+      "title": "DailyMed — Naproxen oral suspension: polyarticular juvenile idiopathic arthritis",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fd5e8d84-f92c-4f4b-ab0d-4cda7cf826bd",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:naproxen_child",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "mtx_jia",
+      "title": "DailyMed — XATMEP: pediatric polyarticular JIA weekly methotrexate",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=aec9984e-34c5-481b-b6bf-9bb5caf1daf8",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:mtx_jia",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "canaki_label",
+      "title": "DailyMed — ILARIS: systemic JIA/Still disease weight-based regimen",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7d271f3b-e4f9-4d80-8dcf-28d49123f80e",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:canaki_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "tocili_label",
+      "title": "FDA — ACTEMRA label 2025: adult GCA and systemic JIA doses",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/125472s059lbl.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published evidence also supports that IL-6 ",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:tocili_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Fiebre persistente, citopenias o falla orgánica: evaluar activación macrofágica; monoartritis aguda: excluir sepsis."
+      ],
+      "factIds": [
+        "b04_033_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Excluir infección, neoplasia y otras causas; reumatología pediátrica y cribado oftalmológico."
+      ],
+      "factIds": [
+        "b04_033_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: naproxeno / metotrexato; canakinumab / tocilizumab. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Oligoartritis: terapia local y antiinflamatorio seleccionado; metotrexato/biológico si insuficiente. Forma sistémica: resumen oficial ACR 2026 prioriza inhibición IL-1 o IL-6; no tratar igual todos los fenotipos."
+      ],
+      "factIds": [
+        "b04_033_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Artritis juvenil poliarticular, referencia pediátrica: naproxeno en suspensión, niño de al menos 2 años, 5 mg por kg por vía oral cada 12 horas para control sintomático, con reevaluación y protección renal/digestiva. Enfermedad que requiere modificador: metotrexato 10 mg por m² por vía oral UNA VEZ POR SEMANA como inicio de formulación XatmeP, ajustado por reumatología pediátrica y folato. Comprobar concentración y cálculo por superficie corporal; nunca diariamente. Controlar hemograma, hígado, riñones y crecimiento.",
+        "AIJ sistémica, niño elegible de al menos 2 años y peso de al menos 7,5 kg: canakinumab 4 mg por kg por vía subcutánea cada 4 semanas, máximo 300 mg por dosis. Alternativa especializada, tocilizumab intravenoso cada 2 semanas: 12 mg por kg si peso menor de 30 kg u 8 mg por kg si al menos 30 kg, en infusión de 60 minutos. No combinar biológicos. Infección y síndrome de activación macrofágica requieren evaluación específica; pesquisa y monitorización de laboratorio obligatorias. No son esquemas para todo subtipo de AIJ ni para automedicación."
+      ],
+      "factIds": [
+        "b04_033_f07",
+        "b04_033_f08"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No extrapolar dosis adultas; peso, vacunas, infección, crecimiento y toxicidad determinan régimen pediátrico."
+      ],
+      "factIds": [
+        "b04_033_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguimiento funcional y ocular aun sin síntomas; fisioterapia y control del tratamiento."
+      ],
+      "factIds": [
+        "b04_033_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Grupo de artritis inflamatorias pediátricas con fenotipos distintos, incluido sistémico."
+      ],
+      "factIds": [
+        "b04_033_f01"
+      ]
+    }
+  ],
+  "markdown": "# Artritis idiopática juvenil\n\n## Abordaje inicial y urgencias\n\nFiebre persistente, citopenias o falla orgánica: evaluar activación macrofágica; monoartritis aguda: excluir sepsis.\n\n## Diagnóstico y diferenciales\n\nExcluir infección, neoplasia y otras causas; reumatología pediátrica y cribado oftalmológico.\n\n## Tratamiento: primera elección y alternativas\n\nOpciones especificadas en este tema: naproxeno / metotrexato; canakinumab / tocilizumab. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Oligoartritis: terapia local y antiinflamatorio seleccionado; metotrexato/biológico si insuficiente. Forma sistémica: resumen oficial ACR 2026 prioriza inhibición IL-1 o IL-6; no tratar igual todos los fenotipos.\n\n## Fármacos, dosis e intervalos\n\nArtritis juvenil poliarticular, referencia pediátrica: naproxeno en suspensión, niño de al menos 2 años, 5 mg por kg por vía oral cada 12 horas para control sintomático, con reevaluación y protección renal/digestiva. Enfermedad que requiere modificador: metotrexato 10 mg por m² por vía oral UNA VEZ POR SEMANA como inicio de formulación XatmeP, ajustado por reumatología pediátrica y folato. Comprobar concentración y cálculo por superficie corporal; nunca diariamente. Controlar hemograma, hígado, riñones y crecimiento.\n\nAIJ sistémica, niño elegible de al menos 2 años y peso de al menos 7,5 kg: canakinumab 4 mg por kg por vía subcutánea cada 4 semanas, máximo 300 mg por dosis. Alternativa especializada, tocilizumab intravenoso cada 2 semanas: 12 mg por kg si peso menor de 30 kg u 8 mg por kg si al menos 30 kg, en infusión de 60 minutos. No combinar biológicos. Infección y síndrome de activación macrofágica requieren evaluación específica; pesquisa y monitorización de laboratorio obligatorias. No son esquemas para todo subtipo de AIJ ni para automedicación.\n\n## Seguridad y monitorización\n\nNo extrapolar dosis adultas; peso, vacunas, infección, crecimiento y toxicidad determinan régimen pediátrico.\n\n## Reevaluación, internación y alta\n\nSeguimiento funcional y ocular aun sin síntomas; fisioterapia y control del tratamiento.\n\n## Reconocimiento rápido\n\nGrupo de artritis inflamatorias pediátricas con fenotipos distintos, incluido sistémico.\n\n## Referencias\n\n1. [DERMNET — Artrite idiopática juvenil](https://dermnetnz.org/topics/juvenile-idiopathic-arthritis)\n2. [ACR — JIA 2026 official posted summary](https://assets.contentstack.io/v3/assets/bltee37abb6b278ab2c/blt4e307b8933591fa5/jia-guidelines-summary-2026.pdf)\n3. [DailyMed — Naproxen oral suspension: polyarticular juvenile idiopathic arthritis](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fd5e8d84-f92c-4f4b-ab0d-4cda7cf826bd)\n4. [DailyMed — XATMEP: pediatric polyarticular JIA weekly methotrexate](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=aec9984e-34c5-481b-b6bf-9bb5caf1daf8)\n5. [DailyMed — ILARIS: systemic JIA/Still disease weight-based regimen](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7d271f3b-e4f9-4d80-8dcf-28d49123f80e)\n6. [FDA — ACTEMRA label 2025: adult GCA and systemic JIA doses](https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/125472s059lbl.pdf)",
+  "approvedReviewCanonicalFileSha256": "807830f40fed37748be904716c62ffa15c61e476009b8e79e1e51cc432bf3c30",
+  "approvedReviewProjectionFileSha256": "921d2f659b7c3a9db4f813b5c7fd418eb22c196fa282e0033c07f06f406568a3"
+}

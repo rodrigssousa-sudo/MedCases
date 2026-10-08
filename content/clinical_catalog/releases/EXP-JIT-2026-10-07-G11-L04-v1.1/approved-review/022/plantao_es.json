@@ -1,0 +1,154 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Neuropatía diabética periférica",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "577b3a634ee84da4be5d1255577f40f7e038af1bc452ef8bbef990dc10205953",
+  "ownerCandidate": "neuropatia_diabetica_periferica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_022_f01",
+    "b04_022_f02",
+    "b04_022_f03",
+    "b04_022_f04",
+    "b04_022_f05",
+    "b04_022_f06",
+    "b04_022_f07",
+    "b04_022_f08"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Úlcera infectada, isquemia, pie caliente/deformado o déficit motor rápido requiere evaluación prioritaria."
+      ],
+      "factIds": [
+        "b04_022_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Examen de pies, sensibilidad, pulsos y distribución; excluir déficit B12, compresión y otras neuropatías."
+      ],
+      "factIds": [
+        "b04_022_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: duloxetina / pregabalina. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Control metabólico y protección de pies. Dolor: elección inicial entre duloxetina, amitriptilina, gabapentina o pregabalina; según comorbilidad y tolerancia, sin combinarlas todas."
+      ],
+      "factIds": [
+        "b04_022_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Neuropatía diabética dolorosa en adulto: duloxetina de liberación retardada 60 mg por vía oral una vez al día; puede requerirse inicio menor por tolerancia. Más de 60 mg al día no ofrece beneficio adicional en este contexto. Alternativa: pregabalina 50 mg por vía oral cada 8 horas; aumentar, según respuesta, hasta 100 mg cada 8 horas durante la primera semana, máximo 300 mg al día para esta indicación en ficha consultada y con depuración de creatinina de al menos 60 mL por minuto. Ajustar pregabalina con función renal menor; no aplicar máximo de otras indicaciones a neuropatía diabética.",
+        "Duloxetina: evitar cirrosis/enfermedad hepática crónica y filtrado menor de 30 mL por minuto. Pregabalina: controlar somnolencia, caídas, edema y depresión respiratoria, especialmente con opioides. Valorar beneficio funcional; no suspender bruscamente. Alivian dolor, no restauran sensibilidad ni reemplazan cuidado de pies y control metabólico."
+      ],
+      "factIds": [
+        "b04_022_f07",
+        "b04_022_f08"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Titular y retirar gradualmente; evaluar sedación, caídas, función renal/hepática e interacciones. Opioide no es primera estrategia rutinaria."
+      ],
+      "factIds": [
+        "b04_022_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar dolor, sueño, función y pies; analgesia no restaura sensibilidad protectora."
+      ],
+      "factIds": [
+        "b04_022_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Lesión nerviosa por diabetes con pérdida sensitiva o dolor distal; aumenta riesgo de úlcera."
+      ],
+      "factIds": [
+        "b04_022_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_181",
+      "title": "NHS — Neuropatia diabética periférica",
+      "url": "https://www.nhs.uk/conditions/peripheral-neuropathy/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 10 October 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_181",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "topic_181_treatment",
+      "title": "NHS — Neuropatia diabética periférica — treatment",
+      "url": "https://www.nhs.uk/conditions/peripheral-neuropathy/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 10 October 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_181_treatment",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "neuropathic",
+      "title": "NICE CG173 — Neuropathic pain",
+      "url": "https://www.nice.org.uk/guidance/cg173/chapter/Recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE CG173: amitriptilina/duloxetina/gabapentina/pregabalina na neuropatia dolorosa; carbamazepina para neuralgia trigeminal. Não confundir os dois algoritmos.",
+      "sourceEvidenceRecord": "web-verification-record.json:neuropathic",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "dulox_label",
+      "title": "DailyMed — duloxetine delayed-release capsules",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=e36a6919-568a-4d4a-9920-7a7fe4f3441c",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:dulox_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "pregabalin_dpn",
+      "title": "DailyMed — Pregabalin: specific diabetic neuropathy regimen, 300 mg daily limit",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=7d93359c-1849-430d-a922-21d42932d0f3",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:pregabalin_dpn",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

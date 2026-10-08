@@ -1,0 +1,183 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Artrite reumatoide",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "11ee7b0b117f77a8b0ede13a1a772d9ea11def73171fa05d659c1be56ab19a7b",
+  "ownerCandidate": "artrite_reumatoide",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_023_f01",
+    "b04_023_f02",
+    "b04_023_f03",
+    "b04_023_f04",
+    "b04_023_f05",
+    "b04_023_f06",
+    "b04_023_f07",
+    "b04_023_f08",
+    "b04_023_f09"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Articulação agudamente quente com febre: excluir artrite séptica antes de corticoide. Encaminhar sinovite persistente precocemente."
+      ],
+      "factIds": [
+        "b04_023_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Sinovite clínica, padrão articular, fator reumatoide/anti-CCP e imagem; sorologia negativa não exclui."
+      ],
+      "factIds": [
+        "b04_023_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: metotrexato; sulfassalazina; metotrexato / sulfassalazina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. DMARD precoce com alvo de remissão/baixa atividade: metotrexato é estratégia usual; leflunomida ou sulfassalazina são alternativas. Hidroxicloroquina em doença leve selecionada. Biológico/terapia dirigida conforme resposta e risco."
+      ],
+      "factIds": [
+        "b04_023_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Metotrexato em adulto, referência de início para artrite reumatoide: 7,5 mg por via oral UMA VEZ POR SEMANA, no mesmo dia; titular conforme resposta e exames até 20 mg por semana por via oral ou 25 mg por semana por via subcutânea no protocolo consultado. Nunca diariamente. Ácido fólico 5 mg por via oral uma vez por semana, no dia seguinte ao metotrexato, conforme prescrição. Reavaliar atividade e tolerância, sem curso fixo curto.",
+        "Sulfassalazina em adulto: 500 mg por via oral a cada 12 horas durante 1 semana; se tolerado, aumentar para 1.000 mg a cada 12 horas. Intolerância digestiva permite início mais lento, 500 mg uma vez ao dia, com aumentos semanais. Manutenção usual 2.000 mg por dia; não superar 40 mg por kg por dia no protocolo regional. Hemograma, fígado e função renal antes e durante; evitar alergia a sulfonamidas/salicilatos. Duração prolongada segundo atividade.",
+        "Não iniciar metotrexato na gestação ou sem avaliação de hemograma, fígado e rins; função renal reduzida exige ajuste/alternativa. No início, exames podem ser necessários a cada 1–2 semanas no protocolo consultado. Sulfassalazina também exige monitorização própria. Seleção e escalonamento seguem atividade, comorbidades e estratégia de alvo; anti-inflamatório isolado não previne dano articular."
+      ],
+      "factIds": [
+        "b04_023_f07",
+        "b04_023_f08",
+        "b04_023_f09"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Metotrexato para doença reumatológica é semanal, nunca diário; exige hemograma, fígado, rim e revisão reprodutiva. Corticoide de ponte é temporário; avaliar infecção antes de imunossupressão."
+      ],
+      "factIds": [
+        "b04_023_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reumatologia para titulação e monitorização de atividade/toxicidade; fisioterapia e prevenção cardiovascular."
+      ],
+      "factIds": [
+        "b04_023_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Sinovite autoimune persistente pode destruir articulações e causar manifestações sistêmicas."
+      ],
+      "factIds": [
+        "b04_023_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "ra_nice",
+      "title": "NICE NG100 — Rheumatoid arthritis, recommendations",
+      "url": "https://www.nice.org.uk/guidance/ng100/chapter/Recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE NG100 recomenda DMARD precoce e escalonamento se alvo não atingido. Trechos oficiais consultados; não extrapolar analgésico como prevenção de erosão.",
+      "sourceEvidenceRecord": "web-verification-record.json:ra_nice",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "topic_182",
+      "title": "NHS — Artrite reumatoide",
+      "url": "https://www.nhs.uk/conditions/rheumatoid-arthritis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 08 March 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_182",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "eular_index",
+      "title": "EULAR — Published management recommendations",
+      "url": "https://www.eular.org/recommendations-management",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published in that year:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:eular_index",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "ra2026_pub",
+      "title": "EULAR — rheumatoid arthritis 2025 update, final primary abstract",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/41826212/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "EULAR atualização 2025 publicada 2026, DOI 10.1016/j.ard.2026.01.023; metadata/resumo primário consultados e recomendações de base cruzadas com NICE. Não alegar leitura integral restrita.",
+      "sourceEvidenceRecord": "web-verification-record.json:ra2026_pub",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "mtx_safety",
+      "title": "MHRA — methotrexate once weekly safety update, 2020",
+      "url": "https://www.gov.uk/drug-safety-update/methotrexate-once-weekly-for-autoimmune-diseases-new-measures-to-reduce-risk-of-fatal-overdose-due-to-inadvertent-daily-instead-of-weekly-dosing",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2020,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:mtx_safety",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "mtx_nhs",
+      "title": "NHS — Methotrexate: adult rheumatoid arthritis weekly dosing, folate and monitoring",
+      "url": "https://www.nhs.uk/medicines/methotrexate/how-and-when-to-take-methotrexate/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 14 March 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:mtx_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "sulfasalazine_dg",
+      "title": "NHS Dumfries and Galloway — Sulfasalazine: adult rheumatology titration",
+      "url": "https://www.rightdecisions.scot.nhs.uk/dg-refhelp/rheumatology/sulfasalazine/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "review date:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:sulfasalazine_dg",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Deficiência de glicose-6-fosfato desidrogenase (G6PD)",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "1925299a854f03a00238c62df0a3de31abd71f7cec066ebb8499f7a109b85bc6",
+  "ownerCandidate": "deficiencia_de_glicose_6_fosfato_desidrogenase_g6pd",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_035_f01",
+    "b04_035_f02",
+    "b04_035_f03",
+    "b04_035_f04",
+    "b04_035_f05",
+    "b04_035_f06",
+    "b04_035_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Palidez, urina escura, dispneia ou icterícia neonatal exigem avaliação rápida."
+      ],
+      "factIds": [
+        "b04_035_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar hemólise e exposição; teste enzimático pode precisar repetição após crise/transfusão."
+      ],
+      "factIds": [
+        "b04_035_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Retirar gatilho e tratar infecção; suporte/transfusão conforme gravidade. Icterícia neonatal exige protocolo próprio, incluindo fototerapia em elegíveis."
+      ],
+      "factIds": [
+        "b04_035_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Deficiência de G6PD: retirar agente oxidante e tratar causa; não há fármaco que reponha a enzima na prática usual. Hemólise sintomática grave pode precisar transfusão; icterícia neonatal segue critérios de fototerapia/exsanguineotransfusão pediátricos. Não usar azul de metileno em metemoglobinemia associada sem toxicologia, pois pode ser ineficaz e agravar hemólise. Folato apenas quando houver indicação específica, não como antídoto."
+      ],
+      "factIds": [
+        "b04_035_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Evitar fármacos oxidantes contraindicados e fava; conferir lista específica e não generalizar classe inteira."
+      ],
+      "factIds": [
+        "b04_035_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Orientar prevenção, registro diagnóstico e reavaliação após crise."
+      ],
+      "factIds": [
+        "b04_035_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Deficiência enzimática torna hemácia vulnerável ao estresse oxidativo."
+      ],
+      "factIds": [
+        "b04_035_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_194",
+      "title": "MEDLINE — Deficiência de glicose-6-fosfato desidrogenase (G6PD)",
+      "url": "https://medlineplus.gov/g6pddeficiency.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated November 30, 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_194",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "g6pd",
+      "title": "MedlinePlus Genetics — G6PD deficiency",
+      "url": "https://medlineplus.gov/genetics/condition/glucose-6-phosphate-dehydrogenase-deficiency/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated April 12, 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:g6pd",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

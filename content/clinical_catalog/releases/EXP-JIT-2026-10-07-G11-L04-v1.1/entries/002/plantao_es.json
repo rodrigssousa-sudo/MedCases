@@ -1,0 +1,180 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Colesteatoma",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "9eabd77e81b614ca39cf68d471454802d400580d2bb053f5753a118d857c0010",
+  "ownerCandidate": "colesteatoma",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_002_f01",
+    "b04_002_f02",
+    "b04_002_f03",
+    "b04_002_f04",
+    "b04_002_f05",
+    "b04_002_f06",
+    "b04_002_f07",
+    "b04_002_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Parálisis facial, vértigo intenso, fiebre o signos neurológicos sugieren complicación y requieren evaluación hospitalaria urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Otorrea persistente e hipoacusia requieren otoscopia, audiometría y evaluación otológica; imágenes según extensión y planificación."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tratamiento definitivo habitualmente quirúrgico. Cuidados locales y tratamiento de infección asociada controlan síntomas mientras se planifica cirugía; no erradican la lesión. Observación especializada solo en situaciones seleccionadas."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tratamiento definitivo: cirugía otológica. No existe fármaco ni dosis que elimine el colesteatoma; vigilancia especializada solo en situaciones seleccionadas. Infección asociada requiere cultivo/examen y prescripción propia, considerando perforación y ototoxicidad. No aplicar gotas inespecíficas como cura."
+    },
+    {
+      "type": "paragraph",
+      "text": "Dolor, solo en adulto de al menos 50 kg y sin riesgo hepático: paracetamol 500–1.000 mg por vía oral cada 6 horas si es necesario, máximo 4.000 mg en 24 horas sumando todas las presentaciones. Uso breve; reevaluar si se necesita por más de 3 días. Menor peso, hepatopatía, alcoholismo o fragilidad requieren un límite menor individualizado. No trata la causa."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Mantener oído seco; no introducir instrumentos. Las gotas dependen de integridad timpánica y riesgo de ototoxicidad; no presentar antibiótico como cura."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguimiento prolongado por enfermedad residual/recurrencia y reevaluación auditiva; consulta urgente ante dolor intenso nuevo, fiebre o déficit facial."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Acumulación de epitelio queratinizante en oído medio que puede erosionar estructuras y causar hipoacusia."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_161",
+      "title": "NHS — Colesteatoma",
+      "url": "https://www.nhs.uk/conditions/cholesteatoma/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 20 February 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_161",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "paracetamol_nhs",
+      "title": "NHS — Paracetamol for adults: dosing and precautions",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:paracetamol_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Parálisis facial, vértigo intenso, fiebre o signos neurológicos sugieren complicación y requieren evaluación hospitalaria urgente."
+      ],
+      "factIds": [
+        "b04_002_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Otorrea persistente e hipoacusia requieren otoscopia, audiometría y evaluación otológica; imágenes según extensión y planificación."
+      ],
+      "factIds": [
+        "b04_002_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Tratamiento definitivo habitualmente quirúrgico. Cuidados locales y tratamiento de infección asociada controlan síntomas mientras se planifica cirugía; no erradican la lesión. Observación especializada solo en situaciones seleccionadas."
+      ],
+      "factIds": [
+        "b04_002_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Tratamiento definitivo: cirugía otológica. No existe fármaco ni dosis que elimine el colesteatoma; vigilancia especializada solo en situaciones seleccionadas. Infección asociada requiere cultivo/examen y prescripción propia, considerando perforación y ototoxicidad. No aplicar gotas inespecíficas como cura.",
+        "Dolor, solo en adulto de al menos 50 kg y sin riesgo hepático: paracetamol 500–1.000 mg por vía oral cada 6 horas si es necesario, máximo 4.000 mg en 24 horas sumando todas las presentaciones. Uso breve; reevaluar si se necesita por más de 3 días. Menor peso, hepatopatía, alcoholismo o fragilidad requieren un límite menor individualizado. No trata la causa."
+      ],
+      "factIds": [
+        "b04_002_f07",
+        "b04_002_f08"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Mantener oído seco; no introducir instrumentos. Las gotas dependen de integridad timpánica y riesgo de ototoxicidad; no presentar antibiótico como cura."
+      ],
+      "factIds": [
+        "b04_002_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguimiento prolongado por enfermedad residual/recurrencia y reevaluación auditiva; consulta urgente ante dolor intenso nuevo, fiebre o déficit facial."
+      ],
+      "factIds": [
+        "b04_002_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Acumulación de epitelio queratinizante en oído medio que puede erosionar estructuras y causar hipoacusia."
+      ],
+      "factIds": [
+        "b04_002_f01"
+      ]
+    }
+  ],
+  "markdown": "# Colesteatoma\n\n## Abordaje inicial y urgencias\n\nParálisis facial, vértigo intenso, fiebre o signos neurológicos sugieren complicación y requieren evaluación hospitalaria urgente.\n\n## Diagnóstico y diferenciales\n\nOtorrea persistente e hipoacusia requieren otoscopia, audiometría y evaluación otológica; imágenes según extensión y planificación.\n\n## Tratamiento: primera elección y alternativas\n\nTratamiento definitivo habitualmente quirúrgico. Cuidados locales y tratamiento de infección asociada controlan síntomas mientras se planifica cirugía; no erradican la lesión. Observación especializada solo en situaciones seleccionadas.\n\n## Fármacos, dosis e intervalos\n\nTratamiento definitivo: cirugía otológica. No existe fármaco ni dosis que elimine el colesteatoma; vigilancia especializada solo en situaciones seleccionadas. Infección asociada requiere cultivo/examen y prescripción propia, considerando perforación y ototoxicidad. No aplicar gotas inespecíficas como cura.\n\nDolor, solo en adulto de al menos 50 kg y sin riesgo hepático: paracetamol 500–1.000 mg por vía oral cada 6 horas si es necesario, máximo 4.000 mg en 24 horas sumando todas las presentaciones. Uso breve; reevaluar si se necesita por más de 3 días. Menor peso, hepatopatía, alcoholismo o fragilidad requieren un límite menor individualizado. No trata la causa.\n\n## Seguridad y monitorización\n\nMantener oído seco; no introducir instrumentos. Las gotas dependen de integridad timpánica y riesgo de ototoxicidad; no presentar antibiótico como cura.\n\n## Reevaluación, internación y alta\n\nSeguimiento prolongado por enfermedad residual/recurrencia y reevaluación auditiva; consulta urgente ante dolor intenso nuevo, fiebre o déficit facial.\n\n## Reconocimiento rápido\n\nAcumulación de epitelio queratinizante en oído medio que puede erosionar estructuras y causar hipoacusia.\n\n## Referencias\n\n1. [NHS — Colesteatoma](https://www.nhs.uk/conditions/cholesteatoma/)\n2. [NHS — Paracetamol for adults: dosing and precautions](https://www.nhs.uk/medicines/paracetamol-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "c521876c288443520a288209349a91302d785cf685124a958a90dc97dad7c20e",
+  "approvedReviewProjectionFileSha256": "5b23e1edf8fbebe407b631c2e8b700fcbfbefff4f1ef61dd19e768e05c9f1664"
+}

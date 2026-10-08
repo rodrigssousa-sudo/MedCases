@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "reviewer": null,
+  "ownerCandidate": "pericondrite_auricular",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Pericondrite auricular",
+    "es": "Pericondritis auricular"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L03",
+  "identityDecision": "NEW_DISTINCT_SCOPE_CANDIDATE; NO_OWNER_REGISTERED",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "treatmentApplicability": "SCENARIO_SPECIFIC_PHARMACOTHERAPY",
+  "regimens": [
+    {
+      "drug": "ciprofloxacino / ceftazidima",
+      "role": "FIRST_LINE_AND_HOSPITAL_ALTERNATIVE",
+      "pt": "Adulto, protocolo regional Forth Valley: ciprofloxacino 750 mg por via oral a cada 12 horas, durante 7 dias, com reavaliação. Via oral inviável: ciprofloxacino 400 mg intravenosos a cada 8 horas; alternativa hospitalar ceftazidima 2 g intravenosos a cada 8 horas. Ajustar à função renal/cultura; abscesso, necrose ou extensão exigem drenagem e duração individualizada. Verificar riscos graves e interações das fluoroquinolonas.",
+      "es": "Adulto, protocolo regional Forth Valley: ciprofloxacino 750 mg por vía oral cada 12 horas, durante 7 días, con reevaluación. Vía oral inviable: ciprofloxacino 400 mg intravenosos cada 8 horas; alternativa hospitalaria ceftazidima 2 g intravenosos cada 8 horas. Ajustar a función renal/cultivo; absceso, necrosis o extensión requieren drenaje y duración individualizada. Comprobar riesgos graves e interacciones de fluoroquinolonas.",
+      "sources": [
+        "perichondritis"
+      ]
+    }
+  ],
+  "treatmentRevision": "ALL_50_REVIEWED_V1.1",
+  "facts": [
+    {
+      "id": "b04_003_f01",
+      "section": "concept",
+      "pt": "Infecção do pericôndrio auricular, frequentemente após piercing/trauma; ameaça a viabilidade da cartilagem.",
+      "es": "Infección del pericondrio auricular, frecuente tras piercing/trauma; amenaza la viabilidad del cartílago.",
+      "sources": [
+        "topic_162",
+        "perichondritis"
+      ]
+    },
+    {
+      "id": "b04_003_f02",
+      "section": "diagnosis",
+      "pt": "Dor, edema e eritema da região cartilaginosa; procurar abscesso e distinguir celulite do lóbulo, otite externa e policondrite. Cultura quando há secreção/coleção.",
+      "es": "Dolor, edema y eritema cartilaginoso; buscar absceso y distinguir celulitis del lóbulo, otitis externa y policondritis. Cultivo si hay secreción/colección.",
+      "sources": [
+        "topic_162",
+        "perichondritis"
+      ]
+    },
+    {
+      "id": "b04_003_f03",
+      "section": "initial",
+      "pt": "Avaliação otorrinolaringológica precoce; abscesso, necrose, febre sistêmica ou imunossupressão favorecem internação e drenagem.",
+      "es": "Evaluación otorrinolaringológica temprana; absceso, necrosis, fiebre sistémica o inmunosupresión favorecen internación y drenaje.",
+      "sources": [
+        "topic_162",
+        "perichondritis"
+      ]
+    },
+    {
+      "id": "b04_003_f04",
+      "section": "options",
+      "pt": "Opções especificadas neste tema: ciprofloxacino / ceftazidima. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Antibiótico com cobertura adequada, incluindo Pseudomonas conforme risco local. Ciprofloxacino oral é opção em adulto elegível; alternativa em gravidade ou via oral inviável: terapia intravenosa protocolada e controle cirúrgico do foco.",
+      "es": "Opciones especificadas en este tema: ciprofloxacino / ceftazidima. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Antibiótico con cobertura adecuada, incluida Pseudomonas según riesgo local. Ciprofloxacino oral es una opción en adulto elegible; alternativa ante gravedad o vía oral inviable: terapia intravenosa protocolizada y control quirúrgico del foco.",
+      "sources": [
+        "topic_162",
+        "perichondritis"
+      ]
+    },
+    {
+      "id": "b04_003_f05",
+      "section": "safety",
+      "pt": "Não extrapolar protocolo adulto para criança/gestante. Fluoroquinolona exige avaliação de riscos, interações e função renal; duração depende de resposta e extensão. Coleção não se resolve apenas com troca de antibiótico.",
+      "es": "No extrapolar protocolo adulto a niños/embarazadas. Fluoroquinolona: evaluar riesgos, interacciones y función renal; duración según respuesta y extensión. Una colección no se resuelve solo cambiando antibiótico.",
+      "sources": [
+        "topic_162",
+        "perichondritis"
+      ]
+    },
+    {
+      "id": "b04_003_f06",
+      "section": "followup",
+      "pt": "Reavaliar resposta e forma da orelha; piora, extensão ou coleção requerem escalonamento urgente. Ajustar após cultura.",
+      "es": "Reevaluar respuesta y forma auricular; empeoramiento, extensión o colección requieren escalamiento urgente. Ajustar tras cultivo.",
+      "sources": [
+        "topic_162",
+        "perichondritis"
+      ]
+    },
+    {
+      "id": "b04_003_f07",
+      "section": "doses",
+      "pt": "Adulto, protocolo regional Forth Valley: ciprofloxacino 750 mg por via oral a cada 12 horas, durante 7 dias, com reavaliação. Via oral inviável: ciprofloxacino 400 mg intravenosos a cada 8 horas; alternativa hospitalar ceftazidima 2 g intravenosos a cada 8 horas. Ajustar à função renal/cultura; abscesso, necrose ou extensão exigem drenagem e duração individualizada. Verificar riscos graves e interações das fluoroquinolonas.",
+      "es": "Adulto, protocolo regional Forth Valley: ciprofloxacino 750 mg por vía oral cada 12 horas, durante 7 días, con reevaluación. Vía oral inviable: ciprofloxacino 400 mg intravenosos cada 8 horas; alternativa hospitalaria ceftazidima 2 g intravenosos cada 8 horas. Ajustar a función renal/cultivo; absceso, necrosis o extensión requieren drenaje y duración individualizada. Comprobar riesgos graves e interacciones de fluoroquinolonas.",
+      "sources": [
+        "perichondritis"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A drenagem preserva cartilagem e complementa antibióticos; escolha antimicrobiana depende do cenário e da susceptibilidade.",
+      "es": "El drenaje preserva cartílago y complementa antibióticos; la elección antimicrobiana depende del contexto y susceptibilidad.",
+      "sources": [
+        "topic_162",
+        "perichondritis"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_162",
+      "title": "NIH/NLM — Pericondrite auricular",
+      "url": "https://medlineplus.gov/ency/article/001253.htm",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Review Date 11/10/2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_162",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "perichondritis",
+      "title": "NHS Forth Valley — perichondritis",
+      "url": "https://www.rightdecisions.scot.nhs.uk/antimicrobial-prescribing-nhs-forth-valley/acute-hospital-guidance/ent/perichondritis/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:perichondritis",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Medicamentos, doses e alternativas identificados por cenário; procedimentos e ausência de fármaco específico explicitados. Regimes sem intervalo universal validado permanecem calculados pelo especialista. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

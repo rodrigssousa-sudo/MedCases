@@ -1,0 +1,138 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Diabetes insípida",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "fc04aa364ded7ceb261ccb9ea16b37e5fd63a641ef9ea67c04bf97c9b5bf54fe",
+  "ownerCandidate": "diabetes_insipido",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_020_f01",
+    "b04_020_f02",
+    "b04_020_f03",
+    "b04_020_f04",
+    "b04_020_f05",
+    "b04_020_f06",
+    "b04_020_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Deshidratación, hipernatremia, alteración neurológica o incapacidad para beber requieren hospital y corrección controlada."
+      ],
+      "factIds": [
+        "b04_020_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Volumen urinario, glucosa, sodio y osmolalidades; excluir polidipsia primaria y diuresis osmótica. Pruebas provocativas solo supervisadas."
+      ],
+      "factIds": [
+        "b04_020_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: desmopressina oral / intranasal. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Déficit central: desmopresina en presentación/dosis individualizadas. Resistencia renal: tratar causa, reducir carga de solutos y considerar tiazida/amilorida en contexto apropiado, especialmente por litio."
+      ],
+      "factIds": [
+        "b04_020_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Diabetes insípida CENTRAL estable: comprimido de desmopresina 100 microgramos por vía oral 3 veces al día como inicio en ficha consultada, titulando por diuresis/sodio. Alternativa en adulto, aerosol intranasal: 10–40 microgramos al día en una dosis o dividido en 2–3 tomas, con titulación propia. No son dosis equivalentes ni se usan juntas. Evitar hiponatremia; acceso a agua, balance, peso y sodio esenciales. No suspender bruscamente en paciente dependiente ni extrapolar a forma nefrogénica."
+      ],
+      "factIds": [
+        "b04_020_f07"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Formas oral, nasal e inyectable no equivalen en dosis. Controlar sodio, líquidos y diuresis; evitar intoxicación hídrica."
+      ],
+      "factIds": [
+        "b04_020_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Plan para enfermedad intercurrente y acceso al agua; endocrinología/nefrología con plan específico en embarazo."
+      ],
+      "factIds": [
+        "b04_020_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Poliuria hipotónica por déficit de vasopresina o resistencia renal; distinta de diabetes mellitus."
+      ],
+      "factIds": [
+        "b04_020_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_179",
+      "title": "NHS — Diabetes insípido",
+      "url": "https://www.nhs.uk/conditions/diabetes-insipidus/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 13 October 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_179",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "topic_179_treatment",
+      "title": "NHS — Diabetes insípido — treatment",
+      "url": "https://www.nhs.uk/conditions/diabetes-insipidus/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 13 October 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_179_treatment",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "desmo_oral",
+      "title": "emc — Desmopressin acetate 100 microgram tablets: cranial DI regimen",
+      "url": "https://www.medicines.org.uk/emc/product/11939/smpc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated on emc: 02 Mar 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:desmo_oral",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "desmo_nasal",
+      "title": "DailyMed — Desmopressin nasal spray: central DI, adult regimen and non-equivalence",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8034989a-45f5-436b-8b1f-42108ee2a21a",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:desmo_nasal",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

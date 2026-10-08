@@ -1,0 +1,152 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "reviewer": null,
+  "ownerCandidate": "nefrite_intersticial_aguda",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Nefrite intersticial aguda",
+    "es": "Nefritis intersticial aguda"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L03",
+  "identityDecision": "NEW_DISTINCT_SCOPE_CANDIDATE; NO_OWNER_REGISTERED",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "treatmentApplicability": "SCENARIO_SPECIFIC_PHARMACOTHERAPY",
+  "regimens": [
+    {
+      "drug": "prednisolona / metilprednisolona",
+      "role": "BIOPSY_PROVEN_DRUG_AIN_SPECIALIST_EXAMPLES",
+      "pt": "Esquemas do ensaio primário em nefrite intersticial medicamentosa comprovada por biópsia: prednisolona 1 mg por kg por dia por via oral durante 3 semanas, seguida de redução nas 3 semanas seguintes; alternativa estudada metilprednisolona 30 mg por kg (máximo 1 g) intravenosa em infusão lenta de 60 minutos, uma vez ao dia durante 3 dias, seguida de prednisolona 1 mg por kg por dia por 2 semanas e redução nas 3 seguintes. Não são prescrição universal; excluir infecção e avaliar cronicidade/fibrose, glicemia e função renal.",
+      "es": "Esquemas del ensayo primario en nefritis intersticial farmacológica confirmada por biopsia: prednisolona 1 mg por kg al día por vía oral durante 3 semanas, seguida de descenso en las 3 semanas siguientes; alternativa estudiada metilprednisolona 30 mg por kg (máximo 1 g) intravenosa en infusión lenta de 60 minutos, una vez al día durante 3 días, seguida de prednisolona 1 mg por kg al día durante 2 semanas y descenso en las 3 siguientes. No son prescripción universal; excluir infección y valorar cronicidad/fibrosis, glucemia y función renal.",
+      "sources": [
+        "ain_trial"
+      ]
+    }
+  ],
+  "treatmentRevision": "ALL_50_REVIEWED_V1.1",
+  "facts": [
+    {
+      "id": "b04_009_f01",
+      "section": "concept",
+      "pt": "Inflamação tubulointersticial, frequentemente medicamentosa, causando lesão renal.",
+      "es": "Inflamación tubulointersticial, a menudo farmacológica, con lesión renal.",
+      "sources": [
+        "topic_168",
+        "ain_trial"
+      ]
+    },
+    {
+      "id": "b04_009_f02",
+      "section": "diagnosis",
+      "pt": "Revisar fármacos, creatinina, urina e causas infecciosas/autoimunes; tríade febre-rash-eosinofilia pode faltar. Biópsia conforme nefrologia.",
+      "es": "Revisar fármacos, creatinina, orina y causas infecciosas/autoinmunes; la tríada fiebre-erupción-eosinofilia puede faltar. Biopsia según nefrología.",
+      "sources": [
+        "topic_168",
+        "ain_trial"
+      ]
+    },
+    {
+      "id": "b04_009_f03",
+      "section": "initial",
+      "pt": "Oligúria, hipercalemia, acidose ou sobrecarga exigem hospitalização e avaliação de diálise.",
+      "es": "Oliguria, hiperpotasemia, acidosis o sobrecarga requieren internación y evaluación de diálisis.",
+      "sources": [
+        "topic_168",
+        "ain_trial"
+      ]
+    },
+    {
+      "id": "b04_009_f04",
+      "section": "options",
+      "pt": "Primeira medida: retirar o agente causal e tratar a causa. Na forma medicamentosa, persistência com biópsia compatível pode justificar prednisolona com nefrologia; pulsoterapia com metilprednisolona é alternativa especializada em casos selecionados, sem benefício superior sustentado no pequeno ensaio comparativo.",
+      "es": "Primera medida: retirar agente causal y tratar causa. En forma farmacológica, persistencia con biopsia compatible puede justificar prednisolona con nefrología; pulsos de metilprednisolona son alternativa especializada en seleccionados, sin beneficio superior sostenido en el pequeño ensayo comparativo.",
+      "sources": [
+        "topic_168",
+        "ain_trial"
+      ]
+    },
+    {
+      "id": "b04_009_f05",
+      "section": "safety",
+      "pt": "Evitar reexposição/nefrotóxicos e ajustar medicamentos à função renal; corticoide não é tratamento universal.",
+      "es": "Evitar reexposición/nefrotóxicos y ajustar medicamentos a función renal; corticoide no es tratamiento universal.",
+      "sources": [
+        "topic_168",
+        "ain_trial"
+      ]
+    },
+    {
+      "id": "b04_009_f06",
+      "section": "followup",
+      "pt": "Monitorizar creatinina, eletrólitos e diurese até recuperação; registrar reação medicamentosa.",
+      "es": "Controlar creatinina, electrolitos y diuresis hasta recuperación; registrar reacción farmacológica.",
+      "sources": [
+        "topic_168",
+        "ain_trial"
+      ]
+    },
+    {
+      "id": "b04_009_f07",
+      "section": "doses",
+      "pt": "Esquemas do ensaio primário em nefrite intersticial medicamentosa comprovada por biópsia: prednisolona 1 mg por kg por dia por via oral durante 3 semanas, seguida de redução nas 3 semanas seguintes; alternativa estudada metilprednisolona 30 mg por kg (máximo 1 g) intravenosa em infusão lenta de 60 minutos, uma vez ao dia durante 3 dias, seguida de prednisolona 1 mg por kg por dia por 2 semanas e redução nas 3 seguintes. Não são prescrição universal; excluir infecção e avaliar cronicidade/fibrose, glicemia e função renal.",
+      "es": "Esquemas del ensayo primario en nefritis intersticial farmacológica confirmada por biopsia: prednisolona 1 mg por kg al día por vía oral durante 3 semanas, seguida de descenso en las 3 semanas siguientes; alternativa estudiada metilprednisolona 30 mg por kg (máximo 1 g) intravenosa en infusión lenta de 60 minutos, una vez al día durante 3 días, seguida de prednisolona 1 mg por kg al día durante 2 semanas y descenso en las 3 siguientes. No son prescripción universal; excluir infección y valorar cronicidad/fibrosis, glucemia y función renal.",
+      "sources": [
+        "ain_trial"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A retirada precoce do gatilho é distinta de imunossupressão; a evidência não define uma dose universal para todos.",
+      "es": "Retirar pronto el desencadenante es distinto de inmunosupresión; la evidencia no define una dosis universal.",
+      "sources": [
+        "topic_168",
+        "ain_trial"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_168",
+      "title": "NIH/NLM — Nefrite intersticial aguda",
+      "url": "https://medlineplus.gov/ency/article/000464.htm",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Review Date 9/2/2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_168",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "ain_trial",
+      "title": "Ramachandran et al — Biopsy-proven drug-induced AIN: randomized steroid-regimen trial, 2015",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4588323/",
+      "authorityStatus": "PRIMARY_CLINICAL_STUDY_NOT_UNIVERSAL_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:ain_trial",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Medicamentos, doses e alternativas identificados por cenário; procedimentos e ausência de fármaco específico explicitados. Regimes sem intervalo universal validado permanecem calculados pelo especialista. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

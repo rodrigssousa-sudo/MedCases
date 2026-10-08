@@ -1,0 +1,125 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Trastorno neurológico funcional",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "7a785224db57ff398b888a77eb5ae3e89287f7dab4048a72798718c7763200e5",
+  "ownerCandidate": "transtorno_neurologico_funcional",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_046_f01",
+    "b04_046_f02",
+    "b04_046_f03",
+    "b04_046_f04",
+    "b04_046_f05",
+    "b04_046_f06",
+    "b04_046_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Déficit agudo nuevo: excluir urgencia; no etiquetar por antecedentes psiquiátricos."
+      ],
+      "factIds": [
+        "b04_046_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Diagnóstico por signos positivos compatibles y evaluación especializada; puede coexistir enfermedad orgánica."
+      ],
+      "factIds": [
+        "b04_046_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Explicación compartida y rehabilitación funcional específica; psicoterapia puede complementar y tratar comorbilidades. No hay fármaco universal curativo."
+      ],
+      "factIds": [
+        "b04_046_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "No hay medicamento específico demostrado para trastorno neurológico funcional. Primera elección: explicar diagnóstico positivo y rehabilitación adaptada; psicoterapia como alternativa/complemento según necesidad. Fármacos solo para comorbilidad diagnosticada, con esquema propio; no usar anticonvulsivos para crisis funcionales sin epilepsia coexistente ni prescribir dos fármacos para completar opciones."
+      ],
+      "factIds": [
+        "b04_046_f07"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Mantener vigilancia ante cambios clínicos, evitando procedimientos repetidos sin indicación. Tratamientos físicos y psicológicos individualizados; no se indican dos fármacos específicos como regla."
+      ],
+      "factIds": [
+        "b04_046_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Plan multidisciplinario y objetivos funcionales graduales; consultar ante signos nuevos."
+      ],
+      "factIds": [
+        "b04_046_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Síntomas neurológicos reales relacionados a funcionamiento de redes, no equivalentes a simulación."
+      ],
+      "factIds": [
+        "b04_046_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "fnd_nhs",
+      "title": "NHS Scotland — Functional Neurological Disorder pathway",
+      "url": "https://www.rightdecisions.scot.nhs.uk/neurology-pathways/functional-neurological-disorder-fnd/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "review date:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:fnd_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "fnd_washu",
+      "title": "Washington University Medicine — functional neurologic disorder rehabilitation",
+      "url": "https://pt.wustl.edu/patient-care/service-lines/multidisciplinary-services/functional-neurologic-disorder/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:fnd_washu",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "neuro",
+      "title": "NICE NG127 — Neurological conditions referral",
+      "url": "https://www.nice.org.uk/guidance/ng127/chapter/Recommendations-for-adults-aged-over-16",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE NG127: sinais novos em diagnóstico prévio de transtorno funcional exigem avaliação; não atribuir automaticamente tudo ao diagnóstico anterior.",
+      "sourceEvidenceRecord": "web-verification-record.json:neuro",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

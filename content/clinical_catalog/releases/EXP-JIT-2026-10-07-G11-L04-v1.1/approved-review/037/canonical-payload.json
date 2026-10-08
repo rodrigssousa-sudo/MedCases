@@ -1,0 +1,192 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "reviewer": null,
+  "ownerCandidate": "doenca_de_von_willebrand",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Doença de von Willebrand",
+    "es": "Enfermedad de von Willebrand"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L03",
+  "identityDecision": "NEW_DISTINCT_SCOPE_CANDIDATE; NO_OWNER_REGISTERED",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "treatmentApplicability": "SCENARIO_SPECIFIC_PHARMACOTHERAPY",
+  "regimens": [
+    {
+      "drug": "desmopressina",
+      "role": "RESPONSIVE_TYPE1_VWD",
+      "pt": "Tipo 1 responsivo, paciente elegível sob hematologia: desmopressina 0,3 micrograma por kg de peso real intravenosa, máximo 20 microgramas, em infusão de 15–30 minutos. Em adulto de pelo menos 10 kg, diluir na solução de cloreto de sódio 0,9% conforme bula, usualmente 50 mL; verificar apresentação. Repetição depende de resposta, sódio e taquifilaxia. Restringir líquidos conforme protocolo; contraindicada no tipo 2B, não usar no tipo 3, hiponatremia ou depuração abaixo de 50 mL por minuto. Não é monoterapia suficiente para cirurgia maior.",
+      "es": "Tipo 1 respondedor, paciente elegible por hematología: desmopresina 0,3 microgramo por kg de peso real intravenosa, máximo 20 microgramos, en infusión de 15–30 minutos. En adulto de al menos 10 kg, diluir en solución de cloruro de sodio 0,9% según ficha, habitualmente 50 mL; comprobar presentación. Repetición según respuesta, sodio y taquifilaxia. Restringir líquidos según protocolo; contraindicada en tipo 2B, no usar en tipo 3, hiponatremia o depuración menor de 50 mL por minuto. No basta como monoterapia en cirugía mayor.",
+      "sources": [
+        "desmo_vwd",
+        "vwd_full"
+      ]
+    },
+    {
+      "drug": "ácido tranexâmico",
+      "role": "POSTPARTUM_ADJUNCT_SCENARIO",
+      "pt": "Cenário específico pós-parto em mulher com doença de von Willebrand/baixo fator e indicação hematológica: ácido tranexâmico 25 mg por kg por via oral, usualmente 1.000–1.300 mg, 3 vezes ao dia durante 10–14 dias; prolongar apenas se perda continuar relevante e equipe indicar. Não aplicar automaticamente esta duração a cirurgia ou outros sangramentos. Ajustar se disfunção renal; avaliar trombose e evitar uso sem especialista na hematúria do trato urinário superior. Sangramento importante pode exigir concentrado de fator de von Willebrand, com produto e dose calculados pela equipe.",
+      "es": "Escenario específico posparto en mujer con enfermedad de von Willebrand/factor bajo e indicación hematológica: ácido tranexámico 25 mg por kg por vía oral, habitualmente 1.000–1.300 mg, 3 veces al día durante 10–14 días; prolongar solo si pérdida sigue relevante y equipo indica. No aplicar automáticamente duración a cirugía u otros sangrados. Ajustar con disfunción renal; valorar trombosis y evitar uso sin especialista en hematuria del tracto urinario superior. Sangrado importante puede requerir concentrado de factor de von Willebrand, con producto y dosis calculados por equipo.",
+      "sources": [
+        "vwd_full"
+      ]
+    }
+  ],
+  "treatmentRevision": "ALL_50_REVIEWED_V1.1",
+  "facts": [
+    {
+      "id": "b04_037_f01",
+      "section": "concept",
+      "pt": "Defeito quantitativo/qualitativo do fator von Willebrand prejudica hemostasia.",
+      "es": "Defecto cuantitativo/cualitativo de factor von Willebrand altera hemostasia.",
+      "sources": [
+        "topic_196",
+        "vwd_full",
+        "desmo_vwd"
+      ]
+    },
+    {
+      "id": "b04_037_f02",
+      "section": "diagnosis",
+      "pt": "História hemorrágica, fator von Willebrand e fator VIII; classificar subtipo com hematologia.",
+      "es": "Historia hemorrágica, factor von Willebrand y factor VIII; clasificar subtipo con hematología.",
+      "sources": [
+        "topic_196",
+        "vwd_full",
+        "desmo_vwd"
+      ]
+    },
+    {
+      "id": "b04_037_f03",
+      "section": "initial",
+      "pt": "Hemorragia importante: estabilização, controle do foco e hematologia urgente.",
+      "es": "Hemorragia importante: estabilización, control del foco y hematología urgente.",
+      "sources": [
+        "topic_196",
+        "vwd_full",
+        "desmo_vwd"
+      ]
+    },
+    {
+      "id": "b04_037_f04",
+      "section": "options",
+      "pt": "Opções especificadas neste tema: desmopressina; ácido tranexâmico. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Desmopressina apenas em subtipo/paciente responsivo elegível; alternativa: concentrado de fator von Willebrand. Ácido tranexâmico complementa cenários mucosos/procedimentos apropriados.",
+      "es": "Opciones especificadas en este tema: desmopressina; ácido tranexâmico. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Desmopresina solo en subtipo/paciente respondedor elegible; alternativa: concentrado de factor von Willebrand. Ácido tranexámico complementa escenarios mucosos/procedimientos apropiados.",
+      "sources": [
+        "topic_196",
+        "vwd_full",
+        "desmo_vwd"
+      ]
+    },
+    {
+      "id": "b04_037_f05",
+      "section": "safety",
+      "pt": "Desmopressina exige controle hídrico/sódio; é contraindicada no tipo 2B e ineficaz/contraindicada no tipo 3. Cirurgia maior não deve depender apenas dela. Cirurgia/parto exigem metas laboratoriais e plano hematológico; evitar dose universal.",
+      "es": "Desmopresina exige control hídrico/sodio; está contraindicada en tipo 2B y es ineficaz/contraindicada en tipo 3. Cirugía mayor no debe depender solo de ella. Cirugía/parto requieren metas de laboratorio y plan hematológico; evitar dosis universal.",
+      "sources": [
+        "topic_196",
+        "vwd_full",
+        "desmo_vwd"
+      ]
+    },
+    {
+      "id": "b04_037_f06",
+      "section": "followup",
+      "pt": "Plano de sangramento, procedimentos e gestação; registro de resposta ao teste terapêutico.",
+      "es": "Plan de sangrado, procedimientos y embarazo; registrar respuesta a prueba terapéutica.",
+      "sources": [
+        "topic_196",
+        "vwd_full",
+        "desmo_vwd"
+      ]
+    },
+    {
+      "id": "b04_037_f07",
+      "section": "doses",
+      "pt": "Tipo 1 responsivo, paciente elegível sob hematologia: desmopressina 0,3 micrograma por kg de peso real intravenosa, máximo 20 microgramas, em infusão de 15–30 minutos. Em adulto de pelo menos 10 kg, diluir na solução de cloreto de sódio 0,9% conforme bula, usualmente 50 mL; verificar apresentação. Repetição depende de resposta, sódio e taquifilaxia. Restringir líquidos conforme protocolo; contraindicada no tipo 2B, não usar no tipo 3, hiponatremia ou depuração abaixo de 50 mL por minuto. Não é monoterapia suficiente para cirurgia maior.",
+      "es": "Tipo 1 respondedor, paciente elegible por hematología: desmopresina 0,3 microgramo por kg de peso real intravenosa, máximo 20 microgramos, en infusión de 15–30 minutos. En adulto de al menos 10 kg, diluir en solución de cloruro de sodio 0,9% según ficha, habitualmente 50 mL; comprobar presentación. Repetición según respuesta, sodio y taquifilaxia. Restringir líquidos según protocolo; contraindicada en tipo 2B, no usar en tipo 3, hiponatremia o depuración menor de 50 mL por minuto. No basta como monoterapia en cirugía mayor.",
+      "sources": [
+        "desmo_vwd",
+        "vwd_full"
+      ]
+    },
+    {
+      "id": "b04_037_f08",
+      "section": "doses",
+      "pt": "Cenário específico pós-parto em mulher com doença de von Willebrand/baixo fator e indicação hematológica: ácido tranexâmico 25 mg por kg por via oral, usualmente 1.000–1.300 mg, 3 vezes ao dia durante 10–14 dias; prolongar apenas se perda continuar relevante e equipe indicar. Não aplicar automaticamente esta duração a cirurgia ou outros sangramentos. Ajustar se disfunção renal; avaliar trombose e evitar uso sem especialista na hematúria do trato urinário superior. Sangramento importante pode exigir concentrado de fator de von Willebrand, com produto e dose calculados pela equipe.",
+      "es": "Escenario específico posparto en mujer con enfermedad de von Willebrand/factor bajo e indicación hematológica: ácido tranexámico 25 mg por kg por vía oral, habitualmente 1.000–1.300 mg, 3 veces al día durante 10–14 días; prolongar solo si pérdida sigue relevante y equipo indica. No aplicar automáticamente duración a cirugía u otros sangrados. Ajustar con disfunción renal; valorar trombosis y evitar uso sin especialista en hematuria del tracto urinario superior. Sangrado importante puede requerir concentrado de factor de von Willebrand, con producto y dosis calculados por equipo.",
+      "sources": [
+        "vwd_full"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Eficácia e segurança variam pelo subtipo; não substituir concentrado por desmopressina sem elegibilidade.",
+      "es": "Eficacia y seguridad según subtipo; no sustituir concentrado por desmopresina sin elegibilidad.",
+      "sources": [
+        "topic_196",
+        "vwd_full",
+        "desmo_vwd"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_196",
+      "title": "NHS — Doença de von Willebrand",
+      "url": "https://www.nhs.uk/conditions/von-willebrand-disease/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 08 April 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_196",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "vwd_full",
+      "title": "ASH/ISTH/NHF/WFH — VWD guideline original primary text",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7805326/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2021,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published correction appears in PLoS One. 2017;12(2):e0172185]. PLoS One. 2016;11(10):e0164683. [DOI] [PMC fr",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:vwd_full",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "desmo_vwd",
+      "title": "DailyMed — DDAVP injection: type 1 von Willebrand hemostatic infusion",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=651f6fee-a2c7-431b-8d5d-58b156c72244",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:desmo_vwd",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Medicamentos, doses e alternativas identificados por cenário; procedimentos e ausência de fármaco específico explicitados. Regimes sem intervalo universal validado permanecem calculados pelo especialista. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

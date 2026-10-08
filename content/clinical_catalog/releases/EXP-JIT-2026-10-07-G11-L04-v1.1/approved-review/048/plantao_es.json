@@ -1,0 +1,141 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Intoxicación por fenitoína",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "ab413e5d480a63e3631a725c3e288c13c983e09f46cf2fd44a53fe530d73c601",
+  "ownerCandidate": "intoxicacao_por_fenitoina",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_048_f01",
+    "b04_048_f02",
+    "b04_048_f03",
+    "b04_048_f04",
+    "b04_048_f05",
+    "b04_048_f06",
+    "b04_048_f07",
+    "b04_048_f08"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Soporte de vía aérea y perfusión; distinguir toxicidad por administración intravenosa rápida."
+      ],
+      "factIds": [
+        "b04_048_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Historia, nivel sérico interpretado con albúmina/función renal, ECG y coingestas."
+      ],
+      "factIds": [
+        "b04_048_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Soporte y suspensión temporal supervisada principales. Hemodiálisis puede considerarse ante coma/ataxia incapacitante prolongados según toxicología/EXTRIP."
+      ],
+      "factIds": [
+        "b04_048_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Convulsión prolongada en adulto: lorazepam 4 mg intravenosos lentamente, sin superar 2 mg por minuto; si persiste/recurre, puede repetirse 4 mg después de 10–15 minutos, con equipo de reanimación y control respiratorio. Referencia pediátrica separada: midazolam 0,15 mg por kg intravenosos (máximo 10 mg por dosis) o 0,3 mg por kg por vía bucal/intranasal (máximo 10 mg); como máximo 2 dosis de benzodiazepina, contando las prehospitalarias. No administrar preventivamente al intoxicado asintomático.",
+        "Fenitoína: suspender exposición y dar soporte; no hay antídoto específico. No administrar nueva carga de fenitoína para convulsión causada por la propia intoxicación. Carbón y eliminación extracorpórea son decisiones toxicológicas seleccionadas, no obligatorias. Controlar nivel total/libre según albúmina/riñón, ECG, conciencia y deglución."
+      ],
+      "factIds": [
+        "b04_048_f07",
+        "b04_048_f08"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No indicar terapia extracorpórea solo por dosis ingerida o nivel sérico. Carbón no es descontaminación rutinaria en este escenario."
+      ],
+      "factIds": [
+        "b04_048_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Controlar evolución y niveles cuando indicados; alta tras recuperación funcional y plan anticonvulsivo."
+      ],
+      "factIds": [
+        "b04_048_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Exposición excesiva causa nistagmo, ataxia y depresión neurológica; cinética no lineal."
+      ],
+      "factIds": [
+        "b04_048_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_207",
+      "title": "RCH — Intoxicação por fenitoína",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Phenytoin_poisoning/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated January 2018",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_207",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "extrip_pht",
+      "title": "EXTRIP — Phenytoin",
+      "url": "https://www.extrip-workgroup.org/phenytoin",
+      "authorityStatus": "SOCIETY_TOXICOLOGY_RECOMMENDATIONS",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:extrip_pht",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "loraz_label",
+      "title": "DailyMed — Lorazepam injection: adult status epilepticus regimen",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5a02c97d-637d-43f7-803c-afe4381ccc59",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:loraz_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "midazolam_rch",
+      "title": "RCH — Seizures, acute management: pediatric benzodiazepine doses",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Seizures_-_acute_management/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published: 27 April 2022. https://www.nice.org.uk/guidance/ng217 (viewed October 2024).",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:midazolam_rch",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

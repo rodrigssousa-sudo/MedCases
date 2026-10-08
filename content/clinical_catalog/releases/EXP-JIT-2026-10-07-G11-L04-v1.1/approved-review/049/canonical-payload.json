@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "reviewer": null,
+  "ownerCandidate": "intoxicacao_por_anti_inflamatorios_nao_esteroides",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Intoxicação por anti-inflamatórios não esteroides",
+    "es": "Intoxicación por antiinflamatorios no esteroideos"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L03",
+  "identityDecision": "NEW_DISTINCT_SCOPE_CANDIDATE; NO_OWNER_REGISTERED",
+  "relatedExistingOwners": [
+    "intox_salicilatos"
+  ],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "treatmentApplicability": "TOXICOLOGY_SUPPORT_WITH_INDICATED_COMPLICATION_RESCUE",
+  "regimens": [
+    {
+      "drug": "lorazepam / midazolam",
+      "role": "COMPLICATION_RESCUE_SEIZURE",
+      "pt": "Convulsão prolongada no adulto: lorazepam 4 mg intravenosos lentamente, sem exceder 2 mg por minuto; se persistir/recorrer, pode repetir 4 mg após 10–15 minutos, com equipe de reanimação e controle respiratório. Referência pediátrica separada: midazolam 0,15 mg por kg intravenosos (máximo 10 mg por dose) ou 0,3 mg por kg por via bucal/intranasal (máximo 10 mg); no máximo 2 doses de benzodiazepínico, contando as pré-hospitalares. Não administrar preventivamente ao intoxicado assintomático.",
+      "es": "Convulsión prolongada en adulto: lorazepam 4 mg intravenosos lentamente, sin superar 2 mg por minuto; si persiste/recurre, puede repetirse 4 mg después de 10–15 minutos, con equipo de reanimación y control respiratorio. Referencia pediátrica separada: midazolam 0,15 mg por kg intravenosos (máximo 10 mg por dosis) o 0,3 mg por kg por vía bucal/intranasal (máximo 10 mg); como máximo 2 dosis de benzodiazepina, contando las prehospitalarias. No administrar preventivamente al intoxicado asintomático.",
+      "sources": [
+        "loraz_label",
+        "midazolam_rch"
+      ]
+    },
+    {
+      "drug": "omeprazol",
+      "role": "ONLY_SELECTED_ADULT_DIGESTIVE_COMPLICATION",
+      "pt": "Adulto com úlcera associada a anti-inflamatório confirmada e indicação de supressão ácida: omeprazol 20 mg por via oral uma vez ao dia, usualmente 4–8 semanas na bula para cicatrização, com investigação/reavaliação. Não é antídoto nem curso automático para todo overdose. Hemorragia, perfuração ou instabilidade exigem atendimento hospitalar e protocolo próprio; não extrapolar dose adulta para criança intoxicada.",
+      "es": "Adulto con úlcera asociada a antiinflamatorio confirmada e indicación de supresión ácida: omeprazol 20 mg por vía oral una vez al día, habitualmente 4–8 semanas en ficha para cicatrización, con investigación/reevaluación. No es antídoto ni curso automático para toda sobredosis. Hemorragia, perforación o inestabilidad requieren hospital y protocolo propio; no extrapolar dosis adulta a niño intoxicado.",
+      "sources": [
+        "omeprazole_label",
+        "topic_208"
+      ]
+    }
+  ],
+  "treatmentRevision": "ALL_50_REVIEWED_V1.1",
+  "facts": [
+    {
+      "id": "b04_049_f01",
+      "section": "concept",
+      "pt": "Superdose pode causar sintomas digestivos, lesão renal e, em grandes exposições, depressão neurológica/acidose.",
+      "es": "Sobredosis puede causar síntomas digestivos, lesión renal y en grandes exposiciones depresión neurológica/acidosis.",
+      "sources": [
+        "topic_208",
+        "loraz_label",
+        "midazolam_rch",
+        "omeprazole_label"
+      ]
+    },
+    {
+      "id": "b04_049_f02",
+      "section": "diagnosis",
+      "pt": "Identificar fármaco, quantidade, formulação e coingestões; função renal, eletrólitos e gasometria conforme gravidade.",
+      "es": "Identificar fármaco, cantidad, formulación y coingestas; función renal, electrolitos y gasometría según gravedad.",
+      "sources": [
+        "topic_208",
+        "loraz_label",
+        "midazolam_rch",
+        "omeprazole_label"
+      ]
+    },
+    {
+      "id": "b04_049_f03",
+      "section": "initial",
+      "pt": "ABCDE e hidratação adequada à perfusão, sem sobrecarga indiscriminada; toxicologia se sintomático.",
+      "es": "ABCDE e hidratación según perfusión sin sobrecarga indiscriminada; toxicología si sintomático.",
+      "sources": [
+        "topic_208",
+        "loraz_label",
+        "midazolam_rch",
+        "omeprazole_label"
+      ]
+    },
+    {
+      "id": "b04_049_f04",
+      "section": "options",
+      "pt": "Suporte e tratamento de complicações são primeira escolha; não há antídoto universal. Omeprazol pode ser usado para sintomas/lesão digestiva selecionada, sem prevenir ou reverter toxicidade renal. Convulsões prolongadas exigem benzodiazepínico, com esquema de emergência abaixo. Carvão não é rotina no protocolo pediátrico RCH.",
+      "es": "Soporte y tratamiento de complicaciones como primera elección; no hay antídoto universal. Omeprazol puede usarse para síntomas/lesión digestiva seleccionada, sin prevenir ni revertir toxicidad renal. Convulsiones prolongadas requieren benzodiazepina, con esquema urgente siguiente. Carbón no es rutina en protocolo pediátrico RCH.",
+      "sources": [
+        "topic_208",
+        "loraz_label",
+        "midazolam_rch",
+        "omeprazole_label"
+      ]
+    },
+    {
+      "id": "b04_049_f05",
+      "section": "safety",
+      "pt": "Protocolo RCH é pediátrico: não extrapolar limiares entre AINEs ou adultos. Salicilatos têm via toxicológica própria; carvão não é indicado rotineiramente neste protocolo.",
+      "es": "Protocolo RCH pediátrico: no extrapolar umbrales entre AINE o adultos. Salicilatos: vía toxicológica propia; carbón no indicado rutinariamente en este protocolo.",
+      "sources": [
+        "topic_208",
+        "loraz_label",
+        "midazolam_rch",
+        "omeprazole_label"
+      ]
+    },
+    {
+      "id": "b04_049_f06",
+      "section": "followup",
+      "pt": "Internação se sintomas/alterações importantes; alta conforme fármaco, evolução e avaliação de autoagressão.",
+      "es": "Internación si síntomas/alteraciones importantes; alta según fármaco, evolución y evaluación de autolesión.",
+      "sources": [
+        "topic_208",
+        "loraz_label",
+        "midazolam_rch",
+        "omeprazole_label"
+      ]
+    },
+    {
+      "id": "b04_049_f07",
+      "section": "doses",
+      "pt": "Convulsão prolongada no adulto: lorazepam 4 mg intravenosos lentamente, sem exceder 2 mg por minuto; se persistir/recorrer, pode repetir 4 mg após 10–15 minutos, com equipe de reanimação e controle respiratório. Referência pediátrica separada: midazolam 0,15 mg por kg intravenosos (máximo 10 mg por dose) ou 0,3 mg por kg por via bucal/intranasal (máximo 10 mg); no máximo 2 doses de benzodiazepínico, contando as pré-hospitalares. Não administrar preventivamente ao intoxicado assintomático.",
+      "es": "Convulsión prolongada en adulto: lorazepam 4 mg intravenosos lentamente, sin superar 2 mg por minuto; si persiste/recurre, puede repetirse 4 mg después de 10–15 minutos, con equipo de reanimación y control respiratorio. Referencia pediátrica separada: midazolam 0,15 mg por kg intravenosos (máximo 10 mg por dosis) o 0,3 mg por kg por vía bucal/intranasal (máximo 10 mg); como máximo 2 dosis de benzodiazepina, contando las prehospitalarias. No administrar preventivamente al intoxicado asintomático.",
+      "sources": [
+        "loraz_label",
+        "midazolam_rch"
+      ]
+    },
+    {
+      "id": "b04_049_f08",
+      "section": "doses",
+      "pt": "Adulto com úlcera associada a anti-inflamatório confirmada e indicação de supressão ácida: omeprazol 20 mg por via oral uma vez ao dia, usualmente 4–8 semanas na bula para cicatrização, com investigação/reavaliação. Não é antídoto nem curso automático para todo overdose. Hemorragia, perfuração ou instabilidade exigem atendimento hospitalar e protocolo próprio; não extrapolar dose adulta para criança intoxicada.",
+      "es": "Adulto con úlcera asociada a antiinflamatorio confirmada e indicación de supresión ácida: omeprazol 20 mg por vía oral una vez al día, habitualmente 4–8 semanas en ficha para cicatrización, con investigación/reevaluación. No es antídoto ni curso automático para toda sobredosis. Hemorragia, perforación o inestabilidad requieren hospital y protocolo propio; no extrapolar dosis adulta a niño intoxicado.",
+      "sources": [
+        "omeprazole_label",
+        "topic_208"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Suporte e terapias por complicação são opções complementares; não inventar dois antídotos.",
+      "es": "Soporte y terapias de complicaciones son complementarias; no inventar dos antídotos.",
+      "sources": [
+        "topic_208",
+        "loraz_label",
+        "midazolam_rch",
+        "omeprazole_label"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_208",
+      "title": "RCH — Intoxicação por anti-inflamatórios não esteroides",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Nonsteroidal_Anti-inflammatory_Drug_NSAID_poisoning/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last Updated April 2019",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_208",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "loraz_label",
+      "title": "DailyMed — Lorazepam injection: adult status epilepticus regimen",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5a02c97d-637d-43f7-803c-afe4381ccc59",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:loraz_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "midazolam_rch",
+      "title": "RCH — Seizures, acute management: pediatric benzodiazepine doses",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Seizures_-_acute_management/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published: 27 April 2022. https://www.nice.org.uk/guidance/ng217 (viewed October 2024).",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:midazolam_rch",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "omeprazole_label",
+      "title": "emc — Omeprazole: NSAID-associated peptic ulcer healing regimen",
+      "url": "https://www.medicines.org.uk/emc/product/4895/smpc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published evidence suggests that proton pump inhibitors should be discontinued between 5 days and 2 weeks pri",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:omeprazole_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Medicamentos, doses e alternativas identificados por cenário; procedimentos e ausência de fármaco específico explicitados. Regimes sem intervalo universal validado permanecem calculados pelo especialista. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

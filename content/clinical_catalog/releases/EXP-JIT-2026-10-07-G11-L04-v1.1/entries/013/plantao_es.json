@@ -1,0 +1,219 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Síndrome de dolor pélvico crónico masculino",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "4a95e8efaa2370709993f7e37d86f8d77e3119c934241bb5d26aa6d8d0297d55",
+  "ownerCandidate": "sindrome_de_dor_pelvica_cronica_masculina",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_013_f01",
+    "b04_013_f02",
+    "b04_013_f03",
+    "b04_013_f04",
+    "b04_013_f05",
+    "b04_013_f06",
+    "b04_013_f07",
+    "b04_013_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Fiebre, retención o dolor escrotal agudo requiere otra vía diagnóstica urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Excluir infección, retención, enfermedad testicular y neoplasia; evaluar síntomas urinarios, músculos pélvicos e impacto psicosocial."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opciones especificadas en este tema: tamsulosina; amitriptilina. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Abordaje multimodal: fisioterapia pélvica/relajación, educación y tratamiento del dolor. Alfa-bloqueante puede ayudar a paciente elegible con síntomas urinarios; antiinflamatorio en curso seleccionado es alternativa sintomática."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Síntomas miccionales en adulto seleccionado: tamsulosina 400 microgramos por vía oral una vez al día, tras la misma comida, como ensayo terapéutico con evaluación urológica; uso en este síndrome puede ser fuera de ficha. Reevaluar beneficio y suspender si es ineficaz. Controlar hipotensión postural, eyaculación e interacciones; avisar al oftalmólogo antes de cirugía de catarata. No es antibiótico ni tratamiento universal del dolor pélvico."
+    },
+    {
+      "type": "paragraph",
+      "text": "Dolor neuropático en adulto seleccionado: amitriptilina 10 mg por vía oral por la noche; titular lentamente según tolerancia, habitualmente a 25–75 mg al día. No es rescate inmediato. Valorar sedación, caídas, retención urinaria, glaucoma, interacciones y riesgo de arritmia; duración y retirada gradual según respuesta. No iniciar ante sospecha de intoxicación o alto riesgo de autolesión."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No repetir antibióticos indiscriminadamente. EAU contempla ensayo antimicrobiano en pacientes seleccionados sin tratamiento previo; urología debe ponderar exposición previa y resistencia."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar dolor, función, efectos adversos y adherencia; apoyo psicológico y dolor especializado cuando necesario."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dolor pélvico/prostático persistente sin infección bacteriana demostrada; distinto de prostatitis bacteriana aguda."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_172",
+      "title": "NHS — Síndrome de dor pélvica crônica masculina",
+      "url": "https://www.nhs.uk/conditions/prostatitis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 19 February 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_172",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "eaudor",
+      "title": "EAU — Chronic pelvic pain, management",
+      "url": "https://uroweb.org/guidelines/chronic-pelvic-pain/chapter/management",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published for patients with PPPS (total n = 774) [507]. It is hypothesised that there may be some immunologic",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:eaudor",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "tamsulosin_nhs",
+      "title": "NHS — Tamsulosin: oral adult dosing",
+      "url": "https://www.nhs.uk/medicines/tamsulosin/how-and-when-to-take-tamsulosin/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 2 February 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:tamsulosin_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "amitrip_label",
+      "title": "emc — Amitriptyline: adult neuropathic pain starting dose and titration",
+      "url": "https://www.medicines.org.uk/emc/product/10850/smpc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated on emc: 25 Sep 2026",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:amitrip_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "neuropathic",
+      "title": "NICE CG173 — Neuropathic pain",
+      "url": "https://www.nice.org.uk/guidance/cg173/chapter/Recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE CG173: amitriptilina/duloxetina/gabapentina/pregabalina na neuropatia dolorosa; carbamazepina para neuralgia trigeminal. Não confundir os dois algoritmos.",
+      "sourceEvidenceRecord": "web-verification-record.json:neuropathic",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Fiebre, retención o dolor escrotal agudo requiere otra vía diagnóstica urgente."
+      ],
+      "factIds": [
+        "b04_013_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Excluir infección, retención, enfermedad testicular y neoplasia; evaluar síntomas urinarios, músculos pélvicos e impacto psicosocial."
+      ],
+      "factIds": [
+        "b04_013_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: tamsulosina; amitriptilina. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Abordaje multimodal: fisioterapia pélvica/relajación, educación y tratamiento del dolor. Alfa-bloqueante puede ayudar a paciente elegible con síntomas urinarios; antiinflamatorio en curso seleccionado es alternativa sintomática."
+      ],
+      "factIds": [
+        "b04_013_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Síntomas miccionales en adulto seleccionado: tamsulosina 400 microgramos por vía oral una vez al día, tras la misma comida, como ensayo terapéutico con evaluación urológica; uso en este síndrome puede ser fuera de ficha. Reevaluar beneficio y suspender si es ineficaz. Controlar hipotensión postural, eyaculación e interacciones; avisar al oftalmólogo antes de cirugía de catarata. No es antibiótico ni tratamiento universal del dolor pélvico.",
+        "Dolor neuropático en adulto seleccionado: amitriptilina 10 mg por vía oral por la noche; titular lentamente según tolerancia, habitualmente a 25–75 mg al día. No es rescate inmediato. Valorar sedación, caídas, retención urinaria, glaucoma, interacciones y riesgo de arritmia; duración y retirada gradual según respuesta. No iniciar ante sospecha de intoxicación o alto riesgo de autolesión."
+      ],
+      "factIds": [
+        "b04_013_f07",
+        "b04_013_f08"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No repetir antibióticos indiscriminadamente. EAU contempla ensayo antimicrobiano en pacientes seleccionados sin tratamiento previo; urología debe ponderar exposición previa y resistencia."
+      ],
+      "factIds": [
+        "b04_013_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar dolor, función, efectos adversos y adherencia; apoyo psicológico y dolor especializado cuando necesario."
+      ],
+      "factIds": [
+        "b04_013_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Dolor pélvico/prostático persistente sin infección bacteriana demostrada; distinto de prostatitis bacteriana aguda."
+      ],
+      "factIds": [
+        "b04_013_f01"
+      ]
+    }
+  ],
+  "markdown": "# Síndrome de dolor pélvico crónico masculino\n\n## Abordaje inicial y urgencias\n\nFiebre, retención o dolor escrotal agudo requiere otra vía diagnóstica urgente.\n\n## Diagnóstico y diferenciales\n\nExcluir infección, retención, enfermedad testicular y neoplasia; evaluar síntomas urinarios, músculos pélvicos e impacto psicosocial.\n\n## Tratamiento: primera elección y alternativas\n\nOpciones especificadas en este tema: tamsulosina; amitriptilina. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Abordaje multimodal: fisioterapia pélvica/relajación, educación y tratamiento del dolor. Alfa-bloqueante puede ayudar a paciente elegible con síntomas urinarios; antiinflamatorio en curso seleccionado es alternativa sintomática.\n\n## Fármacos, dosis e intervalos\n\nSíntomas miccionales en adulto seleccionado: tamsulosina 400 microgramos por vía oral una vez al día, tras la misma comida, como ensayo terapéutico con evaluación urológica; uso en este síndrome puede ser fuera de ficha. Reevaluar beneficio y suspender si es ineficaz. Controlar hipotensión postural, eyaculación e interacciones; avisar al oftalmólogo antes de cirugía de catarata. No es antibiótico ni tratamiento universal del dolor pélvico.\n\nDolor neuropático en adulto seleccionado: amitriptilina 10 mg por vía oral por la noche; titular lentamente según tolerancia, habitualmente a 25–75 mg al día. No es rescate inmediato. Valorar sedación, caídas, retención urinaria, glaucoma, interacciones y riesgo de arritmia; duración y retirada gradual según respuesta. No iniciar ante sospecha de intoxicación o alto riesgo de autolesión.\n\n## Seguridad y monitorización\n\nNo repetir antibióticos indiscriminadamente. EAU contempla ensayo antimicrobiano en pacientes seleccionados sin tratamiento previo; urología debe ponderar exposición previa y resistencia.\n\n## Reevaluación, internación y alta\n\nReevaluar dolor, función, efectos adversos y adherencia; apoyo psicológico y dolor especializado cuando necesario.\n\n## Reconocimiento rápido\n\nDolor pélvico/prostático persistente sin infección bacteriana demostrada; distinto de prostatitis bacteriana aguda.\n\n## Referencias\n\n1. [NHS — Síndrome de dor pélvica crônica masculina](https://www.nhs.uk/conditions/prostatitis/)\n2. [EAU — Chronic pelvic pain, management](https://uroweb.org/guidelines/chronic-pelvic-pain/chapter/management)\n3. [NHS — Tamsulosin: oral adult dosing](https://www.nhs.uk/medicines/tamsulosin/how-and-when-to-take-tamsulosin/)\n4. [emc — Amitriptyline: adult neuropathic pain starting dose and titration](https://www.medicines.org.uk/emc/product/10850/smpc)\n5. [NICE CG173 — Neuropathic pain](https://www.nice.org.uk/guidance/cg173/chapter/Recommendations)",
+  "approvedReviewCanonicalFileSha256": "88a52f4a38e9860e1f95d02867cec9676b244b8c1d16000c197c88a5521b7e55",
+  "approvedReviewProjectionFileSha256": "e09c93c7b51ca72d4b054d1a704f63aca6922a578a38df14f07d48d210125342"
+}

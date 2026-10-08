@@ -1,0 +1,193 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Artrite por cristais de pirofosfato de cálcio",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "effaab38cae7c5de6be0f0be0b1747a3a418459e1575d37082c7ab28235bd8bb",
+  "ownerCandidate": "artrite_por_cristais_de_pirofosfato_de_calcio",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_027_f01",
+    "b04_027_f02",
+    "b04_027_f03",
+    "b04_027_f04",
+    "b04_027_f05",
+    "b04_027_f06",
+    "b04_027_f07",
+    "b04_027_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Articulação quente com febre ou imunossupressão exige avaliação de artrite séptica."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Líquido sinovial pesquisa cristais e cultura; imagem pode apoiar, mas cristais não excluem infecção simultânea."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opções especificadas neste tema: colchicina; naproxeno. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Aspiração e corticoide intra-articular após excluir infecção em monoartrite; alternativas: colchicina, anti-inflamatório ou corticoide oral conforme perfil e extensão."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Após excluir artrite séptica: colchicina em adulto elegível, 0,5 mg por via oral até 3–4 vezes ao dia no esquema EULAR para crise aguda, com ou sem dose inicial de 1 mg; duração pelo alívio e tolerância. Preferir esquema cauteloso em idosos; doença renal/hepática e inibidores fortes de CYP3A4/P-glicoproteína podem contraindicar ou exigir outro tratamento. Diarreia, fraqueza ou toxicidade exigem suspensão/reavaliação. Profilaxia de crises frequentes é outro esquema: 0,5–1 mg por dia, com revisão especializada."
+    },
+    {
+      "type": "paragraph",
+      "text": "Controle sintomático em adulto: naproxeno 250–500 mg por via oral a cada 12 horas, com alimento; máximo 1.000 mg por dia neste esquema. Usar menor dose eficaz pelo menor tempo e reavaliar, sem substituir tratamento modificador da doença. Evitar com outro anti-inflamatório, doença renal significativa, úlcera/sangramento ou gestação; considerar proteção gástrica conforme risco."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Avaliar rim, fígado, interações e risco gastrointestinal; não usar alopurinol para remover cristais de pirofosfato."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reavaliar resolução e recorrência; investigar distúrbios metabólicos em apresentação apropriada."
+    },
+    {
+      "type": "heading",
+      "text": "Reconhecimento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Depósito de cristais de pirofosfato cálcico pode causar artrite aguda; não equivale à gota por urato."
+    }
+  ],
+  "references": [
+    {
+      "key": "cppd",
+      "title": "ACR — CPPD",
+      "url": "https://rheumatology.org/I-Am-A/Patient-Caregiver/Diseases-Conditions/Calcium-Pyrophosphate-Deposition-CPPD",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:cppd",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "cppd_eular",
+      "title": "EULAR — CPPD management, final recommendations 2011: colchicine and alternatives",
+      "url": "https://ard.bmj.com/content/annrheumdis/70/4/571.full.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Final EULAR primary CPPD recommendations 2011 read via publisher indexed full-PDF recommendation text: oral colchicine 0.5 mg up to 3–4 times daily with optional 1 mg initial dose; preventive 0.5–1 mg daily. Evidence largely expert opinion/extrapolation, not a 2026 new guideline.",
+      "sourceEvidenceRecord": "web-verification-record.json:cppd_eular",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "naproxen_label",
+      "title": "DailyMed — Naproxen tablets: adult rheumatic dosing",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=96601d76-50ea-4dc0-b588-d174f8d8bb51",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:naproxen_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Articulação quente com febre ou imunossupressão exige avaliação de artrite séptica."
+      ],
+      "factIds": [
+        "b04_027_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Líquido sinovial pesquisa cristais e cultura; imagem pode apoiar, mas cristais não excluem infecção simultânea."
+      ],
+      "factIds": [
+        "b04_027_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: colchicina; naproxeno. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Aspiração e corticoide intra-articular após excluir infecção em monoartrite; alternativas: colchicina, anti-inflamatório ou corticoide oral conforme perfil e extensão."
+      ],
+      "factIds": [
+        "b04_027_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Após excluir artrite séptica: colchicina em adulto elegível, 0,5 mg por via oral até 3–4 vezes ao dia no esquema EULAR para crise aguda, com ou sem dose inicial de 1 mg; duração pelo alívio e tolerância. Preferir esquema cauteloso em idosos; doença renal/hepática e inibidores fortes de CYP3A4/P-glicoproteína podem contraindicar ou exigir outro tratamento. Diarreia, fraqueza ou toxicidade exigem suspensão/reavaliação. Profilaxia de crises frequentes é outro esquema: 0,5–1 mg por dia, com revisão especializada.",
+        "Controle sintomático em adulto: naproxeno 250–500 mg por via oral a cada 12 horas, com alimento; máximo 1.000 mg por dia neste esquema. Usar menor dose eficaz pelo menor tempo e reavaliar, sem substituir tratamento modificador da doença. Evitar com outro anti-inflamatório, doença renal significativa, úlcera/sangramento ou gestação; considerar proteção gástrica conforme risco."
+      ],
+      "factIds": [
+        "b04_027_f07",
+        "b04_027_f08"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Avaliar rim, fígado, interações e risco gastrointestinal; não usar alopurinol para remover cristais de pirofosfato."
+      ],
+      "factIds": [
+        "b04_027_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar resolução e recorrência; investigar distúrbios metabólicos em apresentação apropriada."
+      ],
+      "factIds": [
+        "b04_027_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Depósito de cristais de pirofosfato cálcico pode causar artrite aguda; não equivale à gota por urato."
+      ],
+      "factIds": [
+        "b04_027_f01"
+      ]
+    }
+  ],
+  "markdown": "# Artrite por cristais de pirofosfato de cálcio\n\n## Abordagem inicial e urgências\n\nArticulação quente com febre ou imunossupressão exige avaliação de artrite séptica.\n\n## Diagnóstico e diferenciais\n\nLíquido sinovial pesquisa cristais e cultura; imagem pode apoiar, mas cristais não excluem infecção simultânea.\n\n## Tratamento: primeira escolha e alternativas\n\nOpções especificadas neste tema: colchicina; naproxeno. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Aspiração e corticoide intra-articular após excluir infecção em monoartrite; alternativas: colchicina, anti-inflamatório ou corticoide oral conforme perfil e extensão.\n\n## Fármacos, doses e intervalos\n\nApós excluir artrite séptica: colchicina em adulto elegível, 0,5 mg por via oral até 3–4 vezes ao dia no esquema EULAR para crise aguda, com ou sem dose inicial de 1 mg; duração pelo alívio e tolerância. Preferir esquema cauteloso em idosos; doença renal/hepática e inibidores fortes de CYP3A4/P-glicoproteína podem contraindicar ou exigir outro tratamento. Diarreia, fraqueza ou toxicidade exigem suspensão/reavaliação. Profilaxia de crises frequentes é outro esquema: 0,5–1 mg por dia, com revisão especializada.\n\nControle sintomático em adulto: naproxeno 250–500 mg por via oral a cada 12 horas, com alimento; máximo 1.000 mg por dia neste esquema. Usar menor dose eficaz pelo menor tempo e reavaliar, sem substituir tratamento modificador da doença. Evitar com outro anti-inflamatório, doença renal significativa, úlcera/sangramento ou gestação; considerar proteção gástrica conforme risco.\n\n## Segurança e monitorização\n\nAvaliar rim, fígado, interações e risco gastrointestinal; não usar alopurinol para remover cristais de pirofosfato.\n\n## Reavaliação, internação e alta\n\nReavaliar resolução e recorrência; investigar distúrbios metabólicos em apresentação apropriada.\n\n## Reconhecimento rápido\n\nDepósito de cristais de pirofosfato cálcico pode causar artrite aguda; não equivale à gota por urato.\n\n## Referências\n\n1. [ACR — CPPD](https://rheumatology.org/I-Am-A/Patient-Caregiver/Diseases-Conditions/Calcium-Pyrophosphate-Deposition-CPPD)\n2. [EULAR — CPPD management, final recommendations 2011: colchicine and alternatives](https://ard.bmj.com/content/annrheumdis/70/4/571.full.pdf)\n3. [DailyMed — Naproxen tablets: adult rheumatic dosing](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=96601d76-50ea-4dc0-b588-d174f8d8bb51)",
+  "approvedReviewCanonicalFileSha256": "114f6a544b839ac9ad591a409c171732257e50cba4bb21dca0a0b739d7b83174",
+  "approvedReviewProjectionFileSha256": "ecf7a1e8550129a62328acac26e43761194d0b9fb406627a2ac559c0076862a9"
+}

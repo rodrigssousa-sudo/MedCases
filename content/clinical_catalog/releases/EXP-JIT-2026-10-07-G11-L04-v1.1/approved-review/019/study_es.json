@@ -1,0 +1,119 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Reflujo vesicoureteral",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "04935cc91b3c00da9b53a9a564e01adc47ed1775423771b70956aa451ec51b1a",
+  "ownerCandidate": "refluxo_vesicoureteral",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_019_f01",
+    "b04_019_f02",
+    "b04_019_f03",
+    "b04_019_f04",
+    "b04_019_f05",
+    "b04_019_f06",
+    "b04_019_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Retorno de orina de vejiga a uréter/riñón, primario o secundario a disfunción/obstrucción."
+      ],
+      "factIds": [
+        "b04_019_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Prevenir infección y corregir anatomía son estrategias distintas; el reflujo puede mejorar con crecimiento."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar infecciones febriles, función renal y vejiga/intestino; ecografía y cistouretrografía según indicación."
+      ],
+      "factIds": [
+        "b04_019_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Fiebre con sospecha urinaria: muestra adecuada y tratamiento oportuno; sepsis/obstrucción requieren internación."
+      ],
+      "factIds": [
+        "b04_019_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: trimetoprima / cefalexina. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Bajo riesgo: vigilancia y tratar estreñimiento/disfunción miccional. Alternativas seleccionadas: profilaxis antimicrobiana o corrección endoscópica/quirúrgica según grado, recurrencia y daño renal."
+      ],
+      "factIds": [
+        "b04_019_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Reflujo con indicación especializada de profilaxis por infección urinaria recurrente: referencia NICE, 3 meses a 11 años, trimetoprima 2 mg por kg por vía oral por la noche, máximo 100 mg por dosis; 12–15 años, 100 mg por la noche. Alternativa de segunda elección, 3 meses a 15 años: cefalexina 12,5 mg por kg por vía oral por la noche, máximo 125 mg por dosis, profilaxis fuera de ficha. No confundir profilaxis con tratamiento de infección febril. Elegir según cultivo/resistencia y función renal; reevaluar al menos cada 6 meses, sin curso indefinido automático."
+      ],
+      "factIds": [
+        "b04_019_f07"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No indicar profilaxis a todo niño; elección/dosis por edad, peso y susceptibilidad con urología pediátrica."
+      ],
+      "factIds": [
+        "b04_019_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguir crecimiento, presión, infecciones y cicatriz renal; consulta ante fiebre."
+      ],
+      "factIds": [
+        "b04_019_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_178",
+      "title": "NIDDK_URO — Refluxo vesicoureteral",
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/hydronephrosis-newborns/vesicoureteral-reflux",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last Reviewed June 2018",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_178",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "uti_prophy_nice",
+      "title": "NICE NG112 — Recurrent UTI prophylaxis: pediatric specialist regimens, updated 2024",
+      "url": "https://www.nice.org.uk/guidance/ng112/chapter/recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Final NICE NG112 recommendations, not draft: indexed Table 2 read. Specialist pediatric prophylaxis trimethoprim 2 mg/kg at night max100 mg through 11 years; 12–15 years100 mg; cefalexin12.5 mg/kg at night max125 mg, ages3 months–15 years. This is selected recurrent-UTI prophylaxis, not treatment of acute febrile infection and not automatic for all VUR.",
+      "sourceEvidenceRecord": "web-verification-record.json:uti_prophy_nice",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

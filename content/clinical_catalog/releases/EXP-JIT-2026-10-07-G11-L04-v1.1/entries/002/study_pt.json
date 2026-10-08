@@ -1,0 +1,195 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Colesteatoma",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "9eabd77e81b614ca39cf68d471454802d400580d2bb053f5753a118d857c0010",
+  "ownerCandidate": "colesteatoma",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_002_f01",
+    "b04_002_f02",
+    "b04_002_f03",
+    "b04_002_f04",
+    "b04_002_f05",
+    "b04_002_f06",
+    "b04_002_f07",
+    "b04_002_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Conceito e mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Acúmulo de epitélio queratinizante no ouvido médio pode erodir estruturas e causar perda auditiva."
+    },
+    {
+      "type": "heading",
+      "text": "Raciocínio e escolha terapêutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "A lesão é estrutural: opções locais são complementares, e não dois fármacos curativos intercambiáveis."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico e diferenciais"
+    },
+    {
+      "type": "paragraph",
+      "text": "Otorreia persistente e perda auditiva requerem otoscopia, audiometria e avaliação otológica; imagem é definida conforme extensão e planejamento."
+    },
+    {
+      "type": "heading",
+      "text": "Abordagem inicial e urgências"
+    },
+    {
+      "type": "paragraph",
+      "text": "Paralisia facial, vertigem intensa, febre ou sinais neurológicos indicam complicação e avaliação hospitalar urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamento: primeira escolha e alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tratamento definitivo geralmente cirúrgico. Cuidados locais e tratamento da infecção associada controlam sintomas enquanto se planeja cirurgia; não erradicam a lesão. Observação especializada somente em situações selecionadas."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, doses e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tratamento definitivo: cirurgia otológica. Não existe fármaco ou dose que elimine o colesteatoma; vigilância especializada é alternativa apenas em situações selecionadas. Infecção associada precisa de cultura/exame e prescrição própria, considerando perfuração e ototoxicidade. Não aplicar gotas inespecíficas como cura."
+    },
+    {
+      "type": "paragraph",
+      "text": "Dor, somente em adulto com pelo menos 50 kg e sem risco hepático: paracetamol 500–1.000 mg por via oral a cada 6 horas se necessário, máximo 4.000 mg em 24 horas somando todas as apresentações. Uso breve; reavaliar se precisar por mais de 3 dias. Peso menor, hepatopatia, alcoolismo ou fragilidade exigem limite menor individualizado. Não trata a causa."
+    },
+    {
+      "type": "heading",
+      "text": "Segurança e monitorização"
+    },
+    {
+      "type": "paragraph",
+      "text": "Manter ouvido seco; não introduzir instrumentos. A escolha de gotas depende da integridade timpânica e risco de ototoxicidade; não oferecer antibiótico como cura."
+    },
+    {
+      "type": "heading",
+      "text": "Reavaliação, internação e alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguimento prolongado por risco de doença residual/recorrência e reavaliação auditiva; retorno urgente se nova dor intensa, febre ou déficit facial."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_161",
+      "title": "NHS — Colesteatoma",
+      "url": "https://www.nhs.uk/conditions/cholesteatoma/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 20 February 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_161",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "paracetamol_nhs",
+      "title": "NHS — Paracetamol for adults: dosing and precautions",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 24 March 2026",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:paracetamol_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Acúmulo de epitélio queratinizante no ouvido médio pode erodir estruturas e causar perda auditiva."
+      ],
+      "factIds": [
+        "b04_002_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "A lesão é estrutural: opções locais são complementares, e não dois fármacos curativos intercambiáveis."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Otorreia persistente e perda auditiva requerem otoscopia, audiometria e avaliação otológica; imagem é definida conforme extensão e planejamento."
+      ],
+      "factIds": [
+        "b04_002_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Paralisia facial, vertigem intensa, febre ou sinais neurológicos indicam complicação e avaliação hospitalar urgente."
+      ],
+      "factIds": [
+        "b04_002_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Tratamento definitivo geralmente cirúrgico. Cuidados locais e tratamento da infecção associada controlam sintomas enquanto se planeja cirurgia; não erradicam a lesão. Observação especializada somente em situações selecionadas."
+      ],
+      "factIds": [
+        "b04_002_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Tratamento definitivo: cirurgia otológica. Não existe fármaco ou dose que elimine o colesteatoma; vigilância especializada é alternativa apenas em situações selecionadas. Infecção associada precisa de cultura/exame e prescrição própria, considerando perfuração e ototoxicidade. Não aplicar gotas inespecíficas como cura.",
+        "Dor, somente em adulto com pelo menos 50 kg e sem risco hepático: paracetamol 500–1.000 mg por via oral a cada 6 horas se necessário, máximo 4.000 mg em 24 horas somando todas as apresentações. Uso breve; reavaliar se precisar por mais de 3 dias. Peso menor, hepatopatia, alcoolismo ou fragilidade exigem limite menor individualizado. Não trata a causa."
+      ],
+      "factIds": [
+        "b04_002_f07",
+        "b04_002_f08"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Manter ouvido seco; não introduzir instrumentos. A escolha de gotas depende da integridade timpânica e risco de ototoxicidade; não oferecer antibiótico como cura."
+      ],
+      "factIds": [
+        "b04_002_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Seguimento prolongado por risco de doença residual/recorrência e reavaliação auditiva; retorno urgente se nova dor intensa, febre ou déficit facial."
+      ],
+      "factIds": [
+        "b04_002_f06"
+      ]
+    }
+  ],
+  "markdown": "# Colesteatoma\n\n## Conceito e mecanismo\n\nAcúmulo de epitélio queratinizante no ouvido médio pode erodir estruturas e causar perda auditiva.\n\n## Raciocínio e escolha terapêutica\n\nA lesão é estrutural: opções locais são complementares, e não dois fármacos curativos intercambiáveis.\n\n## Diagnóstico e diferenciais\n\nOtorreia persistente e perda auditiva requerem otoscopia, audiometria e avaliação otológica; imagem é definida conforme extensão e planejamento.\n\n## Abordagem inicial e urgências\n\nParalisia facial, vertigem intensa, febre ou sinais neurológicos indicam complicação e avaliação hospitalar urgente.\n\n## Tratamento: primeira escolha e alternativas\n\nTratamento definitivo geralmente cirúrgico. Cuidados locais e tratamento da infecção associada controlam sintomas enquanto se planeja cirurgia; não erradicam a lesão. Observação especializada somente em situações selecionadas.\n\n## Fármacos, doses e intervalos\n\nTratamento definitivo: cirurgia otológica. Não existe fármaco ou dose que elimine o colesteatoma; vigilância especializada é alternativa apenas em situações selecionadas. Infecção associada precisa de cultura/exame e prescrição própria, considerando perfuração e ototoxicidade. Não aplicar gotas inespecíficas como cura.\n\nDor, somente em adulto com pelo menos 50 kg e sem risco hepático: paracetamol 500–1.000 mg por via oral a cada 6 horas se necessário, máximo 4.000 mg em 24 horas somando todas as apresentações. Uso breve; reavaliar se precisar por mais de 3 dias. Peso menor, hepatopatia, alcoolismo ou fragilidade exigem limite menor individualizado. Não trata a causa.\n\n## Segurança e monitorização\n\nManter ouvido seco; não introduzir instrumentos. A escolha de gotas depende da integridade timpânica e risco de ototoxicidade; não oferecer antibiótico como cura.\n\n## Reavaliação, internação e alta\n\nSeguimento prolongado por risco de doença residual/recorrência e reavaliação auditiva; retorno urgente se nova dor intensa, febre ou déficit facial.\n\n## Referências\n\n1. [NHS — Colesteatoma](https://www.nhs.uk/conditions/cholesteatoma/)\n2. [NHS — Paracetamol for adults: dosing and precautions](https://www.nhs.uk/medicines/paracetamol-for-adults/)",
+  "approvedReviewCanonicalFileSha256": "c521876c288443520a288209349a91302d785cf685124a958a90dc97dad7c20e",
+  "approvedReviewProjectionFileSha256": "d4966fb9717fd18dd2271190a8dabba7148b63e81263695e03dd3e3a6c2758eb"
+}

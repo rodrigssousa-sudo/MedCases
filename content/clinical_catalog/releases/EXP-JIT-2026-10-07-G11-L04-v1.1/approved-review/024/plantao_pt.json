@@ -1,0 +1,180 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Artrite psoriásica",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "69730db73523fca0a5cddf20644ecc76f552454fbf04c7140bf90d6e0d9bce20",
+  "ownerCandidate": "artrite_psoriasica",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_024_f01",
+    "b04_024_f02",
+    "b04_024_f03",
+    "b04_024_f04",
+    "b04_024_f05",
+    "b04_024_f06",
+    "b04_024_f07",
+    "b04_024_f08"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Articulação quente febril ou olho vermelho doloroso exige investigação urgente."
+      ],
+      "factIds": [
+        "b04_024_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Examinar pele/unhas e domínios musculoesqueléticos; excluir artrite séptica e cristais."
+      ],
+      "factIds": [
+        "b04_024_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: metotrexato / leflunomida; adalimumabe. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Anti-inflamatório pode aliviar doença leve selecionada. Artrite periférica persistente: DMARD como metotrexato; alternativas incluem leflunomida/sulfassalazina e, conforme domínio/resposta, biológicos."
+      ],
+      "factIds": [
+        "b04_024_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Artrite psoriásica periférica em adulto: metotrexato, dose-alvo usual 20–25 mg por via oral ou subcutânea UMA VEZ POR SEMANA, alcançada por titulação especializada, com folato; nunca diariamente. Alternativa leflunomida 20 mg por via oral uma vez ao dia, com especialista, sem associação automática ao metotrexato. Tratamento prolongado com revisão de atividade, hemograma, fígado e rins. Ambos exigem prevenção de gestação e avaliação de hepatotoxicidade; metotrexato não é opção eficaz para acometimento axial isolado.",
+        "Adalimumabe, adulto elegível após falha/intolerância à estratégia convencional: 40 mg por via subcutânea a cada 2 semanas para artrite psoriásica ou espondilite anquilosante, conforme indicação. Tratamento de manutenção, reavaliado pela reumatologia. Rastrear tuberculose/hepatite B e infecção; não iniciar com infecção ativa importante, nem associar a outro biológico. Avaliar insuficiência cardíaca e doença desmielinizante."
+      ],
+      "factIds": [
+        "b04_024_f07",
+        "b04_024_f08"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "DMARD periférico não é solução universal para doença axial/entesite. Selecionar terapia considerando pele, doença intestinal e uveíte; revisar infecção e risco reprodutivo."
+      ],
+      "factIds": [
+        "b04_024_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Tratar por alvo com reumatologia, fisioterapia e monitorização laboratorial."
+      ],
+      "factIds": [
+        "b04_024_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Doença inflamatória associada à psoríase, com artrite, entesite, dactilite ou acometimento axial."
+      ],
+      "factIds": [
+        "b04_024_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_183",
+      "title": "NHS — Artrite psoriásica",
+      "url": "https://www.nhs.uk/conditions/psoriatic-arthritis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 06 September 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_183",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "eular_index",
+      "title": "EULAR — Published management recommendations",
+      "url": "https://www.eular.org/recommendations-management",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published in that year:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:eular_index",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "mtx_safety",
+      "title": "MHRA — methotrexate once weekly safety update, 2020",
+      "url": "https://www.gov.uk/drug-safety-update/methotrexate-once-weekly-for-autoimmune-diseases-new-measures-to-reduce-risk-of-fatal-overdose-due-to-inadvertent-daily-instead-of-weekly-dosing",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2020,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:mtx_safety",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "psa2023",
+      "title": "EULAR — Psoriatic arthritis pharmacological management: final update 2023, published 2024",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11103320/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "EULAR final atualização 2023 publicada 2024: DMARD periférico, terapia por domínio, pele/intestino/uveíte influenciam escolha. Resumo primário indexado consultado; não alegar leitura integral captcha.",
+      "sourceEvidenceRecord": "web-verification-record.json:psa2023",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "psa_mtx",
+      "title": "EULAR — Psoriatic arthritis recommendations 2023, published 2024: methotrexate target dose",
+      "url": "https://ard.bmj.com/content/83/6/706",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Final EULAR PsA2023 update, published2024, specific treatment recommendation read from publisher text: methotrexate usual adequate target20–25 mg weekly with folate; peripheral arthritis, not isolated axial disease. Leflunomide alternative; automatic combination discouraged.",
+      "sourceEvidenceRecord": "web-verification-record.json:psa_mtx",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "leflun_label",
+      "title": "DailyMed — Leflunomide: adult maintenance dose and safety",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=fc044417-cd9a-42f6-8a3d-a14e7c2f81a2",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:leflun_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "adalim_label",
+      "title": "DailyMed — HUMIRA: adult RA, PsA and ankylosing spondylitis dosing",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=608d4f0d-b19f-46d3-749a-7159aa5f933d",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:adalim_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+{
+  "RESULT": "PASS",
+  "command": "dart --suppress-analytics analyze canary.dart",
+  "exitCode": 0,
+  "output": "No issues found!",
+  "sourceCodeChanged": false
+}

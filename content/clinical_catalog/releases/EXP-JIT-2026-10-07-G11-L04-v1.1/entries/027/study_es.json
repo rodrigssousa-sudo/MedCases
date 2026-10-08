@@ -1,0 +1,208 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Artritis por cristales de pirofosfato cálcico",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "effaab38cae7c5de6be0f0be0b1747a3a418459e1575d37082c7ab28235bd8bb",
+  "ownerCandidate": "artrite_por_cristais_de_pirofosfato_de_calcio",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_027_f01",
+    "b04_027_f02",
+    "b04_027_f03",
+    "b04_027_f04",
+    "b04_027_f05",
+    "b04_027_f06",
+    "b04_027_f07",
+    "b04_027_f08"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Depósito de cristales de pirofosfato cálcico puede causar artritis aguda; distinto de gota por urato."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "El tratamiento controla inflamación sin eliminar definitivamente el depósito cristalino."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Líquido sinovial para cristales y cultivo; imágenes apoyan, pero cristales no excluyen infección simultánea."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Articulación caliente con fiebre o inmunosupresión requiere evaluar artritis séptica."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opciones especificadas en este tema: colchicina; naproxeno. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Aspiración y corticoide intraarticular tras excluir infección en monoartritis; alternativas: colchicina, antiinflamatorio o corticoide oral según perfil y extensión."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tras excluir artritis séptica: colchicina en adulto elegible, 0,5 mg por vía oral hasta 3–4 veces al día en esquema EULAR para crisis aguda, con o sin dosis inicial de 1 mg; duración según alivio y tolerancia. Preferir esquema cauteloso en mayores; enfermedad renal/hepática e inhibidores potentes de CYP3A4/P-glicoproteína pueden contraindicar o exigir otro tratamiento. Diarrea, debilidad o toxicidad requieren suspensión/reevaluación. Profilaxis de crisis frecuentes es otro esquema: 0,5–1 mg al día, con revisión especializada."
+    },
+    {
+      "type": "paragraph",
+      "text": "Control sintomático en adulto: naproxeno 250–500 mg por vía oral cada 12 horas, con comida; máximo 1.000 mg al día en este esquema. Usar la menor dosis eficaz durante el menor tiempo y reevaluar, sin reemplazar tratamiento modificador de la enfermedad. Evitar otro antiinflamatorio, enfermedad renal importante, úlcera/sangrado o embarazo; valorar protección gástrica según riesgo."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar riñón, hígado, interacciones y riesgo gastrointestinal; no usar alopurinol para eliminar cristales de pirofosfato."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar resolución y recurrencia; investigar trastornos metabólicos en presentación apropiada."
+    }
+  ],
+  "references": [
+    {
+      "key": "cppd",
+      "title": "ACR — CPPD",
+      "url": "https://rheumatology.org/I-Am-A/Patient-Caregiver/Diseases-Conditions/Calcium-Pyrophosphate-Deposition-CPPD",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:cppd",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "cppd_eular",
+      "title": "EULAR — CPPD management, final recommendations 2011: colchicine and alternatives",
+      "url": "https://ard.bmj.com/content/annrheumdis/70/4/571.full.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Final EULAR primary CPPD recommendations 2011 read via publisher indexed full-PDF recommendation text: oral colchicine 0.5 mg up to 3–4 times daily with optional 1 mg initial dose; preventive 0.5–1 mg daily. Evidence largely expert opinion/extrapolation, not a 2026 new guideline.",
+      "sourceEvidenceRecord": "web-verification-record.json:cppd_eular",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "naproxen_label",
+      "title": "DailyMed — Naproxen tablets: adult rheumatic dosing",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=96601d76-50ea-4dc0-b588-d174f8d8bb51",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:naproxen_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Depósito de cristales de pirofosfato cálcico puede causar artritis aguda; distinto de gota por urato."
+      ],
+      "factIds": [
+        "b04_027_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "El tratamiento controla inflamación sin eliminar definitivamente el depósito cristalino."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Líquido sinovial para cristales y cultivo; imágenes apoyan, pero cristales no excluyen infección simultánea."
+      ],
+      "factIds": [
+        "b04_027_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Articulación caliente con fiebre o inmunosupresión requiere evaluar artritis séptica."
+      ],
+      "factIds": [
+        "b04_027_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: colchicina; naproxeno. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Aspiración y corticoide intraarticular tras excluir infección en monoartritis; alternativas: colchicina, antiinflamatorio o corticoide oral según perfil y extensión."
+      ],
+      "factIds": [
+        "b04_027_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Tras excluir artritis séptica: colchicina en adulto elegible, 0,5 mg por vía oral hasta 3–4 veces al día en esquema EULAR para crisis aguda, con o sin dosis inicial de 1 mg; duración según alivio y tolerancia. Preferir esquema cauteloso en mayores; enfermedad renal/hepática e inhibidores potentes de CYP3A4/P-glicoproteína pueden contraindicar o exigir otro tratamiento. Diarrea, debilidad o toxicidad requieren suspensión/reevaluación. Profilaxis de crisis frecuentes es otro esquema: 0,5–1 mg al día, con revisión especializada.",
+        "Control sintomático en adulto: naproxeno 250–500 mg por vía oral cada 12 horas, con comida; máximo 1.000 mg al día en este esquema. Usar la menor dosis eficaz durante el menor tiempo y reevaluar, sin reemplazar tratamiento modificador de la enfermedad. Evitar otro antiinflamatorio, enfermedad renal importante, úlcera/sangrado o embarazo; valorar protección gástrica según riesgo."
+      ],
+      "factIds": [
+        "b04_027_f07",
+        "b04_027_f08"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Evaluar riñón, hígado, interacciones y riesgo gastrointestinal; no usar alopurinol para eliminar cristales de pirofosfato."
+      ],
+      "factIds": [
+        "b04_027_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar resolución y recurrencia; investigar trastornos metabólicos en presentación apropiada."
+      ],
+      "factIds": [
+        "b04_027_f06"
+      ]
+    }
+  ],
+  "markdown": "# Artritis por cristales de pirofosfato cálcico\n\n## Concepto y mecanismo\n\nDepósito de cristales de pirofosfato cálcico puede causar artritis aguda; distinto de gota por urato.\n\n## Razonamiento y elección terapéutica\n\nEl tratamiento controla inflamación sin eliminar definitivamente el depósito cristalino.\n\n## Diagnóstico y diferenciales\n\nLíquido sinovial para cristales y cultivo; imágenes apoyan, pero cristales no excluyen infección simultánea.\n\n## Abordaje inicial y urgencias\n\nArticulación caliente con fiebre o inmunosupresión requiere evaluar artritis séptica.\n\n## Tratamiento: primera elección y alternativas\n\nOpciones especificadas en este tema: colchicina; naproxeno. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Aspiración y corticoide intraarticular tras excluir infección en monoartritis; alternativas: colchicina, antiinflamatorio o corticoide oral según perfil y extensión.\n\n## Fármacos, dosis e intervalos\n\nTras excluir artritis séptica: colchicina en adulto elegible, 0,5 mg por vía oral hasta 3–4 veces al día en esquema EULAR para crisis aguda, con o sin dosis inicial de 1 mg; duración según alivio y tolerancia. Preferir esquema cauteloso en mayores; enfermedad renal/hepática e inhibidores potentes de CYP3A4/P-glicoproteína pueden contraindicar o exigir otro tratamiento. Diarrea, debilidad o toxicidad requieren suspensión/reevaluación. Profilaxis de crisis frecuentes es otro esquema: 0,5–1 mg al día, con revisión especializada.\n\nControl sintomático en adulto: naproxeno 250–500 mg por vía oral cada 12 horas, con comida; máximo 1.000 mg al día en este esquema. Usar la menor dosis eficaz durante el menor tiempo y reevaluar, sin reemplazar tratamiento modificador de la enfermedad. Evitar otro antiinflamatorio, enfermedad renal importante, úlcera/sangrado o embarazo; valorar protección gástrica según riesgo.\n\n## Seguridad y monitorización\n\nEvaluar riñón, hígado, interacciones y riesgo gastrointestinal; no usar alopurinol para eliminar cristales de pirofosfato.\n\n## Reevaluación, internación y alta\n\nReevaluar resolución y recurrencia; investigar trastornos metabólicos en presentación apropiada.\n\n## Referencias\n\n1. [ACR — CPPD](https://rheumatology.org/I-Am-A/Patient-Caregiver/Diseases-Conditions/Calcium-Pyrophosphate-Deposition-CPPD)\n2. [EULAR — CPPD management, final recommendations 2011: colchicine and alternatives](https://ard.bmj.com/content/annrheumdis/70/4/571.full.pdf)\n3. [DailyMed — Naproxen tablets: adult rheumatic dosing](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=96601d76-50ea-4dc0-b588-d174f8d8bb51)",
+  "approvedReviewCanonicalFileSha256": "114f6a544b839ac9ad591a409c171732257e50cba4bb21dca0a0b739d7b83174",
+  "approvedReviewProjectionFileSha256": "6a5ef1d7b1aee28f5cf3e6ed96a70af00100065c0ef3278bb1a10010a04acd91"
+}

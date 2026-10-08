@@ -1,0 +1,125 @@
+{
+  "mode": "PLANTAO",
+  "language": "pt",
+  "title": "Hiperaldosteronismo primário",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "c6806a03e51a51f6d9e03f5c49dfc0af5dcd3979b0c3d9d1b793a84b32d8302b",
+  "ownerCandidate": "hiperaldosteronismo_primario",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_021_f01",
+    "b04_021_f02",
+    "b04_021_f03",
+    "b04_021_f04",
+    "b04_021_f05",
+    "b04_021_f06",
+    "b04_021_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Hipocalemia sintomática ou crise hipertensiva requer estabilização monitorizada."
+      ],
+      "factIds": [
+        "b04_021_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Dosar aldosterona/renina com interpretação de potássio e interferência medicamentosa; definir lateralização antes de cirurgia."
+      ],
+      "factIds": [
+        "b04_021_f02"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: espironolactona / eplerenona. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Doença lateralizada operável: adrenalectomia após avaliação apropriada. Bilateral ou não cirúrgica: antagonista mineralocorticoide, geralmente espironolactona; eplerenona é alternativa quando elegível."
+      ],
+      "factIds": [
+        "b04_021_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Hiperaldosteronismo tratado clinicamente em adulto: espironolactona 25 mg por via oral uma vez ao dia como início, com titulação conforme pressão, potássio, creatinina e renina. Intolerância endócrina/contraindicação selecionada: eplerenona 25 mg por via oral a cada 12 horas como alternativa inicial. Tratamento prolongado; não usar doses pré-operatórias altas como início habitual. Evitar hipercalemia, insuficiência renal avançada e gestação; revisar interações e controle laboratorial após mudanças."
+      ],
+      "factIds": [
+        "b04_021_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Titular pela pressão, potássio, renina e função renal. Espironolactona não é apropriada em gestação, hipercalemia ou insuficiência renal avançada; tomografia isolada pode errar lado."
+      ],
+      "factIds": [
+        "b04_021_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Monitorização laboratorial após mudanças e seguimento endócrino; cura bioquímica não garante suspensão de todo anti-hipertensivo."
+      ],
+      "factIds": [
+        "b04_021_f06"
+      ]
+    },
+    {
+      "heading": "Reconhecimento rápido",
+      "paragraphs": [
+        "Produção adrenal autônoma de aldosterona causa hipertensão, supressão de renina e, às vezes, hipocalemia."
+      ],
+      "factIds": [
+        "b04_021_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "aldo2025",
+      "title": "Endocrine Society — Primary Aldosteronism final 2025",
+      "url": "https://www.endocrine.org/clinical-practice-guidelines/primary-aldosteronism-2",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last Updated:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:aldo2025",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "topic_180",
+      "title": "NIH/NLM — Hiperaldosteronismo primário",
+      "url": "https://www.medlineplus.gov/ency/article/000330.htm",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Review Date 7/13/2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_180",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "aldo_bihs",
+      "title": "British and Irish Hypertension Society — Primary hyperaldosteronism management, 2024",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10803267/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Recomendações específicas BIHS publicadas no Journal of Human Hypertension, 2024, DOI 10.1038/s41371-023-00875-1, lidas no índice web do editor: espironolactona inicial 12,5–25 mg uma vez ao dia; eplerenona 25 mg duas vezes ao dia como alternativa à espironolactona 25 mg/dia; conferir eletrólitos, creatinina e pressão antes de titular, em até 4 semanas e antes se insuficiência renal. PMC direto retornou CAPTCHA; não lido como texto integral. Fonte normativa mais recente aldo2025 continua na bibliografia.",
+      "sourceEvidenceRecord": "web-verification-record.json:aldo_bihs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

@@ -1,0 +1,254 @@
+{
+  "mode": "STUDY",
+  "language": "es",
+  "title": "Parálisis del nervio radial",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "d97a8fee811807bbe49b9dfbb7cbfaeb46d13c84817d1ba25cf0793ba541672f",
+  "ownerCandidate": "paralisia_de_nervo_radial",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_045_f01",
+    "b04_045_f02",
+    "b04_045_f03",
+    "b04_045_f04",
+    "b04_045_f05",
+    "b04_045_f06",
+    "b04_045_f07",
+    "b04_045_f08",
+    "b04_045_f09"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Concepto y mecanismo"
+    },
+    {
+      "type": "paragraph",
+      "text": "Lesión radial causa debilidad de extensión de muñeca/dedos con déficit sensitivo variable."
+    },
+    {
+      "type": "heading",
+      "text": "Razonamiento y elección terapéutica"
+    },
+    {
+      "type": "paragraph",
+      "text": "Tratar causa y proteger función son más importantes que analgesia aislada."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Localizar lesión y revisar compresión/trauma; examinar húmero, perfusión y otras funciones nerviosas."
+    },
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Herida abierta, fractura, isquemia o déficit progresivo requiere evaluación quirúrgica urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Eliminar compresión y usar ortesis/terapia ocupacional; alternativa ante lesión estructural o fracaso seleccionado: exploración/reparación o descompresión."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Primera elección: aliviar compresión y rehabilitar con férula/fisioterapia; lesión estructural puede requerir reparación/descompresión. Ningún fármaco demostrado regenera nervio. Medicamentos siguientes solo si hay dolor neuropático, no para debilidad aislada."
+    },
+    {
+      "type": "paragraph",
+      "text": "Dolor neuropático en adulto seleccionado: amitriptilina 10 mg por vía oral por la noche; titular lentamente según tolerancia, habitualmente a 25–75 mg al día. No es rescate inmediato. Valorar sedación, caídas, retención urinaria, glaucoma, interacciones y riesgo de arritmia; duración y retirada gradual según respuesta. No iniciar ante sospecha de intoxicación o alto riesgo de autolesión."
+    },
+    {
+      "type": "paragraph",
+      "text": "Alternativa en adulto con dolor neuropático y función renal compatible: pregabalina de formulación estándar 75 mg por vía oral cada 12 horas como inicio, con titulación según respuesta; intervalo habitual total 150–600 mg al día en 2–3 tomas para dolor neuropático general, ajustado a riñón. No usar este máximo para neuropatía diabética cuando ficha limita a 300 mg. Reevaluar sedación, edema, caídas y dependencia; retirar gradualmente si no hay beneficio."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "No infiltrar ni manipular nervio sin indicación especializada; proteger piel y mantener movilidad articular."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar fuerza, sensibilidad y recuperación con estudio neurofisiológico cuando indicado."
+    }
+  ],
+  "references": [
+    {
+      "key": "radial",
+      "title": "MedlinePlus — radial nerve dysfunction",
+      "url": "https://medlineplus.gov/ency/article/000790.htm",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Review Date 5/4/2026",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:radial",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "topic_204",
+      "title": "NIH/NLM — Paralisia de nervo radial",
+      "url": "https://www.medlineplus.gov/peripheralnervedisorders.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated June 27, 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_204",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "amitrip_label",
+      "title": "emc — Amitriptyline: adult neuropathic pain starting dose and titration",
+      "url": "https://www.medicines.org.uk/emc/product/10850/smpc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated on emc: 25 Sep 2026",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:amitrip_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "neuropathic",
+      "title": "NICE CG173 — Neuropathic pain",
+      "url": "https://www.nice.org.uk/guidance/cg173/chapter/Recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE CG173: amitriptilina/duloxetina/gabapentina/pregabalina na neuropatia dolorosa; carbamazepina para neuralgia trigeminal. Não confundir os dois algoritmos.",
+      "sourceEvidenceRecord": "web-verification-record.json:neuropathic",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "pregabalin_nhs",
+      "title": "NHS — Pregabalin: standard-formulation oral dosing and titration",
+      "url": "https://www.nhs.uk/medicines/pregabalin/how-and-when-to-take-pregabalin/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 20 January 2026",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:pregabalin_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "pregabalin_gmmmg",
+      "title": "NHS GMMMG — Neuropathic Pain in Adults, version 8.2: pregabalin titration",
+      "url": "https://gmmmg.nhs.uk/wp-content/uploads/2022/05/GMMMG-Neuropathic-Pain-Guidance-final-version-8.2-for-GMMMG-website.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "last updated ",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:pregabalin_gmmmg",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Concepto y mecanismo",
+      "paragraphs": [
+        "Lesión radial causa debilidad de extensión de muñeca/dedos con déficit sensitivo variable."
+      ],
+      "factIds": [
+        "b04_045_f01"
+      ]
+    },
+    {
+      "heading": "Razonamiento y elección terapéutica",
+      "paragraphs": [
+        "Tratar causa y proteger función son más importantes que analgesia aislada."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Localizar lesión y revisar compresión/trauma; examinar húmero, perfusión y otras funciones nerviosas."
+      ],
+      "factIds": [
+        "b04_045_f02"
+      ]
+    },
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Herida abierta, fractura, isquemia o déficit progresivo requiere evaluación quirúrgica urgente."
+      ],
+      "factIds": [
+        "b04_045_f03"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Eliminar compresión y usar ortesis/terapia ocupacional; alternativa ante lesión estructural o fracaso seleccionado: exploración/reparación o descompresión."
+      ],
+      "factIds": [
+        "b04_045_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Primera elección: aliviar compresión y rehabilitar con férula/fisioterapia; lesión estructural puede requerir reparación/descompresión. Ningún fármaco demostrado regenera nervio. Medicamentos siguientes solo si hay dolor neuropático, no para debilidad aislada.",
+        "Dolor neuropático en adulto seleccionado: amitriptilina 10 mg por vía oral por la noche; titular lentamente según tolerancia, habitualmente a 25–75 mg al día. No es rescate inmediato. Valorar sedación, caídas, retención urinaria, glaucoma, interacciones y riesgo de arritmia; duración y retirada gradual según respuesta. No iniciar ante sospecha de intoxicación o alto riesgo de autolesión.",
+        "Alternativa en adulto con dolor neuropático y función renal compatible: pregabalina de formulación estándar 75 mg por vía oral cada 12 horas como inicio, con titulación según respuesta; intervalo habitual total 150–600 mg al día en 2–3 tomas para dolor neuropático general, ajustado a riñón. No usar este máximo para neuropatía diabética cuando ficha limita a 300 mg. Reevaluar sedación, edema, caídas y dependencia; retirar gradualmente si no hay beneficio."
+      ],
+      "factIds": [
+        "b04_045_f07",
+        "b04_045_f08",
+        "b04_045_f09"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No infiltrar ni manipular nervio sin indicación especializada; proteger piel y mantener movilidad articular."
+      ],
+      "factIds": [
+        "b04_045_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar fuerza, sensibilidad y recuperación con estudio neurofisiológico cuando indicado."
+      ],
+      "factIds": [
+        "b04_045_f06"
+      ]
+    }
+  ],
+  "markdown": "# Parálisis del nervio radial\n\n## Concepto y mecanismo\n\nLesión radial causa debilidad de extensión de muñeca/dedos con déficit sensitivo variable.\n\n## Razonamiento y elección terapéutica\n\nTratar causa y proteger función son más importantes que analgesia aislada.\n\n## Diagnóstico y diferenciales\n\nLocalizar lesión y revisar compresión/trauma; examinar húmero, perfusión y otras funciones nerviosas.\n\n## Abordaje inicial y urgencias\n\nHerida abierta, fractura, isquemia o déficit progresivo requiere evaluación quirúrgica urgente.\n\n## Tratamiento: primera elección y alternativas\n\nEliminar compresión y usar ortesis/terapia ocupacional; alternativa ante lesión estructural o fracaso seleccionado: exploración/reparación o descompresión.\n\n## Fármacos, dosis e intervalos\n\nPrimera elección: aliviar compresión y rehabilitar con férula/fisioterapia; lesión estructural puede requerir reparación/descompresión. Ningún fármaco demostrado regenera nervio. Medicamentos siguientes solo si hay dolor neuropático, no para debilidad aislada.\n\nDolor neuropático en adulto seleccionado: amitriptilina 10 mg por vía oral por la noche; titular lentamente según tolerancia, habitualmente a 25–75 mg al día. No es rescate inmediato. Valorar sedación, caídas, retención urinaria, glaucoma, interacciones y riesgo de arritmia; duración y retirada gradual según respuesta. No iniciar ante sospecha de intoxicación o alto riesgo de autolesión.\n\nAlternativa en adulto con dolor neuropático y función renal compatible: pregabalina de formulación estándar 75 mg por vía oral cada 12 horas como inicio, con titulación según respuesta; intervalo habitual total 150–600 mg al día en 2–3 tomas para dolor neuropático general, ajustado a riñón. No usar este máximo para neuropatía diabética cuando ficha limita a 300 mg. Reevaluar sedación, edema, caídas y dependencia; retirar gradualmente si no hay beneficio.\n\n## Seguridad y monitorización\n\nNo infiltrar ni manipular nervio sin indicación especializada; proteger piel y mantener movilidad articular.\n\n## Reevaluación, internación y alta\n\nReevaluar fuerza, sensibilidad y recuperación con estudio neurofisiológico cuando indicado.\n\n## Referencias\n\n1. [MedlinePlus — radial nerve dysfunction](https://medlineplus.gov/ency/article/000790.htm)\n2. [NIH/NLM — Paralisia de nervo radial](https://www.medlineplus.gov/peripheralnervedisorders.html)\n3. [emc — Amitriptyline: adult neuropathic pain starting dose and titration](https://www.medicines.org.uk/emc/product/10850/smpc)\n4. [NICE CG173 — Neuropathic pain](https://www.nice.org.uk/guidance/cg173/chapter/Recommendations)\n5. [NHS — Pregabalin: standard-formulation oral dosing and titration](https://www.nhs.uk/medicines/pregabalin/how-and-when-to-take-pregabalin/)\n6. [NHS GMMMG — Neuropathic Pain in Adults, version 8.2: pregabalin titration](https://gmmmg.nhs.uk/wp-content/uploads/2022/05/GMMMG-Neuropathic-Pain-Guidance-final-version-8.2-for-GMMMG-website.pdf)",
+  "approvedReviewCanonicalFileSha256": "241eab1a1f33483e9f350c59c384c1ac934cde8b06722007db5d55d883a2821e",
+  "approvedReviewProjectionFileSha256": "6a806c0ba07cf7bc0cd022cf6c75bbbf32dccd875e8f7d927a2fbddd9ff6ecd7"
+}

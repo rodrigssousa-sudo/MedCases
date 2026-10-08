@@ -1,0 +1,138 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Talasemia",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "98d7ed3bfa4d75c69cdcf42766604cc9209ead266081d478c7eb6b3b33e0ce30",
+  "ownerCandidate": "talassemia",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_036_f01",
+    "b04_036_f02",
+    "b04_036_f03",
+    "b04_036_f04",
+    "b04_036_f05",
+    "b04_036_f06",
+    "b04_036_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Anemia sintomática grave, fiebre o complicación transfusional requiere evaluación hospitalaria."
+      ],
+      "factIds": [
+        "b04_036_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Hemograma, estudio de hemoglobina y hierro; distinguir rasgo de enfermedad dependiente de transfusión."
+      ],
+      "factIds": [
+        "b04_036_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: deferasirox / deferoxamina. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Rasgo generalmente sin terapia. Formas graves: transfusiones y quelación como deferasirox, deferiprona o deferoxamina según perfil; trasplante/terapia avanzada si elegible."
+      ],
+      "factIds": [
+        "b04_036_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Sobrecarga de hierro TRANSFUSIONAL confirmada, no rasgo talasémico: deferasirox en comprimido recubierto, desde 2 años y con filtrado mayor de 60 mL por minuto por 1,73 m², inicio 14 mg por kg por vía oral una vez al día; titular por ferritina/carga de hierro y toxicidad, sin superar 28 mg por kg al día. No equivale al comprimido dispersable. Alternativa en ADULTO: deferoxamina 40–50 mg por kg al día en infusión subcutánea lenta de 8–12 horas, 5–7 días por semana, en programa hematológico. Controlar riñones, hígado, hemograma, audición/visión e infección; no dar hierro empírico."
+      ],
+      "factIds": [
+        "b04_036_f07"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No dar hierro sin déficit comprobado; quelantes difieren en presentación y toxicidad renal/hepática/hematológica."
+      ],
+      "factIds": [
+        "b04_036_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Controlar sobrecarga de hierro, órganos y crecimiento; asesoramiento genético."
+      ],
+      "factIds": [
+        "b04_036_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Defecto hereditario de síntesis globínica causa anemia de gravedad variable."
+      ],
+      "factIds": [
+        "b04_036_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_195",
+      "title": "NHS — Talassemia",
+      "url": "https://www.nhs.uk/conditions/thalassaemia/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 17 October 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_195",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "topic_195_treatment",
+      "title": "NHS — Talassemia — treatment",
+      "url": "https://www.nhs.uk/conditions/thalassaemia/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 17 October 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_195_treatment",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "deferasirox_label",
+      "title": "DailyMed — Deferasirox film-coated tablets: transfusional iron overload",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=0fb210b3-6a3d-4313-83ce-52012e384f9b",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:deferasirox_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "deferox_label",
+      "title": "DailyMed — DESFERAL: adult chronic iron overload slow infusion",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=a7174843-5965-49fc-b842-f7eff7b48bbc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:deferox_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

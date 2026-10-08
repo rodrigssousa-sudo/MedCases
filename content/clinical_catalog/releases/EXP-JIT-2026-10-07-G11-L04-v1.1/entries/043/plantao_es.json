@@ -1,0 +1,199 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Temblor esencial",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "a2685f288ff4ecc65a94fb900292d1e1caf876600c1038ed8dfd0a4bb8c42e53",
+  "ownerCandidate": "tremor_essencial",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_043_f01",
+    "b04_043_f02",
+    "b04_043_f03",
+    "b04_043_f04",
+    "b04_043_f05",
+    "b04_043_f06",
+    "b04_043_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Déficit focal agudo o intoxicación requiere investigación urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Caracterizar reposo/acción, evolución, función y examen neurológico; inicio súbito no es típico."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opciones especificadas en este tema: propranolol / primidona. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Leve: reducir desencadenantes y adaptar tareas. Propranolol o primidona si incapacitante y elegible; refractarios pueden requerir procedimiento especializado."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Adulto con temblor esencial incapacitante: propranolol 40 mg por vía oral cada 12 horas como inicio de ficha, con dosis menores en frágiles y titulación; objetivo frecuente 80–160 mg al día. Alternativa: primidona 50 mg por vía oral una vez al día al final de la tarde, aumentando lentamente durante 2–3 semanas a menor dosis eficaz; una vez titulado, dividir en 2 tomas, máximo 750 mg al día en ficha consultada. Evitar propranolol en asma/bradicardia/bloqueo; primidona puede causar sedación/inestabilidad y requiere ajuste renal/hepático. Reevaluar función, sin retirada brusca."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar broncoespasmo/bradicardia con propranolol y sedación/ataxia con primidona; titulación individual. No indicar alcohol como tratamiento."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Neurología si atípico, progresivo o refractario; seguir impacto funcional y caídas."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Temblor de acción generalmente bilateral; excluir fármacos, tiroides y otras enfermedades."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_202",
+      "title": "MEDLINE — Tremor essencial",
+      "url": "https://medlineplus.gov/tremor.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated October 27, 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_202",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "et_overview",
+      "title": "MDS — Tremor and Essential Tremor: society clinical overview",
+      "url": "https://www.movementdisorders.org/MDS/About/Movement-Disorder-Overviews/Tremor--Essential-Tremor.htm",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": 2019,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published paper",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:et_overview",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "propranolol_label",
+      "title": "SmPC — propranolol comprimidos: tremor essencial",
+      "url": "https://www.medicines.org.uk/emc/product/101996/smpc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated on emc: 24 Mar 2026",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:propranolol_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "primidone_label",
+      "title": "emc — Primidone SERB: essential tremor starting dose and slow titration",
+      "url": "https://www.medicines.org.uk/emc/product/2940/smpc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published studies are inconsistent, phenobarbital given to rats/mice during gestation or early postnatal peri",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:primidone_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Déficit focal agudo o intoxicación requiere investigación urgente."
+      ],
+      "factIds": [
+        "b04_043_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Caracterizar reposo/acción, evolución, función y examen neurológico; inicio súbito no es típico."
+      ],
+      "factIds": [
+        "b04_043_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: propranolol / primidona. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Leve: reducir desencadenantes y adaptar tareas. Propranolol o primidona si incapacitante y elegible; refractarios pueden requerir procedimiento especializado."
+      ],
+      "factIds": [
+        "b04_043_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Adulto con temblor esencial incapacitante: propranolol 40 mg por vía oral cada 12 horas como inicio de ficha, con dosis menores en frágiles y titulación; objetivo frecuente 80–160 mg al día. Alternativa: primidona 50 mg por vía oral una vez al día al final de la tarde, aumentando lentamente durante 2–3 semanas a menor dosis eficaz; una vez titulado, dividir en 2 tomas, máximo 750 mg al día en ficha consultada. Evitar propranolol en asma/bradicardia/bloqueo; primidona puede causar sedación/inestabilidad y requiere ajuste renal/hepático. Reevaluar función, sin retirada brusca."
+      ],
+      "factIds": [
+        "b04_043_f07"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Evaluar broncoespasmo/bradicardia con propranolol y sedación/ataxia con primidona; titulación individual. No indicar alcohol como tratamiento."
+      ],
+      "factIds": [
+        "b04_043_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Neurología si atípico, progresivo o refractario; seguir impacto funcional y caídas."
+      ],
+      "factIds": [
+        "b04_043_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Temblor de acción generalmente bilateral; excluir fármacos, tiroides y otras enfermedades."
+      ],
+      "factIds": [
+        "b04_043_f01"
+      ]
+    }
+  ],
+  "markdown": "# Temblor esencial\n\n## Abordaje inicial y urgencias\n\nDéficit focal agudo o intoxicación requiere investigación urgente.\n\n## Diagnóstico y diferenciales\n\nCaracterizar reposo/acción, evolución, función y examen neurológico; inicio súbito no es típico.\n\n## Tratamiento: primera elección y alternativas\n\nOpciones especificadas en este tema: propranolol / primidona. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Leve: reducir desencadenantes y adaptar tareas. Propranolol o primidona si incapacitante y elegible; refractarios pueden requerir procedimiento especializado.\n\n## Fármacos, dosis e intervalos\n\nAdulto con temblor esencial incapacitante: propranolol 40 mg por vía oral cada 12 horas como inicio de ficha, con dosis menores en frágiles y titulación; objetivo frecuente 80–160 mg al día. Alternativa: primidona 50 mg por vía oral una vez al día al final de la tarde, aumentando lentamente durante 2–3 semanas a menor dosis eficaz; una vez titulado, dividir en 2 tomas, máximo 750 mg al día en ficha consultada. Evitar propranolol en asma/bradicardia/bloqueo; primidona puede causar sedación/inestabilidad y requiere ajuste renal/hepático. Reevaluar función, sin retirada brusca.\n\n## Seguridad y monitorización\n\nEvaluar broncoespasmo/bradicardia con propranolol y sedación/ataxia con primidona; titulación individual. No indicar alcohol como tratamiento.\n\n## Reevaluación, internación y alta\n\nNeurología si atípico, progresivo o refractario; seguir impacto funcional y caídas.\n\n## Reconocimiento rápido\n\nTemblor de acción generalmente bilateral; excluir fármacos, tiroides y otras enfermedades.\n\n## Referencias\n\n1. [MEDLINE — Tremor essencial](https://medlineplus.gov/tremor.html)\n2. [MDS — Tremor and Essential Tremor: society clinical overview](https://www.movementdisorders.org/MDS/About/Movement-Disorder-Overviews/Tremor--Essential-Tremor.htm)\n3. [SmPC — propranolol comprimidos: tremor essencial](https://www.medicines.org.uk/emc/product/101996/smpc)\n4. [emc — Primidone SERB: essential tremor starting dose and slow titration](https://www.medicines.org.uk/emc/product/2940/smpc)",
+  "approvedReviewCanonicalFileSha256": "8af987f5bd06e00a308988deb5fe50cfaa2e6e4d332faf869c34b9d515ea936d",
+  "approvedReviewProjectionFileSha256": "03bf4b45b185a9e3aa0925a1bd765da768e99ef29e115d0b145812dec160a082"
+}

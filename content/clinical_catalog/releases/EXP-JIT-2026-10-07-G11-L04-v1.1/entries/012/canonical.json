@@ -1,0 +1,176 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "reviewer": null,
+  "ownerCandidate": "acidose_tubular_renal",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Acidose tubular renal",
+    "es": "Acidosis tubular renal"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L03",
+  "identityDecision": "NEW_DISTINCT_SCOPE_CANDIDATE; NO_OWNER_REGISTERED",
+  "relatedExistingOwners": [
+    "acidose_metabolica"
+  ],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "treatmentApplicability": "SCENARIO_SPECIFIC_PHARMACOTHERAPY",
+  "regimens": [
+    {
+      "drug": "citrato/bicarbonato de potássio / bicarbonato de sódio",
+      "role": "SUBTYPE_AND_FORMULATION_SPECIFIC",
+      "pt": "Adulto com acidose tubular distal, elegível à formulação prolongada Sibnayal: iniciar citrato/bicarbonato de potássio em 1 mEq por kg por dia por via oral, dividido em 2 tomadas, aproximadamente a cada 12 horas; titular pelo bicarbonato e potássio. Máximo da bula: menor entre 10 mEq por kg por dia e 336 mEq por dia. Contraindicado com hipercalemia ou filtração de 44 mL por minuto por 1,73 m² ou menor. Alternativa bicarbonato de sódio oral, solução 84 mg por mL = 1 mmol por mL: dose calculada por equilíbrio ácido-base/eletrólitos, sem intervalo universal validado pela bula. Não usar dose de antiácido nem transpor esse esquema para outro subtipo/formulação.",
+      "es": "Adulto con acidosis tubular distal, elegible para formulación prolongada Sibnayal: iniciar citrato/bicarbonato de potasio en 1 mEq por kg al día por vía oral, dividido en 2 tomas, aproximadamente cada 12 horas; titular por bicarbonato y potasio. Máximo de ficha: menor entre 10 mEq por kg al día y 336 mEq al día. Contraindicado con hiperpotasemia o filtrado de 44 mL por minuto por 1,73 m² o menor. Alternativa bicarbonato de sodio oral, solución 84 mg por mL = 1 mmol por mL: dosis calculada por equilibrio ácido-base/electrolitos, sin intervalo universal validado en ficha. No usar dosis de antiácido ni trasladar esquema a otro subtipo/formulación.",
+      "sources": [
+        "sibnayal_label",
+        "bicarb_oral"
+      ]
+    }
+  ],
+  "treatmentRevision": "ALL_50_REVIEWED_V1.1",
+  "facts": [
+    {
+      "id": "b04_012_f01",
+      "section": "concept",
+      "pt": "Defeito de acidificação/excreção tubular causa acidose; fenótipos distal, proximal e hipercalêmico exigem abordagens distintas.",
+      "es": "Defecto tubular de acidificación/excreción causa acidosis; fenotipos distal, proximal e hiperpotasémico requieren abordajes distintos.",
+      "sources": [
+        "topic_171",
+        "sibnayal_label",
+        "bicarb_oral"
+      ]
+    },
+    {
+      "id": "b04_012_f02",
+      "section": "diagnosis",
+      "pt": "Gasometria, eletrólitos, função renal, urina e história medicamentosa; excluir diarreia como causa de acidose sem aumento do ânion gap.",
+      "es": "Gasometría, electrolitos, función renal, orina y fármacos; excluir diarrea como causa de acidosis sin aumento de brecha aniónica.",
+      "sources": [
+        "topic_171",
+        "sibnayal_label",
+        "bicarb_oral"
+      ]
+    },
+    {
+      "id": "b04_012_f03",
+      "section": "initial",
+      "pt": "Arritmia, fraqueza grave ou distúrbio importante do potássio exige monitorização e correção urgente.",
+      "es": "Arritmia, debilidad grave o trastorno importante del potasio requiere monitorización y corrección urgente.",
+      "sources": [
+        "topic_171",
+        "sibnayal_label",
+        "bicarb_oral"
+      ]
+    },
+    {
+      "id": "b04_012_f04",
+      "section": "options",
+      "pt": "Identificar o subtipo antes de repor álcali/potássio. Na forma distal hipocalêmica, citrato/bicarbonato de potássio é opção; bicarbonato de sódio é alternativa quando apropriado. Na forma hipercalêmica tipo 4, não aplicar reposição de potássio: tratar a causa e a hipercalemia.",
+      "es": "Identificar subtipo antes de reponer álcali/potasio. En forma distal hipocalémica, citrato/bicarbonato de potasio es opción; bicarbonato de sodio es alternativa cuando corresponde. En forma hipercalémica tipo 4, no aplicar reposición de potasio: tratar causa e hiperpotasemia.",
+      "sources": [
+        "topic_171",
+        "sibnayal_label",
+        "bicarb_oral"
+      ]
+    },
+    {
+      "id": "b04_012_f05",
+      "section": "safety",
+      "pt": "Dose de álcali depende do subtipo, peso, potássio e resposta; a forma proximal pode piorar hipocalemia durante correção.",
+      "es": "Dosis de álcali según subtipo, peso, potasio y respuesta; la forma proximal puede empeorar hipopotasemia durante corrección.",
+      "sources": [
+        "topic_171",
+        "sibnayal_label",
+        "bicarb_oral"
+      ]
+    },
+    {
+      "id": "b04_012_f06",
+      "section": "followup",
+      "pt": "Acompanhar eletrólitos, crescimento infantil, osso e cálculos; nefrologia para etiologia e titulação.",
+      "es": "Seguir electrolitos, crecimiento infantil, hueso y cálculos; nefrología para etiología y titulación.",
+      "sources": [
+        "topic_171",
+        "sibnayal_label",
+        "bicarb_oral"
+      ]
+    },
+    {
+      "id": "b04_012_f07",
+      "section": "doses",
+      "pt": "Adulto com acidose tubular distal, elegível à formulação prolongada Sibnayal: iniciar citrato/bicarbonato de potássio em 1 mEq por kg por dia por via oral, dividido em 2 tomadas, aproximadamente a cada 12 horas; titular pelo bicarbonato e potássio. Máximo da bula: menor entre 10 mEq por kg por dia e 336 mEq por dia. Contraindicado com hipercalemia ou filtração de 44 mL por minuto por 1,73 m² ou menor. Alternativa bicarbonato de sódio oral, solução 84 mg por mL = 1 mmol por mL: dose calculada por equilíbrio ácido-base/eletrólitos, sem intervalo universal validado pela bula. Não usar dose de antiácido nem transpor esse esquema para outro subtipo/formulação.",
+      "es": "Adulto con acidosis tubular distal, elegible para formulación prolongada Sibnayal: iniciar citrato/bicarbonato de potasio en 1 mEq por kg al día por vía oral, dividido en 2 tomas, aproximadamente cada 12 horas; titular por bicarbonato y potasio. Máximo de ficha: menor entre 10 mEq por kg al día y 336 mEq al día. Contraindicado con hiperpotasemia o filtrado de 44 mL por minuto por 1,73 m² o menor. Alternativa bicarbonato de sodio oral, solución 84 mg por mL = 1 mmol por mL: dosis calculada por equilibrio ácido-base/electrolitos, sin intervalo universal validado en ficha. No usar dosis de antiácido ni trasladar esquema a otro subtipo/formulación.",
+      "sources": [
+        "sibnayal_label",
+        "bicarb_oral"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Não existe intercambialidade entre sais de sódio e potássio; a fisiologia do subtipo determina a escolha.",
+      "es": "Las sales de sodio y potasio no son intercambiables; la fisiología del subtipo determina elección.",
+      "sources": [
+        "topic_171",
+        "sibnayal_label",
+        "bicarb_oral"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_171",
+      "title": "NIDDK — Acidose tubular renal",
+      "url": "https://www.niddk.nih.gov/health-information/kidney-disease/renal-tubular-acidosis",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last Reviewed November 2020",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_171",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "sibnayal_label",
+      "title": "EMA — Sibnayal: prolonged-release potassium citrate/bicarbonate for distal RTA",
+      "url": "https://www.ema.europa.eu/en/documents/product-information/sibnayal-epar-product-information_en.pdf",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published on the European medicines web-portal. ",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:sibnayal_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "bicarb_oral",
+      "title": "emc — Sodium bicarbonate 84 mg/mL oral solution: acidosis requires individual calculation",
+      "url": "https://www.medicines.org.uk/emc/product/13349/smpc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated on emc: 23 Feb 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:bicarb_oral",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Medicamentos, doses e alternativas identificados por cenário; procedimentos e ausência de fármaco específico explicitados. Regimes sem intervalo universal validado permanecem calculados pelo especialista. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

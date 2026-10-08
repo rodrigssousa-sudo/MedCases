@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "reviewer": null,
+  "ownerCandidate": "pericoronarite",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Pericoronarite",
+    "es": "Pericoronaritis"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L03",
+  "identityDecision": "NEW_DISTINCT_SCOPE_CANDIDATE; NO_OWNER_REGISTERED",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "treatmentApplicability": "SCENARIO_SPECIFIC_PHARMACOTHERAPY",
+  "regimens": [
+    {
+      "drug": "clorexidina",
+      "role": "LOCAL_ADJUNCT",
+      "pt": "Após irrigação/desbridamento, se a dor impedir higiene: clorexidina 0,2%, 10 mL como bochecho por 1 minuto, 2 vezes ao dia. Cuspir, não engolir; usar enquanto a lesão exigir, com revisão odontológica. Não substitui drenagem/higiene nem justifica antibiótico sistêmico automático.",
+      "es": "Tras irrigación/desbridamiento, si el dolor impide higiene: clorhexidina 0,2%, 10 mL como enjuague durante 1 minuto, 2 veces al día. Escupir, no tragar; usar mientras la lesión lo requiera, con revisión odontológica. No reemplaza drenaje/higiene ni justifica antibiótico sistémico automático.",
+      "sources": [
+        "chlorhexidine_sd",
+        "pericoronitis"
+      ]
+    },
+    {
+      "drug": "metronidazol / amoxicilina",
+      "role": "INDICATED_ANTIBIOTIC_AND_ALTERNATIVE",
+      "pt": "Somente disseminação ou repercussão sistêmica em adulto: metronidazol 400 mg por via oral a cada 8 horas durante 3 dias; alternativa amoxicilina 500 mg por via oral a cada 8 horas durante 3 dias. Reavaliar ao final ou antes se piorar. Não associar automaticamente; conferir alergia, interação com anticoagulantes, função orgânica e instruções da bula sobre álcool.",
+      "es": "Solo diseminación o repercusión sistémica en adulto: metronidazol 400 mg por vía oral cada 8 horas durante 3 días; alternativa amoxicilina 500 mg por vía oral cada 8 horas durante 3 días. Reevaluar al final o antes si empeora. No combinar automáticamente; comprobar alergia, interacción con anticoagulantes, función orgánica e instrucciones de la ficha sobre alcohol.",
+      "sources": [
+        "sd_metron",
+        "sd_amox"
+      ]
+    }
+  ],
+  "treatmentRevision": "ALL_50_REVIEWED_V1.1",
+  "facts": [
+    {
+      "id": "b04_007_f01",
+      "section": "concept",
+      "pt": "Inflamação/infecção em tecido ao redor de dente parcialmente erupcionado.",
+      "es": "Inflamación/infección alrededor de diente parcialmente erupcionado.",
+      "sources": [
+        "pericoronitis",
+        "dental",
+        "sd_metron",
+        "sd_amox",
+        "chlorhexidine_sd"
+      ]
+    },
+    {
+      "id": "b04_007_f02",
+      "section": "diagnosis",
+      "pt": "Examinar dente, gengiva, abertura oral e disseminação; excluir abscesso profundo.",
+      "es": "Examinar diente, encía, apertura oral y extensión; excluir absceso profundo.",
+      "sources": [
+        "pericoronitis",
+        "dental",
+        "sd_metron",
+        "sd_amox",
+        "chlorhexidine_sd"
+      ]
+    },
+    {
+      "id": "b04_007_f03",
+      "section": "initial",
+      "pt": "Trismo importante, disfagia, assoalho elevado ou dispneia exigem hospital e proteção da via aérea.",
+      "es": "Trismo importante, disfagia, piso bucal elevado o disnea requieren hospital y protección de vía aérea.",
+      "sources": [
+        "pericoronitis",
+        "dental",
+        "sd_metron",
+        "sd_amox",
+        "chlorhexidine_sd"
+      ]
+    },
+    {
+      "id": "b04_007_f04",
+      "section": "options",
+      "pt": "Opções especificadas neste tema: clorexidina; metronidazol / amoxicilina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Primeiro: irrigação/remoção local de placa e analgesia. Antibiótico somente com disseminação, manifestação sistêmica ou indicação específica; tratamento dentário definitivo se recorrente.",
+      "es": "Opciones especificadas en este tema: clorexidina; metronidazol / amoxicilina. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Primero: irrigación/remoción local de placa y analgesia. Antibiótico solo ante extensión, manifestación sistémica o indicación específica; tratamiento dental definitivo si recurrente.",
+      "sources": [
+        "pericoronitis",
+        "dental",
+        "sd_metron",
+        "sd_amox",
+        "chlorhexidine_sd"
+      ]
+    },
+    {
+      "id": "b04_007_f05",
+      "section": "safety",
+      "pt": "Escolha e duração do antibiótico dependem de alergia, gravidade e protocolo; metronidazol ou amoxicilina são opções odontológicas selecionadas, não combinação automática.",
+      "es": "Elección y duración según alergia, gravedad y protocolo; metronidazol o amoxicilina son opciones odontológicas seleccionadas, no combinación automática.",
+      "sources": [
+        "pericoronitis",
+        "dental",
+        "sd_metron",
+        "sd_amox",
+        "chlorhexidine_sd"
+      ]
+    },
+    {
+      "id": "b04_007_f06",
+      "section": "followup",
+      "pt": "Reavaliar dor, abertura oral e edema; piora exige novo exame e controle de foco.",
+      "es": "Reevaluar dolor, apertura oral y edema; empeoramiento exige nuevo examen y control del foco.",
+      "sources": [
+        "pericoronitis",
+        "dental",
+        "sd_metron",
+        "sd_amox",
+        "chlorhexidine_sd"
+      ]
+    },
+    {
+      "id": "b04_007_f07",
+      "section": "doses",
+      "pt": "Após irrigação/desbridamento, se a dor impedir higiene: clorexidina 0,2%, 10 mL como bochecho por 1 minuto, 2 vezes ao dia. Cuspir, não engolir; usar enquanto a lesão exigir, com revisão odontológica. Não substitui drenagem/higiene nem justifica antibiótico sistêmico automático.",
+      "es": "Tras irrigación/desbridamiento, si el dolor impide higiene: clorhexidina 0,2%, 10 mL como enjuague durante 1 minuto, 2 veces al día. Escupir, no tragar; usar mientras la lesión lo requiera, con revisión odontológica. No reemplaza drenaje/higiene ni justifica antibiótico sistémico automático.",
+      "sources": [
+        "chlorhexidine_sd",
+        "pericoronitis"
+      ]
+    },
+    {
+      "id": "b04_007_f08",
+      "section": "doses",
+      "pt": "Somente disseminação ou repercussão sistêmica em adulto: metronidazol 400 mg por via oral a cada 8 horas durante 3 dias; alternativa amoxicilina 500 mg por via oral a cada 8 horas durante 3 dias. Reavaliar ao final ou antes se piorar. Não associar automaticamente; conferir alergia, interação com anticoagulantes, função orgânica e instruções da bula sobre álcool.",
+      "es": "Solo diseminación o repercusión sistémica en adulto: metronidazol 400 mg por vía oral cada 8 horas durante 3 días; alternativa amoxicilina 500 mg por vía oral cada 8 horas durante 3 días. Reevaluar al final o antes si empeora. No combinar automáticamente; comprobar alergia, interacción con anticoagulantes, función orgánica e instrucciones de la ficha sobre alcohol.",
+      "sources": [
+        "sd_metron",
+        "sd_amox"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "A remoção do foco é central; cursos repetidos sem tratamento local favorecem recorrência.",
+      "es": "Eliminar el foco es central; cursos repetidos sin tratamiento local favorecen recurrencia.",
+      "sources": [
+        "pericoronitis",
+        "dental",
+        "sd_metron",
+        "sd_amox",
+        "chlorhexidine_sd"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "pericoronitis",
+      "title": "SDCEP — local measures for pericoronitis",
+      "url": "https://www.sdcepdentalprescribing.nhs.scot/guidance/bacterial-infections/acute-periodontal-conditions/local-measures/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:pericoronitis",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "dental",
+      "title": "SDCEP — Acute periodontal conditions updated 2026",
+      "url": "https://www.sdcepdentalprescribing.nhs.scot/guidance/bacterial-infections/acute-periodontal-conditions/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:dental",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "sd_metron",
+      "title": "SDCEP — metronidazole for acute periodontal conditions",
+      "url": "https://www.sdcepdentalprescribing.nhs.scot/guidance/bacterial-infections/acute-periodontal-conditions/metronidazole/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:sd_metron",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "sd_amox",
+      "title": "SDCEP — amoxicillin for acute periodontal conditions",
+      "url": "https://www.sdcepdentalprescribing.nhs.scot/guidance/bacterial-infections/acute-periodontal-conditions/amoxicillin/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:sd_amox",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "chlorhexidine_sd",
+      "title": "SDCEP — Chlorhexidine mouthwash 0.2%: dental regimen",
+      "url": "https://www.sdcepdentalprescribing.nhs.scot/guidance/ulceration-inflammation/antimicrobial-mouthwashes/chlorhexidine-mouthwash/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:chlorhexidine_sd",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Medicamentos, doses e alternativas identificados por cenário; procedimentos e ausência de fármaco específico explicitados. Regimes sem intervalo universal validado permanecem calculados pelo especialista. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

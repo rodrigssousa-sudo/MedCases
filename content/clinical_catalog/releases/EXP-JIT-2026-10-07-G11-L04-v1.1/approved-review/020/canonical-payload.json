@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "reviewer": null,
+  "ownerCandidate": "diabetes_insipido",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Diabetes insípido",
+    "es": "Diabetes insípida"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L03",
+  "identityDecision": "NEW_DISTINCT_SCOPE_CANDIDATE; NO_OWNER_REGISTERED",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "treatmentApplicability": "SCENARIO_SPECIFIC_PHARMACOTHERAPY",
+  "regimens": [
+    {
+      "drug": "desmopressina oral / intranasal",
+      "role": "CENTRAL_DI_FORMULATION_ALTERNATIVES",
+      "pt": "Diabetes insípida CENTRAL estável: comprimido de desmopressina 100 microgramas por via oral 3 vezes ao dia como início na bula consultada, titulando por diurese/sódio. Alternativa em adulto, spray intranasal: 10–40 microgramas por dia em uma dose ou dividido em 2–3 tomadas, com titulação própria. Não são doses equivalentes nem usadas juntas. Evitar hiponatremia; acesso a água, balanço, peso e sódio são essenciais. Não suspender abruptamente em paciente dependente nem extrapolar para forma nefrogênica.",
+      "es": "Diabetes insípida CENTRAL estable: comprimido de desmopresina 100 microgramos por vía oral 3 veces al día como inicio en ficha consultada, titulando por diuresis/sodio. Alternativa en adulto, aerosol intranasal: 10–40 microgramos al día en una dosis o dividido en 2–3 tomas, con titulación propia. No son dosis equivalentes ni se usan juntas. Evitar hiponatremia; acceso a agua, balance, peso y sodio esenciales. No suspender bruscamente en paciente dependiente ni extrapolar a forma nefrogénica.",
+      "sources": [
+        "desmo_oral",
+        "desmo_nasal",
+        "topic_179_treatment"
+      ]
+    }
+  ],
+  "treatmentRevision": "ALL_50_REVIEWED_V1.1",
+  "facts": [
+    {
+      "id": "b04_020_f01",
+      "section": "concept",
+      "pt": "Poliúria hipotônica por deficiência de vasopressina ou resistência renal; distinta de diabetes mellitus.",
+      "es": "Poliuria hipotónica por déficit de vasopresina o resistencia renal; distinta de diabetes mellitus.",
+      "sources": [
+        "topic_179",
+        "topic_179_treatment",
+        "desmo_oral",
+        "desmo_nasal"
+      ]
+    },
+    {
+      "id": "b04_020_f02",
+      "section": "diagnosis",
+      "pt": "Volume urinário, glicose, sódio e osmolaridades; excluir polidipsia primária e diurese osmótica. Testes provocativos apenas supervisionados.",
+      "es": "Volumen urinario, glucosa, sodio y osmolalidades; excluir polidipsia primaria y diuresis osmótica. Pruebas provocativas solo supervisadas.",
+      "sources": [
+        "topic_179",
+        "topic_179_treatment",
+        "desmo_oral",
+        "desmo_nasal"
+      ]
+    },
+    {
+      "id": "b04_020_f03",
+      "section": "initial",
+      "pt": "Desidratação, hipernatremia, alteração neurológica ou incapacidade de beber exigem hospital e correção controlada.",
+      "es": "Deshidratación, hipernatremia, alteración neurológica o incapacidad para beber requieren hospital y corrección controlada.",
+      "sources": [
+        "topic_179",
+        "topic_179_treatment",
+        "desmo_oral",
+        "desmo_nasal"
+      ]
+    },
+    {
+      "id": "b04_020_f04",
+      "section": "options",
+      "pt": "Opções especificadas neste tema: desmopressina oral / intranasal. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Deficiência central: desmopressina em apresentação/dose individualizadas. Resistência renal: tratar causa, reduzir carga de solutos e considerar tiazídico/amilorida em contexto apropriado, especialmente relacionado ao lítio.",
+      "es": "Opciones especificadas en este tema: desmopressina oral / intranasal. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Déficit central: desmopresina en presentación/dosis individualizadas. Resistencia renal: tratar causa, reducir carga de solutos y considerar tiazida/amilorida en contexto apropiado, especialmente por litio.",
+      "sources": [
+        "topic_179",
+        "topic_179_treatment",
+        "desmo_oral",
+        "desmo_nasal"
+      ]
+    },
+    {
+      "id": "b04_020_f05",
+      "section": "safety",
+      "pt": "Formas oral, nasal e injetável não são equivalentes em dose. Monitorizar sódio, líquidos e diurese; evitar intoxicação hídrica.",
+      "es": "Formas oral, nasal e inyectable no equivalen en dosis. Controlar sodio, líquidos y diuresis; evitar intoxicación hídrica.",
+      "sources": [
+        "topic_179",
+        "topic_179_treatment",
+        "desmo_oral",
+        "desmo_nasal"
+      ]
+    },
+    {
+      "id": "b04_020_f06",
+      "section": "followup",
+      "pt": "Plano para doença intercorrente e acesso à água; endocrinologia/nefrologia, com plano específico para gestação.",
+      "es": "Plan para enfermedad intercurrente y acceso al agua; endocrinología/nefrología con plan específico en embarazo.",
+      "sources": [
+        "topic_179",
+        "topic_179_treatment",
+        "desmo_oral",
+        "desmo_nasal"
+      ]
+    },
+    {
+      "id": "b04_020_f07",
+      "section": "doses",
+      "pt": "Diabetes insípida CENTRAL estável: comprimido de desmopressina 100 microgramas por via oral 3 vezes ao dia como início na bula consultada, titulando por diurese/sódio. Alternativa em adulto, spray intranasal: 10–40 microgramas por dia em uma dose ou dividido em 2–3 tomadas, com titulação própria. Não são doses equivalentes nem usadas juntas. Evitar hiponatremia; acesso a água, balanço, peso e sódio são essenciais. Não suspender abruptamente em paciente dependente nem extrapolar para forma nefrogênica.",
+      "es": "Diabetes insípida CENTRAL estable: comprimido de desmopresina 100 microgramos por vía oral 3 veces al día como inicio en ficha consultada, titulando por diuresis/sodio. Alternativa en adulto, aerosol intranasal: 10–40 microgramos al día en una dosis o dividido en 2–3 tomas, con titulación propia. No son dosis equivalentes ni se usan juntas. Evitar hiponatremia; acceso a agua, balance, peso y sodio esenciales. No suspender bruscamente en paciente dependiente ni extrapolar a forma nefrogénica.",
+      "sources": [
+        "desmo_oral",
+        "desmo_nasal",
+        "topic_179_treatment"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "O mecanismo define o tratamento: desmopressina não corrige rotineiramente resistência renal.",
+      "es": "El mecanismo define tratamiento: desmopresina no corrige rutinariamente resistencia renal.",
+      "sources": [
+        "topic_179",
+        "topic_179_treatment",
+        "desmo_oral",
+        "desmo_nasal"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_179",
+      "title": "NHS — Diabetes insípido",
+      "url": "https://www.nhs.uk/conditions/diabetes-insipidus/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 13 October 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_179",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "topic_179_treatment",
+      "title": "NHS — Diabetes insípido — treatment",
+      "url": "https://www.nhs.uk/conditions/diabetes-insipidus/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 13 October 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_179_treatment",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "desmo_oral",
+      "title": "emc — Desmopressin acetate 100 microgram tablets: cranial DI regimen",
+      "url": "https://www.medicines.org.uk/emc/product/11939/smpc",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated on emc: 02 Mar 2022",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:desmo_oral",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "desmo_nasal",
+      "title": "DailyMed — Desmopressin nasal spray: central DI, adult regimen and non-equivalence",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8034989a-45f5-436b-8b1f-42108ee2a21a",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:desmo_nasal",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Medicamentos, doses e alternativas identificados por cenário; procedimentos e ausência de fármaco específico explicitados. Regimes sem intervalo universal validado permanecem calculados pelo especialista. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

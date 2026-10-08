@@ -1,0 +1,239 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Espondiloartritis axial",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "f2df31628ae84c298d43ab90957f0b707268b1ca3b50bc9c6c580fa935da579e",
+  "ownerCandidate": "espondiloartrite_axial",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_025_f01",
+    "b04_025_f02",
+    "b04_025_f03",
+    "b04_025_f04",
+    "b04_025_f05",
+    "b04_025_f06",
+    "b04_025_f07",
+    "b04_025_f08",
+    "b04_025_f09"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Trauma en columna rígida, déficit neurológico u ojo rojo doloroso requiere evaluación urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dolor inflamatorio y examen, marcadores e imágenes según sospecha; HLA-B27 negativo no excluye."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opciones especificadas en este tema: naproxeno; ibuprofeno; adalimumab. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Ejercicio/fisioterapia y antiinflamatorio elegible como naproxeno o ibuprofeno. Persistencia activa: anti-TNF o inhibidor IL-17/terapia dirigida según especialista y comorbilidades."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Control sintomático en adulto: naproxeno 250–500 mg por vía oral cada 12 horas, con comida; máximo 1.000 mg al día en este esquema. Usar la menor dosis eficaz durante el menor tiempo y reevaluar, sin reemplazar tratamiento modificador de la enfermedad. Evitar otro antiinflamatorio, enfermedad renal importante, úlcera/sangrado o embarazo; valorar protección gástrica según riesgo."
+    },
+    {
+      "type": "paragraph",
+      "text": "Alternativa para dolor inflamatorio en adulto elegible: ibuprofeno 200–400 mg por vía oral cada 8 horas si es necesario, con comida, máximo 1.200 mg al día en este esquema breve. No combinar con otro antiinflamatorio. Evitar en lesión renal, sangrado/úlcera, insuficiencia cardíaca descompensada o embarazo; reevaluar necesidad y riesgo digestivo."
+    },
+    {
+      "type": "paragraph",
+      "text": "Adalimumab, adulto elegible tras fracaso/intolerancia de la estrategia convencional: 40 mg por vía subcutánea cada 2 semanas para artritis psoriásica o espondilitis anquilosante, según indicación. Tratamiento de mantenimiento, reevaluado por reumatología. Pesquisar tuberculosis/hepatitis B e infección; no iniciar con infección activa importante ni combinar con otro biológico. Valorar insuficiencia cardíaca y enfermedad desmielinizante."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Revisar riesgo renal/gastrointestinal; inmunosupresión requiere cribado infeccioso. No indicar metotrexato para toda afectación axial aislada."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Seguir actividad, movilidad y función; dejar tabaco y adaptar rehabilitación."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Inflamación axial/sacroilíaca con o sin cambios radiográficos; puede coexistir con uveítis/psoriasis."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_184",
+      "title": "NHS — Espondiloartrite axial",
+      "url": "https://www.nhs.uk/conditions/ankylosing-spondylitis/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 05 January 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_184",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "topic_184_treatment",
+      "title": "NHS — Espondiloartrite axial — treatment",
+      "url": "https://www.nhs.uk/conditions/ankylosing-spondylitis/treatment/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 05 January 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_184_treatment",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "axial",
+      "title": "NICE NG65 — Spondyloarthritis",
+      "url": "https://www.nice.org.uk/guidance/ng65/chapter/Recommendations",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "NICE NG65: NSAID na menor dose eficaz, monitorização e escalonamento especializado se atividade persistente; recomendações oficiais consultadas.",
+      "sourceEvidenceRecord": "web-verification-record.json:axial",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "naproxen_label",
+      "title": "DailyMed — Naproxen tablets: adult rheumatic dosing",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=96601d76-50ea-4dc0-b588-d174f8d8bb51",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:naproxen_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "ibuprofen_nhs",
+      "title": "NHS — Ibuprofen for adults: dose, maximum and precautions",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 August 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:ibuprofen_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "adalim_label",
+      "title": "DailyMed — HUMIRA: adult RA, PsA and ankylosing spondylitis dosing",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=608d4f0d-b19f-46d3-749a-7159aa5f933d",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:adalim_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Trauma en columna rígida, déficit neurológico u ojo rojo doloroso requiere evaluación urgente."
+      ],
+      "factIds": [
+        "b04_025_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Dolor inflamatorio y examen, marcadores e imágenes según sospecha; HLA-B27 negativo no excluye."
+      ],
+      "factIds": [
+        "b04_025_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: naproxeno; ibuprofeno; adalimumab. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Ejercicio/fisioterapia y antiinflamatorio elegible como naproxeno o ibuprofeno. Persistencia activa: anti-TNF o inhibidor IL-17/terapia dirigida según especialista y comorbilidades."
+      ],
+      "factIds": [
+        "b04_025_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Control sintomático en adulto: naproxeno 250–500 mg por vía oral cada 12 horas, con comida; máximo 1.000 mg al día en este esquema. Usar la menor dosis eficaz durante el menor tiempo y reevaluar, sin reemplazar tratamiento modificador de la enfermedad. Evitar otro antiinflamatorio, enfermedad renal importante, úlcera/sangrado o embarazo; valorar protección gástrica según riesgo.",
+        "Alternativa para dolor inflamatorio en adulto elegible: ibuprofeno 200–400 mg por vía oral cada 8 horas si es necesario, con comida, máximo 1.200 mg al día en este esquema breve. No combinar con otro antiinflamatorio. Evitar en lesión renal, sangrado/úlcera, insuficiencia cardíaca descompensada o embarazo; reevaluar necesidad y riesgo digestivo.",
+        "Adalimumab, adulto elegible tras fracaso/intolerancia de la estrategia convencional: 40 mg por vía subcutánea cada 2 semanas para artritis psoriásica o espondilitis anquilosante, según indicación. Tratamiento de mantenimiento, reevaluado por reumatología. Pesquisar tuberculosis/hepatitis B e infección; no iniciar con infección activa importante ni combinar con otro biológico. Valorar insuficiencia cardíaca y enfermedad desmielinizante."
+      ],
+      "factIds": [
+        "b04_025_f07",
+        "b04_025_f08",
+        "b04_025_f09"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Revisar riesgo renal/gastrointestinal; inmunosupresión requiere cribado infeccioso. No indicar metotrexato para toda afectación axial aislada."
+      ],
+      "factIds": [
+        "b04_025_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguir actividad, movilidad y función; dejar tabaco y adaptar rehabilitación."
+      ],
+      "factIds": [
+        "b04_025_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Inflamación axial/sacroilíaca con o sin cambios radiográficos; puede coexistir con uveítis/psoriasis."
+      ],
+      "factIds": [
+        "b04_025_f01"
+      ]
+    }
+  ],
+  "markdown": "# Espondiloartritis axial\n\n## Abordaje inicial y urgencias\n\nTrauma en columna rígida, déficit neurológico u ojo rojo doloroso requiere evaluación urgente.\n\n## Diagnóstico y diferenciales\n\nDolor inflamatorio y examen, marcadores e imágenes según sospecha; HLA-B27 negativo no excluye.\n\n## Tratamiento: primera elección y alternativas\n\nOpciones especificadas en este tema: naproxeno; ibuprofeno; adalimumab. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Ejercicio/fisioterapia y antiinflamatorio elegible como naproxeno o ibuprofeno. Persistencia activa: anti-TNF o inhibidor IL-17/terapia dirigida según especialista y comorbilidades.\n\n## Fármacos, dosis e intervalos\n\nControl sintomático en adulto: naproxeno 250–500 mg por vía oral cada 12 horas, con comida; máximo 1.000 mg al día en este esquema. Usar la menor dosis eficaz durante el menor tiempo y reevaluar, sin reemplazar tratamiento modificador de la enfermedad. Evitar otro antiinflamatorio, enfermedad renal importante, úlcera/sangrado o embarazo; valorar protección gástrica según riesgo.\n\nAlternativa para dolor inflamatorio en adulto elegible: ibuprofeno 200–400 mg por vía oral cada 8 horas si es necesario, con comida, máximo 1.200 mg al día en este esquema breve. No combinar con otro antiinflamatorio. Evitar en lesión renal, sangrado/úlcera, insuficiencia cardíaca descompensada o embarazo; reevaluar necesidad y riesgo digestivo.\n\nAdalimumab, adulto elegible tras fracaso/intolerancia de la estrategia convencional: 40 mg por vía subcutánea cada 2 semanas para artritis psoriásica o espondilitis anquilosante, según indicación. Tratamiento de mantenimiento, reevaluado por reumatología. Pesquisar tuberculosis/hepatitis B e infección; no iniciar con infección activa importante ni combinar con otro biológico. Valorar insuficiencia cardíaca y enfermedad desmielinizante.\n\n## Seguridad y monitorización\n\nRevisar riesgo renal/gastrointestinal; inmunosupresión requiere cribado infeccioso. No indicar metotrexato para toda afectación axial aislada.\n\n## Reevaluación, internación y alta\n\nSeguir actividad, movilidad y función; dejar tabaco y adaptar rehabilitación.\n\n## Reconocimiento rápido\n\nInflamación axial/sacroilíaca con o sin cambios radiográficos; puede coexistir con uveítis/psoriasis.\n\n## Referencias\n\n1. [NHS — Espondiloartrite axial](https://www.nhs.uk/conditions/ankylosing-spondylitis/)\n2. [NHS — Espondiloartrite axial — treatment](https://www.nhs.uk/conditions/ankylosing-spondylitis/treatment/)\n3. [NICE NG65 — Spondyloarthritis](https://www.nice.org.uk/guidance/ng65/chapter/Recommendations)\n4. [DailyMed — Naproxen tablets: adult rheumatic dosing](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=96601d76-50ea-4dc0-b588-d174f8d8bb51)\n5. [NHS — Ibuprofen for adults: dose, maximum and precautions](https://www.nhs.uk/medicines/ibuprofen-for-adults/)\n6. [DailyMed — HUMIRA: adult RA, PsA and ankylosing spondylitis dosing](https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=608d4f0d-b19f-46d3-749a-7159aa5f933d)",
+  "approvedReviewCanonicalFileSha256": "e7697661f53d0215490568d3d01f6ccba9b52e4d171192be4d125d5938d59161",
+  "approvedReviewProjectionFileSha256": "5106d3fa13e219f3d06d7345e675a846410089ef7b4d60e069b11864182fcc83"
+}

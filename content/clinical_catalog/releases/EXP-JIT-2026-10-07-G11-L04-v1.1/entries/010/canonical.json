@@ -1,0 +1,254 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "reviewer": null,
+  "ownerCandidate": "glomerulonefrite_pos_infecciosa",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Glomerulonefrite pós-infecciosa",
+    "es": "Glomerulonefritis posinfecciosa"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L03",
+  "identityDecision": "NEW_DISTINCT_SCOPE_CANDIDATE; NO_OWNER_REGISTERED",
+  "relatedExistingOwners": [
+    "nefro_glomerulonefrite_rapidamente_progressiva"
+  ],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "treatmentApplicability": "SCENARIO_SPECIFIC_PHARMACOTHERAPY",
+  "regimens": [
+    {
+      "drug": "furosemida / amlodipino",
+      "role": "ADULT_SUPPORTIVE",
+      "pt": "Adulto com edema e via oral viável: furosemida 20–80 mg por via oral como dose inicial, com ajuste por diurese, peso, pressão e eletrólitos; dose individualizada depois uma ou duas vezes ao dia até euvolemia. Hipertensão persistente, sem emergência: amlodipino 5 mg por via oral uma vez ao dia, titulável até 10 mg por dia; fragilidade/hepatopatia podem exigir início menor. Não usar esses esquemas para edema pulmonar/emergência hipertensiva.",
+      "es": "Adulto con edema y vía oral viable: furosemida 20–80 mg por vía oral como dosis inicial, con ajuste por diuresis, peso, presión y electrolitos; dosis individualizada después una o dos veces al día hasta euvolemia. Hipertensión persistente, sin emergencia: amlodipino 5 mg por vía oral una vez al día, titulable hasta 10 mg al día; fragilidad/hepatopatía pueden requerir inicio menor. No usar estos esquemas para edema pulmonar/emergencia hipertensiva.",
+      "sources": [
+        "furo_label",
+        "amlod_label",
+        "topic_169"
+      ]
+    },
+    {
+      "drug": "furosemida / amlodipino",
+      "role": "PEDIATRIC_PSGN_SUPPORTIVE",
+      "pt": "Pediatria, referência específica de glomerulonefrite pós-estreptocócica: furosemida 0,5–1 mg por kg por dose, máximo 40 mg, por via oral ou intravenosa a cada 12 horas; reduzir/suspender quando euvolêmico. Se hipertensão persistir após controle da sobrecarga: amlodipino 0,1 mg por kg por dia por via oral, titulável até 0,6 mg por kg por dia, máximo 10 mg por dia, sob equipe pediátrica. Monitorizar peso, balanço, pressão, creatinina e eletrólitos.",
+      "es": "Pediatría, referencia específica de glomerulonefritis posestreptocócica: furosemida 0,5–1 mg por kg por dosis, máximo 40 mg, por vía oral o intravenosa cada 12 horas; reducir/suspender con euvolemia. Si hipertensión persiste tras controlar sobrecarga: amlodipino 0,1 mg por kg al día por vía oral, titulable hasta 0,6 mg por kg al día, máximo 10 mg al día, por equipo pediátrico. Controlar peso, balance, presión, creatinina y electrolitos.",
+      "sources": [
+        "psgn_rch"
+      ]
+    },
+    {
+      "drug": "penicilina V / amoxicilina",
+      "role": "ONLY_ACTIVE_CONFIRMED_GAS_PHARYNGITIS",
+      "pt": "Somente faringite ativa confirmada por estreptococo do grupo A: adolescente/adulto, penicilina V 500 mg por via oral a cada 12 horas durante 10 dias. Alternativa amoxicilina 50 mg por kg uma vez ao dia, máximo 1.000 mg, ou 25 mg por kg por dose a cada 12 horas, máximo 500 mg por dose, durante 10 dias. Não extrapolar para endocardite, abscesso ou outras infecções pós-infecciosas; alergia e função renal exigem escolha/ajuste específicos.",
+      "es": "Solo faringitis activa confirmada por estreptococo del grupo A: adolescente/adulto, penicilina V 500 mg por vía oral cada 12 horas durante 10 días. Alternativa amoxicilina 50 mg por kg una vez al día, máximo 1.000 mg, o 25 mg por kg por dosis cada 12 horas, máximo 500 mg por dosis, durante 10 días. No extrapolar a endocarditis, absceso u otras infecciones posinfecciosas; alergia y función renal requieren elección/ajuste específicos.",
+      "sources": [
+        "strep_cdc"
+      ]
+    }
+  ],
+  "treatmentRevision": "ALL_50_REVIEWED_V1.1",
+  "facts": [
+    {
+      "id": "b04_010_f01",
+      "section": "concept",
+      "pt": "Lesão glomerular imunomediada após infecção; pode causar síndrome nefrítica.",
+      "es": "Lesión glomerular inmunomediada posinfección; puede causar síndrome nefrítico.",
+      "sources": [
+        "topic_169",
+        "furo_label",
+        "amlod_label",
+        "psgn_rch",
+        "strep_cdc"
+      ]
+    },
+    {
+      "id": "b04_010_f02",
+      "section": "diagnosis",
+      "pt": "Urina, creatinina, eletrólitos, complemento e evidência infecciosa; excluir glomerulonefrite rapidamente progressiva.",
+      "es": "Orina, creatinina, electrolitos, complemento y evidencia infecciosa; excluir glomerulonefritis rápidamente progresiva.",
+      "sources": [
+        "topic_169",
+        "furo_label",
+        "amlod_label",
+        "psgn_rch",
+        "strep_cdc"
+      ]
+    },
+    {
+      "id": "b04_010_f03",
+      "section": "initial",
+      "pt": "Hipertensão grave, edema pulmonar, oligúria ou alteração neurológica exigem hospitalização.",
+      "es": "Hipertensión grave, edema pulmonar, oliguria o alteración neurológica requieren internación.",
+      "sources": [
+        "topic_169",
+        "furo_label",
+        "amlod_label",
+        "psgn_rch",
+        "strep_cdc"
+      ]
+    },
+    {
+      "id": "b04_010_f04",
+      "section": "options",
+      "pt": "Sobrecarga: furosemida, com restrição de sal/fluidos individualizada. Hipertensão persistente: amlodipino quando apropriado; emergência hipertensiva requer tratamento hospitalar. Infecção estreptocócica ativa: penicilina V ou amoxicilina conforme foco e teste, sem prometer reversão da nefrite pelo antibiótico.",
+      "es": "Sobrecarga: furosemida, con restricción individualizada de sal/líquidos. Hipertensión persistente: amlodipino cuando corresponda; emergencia hipertensiva requiere tratamiento hospitalario. Infección estreptocócica activa: penicilina V o amoxicilina según foco y prueba, sin prometer reversión de nefritis por antibiótico.",
+      "sources": [
+        "topic_169",
+        "furo_label",
+        "amlod_label",
+        "psgn_rch",
+        "strep_cdc"
+      ]
+    },
+    {
+      "id": "b04_010_f05",
+      "section": "safety",
+      "pt": "Monitorizar pressão, peso, diurese e potássio; não extrapolar doses pediátricas do protocolo RCH para adultos.",
+      "es": "Controlar presión, peso, diuresis y potasio; no extrapolar dosis pediátricas RCH a adultos.",
+      "sources": [
+        "topic_169",
+        "furo_label",
+        "amlod_label",
+        "psgn_rch",
+        "strep_cdc"
+      ]
+    },
+    {
+      "id": "b04_010_f06",
+      "section": "followup",
+      "pt": "Nefrologia se função/complemento não recuperam ou proteinúria persiste; diálise se complicações refratárias.",
+      "es": "Nefrología si función/complemento no se recuperan o persiste proteinuria; diálisis si complicaciones refractarias.",
+      "sources": [
+        "topic_169",
+        "furo_label",
+        "amlod_label",
+        "psgn_rch",
+        "strep_cdc"
+      ]
+    },
+    {
+      "id": "b04_010_f07",
+      "section": "doses",
+      "pt": "Adulto com edema e via oral viável: furosemida 20–80 mg por via oral como dose inicial, com ajuste por diurese, peso, pressão e eletrólitos; dose individualizada depois uma ou duas vezes ao dia até euvolemia. Hipertensão persistente, sem emergência: amlodipino 5 mg por via oral uma vez ao dia, titulável até 10 mg por dia; fragilidade/hepatopatia podem exigir início menor. Não usar esses esquemas para edema pulmonar/emergência hipertensiva.",
+      "es": "Adulto con edema y vía oral viable: furosemida 20–80 mg por vía oral como dosis inicial, con ajuste por diuresis, peso, presión y electrolitos; dosis individualizada después una o dos veces al día hasta euvolemia. Hipertensión persistente, sin emergencia: amlodipino 5 mg por vía oral una vez al día, titulable hasta 10 mg al día; fragilidad/hepatopatía pueden requerir inicio menor. No usar estos esquemas para edema pulmonar/emergencia hipertensiva.",
+      "sources": [
+        "furo_label",
+        "amlod_label",
+        "topic_169"
+      ]
+    },
+    {
+      "id": "b04_010_f08",
+      "section": "doses",
+      "pt": "Pediatria, referência específica de glomerulonefrite pós-estreptocócica: furosemida 0,5–1 mg por kg por dose, máximo 40 mg, por via oral ou intravenosa a cada 12 horas; reduzir/suspender quando euvolêmico. Se hipertensão persistir após controle da sobrecarga: amlodipino 0,1 mg por kg por dia por via oral, titulável até 0,6 mg por kg por dia, máximo 10 mg por dia, sob equipe pediátrica. Monitorizar peso, balanço, pressão, creatinina e eletrólitos.",
+      "es": "Pediatría, referencia específica de glomerulonefritis posestreptocócica: furosemida 0,5–1 mg por kg por dosis, máximo 40 mg, por vía oral o intravenosa cada 12 horas; reducir/suspender con euvolemia. Si hipertensión persiste tras controlar sobrecarga: amlodipino 0,1 mg por kg al día por vía oral, titulable hasta 0,6 mg por kg al día, máximo 10 mg al día, por equipo pediátrico. Controlar peso, balance, presión, creatinina y electrolitos.",
+      "sources": [
+        "psgn_rch"
+      ]
+    },
+    {
+      "id": "b04_010_f09",
+      "section": "doses",
+      "pt": "Somente faringite ativa confirmada por estreptococo do grupo A: adolescente/adulto, penicilina V 500 mg por via oral a cada 12 horas durante 10 dias. Alternativa amoxicilina 50 mg por kg uma vez ao dia, máximo 1.000 mg, ou 25 mg por kg por dose a cada 12 horas, máximo 500 mg por dose, durante 10 dias. Não extrapolar para endocardite, abscesso ou outras infecções pós-infecciosas; alergia e função renal exigem escolha/ajuste específicos.",
+      "es": "Solo faringitis activa confirmada por estreptococo del grupo A: adolescente/adulto, penicilina V 500 mg por vía oral cada 12 horas durante 10 días. Alternativa amoxicilina 50 mg por kg una vez al día, máximo 1.000 mg, o 25 mg por kg por dosis cada 12 horas, máximo 500 mg por dosis, durante 10 días. No extrapolar a endocarditis, absceso u otras infecciones posinfecciosas; alergia y función renal requieren elección/ajuste específicos.",
+      "sources": [
+        "strep_cdc"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "O mecanismo imune explica a persistência renal após eliminação do patógeno.",
+      "es": "El mecanismo inmune explica persistencia renal tras eliminar el patógeno.",
+      "sources": [
+        "topic_169",
+        "furo_label",
+        "amlod_label",
+        "psgn_rch",
+        "strep_cdc"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_169",
+      "title": "RCH — Glomerulonefrite pós-infecciosa",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Post-streptococcal_glomerulonephritis_(PSGN)/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated June 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_169",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "furo_label",
+      "title": "DailyMed — Furosemide oral tablets: adult edema starting dose",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/lookup.cfm?setid=12137a90-fb35-45d7-8984-0b04793d3e34",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:furo_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "amlod_label",
+      "title": "DailyMed — Amlodipine: adult hypertension starting and maximum doses",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5467eee5-1519-7859-e063-6294a90afed1",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:amlod_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "psgn_rch",
+      "title": "Royal Children’s Hospital — Post-streptococcal glomerulonephritis: pediatric doses",
+      "url": "https://www.rch.org.au/clinicalguide/guideline_index/Post-streptococcal_glomerulonephritis_%28PSGN%29/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Last updated June 2025",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:psgn_rch",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "strep_cdc",
+      "title": "CDC — Group A streptococcal pharyngitis: recommended antibiotic regimens",
+      "url": "https://www.cdc.gov/group-a-strep/hcp/clinical-guidance/strep-throat.html",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "CDC specific recommended-regimen text read in web: penicillin V adult 500 mg twice daily 10 days; amoxicillin 50 mg/kg daily maximum 1000 mg, or 25 mg/kg twice daily maximum 500 mg per dose, 10 days. Only active confirmed GAS pharyngitis; not a GN reversal claim.",
+      "sourceEvidenceRecord": "web-verification-record.json:strep_cdc",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Medicamentos, doses e alternativas identificados por cenário; procedimentos e ausência de fármaco específico explicitados. Regimes sem intervalo universal validado permanecem calculados pelo especialista. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

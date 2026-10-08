@@ -1,0 +1,132 @@
+{
+  "mode": "STUDY",
+  "language": "pt",
+  "title": "Fenômeno de Raynaud",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "0595f37a72e559783ac9d5a35587b49fc9283bdb51b48441204fa1fd877a655f",
+  "ownerCandidate": "fenomeno_de_raynaud",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_032_f01",
+    "b04_032_f02",
+    "b04_032_f03",
+    "b04_032_f04",
+    "b04_032_f05",
+    "b04_032_f06",
+    "b04_032_f07"
+  ],
+  "sections": [
+    {
+      "heading": "Conceito e mecanismo",
+      "paragraphs": [
+        "Vasoespasmo digital desencadeado por frio/estresse; primário ou secundário."
+      ],
+      "factIds": [
+        "b04_032_f01"
+      ]
+    },
+    {
+      "heading": "Raciocínio e escolha terapêutica",
+      "paragraphs": [
+        "Conduta conservadora e vasodilatador são opções conforme necessidade; mais fármacos exigem fenotipagem."
+      ],
+      "factIds": []
+    },
+    {
+      "heading": "Diagnóstico e diferenciais",
+      "paragraphs": [
+        "Avaliar padrão, simetria, lesão tecidual e doença autoimune; investigar suspeita secundária."
+      ],
+      "factIds": [
+        "b04_032_f02"
+      ]
+    },
+    {
+      "heading": "Abordagem inicial e urgências",
+      "paragraphs": [
+        "Dor persistente, úlcera, necrose ou isquemia de membro exige atendimento urgente."
+      ],
+      "factIds": [
+        "b04_032_f03"
+      ]
+    },
+    {
+      "heading": "Tratamento: primeira escolha e alternativas",
+      "paragraphs": [
+        "Opções especificadas neste tema: nifedipino / amlodipino. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Primeiro: aquecimento, evitar tabaco e gatilhos. Nifedipino pode ser oferecido se sintomas importantes; alternativas especializadas dependem da causa e gravidade, sobretudo na isquemia secundária."
+      ],
+      "factIds": [
+        "b04_032_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, doses e intervalos",
+      "paragraphs": [
+        "Raynaud em adulto com indicação farmacológica: protocolo NHS Highland, nifedipino preferencialmente de liberação modificada, 10 mg por via oral uma vez ao dia inicialmente, titulável até 60 mg por dia conforme formulação e tolerância. Alternativa amlodipino 5 mg por via oral uma vez ao dia, titulável até 10 mg por dia. Uso para Raynaud pode ser fora de bula; não intercambiar apresentações de liberação modificada. Monitorizar pressão, edema e cefaleia; isquemia/úlcera digital exige especialista, não apenas aumentar dose."
+      ],
+      "factIds": [
+        "b04_032_f07"
+      ]
+    },
+    {
+      "heading": "Segurança e monitorização",
+      "paragraphs": [
+        "Monitorizar pressão e edema; revisar vasoconstritores e não mascarar isquemia grave com terapia domiciliar."
+      ],
+      "factIds": [
+        "b04_032_f05"
+      ]
+    },
+    {
+      "heading": "Reavaliação, internação e alta",
+      "paragraphs": [
+        "Reavaliar resposta e sinais de doença sistêmica; proteção das extremidades contínua."
+      ],
+      "factIds": [
+        "b04_032_f06"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_191",
+      "title": "NHS — Fenômeno de Raynaud",
+      "url": "https://www.nhs.uk/conditions/raynauds/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 20 July 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_191",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "raynaud_nhs",
+      "title": "NHS Highland — Raynaud phenomenon: modified-release nifedipine titration",
+      "url": "https://www.rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/adult-therapeutic-guidelines/rheumatology/raynauds-phenomenon-guidelines/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "review date:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:raynaud_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "amlod_label",
+      "title": "DailyMed — Amlodipine: adult hypertension starting and maximum doses",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5467eee5-1519-7859-e063-6294a90afed1",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:amlod_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

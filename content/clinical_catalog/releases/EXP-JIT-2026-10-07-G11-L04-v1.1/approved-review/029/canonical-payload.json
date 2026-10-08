@@ -1,0 +1,196 @@
+{
+  "schemaVersion": 1,
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "reviewer": null,
+  "ownerCandidate": "sindrome_de_sjogren",
+  "ownerBinding": "CANDIDATE_NOT_REGISTERED",
+  "title": {
+    "pt": "Síndrome de Sjögren",
+    "es": "Síndrome de Sjögren"
+  },
+  "status": "WAITING_HUMAN_APPROVAL",
+  "humanApproved": false,
+  "publicationAuthorized": false,
+  "activeBaseline": "MEDCASES-CLINICAL-S2-2026-10-07-G11-L03",
+  "identityDecision": "NEW_DISTINCT_SCOPE_CANDIDATE; NO_OWNER_REGISTERED",
+  "relatedExistingOwners": [],
+  "optionRelation": "CONTEXT_DEPENDENT_OPTIONS",
+  "treatmentApplicability": "SCENARIO_SPECIFIC_PHARMACOTHERAPY",
+  "regimens": [
+    {
+      "drug": "pilocarpina / cevimelina",
+      "role": "SELECTED_XEROSTOMIA_ALTERNATIVES",
+      "pt": "Xerostomia em adulto com função glandular residual: pilocarpina 5 mg por via oral 4 vezes ao dia; avaliar benefício ao longo de 6 semanas. Alternativa onde disponível: cevimelina 30 mg por via oral a cada 8 horas. Escolher uma, não associar automaticamente. Evitar asma não controlada e situações em que miose é indesejável; monitorizar sudorese, hidratação e efeitos cardiovasculares. Pilocarpina com insuficiência hepática moderada requer início de 5 mg a cada 12 horas. Não trata toda manifestação sistêmica do Sjögren.",
+      "es": "Xerostomía en adulto con función glandular residual: pilocarpina 5 mg por vía oral 4 veces al día; valorar beneficio durante 6 semanas. Alternativa donde disponible: cevimelina 30 mg por vía oral cada 8 horas. Elegir una, no combinar automáticamente. Evitar asma no controlada y situaciones en que miosis es indeseable; controlar sudoración, hidratación y efectos cardiovasculares. Pilocarpina con insuficiencia hepática moderada requiere inicio de 5 mg cada 12 horas. No trata toda manifestación sistémica del Sjögren.",
+      "sources": [
+        "piloc_label",
+        "cevim_label",
+        "sjogren2024"
+      ]
+    }
+  ],
+  "treatmentRevision": "ALL_50_REVIEWED_V1.1",
+  "facts": [
+    {
+      "id": "b04_029_f01",
+      "section": "concept",
+      "pt": "Autoimunidade exócrina causa secura ocular/oral; pode haver doença sistêmica.",
+      "es": "Autoinmunidad exocrina causa sequedad ocular/bucal; puede existir enfermedad sistémica.",
+      "sources": [
+        "topic_188",
+        "sjogren2024",
+        "piloc_label",
+        "cevim_label"
+      ]
+    },
+    {
+      "id": "b04_029_f02",
+      "section": "diagnosis",
+      "pt": "Avaliar secura, medicamentos e testes glandulares/autoanticorpos; excluir outras causas de xerostomia.",
+      "es": "Evaluar sequedad, fármacos y pruebas glandulares/autoanticuerpos; excluir otras causas de xerostomía.",
+      "sources": [
+        "topic_188",
+        "sjogren2024",
+        "piloc_label",
+        "cevim_label"
+      ]
+    },
+    {
+      "id": "b04_029_f03",
+      "section": "initial",
+      "pt": "Olho doloroso/fotofobia ou déficit sistêmico agudo exige avaliação direcionada urgente.",
+      "es": "Ojo doloroso/fotofobia o déficit sistémico agudo requiere evaluación dirigida urgente.",
+      "sources": [
+        "topic_188",
+        "sjogren2024",
+        "piloc_label",
+        "cevim_label"
+      ]
+    },
+    {
+      "id": "b04_029_f04",
+      "section": "options",
+      "pt": "Opções especificadas neste tema: pilocarpina / cevimelina. Selecionar pelo cenário e pela indicação detalhados abaixo; alternativas, adjuvantes e resgate não são automaticamente intercambiáveis. Lágrimas artificiais e substitutos salivares são medidas iniciais. Pilocarpina é opção selecionada quando há função glandular residual; tratamento ocular especializado se insuficiente. Imunomodulação depende de manifestação sistêmica específica; corticoide sistêmico não é rotina para toda secura.",
+      "es": "Opciones especificadas en este tema: pilocarpina / cevimelina. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Lágrimas artificiales y sustitutos salivales son medidas iniciales. Pilocarpina es opción seleccionada si hay función glandular residual; tratamiento ocular especializado si insuficiente. Inmunomodulación según manifestación sistémica específica; corticoide sistémico no es rutina para toda sequedad.",
+      "sources": [
+        "topic_188",
+        "sjogren2024",
+        "piloc_label",
+        "cevim_label"
+      ]
+    },
+    {
+      "id": "b04_029_f05",
+      "section": "safety",
+      "pt": "Não usar corticoide ocular sem oftalmologia; avaliar cáries, candidíase e contraindicações aos secretagogos.",
+      "es": "No usar corticoide ocular sin oftalmología; evaluar caries, candidiasis y contraindicaciones a secretagogos.",
+      "sources": [
+        "topic_188",
+        "sjogren2024",
+        "piloc_label",
+        "cevim_label"
+      ]
+    },
+    {
+      "id": "b04_029_f06",
+      "section": "followup",
+      "pt": "Odontologia/oftalmologia e reumatologia; investigar aumento glandular persistente ou linfonodos.",
+      "es": "Odontología/oftalmología y reumatología; investigar aumento glandular persistente o ganglios.",
+      "sources": [
+        "topic_188",
+        "sjogren2024",
+        "piloc_label",
+        "cevim_label"
+      ]
+    },
+    {
+      "id": "b04_029_f07",
+      "section": "doses",
+      "pt": "Xerostomia em adulto com função glandular residual: pilocarpina 5 mg por via oral 4 vezes ao dia; avaliar benefício ao longo de 6 semanas. Alternativa onde disponível: cevimelina 30 mg por via oral a cada 8 horas. Escolher uma, não associar automaticamente. Evitar asma não controlada e situações em que miose é indesejável; monitorizar sudorese, hidratação e efeitos cardiovasculares. Pilocarpina com insuficiência hepática moderada requer início de 5 mg a cada 12 horas. Não trata toda manifestação sistêmica do Sjögren.",
+      "es": "Xerostomía en adulto con función glandular residual: pilocarpina 5 mg por vía oral 4 veces al día; valorar beneficio durante 6 semanas. Alternativa donde disponible: cevimelina 30 mg por vía oral cada 8 horas. Elegir una, no combinar automáticamente. Evitar asma no controlada y situaciones en que miosis es indeseable; controlar sudoración, hidratación y efectos cardiovasculares. Pilocarpina con insuficiencia hepática moderada requiere inicio de 5 mg cada 12 horas. No trata toda manifestación sistémica del Sjögren.",
+      "sources": [
+        "piloc_label",
+        "cevim_label",
+        "sjogren2024"
+      ]
+    }
+  ],
+  "studyExplanations": [
+    {
+      "pt": "Controle de secura não equivale a tratar todo acometimento sistêmico.",
+      "es": "Control de sequedad no equivale a tratar toda afectación sistémica.",
+      "sources": [
+        "topic_188",
+        "sjogren2024",
+        "piloc_label",
+        "cevim_label"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_188",
+      "title": "NHS — Síndrome de Sjögren",
+      "url": "https://www.nhs.uk/conditions/sjogrens-syndrome/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 27 November 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_188",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "sjogren2024",
+      "title": "BSR — Sjögren disease guideline: executive summary 2024",
+      "url": "https://academic.oup.com/rheumatology/article/64/2/396/7681577",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2024,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "BSR resumo final 2024: substitutos salivares, pilocarpina em função residual e manifestações sistêmicas individualizadas; corticoide sistêmico não rotineiro. Recomendações específicas acessíveis na web.",
+      "sourceEvidenceRecord": "web-verification-record.json:sjogren2024",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "piloc_label",
+      "title": "DailyMed — Pilocarpine: Sjögren xerostomia regimen",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=8db0db4f-55ad-46b2-af50-e71b4a763aaa",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:piloc_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "cevim_label",
+      "title": "DailyMed — Cevimeline: Sjögren xerostomia regimen",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=61dd5ee1-cf89-43ea-ada4-4e4a4d9d133b&type=display",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:cevim_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "sourceOfTruth": "REVIEW_CANDIDATE_SHARED_CANONICAL_PAYLOAD",
+  "clinicalContext": "Primeira escolha por cenário; alternativas não automaticamente equivalentes. Medicamentos, doses e alternativas identificados por cenário; procedimentos e ausência de fármaco específico explicitados. Regimes sem intervalo universal validado permanecem calculados pelo especialista. Confirmar apresentação/bula e resistência locais; resumo público não equivale a leitura integral de conteúdo restrito.",
+  "publicationContract": {
+    "studyAndPlantaoTogether": true,
+    "languages": [
+      "pt",
+      "es"
+    ],
+    "guidesStatusAfterFuturePublication": "DRAFT_ADMIN",
+    "technicalSnapshotSizeGateRequired": true
+  }
+}

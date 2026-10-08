@@ -1,0 +1,1 @@
+{"RESULT":"PASS","tests":["real_schema_867","corrupt_chunk_rejected","approved_hashes_50","four_projections_200","baseline_817_clinical_content_exactly_preserved","compacted_indices_losslessly_rehydrated","corrupt_index_binding_rejected","snapshot_under_real_1717_limit","real_reader_cache_offline","admin_50_drafts"],"newRelevantFailures":0}

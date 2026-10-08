@@ -1,0 +1,178 @@
+{
+  "schema_version": "1.0",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "status": "draft",
+  "human_approved": false,
+  "human_approval_note": "Candidato aguardando aprovação do lote; Guia deverá permanecer DRAFT no Admin após futura publicação dos modos.",
+  "canonical_payload_sha256": "621e5914ca950dcc5acdfdaf5418f13d875a702658590e52fbea369163757e24",
+  "owner_candidate": "leucoplasia_oral",
+  "pt": {
+    "title": "Leucoplasia oral",
+    "subtitle": "Primeira escolha e alternativas por cenário",
+    "summary": "Placa branca oral persistente com potencial de displasia; não é sinônimo de candidíase.",
+    "sections": [
+      {
+        "heading": "Conceito e mecanismo",
+        "paragraphs": [
+          "Placa branca oral persistente com potencial de displasia; não é sinônimo de candidíase."
+        ],
+        "factIds": [
+          "b04_008_f01"
+        ]
+      },
+      {
+        "heading": "Raciocínio e escolha terapêutica",
+        "paragraphs": [
+          "A escolha é entre vigilância e intervenção por risco, não dois medicamentos obrigatórios."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico e diferenciais",
+        "paragraphs": [
+          "Avaliar placa não removível, fatores irritantes e biópsia quando indicada; diferenciar leucoplasia pilosa."
+        ],
+        "factIds": [
+          "b04_008_f02"
+        ]
+      },
+      {
+        "heading": "Abordagem inicial e urgências",
+        "paragraphs": [
+          "Ulceração, massa, sangramento, disfagia ou crescimento exigem avaliação prioritária."
+        ],
+        "factIds": [
+          "b04_008_f03"
+        ]
+      },
+      {
+        "heading": "Tratamento: primeira escolha e alternativas",
+        "paragraphs": [
+          "Cessar tabaco/álcool e seguimento; alternativa em lesão de risco: excisão por bisturi ou laser conforme histologia/equipe."
+        ],
+        "factIds": [
+          "b04_008_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, doses e intervalos",
+        "paragraphs": [
+          "Não há medicamento padrão comprovado que elimine leucoplasia e previna câncer. Primeira conduta: eliminar tabaco/álcool, biópsia conforme risco e vigilância; alternativa em lesão selecionada: excisão cirúrgica/laser. Não prescrever antifúngico, vitamina ou retinoide empiricamente como cura da placa."
+        ],
+        "factIds": [
+          "b04_008_f07"
+        ]
+      },
+      {
+        "heading": "Segurança e monitorização",
+        "paragraphs": [
+          "Não prescrever antifúngico como cura de placa não diagnosticada; remoção não elimina todo risco futuro."
+        ],
+        "factIds": [
+          "b04_008_f05"
+        ]
+      },
+      {
+        "heading": "Reavaliação, internação e alta",
+        "paragraphs": [
+          "Exames seriados e nova biópsia se mudança; atenção odontológica especializada."
+        ],
+        "factIds": [
+          "b04_008_f06"
+        ]
+      }
+    ]
+  },
+  "es": {
+    "title": "Leucoplasia oral",
+    "subtitle": "Primera elección y alternativas por escenario",
+    "summary": "Placa blanca oral persistente con potencial de displasia; no es sinónimo de candidiasis.",
+    "sections": [
+      {
+        "heading": "Concepto y mecanismo",
+        "paragraphs": [
+          "Placa blanca oral persistente con potencial de displasia; no es sinónimo de candidiasis."
+        ],
+        "factIds": [
+          "b04_008_f01"
+        ]
+      },
+      {
+        "heading": "Razonamiento y elección terapéutica",
+        "paragraphs": [
+          "La elección es vigilancia o intervención según riesgo, no dos medicamentos obligatorios."
+        ],
+        "factIds": []
+      },
+      {
+        "heading": "Diagnóstico y diferenciales",
+        "paragraphs": [
+          "Evaluar placa no removible, irritantes y biopsia cuando indicada; diferenciar leucoplasia vellosa."
+        ],
+        "factIds": [
+          "b04_008_f02"
+        ]
+      },
+      {
+        "heading": "Abordaje inicial y urgencias",
+        "paragraphs": [
+          "Ulceración, masa, sangrado, disfagia o crecimiento requieren evaluación prioritaria."
+        ],
+        "factIds": [
+          "b04_008_f03"
+        ]
+      },
+      {
+        "heading": "Tratamiento: primera elección y alternativas",
+        "paragraphs": [
+          "Dejar tabaco/alcohol y seguimiento; alternativa en lesión de riesgo: escisión con bisturí o láser según histología/equipo."
+        ],
+        "factIds": [
+          "b04_008_f04"
+        ]
+      },
+      {
+        "heading": "Fármacos, dosis e intervalos",
+        "paragraphs": [
+          "No hay medicamento estándar demostrado que elimine leucoplasia y prevenga cáncer. Primera conducta: eliminar tabaco/alcohol, biopsia según riesgo y vigilancia; alternativa en lesión seleccionada: exéresis quirúrgica/láser. No prescribir antifúngico, vitamina ni retinoide empíricamente como cura de la placa."
+        ],
+        "factIds": [
+          "b04_008_f07"
+        ]
+      },
+      {
+        "heading": "Seguridad y monitorización",
+        "paragraphs": [
+          "No indicar antifúngico como cura de placa sin diagnóstico; la remoción no elimina todo riesgo futuro."
+        ],
+        "factIds": [
+          "b04_008_f05"
+        ]
+      },
+      {
+        "heading": "Reevaluación, internación y alta",
+        "paragraphs": [
+          "Exámenes seriados y nueva biopsia si cambia; atención odontológica especializada."
+        ],
+        "factIds": [
+          "b04_008_f06"
+        ]
+      }
+    ]
+  },
+  "references": [
+    {
+      "key": "topic_167",
+      "title": "NHS — Leucoplasia oral",
+      "url": "https://www.nhs.uk/conditions/leukoplakia/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 15 May 2024",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_167",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

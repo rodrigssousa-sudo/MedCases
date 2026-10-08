@@ -1,0 +1,180 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Lupus eritematoso sistémico",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "44ba2ed79de406206ebc79d1c1dba8fd4488b1ea890369a4d22a8d9226af9eec",
+  "ownerCandidate": "lupus_eritematoso_sistemico",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_028_f01",
+    "b04_028_f02",
+    "b04_028_f03",
+    "b04_028_f04",
+    "b04_028_f05",
+    "b04_028_f06",
+    "b04_028_f07",
+    "b04_028_f08"
+  ],
+  "sections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Déficit neurológico, disnea, fiebre, lesión renal o sangrado: excluir infección y enfermedad amenazante de órgano."
+      ],
+      "factIds": [
+        "b04_028_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Integrar clínica, autoanticuerpos, complemento, hemograma y orina; ANA aislado no confirma."
+      ],
+      "factIds": [
+        "b04_028_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: hidroxicloroquina; belimumab. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Hidroxicloroquina es base si elegible, con fotoprotección. Corticoide para control seleccionado y reducción progresiva; inmunosupresores/biológicos según órgano y gravedad."
+      ],
+      "factIds": [
+        "b04_028_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Hidroxicloroquina en adulto con lupus, salvo contraindicación: habitualmente 200–400 mg por vía oral al día, ajustando a dosis objetivo de 5 mg por kg de peso REAL al día y riesgo retiniano; no redondear automáticamente a 400 mg en persona de bajo peso. Uso continuo con revisión clínica y pesquisa oftalmológica. Valorar riñón, interacciones y QT. No reemplaza inducción hospitalaria en nefritis/afectación grave de órgano.",
+        "Alternativa adyuvante en lupus activo elegible pese a tratamiento estándar, adulto: belimumab 200 mg por vía subcutánea una vez por semana, por reumatología. No es monoterapia inicial ni rescate urgente; duración según respuesta. Pesquisar infección, hipersensibilidad y síntomas de depresión/autolesión; valorar vacunas y evitar combinación automática con otros biológicos. Nefritis lúpica tiene protocolo propio."
+      ],
+      "factIds": [
+        "b04_028_f07",
+        "b04_028_f08"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "No extrapolar esquema de nefritis a todo lupus. Evaluar ojo, función renal, infección y compatibilidad reproductiva; hidroxicloroquina según peso/riesgo retiniano."
+      ],
+      "factIds": [
+        "b04_028_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Seguimiento reumatológico y renal; reevaluar orina, actividad y toxicidad aun tras mejoría sintomática."
+      ],
+      "factIds": [
+        "b04_028_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Enfermedad autoinmune multisistémica con manifestaciones cutáneas, articulares, hematológicas y orgánicas."
+      ],
+      "factIds": [
+        "b04_028_f01"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_187",
+      "title": "NHS — Lúpus eritematoso sistêmico",
+      "url": "https://www.nhs.uk/conditions/lupus/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 19 July 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_187",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "eular_index",
+      "title": "EULAR — Published management recommendations",
+      "url": "https://www.eular.org/recommendations-management",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published in that year:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:eular_index",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "sle2025",
+      "title": "ACR — Guideline for treatment of SLE 2025: official release",
+      "url": "https://rheumatology.org/press-releases/new-lupus-sle-clinical-practice-guidelines-released",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2025,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "ACR comunicado oficial de guideline final 2025, lido: hidroxicloroquina como base, minimizar corticoide e imunossupressão individualizada por órgão.",
+      "sourceEvidenceRecord": "web-verification-record.json:sle2025",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "sle2026",
+      "title": "BSR — Management of systemic lupus erythematosus, final 2026",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC13290301/",
+      "authorityStatus": "FINAL_GUIDELINE_OR_OFFICIAL_RECOMMENDATION_SUMMARY",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": 2026,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "BSR guideline final 2026 identificado no resumo primário: hidroxicloroquina salvo contraindicação; peso/risco retiniano. Não alegar leitura integral da página com captcha.",
+      "sourceEvidenceRecord": "web-verification-record.json:sle2026",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "hcq_eular",
+      "title": "EULAR — SLE recommendations 2023: hydroxychloroquine real-body-weight dose",
+      "url": "https://ard.bmj.com/content/83/1/15",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "OFFICIAL_SPECIFIC_RECOMMENDATIONS_OR_ABSTRACT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": null,
+      "scope": "Final EULAR SLE2023 recommendation read: hydroxychloroquine target5 mg/kg real body weight/day, individualized for flares/retinal toxicity. This takes precedence over older regional maximum6.5 mg/kg; regional source used for200–400 mg adult range only.",
+      "sourceEvidenceRecord": "web-verification-record.json:hcq_eular",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "hcq_dg",
+      "title": "NHS Dumfries and Galloway — Hydroxychloroquine: adult rheumatology dosing",
+      "url": "https://www.rightdecisions.scot.nhs.uk/dg-refhelp/rheumatology/hydroxychloroquine/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "review date:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:hcq_dg",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "belimumab_label",
+      "title": "FDA — BENLYSTA label 2026: adult SLE weekly subcutaneous dose",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2026/125370s090lbl.pdf",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "published case reports, ",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:belimumab_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ]
+}

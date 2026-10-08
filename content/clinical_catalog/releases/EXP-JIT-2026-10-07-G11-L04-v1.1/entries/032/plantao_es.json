@@ -1,0 +1,186 @@
+{
+  "mode": "PLANTAO",
+  "language": "es",
+  "title": "Fenómeno de Raynaud",
+  "version": "EXP-JIT-2026-10-07-G11-L04-v1.1",
+  "reviewDate": "2026-10-08",
+  "canonicalPayloadSha256": "413b62db134b47c0cd962b9d1b3ecb8f15073e5c4e08542e1a6776713dd0063a",
+  "ownerCandidate": "fenomeno_de_raynaud",
+  "status": "REVIEW_ONLY",
+  "factIds": [
+    "b04_032_f01",
+    "b04_032_f02",
+    "b04_032_f03",
+    "b04_032_f04",
+    "b04_032_f05",
+    "b04_032_f06",
+    "b04_032_f07"
+  ],
+  "sections": [
+    {
+      "type": "heading",
+      "text": "Abordaje inicial y urgencias"
+    },
+    {
+      "type": "paragraph",
+      "text": "Dolor persistente, úlcera, necrosis o isquemia de miembro requiere atención urgente."
+    },
+    {
+      "type": "heading",
+      "text": "Diagnóstico y diferenciales"
+    },
+    {
+      "type": "paragraph",
+      "text": "Evaluar patrón, simetría, lesión tisular y enfermedad autoinmune; investigar sospecha secundaria."
+    },
+    {
+      "type": "heading",
+      "text": "Tratamiento: primera elección y alternativas"
+    },
+    {
+      "type": "paragraph",
+      "text": "Opciones especificadas en este tema: nifedipino / amlodipino. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Primero: calor, evitar tabaco y desencadenantes. Nifedipino si síntomas importantes; alternativas especializadas según causa/gravedad, sobre todo en isquemia secundaria."
+    },
+    {
+      "type": "heading",
+      "text": "Fármacos, dosis e intervalos"
+    },
+    {
+      "type": "paragraph",
+      "text": "Raynaud en adulto con indicación farmacológica: protocolo NHS Highland, nifedipino preferentemente de liberación modificada, 10 mg por vía oral una vez al día inicialmente, titulable hasta 60 mg al día según formulación y tolerancia. Alternativa amlodipino 5 mg por vía oral una vez al día, titulable hasta 10 mg al día. Uso para Raynaud puede ser fuera de ficha; no intercambiar presentaciones de liberación modificada. Controlar presión, edema y cefalea; isquemia/úlcera digital requiere especialista, no solo aumentar dosis."
+    },
+    {
+      "type": "heading",
+      "text": "Seguridad y monitorización"
+    },
+    {
+      "type": "paragraph",
+      "text": "Controlar presión y edema; revisar vasoconstrictores y no ocultar isquemia grave con terapia domiciliaria."
+    },
+    {
+      "type": "heading",
+      "text": "Reevaluación, internación y alta"
+    },
+    {
+      "type": "paragraph",
+      "text": "Reevaluar respuesta y signos sistémicos; protección continua de extremidades."
+    },
+    {
+      "type": "heading",
+      "text": "Reconocimiento rápido"
+    },
+    {
+      "type": "paragraph",
+      "text": "Vasoespasmo digital por frío/estrés; primario o secundario."
+    }
+  ],
+  "references": [
+    {
+      "key": "topic_191",
+      "title": "NHS — Fenômeno de Raynaud",
+      "url": "https://www.nhs.uk/conditions/raynauds/",
+      "authorityStatus": "PRIMARY_PROVIDER_OR_SOCIETY_INFORMATION",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Page last reviewed: 20 July 2023",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-complete.json:topic_191",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "raynaud_nhs",
+      "title": "NHS Highland — Raynaud phenomenon: modified-release nifedipine titration",
+      "url": "https://www.rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/adult-therapeutic-guidelines/rheumatology/raynauds-phenomenon-guidelines/",
+      "authorityStatus": "OFFICIAL_REGIONAL_OR_PEDIATRIC_PROTOCOL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "review date:",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:raynaud_nhs",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    },
+    {
+      "key": "amlod_label",
+      "title": "DailyMed — Amlodipine: adult hypertension starting and maximum doses",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5467eee5-1519-7859-e063-6294a90afed1",
+      "authorityStatus": "REGULATORY_PRODUCT_LABEL",
+      "readMethod": "PUBLIC_TEXT_READ",
+      "publicationYear": null,
+      "checkedAt": "2026-10-08",
+      "lastReviewAsDisplayed": "Published Date (What",
+      "scope": "Somente conteúdo aplicável ao tema e cenário; protocolo pediátrico não autoriza extrapolar doses adultas. Formulações, populações e apresentações não são intercambiáveis.",
+      "sourceEvidenceRecord": "source-readback-dose-v1.1.json:amlod_label",
+      "recencyAssessment": "Data de consulta não é ano de publicação. Resumo oficial e informação ao paciente não equivalem à leitura integral de guideline. Esquemas especializados permanecem individualizados."
+    }
+  ],
+  "clinicalSections": [
+    {
+      "heading": "Abordaje inicial y urgencias",
+      "paragraphs": [
+        "Dolor persistente, úlcera, necrosis o isquemia de miembro requiere atención urgente."
+      ],
+      "factIds": [
+        "b04_032_f03"
+      ]
+    },
+    {
+      "heading": "Diagnóstico y diferenciales",
+      "paragraphs": [
+        "Evaluar patrón, simetría, lesión tisular y enfermedad autoinmune; investigar sospecha secundaria."
+      ],
+      "factIds": [
+        "b04_032_f02"
+      ]
+    },
+    {
+      "heading": "Tratamiento: primera elección y alternativas",
+      "paragraphs": [
+        "Opciones especificadas en este tema: nifedipino / amlodipino. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Primero: calor, evitar tabaco y desencadenantes. Nifedipino si síntomas importantes; alternativas especializadas según causa/gravedad, sobre todo en isquemia secundaria."
+      ],
+      "factIds": [
+        "b04_032_f04"
+      ]
+    },
+    {
+      "heading": "Fármacos, dosis e intervalos",
+      "paragraphs": [
+        "Raynaud en adulto con indicación farmacológica: protocolo NHS Highland, nifedipino preferentemente de liberación modificada, 10 mg por vía oral una vez al día inicialmente, titulable hasta 60 mg al día según formulación y tolerancia. Alternativa amlodipino 5 mg por vía oral una vez al día, titulable hasta 10 mg al día. Uso para Raynaud puede ser fuera de ficha; no intercambiar presentaciones de liberación modificada. Controlar presión, edema y cefalea; isquemia/úlcera digital requiere especialista, no solo aumentar dosis."
+      ],
+      "factIds": [
+        "b04_032_f07"
+      ]
+    },
+    {
+      "heading": "Seguridad y monitorización",
+      "paragraphs": [
+        "Controlar presión y edema; revisar vasoconstrictores y no ocultar isquemia grave con terapia domiciliaria."
+      ],
+      "factIds": [
+        "b04_032_f05"
+      ]
+    },
+    {
+      "heading": "Reevaluación, internación y alta",
+      "paragraphs": [
+        "Reevaluar respuesta y signos sistémicos; protección continua de extremidades."
+      ],
+      "factIds": [
+        "b04_032_f06"
+      ]
+    },
+    {
+      "heading": "Reconocimiento rápido",
+      "paragraphs": [
+        "Vasoespasmo digital por frío/estrés; primario o secundario."
+      ],
+      "factIds": [
+        "b04_032_f01"
+      ]
+    }
+  ],
+  "markdown": "# Fenómeno de Raynaud\n\n## Abordaje inicial y urgencias\n\nDolor persistente, úlcera, necrosis o isquemia de miembro requiere atención urgente.\n\n## Diagnóstico y diferenciales\n\nEvaluar patrón, simetría, lesión tisular y enfermedad autoinmune; investigar sospecha secundaria.\n\n## Tratamiento: primera elección y alternativas\n\nOpciones especificadas en este tema: nifedipino / amlodipino. Seleccionar según escenario e indicación detallados a continuación; alternativas, adyuvantes y rescate no son automáticamente intercambiables. Primero: calor, evitar tabaco y desencadenantes. Nifedipino si síntomas importantes; alternativas especializadas según causa/gravedad, sobre todo en isquemia secundaria.\n\n## Fármacos, dosis e intervalos\n\nRaynaud en adulto con indicación farmacológica: protocolo NHS Highland, nifedipino preferentemente de liberación modificada, 10 mg por vía oral una vez al día inicialmente, titulable hasta 60 mg al día según formulación y tolerancia. Alternativa amlodipino 5 mg por vía oral una vez al día, titulable hasta 10 mg al día. Uso para Raynaud puede ser fuera de ficha; no intercambiar presentaciones de liberación modificada. Controlar presión, edema y cefalea; isquemia/úlcera digital requiere especialista, no solo aumentar dosis.\n\n## Seguridad y monitorización\n\nControlar presión y edema; revisar vasoconstrictores y no ocultar isquemia grave con terapia domiciliaria.\n\n## Reevaluación, internación y alta\n\nReevaluar respuesta y signos sistémicos; protección continua de extremidades.\n\n## Reconocimiento rápido\n\nVasoespasmo digital por frío/estrés; primario o secundario.\n\n## Referencias\n\n1. [NHS — Fenômeno de Raynaud](https://www.nhs.uk/conditions/raynauds/)\n2. [NHS Highland — Raynaud phenomenon: modified-release nifedipine titration](https://www.rightdecisions.scot.nhs.uk/tam-treatments-and-medicines-nhs-highland/adult-therapeutic-guidelines/rheumatology/raynauds-phenomenon-guidelines/)\n3. [DailyMed — Amlodipine: adult hypertension starting and maximum doses](https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5467eee5-1519-7859-e063-6294a90afed1)",
+  "approvedReviewCanonicalFileSha256": "0595f37a72e559783ac9d5a35587b49fc9283bdb51b48441204fa1fd877a655f",
+  "approvedReviewProjectionFileSha256": "9779beac79cdb8947add5d06ccd1a8293b235f4f93fb73432e187ccb9a98a280"
+}
