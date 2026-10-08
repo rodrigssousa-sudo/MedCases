@@ -1,0 +1,217 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "vaginismo",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "aa5b6af7730bdd1350408d30d8269c984071156b2d5a4ddac38e866097dc44ea",
+  "references": [
+    {
+      "id": "vaginismus",
+      "title": "NHS — Vaginismus",
+      "url": "https://www.nhs.uk/conditions/vaginismus/",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Vaginismo",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Contração involuntária e dificuldade relacionada à penetração podem causar dor e sofrimento. A reação não é voluntária; dor pode coexistir com vulvodínia, dermatose ou infecção.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Contração involuntária e dificuldade relacionada à penetração podem causar dor e sofrimento. A reação não é voluntária; dor pode coexistir com vulvodínia, dermatose ou infecção."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Conversar sobre sintomas, contextos, medo e impacto sem pressionar por penetração. Exame deve ser consentido e pode ser interrompido a qualquer momento."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Avaliar causas orgânicas de dor, incluindo candidíase, síndrome geniturinária da menopausa e endometriose. Não realizar exame forçado nem presumir que toda dificuldade é psicológica."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Opções complementares incluem terapia psicossexual e fisioterapia pélvica voltada a relaxamento/controle muscular. Treinadores vaginais graduais podem ser usados com orientação, consentimento e sem ultrapassar limite de dor."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Não indicar sedação, cirurgia ou antibiótico como resposta automática. Tratar causa dolorosa associada; participação do parceiro é opcional e deve ser desejada pela paciente."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Acompanhar conforto, função e autonomia, não apenas capacidade de penetração. Persistência exige reavaliar causas e acesso a equipe especializada; sangramento ou lesão nova demanda investigação."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opção 1: terapia psicossexual. Opção 2: fisioterapia pélvica voltada a relaxamento, com treinadores vaginais graduais quando desejados e orientados. Podem ser combinadas; nenhuma abordagem autoriza penetração forçada ou ultrapassar o limite de dor."
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12",
+        "type": "paragraph",
+        "text": "Não há medicamento de primeira linha com dose curativa comprovada para vaginismo. As opções são abordagem psicosexual e fisioterapia do assoalho pélvico com relaxamento/exposição gradual e dilatadores consensuais. Não usar benzodiazepínico ou anestésico como substituto de diagnóstico/tratamento multimodal nem forçar penetração. Tratar separadamente dermatose, infecção ou dor associada quando comprovadas."
+      }
+    ]
+  },
+  "es": {
+    "title": "Vaginismo",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "La contracción involuntaria y dificultad relacionada con penetración pueden causar dolor y malestar. La reacción no es voluntaria; el dolor puede coexistir con vulvodinia, dermatosis o infección.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "La contracción involuntaria y dificultad relacionada con penetración pueden causar dolor y malestar. La reacción no es voluntaria; el dolor puede coexistir con vulvodinia, dermatosis o infección."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Conversar sobre síntomas, contextos, miedo e impacto sin presionar para penetración. El examen debe ser consentido y puede interrumpirse en cualquier momento."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Evaluar causas orgánicas de dolor, incluida candidiasis, síndrome genitourinario de la menopausia y endometriosis. No realizar examen forzado ni asumir que toda dificultad es psicológica."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Las opciones complementarias incluyen terapia psicosexual y fisioterapia pélvica orientada a relajación/control muscular. Los entrenadores vaginales graduales pueden usarse con orientación, consentimiento y sin superar el límite de dolor."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "No indicar sedación, cirugía ni antibióticos como respuesta automática. Tratar una causa dolorosa asociada; la participación de la pareja es opcional y debe ser deseada por la paciente."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Controlar comodidad, funcionamiento y autonomía, no solo capacidad de penetración. La persistencia exige reevaluar causas y acceso a equipo especializado; sangrado o lesión nueva requiere estudio."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opción 1: terapia psicosexual. Opción 2: fisioterapia pélvica orientada a relajación, con entrenadores vaginales graduales cuando se deseen y sean guiados. Pueden combinarse; ningún enfoque autoriza penetración forzada ni superar el límite de dolor."
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12",
+        "type": "paragraph",
+        "text": "No existe un medicamento de primera línea con dosis curativa demostrada para vaginismo. Las opciones son enfoque psicosexual y fisioterapia del suelo pélvico con relajación/exposición gradual y dilatadores consensuados. No usar benzodiacepina ni anestésico como sustituto de diagnóstico/tratamiento multimodal ni forzar penetración. Tratar por separado dermatosis, infección o dolor asociado cuando se demuestren."
+      }
+    ]
+  }
+}

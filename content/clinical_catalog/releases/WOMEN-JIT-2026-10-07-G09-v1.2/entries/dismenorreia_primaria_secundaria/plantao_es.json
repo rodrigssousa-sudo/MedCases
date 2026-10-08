@@ -1,0 +1,158 @@
+{
+  "owner": "dismenorreia_primaria_secundaria",
+  "mode": "plantao",
+  "locale": "es",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "03d656303965b1eeed85a9a68500d6cc7fc771e664a9fc674b1d0a2fb59811bb",
+  "title": "Dismenorrea primaria / secundaria",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "recognition",
+      "heading": "Reconocimiento",
+      "text": "Evaluar impacto funcional, dispareunia, sangrado anormal y síntomas cíclicos intestinales/urinarios. Dolor súbito, fiebre o posible embarazo requiere excluir urgencias.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "period",
+        "endo",
+        "ibuprofen"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "heading": "Diagnóstico y diferenciales",
+      "text": "Historia y examen orientan; ecografía si se sospecha causa secundaria. Una imagen normal no excluye endometriosis; síntomas persistentes pese a tratamiento adecuado requieren revisión.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "period",
+        "endo",
+        "ibuprofen"
+      ]
+    },
+    {
+      "id": "treatment",
+      "heading": "Tratamiento inicial",
+      "text": "Adulta no embarazada: ejemplo conservador de analgesia, ibuprofeno 400 mg por vía oral hasta tres veces al día con alimento, máximo 1.200 mg al día en este esquema e intervalo mínimo de 4 horas entre dosis, durante un período corto. Evitar ante úlcera, insuficiencia renal o contraindicación; no asociar otro antiinflamatorio.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "period",
+        "endo",
+        "ibuprofen"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Ejemplo de anticonceptivo combinado para adulta elegible, sin deseo inmediato de embarazo: etinilestradiol 30 microgramos + levonorgestrel 150 microgramos, 1 comprimido activo por vía oral una vez al día durante 21 días, seguido de 7 días de descanso; iniciar un nuevo envase al día siguiente de finalizar el descanso. Este es el esquema de la presentación de 21 comprimidos; no confundir con envases con placebo. El uso para síntomas requiere prescripción y seguimiento, sin un plazo curativo universal. Antes, medir presión y descartar embarazo, trombosis/trombofilia, migraña con aura, hipertensión importante, hepatopatía grave y otras contraindicaciones; fumar después de los 35 años puede impedir su uso. No asociar automáticamente con otras hormonas.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "W12_COC"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_2",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Alternativa analgésica en adulta elegible: ibuprofeno 400 mg por vía oral cada 8 horas, con alimento, si es necesario; máximo 1200 mg en 24 horas en este esquema breve. No asociar a otro antiinflamatorio. Evitar ante enfermedad renal, deshidratación, úlcera/hemorragia digestiva, alergia a antiinflamatorios o alto riesgo cardiovascular; en el embarazo no utilizar por cuenta propia, especialmente a partir de 20 semanas.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "ibuprofen"
+      ]
+    },
+    {
+      "id": "alternative",
+      "heading": "Alternativas y selección",
+      "text": "Alternativa/asociación: supresión hormonal con anticonceptivo combinado o progestágeno según elegibilidad y deseo reproductivo. Calor local y ejercicio tolerado complementan; no sustituyen el estudio de señales de alarma.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "period",
+        "endo",
+        "ibuprofen"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "heading": "Monitorización y seguimiento",
+      "text": "Reevaluar beneficio, efectos adversos y absentismo. Persistencia, infertilidad, masa o sangrado anormal justifican evaluación ginecológica; no extrapolar dosis de antiinflamatorios al embarazo.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "period",
+        "endo",
+        "ibuprofen"
+      ]
+    },
+    {
+      "id": "foundation",
+      "heading": "Definición y razonamiento",
+      "text": "La dismenorrea primaria se relaciona con actividad de prostaglandinas; la secundaria puede deberse a endometriosis, adenomiosis u otra enfermedad. El dolor menstrual nuevo o progresivo requiere estudio.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "period",
+        "endo",
+        "ibuprofen"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "period",
+      "title": "NHS — Period problems",
+      "url": "https://www.nhs.uk/conditions/periods/period-problems/",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "endo",
+      "title": "NICE NG73 — Endometriosis: diagnosis and management",
+      "url": "https://www.nice.org.uk/guidance/ng73/chapter/Recommendations",
+      "year": 2024,
+      "status": "AUTHORITATIVE_LIVING",
+      "authority": "NICE NG73",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "ibuprofen",
+      "title": "NHS — Ibuprofen for adults",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": 2025,
+      "status": "SUPPORTIVE_OFFICIAL_MEDICINE_GUIDANCE",
+      "authority": "NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_COC",
+      "title": "Microgynon 30 — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/1130/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "markdown": "# Dismenorrea primaria / secundaria\n\n## Reconocimiento\n\nEvaluar impacto funcional, dispareunia, sangrado anormal y síntomas cíclicos intestinales/urinarios. Dolor súbito, fiebre o posible embarazo requiere excluir urgencias.\n\n## Diagnóstico y diferenciales\n\nHistoria y examen orientan; ecografía si se sospecha causa secundaria. Una imagen normal no excluye endometriosis; síntomas persistentes pese a tratamiento adecuado requieren revisión.\n\n## Tratamiento inicial\n\nAdulta no embarazada: ejemplo conservador de analgesia, ibuprofeno 400 mg por vía oral hasta tres veces al día con alimento, máximo 1.200 mg al día en este esquema e intervalo mínimo de 4 horas entre dosis, durante un período corto. Evitar ante úlcera, insuficiencia renal o contraindicación; no asociar otro antiinflamatorio.\n\n## Medicamento, dosis y forma de uso\n\nEjemplo de anticonceptivo combinado para adulta elegible, sin deseo inmediato de embarazo: etinilestradiol 30 microgramos + levonorgestrel 150 microgramos, 1 comprimido activo por vía oral una vez al día durante 21 días, seguido de 7 días de descanso; iniciar un nuevo envase al día siguiente de finalizar el descanso. Este es el esquema de la presentación de 21 comprimidos; no confundir con envases con placebo. El uso para síntomas requiere prescripción y seguimiento, sin un plazo curativo universal. Antes, medir presión y descartar embarazo, trombosis/trombofilia, migraña con aura, hipertensión importante, hepatopatía grave y otras contraindicaciones; fumar después de los 35 años puede impedir su uso. No asociar automáticamente con otras hormonas.\n\n## Medicamento, dosis y forma de uso\n\nAlternativa analgésica en adulta elegible: ibuprofeno 400 mg por vía oral cada 8 horas, con alimento, si es necesario; máximo 1200 mg en 24 horas en este esquema breve. No asociar a otro antiinflamatorio. Evitar ante enfermedad renal, deshidratación, úlcera/hemorragia digestiva, alergia a antiinflamatorios o alto riesgo cardiovascular; en el embarazo no utilizar por cuenta propia, especialmente a partir de 20 semanas.\n\n## Alternativas y selección\n\nAlternativa/asociación: supresión hormonal con anticonceptivo combinado o progestágeno según elegibilidad y deseo reproductivo. Calor local y ejercicio tolerado complementan; no sustituyen el estudio de señales de alarma.\n\n## Monitorización y seguimiento\n\nReevaluar beneficio, efectos adversos y absentismo. Persistencia, infertilidad, masa o sangrado anormal justifican evaluación ginecológica; no extrapolar dosis de antiinflamatorios al embarazo.\n\n## Definición y razonamiento\n\nLa dismenorrea primaria se relaciona con actividad de prostaglandinas; la secundaria puede deberse a endometriosis, adenomiosis u otra enfermedad. El dolor menstrual nuevo o progresivo requiere estudio.\n\n## Referencias\n\n1. [NHS — Period problems](https://www.nhs.uk/conditions/periods/period-problems/)\n2. [NICE NG73 — Endometriosis: diagnosis and management](https://www.nice.org.uk/guidance/ng73/chapter/Recommendations)\n3. [NHS — Ibuprofen for adults](https://www.nhs.uk/medicines/ibuprofen-for-adults/)\n4. [Microgynon 30 — Summary of Product Characteristics](https://www.medicines.org.uk/emc/product/1130/smpc)",
+  "factIds": [
+    "recognition",
+    "diagnosis",
+    "treatment",
+    "pharmacotherapy_v12_1",
+    "pharmacotherapy_v12_2",
+    "alternative",
+    "monitoring",
+    "foundation"
+  ],
+  "canonicalPayloadSha256": "03d656303965b1eeed85a9a68500d6cc7fc771e664a9fc674b1d0a2fb59811bb",
+  "approvedReviewProjectionHash": "496ac16df1f5b8aa6fd468a3a9cfa87cfd281c4664bad4599de63b9a4d4c894c"
+}

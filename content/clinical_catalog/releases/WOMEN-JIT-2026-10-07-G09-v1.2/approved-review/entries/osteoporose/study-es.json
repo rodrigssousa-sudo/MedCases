@@ -1,0 +1,120 @@
+{
+  "owner": "osteoporose",
+  "mode": "study",
+  "locale": "es",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "10ea179960ac6e6b47ad8f92ccc1bd618379605944521d705ced372b4f8c3f2f",
+  "title": "Osteoporosis",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "foundation_1",
+      "heading": "Definición y razonamiento",
+      "text": "La fragilidad ósea aumenta riesgo de fracturas; fractura por bajo traumatismo debe activar prevención secundaria, no solo analgesia.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "PLAN"
+      ]
+    },
+    {
+      "id": "recognition_2",
+      "heading": "Reconocimiento",
+      "text": "Buscar caídas, fracturas previas, pérdida de talla, corticoides y causas secundarias; dolor vertebral nuevo puede representar fractura.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "PLAN"
+      ]
+    },
+    {
+      "id": "diagnosis_3",
+      "heading": "Diagnóstico y diferenciales",
+      "text": "Estratificar riesgo y evaluar densitometría según indicación; investigar función renal, calcio y causas secundarias antes de tratamiento.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "NOGG",
+        "PLAN"
+      ]
+    },
+    {
+      "id": "treatment_4",
+      "heading": "Tratamiento inicial",
+      "text": "Prevenir caídas, asegurar nutrición y actividad segura; seleccionar antirresortivo o tratamiento anabólico según riesgo y contraindicaciones.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "NOGG"
+      ]
+    },
+    {
+      "id": "dose_5",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Opción adulta indicada: alendronato 70 mg oral una vez por semana, en ayunas con agua; permanecer sentado/de pie y esperar al menos 30 minutos antes de alimento u otros medicamentos.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "NOGG"
+      ]
+    },
+    {
+      "id": "monitoring_6",
+      "heading": "Monitorización y seguimiento",
+      "text": "Evaluar adherencia, tolerancia y nuevas fracturas; reevaluar duración según riesgo. No suspender denosumab sin plan para evitar fracturas de rebote.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "PLAN"
+      ]
+    },
+    {
+      "id": "redflags_7",
+      "heading": "Señales de alarma",
+      "text": "Fractura de cadera, déficit neurológico o dolor incapacitante exige evaluación hospitalaria. Alta tras fractura requiere movilidad segura y plan de prevención.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "PLAN"
+      ]
+    },
+    {
+      "id": "special_8",
+      "heading": "Poblaciones especiales",
+      "text": "Corregir hipocalcemia antes de antirresortivo; enfermedad esofágica, imposibilidad de permanecer erguido o función renal reducida pueden impedir alendronato oral.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "NOGG"
+      ]
+    },
+    {
+      "id": "alternative_verified_20261007",
+      "heading": "Alternativas y selección",
+      "text": "Alternativa en persona elegible: ácido zoledrónico 5 mg por vía intravenosa una vez por año, en infusión de al menos 15 minutos. Antes, comprobar función renal, calcio e idoneidad clínica; evitar en embarazo/lactancia y seguir contraindicaciones de la ficha técnica.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "NOGG"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "NOGG",
+      "title": "Pharmacological treatment options",
+      "url": "https://www.nogg.org.uk/full-guideline/section-6-pharmacological-treatment-options",
+      "authority": "NOGG",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "PLAN",
+      "title": "Strategies for management of osteoporosis and fracture risk",
+      "url": "https://www.nogg.org.uk/full-guideline/section-7-strategies-management-osteoporosis-and-fracture-risk",
+      "authority": "NOGG",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ]
+}

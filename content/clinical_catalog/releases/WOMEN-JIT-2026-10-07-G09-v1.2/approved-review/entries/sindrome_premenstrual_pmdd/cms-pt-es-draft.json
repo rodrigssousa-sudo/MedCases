@@ -1,0 +1,284 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "sindrome_premenstrual_pmdd",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "b37460ab51bd6fa2044debd5b91c8be38174494ffecf483587e6381ceba9409c",
+  "references": [
+    {
+      "id": "M1",
+      "title": "Management of premenstrual disorders",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/37973069/",
+      "authority": "ACOG Clinical Practice Guideline 7",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "M2",
+      "title": "Fluoxetine tablets for PMDD: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=dcebc7cf-6f95-4f7a-a22b-c7d2e0f04d74",
+      "authority": "DailyMed / bula dos EUA",
+      "year": "bula vigente consultada em 2026",
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Sertraline",
+      "title": "DailyMed — sertraline PMDD prescribing information",
+      "url": "https://www.dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=bdbcb3ce-e424-43eb-9f1a-77eda4dfbdaa&type=display",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Síndrome pré-menstrual e transtorno disfórico pré-menstrual",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Sintomas afetivos e físicos ligados à fase pré-menstrual, com melhora após menstruar; o transtorno disfórico produz prejuízo importante, não apenas cólica.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Sintomas afetivos e físicos ligados à fase pré-menstrual, com melhora após menstruar; o transtorno disfórico produz prejuízo importante, não apenas cólica."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Registrar temporalidade, intensidade, função e sintomas fora da fase pré-menstrual; procurar depressão, ansiedade e causas médicas coexistentes."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Confirmar padrão com registro diário prospectivo por pelo menos 2 ciclos sintomáticos; distinguir exacerbação pré-menstrual de transtorno persistente."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Combinar educação, medidas de autocuidado, terapia cognitivo-comportamental e opções farmacológicas ou hormonais conforme sintomas, contracepção desejada e contraindicações."
+      },
+      {
+        "id": "dose_5-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "dose_5",
+        "type": "paragraph",
+        "text": "Para transtorno disfórico em adultas, fluoxetina 20 mg por via oral uma vez ao dia: continuamente, ou desde 14 dias antes da menstruação prevista até o primeiro dia completo de sangramento; repetir a cada ciclo conforme prescrição."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Reavaliar resposta por ciclo, efeitos sexuais, insônia e interações; monitorar piora do humor. Não associar fluoxetina a inibidores de monoaminoxidase."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Sinais de alarme",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Ideação suicida, mania ou deterioração grave exige avaliação urgente e diagnóstico psiquiátrico; não aguardar o próximo ciclo menstrual."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Populações especiais",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Adolescentes necessitam vigilância específica de risco suicida. Gestação, lactação e comprometimento hepático exigem revisão individual; a dose adulta não é automaticamente aplicável."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Escolher fluoxetina ou sertralina, no esquema contínuo ou intermitente descrito, conforme perfil e tolerância. Terapia cognitivo-comportamental é alternativa não farmacológica. Sintomas persistentes fora da fase pré-menstrual exigem revisar o diagnóstico; não combinar antidepressivos por rotina."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Alternativa à fluoxetina para transtorno disfórico pré-menstrual: sertralina 50 mg por via oral uma vez ao dia, continuamente ou apenas na fase lútea, começando 14 dias antes da menstruação esperada e mantendo até seu início. Se necessário, titular em ciclos seguintes: máximo 150 mg ao dia no esquema contínuo ou 100 mg ao dia no intermitente, conforme bula. Não associar fluoxetina e sertralina por rotina; avaliar transtorno bipolar, suicídio, interações serotoninérgicas e tolerabilidade."
+      }
+    ]
+  },
+  "es": {
+    "title": "Síndrome premenstrual y trastorno disfórico premenstrual",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Síntomas afectivos y físicos ligados a la fase premenstrual, con mejoría tras menstruar; el trastorno disfórico produce deterioro importante, no solo cólicos.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Síntomas afectivos y físicos ligados a la fase premenstrual, con mejoría tras menstruar; el trastorno disfórico produce deterioro importante, no solo cólicos."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Registrar temporalidad, intensidad, funcionamiento y síntomas fuera de la fase premenstrual; buscar depresión, ansiedad y causas médicas coexistentes."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Confirmar el patrón mediante registro diario prospectivo durante al menos 2 ciclos sintomáticos; distinguir exacerbación premenstrual de un trastorno persistente."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Combinar educación, autocuidado, terapia cognitivo-conductual y opciones farmacológicas u hormonales según síntomas, anticoncepción deseada y contraindicaciones."
+      },
+      {
+        "id": "dose_5-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "dose_5",
+        "type": "paragraph",
+        "text": "Para trastorno disfórico en adultas, fluoxetina 20 mg por vía oral una vez al día: continuamente, o desde 14 días antes de la menstruación prevista hasta el primer día completo de sangrado; repetir en cada ciclo según prescripción."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Reevaluar respuesta por ciclo, efectos sexuales, insomnio e interacciones; controlar empeoramiento del ánimo. No asociar fluoxetina con inhibidores de monoaminooxidasa."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Señales de alarma",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "La ideación suicida, la manía o el deterioro grave exige evaluación urgente y diagnóstico psiquiátrico; no esperar al siguiente ciclo menstrual."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Poblaciones especiales",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Las adolescentes necesitan vigilancia específica del riesgo suicida. El embarazo, la lactancia y el compromiso hepático requieren revisión individual; la dosis adulta no es automáticamente aplicable."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Elegir fluoxetina o sertralina, en el esquema continuo o intermitente descrito, según perfil y tolerancia. La terapia cognitivo-conductual es una alternativa no farmacológica. Los síntomas persistentes fuera de la fase premenstrual requieren revisar el diagnóstico; no combinar antidepresivos rutinariamente."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Alternativa a fluoxetina para trastorno disfórico premenstrual: sertralina 50 mg por vía oral una vez al día, continuamente o solo en fase lútea, comenzando 14 días antes de la menstruación esperada y manteniendo hasta su inicio. Si se necesita, titular en ciclos siguientes: máximo 150 mg al día en el esquema continuo o 100 mg al día en el intermitente, según ficha. No asociar fluoxetina y sertralina rutinariamente; evaluar trastorno bipolar, suicidio, interacciones serotoninérgicas y tolerabilidad."
+      }
+    ]
+  }
+}

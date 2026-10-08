@@ -1,0 +1,273 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "cancer_colo_uterino",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "c5e9e1110ad856f652ad0b02741ad68d8cb42c1ce98b885f73fb8dc931a2657c",
+  "references": [
+    {
+      "id": "cervcancer",
+      "title": "NCI PDQ — Cervical cancer treatment, versão profissional",
+      "url": "https://www.cancer.gov/types/cervical/hp/cervical-treatment-pdq",
+      "year": null,
+      "status": "AUTHORITATIVE_LIVING",
+      "authority": "NCI PDQ",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "cancerref",
+      "title": "NICE NG12 — Suspected cancer: recognition and referral",
+      "url": "https://www.nice.org.uk/guidance/ng12/chapter/recommendations-organised-by-site-of-cancer",
+      "year": null,
+      "status": "AUTHORITATIVE_LIVING",
+      "authority": "NICE NG12",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Cisplatin",
+      "title": "HSE NCCP — Cisplatin 40 mg/m² weekly with radiotherapy",
+      "url": "https://healthservice.hse.ie/documents/6341/385_V5_CISplatin_40mgm2_weekly_with_RT.pdf",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "WEB_SPECIFIC_RECOMMENDATIONS_READ",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Carbo",
+      "title": "HSE NCCP — Carboplatin AUC 2 weekly with radiotherapy, cervical cancer",
+      "url": "https://healthservice.hse.ie/staff/information-healthcare-workers/nccp/gynaecology-sact-regimens/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "WEB_SPECIFIC_RECOMMENDATIONS_READ",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Câncer do colo do útero",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Neoplasia cervical associada principalmente à infecção persistente por HPV oncogênico. Lesão precursora e câncer invasivo são condições diferentes, com condutas próprias.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Neoplasia cervical associada principalmente à infecção persistente por HPV oncogênico. Lesão precursora e câncer invasivo são condições diferentes, com condutas próprias."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Sangramento pós-coito, secreção persistente, lesão visível ou dor pélvica exigem avaliação. Hemorragia, obstrução urinária ou dor incapacitante pode demandar atendimento hospitalar."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Lesão suspeita exige exame e biópsia; citologia de rastreamento não exclui câncer em paciente sintomática. Confirmar histologia e estadiar antes de decidir tratamento."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Doença inicial selecionada pode ser tratada cirurgicamente, com preservação de fertilidade quando oncologicamente adequada. Doença localmente avançada geralmente requer quimiorradioterapia com braquiterapia; decisão é especializada."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Não oferecer procedimento ablativo para lesão com suspeita de invasão. Esquemas sistêmicos dependem de estádio, biomarcadores, função renal e diretriz oncológica; não há dose universal para consulta geral."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Encaminhar prioritariamente à ginecologia oncológica e revisar resultados/estadiamento. Avaliar dor, anemia, função renal e necessidades psicossociais; sangramento importante exige estabilização antes do plano definitivo."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Via cirúrgica para doença inicial selecionada; via de quimiorradioterapia com braquiterapia para doença localmente avançada ou indicação própria. Preservação de fertilidade é seletiva. A escolha depende de estadiamento, não de preferência isolada por uma segunda opção."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Exemplo oncológico para quimiorradioterapia em câncer cervical elegível: cisplatina 40 mg/m² por via intravenosa em 1000 mL de solução de cloreto de sódio 0,9%, em infusão de 1 hora, uma vez a cada 7 dias por 5 ciclos no protocolo cervical HSE consultado, concomitante à radioterapia. Exige hidratação pré/pós, antiemese e verificação de hemograma, função renal, magnésio/potássio, audição e neuropatia antes de cada ciclo. Não é prescrição ambulatorial de Plantão; dose, adiamento e extensão exigem oncologia. Se cisplatina for contraindicada/não tolerada, carboplatina semanal com radioterapia é alternativa protocolar especializada; usar cálculo por AUC e função renal do protocolo, nunca converter em dose fixa ou mg/kg."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Alternativa apenas quando cisplatina for contraindicada ou não tolerada, sob oncologia: carboplatina com AUC-alvo 2 por via intravenosa uma vez a cada 7 dias, concomitante à radioterapia, conforme índice vigente HSE. Dose em mg deve ser calculada pela função renal e pelo protocolo do serviço; não é 2 mg nem 2 mg/kg. Diluição, velocidade, número de ciclos e ajustes devem constar da prescrição oncológica validada; não extrapolar protocolo de outra localização tumoral. Não administrar como conduta empírica de Plantão."
+      }
+    ]
+  },
+  "es": {
+    "title": "Cáncer de cuello uterino",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Neoplasia cervical asociada principalmente a infección persistente por VPH oncogénico. La lesión precursora y el cáncer invasivo son condiciones diferentes, con conductas específicas.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Neoplasia cervical asociada principalmente a infección persistente por VPH oncogénico. La lesión precursora y el cáncer invasivo son condiciones diferentes, con conductas específicas."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Sangrado poscoital, secreción persistente, lesión visible o dolor pélvico requieren evaluación. Hemorragia, obstrucción urinaria o dolor incapacitante pueden requerir atención hospitalaria."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Una lesión sospechosa requiere examen y biopsia; la citología de cribado no excluye cáncer en una paciente sintomática. Confirmar histología y estadificar antes de decidir tratamiento."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "La enfermedad inicial seleccionada puede tratarse quirúrgicamente, preservando fertilidad cuando sea oncológicamente adecuado. La enfermedad localmente avanzada generalmente requiere quimiorradioterapia con braquiterapia; la decisión es especializada."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "No ofrecer un procedimiento ablativo ante sospecha de invasión. Los esquemas sistémicos dependen de estadio, biomarcadores, función renal y guía oncológica; no existe una dosis universal para consulta general."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Derivar prioritariamente a ginecología oncológica y revisar resultados/estadificación. Evaluar dolor, anemia, función renal y necesidades psicosociales; el sangrado importante requiere estabilización antes del plan definitivo."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Vía quirúrgica para enfermedad inicial seleccionada; vía de quimiorradioterapia con braquiterapia para enfermedad localmente avanzada o indicación específica. Preservación de fertilidad es selectiva. La elección depende del estadio, no solo de preferencia por una segunda opción."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Ejemplo oncológico para quimiorradioterapia en cáncer cervical elegible: cisplatino 40 mg/m² por vía intravenosa en 1000 mL de solución de cloruro de sodio al 0,9%, en infusión de 1 hora, una vez cada 7 días durante 5 ciclos en el protocolo cervical HSE consultado, concomitante con radioterapia. Requiere hidratación previa/posterior, antiemesis y control de hemograma, función renal, magnesio/potasio, audición y neuropatía antes de cada ciclo. No es una prescripción ambulatoria de guardia; dosis, aplazamiento y extensión requieren oncología. Si cisplatino está contraindicado/no se tolera, carboplatino semanal con radioterapia es una alternativa protocolaria especializada; utilizar cálculo por AUC y función renal del protocolo, nunca convertir a dosis fija ni mg/kg."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Alternativa solo cuando cisplatino esté contraindicado o no se tolere, bajo oncología: carboplatino con AUC objetivo 2 por vía intravenosa una vez cada 7 días, concomitante con radioterapia, según índice vigente HSE. La dosis en mg debe calcularse por función renal y protocolo del servicio; no es 2 mg ni 2 mg/kg. Dilución, velocidad, número de ciclos y ajustes deben constar en la prescripción oncológica validada; no extrapolar un protocolo de otra localización tumoral. No administrar como conducta empírica de guardia."
+      }
+    ]
+  }
+}

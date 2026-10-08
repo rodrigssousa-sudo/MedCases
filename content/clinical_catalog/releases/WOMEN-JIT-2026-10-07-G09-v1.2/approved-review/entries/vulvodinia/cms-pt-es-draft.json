@@ -1,0 +1,295 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "vulvodinia",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "3bfe464dc03529e930af72bff67f8efb5a72bed618cc56a5b52abac791449a90",
+  "references": [
+    {
+      "id": "V1",
+      "title": "Persistent vulvar pain",
+      "url": "https://www.acog.org/clinical/clinical-guidance/committee-opinion/articles/2016/09/persistent-vulvar-pain",
+      "authority": "ACOG Committee Opinion",
+      "year": 2016,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "V2",
+      "title": "Vulvodynia",
+      "url": "https://www.acog.org/womens-health/faqs/vulvodynia",
+      "authority": "ACOG",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_amitrip_label",
+      "title": "emc — Amitriptyline: adult neuropathic pain starting dose and titration",
+      "url": "https://www.medicines.org.uk/emc/product/10850/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Vulval",
+      "title": "BASHH — Vulval conditions, final guideline 2024 published 2025",
+      "url": "https://www.bashh.org/_userfiles/pages/files/bashh_vulval_guidelines_2024.pdf",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "PUBLIC_PDF_FULL_TEXT_READ",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Vulvodínia",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Dor vulvar por pelo menos 3 meses sem causa identificável suficiente; classificar localização e relação com toque. Não é sinônimo de candidíase ou vaginite.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Dor vulvar por pelo menos 3 meses sem causa identificável suficiente; classificar localização e relação com toque. Não é sinônimo de candidíase ou vaginite."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Perguntar sobre dor espontânea ou provocada, relações sexuais, produtos irritantes e impacto funcional; realizar exame delicado, com consentimento."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Mapear dor com toque leve de cotonete e avaliar assoalho pélvico; investigar infecção ou dermatose quando sugeridas pelo exame, sem presumir fungo por dor isolada."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Abordagem multidisciplinar com cuidados vulvares, fisioterapia pélvica e apoio psicológico ou sexual; explicar que melhora pode ser gradual."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Acompanhar intensidade da dor, função, tolerância à fisioterapia e qualidade de vida; vestibulectomia não é primeira medida e depende de seleção especializada."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Sinais de alarme",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Úlcera, massa, lesão persistente ou achado suspeito requer investigação de causa orgânica e eventual biópsia; não atribuir tudo à vulvodínia."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Populações especiais",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Considerar gestação, lactação, menopausa e comorbidades antes de escolher fármacos; priorizar participação da paciente e evitar tratamentos invasivos sem indicação."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opção 1: fisioterapia pélvica especializada conforme achados musculares. Opção 2: terapia psicológica/sexual e, em casos selecionados, moduladores de dor prescritos individualmente. Podem ser combinadas; cirurgia é reservada a apresentações selecionadas refratárias, não à dor vulvar sem investigação."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Para dor persistente selecionada, como adjuvante e fora de bula para esta indicação: amitriptilina 10 mg por via oral à noite; titular lentamente conforme tolerância e resposta, usualmente para 25–75 mg ao dia. Este pacote usa 75 mg ao dia como limite do esquema de dor descrito; doses superiores exigem avaliação especializada. Não é analgésico de resgate; reavaliar benefício ao longo das semanas. Rever sonolência, quedas, constipação, retenção, QT/arritmia, interação com outros serotoninérgicos e risco de suicídio; gestação exige avaliação própria. Evidência de benefício varia e a medicação não substitui reabilitação/terapia multimodal."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Alternativa tópica selecionada: lidocaína pomada 5% ou gel 1–2%, pequena camada sobre a área externa dolorosa, algumas vezes ao dia conforme plano especializado e tolerância. A diretriz não define uma quantidade universal em gramas nem duração ideal: não inventar dose por área ou esquema de anestesia invasiva. Evidência limitada; interromper se irritar e evitar aplicação extensa/repetida com risco de absorção. Não substitui fisioterapia, avaliação de dermatoses ou abordagem psicosexual."
+      }
+    ]
+  },
+  "es": {
+    "title": "Vulvodinia",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Dolor vulvar durante al menos 3 meses sin causa identificable suficiente; clasificar localización y relación con el contacto. No equivale a candidiasis ni vaginitis.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Dolor vulvar durante al menos 3 meses sin causa identificable suficiente; clasificar localización y relación con el contacto. No equivale a candidiasis ni vaginitis."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Preguntar por dolor espontáneo o provocado, relaciones sexuales, productos irritantes e impacto funcional; realizar examen delicado con consentimiento."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Mapear el dolor con contacto suave de un hisopo y evaluar el suelo pélvico; investigar infección o dermatosis cuando el examen las sugiera, sin presumir hongos por dolor aislado."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Abordaje multidisciplinario con cuidados vulvares, fisioterapia pélvica y apoyo psicológico o sexual; explicar que la mejoría puede ser gradual."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Seguir intensidad del dolor, funcionamiento, tolerancia a fisioterapia y calidad de vida; la vestibulectomía no es la primera medida y depende de selección especializada."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Señales de alarma",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Una úlcera, masa, lesión persistente o hallazgo sospechoso requiere investigar una causa orgánica y eventualmente biopsia; no atribuirlo todo a vulvodinia."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Poblaciones especiales",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Considerar embarazo, lactancia, menopausia y comorbilidades antes de elegir fármacos; priorizar participación de la paciente y evitar tratamientos invasivos sin indicación."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opción 1: fisioterapia pélvica especializada según hallazgos musculares. Opción 2: terapia psicológica/sexual y, en casos seleccionados, moduladores de dolor prescritos individualmente. Pueden combinarse; la cirugía se reserva a presentaciones seleccionadas refractarias, no a dolor vulvar sin estudio."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Para dolor persistente seleccionado, como coadyuvante y fuera de indicación autorizada para este cuadro: amitriptilina 10 mg por vía oral por la noche; titular lentamente según tolerancia y respuesta, habitualmente a 25–75 mg al día. Este paquete utiliza 75 mg al día como límite del esquema de dolor descrito; dosis superiores requieren evaluación especializada. No es un analgésico de rescate; reevaluar beneficio a lo largo de las semanas. Revisar somnolencia, caídas, estreñimiento, retención, QT/arritmia, interacción con otros serotoninérgicos y riesgo de suicidio; el embarazo requiere evaluación propia. La evidencia de beneficio varía y el fármaco no sustituye rehabilitación/terapia multimodal."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Alternativa tópica seleccionada: lidocaína pomada al 5% o gel al 1–2%, pequeña capa sobre el área externa dolorosa, algunas veces al día según plan especializado y tolerancia. La guía no define una cantidad universal en gramos ni duración ideal: no inventar dosis por área ni esquema de anestesia invasiva. Evidencia limitada; suspender si irrita y evitar aplicación extensa/repetida con riesgo de absorción. No sustituye fisioterapia, evaluación de dermatosis ni enfoque psicosexual."
+      }
+    ]
+  }
+}

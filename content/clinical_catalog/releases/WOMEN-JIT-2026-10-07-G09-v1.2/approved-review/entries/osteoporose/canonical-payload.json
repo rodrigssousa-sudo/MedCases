@@ -1,0 +1,156 @@
+{
+  "schemaVersion": "1.0",
+  "owner": "osteoporose",
+  "title": {
+    "pt": "Osteoporose",
+    "es": "Osteoporosis"
+  },
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "population": "Mulheres adultas; gestação/lactação e outros contextos somente quando explicitados",
+  "identity": {
+    "action": "REVIEW_EXISTING_PRESERVE_ID",
+    "existingCanonicalDocumentIds": [
+      "osteoporose"
+    ],
+    "owner": "osteoporose",
+    "newOwnerActivated": false,
+    "relatedButNotEquivalent": [],
+    "scope": "Fragilidade óssea aumenta risco de fraturas; fratura por baixo trauma deve acionar prevenção secundária, não apenas analgesia.",
+    "preserveExistingPregnancyContent": true,
+    "existingCMSDocumentIds": [
+      "osteoporose"
+    ],
+    "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+    "existingRuntimeOwnerPreserved": true
+  },
+  "review": {
+    "author": "Codex — preparação e conferência de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Fragilidade óssea aumenta risco de fraturas; fratura por baixo trauma deve acionar prevenção secundária, não apenas analgesia.",
+      "es": "La fragilidad ósea aumenta riesgo de fracturas; fractura por bajo traumatismo debe activar prevención secundaria, no solo analgesia.",
+      "sources": [
+        "PLAN"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Pesquisar quedas, fraturas prévias, perda de altura, corticoides e causas secundárias; dor vertebral nova pode representar fratura.",
+      "es": "Buscar caídas, fracturas previas, pérdida de talla, corticoides y causas secundarias; dolor vertebral nuevo puede representar fractura.",
+      "sources": [
+        "PLAN"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Estratificar risco e avaliar densitometria conforme indicação; investigar função renal, cálcio e condições secundárias antes de terapia.",
+      "es": "Estratificar riesgo y evaluar densitometría según indicación; investigar función renal, calcio y causas secundarias antes de tratamiento.",
+      "sources": [
+        "NOGG",
+        "PLAN"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Prevenir quedas, assegurar nutrição e atividade segura; selecionar antirreabsortivo ou terapia anabólica conforme risco e contraindicações.",
+      "es": "Prevenir caídas, asegurar nutrición y actividad segura; seleccionar antirresortivo o tratamiento anabólico según riesgo y contraindicaciones.",
+      "sources": [
+        "NOGG"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Opção adulta indicada: alendronato 70 mg oral uma vez por semana, em jejum com água; permanecer sentado/em pé e aguardar pelo menos 30 minutos antes de alimento ou outros medicamentos.",
+      "es": "Opción adulta indicada: alendronato 70 mg oral una vez por semana, en ayunas con agua; permanecer sentado/de pie y esperar al menos 30 minutos antes de alimento u otros medicamentos.",
+      "sources": [
+        "NOGG"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Avaliar adesão, tolerância e novas fraturas; reavaliar duração conforme risco. Não interromper denosumabe sem plano para evitar fraturas de rebote.",
+      "es": "Evaluar adherencia, tolerancia y nuevas fracturas; reevaluar duración según riesgo. No suspender denosumab sin plan para evitar fracturas de rebote.",
+      "sources": [
+        "PLAN"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Fratura de quadril, déficit neurológico ou dor incapacitante exige avaliação hospitalar. Alta após fratura requer mobilidade segura e plano de prevenção.",
+      "es": "Fractura de cadera, déficit neurológico o dolor incapacitante exige evaluación hospitalaria. Alta tras fractura requiere movilidad segura y plan de prevención.",
+      "sources": [
+        "PLAN"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Corrigir hipocalcemia antes de antirreabsortivo; doença esofágica, impossibilidade de permanecer ereto ou função renal reduzida podem impedir alendronato oral.",
+      "es": "Corregir hipocalcemia antes de antirresortivo; enfermedad esofágica, imposibilidad de permanecer erguido o función renal reducida pueden impedir alendronato oral.",
+      "sources": [
+        "NOGG"
+      ],
+      "id": "special_8"
+    },
+    {
+      "id": "alternative_verified_20261007",
+      "section": "alternative",
+      "pt": "Alternativa em pessoa elegível: ácido zoledrônico 5 mg por via intravenosa uma vez por ano, em infusão de pelo menos 15 minutos. Antes, verificar função renal, cálcio e adequação clínica; evitar em gestação/lactação e seguir contraindicações da bula.",
+      "es": "Alternativa en persona elegible: ácido zoledrónico 5 mg por vía intravenosa una vez por año, en infusión de al menos 15 minutos. Antes, comprobar función renal, calcio e idoneidad clínica; evitar en embarazo/lactancia y seguir contraindicaciones de la ficha técnica.",
+      "sources": [
+        "NOGG"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "NOGG",
+      "title": "Pharmacological treatment options",
+      "url": "https://www.nogg.org.uk/full-guideline/section-6-pharmacological-treatment-options",
+      "authority": "NOGG",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "PLAN",
+      "title": "Strategies for management of osteoporosis and fracture risk",
+      "url": "https://www.nogg.org.uk/full-guideline/section-7-strategies-management-osteoporosis-and-fracture-risk",
+      "authority": "NOGG",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "provenance": {
+    "version": "WOMEN-JIT-2026-10-07-G09-v1.1",
+    "canonicalHash": "ba60d498fac62dbb30a2b376ea6d13e770f8d2d2d05909515020f8802fcb5932",
+    "sourcePath": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-women50-group09-2026-10-07/revisions/v1.1/entries/osteoporose/canonical-payload.json",
+    "revisionScope": "treatment completion; no remote writes; identifiers preserved",
+    "previousProvenance": {
+      "path": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-infectious-metabolic50-group05-2026-10-03/entries/osteoporose/canonical-payload.json",
+      "sha256": "fd10f732256e5965266e4f03dd55a845f73c6905d268829fc5ab34f8f0e0d00d",
+      "version": "NEW-JIT-2026-10-03-G05-v1.0"
+    }
+  },
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

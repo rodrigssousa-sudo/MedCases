@@ -1,0 +1,1 @@
+{"RESULT":"PASS","tests":["real_1717_schema","corrupt_chunk_rejected","50_approved_hashes","200_projections","only_150_scoped_registry_rows_changed","all_other_867_baseline_rows_preserved","same_50_existing_guide_bindings","admin_approved_text_exact_and_draft","snapshot_under_64MiB","real_reader_routing_display_AI_cache_offline"],"newRelevantFailures":0}

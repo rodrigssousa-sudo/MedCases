@@ -1,0 +1,229 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "ectasia_ductal_mamaria",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "e3b551039596fa3d630f62cd6548171d8d3f24bf2279d6c7880a407d8b708a26",
+  "references": [
+    {
+      "id": "duct",
+      "title": "Royal United Hospitals Bath NHS — Duct ectasia",
+      "url": "https://www.ruh.nhs.uk/patients/services/breast_unit/common_problems/duct_ectasia.asp?menu_id=12",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "Royal United Hospitals Bath NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "breastlump",
+      "title": "NHS — Breast lumps",
+      "url": "https://www.nhs.uk/symptoms/breast-lump/",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Ectasia ductal mamária",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Dilatação de ductos mamários pode produzir secreção espessa e alteração do mamilo; é condição benigna, mas o diagnóstico depende de excluir causas suspeitas.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Dilatação de ductos mamários pode produzir secreção espessa e alteração do mamilo; é condição benigna, mas o diagnóstico depende de excluir causas suspeitas."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Avaliar secreção espontânea ou provocada, unilateralidade, ducto único, sangue, massa e retração nova. Não espremer repetidamente o mamilo para testar secreção."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Exame e investigação mamária quando indicada; diferenciar papiloma, mastite periductal e câncer. Secreção sanguinolenta/unilateral espontânea ou retração recente requer avaliação especializada."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Se confirmada e pouco sintomática, observação e orientação são adequadas. Sintomas persistentes importantes podem justificar tratamento cirúrgico dos ductos após avaliação especializada."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Antibiótico é reservado à infecção associada, não à dilatação isolada. Dor com febre, eritema ou coleção exige avaliar mastite/abscesso; não assumir benignidade de toda secreção."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Rever evolução e resultados; retorno se sangue, massa, febre ou mudança de padrão. A conduta depende dos achados, sem medicamento ou duração universal."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opção 1: observação e orientação após confirmação benigna. Opção 2: excisão dos ductos em sintomas persistentes importantes, por especialista. Antibiótico somente se infecção associada; secreção suspeita não deve receber tranquilização sem investigação."
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12",
+        "type": "paragraph",
+        "text": "Ectasia ductal sem infecção não exige antibiótico. Cuidados locais/observação são alternativas iniciais; sintomas persistentes ou suspeitos podem exigir avaliação e excisão ductal. Se houver infecção periductal/abscesso, confirmar esse diagnóstico e tratar conforme cultura/protocolo, com drenagem quando necessária; não prescrever antibiótico para toda ectasia."
+      }
+    ]
+  },
+  "es": {
+    "title": "Ectasia ductal mamaria",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "La dilatación de conductos mamarios puede producir secreción espesa y alteraciones del pezón; es una condición benigna, pero el diagnóstico depende de excluir causas sospechosas.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "La dilatación de conductos mamarios puede producir secreción espesa y alteraciones del pezón; es una condición benigna, pero el diagnóstico depende de excluir causas sospechosas."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Evaluar secreción espontánea o provocada, unilateralidad, conducto único, sangre, masa y retracción reciente. No apretar repetidamente el pezón para comprobar secreción."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Examen y estudio mamario cuando se indique; diferenciar papiloma, mastitis periductal y cáncer. Secreción sanguinolenta/unilateral espontánea o retracción reciente requiere evaluación especializada."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Si está confirmada y es poco sintomática, observación y orientación son adecuadas. Síntomas persistentes importantes pueden justificar tratamiento quirúrgico de los conductos tras evaluación especializada."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Los antibióticos se reservan para infección asociada, no para dilatación aislada. Dolor con fiebre, eritema o colección exige evaluar mastitis/absceso; no asumir benignidad de toda secreción."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Revisar evolución y resultados; consultar ante sangre, masa, fiebre o cambio de patrón. La conducta depende de los hallazgos, sin medicación ni duración universal."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opción 1: observación y orientación tras confirmación benigna. Opción 2: excisión de conductos ante síntomas persistentes importantes, por especialista. Antibiótico solo si existe infección asociada; una secreción sospechosa no debe tranquilizarse sin estudio."
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12",
+        "type": "paragraph",
+        "text": "La ectasia ductal sin infección no exige antibiótico. Cuidados locales/observación son alternativas iniciales; síntomas persistentes o sospechosos pueden requerir evaluación y escisión ductal. Si hay infección periductal/absceso, confirmar ese diagnóstico y tratar según cultivo/protocolo, con drenaje cuando sea necesario; no prescribir antibiótico para toda ectasia."
+      }
+    ]
+  }
+}

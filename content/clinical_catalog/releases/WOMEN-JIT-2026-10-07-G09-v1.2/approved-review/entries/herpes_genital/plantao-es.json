@@ -1,0 +1,148 @@
+{
+  "owner": "herpes_genital",
+  "mode": "plantao",
+  "locale": "es",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "1b6af5d85b05259b77c3811e6c206c2fa2aadb07d7d1b10a52c43ca11a509f8b",
+  "title": "Herpes genital",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "recognition_2",
+      "heading": "Reconocimiento",
+      "text": "Vesículas o úlceras dolorosas, ardor y disuria sugieren herpes, pero la presentación puede ser atípica. Diferenciar primer episodio, recurrencia y enfermedad extensa en inmunosuprimidos.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "WHO_H"
+      ]
+    },
+    {
+      "id": "redflags_7",
+      "heading": "Señales de alarma",
+      "text": "Retención urinaria, meningismo, alteración de conciencia, enfermedad diseminada o imposibilidad de ingesta requieren evaluación hospitalaria. La enfermedad grave puede requerir aciclovir intravenoso con monitorización específica.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "CDC_H"
+      ]
+    },
+    {
+      "id": "diagnosis_3",
+      "heading": "Diagnóstico y diferenciales",
+      "text": "Confirmar lesiones mediante prueba molecular para HSV cuando esté disponible. Un resultado negativo en lesión antigua no descarta herpes. Evaluar sífilis y ofrecer prueba de VIH; la serología aislada no identifica toda úlcera actual.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "CDC_H"
+      ]
+    },
+    {
+      "id": "treatment_4",
+      "heading": "Tratamiento inicial",
+      "text": "Tratar el primer episodio, controlar dolor e indicar abstinencia durante lesiones o pródromos. La supresión continua depende de recurrencias, impacto y decisión compartida; los preservativos reducen, pero no eliminan transmisión.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "CDC_H",
+        "WHO_H"
+      ]
+    },
+    {
+      "id": "dose_5",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Adulto con primer episodio genital y función renal adecuada: aciclovir 400 mg por vía oral tres veces al día durante 7–10 días. Si la cicatrización es incompleta, reevaluar extensión del tratamiento; no utilizar automáticamente este esquema para recurrencia o supresión.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "CDC_H",
+        "NIH_H"
+      ]
+    },
+    {
+      "id": "alternative_verified_20261007",
+      "heading": "Alternativas y selección",
+      "text": "Alternativa para primer episodio en adulta con función renal adecuada: valaciclovir 1 g por vía oral dos veces al día durante 7–10 días. Revisar ajuste renal; este esquema no corresponde a supresión continua.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "CDC_H"
+      ]
+    },
+    {
+      "id": "special_8",
+      "heading": "Poblaciones especiales",
+      "text": "Durante el embarazo, informar a obstetricia por el riesgo neonatal, especialmente adquisición cerca del parto. Niños, inmunosuprimidos e insuficiencia renal requieren esquema individual; aciclovir necesita ajuste renal según ficha técnica.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "WHO_H",
+        "CDC_H",
+        "FDA_ACY"
+      ]
+    },
+    {
+      "id": "monitoring_6",
+      "heading": "Monitorización y seguimiento",
+      "text": "Reevaluar cicatrización, hidratación, efectos adversos y adherencia. Las lesiones persistentes en inmunosuprimidos requieren investigación de resistencia y diagnóstico diferencial, en vez de escalamiento empírico indefinido.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "CDC_H",
+        "NIH_H"
+      ]
+    },
+    {
+      "id": "foundation_1",
+      "heading": "Definición y razonamiento",
+      "text": "Infección genital por HSV con latencia neural y posibilidad de reactivación. Puede transmitirse sin lesiones visibles; los antivirales controlan manifestaciones, pero no erradican el virus.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "WHO_H"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO_H",
+      "title": "Herpes simplex virus",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/herpes-simplex-virus",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "CDC_H",
+      "title": "Genital herpes",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "NIH_H",
+      "title": "Herpes simplex virus: adultos e adolescentes com HIV",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/herpes-simplex",
+      "authority": "NIH",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "FDA_ACY",
+      "title": "Acyclovir tablets — prescribing information; renal adjustment",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=e186fdc9-b60e-4280-8d60-36cae9f2838f&type=display",
+      "authority": "FDA / DailyMed",
+      "year": "bula vigente consultada em 2026",
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ]
+}

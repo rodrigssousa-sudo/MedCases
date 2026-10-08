@@ -1,0 +1,141 @@
+{
+  "schemaVersion": "1.0",
+  "owner": "infeccao_mycoplasma_genitalium",
+  "title": {
+    "pt": "Infecção por Mycoplasma genitalium",
+    "es": "Infección por Mycoplasma genitalium"
+  },
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "population": "Mulheres adultas; gestação/lactação e outros contextos somente quando explicitados",
+  "identity": {
+    "action": "REVIEW_EXISTING_PRESERVE_ID",
+    "existingCanonicalDocumentIds": [
+      "infeccao_mycoplasma_genitalium"
+    ],
+    "owner": "infeccao_mycoplasma_genitalium",
+    "newOwnerActivated": false,
+    "relatedButNotEquivalent": [
+      "cervicite",
+      "doenca_inflamatoria_pelvica"
+    ],
+    "scope": "Infecção sexualmente transmissível associada a cervicite persistente e doença inflamatória pélvica. A ausência de parede celular torna penicilinas e cefalosporinas ineficazes; resistência a macrolídeos é relevante.",
+    "preserveExistingPregnancyContent": true,
+    "existingCMSDocumentIds": [],
+    "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+    "existingRuntimeOwnerPreserved": true
+  },
+  "review": {
+    "author": "Codex — preparação e conferência de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "foundation",
+      "section": "foundation",
+      "pt": "Infecção sexualmente transmissível associada a cervicite persistente e doença inflamatória pélvica. A ausência de parede celular torna penicilinas e cefalosporinas ineficazes; resistência a macrolídeos é relevante.",
+      "es": "Infección de transmisión sexual asociada a cervicitis persistente y enfermedad inflamatoria pélvica. La ausencia de pared celular vuelve ineficaces penicilinas y cefalosporinas; la resistencia a macrólidos es relevante.",
+      "sources": [
+        "mgen",
+        "mgen25"
+      ]
+    },
+    {
+      "id": "recognition",
+      "section": "recognition",
+      "pt": "Suspeitar em cervicite recorrente após excluir reinfecção e outros agentes. Dor pélvica, febre ou sinais de infecção superior exigem abordagem de doença inflamatória pélvica.",
+      "es": "Sospechar ante cervicitis recurrente tras excluir reinfección y otros agentes. Dolor pélvico, fiebre o signos de infección superior exigen abordar enfermedad inflamatoria pélvica.",
+      "sources": [
+        "mgen",
+        "mgen25"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "section": "diagnosis",
+      "pt": "Confirmar por teste molecular e testar resistência quando disponível. Não rastrear pessoas assintomáticas rotineiramente; conhecer diferenças territoriais entre CDC e BASHH.",
+      "es": "Confirmar mediante prueba molecular y estudiar resistencia cuando sea posible. No realizar cribado rutinario de personas asintomáticas; conocer diferencias territoriales entre CDC y BASHH.",
+      "sources": [
+        "mgen",
+        "mgen25"
+      ]
+    },
+    {
+      "id": "treatment",
+      "section": "treatment",
+      "pt": "Pelo CDC, infecção não complicada sem teste de resistência: doxiciclina 100 mg por via oral duas vezes ao dia durante 7 dias, seguida de moxifloxacino 400 mg por via oral uma vez ao dia durante 7 dias.",
+      "es": "Según CDC, infección no complicada sin prueba de resistencia: doxiciclina 100 mg por vía oral dos veces al día durante 7 días, seguida de moxifloxacino 400 mg por vía oral una vez al día durante 7 días.",
+      "sources": [
+        "mgen",
+        "mgen25"
+      ]
+    },
+    {
+      "id": "alternative",
+      "section": "alternative",
+      "pt": "Com sensibilidade a macrolídeos comprovada, pelo CDC: após a mesma doxiciclina, azitromicina 1 g por via oral no primeiro dia, depois 500 mg uma vez ao dia por mais 3 dias. Azitromicina 1 g isolada não é adequada.",
+      "es": "Con sensibilidad a macrólidos comprobada, según CDC: tras la misma doxiciclina, azitromicina 1 g por vía oral el primer día, luego 500 mg una vez al día durante otros 3 días. Azitromicina 1 g aislada no es adecuada.",
+      "sources": [
+        "mgen",
+        "mgen25"
+      ]
+    },
+    {
+      "id": "safety",
+      "section": "safety",
+      "pt": "Os esquemas descritos não se aplicam automaticamente à gestação ou infecção superior. Moxifloxacino exige revisar prolongamento de QT, interações e risco tendíneo; falha exige especialista.",
+      "es": "Los esquemas descritos no se aplican automáticamente al embarazo ni a infección superior. Moxifloxacino exige revisar prolongación del QT, interacciones y riesgo tendinoso; el fracaso requiere especialista.",
+      "sources": [
+        "mgen",
+        "mgen25"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "section": "monitoring",
+      "pt": "Avaliar adesão, reinfecção e parceiros. Teste de cura depende do esquema e da diretriz; pelo CDC não é rotineiro após esquema recomendado em pessoa assintomática.",
+      "es": "Evaluar adherencia, reinfección y parejas. La prueba de curación depende del esquema y de la guía; según CDC no es rutinaria tras un esquema recomendado en una persona asintomática.",
+      "sources": [
+        "mgen",
+        "mgen25"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "mgen",
+      "title": "CDC — Mycoplasma genitalium",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/mycoplasmagenitalium.htm",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "authority": "CDC",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "mgen25",
+      "title": "BASHH — Mycoplasma genitalium, final 2025",
+      "url": "https://www.bashh.org/_userfiles/pages/files/bashh_mgen_2025.pdf",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "BASHH",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "provenance": {
+    "version": "WOMEN-JIT-2026-10-07-G09-v1.1",
+    "canonicalHash": "fce70388ef5c616e5dbceb6aae6889fbc82fbeda97bd590961c9f10be1dae35a",
+    "sourcePath": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-women50-group09-2026-10-07/revisions/v1.1/entries/infeccao_mycoplasma_genitalium/canonical-payload.json",
+    "revisionScope": "treatment completion; no remote writes; identifiers preserved",
+    "previousProvenance": null
+  },
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

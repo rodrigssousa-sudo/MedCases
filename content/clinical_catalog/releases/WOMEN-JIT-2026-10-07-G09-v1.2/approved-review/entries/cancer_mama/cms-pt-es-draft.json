@@ -1,0 +1,251 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "cancer_mama",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "6f28b664c14ad32c89916199c7903277fe5f5f2ab2057fd245875857af800c80",
+  "references": [
+    {
+      "id": "breastcancer",
+      "title": "NICE NG101 — Early and locally advanced breast cancer, atualização 2025; surveillance 2026",
+      "url": "https://www.nice.org.uk/guidance/ng101/chapter/Recommendations",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LIVING",
+      "authority": "NICE NG101",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "cancerref",
+      "title": "NICE NG12 — Suspected cancer: recognition and referral",
+      "url": "https://www.nice.org.uk/guidance/ng12/chapter/recommendations-organised-by-site-of-cancer",
+      "year": null,
+      "status": "AUTHORITATIVE_LIVING",
+      "authority": "NICE NG12",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Tamoxifen",
+      "title": "Tamoxifen 20 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/12211/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_LetroCancer",
+      "title": "Letrozole 2.5 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/9957/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Câncer de mama",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Neoplasia mamária exige confirmação histológica e caracterização biológica; receptores hormonais e HER2 influenciam tratamento. Não é diagnóstico estabelecido apenas por nódulo palpável.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Neoplasia mamária exige confirmação histológica e caracterização biológica; receptores hormonais e HER2 influenciam tratamento. Não é diagnóstico estabelecido apenas por nódulo palpável."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Pesquisar massa persistente, alterações de pele/mamilo e adenopatia. Inflamação que não resolve, retração recente ou secreção sanguinolenta requer investigação; registrar história familiar."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Avaliação clínica, imagem e biópsia devem ser concordantes. Definir extensão, subtipo e axila conforme indicação; não iniciar tratamento oncológico sem diagnóstico e plano multidisciplinar."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Doença operável pode receber cirurgia conservadora com radioterapia ou mastectomia, conforme extensão e preferência. Tratamento sistêmico neoadjuvante/adjuvante depende do subtipo, risco e estadiamento."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Quimioterapia, terapia anti-HER2 e endocrinoterapia não são intercambiáveis; doses são definidas por protocolo oncológico, função orgânica e contexto. Discutir fertilidade antes de tratamento gonadotóxico."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Garantir encaminhamento prioritário e seguimento estruturado. Febre em paciente sob quimioterapia, dispneia, déficit neurológico ou dor vertebral com sinais medulares exige emergência; não aguardar consulta eletiva."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Na doença operável elegível, comparar cirurgia conservadora com radioterapia e mastectomia, considerando extensão e preferência. Tratamento sistêmico depende do subtipo/risco. Essas opções não são intercambiáveis em todos os estádios nem substituem avaliação oncológica."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Exemplos de terapia endócrina exclusivamente para câncer de mama com receptor hormonal positivo e plano oncológico definido: tamoxifeno 20 mg por via oral uma vez ao dia é opção, inclusive em pré-menopausa; em pós-menopausa, letrozol 2,5 mg por via oral uma vez ao dia é opção de inibidor de aromatase. Não combinar os dois por rotina e não usar letrozol isolado em mulher com função ovariana ativa sem supressão apropriada. No cenário adjuvante, duração costuma ser de anos, frequentemente 5 anos, com extensão/sequência individualizadas; doença avançada segue resposta/progressão. Tamoxifeno exige vigilância de tromboembolismo e sangramento uterino; letrozol, saúde óssea. Estes exemplos não substituem cirurgia, radioterapia ou esquemas por estágio/biomarcador e não se aplicam a todo câncer de mama."
+      }
+    ]
+  },
+  "es": {
+    "title": "Cáncer de mama",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "La neoplasia mamaria exige confirmación histológica y caracterización biológica; receptores hormonales y HER2 influyen en el tratamiento. Un nódulo palpable por sí solo no establece el diagnóstico.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "La neoplasia mamaria exige confirmación histológica y caracterización biológica; receptores hormonales y HER2 influyen en el tratamiento. Un nódulo palpable por sí solo no establece el diagnóstico."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Investigar masa persistente, alteraciones de piel/pezón y adenopatías. Inflamación que no resuelve, retracción reciente o secreción sanguinolenta requieren estudio; registrar antecedentes familiares."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "La evaluación clínica, imagen y biopsia deben ser concordantes. Definir extensión, subtipo y axila según indicación; no iniciar tratamiento oncológico sin diagnóstico y plan multidisciplinario."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "La enfermedad operable puede recibir cirugía conservadora con radioterapia o mastectomía, según extensión y preferencia. El tratamiento sistémico neoadyuvante/adyuvante depende del subtipo, riesgo y estadio."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Quimioterapia, terapia anti-HER2 y endocrinoterapia no son intercambiables; las dosis se definen por protocolo oncológico, función orgánica y contexto. Discutir fertilidad antes de tratamiento gonadotóxico."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Asegurar derivación prioritaria y seguimiento estructurado. Fiebre bajo quimioterapia, disnea, déficit neurológico o dolor vertebral con signos medulares requieren urgencia; no esperar una consulta electiva."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "En enfermedad operable elegible, comparar cirugía conservadora con radioterapia y mastectomía según extensión y preferencia. Tratamiento sistémico depende del subtipo/riesgo. Estas opciones no son intercambiables en todos los estadios ni sustituyen evaluación oncológica."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Ejemplos de terapia endocrina exclusivamente para cáncer de mama con receptor hormonal positivo y plan oncológico definido: tamoxifeno 20 mg por vía oral una vez al día es una opción, incluso en premenopausia; en posmenopausia, letrozol 2,5 mg por vía oral una vez al día es una opción de inhibidor de aromatasa. No combinar ambos rutinariamente ni usar letrozol solo en mujer con función ovárica activa sin supresión apropiada. En el escenario adyuvante, la duración suele ser de años, frecuentemente 5 años, con extensión/secuencia individualizadas; la enfermedad avanzada sigue respuesta/progresión. Tamoxifeno exige vigilancia de tromboembolismo y sangrado uterino; letrozol, salud ósea. Estos ejemplos no sustituyen cirugía, radioterapia ni esquemas por estadio/biomarcador y no se aplican a todo cáncer de mama."
+      }
+    ]
+  }
+}

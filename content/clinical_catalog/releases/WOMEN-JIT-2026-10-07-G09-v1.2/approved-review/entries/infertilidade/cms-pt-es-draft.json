@@ -1,0 +1,308 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "infertilidade",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "ed686c00efb1fe2a96bb507897e9e44b6823ee614de39faa399bc8f799d23bb2",
+  "references": [
+    {
+      "id": "N1",
+      "title": "Fertility problems: assessment and treatment",
+      "url": "https://www.nice.org.uk/guidance/ng257/chapter/Investigation-of-fertility-problems-and-management-strategies",
+      "authority": "NICE NG257",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "N2",
+      "title": "Referral for specialist consultation",
+      "url": "https://www.nice.org.uk/guidance/qs73/chapter/quality-statement-2-referral-for-specialist-consultation",
+      "authority": "NICE QS73",
+      "year": 2026,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_LetroOI",
+      "title": "Cambridge University Hospitals NHS — letrozole ovulation induction",
+      "url": "https://www.cuh.nhs.uk/patient-information/using-letrozole-tablet-femara-for-ovulation-induction-oi/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "pcosfull",
+      "title": "International evidence-based PCOS guideline — texto integral 2023",
+      "url": "https://www.monash.edu/__data/assets/pdf_file/0003/3379521/Evidence-Based-Guidelines-2023.pdf",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "authority": "International evidence-based PCOS guideline",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": true,
+      "sourceReadStatus": "WEB_SPECIFIC_RECOMMENDATIONS_READ"
+    },
+    {
+      "id": "W12_Clomifene",
+      "title": "Gloucestershire Hospitals NHS — ovulation induction with clomifene/letrozole",
+      "url": "https://www.gloshospitals.nhs.uk/your-visit/patient-information-leaflets/ovulation-induction-with-oral-agents-clomid-and-letrozole/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "WEB_SPECIFIC_RECOMMENDATIONS_READ",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Infertilidade",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Dificuldade de concepção tem causas femininas, masculinas, combinadas ou inexplicadas; investigar ambas as partes, sem pressupor responsabilidade de uma pessoa.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Dificuldade de concepção tem causas femininas, masculinas, combinadas ou inexplicadas; investigar ambas as partes, sem pressupor responsabilidade de uma pessoa."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Registrar tempo de tentativa, ciclos, relações sexuais, tratamentos, cirurgias e condições associadas; oferecer aconselhamento reprodutivo e suporte emocional."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Avaliar sêmen, ovulação e permeabilidade tubária conforme história; não solicitar teste pós-coital de rotina. Exames devem responder a hipóteses clínicas."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Pelo NICE 2026, encaminhar após 1 ano de relações vaginais desprotegidas sem concepção; encaminhar já na apresentação com idade reprodutiva feminina ≥36 anos ou causa/fator predisponente conhecido."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Reavaliar plano e acesso ao especialista; decisões sobre manejo expectante ou reprodução assistida consideram idade, duração, diagnóstico e preferências, não um algoritmo único."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Sinais de alarme",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Antes de tratamento gonadotóxico, acelerar encaminhamento para preservação de fertilidade. Dor intensa ou distensão após estimulação exige avaliação de complicações."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Populações especiais",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Considerar infecções transmissíveis, contraindicações, diversidade de arranjos familiares e causas masculinas; infertilidade não equivale automaticamente a impossibilidade definitiva de concepção."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opção 1: manejo expectante quando diagnóstico, idade e prognóstico permitirem. Opção 2: tratamento dirigido à causa, incluindo indução de ovulação ou reprodução assistida em serviço especializado. Não são escolhas equivalentes para todas as pacientes; excluir causas tubárias e masculinas antes de tratar apenas ovulação."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Somente para infertilidade anovulatória por SOP sem outro fator e sob serviço especializado: letrozol 2,5 mg por via oral uma vez ao dia nos dias 2–6 do ciclo, total de 5 dias. Excluir gravidez antes de cada ciclo e monitorar ovulação/resposta; uso fora de bula para indução. Se não houver ovulação, o especialista pode utilizar 5 mg ou 7,5 mg ao dia por 5 dias em ciclos posteriores, sem autotitulação. Não indicado para toda causa de infertilidade nem para gravidez estabelecida."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Alternativa de indução se letrozol não for adequado/disponível, somente para anovulação com avaliação especializada: citrato de clomifeno 50 mg por via oral uma vez ao dia nos dias 2–6 do ciclo, total de 5 dias. Não associar automaticamente a letrozol. Excluir gestação, monitorar folículos/ovulação e orientar risco de gestação múltipla/hiperestimulação; alteração visual exige interromper e avaliar. Repetição ou aumento depende do serviço, não de automedicação."
+      }
+    ]
+  },
+  "es": {
+    "title": "Infertilidad",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "La dificultad de concepción tiene causas femeninas, masculinas, combinadas o inexplicadas; investigar a ambas partes sin presuponer responsabilidad de una persona.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "La dificultad de concepción tiene causas femeninas, masculinas, combinadas o inexplicadas; investigar a ambas partes sin presuponer responsabilidad de una persona."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Registrar tiempo de intento, ciclos, relaciones sexuales, tratamientos, cirugías y condiciones asociadas; ofrecer asesoramiento reproductivo y apoyo emocional."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Evaluar semen, ovulación y permeabilidad tubaria según antecedentes; no solicitar prueba poscoital de rutina. Los estudios deben responder a hipótesis clínicas."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Según NICE 2026, derivar tras 1 año de relaciones vaginales sin protección sin concepción; derivar desde la presentación con edad reproductiva femenina ≥36 años o causa/factor predisponente conocido."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Reevaluar plan y acceso al especialista; las decisiones sobre manejo expectante o reproducción asistida consideran edad, duración, diagnóstico y preferencias, no un algoritmo único."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Señales de alarma",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Antes de un tratamiento gonadotóxico, acelerar la derivación para preservar fertilidad. El dolor intenso o la distensión tras estimulación exige evaluar complicaciones."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Poblaciones especiales",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Considerar infecciones transmisibles, contraindicaciones, diversidad familiar y causas masculinas; infertilidad no equivale automáticamente a imposibilidad definitiva de concepción."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opción 1: manejo expectante cuando diagnóstico, edad y pronóstico lo permitan. Opción 2: tratamiento dirigido a la causa, incluida inducción de ovulación o reproducción asistida en un servicio especializado. No son opciones equivalentes para todas las pacientes; descartar causas tubáricas y masculinas antes de tratar solo la ovulación."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Solo para infertilidad anovulatoria por SOP sin otro factor y en un servicio especializado: letrozol 2,5 mg por vía oral una vez al día en los días 2–6 del ciclo, total de 5 días. Descartar embarazo antes de cada ciclo y controlar ovulación/respuesta; uso fuera de indicación autorizada para inducción. Si no hay ovulación, el especialista puede utilizar 5 mg o 7,5 mg al día durante 5 días en ciclos posteriores, sin autotitulación. No indicado para toda causa de infertilidad ni para embarazo establecido."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Alternativa de inducción si letrozol no es adecuado/no está disponible, solo para anovulación con evaluación especializada: citrato de clomifeno 50 mg por vía oral una vez al día en los días 2–6 del ciclo, total de 5 días. No asociar automáticamente con letrozol. Descartar embarazo, controlar folículos/ovulación e informar riesgo de embarazo múltiple/hiperestimulación; una alteración visual exige suspender y evaluar. Repetición o aumento dependen del servicio, no de automedicación."
+      }
+    ]
+  }
+}

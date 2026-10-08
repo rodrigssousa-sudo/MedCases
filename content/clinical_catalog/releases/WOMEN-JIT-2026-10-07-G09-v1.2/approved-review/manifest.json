@@ -1,0 +1,1495 @@
+{
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "entryCount": 50,
+  "new": 0,
+  "existing": 50,
+  "projectionCount": 200,
+  "publicationAuthorized": false,
+  "remoteWrites": 0,
+  "entries": [
+    {
+      "number": 1,
+      "owner": "candidiase_vulvovaginal",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "953f5cb08aa9bd265a701035de95a9efceb868183a1ec06a37b350eaa121cb4d",
+      "projectionHashes": {
+        "study_pt": "f01be5d2af358d379eaef85631fff3c01c90f09addc6d1bee5c6b2fea576467f",
+        "study_es": "9c260c0bdc01e92162493582b99a8934fb1ebb94829d5d19f2a2f97c0781f248",
+        "plantao_pt": "1c9ea14d580d6a36ab823b06485c3adcd93dd6c84dafdeaaf31e7e32ee629db1",
+        "plantao_es": "b37b35e61d7a3d857f1bd35b70586d4f3ee4b8ade7f7d5b75f22a913e453e7fc"
+      },
+      "cmsHash": "4bffe74431506b08b6bfb656efa47ba249a58262e42e39da3e373d07b125f89c",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "candidiase_vulvovaginal"
+        ],
+        "owner": "candidiase_vulvovaginal",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Infecção sintomática vulvovaginal por Candida, geralmente Candida albicans. Colonização sem sintomas não exige tratamento. Não equivale à candidíase oral nem ao intertrigo cutâneo.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "candidiase_vulvovaginal"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 2,
+      "owner": "vaginose_bacteriana",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "f839cdd41c3b7367685fa4a22431e88ecdd65bc102449c87958f7c3c0c5126e3",
+      "projectionHashes": {
+        "study_pt": "074c6a0382fc906c31d61ee810113e7ec503673ef159df0ad1b03de3479b267a",
+        "study_es": "8f9b1a14eab97fcf12c1cb3afacb8403ac90850c877ecbe4f10dfa80c7aef6ab",
+        "plantao_pt": "5c320470568c1b32b93bbb40d27e559fd5bae9c0cca1a3a9265354c12e798982",
+        "plantao_es": "4ac9d92b85f658574b4c703ffd91b5844fb0f9e02fd9beafa1aa954f747bae87"
+      },
+      "cmsHash": "b7e1cdceee4d92a99af42345950ed29fdb5d07e5cc70fec072d6385086c32c0d",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "vaginose_bacteriana"
+        ],
+        "owner": "vaginose_bacteriana",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Disbiose vaginal com redução de lactobacilos e predomínio de bactérias anaeróbias. Não equivale à tricomoníase nem à candidíase; recorrência é comum.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "vaginose_bacteriana"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 3,
+      "owner": "tricomoniase",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "98970f4d946246bc3deda44926b4bfb8c8bd683694e6f1b4daa109275f085ee6",
+      "projectionHashes": {
+        "study_pt": "364f8d0b3683771146af7431f245b5b397df0a58daeea3660a4f182f321a51c2",
+        "study_es": "76b74d7457bd86fce51c2a0525a3971fe4c8d9889686522f85bde14909f806a5",
+        "plantao_pt": "4be995af60831e00339bb02b8177d75f3fe3e902545f35915daee56b74608077",
+        "plantao_es": "2b2a64215e294a32ee08c98193be6f2f9017b64752acf18e39d01382fe86500d"
+      },
+      "cmsHash": "39168f3417eeeaf914212bfc939635b764187a14ba3550e0587ee605301d784e",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "tricomoniase"
+        ],
+        "owner": "tricomoniase",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Infecção sexualmente transmissível pelo protozoário Trichomonas vaginalis. Pode ser assintomática em qualquer sexo e persistir com transmissão e reinfecção se parceiros não forem tratados.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "tricomoniase"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 4,
+      "owner": "infeccao_chlamydia_trachomatis",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "304772985c0a482154fe8dd50426f93693affb4a352d43e8bed0edc7cc4d1086",
+      "projectionHashes": {
+        "study_pt": "7a9524d6ef6e4aea9a473b53848c9876b5834166f5a862304c0436cebe7d835a",
+        "study_es": "98bce6efeef9d80d7dd3411671777d3cdcf7694c3507a67189a95a73539a5b57",
+        "plantao_pt": "d7eb172446be139a1c2e6db2aa10586ab46aa8b7fc7fcfc7c22892a2a89dce48",
+        "plantao_es": "770444088c509ea922d5b966f2f7c1fe842b040e63f8d4829d0fec309f5e01b9"
+      },
+      "cmsHash": "1e436dff48f4aeaf36236b758483913ecc7ca5d056bc4065e89e3dd04308baea",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "infeccao_chlamydia_trachomatis"
+        ],
+        "owner": "infeccao_chlamydia_trachomatis",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Infecção bacteriana sexualmente transmissível frequentemente assintomática. Pode causar uretrite, cervicite e proctite; o comprometimento genital ascendente pode levar a infertilidade e gestação ectópica.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "infeccao_chlamydia_trachomatis"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 5,
+      "owner": "infeccao_gonococica",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "2a98075411b7220fad61525ef42de650cb2f82079df051cf8e6de65a2f67b7b1",
+      "projectionHashes": {
+        "study_pt": "7c83e1b9a7fbe3b356c9a05064ee4235cf2bf1822cc6940d1cf7e1b209e029f2",
+        "study_es": "4edd7bbd36dff24aa202c82d2aa76a26171c28dba29d53f8320143e654878faf",
+        "plantao_pt": "77ff7e825a95051a7369515bdc303e8154e007c0dfddaa668e37ce5bce763a21",
+        "plantao_es": "4e0f1586ce42de431c3be209a6114299ce961704416c4cc28ae223ec1cb1b128"
+      },
+      "cmsHash": "aa4cc146f2ccb280840678c3e3cff1523e2ad49c63e76b4a726c143a4c2fb98c",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "infeccao_gonococica"
+        ],
+        "owner": "infeccao_gonococica",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Infecção sexualmente transmissível por Neisseria gonorrhoeae, com acometimento genital, retal ou faríngeo. Resistência antimicrobiana modifica a escolha terapêutica; este owner reúne os sítios de infecção.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "infeccao_gonococica"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 6,
+      "owner": "sifilis",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "8b8ab9a4e696e207f67c2cf95fd70dbe332dd07552eddeb193fb554d849efc1f",
+      "projectionHashes": {
+        "study_pt": "f455e81e240f5bb4aad42003c8b1f049cf18d15e854050cac205efeb968a3b3c",
+        "study_es": "d97f28b92f364e43541187ff680cce331cb83f216b7da1ab7a019ca5b420b6fa",
+        "plantao_pt": "7ea4b6bb74ab83527c44c035946f9e3ca567b8b2bc4ee1a593095965e4f6fdf0",
+        "plantao_es": "c7510ced66c0f7c08319757b6fc706f3643088c343256d9e0da10b8b685d06ea"
+      },
+      "cmsHash": "fc9c384cd840834a09b86154934cc71dead86dd127bb6c7fa27b22a34d1f32d3",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "sifilis"
+        ],
+        "owner": "sifilis",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Infecção por Treponema pallidum, transmissível por contato sexual e verticalmente. A ausência de sintomas não exclui infecção; lesões podem desaparecer sem que a doença esteja curada.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "sifilis"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 7,
+      "owner": "herpes_genital",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "1b6af5d85b05259b77c3811e6c206c2fa2aadb07d7d1b10a52c43ca11a509f8b",
+      "projectionHashes": {
+        "study_pt": "a5e5ead0c8ebda74eaa7f10bbf55cfe14eb2f8fb4f2c3243a4926b38e3356f3c",
+        "study_es": "33f05b4d7c26737e7767a393730451ea62a022bb590d9fec44cd5358c5aee5bb",
+        "plantao_pt": "5d2bacdca7865a11fc79c73ba5af615e6bb45dc7d5ea10013a1d57d7980db7a0",
+        "plantao_es": "b67f6525dd7cf8cd30ba2ef93c18ab314192527899aca84f87e5775ffafbbbb7"
+      },
+      "cmsHash": "badb8fd604e53f01d7f43b3568b2cc9e5662fd8ccca5908d751df1c0dd7cfbf6",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "herpes_genital"
+        ],
+        "owner": "herpes_genital",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Infecção genital por HSV com latência neural e possibilidade de reativação. Pode haver transmissão sem lesões visíveis; antivirais controlam manifestações, mas não erradicam o vírus.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "herpes_genital"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 8,
+      "owner": "doenca_inflamatoria_pelvica",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "65f23a543520f7bfe39627c7432a07d0f51b5f769cd96dc931396a3305f01bc3",
+      "projectionHashes": {
+        "study_pt": "04111cfdbfd188439e3f5a4e287b9e16432b5f5cd2f0186a730b5b4991df2ea5",
+        "study_es": "742e2a95a4c61ec7c29706b7259b512dc41d7bca97abcf3fc15d1d44cca99356",
+        "plantao_pt": "a9ab6f344d80158db2a05d2d7e4a4dbbbe52d654356a76dfdb0557c52dedd3d3",
+        "plantao_es": "184cd50f85a422af050718474f5b7ba55fd533bfcde8dd21c25fc4faeba38fbf"
+      },
+      "cmsHash": "195f87c61caaab44b48eb16cb7714c87d33443bfa2327aebb0ebc651c3431207",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "doenca_inflamatoria_pelvica"
+        ],
+        "owner": "doenca_inflamatoria_pelvica",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Infecção/inflamação do trato genital superior, frequentemente polimicrobiana; atraso terapêutico aumenta risco de infertilidade e gestação ectópica.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "doenca_inflamatoria_pelvica"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 9,
+      "owner": "cisto_abscesso_bartholin",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "4e6a7be2a74790d7d4eb3c8dd639b90498b58c96bd1d604eec7b7fb7bf81d658",
+      "projectionHashes": {
+        "study_pt": "9df1ab9034251d2ce2b9c99a8a704e2fb77b2836f12b820341d54aebf90977cb",
+        "study_es": "870a32551130b0bb997a96d42fc051fe7ab87056bd34fdadb3c6118ca3d0bb7f",
+        "plantao_pt": "30db751754f8751f931e5cabf8c529d486c19433ae72d56ebbf18f0cf907746f",
+        "plantao_es": "5a1a62a0272d2135b5db11e8b31f699355eebee346e706e98c2f9ab7dd0ed8e0"
+      },
+      "cmsHash": "439f977cbb149ce92d3d3e290bc34994ce7c0eb5509cd7e5aff341bfcefad528",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "cisto_abscesso_bartholin"
+        ],
+        "owner": "cisto_abscesso_bartholin",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Obstrução do ducto de Bartholin pode produzir cisto; infecção pode causar abscesso doloroso. Não equivale a toda massa vulvar.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "cisto_abscesso_bartholin"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 10,
+      "owner": "infeccao_urinaria_recorrente",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "6e43684bbf9879ca6a85793902b784f956ffa5f5d6f7682f6c4a1abfacf6b270",
+      "projectionHashes": {
+        "study_pt": "8514af2b1b33c54906763f17ae3b01baef4bd7ceee753fcfd25413876d46f51c",
+        "study_es": "547d1d290bf5224d0bb11f966385f85e66040224f1ad0614f69ac0854b2b2550",
+        "plantao_pt": "c8747fa995588e3e5233d91403962067b37442239a850653c00ca8b10f421b40",
+        "plantao_es": "33cb7ee748d26ed89d93ea977e4beaa371ae296f9b2636532727a213be22a40a"
+      },
+      "cmsHash": "adb8f3ea5917511294fc7182b4b0a07bd350abb89fb9fff778d03cce512db772",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "infeccao_urinaria_recorrente"
+        ],
+        "owner": "infeccao_urinaria_recorrente",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Infecções urinárias sintomáticas recorrentes exigem confirmação e prevenção individualizada. A diretriz de infecção não complicada não abrange automaticamente gestação, obstrução ou imunossupressão.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 11,
+      "owner": "pielonefrite_aguda",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "937fe1a774dad5e5109cefd99b2c859c8e8c881d478cb9a85045aa7d4c1893fd",
+      "projectionHashes": {
+        "study_pt": "bd88758b9c65da002705154bebfe65251afbc043ce8bc3b01b37f6a07dc85808",
+        "study_es": "e01254796dd3897403d0403c7063122168f2255238c6d6da3b323c67db4385e2",
+        "plantao_pt": "eb528b7a08c2af6e9782f4f5cf6894dc429c69476d3a29bc0572847342b6d02c",
+        "plantao_es": "35e4770ceb81f5028ad3143106477ac28c5d197413d2220ad9fabd2d45d73cf7"
+      },
+      "cmsHash": "8e17f24ce031deef3b5f01c040fe197526dc204f847a565a4839485501d36b81",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "pielonefrite_aguda"
+        ],
+        "owner": "pielonefrite_aguda",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Infecção do parênquima renal pode evoluir para sepse; antibiótico deve alcançar tecido renal. O esquema abaixo refere-se a adultas não gestantes e não substitui protocolo de gestação.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "pielonefrite_aguda"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 12,
+      "owner": "mastite_lactacional",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "8ac79e49cc5ee89369c27b4586f013a7e39ba70384e07f50089590e639112c35",
+      "projectionHashes": {
+        "study_pt": "3f578ee88b717922870d84e3db37c0147e01b8bc96d7ba22cf6c4c6de110d955",
+        "study_es": "e390802eb73db9a49f8d38d2ccc4f6571bd1bf9a50ff4c602320fa4dc573c9b5",
+        "plantao_pt": "077bfbdbf6526de50e4d997da3e22980f528287257c079b0c60d557db5bd66bd",
+        "plantao_es": "120738fc4c89aabb02e41a00c1e2ad883969933df4276102fb77087a8e67cfcf"
+      },
+      "cmsHash": "919592ef86da19f151029375e8e4aef79a3d21ba50e3fa6d8f85d357aaaf8b73",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "mastite_lactacional"
+        ],
+        "owner": "mastite_lactacional",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Mastite abrange inflamação e infecção; nem toda dor/eritema mamário exige antibiótico. Edema e estímulo excessivo de produção podem perpetuar o quadro.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "mastite_lactacional"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 13,
+      "owner": "amenorreia_secundaria",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "85b4fafcd452a2f0bb5b83c6fd926f5bb355b49bf1edbaf247d88d57e4c8f0e6",
+      "projectionHashes": {
+        "study_pt": "dd7fef565c0cfbddfbc96a81969ec494d53e223379a55968fa3abcb9fb42f2a4",
+        "study_es": "a81baf5a83083a23d27900edcf3866d914c9e0e21e1c74d105cd17f3e6aac894",
+        "plantao_pt": "1bbc2ebd9a5db0c0705dc7348976bc0a4be169752460c2d2de3c527e6156e39d",
+        "plantao_es": "03be369139cdb8126302e49dbf5d05afe24fe3aa140ed4882c39a588b8090756"
+      },
+      "cmsHash": "4f1a0bcedfc122abc9e76b748d1305bea9a61b664eac4a3752fa921b8c570297",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "amenorreia_secundaria"
+        ],
+        "owner": "amenorreia_secundaria",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Ausência de menstruação por mais de 3 meses após ciclos regulares ou 6 meses após ciclos irregulares exige investigação. Gravidez deve ser excluída antes desses prazos quando possível.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "amenorreia_secundaria"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 14,
+      "owner": "dismenorreia_primaria_secundaria",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "03d656303965b1eeed85a9a68500d6cc7fc771e664a9fc674b1d0a2fb59811bb",
+      "projectionHashes": {
+        "study_pt": "2aea5d1142cbd4f967e6b390fb711b77b9707b5ed10b52a2c6f3cc8751071e86",
+        "study_es": "6a02316a0ca7dd27629e3fd2aaeec84f34a1e39346abbe5e53e0536711e0a07a",
+        "plantao_pt": "a45241de5b6371d6fb9ab164765be797a21f6ec6fbc3e5a07baf23af741f740c",
+        "plantao_es": "496ac16df1f5b8aa6fd468a3a9cfa87cfd281c4664bad4599de63b9a4d4c894c"
+      },
+      "cmsHash": "d7cf24ab6b4990b3cc76d77bd0ad4e7d002da170afbc5a1cd4125346eba68f3a",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "dismenorreia_primaria_secundaria"
+        ],
+        "owner": "dismenorreia_primaria_secundaria",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Dismenorreia primária relaciona-se à atividade de prostaglandinas; secundária pode decorrer de endometriose, adenomiose ou outra doença. Dor menstrual nova ou progressiva merece investigação.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "dismenorreia_primaria_secundaria"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 15,
+      "owner": "sindrome_premenstrual_pmdd",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "b37460ab51bd6fa2044debd5b91c8be38174494ffecf483587e6381ceba9409c",
+      "projectionHashes": {
+        "study_pt": "e389286ace2d7154bfb833976fcb03813b657cfee988c97f89b1371ddefe5989",
+        "study_es": "f90fcd4eba2fcef8e5f2a96e6372bd8fbfcddfda1e2ebb082ae59aefa7b89064",
+        "plantao_pt": "1136f117b9d90bd773b8b3563ac2b765e2e583f59376750f604a96d7f9166a0c",
+        "plantao_es": "7eecf6f365186980bedbfbc39399d1e8c50e2808dfb86a3f31e856256eefbd56"
+      },
+      "cmsHash": "6e23ebd617ff5fc1a4213b8efb69112011d7d210b076f48ffb9b2894e2026738",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "sindrome_premenstrual_pmdd"
+        ],
+        "owner": "sindrome_premenstrual_pmdd",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Sintomas afetivos e físicos ligados à fase pré-menstrual, com melhora após menstruar; o transtorno disfórico produz prejuízo importante, não apenas cólica.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "sindrome_premenstrual_pmdd"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 16,
+      "owner": "infertilidade",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "ed686c00efb1fe2a96bb507897e9e44b6823ee614de39faa399bc8f799d23bb2",
+      "projectionHashes": {
+        "study_pt": "ef7069577b90e77ee1f586da88505dadf9b46b5e93e79f341d878779052bd6bb",
+        "study_es": "9af59258ed8f0b34eddb94f95a40540dd07f1714a09dacd6d87860a4f3f897ce",
+        "plantao_pt": "8b10d2a6c2f6884cfcaf672880da00149408339c6979482dafd58ce8bca883ad",
+        "plantao_es": "9f08b8b9ffeb2a78ef153c1a4c56cab7e95997bc546954ab2726af29829f9c42"
+      },
+      "cmsHash": "243cf21f3ba8d85cbee41ea69a8e0f3be6a3bf1aeff4ed5da5c701527906a7c8",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "infertilidade"
+        ],
+        "owner": "infertilidade",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Dificuldade de concepção tem causas femininas, masculinas, combinadas ou inexplicadas; investigar ambas as partes, sem pressupor responsabilidade de uma pessoa.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "infertilidade"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 17,
+      "owner": "insuficiencia_ovariana_prematura",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "fc94c4391ee65a10da8be3b82023af6404dc5fcde123ca17a9fff34d1d59def4",
+      "projectionHashes": {
+        "study_pt": "9ee02e81c546abcbf665f4368ec80359fc890dfed783fed3a7d2def3a9f32317",
+        "study_es": "2380dba10de10fc8630ff3064644532ab9da83cf092cfc6cdfb68c19703ebc02",
+        "plantao_pt": "0799d04d682409ce22ff7970e5d63e56eb61476852a5c77e31c1e5ef620d3220",
+        "plantao_es": "304a83460acd66a5fd64fd7cfb097aae82d380c0af5c4fc8aa783d11ab310132"
+      },
+      "cmsHash": "db17d8776bbce74322da48483729d0c803a14ca39cd3e3f221ee16d49a3842d8",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "insuficiencia_ovariana_prematura"
+        ],
+        "owner": "insuficiencia_ovariana_prematura",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Perda de atividade ovariana antes dos 40 anos, com efeitos reprodutivos, ósseos e cardiovasculares; função ovariana intermitente ainda pode ocorrer.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "insuficiencia_ovariana_prematura"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 18,
+      "owner": "cisto_ovariano_massa_anexial_benigna",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "28281e9593882b2b48f24c20a26f7572a774310b405bc197b47e388882e43d1c",
+      "projectionHashes": {
+        "study_pt": "38d6133461dc1d8039e703be8d5240e7ae30e318a46f897efaf84d8d507e0f5d",
+        "study_es": "750dbc550ad34ed9746e505b6b6695feaacc2a0732523dcc29527cfab5295357",
+        "plantao_pt": "c92c6e4950e010346d1345f93c9e6c23c5302254430d2f3d47cf43d4d0154c0f",
+        "plantao_es": "29c04ad7a3fb4faed2ab70fe4348cadb6f9830db21b95e5108a12a50deb16301"
+      },
+      "cmsHash": "ce89a8512284422233a17b530c68967847933d8d650cfe24f084052fe37c0405",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "cisto_ovariano_massa_anexial_benigna"
+        ],
+        "owner": "cisto_ovariano_massa_anexial_benigna",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Massas anexiais têm causas funcionais, benignas e malignas; classificação depende de morfologia e contexto. Presumir benignidade não dispensa avaliação de sintomas e risco.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "cisto_ovariano_massa_anexial_benigna"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 19,
+      "owner": "prolapso_orgaos_pelvicos",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "303c32ad0486d3b1c760fa1265ab8fe5cd1ddeaedfbce67e40d5504a2afb430e",
+      "projectionHashes": {
+        "study_pt": "450c3fdfea0cf40233730daabeb3f0b4dee53111e2907acd27718a979a7631ea",
+        "study_es": "346a64229fa47b7e13fae6a7c5c351146b594f59fb9a2019d6880426e55af229",
+        "plantao_pt": "60b77e35d59c8157d1d034bb145b97e8d41d3a5f97388f8aaccf5503603c21f1",
+        "plantao_es": "df9ac44595774b68024d12f7b3d6fc2b07895c532f9586ffa8171ccbba6df1f2"
+      },
+      "cmsHash": "db1c547073db9f7f34098d53d40972b41959d932f4336abeea98271e8d8b8037",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "prolapso_orgaos_pelvicos"
+        ],
+        "owner": "prolapso_orgaos_pelvicos",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Perda de suporte pélvico permite descida vaginal, uterina ou apical; sintomas e impacto funcional orientam tratamento, não apenas o estágio anatômico.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "prolapso_orgaos_pelvicos"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 20,
+      "owner": "incontinencia_urinaria_adulto",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "8f3ed59c3268588570fcd70c916e52d8bfec49158d2528f667298db8d29b1136",
+      "projectionHashes": {
+        "study_pt": "01d9b884a8f04d2363f5dc6533521530fb0e15cfbd566d4d351c93a9d5af1c91",
+        "study_es": "4970d41cb9ee92bb3452399e54201d370d607481326b26ded2f47aaf76f0c2e5",
+        "plantao_pt": "4d6088ab4eaead932c944f5f7633fa69fffd7fcd1361cf35aa05c9f60ad43d2d",
+        "plantao_es": "5c849a0a19c991c04126ba5ff86c3324c5a36372dcbe858e0476aef093b096d7"
+      },
+      "cmsHash": "0acc72553294edd029275d623ad750621c059718bf16e558be36c2492233eb44",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "incontinencia_urinaria_adulto"
+        ],
+        "owner": "incontinencia_urinaria_adulto",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Perda involuntária de urina: distinguir esforço, urgência, mista e transbordamento. Incontinência é um sintoma, não sinônimo obrigatório de bexiga hiperativa.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "incontinencia_urinaria_adulto"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 21,
+      "owner": "vulvodinia",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "3bfe464dc03529e930af72bff67f8efb5a72bed618cc56a5b52abac791449a90",
+      "projectionHashes": {
+        "study_pt": "ce6eb76c054ed7676f68a1eedeb61b7f757a626cd6f40665c592a8bb543858ea",
+        "study_es": "276feff4e51185e1646575761ca8c3c3a0d47881d484e48947f375fb5831dded",
+        "plantao_pt": "0e7ae02fc287673f39fd8798ab8f11dbb46f828ed6114da57c1ee4ba66607c44",
+        "plantao_es": "70f3efa723eca462da7c3071c16cfd6a65939ff06ed52acc89f5bd9e0b09657b"
+      },
+      "cmsHash": "769ecbf69a13cf3d11cc1f67b11de2b5d77236ef1b66015401ce7b98f60adb65",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "vulvodinia"
+        ],
+        "owner": "vulvodinia",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Dor vulvar por pelo menos 3 meses sem causa identificável suficiente; classificar localização e relação com toque. Não é sinônimo de candidíase ou vaginite.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "vulvodinia"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 22,
+      "owner": "liquen_simplex_cronico",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "6e8fd42fbf42ed15a078a91afabe05033fc78069eaccb42b667fb1837315e716",
+      "projectionHashes": {
+        "study_pt": "618ec52e945ef4a7ce9ff668a651117d4431606211f23892ff66c603203b3484",
+        "study_es": "8f37d48f3942b42128788df2d9ddbc2e63928f4511b241d5b7e2155ccc07ce9c",
+        "plantao_pt": "98643a4355a8792844aa406f372afe1cac9a752911c425dc4f30e7530c80dfb4",
+        "plantao_es": "c48853169839de8cb11607ca40e989b93adb66b921af4edbe9b643258ad9a98b"
+      },
+      "cmsHash": "58479232b96f4cf86e5e8e0b21c5be1314f740586060a16522bca0f0a1117ddd",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "liquen_simplex_cronico"
+        ],
+        "owner": "liquen_simplex_cronico",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Ciclo prurido–coçadura produz placas espessadas e liquenificadas; pode ocorrer sobre dermatose prévia ou sem causa primária reconhecida.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "liquen_simplex_cronico"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 23,
+      "owner": "liquen_plano",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "f21f036e1f0597e719f2f7641bb84a15ba65be4a750b5d7c51ba7efa5a0c84a1",
+      "projectionHashes": {
+        "study_pt": "5d34a3de00807e927d82b782d8b446fdc8316ea80b51f59e82cd2433e43d9a6b",
+        "study_es": "ae7069beb5fbb9db79b327d68cafff5a277375186cc608e0492967dc0df1fca1",
+        "plantao_pt": "877e889a08bc05d4ff70e19aeab26657b149155d49abd6bb0c30d694bb485676",
+        "plantao_es": "0aa2f672090ad32a337614e625a61eee5160606bbd6a8a13233c0c64416e636b"
+      },
+      "cmsHash": "2a10817c5ab268d4754628a97dfb7988967151d5ce66eb808172eb07c801d423",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "liquen_plano"
+        ],
+        "owner": "liquen_plano",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Doença inflamatória imunomediada que pode afetar pele, mucosas, unhas e couro cabeludo; a localização modifica riscos e tratamento.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "liquen_plano"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 24,
+      "owner": "osteoporose",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "10ea179960ac6e6b47ad8f92ccc1bd618379605944521d705ced372b4f8c3f2f",
+      "projectionHashes": {
+        "study_pt": "7ac44a94660d0b061b374d56c2b7c4d28405b793de37f3bb6f50ecc22963cd7b",
+        "study_es": "bd9732ea6963441a3ddf684d5d7c6d8c3c09e79b27b1aa98d354400ef42083d5",
+        "plantao_pt": "f5299a3eda5bfa25d32acc9dc0e544c917a29abfe96fc266849fc83ebb5ea2a7",
+        "plantao_es": "1092ea57350d7bee1ec6292c427f2e7da88e104beaa231543f9857124bcac2c1"
+      },
+      "cmsHash": "43b91d74d12222b400616035ea44236869799d0270dc7e78eb4e7f16b08d9fd6",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "osteoporose"
+        ],
+        "owner": "osteoporose",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Fragilidade óssea aumenta risco de fraturas; fratura por baixo trauma deve acionar prevenção secundária, não apenas analgesia.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "osteoporose"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 25,
+      "owner": "cervicite",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "20310ce6f86ed66eee0d1923a48185eba25b812a98deaea69c38e63115b54e3e",
+      "projectionHashes": {
+        "study_pt": "74a10a4f358ac455d132fd9522ba6e99d6d5bcef3781009b018bcd744ad1b29a",
+        "study_es": "3a06528027a24cd3e3d422f2cfafc0d0c674d4cfc41f407406f9766e45d3f852",
+        "plantao_pt": "eeaa4adb24d4210134a8363d78be46b1f3d0e0cf13989ac6781975e22fd424e4",
+        "plantao_es": "ebe5da46f65909d9965017d6b5bedefc78c4cb3286a7f11704a9dee7bf62e29f"
+      },
+      "cmsHash": "edb215daeb86472ee1df9ce3278d98cf4624a6a9b373390d825a3ceb437f9e11",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "cervicite"
+        ],
+        "owner": "cervicite",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [
+          "doenca_inflamatoria_pelvica",
+          "infeccao_chlamydia_trachomatis",
+          "infeccao_gonococica"
+        ],
+        "scope": "Inflamação cervical, frequentemente por clamídia ou gonococo; também pode ser não infecciosa. Corrimento mucopurulento e sangramento ao toque sugerem cervicite, mas não identificam o agente.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 26,
+      "owner": "infeccao_mycoplasma_genitalium",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "45e2056f06319448245f0ad2e31cfcd6100fa9fe28b9c4b88d3aa498b5a0a439",
+      "projectionHashes": {
+        "study_pt": "38feb8679c484ed8a73cc487d7cdcc96cf617d6cce828304b834128ed1a20e44",
+        "study_es": "98d3868b55ed5051b545c452c3f7dba40ed8c617f2b787a045e4648fadf5abb8",
+        "plantao_pt": "3794c3aa43c4b11bca7c505bd4c614b9d8d09f675d8e6ac581796b639d4469c9",
+        "plantao_es": "8261b873dd87ca04215d149df5192d768ebe6823b37afe10bbaf054ae1ea5e11"
+      },
+      "cmsHash": "be878418a9c6a9f9c2e32a06bfa45eb89a92caf455c1571b9cc97aa5eed22fc1",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "infeccao_mycoplasma_genitalium"
+        ],
+        "owner": "infeccao_mycoplasma_genitalium",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [
+          "cervicite",
+          "doenca_inflamatoria_pelvica"
+        ],
+        "scope": "Infecção sexualmente transmissível associada a cervicite persistente e doença inflamatória pélvica. A ausência de parede celular torna penicilinas e cefalosporinas ineficazes; resistência a macrolídeos é relevante.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 27,
+      "owner": "endometriose",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "b50f958a54e07a0f67f372bc8fc9ede1c676f50cc467b542f58aec995979059d",
+      "projectionHashes": {
+        "study_pt": "c692a3826281a2d8d3e75215e9d4c263f9a399215a8061714ae30714ec8da3cf",
+        "study_es": "90f6b42eac5c77256e9c76c244826797f2976b5f195b85c82b8efb0f7fdc78c7",
+        "plantao_pt": "25fd8a76ea47ac86a7ba9102a3d2bc0d13c4a84b097bc14081bc16243e20ee67",
+        "plantao_es": "4ec3902a89ae06b68bbadd100634918dfe75ec1beb45cd5e5664a09a4931c3c0"
+      },
+      "cmsHash": "37cfa3275de6ff2871f1d521403f06efb11bc56c1bd58dc0333a8b5cff415c70",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "endometriose"
+        ],
+        "owner": "endometriose",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Tecido semelhante ao endométrio fora da cavidade uterina provoca inflamação, aderências e dor; intensidade dos sintomas não acompanha necessariamente a extensão das lesões.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 28,
+      "owner": "adenomiose",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "694c9c12b7c04e6b5fe5e34f59c15b5319c5935318e974924de6d014cb5c97d5",
+      "projectionHashes": {
+        "study_pt": "054ff8c3b8e85abcd7690885143eb4d6ae0fa1269e9f90f444f3a3181a168850",
+        "study_es": "97f44a5ae36d19eddaa99fb97c31e02b735483e9bf999e9281fef465542c7333",
+        "plantao_pt": "3c60557daf701808b459ebb3edb2a88cde818733b543f719e438852522547cfc",
+        "plantao_es": "ab7a974ffe82632618b80f10b82a23485fedb15ce21e4fcb749291e3fb5377c1"
+      },
+      "cmsHash": "d75b5d6359dedb06fec13000895b1257ca30195597422b30f62823404443d9b8",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "adenomiose"
+        ],
+        "owner": "adenomiose",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [
+          "endometriose",
+          "sangramento_uterino_anormal"
+        ],
+        "scope": "Glândulas e estroma endometriais no miométrio podem causar útero aumentado, sangramento intenso e dor menstrual; não é sinônimo de endometriose nem de mioma.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 29,
+      "owner": "leiomioma_uterino",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "1667e6da966b369806bcf45383f7bdf7b8e125690b268a1b500170788f170175",
+      "projectionHashes": {
+        "study_pt": "1ca4f9ebb78f77249148dc05bb2cdafc7be37b742e81149cc8c00bce9a116ca6",
+        "study_es": "18c4bfe89dc52afa05bff90f75e1bb5834d0a95f7b1772d52634d88c01a87e62",
+        "plantao_pt": "893401924aa683bcd9d615562db5769547d1a2f809bbe3278e3b4d20c568fc7d",
+        "plantao_es": "fb8b0d525c864ba07010d10e198053f2cd59172922c5aa4e00a8eaceee013169"
+      },
+      "cmsHash": "11308535367195ff79819089767d188a5e80b90338f6693194252f99f705dca2",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "leiomioma_uterino"
+        ],
+        "owner": "leiomioma_uterino",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Tumor benigno de músculo liso uterino. Localização e deformação da cavidade explicam sangramento, sintomas compressivos e possíveis efeitos reprodutivos; tamanho isolado não define tratamento.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 30,
+      "owner": "polipo_endometrial",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "9aa3642ff5edecb53692fabe0f19cf4d9351a5f8b9e1da3b7a0998fb5371eecb",
+      "projectionHashes": {
+        "study_pt": "6cf2de922a27bfbf3180a17659e346a548864a81c1d85fe98ddcf38c2778b1e6",
+        "study_es": "c72a1d3b5ded948e12bf5515252b71081fe91ab85ad485ff317603a6212d9c18",
+        "plantao_pt": "f64f7168e2ee65073b1d9b738742226dc82ed22f391e6a401ef3d414667614ff",
+        "plantao_es": "27bd66563e44edb7b6da588880274920ac6c7de945fdc63d05551a2cdb0d8ca2"
+      },
+      "cmsHash": "4172d8fe75099096574a38a9f59bf33017b4dfa194ac5fc2f690363f1bdc549a",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "polipo_endometrial"
+        ],
+        "owner": "polipo_endometrial",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [
+          "sangramento_uterino_anormal"
+        ],
+        "scope": "Crescimento focal da mucosa endometrial pode causar sangramento irregular ou ser incidental. Maioria é benigna, mas risco individual e histologia orientam conduta.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 31,
+      "owner": "polipo_cervical",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "1918a3966f7764183d297f003b61ea6e1ba75ab7d5ab453dc2499baeb37125fb",
+      "projectionHashes": {
+        "study_pt": "fef1410ada61cd97b02f5f26d4514b547e8ec61f9a12f3dfdf1040144c7d3c71",
+        "study_es": "5b27800370f67b2f75c72cd7161290f8f7a148ae56412c082ed6697d0ed09a06",
+        "plantao_pt": "07d886a6c0a7cacaf62e365c68608b16d98df6233b222dbac810226119e40c94",
+        "plantao_es": "1db64c490269218dea8f5a98bc0da45bbcbadc1c945d78d506cdf3b5eb749c18"
+      },
+      "cmsHash": "f16469c04381a1b22b5184bfeaae4ff82cada897d3ade48a04001ae5925314b9",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "polipo_cervical"
+        ],
+        "owner": "polipo_cervical",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [
+          "cervicite"
+        ],
+        "scope": "Projeção de tecido do colo/canal cervical, em geral benigna; não equivale a pólipo endometrial prolapsado nem a câncer cervical.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 32,
+      "owner": "sangramento_uterino_anormal",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "6c3484f3bc7c9d8349efbe3a1e3dac6572f6dbb3e4c26100895b8ff1cc81818a",
+      "projectionHashes": {
+        "study_pt": "1bd12239ac060451c9d1315d6595b9f418031fc10e677864679aa64c05b70d3e",
+        "study_es": "0dc8f06ae86fbc6e6a13c454b822d466e414e3c701f08bddca5c82adfd309258",
+        "plantao_pt": "831098b053faaab0cb262c74c5972821c51dd35ee24b420b285524ef842097be",
+        "plantao_es": "4191f1153efabb0e4b485a74e8a87d5ee54f6de3922ba38fd83e4c11f0ae0636"
+      },
+      "cmsHash": "8d41bca3ea4eb84eef13f782c42c9a08c88c38ade37f03186e645bd9b797548b",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "sangramento_uterino_anormal"
+        ],
+        "owner": "sangramento_uterino_anormal",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Síndrome de alteração da frequência, regularidade, duração ou volume menstrual fora da gestação; causas estruturais e não estruturais devem ser separadas. Não confundir com diagnóstico etiológico único.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 33,
+      "owner": "sangramento_pos_menopausa",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "3e3a85b3449b7f1704bbcd0509d6480e2d6b6c493de9685c89939dae6b793190",
+      "projectionHashes": {
+        "study_pt": "12d8e10e02216e0a91b877964fdf08e268941ecb5748f2b20cb2a6ca03b81a61",
+        "study_es": "55a6eeabfb5fe8352095fb181bc12e12b6ba58c4cdad5f18f640f3952593c8d4",
+        "plantao_pt": "1418d315da2e166e845c16dec1d27a3143592c5105cee3ed1e21e2a69003b53b",
+        "plantao_es": "7b8d2ad944278e6a200c76cae375170a64e6e203cefd7f028279a1a3271fa987"
+      },
+      "cmsHash": "84d7fae7863208c193d9304d499f388cfca4a1ddfa27b461c4943c7c5e52b8bf",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "sangramento_pos_menopausa"
+        ],
+        "owner": "sangramento_pos_menopausa",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Sangramento vaginal após a menopausa requer investigação, mesmo pequeno ou isolado; atrofia é frequente, mas câncer endometrial ou cervical precisa ser excluído.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 34,
+      "owner": "sindrome_ovarios_policisticos",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "62ee269929f7aa95cc9b845f53c4edf786694cbd5abe3d52ef0bce0503335f85",
+      "projectionHashes": {
+        "study_pt": "0aec737602c9a0f1553ba7ffe640c2ec4c73a90a781c80dfe623b4a166b3b44b",
+        "study_es": "4350df1b831f25ae31fa66e7b87fc2d83a5bfea6d26e3adfe434a2b3f20a43dc",
+        "plantao_pt": "acc7159eed1ca5cd87bffa327e234f6e221949146f23bd0f38363a0acb52b37a",
+        "plantao_es": "db149ce152b539d0158708136a2a722660857f7f7df0516ba6af40b7e4a6a1cf"
+      },
+      "cmsHash": "09114d67dbb8ddff13623277b6c5d95ab9467bbfb11de5457f37f8f8faa04518",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "sindrome_ovarios_policisticos"
+        ],
+        "owner": "sindrome_ovarios_policisticos",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Condição endócrino-metabólica com disfunção ovulatória e/ou hiperandrogenismo; imagem ovariana isolada não define a síndrome. Resistência à insulina e riscos metabólicos variam entre pacientes.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 35,
+      "owner": "sintomas_vasomotores_menopausa",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "f947457df4d17bd3d20c9b8eb5a80cde1a1606c3dfadd5b52fa0ba78f836ef0b",
+      "projectionHashes": {
+        "study_pt": "54b5b8fb773a6bbde97df554a52111ba1247c364f7a2a3a9059591b395b01b26",
+        "study_es": "dc1e25a01b3bc7b2170b183323c3b77e32da8ebe57a1f610690c2fd5ad98f798",
+        "plantao_pt": "e0ffcb6da2d7c1b1b37c92d99711996aa25b5d22dd90aeb54a6efc0e9ba6e7c8",
+        "plantao_es": "cd430a3525f8dc9a3da2295eeec591b3b4f5eba45c4071b9a1dfe80bd3a14e03"
+      },
+      "cmsHash": "39fd35291fe4132fc68ef754ae161d7642d9232a9213e165cd30bede71597495",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "sintomas_vasomotores_menopausa"
+        ],
+        "owner": "sintomas_vasomotores_menopausa",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [
+          "insuficiencia_ovariana_prematura"
+        ],
+        "scope": "Ondas de calor e sudorese relacionadas à transição menopausal podem afetar sono e função; quadro atípico exige procurar outra causa. Menopausa é uma fase fisiológica, não uma infecção.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 36,
+      "owner": "sindrome_geniturinaria_menopausa",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "48d0982fb2be1aa99a9c689a60d9f6ea451d197b8f626a38a07e466b6ec1867b",
+      "projectionHashes": {
+        "study_pt": "33b1144f8a9c047ac8990af1ebe98941095abc8b4fe5650a6d3d974a86d88a6e",
+        "study_es": "ffb45f4b24a326fee4be105b0abd4951436657cd2fce21f36e136bbafa10da0a",
+        "plantao_pt": "42272fbc4cc7e584b36f2fae982dfd2faa62077594b59fb57e63511a31a3fe0b",
+        "plantao_es": "0e0fdc98f2e06d2778c524733332eab7366853043a6e1342b02aa9924efd119f"
+      },
+      "cmsHash": "292e004b2db58ae83829831466f4aa1d24bd04562c66773d8946cd57228e599e",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "sindrome_geniturinaria_menopausa"
+        ],
+        "owner": "sindrome_geniturinaria_menopausa",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [
+          "infeccao_urinaria_recorrente",
+          "vulvodinia"
+        ],
+        "scope": "Hipoestrogenismo pode causar secura, ardor, dispareunia e sintomas urinários; não equivale automaticamente a infecção urinária ou candidíase.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 37,
+      "owner": "hiperprolactinemia",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "2625bfc6671bac69f68c5238716684c45edc90a18e33a87c5ee94d45cb76bc2a",
+      "projectionHashes": {
+        "study_pt": "77aeb6590b2cd21df59cc8279496bbeb26ae9b6d628c2602fea0c0ebaaa427cf",
+        "study_es": "5aba798eda3d5395e5d8c18d681f431c2555416442b041d8a2740019cc8523a1",
+        "plantao_pt": "9823a6389c1de440aa7d9216e029e3cf3ca743e672a73dfd5c9656bf4c6b3024",
+        "plantao_es": "b4c181f8e58252774fa98a7c7f1d9271d41bef3752af9d412ba6f9f046fb3970"
+      },
+      "cmsHash": "a52c3c9d8f1b0bd1d03ecc5b4c843251e7dd1dccbc375d83ea5535d8136258e3",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "hiperprolactinemia"
+        ],
+        "owner": "hiperprolactinemia",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [
+          "amenorreia_secundaria"
+        ],
+        "scope": "Prolactina elevada pode suprimir função gonadal, causando irregularidade menstrual, infertilidade e galactorreia; nem toda elevação significa prolactinoma.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 38,
+      "owner": "hirsutismo",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "8a5ee01b4f2abd5d108fc76cb81549fceede574e2c32adc4089e9b77c9a61cf6",
+      "projectionHashes": {
+        "study_pt": "f96ddc63c365e2cd2b6f61a3d20214fb974d032f7ea8faeeb16a647871276c2b",
+        "study_es": "1803311050a05376b78dec00a9dac5f37b0d8a158412a8493fd5d8b58fc81f30",
+        "plantao_pt": "3e501d0f0407325e14ffaec5ed880be2ebbee27a381343ced62750a91648b647",
+        "plantao_es": "21c6aa6f847c8b602642c3e3929eaa98687fc701416c0506a1952b3678b39da1"
+      },
+      "cmsHash": "0d7e67afc99e81c6eb3a85285cdba1eb79022556639ac83e401c93ad97e948f1",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "hirsutismo"
+        ],
+        "owner": "hirsutismo",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [
+          "sindrome_ovarios_policisticos"
+        ],
+        "scope": "Crescimento de pelos terminais em padrão androgênico; diferenciar hipertricose. Pode acompanhar síndrome dos ovários policísticos, mas causa deve ser avaliada sem presumir esse diagnóstico.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 39,
+      "owner": "mastalgia",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "74bd79a9a49e5f8836a109b45b34a70f3a340702d303126241c3f61b73b3a989",
+      "projectionHashes": {
+        "study_pt": "65e4ef19093c7b55c769476af80e46eca6aa5ba12ffd1de1f57a9b6f0529950f",
+        "study_es": "92cc2d51b994f9268e6e58cb370fe00b3d3a6a4491f8476f705fde08760f78d6",
+        "plantao_pt": "c10b9eb30b93b27d9d9954bb2b9d277a40f16be0f117d0ac86741abd43f9ceb0",
+        "plantao_es": "76d45411daec3f21777746a3de77b3340bd01f85269bbc3167e10ebb9517bd7a"
+      },
+      "cmsHash": "8b8b7f2dfc996f2a3d276bbaef4c7940203ad0243bd0910dddb91f13419ab676",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "mastalgia"
+        ],
+        "owner": "mastalgia",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Dor mamária pode ser cíclica, não cíclica ou referida da parede torácica; dor isolada é pouco sugestiva de câncer, mas não substitui avaliação de achados associados.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 40,
+      "owner": "fibroadenoma_mamario",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "319f5c7010b7b1b4e384e9ed78e3967d5ada082de507ae582e968369fe7c6f5c",
+      "projectionHashes": {
+        "study_pt": "755cbcd0118ce5e0ecdb1ac65738577853c667e91968d7eac774e5397ec3b515",
+        "study_es": "e38f5abc7f132383fa18af833dc1a916ce9cf5205be03223f07784a2674c532a",
+        "plantao_pt": "933581f21f94386aa1389dfc210210a7456a2f93573d377a31702352377c75e1",
+        "plantao_es": "8b98663092295c054414f21a1c5c2e8c92255930b657c64c131e399477545062"
+      },
+      "cmsHash": "a160d187646e1466a94dc5c8bececb127fd84b5a157d5de0ed943d24e5f3b81f",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "fibroadenoma_mamario"
+        ],
+        "owner": "fibroadenoma_mamario",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Nódulo sólido benigno composto por tecido glandular e fibroso, frequentemente móvel; aspecto clínico sugere, mas não confirma, benignidade. Não equivale a cisto líquido.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 41,
+      "owner": "cisto_mamario",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "7fce8d9b579ea02255fe6eba663d8662fff3c54353818ad99fa22e62815e6bd7",
+      "projectionHashes": {
+        "study_pt": "205eaeeced55c2f09058e8a2c9108609df2119b50fe61f13ef8ed0adb9bb53cf",
+        "study_es": "c4e4e65d4e9e9c649480766146ad43d106025fd01e22731a08afce38556d5f6f",
+        "plantao_pt": "a6e493d0ca0eb317f7e7eecc6433b3fefa93acc79948fb062bbcbbbd81089096",
+        "plantao_es": "c8426da65037f4d7fa0e1be86bae8a185831cab10014bc9821b049a4101614f0"
+      },
+      "cmsHash": "b03c863aeb15f2ff5d0ac946903eb8c90c1bf5c31eba1a4dfb9237a3018df4ea",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "cisto_mamario"
+        ],
+        "owner": "cisto_mamario",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Coleção líquida na mama, comum sobretudo antes da menopausa; cisto simples confirmado é benigno. Lesões complexas ou com componente sólido não recebem a mesma conduta.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 42,
+      "owner": "ectasia_ductal_mamaria",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "e3b551039596fa3d630f62cd6548171d8d3f24bf2279d6c7880a407d8b708a26",
+      "projectionHashes": {
+        "study_pt": "edc6bdd016113a7924651c566a0d9a9c5c4bae648e5ae6f47aeb1e23dac772f8",
+        "study_es": "462125cbb1f63be9b15f2502b31c931cbff39db5c3b34c369df5c4b00c0fed76",
+        "plantao_pt": "6598d5806222bf48f081bcf01d09931893ae6e7033a049e8afe5b7b59c048652",
+        "plantao_es": "a2f096573c7af4c6fff51c353d579a50ac1f761d4bb0bfc55e32ad0c08e4518b"
+      },
+      "cmsHash": "5fedd13f66017c3b133224cb5e0014407d815af4795a8e6d0f9bebeddfd61cd1",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "ectasia_ductal_mamaria"
+        ],
+        "owner": "ectasia_ductal_mamaria",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Dilatação de ductos mamários pode produzir secreção espessa e alteração do mamilo; é condição benigna, mas o diagnóstico depende de excluir causas suspeitas.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 43,
+      "owner": "cancer_mama",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "6f28b664c14ad32c89916199c7903277fe5f5f2ab2057fd245875857af800c80",
+      "projectionHashes": {
+        "study_pt": "8cd44cd7f817114df76aa341e7b77c12c0ee70bbc6867c32fb26d1e8abb5ba19",
+        "study_es": "416dee796cf1600765c23cfd25aee47f5de32822d85a204dc5f2ef696a1e7608",
+        "plantao_pt": "7eda304a489cb573eb4699178dab8a8c5b0a0fbe10f488ae0f8c4e4b7ff51825",
+        "plantao_es": "e04b9bd1ddee2d3adc0c609d14df59c6783aa640941fe3d68b99007e918a41c8"
+      },
+      "cmsHash": "49fe98c90b4db062bda05869d771486abbc7db19ee62a18cb54eef8cd742803f",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "cancer_mama"
+        ],
+        "owner": "cancer_mama",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Neoplasia mamária exige confirmação histológica e caracterização biológica; receptores hormonais e HER2 influenciam tratamento. Não é diagnóstico estabelecido apenas por nódulo palpável.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 44,
+      "owner": "cancer_colo_uterino",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "c5e9e1110ad856f652ad0b02741ad68d8cb42c1ce98b885f73fb8dc931a2657c",
+      "projectionHashes": {
+        "study_pt": "8031cc58224e244b285191f15bc0d10fc58733404a9ab21e8be6a08ad6e5e0f9",
+        "study_es": "7c10b18adddc8ce1300fd30ed926662447ea5f6b2286d450bbcadf29f7426509",
+        "plantao_pt": "f829d9930ede65772a0cf684e2e4da76e9e02cf2eaf17fdf69d41f56e79906e5",
+        "plantao_es": "20e184756da9b0534c583ef71e943f4db709ad6c2e851dff870a1901d1a1a829"
+      },
+      "cmsHash": "8055f09e079fdfec74f35b428c7e2185415366631b8667787cbb3ac4c9bd0489",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "cancer_colo_uterino"
+        ],
+        "owner": "cancer_colo_uterino",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Neoplasia cervical associada principalmente à infecção persistente por HPV oncogênico. Lesão precursora e câncer invasivo são condições diferentes, com condutas próprias.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 45,
+      "owner": "lesao_precursora_cervical",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "407a9636e52b024effc2251a4f49c4d313061994ac368dc6b3671b1b3e99e8a2",
+      "projectionHashes": {
+        "study_pt": "fd6718c3b5080587688697cf2be2f82b0f3092e57f612e5f01bad75651276f53",
+        "study_es": "1b73b7baefc0554f51fe5a5287deefb9b38ad8927d3866cf6e9b52b03deefa2f",
+        "plantao_pt": "48533fe75de9d30d30ccc6b5c6b10ea13760e27cc36fe0c9340c2a62958930b9",
+        "plantao_es": "69c6fe685566b7869cdb30f3be2587217f404ec1c1aa1fc884031834ded24517"
+      },
+      "cmsHash": "7b94b65d16b23561c34cd59e1637136e9f0549c1ddf5db9d28df5d7f9e71e015",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "lesao_precursora_cervical"
+        ],
+        "owner": "lesao_precursora_cervical",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [
+          "cancer_colo_uterino"
+        ],
+        "scope": "Lesões intraepiteliais cervicais associadas a HPV podem regredir ou progredir; citologia e histologia são classificações diferentes. HPV positivo isolado não equivale a câncer.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 46,
+      "owner": "hiperplasia_endometrial",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "35ef07c3b03590239f32f359609c0f0b7d53993051f0ee05806691a48ca04213",
+      "projectionHashes": {
+        "study_pt": "f50db85875967210616113bce46cac8817738d056769890ead4098d857d00ffb",
+        "study_es": "b7ba17daf5b55df88f6ae16856d7e13679532e9afd1b17d532909a98d5384b84",
+        "plantao_pt": "9e2f5b4316cb6b0c865315954fff2de7bf72c6d26897668e3df5de19076b53d9",
+        "plantao_es": "3ce2438dd6efb5040d7ebf1b8a4f117184be2004d346a344e3af0468a477251e"
+      },
+      "cmsHash": "a3625b41a4d32c95418eeffdc5a3934b0cf80d2c07d632f25fbe68a0432108ea",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "hiperplasia_endometrial"
+        ],
+        "owner": "hiperplasia_endometrial",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [
+          "sangramento_uterino_anormal",
+          "sangramento_pos_menopausa"
+        ],
+        "scope": "Proliferação endometrial anormal exige histologia para distinguir hiperplasia sem atipia de neoplasia intraepitelial endometrial/hiperplasia atípica, que tem risco maior de câncer concomitante.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 47,
+      "owner": "bexiga_hiperativa",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "2926575f512ef95325378d93b88cb7ae07fe9efd23882b2762471996f22cfc98",
+      "projectionHashes": {
+        "study_pt": "8094e8c19b8e690c5c04610b0f4f1a080c6e686c3e1ef83552a5292daef7524a",
+        "study_es": "107e4cb381a92dab6551175e9cc1b5b40a36095c65b4116f9b9e8347450f99d4",
+        "plantao_pt": "f4b9e7eeb34fa1f1975fef038bce58ba3cac8e1abd22769351e96cd1aca76186",
+        "plantao_es": "ce769706a13871b78d13cffcd3a56f35d5129e82e72ddfbbf14e369b941a0b5b"
+      },
+      "cmsHash": "cf0461d5ad201b39a8d830fe868a5dd2725b0e50d032d803d81dba1978bb7cda",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "bexiga_hiperativa"
+        ],
+        "owner": "bexiga_hiperativa",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [],
+        "scope": "Urgência urinária, geralmente com frequência e noctúria, com ou sem perda urinária, sem infecção ou outra causa evidente; pode existir sem incontinência.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [
+          "bexiga_hiperativa"
+        ],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 48,
+      "owner": "sindrome_bexiga_dolorosa",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "6394d45167b86a145370def73f0d3ce317b7c4acc7a1161346b64b9ae333abce",
+      "projectionHashes": {
+        "study_pt": "4850a606b1c196f9e4db186586dace6893187324b9d6a100379c955c0caafd0b",
+        "study_es": "5f7e0a2ae769e04984b7cf3a68a57994711d19f4988b4181ea4edc93a7f29fe1",
+        "plantao_pt": "cef64b5235105cf0b5896a051e9a350c40d9dd118544337d1f62b9188284d1be",
+        "plantao_es": "612ea7946a885059ebe8a5a48108b8f4bf2d406dbfc20f23fdb3bc338f43bc9e"
+      },
+      "cmsHash": "e17b1c4ed9167d4848531d425a10c1bc3930144bf891ae8c961e980bdb001719",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "sindrome_bexiga_dolorosa"
+        ],
+        "owner": "sindrome_bexiga_dolorosa",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [
+          "bexiga_hiperativa",
+          "infeccao_urinaria_recorrente"
+        ],
+        "scope": "Síndrome de dor percebida na bexiga com sintomas urinários, sem infecção ou outra causa que explique o quadro. Não equivale a cistite bacteriana recorrente nem a urgência sem dor.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 49,
+      "owner": "liquen_escleroso_vulvar",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "ef8edc79293301d3d411fe33a1b30854f2b00fc79fb71c0ba2bf16bd0b5f44f6",
+      "projectionHashes": {
+        "study_pt": "32698e6965dae7646738c1e2b9ed89bd6772379f582a7af49fd8475e960e4ce7",
+        "study_es": "247169d944441e49812c10644c5d331e25487c777ad2ce662926273e25490095",
+        "plantao_pt": "a24a6505df64ec6d2282b5709facd305425d4b61d0cbda28a45a75ba77f23d14",
+        "plantao_es": "baeb5dcfc630d2a92a231440f10806001530a0fee2148629ac0b10284836753b"
+      },
+      "cmsHash": "0ea89247739a617703b2358074455a640a936bb32ddf18e8f2100be93df203ad",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "liquen_escleroso_vulvar"
+        ],
+        "owner": "liquen_escleroso_vulvar",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [
+          "liquen_plano",
+          "liquen_simplex_cronico"
+        ],
+        "scope": "Dermatose inflamatória crônica que pode causar placas esbranquiçadas, fissuras e alteração arquitetural vulvar. Não é infecção sexualmente transmissível e não equivale a candidíase.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    },
+    {
+      "number": 50,
+      "owner": "vaginismo",
+      "action": "REVIEW_EXISTING_PRESERVE_ID",
+      "canonicalHash": "aa5b6af7730bdd1350408d30d8269c984071156b2d5a4ddac38e866097dc44ea",
+      "projectionHashes": {
+        "study_pt": "f384489eb4fb46020105397fbcc37ea8cb71c13e59da9ed2b2e29e7d0a44f25e",
+        "study_es": "3e713c9e3648817fe648b9587670699167defcc70b4d2e587501a04de0814135",
+        "plantao_pt": "18a6328a4ee8f9260248f5e7897f8e37c0603f37fb514218b9ffb18c5dc1a60b",
+        "plantao_es": "c210d11ecabee0e585034ad7437e90c5d6abd136531809b20d5d0647693376ba"
+      },
+      "cmsHash": "4cca0c4a57a7db888649bd38295863bd0ea5afcef6a67dc937690d8d6f679aad",
+      "status": "READY_FOR_OWNER_APPROVAL",
+      "identity": {
+        "action": "REVIEW_EXISTING_PRESERVE_ID",
+        "existingCanonicalDocumentIds": [
+          "vaginismo"
+        ],
+        "owner": "vaginismo",
+        "newOwnerActivated": false,
+        "relatedButNotEquivalent": [
+          "vulvodinia"
+        ],
+        "scope": "Contração involuntária e dificuldade relacionada à penetração podem causar dor e sofrimento. A reação não é voluntária; dor pode coexistir com vulvodínia, dermatose ou infecção.",
+        "preserveExistingPregnancyContent": true,
+        "existingCMSDocumentIds": [],
+        "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+        "existingRuntimeOwnerPreserved": true
+      }
+    }
+  ]
+}

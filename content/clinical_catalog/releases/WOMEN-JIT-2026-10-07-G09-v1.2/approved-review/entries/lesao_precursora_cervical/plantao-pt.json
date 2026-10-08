@@ -1,0 +1,118 @@
+{
+  "owner": "lesao_precursora_cervical",
+  "mode": "plantao",
+  "locale": "pt",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "407a9636e52b024effc2251a4f49c4d313061994ac368dc6b3671b1b3e99e8a2",
+  "title": "Lesões precursoras do colo do útero",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "recognition",
+      "heading": "Reconhecimento",
+      "text": "Registrar resultados atuais e anteriores, idade, imunossupressão, gestação e tratamento prévio. Lesão visível suspeita ou sintomas de invasão exige investigação, independentemente do rastreamento.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "asccp",
+        "asccp23"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "heading": "Diagnóstico e diferenciais",
+      "text": "Aplicar algoritmo de risco da diretriz vigente, com colposcopia/biópsia conforme indicação. Diferenciar lesão de baixo grau, alto grau e invasão; não tratar um resultado sem contexto.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "asccp",
+        "asccp23"
+      ]
+    },
+    {
+      "id": "treatment",
+      "heading": "Tratamento inicial",
+      "text": "Opções: vigilância em contextos de baixo risco ou excisão/ablação quando critérios permitem. Lesão de alto grau confirmada geralmente requer tratamento; observação seletiva depende de grau, fertilidade e seguimento garantido.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "asccp",
+        "asccp23"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_not_routine_v12",
+      "heading": "Medicamento, dose e forma de uso",
+      "text": "Não existe fármaco de rotina que substitua vigilância, excisão ou ablação indicada para lesão precursora cervical. A escolha depende do grau/histologia, idade, gestação e risco. Não prescrever antiviral, antibiótico ou hormônio para erradicar lesão intraepitelial; vacina previne infecções futuras, mas não é tratamento da lesão existente.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "asccp",
+        "asccp23"
+      ]
+    },
+    {
+      "id": "safety",
+      "heading": "Segurança e contraindicações",
+      "text": "Não usar ablação quando há suspeita de invasão ou avaliação inadequada da lesão. Gestação modifica procedimentos e seguimento; não extrapolar excisão imediata de não gestante para grávida.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "asccp",
+        "asccp23"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "heading": "Monitorização e seguimento",
+      "text": "Seguimento pós-tratamento permanece necessário mesmo com exames negativos iniciais. Garantir resultados, adesão e intervalos conforme algoritmo individual; vacina previne novas infecções, não substitui tratamento de lesão existente.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "asccp",
+        "asccp23"
+      ]
+    },
+    {
+      "id": "foundation",
+      "heading": "Definição e raciocínio",
+      "text": "Lesões intraepiteliais cervicais associadas a HPV podem regredir ou progredir; citologia e histologia são classificações diferentes. HPV positivo isolado não equivale a câncer.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "asccp",
+        "asccp23"
+      ]
+    },
+    {
+      "id": "treatment_choices_v11",
+      "heading": "Escolha do tratamento",
+      "text": "Vigilância é opção apenas quando grau e risco permitem retorno seguro. Excisão é opção quando tratamento é indicado; ablação exige critérios de elegibilidade e exclusão de invasão. Não oferecer observação indiscriminada para lesão de alto grau nem extrapolar para gravidez.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "asccp",
+        "asccp23"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "asccp",
+      "title": "ASCCP — Risk-based management and Enduring Guidelines",
+      "url": "https://www.asccp.org/management-guidelines/",
+      "year": null,
+      "status": "AUTHORITATIVE_LIVING",
+      "authority": "ASCCP",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "asccp23",
+      "title": "ASCCP — 2019 consensus updates through 2023",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10755815/",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "ASCCP",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ]
+}

@@ -1,0 +1,285 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "infeccao_urinaria_recorrente",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "6e43684bbf9879ca6a85793902b784f956ffa5f5d6f7682f6c4a1abfacf6b270",
+  "references": [
+    {
+      "id": "ruti",
+      "title": "AUA/CUA/SUFU — Recurrent uncomplicated urinary tract infection in women, 2025",
+      "url": "https://www.auanet.org/documents/Guidelines/PDF/2025%20Guidelines/rUTI%20Update/rUTI%202025%20Unabridged%20Final.pdf",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "AUA/CUA/SUFU",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "ui",
+      "title": "NICE NG123 — Urinary incontinence and pelvic organ prolapse in women",
+      "url": "https://www.nice.org.uk/guidance/ng123/chapter/Recommendations",
+      "year": null,
+      "status": "AUTHORITATIVE_LIVING",
+      "authority": "NICE NG123",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "rutiupdate",
+      "title": "AUA — Recurrent UTI guideline update, October 2025",
+      "url": "https://auanews.net/issues/articles/2025/october-2025/updates-to-the-aua/cua/sufu-guideline-on-recurrent-uncomplicated-urinary-tract-infections-in-women",
+      "year": 2025,
+      "status": "AUTHORITATIVE_UPDATE",
+      "authority": "AUA",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_RUTI_RECS",
+      "title": "NICE NG112 — Recommendations, amended 2024",
+      "url": "https://www.nice.org.uk/guidance/ng112/chapter/recommendations",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "WEB_SPECIFIC_RECOMMENDATIONS_READ",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Vagifem",
+      "title": "Vagifem 10 micrograms — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/5719/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Infecção urinária recorrente",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Infecções urinárias sintomáticas recorrentes exigem confirmação e prevenção individualizada. A diretriz de infecção não complicada não abrange automaticamente gestação, obstrução ou imunossupressão.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Infecções urinárias sintomáticas recorrentes exigem confirmação e prevenção individualizada. A diretriz de infecção não complicada não abrange automaticamente gestação, obstrução ou imunossupressão."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Distinguir episódios com disúria e urgência de bacteriúria sem sintomas. Febre, dor lombar, vômitos ou instabilidade sugerem infecção superior/complicada."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Documentar sintomas, urinálise e cultura em episódios recorrentes, preferencialmente antes do antibiótico. Diferenciar vaginite, síndrome geniturinária da menopausa e bexiga dolorosa; imagem/cistoscopia são seletivas."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Tratar o episódio atual com antibiótico dirigido ao local da infecção, cultura e resistências locais. Não usar profilaxia como substituto do tratamento nem tratar bacteriúria assintomática rotineiramente em não gestantes."
+      },
+      {
+        "id": "alternative-heading",
+        "type": "heading",
+        "text": "Alternativas e seleção",
+        "level": 2
+      },
+      {
+        "id": "alternative",
+        "type": "paragraph",
+        "text": "Para prevenção, considerar estrogênio vaginal na peri/pós-menopausa quando adequado. Alternativas selecionadas incluem metenamina ou profilaxia antibiótica, discutindo contraindicações, resistência e duração; não prescrever automaticamente."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Reavaliar frequência, culturas, tolerância e necessidade de profilaxia. Sintomas persistentes apesar da cura microbiológica exigem procurar outra causa; gestação segue via própria, sem extrapolar este esquema."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Prevenção em adulta não gestante após tratar a infecção ativa: hipurato de metenamina 1 g por via oral a cada 12 horas é alternativa à profilaxia antibiótica diária quando medidas anteriores foram insuficientes. Reavaliar em 6 meses e depois anualmente. Não trata pielonefrite nem episódio agudo. Não usar sachês alcalinizantes de citrato concomitantes; conferir contraindicações renais/hepáticas e interações na bula, incluindo sulfonamidas. Infecção complicada/alta ou gestação exige especialista."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Se profilaxia antibiótica for escolhida por culturas e decisão compartilhada: nitrofurantoína 50–100 mg por via oral à noite; alternativa de estratégia, não de combinação: 100 mg por via oral em dose única na exposição a gatilho identificado. Usar somente com filtração glomerular estimada de pelo menos 45 mL/minuto e rever em até 6 meses. Monitorar toxicidade pulmonar/hepática, neuropatia e função renal. Não serve para pielonefrite; não transferir este esquema preventivo à gestação ou ao tratamento agudo."
+      },
+      {
+        "id": "pharmacotherapy_v12_3-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_3",
+        "type": "paragraph",
+        "text": "Para atrofia geniturinária pós-menopausa confirmada: estradiol vaginal em comprimido de 10 microgramas, 1 comprimido por via intravaginal uma vez ao dia durante 2 semanas; depois 1 comprimido duas vezes por semana. Avaliar resposta, menor dose eficaz e necessidade de manutenção; não há um curso curativo único. Investigar sangramento inexplicado antes de iniciar. Não indicado na gestação; antecedente de neoplasia hormônio-dependente exige decisão compartilhada com especialista. Não corrige prolapso nem trata sangramento sem diagnóstico."
+      }
+    ]
+  },
+  "es": {
+    "title": "Infección urinaria recurrente",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Las infecciones urinarias sintomáticas recurrentes requieren confirmación y prevención individualizada. La guía de infección no complicada no abarca automáticamente embarazo, obstrucción o inmunosupresión.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Las infecciones urinarias sintomáticas recurrentes requieren confirmación y prevención individualizada. La guía de infección no complicada no abarca automáticamente embarazo, obstrucción o inmunosupresión."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Distinguir episodios con disuria y urgencia de bacteriuria sin síntomas. Fiebre, dolor lumbar, vómitos o inestabilidad sugieren infección superior/complicada."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Documentar síntomas, análisis y cultivo urinario en episodios recurrentes, preferiblemente antes del antibiótico. Diferenciar vaginitis, síndrome genitourinario de la menopausia y vejiga dolorosa; imagen/cistoscopia son selectivas."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Tratar el episodio actual con antibiótico dirigido al sitio de infección, cultivo y resistencias locales. No usar profilaxis como sustituto del tratamiento ni tratar rutinariamente bacteriuria asintomática en no embarazadas."
+      },
+      {
+        "id": "alternative-heading",
+        "type": "heading",
+        "text": "Alternativas y selección",
+        "level": 2
+      },
+      {
+        "id": "alternative",
+        "type": "paragraph",
+        "text": "Para prevención, considerar estrógeno vaginal en peri/posmenopausia cuando sea apropiado. Alternativas seleccionadas incluyen metenamina o profilaxis antibiótica, discutiendo contraindicaciones, resistencia y duración; no prescribir automáticamente."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Reevaluar frecuencia, cultivos, tolerancia y necesidad de profilaxis. Síntomas persistentes pese a curación microbiológica requieren buscar otra causa; el embarazo sigue una vía específica, sin extrapolar este esquema."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Prevención en adulta no embarazada tras tratar la infección activa: hipurato de metenamina 1 g por vía oral cada 12 horas es alternativa a profilaxis antibiótica diaria cuando medidas anteriores resultaron insuficientes. Reevaluar en 6 meses y después anualmente. No trata pielonefritis ni episodio agudo. No utilizar sobres alcalinizantes de citrato concomitantes; comprobar contraindicaciones renales/hepáticas e interacciones en la ficha, incluidas sulfonamidas. Infección complicada/alta o embarazo requiere especialista."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Si se elige profilaxis antibiótica según cultivos y decisión compartida: nitrofurantoína 50–100 mg por vía oral por la noche; alternativa de estrategia, no de combinación: 100 mg por vía oral en dosis única ante exposición a un desencadenante identificado. Utilizar solo con filtración glomerular estimada de al menos 45 mL/minuto y revisar en hasta 6 meses. Controlar toxicidad pulmonar/hepática, neuropatía y función renal. No sirve para pielonefritis; no trasladar este esquema preventivo al embarazo ni al tratamiento agudo."
+      },
+      {
+        "id": "pharmacotherapy_v12_3-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_3",
+        "type": "paragraph",
+        "text": "Para atrofia genitourinaria posmenopáusica confirmada: estradiol vaginal en comprimido de 10 microgramos, 1 comprimido por vía intravaginal una vez al día durante 2 semanas; después 1 comprimido dos veces por semana. Evaluar respuesta, menor dosis eficaz y necesidad de mantenimiento; no existe un curso curativo único. Investigar sangrado inexplicado antes de iniciar. No indicado en el embarazo; un antecedente de neoplasia hormonodependiente requiere decisión compartida con especialista. No corrige el prolapso ni trata sangrado sin diagnóstico."
+      }
+    ]
+  }
+}

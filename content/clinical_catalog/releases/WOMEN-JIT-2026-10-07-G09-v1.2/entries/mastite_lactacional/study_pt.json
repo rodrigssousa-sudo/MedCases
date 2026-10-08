@@ -1,0 +1,112 @@
+{
+  "owner": "mastite_lactacional",
+  "mode": "study",
+  "locale": "pt",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "8ac79e49cc5ee89369c27b4586f013a7e39ba70384e07f50089590e639112c35",
+  "title": "Mastite lactacional",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "foundation",
+      "heading": "Definição e raciocínio",
+      "text": "Mastite abrange inflamação e infecção; nem toda dor/eritema mamário exige antibiótico. Edema e estímulo excessivo de produção podem perpetuar o quadro.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "mast"
+      ]
+    },
+    {
+      "id": "recognition",
+      "heading": "Reconhecimento",
+      "text": "Avaliar dor, eritema, febre, técnica de amamentação e sinais de abscesso. Instabilidade, progressão rápida ou massa persistente exige avaliação urgente e diagnóstico alternativo.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "mast"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "heading": "Diagnóstico e diferenciais",
+      "text": "Distinguir inflamação de mastite bacteriana; ultrassonografia se suspeita de coleção. Cultura é indicada seletivamente, especialmente na ausência de melhora após 48 horas de tratamento adequado.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "mast"
+      ]
+    },
+    {
+      "id": "treatment",
+      "heading": "Tratamento inicial",
+      "text": "Manter amamentação fisiológica conforme tolerância, gelo e analgesia compatível com lactação. Evitar massagem profunda e extração excessiva para tentar esvaziar a mama.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "mast"
+      ]
+    },
+    {
+      "id": "alternative",
+      "heading": "Alternativas e seleção",
+      "text": "Mastite bacteriana, pelo ABM: dicloxacilina 500 mg por via oral quatro vezes ao dia durante 10–14 dias. Alternativa: cefalexina 500 mg por via oral quatro vezes ao dia durante 10–14 dias; revisar alergias, função renal e resistência local.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "mast"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "heading": "Monitorização e seguimento",
+      "text": "Abscesso exige drenagem e cultura, além de terapia selecionada. Falha em 48 horas exige reavaliar resistência, coleção e diagnóstico; não interromper lactação automaticamente nem repetir antibióticos sem investigação.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "mast"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "heading": "Medicamento, dose e forma de uso",
+      "text": "Alívio de dor em adulta com pelo menos 50 kg: paracetamol 500–1000 mg por via oral a cada 6 horas, se necessário; máximo 4000 mg em 24 horas. Usar por curto período e reavaliar se precisar por mais de 3 dias. Reduzir limite/individualizar em baixo peso, hepatopatia, desnutrição ou uso excessivo de álcool; somar todas as apresentações que contêm paracetamol.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "W12_paracetamol_nhs"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "mast",
+      "title": "ABM Clinical Protocol 36 — Mastitis spectrum, 2022",
+      "url": "https://www.bfmed.org/assets/ABM%20Protocol%20%2336.pdf",
+      "year": 2022,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "authority": "ABM Clinical Protocol 36",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_paracetamol_nhs",
+      "title": "NHS — Paracetamol for adults: dosing and precautions",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "markdown": "# Mastite lactacional\n\n## Definição e raciocínio\n\nMastite abrange inflamação e infecção; nem toda dor/eritema mamário exige antibiótico. Edema e estímulo excessivo de produção podem perpetuar o quadro.\n\n## Reconhecimento\n\nAvaliar dor, eritema, febre, técnica de amamentação e sinais de abscesso. Instabilidade, progressão rápida ou massa persistente exige avaliação urgente e diagnóstico alternativo.\n\n## Diagnóstico e diferenciais\n\nDistinguir inflamação de mastite bacteriana; ultrassonografia se suspeita de coleção. Cultura é indicada seletivamente, especialmente na ausência de melhora após 48 horas de tratamento adequado.\n\n## Tratamento inicial\n\nManter amamentação fisiológica conforme tolerância, gelo e analgesia compatível com lactação. Evitar massagem profunda e extração excessiva para tentar esvaziar a mama.\n\n## Alternativas e seleção\n\nMastite bacteriana, pelo ABM: dicloxacilina 500 mg por via oral quatro vezes ao dia durante 10–14 dias. Alternativa: cefalexina 500 mg por via oral quatro vezes ao dia durante 10–14 dias; revisar alergias, função renal e resistência local.\n\n## Monitorização e seguimento\n\nAbscesso exige drenagem e cultura, além de terapia selecionada. Falha em 48 horas exige reavaliar resistência, coleção e diagnóstico; não interromper lactação automaticamente nem repetir antibióticos sem investigação.\n\n## Medicamento, dose e forma de uso\n\nAlívio de dor em adulta com pelo menos 50 kg: paracetamol 500–1000 mg por via oral a cada 6 horas, se necessário; máximo 4000 mg em 24 horas. Usar por curto período e reavaliar se precisar por mais de 3 dias. Reduzir limite/individualizar em baixo peso, hepatopatia, desnutrição ou uso excessivo de álcool; somar todas as apresentações que contêm paracetamol.\n\n## Referências\n\n1. [ABM Clinical Protocol 36 — Mastitis spectrum, 2022](https://www.bfmed.org/assets/ABM%20Protocol%20%2336.pdf)\n2. [NHS — Paracetamol for adults: dosing and precautions](https://www.nhs.uk/medicines/paracetamol-for-adults/)",
+  "factIds": [
+    "foundation",
+    "recognition",
+    "diagnosis",
+    "treatment",
+    "alternative",
+    "monitoring",
+    "pharmacotherapy_v12_1"
+  ],
+  "canonicalPayloadSha256": "8ac79e49cc5ee89369c27b4586f013a7e39ba70384e07f50089590e639112c35",
+  "approvedReviewProjectionHash": "3f578ee88b717922870d84e3db37c0147e01b8bc96d7ba22cf6c4c6de110d955"
+}

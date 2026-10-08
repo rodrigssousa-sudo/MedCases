@@ -1,0 +1,262 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "cisto_mamario",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "7fce8d9b579ea02255fe6eba663d8662fff3c54353818ad99fa22e62815e6bd7",
+  "references": [
+    {
+      "id": "bcyst",
+      "title": "Royal United Hospitals Bath NHS — Breast cysts",
+      "url": "https://www.ruh.nhs.uk/patients/services/breast_unit/common_problems/cysts.asp?menu_id=12",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "Royal United Hospitals Bath NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "breastlump",
+      "title": "NHS — Breast lumps",
+      "url": "https://www.nhs.uk/symptoms/breast-lump/",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_paracetamol_nhs",
+      "title": "NHS — Paracetamol for adults: dosing and precautions",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Cisto mamário",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Coleção líquida na mama, comum sobretudo antes da menopausa; cisto simples confirmado é benigno. Lesões complexas ou com componente sólido não recebem a mesma conduta.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Coleção líquida na mama, comum sobretudo antes da menopausa; cisto simples confirmado é benigno. Lesões complexas ou com componente sólido não recebem a mesma conduta."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Nódulo pode variar com ciclo e ser doloroso. Avaliar crescimento, alterações cutâneas, secreção e história pessoal; não diagnosticar cisto apenas por palpação."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Ultrassonografia caracteriza conteúdo e parede; complementar imagem conforme idade e achados. Diferenciar fibroadenoma, abscesso e câncer; suspeita ou discordância pode exigir amostragem."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Cisto simples assintomático pode ser observado. Aspiração é opção para cisto doloroso ou volumoso após avaliação; líquido sanguinolento ou massa residual exige investigação, não alta automática."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Não usar antibiótico sem infecção. Lesão complexa, nódulo persistente ou secreção suspeita requer mastologia; medicamento não substitui diagnóstico por imagem quando indicado."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Explicar possibilidade de recorrência e procurar avaliação diante de novo nódulo. Após aspiração, confirmar resolução e seguir o plano indicado; sinais inflamatórios ou reaparecimento precoce exigem revisão."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opção 1: observar cisto simples assintomático confirmado. Opção 2: aspirar quando doloroso/volumoso e clinicamente indicado. Recidiva suspeita, líquido sanguinolento ou massa residual exige investigação especializada, sem tratar como cisto simples automaticamente."
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12",
+        "type": "paragraph",
+        "text": "Medicamento não elimina cisto mamário simples. Observar se assintomático; aspiração pode aliviar cisto doloroso/tenso quando indicada. Analgesia abaixo é apenas sintomática; sangue no aspirado, massa residual ou discordância exige investigação."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Alívio de dor em adulta com pelo menos 50 kg: paracetamol 500–1000 mg por via oral a cada 6 horas, se necessário; máximo 4000 mg em 24 horas. Usar por curto período e reavaliar se precisar por mais de 3 dias. Reduzir limite/individualizar em baixo peso, hepatopatia, desnutrição ou uso excessivo de álcool; somar todas as apresentações que contêm paracetamol."
+      }
+    ]
+  },
+  "es": {
+    "title": "Quiste mamario",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Colección líquida en la mama, común sobre todo antes de la menopausia; un quiste simple confirmado es benigno. Las lesiones complejas o con componente sólido no reciben la misma conducta.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Colección líquida en la mama, común sobre todo antes de la menopausia; un quiste simple confirmado es benigno. Las lesiones complejas o con componente sólido no reciben la misma conducta."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "El nódulo puede variar con el ciclo y ser doloroso. Evaluar crecimiento, alteraciones cutáneas, secreción y antecedentes personales; no diagnosticar un quiste solo por palpación."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "La ecografía caracteriza contenido y pared; complementar imagen según edad y hallazgos. Diferenciar fibroadenoma, absceso y cáncer; sospecha o discordancia pueden exigir muestreo."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Un quiste simple asintomático puede observarse. La aspiración es una opción para un quiste doloroso o voluminoso tras evaluación; líquido sanguinolento o masa residual requieren estudio, no alta automática."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "No usar antibióticos sin infección. Una lesión compleja, nódulo persistente o secreción sospechosa requieren mastología; la medicación no sustituye el diagnóstico por imagen cuando está indicado."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Explicar la posibilidad de recurrencia y consultar ante un nuevo nódulo. Tras aspiración, confirmar resolución y seguir el plan indicado; signos inflamatorios o reaparición temprana requieren revisión."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opción 1: observar un quiste simple asintomático confirmado. Opción 2: aspirar si es doloroso/voluminoso y clínicamente indicado. Recidiva sospechosa, líquido sanguinolento o masa residual requiere estudio especializado, sin tratarlo automáticamente como quiste simple."
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12",
+        "type": "paragraph",
+        "text": "Un medicamento no elimina un quiste mamario simple. Observar si es asintomático; la aspiración puede aliviar un quiste doloroso/tenso cuando esté indicada. La analgesia siguiente es solo sintomática; sangre en aspirado, masa residual o discordancia exige investigación."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Alivio del dolor en adulta de al menos 50 kg: paracetamol 500–1000 mg por vía oral cada 6 horas, si es necesario; máximo 4000 mg en 24 horas. Usar por un período breve y reevaluar si se necesita durante más de 3 días. Reducir el límite/individualizar ante bajo peso, hepatopatía, desnutrición o consumo excesivo de alcohol; sumar todas las presentaciones que contienen paracetamol."
+      }
+    ]
+  }
+}

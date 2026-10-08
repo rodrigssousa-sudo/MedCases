@@ -1,0 +1,251 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "hirsutismo",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "8a5ee01b4f2abd5d108fc76cb81549fceede574e2c32adc4089e9b77c9a61cf6",
+  "references": [
+    {
+      "id": "hirs",
+      "title": "Endocrine Society — Hirsutism in premenopausal women, 2018",
+      "url": "https://www.endocrine.org/clinical-practice-guidelines/hirsutism",
+      "year": 2018,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "authority": "Endocrine Society",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "pcos",
+      "title": "International evidence-based PCOS guideline — Monash/ASRM/ESHRE, 2023",
+      "url": "https://www.monash.edu/medicine/mchri/pcos/guideline",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "International evidence-based PCOS guideline",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_COC",
+      "title": "Microgynon 30 — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/1130/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Hirsutism",
+      "title": "SOGC Guideline 444 — Hirsutism, 2023",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38049282/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Guideline SOGC 444: referência bibliográfica PubMed; tabela de doses lida no texto oficial indexado. Download direto antigo retorna HTML 404; não foi tratado como leitura integral.",
+      "sourceReadStatus": "WEB_INDEXED_RECOMMENDATIONS_READ",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Hirsutismo",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Crescimento de pelos terminais em padrão androgênico; diferenciar hipertricose. Pode acompanhar síndrome dos ovários policísticos, mas causa deve ser avaliada sem presumir esse diagnóstico.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Crescimento de pelos terminais em padrão androgênico; diferenciar hipertricose. Pode acompanhar síndrome dos ovários policísticos, mas causa deve ser avaliada sem presumir esse diagnóstico."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Registrar progressão, ciclos, medicamentos, acne e sinais de virilização. Início rápido, voz grave ou clitoromegalia exige investigação prioritária de causa tumoral."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Avaliação clínica orienta dosagem de androgênios e investigação etiológica; considerar causas ovarianas/adrenais. Não usar imagem de ovários isoladamente para diagnosticar síndrome."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Para quem não busca gestação, contraceptivo combinado é opção farmacológica se elegível. Métodos de remoção de pelos, incluindo fotoepilação ou eletrólise, podem ser associados conforme pele e pelo."
+      },
+      {
+        "id": "alternative-heading",
+        "type": "heading",
+        "text": "Alternativas e seleção",
+        "level": 2
+      },
+      {
+        "id": "alternative",
+        "type": "paragraph",
+        "text": "Se resposta insuficiente após 6 meses, considerar antiandrogênio, como espironolactona, com contracepção eficaz e avaliação clínica. Não usar antiandrogênio sem prevenção adequada de gestação."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "A melhora é gradual; acompanhar impacto, efeitos e aderência. Dose é individualizada; função renal, potássio e interações são relevantes ao escolher espironolactona. Não extrapolar tratamentos à gestação."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Exemplo de contraceptivo combinado para adulta elegível, sem desejo imediato de gravidez: etinilestradiol 30 microgramas + levonorgestrel 150 microgramas, 1 comprimido ativo por via oral uma vez ao dia por 21 dias, seguido de 7 dias de pausa; iniciar nova cartela no dia seguinte ao fim da pausa. Esse é o esquema da apresentação de 21 comprimidos; não confundir com cartelas de placebo. Uso para sintomas requer prescrição e seguimento, sem prazo curativo universal. Antes, medir pressão e excluir gestação, trombose/trombofilia, enxaqueca com aura, hipertensão importante, hepatopatia grave e outras contraindicações; tabagismo após 35 anos pode impedir o uso. Não associar automaticamente a outros hormônios."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Se resposta insuficiente após pelo menos 6 meses de medidas/contraceptivo e com contracepção eficaz: espironolactona 50 mg por via oral ao dia inicialmente; titular para 100–200 mg ao dia em doses divididas conforme resposta e tolerância, máximo 200 mg ao dia no esquema descrito. Uso para hirsutismo é fora de bula em diversos locais. Não usar na gestação; monitorar potássio, função renal e pressão, sobretudo com outros fármacos que elevam potássio. Não iniciar sem excluir hiperandrogenismo tumoral quando há virilização rápida."
+      }
+    ]
+  },
+  "es": {
+    "title": "Hirsutismo",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Crecimiento de vello terminal en patrón androgénico; diferenciar hipertricosis. Puede acompañar el síndrome de ovario poliquístico, pero debe evaluarse la causa sin asumir ese diagnóstico.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Crecimiento de vello terminal en patrón androgénico; diferenciar hipertricosis. Puede acompañar el síndrome de ovario poliquístico, pero debe evaluarse la causa sin asumir ese diagnóstico."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Registrar progresión, ciclos, medicamentos, acné y signos de virilización. Inicio rápido, voz grave o clitoromegalia exige investigación prioritaria de una causa tumoral."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "La evaluación clínica orienta la medición de andrógenos y el estudio etiológico; considerar causas ováricas/suprarrenales. No usar una imagen ovárica aislada para diagnosticar el síndrome."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Para quien no busca embarazo, un anticonceptivo combinado es una opción farmacológica si es adecuado. Los métodos de eliminación de vello, incluida fotoepilación o electrólisis, pueden asociarse según piel y vello."
+      },
+      {
+        "id": "alternative-heading",
+        "type": "heading",
+        "text": "Alternativas y selección",
+        "level": 2
+      },
+      {
+        "id": "alternative",
+        "type": "paragraph",
+        "text": "Si la respuesta es insuficiente tras 6 meses, considerar un antiandrógeno, como espironolactona, con anticoncepción eficaz y evaluación clínica. No usar antiandrógenos sin prevención adecuada del embarazo."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "La mejoría es gradual; controlar impacto, efectos y adherencia. La dosis se individualiza; función renal, potasio e interacciones son relevantes al elegir espironolactona. No extrapolar tratamientos al embarazo."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Ejemplo de anticonceptivo combinado para adulta elegible, sin deseo inmediato de embarazo: etinilestradiol 30 microgramos + levonorgestrel 150 microgramos, 1 comprimido activo por vía oral una vez al día durante 21 días, seguido de 7 días de descanso; iniciar un nuevo envase al día siguiente de finalizar el descanso. Este es el esquema de la presentación de 21 comprimidos; no confundir con envases con placebo. El uso para síntomas requiere prescripción y seguimiento, sin un plazo curativo universal. Antes, medir presión y descartar embarazo, trombosis/trombofilia, migraña con aura, hipertensión importante, hepatopatía grave y otras contraindicaciones; fumar después de los 35 años puede impedir su uso. No asociar automáticamente con otras hormonas."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Si hay respuesta insuficiente tras al menos 6 meses de medidas/anticonceptivo y con anticoncepción eficaz: espironolactona 50 mg por vía oral al día inicialmente; titular a 100–200 mg al día en dosis divididas según respuesta y tolerancia, máximo 200 mg al día en el esquema descrito. El uso para hirsutismo es fuera de indicación autorizada en diversos lugares. No utilizar en el embarazo; controlar potasio, función renal y presión, especialmente con otros fármacos que elevan potasio. No iniciar sin descartar hiperandrogenismo tumoral si hay virilización rápida."
+      }
+    ]
+  }
+}

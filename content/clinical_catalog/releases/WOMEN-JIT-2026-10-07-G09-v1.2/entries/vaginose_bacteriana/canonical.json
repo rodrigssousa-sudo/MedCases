@@ -1,0 +1,205 @@
+{
+  "schemaVersion": "1.0",
+  "owner": "vaginose_bacteriana",
+  "title": {
+    "pt": "Vaginose bacteriana",
+    "es": "Vaginosis bacteriana"
+  },
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "population": "Mulheres adultas; gestação/lactação e outros contextos somente quando explicitados",
+  "identity": {
+    "action": "REVIEW_EXISTING_PRESERVE_ID",
+    "existingCanonicalDocumentIds": [
+      "vaginose_bacteriana"
+    ],
+    "owner": "vaginose_bacteriana",
+    "newOwnerActivated": false,
+    "relatedButNotEquivalent": [],
+    "scope": "Disbiose vaginal com redução de lactobacilos e predomínio de bactérias anaeróbias. Não equivale à tricomoníase nem à candidíase; recorrência é comum.",
+    "preserveExistingPregnancyContent": true,
+    "existingCMSDocumentIds": [
+      "vaginose_bacteriana"
+    ],
+    "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+    "existingRuntimeOwnerPreserved": true
+  },
+  "review": {
+    "author": "Codex — preparação e conferência de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Disbiose vaginal com redução de lactobacilos e predomínio de bactérias anaeróbias. Não equivale à tricomoníase nem à candidíase; recorrência é comum.",
+      "es": "Disbiosis vaginal con reducción de lactobacilos y predominio de bacterias anaerobias. No equivale a tricomoniasis ni candidiasis; la recurrencia es frecuente.",
+      "sources": [
+        "WHO_B"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Corrimento fino e homogêneo com odor característico sugere o diagnóstico. Prurido intenso, úlceras, sangramento ou dor pélvica importante requerem investigar outras causas, inclusive infecções sexualmente transmissíveis.",
+      "es": "La secreción fina y homogénea con olor característico sugiere el diagnóstico. Prurito intenso, úlceras, sangrado o dolor pélvico importante requieren investigar otras causas, incluso infecciones de transmisión sexual.",
+      "sources": [
+        "WHO_B",
+        "CDC_B"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Diagnosticar por avaliação clínica e critérios de Amsel ou microscopia com escore de Nugent; testes moleculares podem ajudar em pessoas sintomáticas. Cultura de Gardnerella isolada não estabelece o diagnóstico.",
+      "es": "Diagnosticar mediante evaluación clínica y criterios de Amsel o microscopía con puntuación de Nugent; las pruebas moleculares pueden ayudar en personas sintomáticas. Un cultivo aislado de Gardnerella no establece el diagnóstico.",
+      "sources": [
+        "CDC_B",
+        "WHO_B"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar pessoas sintomáticas, evitar duchas e produtos intravaginais irritantes e avaliar infecções associadas conforme risco. Antifúngico isolado não trata vaginose bacteriana.",
+      "es": "Tratar a personas sintomáticas, evitar duchas y productos intravaginales irritantes y evaluar infecciones asociadas según riesgo. Un antifúngico aislado no trata la vaginosis bacteriana.",
+      "sources": [
+        "WHO_B"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Esquema oral de referência para adultas: metronidazol 500 mg por via oral duas vezes ao dia durante 7 dias. Selecionar via e alternativa conforme contraindicações, tolerabilidade e disponibilidade local.",
+      "es": "Esquema oral de referencia para adultas: metronidazol 500 mg por vía oral dos veces al día durante 7 días. Seleccionar vía y alternativa según contraindicaciones, tolerabilidad y disponibilidad local.",
+      "sources": [
+        "CDC_B",
+        "WHO_VAG"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Se resolver, seguimento rotineiro imediato não é necessário; retornar se recidivar. ACOG 2025 orienta considerar tratamento concomitante de parceiros para reduzir recorrência, especialmente em doença recorrente, mediante avaliação clínica.",
+      "es": "Si se resuelve, no es necesario un seguimiento rutinario inmediato; consultar si recidiva. ACOG 2025 orienta considerar tratamiento concomitante de parejas para reducir recurrencia, especialmente en enfermedad recurrente, mediante evaluación clínica.",
+      "sources": [
+        "acogBV25",
+        "CDC_B"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Febre, dor abdominal ou pélvica, gestação com sinais de complicação ou comprometimento sistêmico exigem avaliação urgente. Vaginose isolada não deve explicar esses achados sem investigação.",
+      "es": "Fiebre, dolor abdominal o pélvico, embarazo con signos de complicación o afectación sistémica requieren evaluación urgente. La vaginosis aislada no debe explicar estos hallazgos sin investigación.",
+      "sources": [
+        "WHO_B"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Gestantes sintomáticas devem ser avaliadas e tratadas; não extrapolar alternativas sem segurança gestacional. Revisar hepatopatia, alergias e interações medicamentosas, incluindo anticoagulantes.",
+      "es": "Las embarazadas sintomáticas deben ser evaluadas y tratadas; no extrapolar alternativas sin seguridad gestacional. Revisar hepatopatía, alergias e interacciones farmacológicas, incluidos anticoagulantes.",
+      "sources": [
+        "CDC_B",
+        "WHO_VAG"
+      ],
+      "id": "special_8"
+    },
+    {
+      "id": "alternative_verified_20261007",
+      "section": "alternative",
+      "pt": "Alternativa ao esquema oral: metronidazol gel vaginal 0,75%, 5 g por via intravaginal uma vez ao dia durante 5 dias. Formulação e via importam; não converter dose oral em dose vaginal.",
+      "es": "Alternativa al esquema oral: metronidazol gel vaginal al 0,75%, 5 g por vía intravaginal una vez al día durante 5 días. Formulación y vía importan; no convertir la dosis oral en vaginal.",
+      "sources": [
+        "CDC_B"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "section": "dose",
+      "pt": "Outra alternativa recomendada para adulta: clindamicina creme vaginal 2%, 5 g por via intravaginal à noite durante 7 dias. O veículo oleoso pode enfraquecer preservativos de látex; seguir a bula quanto ao período de precaução. Escolher um esquema, não combinar por rotina.",
+      "es": "Otra alternativa recomendada para adulta: clindamicina crema vaginal al 2%, 5 g por vía intravaginal por la noche durante 7 días. El vehículo oleoso puede debilitar preservativos de látex; seguir la ficha respecto del período de precaución. Elegir un esquema, no combinar rutinariamente.",
+      "sources": [
+        "CDC_B"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO_B",
+      "title": "Bacterial vaginosis",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/bacterial-vaginosis",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "CDC_B",
+      "title": "Bacterial vaginosis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/bv.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "WHO_VAG",
+      "title": "Recommendations: trichomoniasis, candidiasis and bacterial vaginosis",
+      "url": "https://www.who.int/publications/i/item/9789240096370",
+      "authority": "OMS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "ACOG_B",
+      "title": "Vaginitis: atualização sobre parceiros",
+      "url": "https://www.acog.org/womens-health/faqs/vaginitis",
+      "authority": "ACOG",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "acogBV25",
+      "title": "ACOG — Concurrent partner treatment in recurrent bacterial vaginosis, 2025",
+      "url": "https://www.acog.org/news/news-releases/2025/10/acog-recommends-concurrent-sexual-partner-treatment-recurrent-bacterial-vaginosis-first-time",
+      "year": 2025,
+      "status": "AUTHORITATIVE_UPDATE",
+      "authority": "ACOG",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-07",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "provenance": {
+    "version": "WOMEN-JIT-2026-10-07-G09-v1.1",
+    "canonicalHash": "8294aaaf6cfa23e24c26b5ed5c25863d1531d77952fea0ee413d8b55e82df12a",
+    "sourcePath": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-women50-group09-2026-10-07/revisions/v1.1/entries/vaginose_bacteriana/canonical-payload.json",
+    "revisionScope": "treatment completion; no remote writes; identifiers preserved",
+    "previousProvenance": {
+      "path": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-skin30-infect20-group04-2026-10-03/entries/vaginose_bacteriana/canonical-payload.json",
+      "sha256": "f8b84e37b3094a9cd5f2676d46a42b7e752a129d8d042373806529a8d43d726a",
+      "version": "NEW-JIT-2026-10-03-G04-v1.0"
+    }
+  },
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

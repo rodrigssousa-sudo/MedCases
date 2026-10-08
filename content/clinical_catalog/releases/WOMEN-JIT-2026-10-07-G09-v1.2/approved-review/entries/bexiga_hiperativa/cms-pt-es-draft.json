@@ -1,0 +1,284 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "bexiga_hiperativa",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "2926575f512ef95325378d93b88cb7ae07fe9efd23882b2762471996f22cfc98",
+  "references": [
+    {
+      "id": "O1",
+      "title": "AUA/SUFU guideline on idiopathic overactive bladder",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/39010271/",
+      "authority": "AUA/SUFU",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "O2",
+      "title": "Mirabegron extended-release tablets: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5f7a1758-8691-4e53-96d6-a01626ee8140",
+      "authority": "DailyMed / bula dos EUA",
+      "year": "bula vigente consultada em 2026",
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Solifenacin",
+      "title": "Solifenacin 5 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/10463/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Bexiga hiperativa",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Urgência urinária, geralmente com frequência e noctúria, com ou sem perda urinária, sem infecção ou outra causa evidente; pode existir sem incontinência.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Urgência urinária, geralmente com frequência e noctúria, com ou sem perda urinária, sem infecção ou outra causa evidente; pode existir sem incontinência."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Anamnese, exame, urinálise e diário miccional orientam sintomas, líquidos, fármacos e impacto; investigar dificuldade de esvaziamento antes de escolher medicamentos."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Resíduo pós-miccional conforme risco ou sintomas de retenção. Não solicitar urodinâmica, cistoscopia ou imagem rotineiramente na avaliação inicial não complicada."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Oferecer treinamento vesical e medidas comportamentais; decidir conjuntamente sobre antimuscarínicos, agonistas beta-3 ou terapias especializadas, conforme preferência e riscos."
+      },
+      {
+        "id": "dose_5-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "dose_5",
+        "type": "paragraph",
+        "text": "Mirabegrona, conforme bula dos EUA: 25 mg por via oral uma vez ao dia; considerar 50 mg uma vez ao dia após 4–8 semanas. Dose máxima: 50 mg ao dia. Confirmar bula local."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Monitorar pressão arterial e resposta em 4–8 semanas. Discutir risco cognitivo dos antimuscarínicos e risco de retenção; revisar interações da mirabegrona."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Sinais de alarme",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Retenção, hematúria ou suspeita de infecção exigem investigação da causa. Mirabegrona não é recomendada na hipertensão grave não controlada: sistólica ≥180 ou diastólica ≥110 mmHg."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Populações especiais",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Mirabegrona: filtração estimada 15–29 mL/minuto/1,73 m² ou Child-Pugh B limita a dose a 25 mg ao dia; filtração <15, diálise ou Child-Pugh C: uso não recomendado. Gestação e pediatria exigem avaliação específica."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opção não farmacológica: treinamento vesical. Opções farmacológicas selecionadas: mirabegrona no esquema descrito ou antimuscarínico conforme perfil, discutindo risco cognitivo e retenção. Não combinar medicamentos automaticamente; hipertensão grave não controlada impede recomendar mirabegrona."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Alternativa para urgência: solifenacina 5 mg por via oral uma vez ao dia; se necessário e tolerado, 10 mg uma vez ao dia, máximo 10 mg ao dia. Em depuração de creatinina até 30 mL/minuto ou insuficiência hepática moderada, máximo 5 mg ao dia; insuficiência hepática grave contraindica. Avaliar retenção, constipação, carga anticolinérgica/cognição, glaucoma de ângulo fechado e risco de QT. Não associar automaticamente a mirabegrona; rever resposta e tolerância em 4–8 semanas."
+      }
+    ]
+  },
+  "es": {
+    "title": "Vejiga hiperactiva",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Urgencia urinaria, habitualmente con frecuencia y nocturia, con o sin pérdida urinaria, sin infección u otra causa evidente; puede existir sin incontinencia.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Urgencia urinaria, habitualmente con frecuencia y nocturia, con o sin pérdida urinaria, sin infección u otra causa evidente; puede existir sin incontinencia."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "La anamnesis, el examen, el análisis de orina y el diario miccional orientan síntomas, líquidos, fármacos e impacto; investigar dificultad de vaciamiento antes de elegir medicamentos."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Evaluar residuo posmiccional según riesgo o síntomas de retención. No solicitar urodinamia, cistoscopia ni imágenes de rutina en la evaluación inicial no complicada."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Ofrecer entrenamiento vesical y medidas conductuales; decidir conjuntamente sobre antimuscarínicos, agonistas beta-3 o terapias especializadas según preferencias y riesgos."
+      },
+      {
+        "id": "dose_5-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "dose_5",
+        "type": "paragraph",
+        "text": "Mirabegrón, según la ficha de los EE. UU.: 25 mg por vía oral una vez al día; considerar 50 mg una vez al día tras 4–8 semanas. Dosis máxima: 50 mg al día. Confirmar ficha local."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Controlar presión arterial y respuesta en 4–8 semanas. Discutir riesgo cognitivo de los antimuscarínicos y riesgo de retención; revisar interacciones del mirabegrón."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Señales de alarma",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "La retención, la hematuria o la sospecha de infección requieren investigar la causa. El mirabegrón no se recomienda ante hipertensión grave no controlada: sistólica ≥180 o diastólica ≥110 mmHg."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Poblaciones especiales",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Mirabegrón: filtrado estimado 15–29 mL/minuto/1,73 m² o Child-Pugh B limita la dosis a 25 mg al día; filtrado <15, diálisis o Child-Pugh C: uso no recomendado. El embarazo y la pediatría requieren evaluación específica."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opción no farmacológica: entrenamiento vesical. Opciones farmacológicas seleccionadas: mirabegrón según el esquema descrito o antimuscarínico según perfil, discutiendo riesgo cognitivo y retención. No combinar medicamentos automáticamente; hipertensión grave no controlada impide recomendar mirabegrón."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Alternativa para urgencia: solifenacina 5 mg por vía oral una vez al día; si se necesita y se tolera, 10 mg una vez al día, máximo 10 mg al día. Con depuración de creatinina hasta 30 mL/minuto o insuficiencia hepática moderada, máximo 5 mg al día; la insuficiencia hepática grave contraindica. Evaluar retención, estreñimiento, carga anticolinérgica/cognición, glaucoma de ángulo cerrado y riesgo de QT. No asociar automáticamente con mirabegrón; revisar respuesta y tolerancia en 4–8 semanas."
+      }
+    ]
+  }
+}

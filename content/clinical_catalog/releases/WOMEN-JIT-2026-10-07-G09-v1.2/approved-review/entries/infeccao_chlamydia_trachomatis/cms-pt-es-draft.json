@@ -1,0 +1,263 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "infeccao_chlamydia_trachomatis",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "304772985c0a482154fe8dd50426f93693affb4a352d43e8bed0edc7cc4d1086",
+  "references": [
+    {
+      "id": "WHO_C",
+      "title": "Chlamydia",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/chlamydia",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "CDC_C",
+      "title": "Chlamydial infections",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/chlamydia.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "WHO_STI",
+      "title": "Updated recommendations: gonorrhoea, chlamydia, syphilis and partner services",
+      "url": "https://www.who.int/publications/i/item/9789240090767",
+      "authority": "OMS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Infecção por Chlamydia trachomatis",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Infecção bacteriana sexualmente transmissível frequentemente assintomática. Pode causar uretrite, cervicite e proctite; o comprometimento genital ascendente pode levar a infertilidade e gestação ectópica.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Infecção bacteriana sexualmente transmissível frequentemente assintomática. Pode causar uretrite, cervicite e proctite; o comprometimento genital ascendente pode levar a infertilidade e gestação ectópica."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Investigar disúria, corrimento, sangramento pós-coito e dor pélvica, além dos sítios de exposição. Dor escrotal ou pélvica não deve ser automaticamente rotulada como infecção não complicada."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Usar teste molecular em amostra adequada ao sítio exposto. Avaliar gonorreia, sífilis e HIV. Proctite importante e suspeita de linfogranuloma venéreo exigem investigação e tratamento próprios."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Tratar a infecção e os parceiros indicados. Evitar relações até completar o esquema de 7 dias, resolver sintomas e tratar parceiros; após dose única, aguardar 7 dias."
+      },
+      {
+        "id": "dose_5-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "dose_5",
+        "type": "paragraph",
+        "text": "Adulto não gestante com infecção não complicada: doxiciclina 100 mg por via oral duas vezes ao dia durante 7 dias. Na gestação, o CDC recomenda azitromicina 1 g por via oral em dose única."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Repetir teste em aproximadamente 3 meses para detectar reinfecção. Na gestação, confirmar cura por teste molecular aproximadamente 4 semanas após completar tratamento; teste muito precoce pode permanecer positivo por material não viável."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Sinais de alarme",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Dor pélvica com febre, dor testicular aguda ou piora sistêmica exigem excluir doença inflamatória pélvica, epididimite e torção testicular. Esses quadros não usam simplesmente o esquema não complicado."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Populações especiais",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Infecção neonatal, crianças e linfogranuloma venéreo exigem protocolo específico. Revisar tolerabilidade, interações e adesão; não usar o esquema adulto como dose pediátrica."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Se adesão ao esquema de doxiciclina for um problema relevante, azitromicina 1 g por via oral em dose única é alternativa pelo CDC. É menos eficaz na infecção retal e pode exigir avaliação/teste após tratamento. Na gestação, seguir o esquema obstétrico específico."
+      }
+    ]
+  },
+  "es": {
+    "title": "Infección por Chlamydia trachomatis",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Infección bacteriana de transmisión sexual frecuentemente asintomática. Puede causar uretritis, cervicitis y proctitis; la afectación genital ascendente puede provocar infertilidad y embarazo ectópico.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Infección bacteriana de transmisión sexual frecuentemente asintomática. Puede causar uretritis, cervicitis y proctitis; la afectación genital ascendente puede provocar infertilidad y embarazo ectópico."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Investigar disuria, secreción, sangrado poscoital y dolor pélvico, además de los sitios de exposición. El dolor escrotal o pélvico no debe etiquetarse automáticamente como infección no complicada."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Utilizar prueba molecular en una muestra adecuada al sitio expuesto. Evaluar gonorrea, sífilis y VIH. La proctitis importante y la sospecha de linfogranuloma venéreo requieren investigación y tratamiento propios."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Tratar la infección y las parejas indicadas. Evitar relaciones hasta completar el esquema de 7 días, resolver síntomas y tratar parejas; después de dosis única, esperar 7 días."
+      },
+      {
+        "id": "dose_5-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "dose_5",
+        "type": "paragraph",
+        "text": "Adulto no embarazado con infección no complicada: doxiciclina 100 mg por vía oral dos veces al día durante 7 días. En el embarazo, CDC recomienda azitromicina 1 g por vía oral en dosis única."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Repetir prueba aproximadamente a los 3 meses para detectar reinfección. En el embarazo, confirmar curación mediante prueba molecular aproximadamente 4 semanas después de completar tratamiento; una prueba demasiado precoz puede seguir positiva por material no viable."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Señales de alarma",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Dolor pélvico con fiebre, dolor testicular agudo o deterioro sistémico requieren descartar enfermedad inflamatoria pélvica, epididimitis y torsión testicular. Estos cuadros no utilizan simplemente el esquema no complicado."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Poblaciones especiales",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "La infección neonatal, los niños y el linfogranuloma venéreo requieren protocolo específico. Revisar tolerabilidad, interacciones y adherencia; no utilizar el esquema adulto como dosis pediátrica."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Si la adherencia al esquema de doxiciclina es un problema importante, azitromicina 1 g por vía oral en dosis única es alternativa según CDC. Es menos eficaz en infección rectal y puede requerir evaluación/prueba después del tratamiento. En embarazo, seguir el esquema obstétrico específico."
+      }
+    ]
+  }
+}

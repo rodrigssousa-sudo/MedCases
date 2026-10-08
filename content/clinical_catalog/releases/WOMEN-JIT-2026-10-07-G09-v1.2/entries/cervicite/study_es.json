@@ -1,0 +1,91 @@
+{
+  "owner": "cervicite",
+  "mode": "study",
+  "locale": "es",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "20310ce6f86ed66eee0d1923a48185eba25b812a98deaea69c38e63115b54e3e",
+  "title": "Cervicitis",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "foundation",
+      "heading": "Definición y razonamiento",
+      "text": "Inflamación cervical, frecuentemente por clamidia o gonococo; también puede ser no infecciosa. Secreción mucopurulenta y sangrado al contacto sugieren cervicitis, pero no identifican el agente.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "cerv"
+      ]
+    },
+    {
+      "id": "recognition",
+      "heading": "Reconocimiento",
+      "text": "Investigar sangrado poscoital, exposición sexual y dolor pélvico; examinar con consentimiento. Dolor uterino, anexial o a la movilización cervical exige evaluar enfermedad inflamatoria pélvica.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "cerv"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "heading": "Diagnóstico y diferenciales",
+      "text": "Solicitar pruebas moleculares para clamidia/gonococo y buscar tricomoniasis/vaginosis; considerar Mycoplasma genitalium ante persistencia. Diferenciar ectopia, pólipo y neoplasia; no investigar Ureaplasma rutinariamente.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "cerv"
+      ]
+    },
+    {
+      "id": "treatment",
+      "heading": "Tratamiento inicial",
+      "text": "Adulta no embarazada: doxiciclina 100 mg por vía oral dos veces al día durante 7 días. Alternativa: azitromicina 1 g por vía oral en dosis única; cubrir gonococo cuando lo indique el riesgo.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "cerv"
+      ]
+    },
+    {
+      "id": "safety",
+      "heading": "Seguridad y contraindicaciones",
+      "text": "En bajo riesgo con seguimiento asegurado se pueden esperar resultados; no retrasar tratamiento ante alto riesgo o seguimiento incierto. El embarazo requiere un esquema específico; no extrapolar doxiciclina.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "cerv"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "heading": "Monitorización y seguimiento",
+      "text": "Revisar resolución, resultados y parejas. Evitar relaciones hasta completar tratamiento y tratar parejas. Persistencia sin reinfección exige investigar otra causa, no repetir antibióticos indefinidamente.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "cerv"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "cerv",
+      "title": "CDC — Urethritis and Cervicitis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/urethritis-and-cervicitis.htm",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "authority": "CDC",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "markdown": "# Cervicitis\n\n## Definición y razonamiento\n\nInflamación cervical, frecuentemente por clamidia o gonococo; también puede ser no infecciosa. Secreción mucopurulenta y sangrado al contacto sugieren cervicitis, pero no identifican el agente.\n\n## Reconocimiento\n\nInvestigar sangrado poscoital, exposición sexual y dolor pélvico; examinar con consentimiento. Dolor uterino, anexial o a la movilización cervical exige evaluar enfermedad inflamatoria pélvica.\n\n## Diagnóstico y diferenciales\n\nSolicitar pruebas moleculares para clamidia/gonococo y buscar tricomoniasis/vaginosis; considerar Mycoplasma genitalium ante persistencia. Diferenciar ectopia, pólipo y neoplasia; no investigar Ureaplasma rutinariamente.\n\n## Tratamiento inicial\n\nAdulta no embarazada: doxiciclina 100 mg por vía oral dos veces al día durante 7 días. Alternativa: azitromicina 1 g por vía oral en dosis única; cubrir gonococo cuando lo indique el riesgo.\n\n## Seguridad y contraindicaciones\n\nEn bajo riesgo con seguimiento asegurado se pueden esperar resultados; no retrasar tratamiento ante alto riesgo o seguimiento incierto. El embarazo requiere un esquema específico; no extrapolar doxiciclina.\n\n## Monitorización y seguimiento\n\nRevisar resolución, resultados y parejas. Evitar relaciones hasta completar tratamiento y tratar parejas. Persistencia sin reinfección exige investigar otra causa, no repetir antibióticos indefinidamente.\n\n## Referencias\n\n1. [CDC — Urethritis and Cervicitis](https://www.cdc.gov/std/treatment-guidelines/urethritis-and-cervicitis.htm)",
+  "factIds": [
+    "foundation",
+    "recognition",
+    "diagnosis",
+    "treatment",
+    "safety",
+    "monitoring"
+  ],
+  "canonicalPayloadSha256": "20310ce6f86ed66eee0d1923a48185eba25b812a98deaea69c38e63115b54e3e",
+  "approvedReviewProjectionHash": "3a06528027a24cd3e3d422f2cfafc0d0c674d4cfc41f407406f9766e45d3f852"
+}

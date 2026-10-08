@@ -1,0 +1,138 @@
+{
+  "owner": "hirsutismo",
+  "mode": "plantao",
+  "locale": "es",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "8a5ee01b4f2abd5d108fc76cb81549fceede574e2c32adc4089e9b77c9a61cf6",
+  "title": "Hirsutismo",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "recognition",
+      "heading": "Reconocimiento",
+      "text": "Registrar progresión, ciclos, medicamentos, acné y signos de virilización. Inicio rápido, voz grave o clitoromegalia exige investigación prioritaria de una causa tumoral.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "hirs",
+        "pcos"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "heading": "Diagnóstico y diferenciales",
+      "text": "La evaluación clínica orienta la medición de andrógenos y el estudio etiológico; considerar causas ováricas/suprarrenales. No usar una imagen ovárica aislada para diagnosticar el síndrome.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "hirs",
+        "pcos"
+      ]
+    },
+    {
+      "id": "treatment",
+      "heading": "Tratamiento inicial",
+      "text": "Para quien no busca embarazo, un anticonceptivo combinado es una opción farmacológica si es adecuado. Los métodos de eliminación de vello, incluida fotoepilación o electrólisis, pueden asociarse según piel y vello.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "hirs",
+        "pcos"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Ejemplo de anticonceptivo combinado para adulta elegible, sin deseo inmediato de embarazo: etinilestradiol 30 microgramos + levonorgestrel 150 microgramos, 1 comprimido activo por vía oral una vez al día durante 21 días, seguido de 7 días de descanso; iniciar un nuevo envase al día siguiente de finalizar el descanso. Este es el esquema de la presentación de 21 comprimidos; no confundir con envases con placebo. El uso para síntomas requiere prescripción y seguimiento, sin un plazo curativo universal. Antes, medir presión y descartar embarazo, trombosis/trombofilia, migraña con aura, hipertensión importante, hepatopatía grave y otras contraindicaciones; fumar después de los 35 años puede impedir su uso. No asociar automáticamente con otras hormonas.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "W12_COC"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_2",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Si hay respuesta insuficiente tras al menos 6 meses de medidas/anticonceptivo y con anticoncepción eficaz: espironolactona 50 mg por vía oral al día inicialmente; titular a 100–200 mg al día en dosis divididas según respuesta y tolerancia, máximo 200 mg al día en el esquema descrito. El uso para hirsutismo es fuera de indicación autorizada en diversos lugares. No utilizar en el embarazo; controlar potasio, función renal y presión, especialmente con otros fármacos que elevan potasio. No iniciar sin descartar hiperandrogenismo tumoral si hay virilización rápida.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "W12_Hirsutism"
+      ]
+    },
+    {
+      "id": "alternative",
+      "heading": "Alternativas y selección",
+      "text": "Si la respuesta es insuficiente tras 6 meses, considerar un antiandrógeno, como espironolactona, con anticoncepción eficaz y evaluación clínica. No usar antiandrógenos sin prevención adecuada del embarazo.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "hirs",
+        "pcos"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "heading": "Monitorización y seguimiento",
+      "text": "La mejoría es gradual; controlar impacto, efectos y adherencia. La dosis se individualiza; función renal, potasio e interacciones son relevantes al elegir espironolactona. No extrapolar tratamientos al embarazo.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "hirs",
+        "pcos"
+      ]
+    },
+    {
+      "id": "foundation",
+      "heading": "Definición y razonamiento",
+      "text": "Crecimiento de vello terminal en patrón androgénico; diferenciar hipertricosis. Puede acompañar el síndrome de ovario poliquístico, pero debe evaluarse la causa sin asumir ese diagnóstico.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "hirs",
+        "pcos"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "hirs",
+      "title": "Endocrine Society — Hirsutism in premenopausal women, 2018",
+      "url": "https://www.endocrine.org/clinical-practice-guidelines/hirsutism",
+      "year": 2018,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "authority": "Endocrine Society",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "pcos",
+      "title": "International evidence-based PCOS guideline — Monash/ASRM/ESHRE, 2023",
+      "url": "https://www.monash.edu/medicine/mchri/pcos/guideline",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "International evidence-based PCOS guideline",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_COC",
+      "title": "Microgynon 30 — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/1130/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Hirsutism",
+      "title": "SOGC Guideline 444 — Hirsutism, 2023",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/38049282/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Guideline SOGC 444: referência bibliográfica PubMed; tabela de doses lida no texto oficial indexado. Download direto antigo retorna HTML 404; não foi tratado como leitura integral.",
+      "sourceReadStatus": "WEB_INDEXED_RECOMMENDATIONS_READ",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ]
+}

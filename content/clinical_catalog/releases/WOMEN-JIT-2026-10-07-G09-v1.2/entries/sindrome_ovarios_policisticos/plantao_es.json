@@ -1,0 +1,196 @@
+{
+  "owner": "sindrome_ovarios_policisticos",
+  "mode": "plantao",
+  "locale": "es",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "62ee269929f7aa95cc9b845f53c4edf786694cbd5abe3d52ef0bce0503335f85",
+  "title": "Síndrome de ovario poliquístico",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "recognition",
+      "heading": "Reconocimiento",
+      "text": "Investigar irregularidad menstrual, acné, hirsutismo, peso, apnea y salud mental; la virilización rápida exige excluir un tumor productor de andrógenos.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "pcos",
+        "pcosfull"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "heading": "Diagnóstico y diferenciales",
+      "text": "En adultas, integrar disfunción ovulatoria, hiperandrogenismo y morfología ovárica tras excluir otras causas. Evaluar embarazo, tiroides, prolactina y causas suprarrenales según contexto; no extrapolar criterios de adultas a adolescentes.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "pcos",
+        "pcosfull"
+      ]
+    },
+    {
+      "id": "treatment",
+      "heading": "Tratamiento inicial",
+      "text": "Sin deseo inmediato de embarazo, un anticonceptivo combinado puede tratar ciclos/hirsutismo si es adecuado; un progestágeno ofrece protección endometrial en situaciones seleccionadas. Metformina es una opción para objetivos metabólicos, no un sustituto universal.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "pcos",
+        "pcosfull"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Ejemplo de anticonceptivo combinado para adulta elegible, sin deseo inmediato de embarazo: etinilestradiol 30 microgramos + levonorgestrel 150 microgramos, 1 comprimido activo por vía oral una vez al día durante 21 días, seguido de 7 días de descanso; iniciar un nuevo envase al día siguiente de finalizar el descanso. Este es el esquema de la presentación de 21 comprimidos; no confundir con envases con placebo. El uso para síntomas requiere prescripción y seguimiento, sin un plazo curativo universal. Antes, medir presión y descartar embarazo, trombosis/trombofilia, migraña con aura, hipertensión importante, hepatopatía grave y otras contraindicaciones; fumar después de los 35 años puede impedir su uso. No asociar automáticamente con otras hormonas.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "W12_COC"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_2",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Solo para infertilidad anovulatoria por SOP sin otro factor y en un servicio especializado: letrozol 2,5 mg por vía oral una vez al día en los días 2–6 del ciclo, total de 5 días. Descartar embarazo antes de cada ciclo y controlar ovulación/respuesta; uso fuera de indicación autorizada para inducción. Si no hay ovulación, el especialista puede utilizar 5 mg o 7,5 mg al día durante 5 días en ciclos posteriores, sin autotitulación. No indicado para toda causa de infertilidad ni para embarazo establecido.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "W12_LetroOI",
+        "pcosfull"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_3",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Para objetivos metabólicos, especialmente en adulta con exceso de peso/riesgo metabólico: metformina 500 mg por vía oral una vez al día con alimento inicialmente; aumentar en incrementos de 500 mg cada 1–2 semanas según tolerancia, habitualmente hasta 1500–2000 mg al día en dosis divididas o presentación de liberación prolongada. La guía sugiere máximo 2500 mg al día en adultas, respetando el límite de la presentación y función renal. Controlar función renal, efectos digestivos y vitamina B12; no usar con filtración glomerular inferior a 30 mL/minuto, hipoxia aguda o riesgo de acidosis láctica. No sustituye anticoncepción ni letrozol para inducir ovulación.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "pcosfull",
+        "W12_Metformin"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_4",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Alternativa de inducción si letrozol no es adecuado/no está disponible, solo para anovulación con evaluación especializada: citrato de clomifeno 50 mg por vía oral una vez al día en los días 2–6 del ciclo, total de 5 días. No asociar automáticamente con letrozol. Descartar embarazo, controlar folículos/ovulación e informar riesgo de embarazo múltiple/hiperestimulación; una alteración visual exige suspender y evaluar. Repetición o aumento dependen del servicio, no de automedicación.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "W12_Clomifene",
+        "pcosfull"
+      ]
+    },
+    {
+      "id": "alternative",
+      "heading": "Alternativas y selección",
+      "text": "En infertilidad anovulatoria sin otro factor, letrozol es la primera opción farmacológica de inducción según la guía, con especialista, exclusión de embarazo y control; hábitos saludables y apoyo forman parte de todos los planes.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "pcos",
+        "pcosfull"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "heading": "Monitorización y seguimiento",
+      "text": "Evaluar presión, lípidos, glucemia y protección endometrial; una amenorrea prolongada requiere un plan. Individualizar dosis, elegibilidad anticonceptiva y función renal antes de metformina; no prometer prevención de complicaciones gestacionales.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "pcos",
+        "pcosfull"
+      ]
+    },
+    {
+      "id": "foundation",
+      "heading": "Definición y razonamiento",
+      "text": "Condición endocrino-metabólica con disfunción ovulatoria y/o hiperandrogenismo; una imagen ovárica aislada no define el síndrome. La resistencia a la insulina y los riesgos metabólicos varían entre pacientes.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "pcos",
+        "pcosfull"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "pcos",
+      "title": "International evidence-based PCOS guideline — Monash/ASRM/ESHRE, 2023",
+      "url": "https://www.monash.edu/medicine/mchri/pcos/guideline",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "International evidence-based PCOS guideline",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "pcosfull",
+      "title": "International evidence-based PCOS guideline — texto integral 2023",
+      "url": "https://www.monash.edu/__data/assets/pdf_file/0003/3379521/Evidence-Based-Guidelines-2023.pdf",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "International evidence-based PCOS guideline",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_COC",
+      "title": "Microgynon 30 — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/1130/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_LetroOI",
+      "title": "Cambridge University Hospitals NHS — letrozole ovulation induction",
+      "url": "https://www.cuh.nhs.uk/patient-information/using-letrozole-tablet-femara-for-ovulation-induction-oi/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Metformin",
+      "title": "Metformin 500 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/13160/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "WEB_SPECIFIC_RECOMMENDATIONS_READ",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Clomifene",
+      "title": "Gloucestershire Hospitals NHS — ovulation induction with clomifene/letrozole",
+      "url": "https://www.gloshospitals.nhs.uk/your-visit/patient-information-leaflets/ovulation-induction-with-oral-agents-clomid-and-letrozole/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "WEB_SPECIFIC_RECOMMENDATIONS_READ",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "markdown": "# Síndrome de ovario poliquístico\n\n## Reconocimiento\n\nInvestigar irregularidad menstrual, acné, hirsutismo, peso, apnea y salud mental; la virilización rápida exige excluir un tumor productor de andrógenos.\n\n## Diagnóstico y diferenciales\n\nEn adultas, integrar disfunción ovulatoria, hiperandrogenismo y morfología ovárica tras excluir otras causas. Evaluar embarazo, tiroides, prolactina y causas suprarrenales según contexto; no extrapolar criterios de adultas a adolescentes.\n\n## Tratamiento inicial\n\nSin deseo inmediato de embarazo, un anticonceptivo combinado puede tratar ciclos/hirsutismo si es adecuado; un progestágeno ofrece protección endometrial en situaciones seleccionadas. Metformina es una opción para objetivos metabólicos, no un sustituto universal.\n\n## Medicamento, dosis y forma de uso\n\nEjemplo de anticonceptivo combinado para adulta elegible, sin deseo inmediato de embarazo: etinilestradiol 30 microgramos + levonorgestrel 150 microgramos, 1 comprimido activo por vía oral una vez al día durante 21 días, seguido de 7 días de descanso; iniciar un nuevo envase al día siguiente de finalizar el descanso. Este es el esquema de la presentación de 21 comprimidos; no confundir con envases con placebo. El uso para síntomas requiere prescripción y seguimiento, sin un plazo curativo universal. Antes, medir presión y descartar embarazo, trombosis/trombofilia, migraña con aura, hipertensión importante, hepatopatía grave y otras contraindicaciones; fumar después de los 35 años puede impedir su uso. No asociar automáticamente con otras hormonas.\n\n## Medicamento, dosis y forma de uso\n\nSolo para infertilidad anovulatoria por SOP sin otro factor y en un servicio especializado: letrozol 2,5 mg por vía oral una vez al día en los días 2–6 del ciclo, total de 5 días. Descartar embarazo antes de cada ciclo y controlar ovulación/respuesta; uso fuera de indicación autorizada para inducción. Si no hay ovulación, el especialista puede utilizar 5 mg o 7,5 mg al día durante 5 días en ciclos posteriores, sin autotitulación. No indicado para toda causa de infertilidad ni para embarazo establecido.\n\n## Medicamento, dosis y forma de uso\n\nPara objetivos metabólicos, especialmente en adulta con exceso de peso/riesgo metabólico: metformina 500 mg por vía oral una vez al día con alimento inicialmente; aumentar en incrementos de 500 mg cada 1–2 semanas según tolerancia, habitualmente hasta 1500–2000 mg al día en dosis divididas o presentación de liberación prolongada. La guía sugiere máximo 2500 mg al día en adultas, respetando el límite de la presentación y función renal. Controlar función renal, efectos digestivos y vitamina B12; no usar con filtración glomerular inferior a 30 mL/minuto, hipoxia aguda o riesgo de acidosis láctica. No sustituye anticoncepción ni letrozol para inducir ovulación.\n\n## Medicamento, dosis y forma de uso\n\nAlternativa de inducción si letrozol no es adecuado/no está disponible, solo para anovulación con evaluación especializada: citrato de clomifeno 50 mg por vía oral una vez al día en los días 2–6 del ciclo, total de 5 días. No asociar automáticamente con letrozol. Descartar embarazo, controlar folículos/ovulación e informar riesgo de embarazo múltiple/hiperestimulación; una alteración visual exige suspender y evaluar. Repetición o aumento dependen del servicio, no de automedicación.\n\n## Alternativas y selección\n\nEn infertilidad anovulatoria sin otro factor, letrozol es la primera opción farmacológica de inducción según la guía, con especialista, exclusión de embarazo y control; hábitos saludables y apoyo forman parte de todos los planes.\n\n## Monitorización y seguimiento\n\nEvaluar presión, lípidos, glucemia y protección endometrial; una amenorrea prolongada requiere un plan. Individualizar dosis, elegibilidad anticonceptiva y función renal antes de metformina; no prometer prevención de complicaciones gestacionales.\n\n## Definición y razonamiento\n\nCondición endocrino-metabólica con disfunción ovulatoria y/o hiperandrogenismo; una imagen ovárica aislada no define el síndrome. La resistencia a la insulina y los riesgos metabólicos varían entre pacientes.\n\n## Referencias\n\n1. [International evidence-based PCOS guideline — Monash/ASRM/ESHRE, 2023](https://www.monash.edu/medicine/mchri/pcos/guideline)\n2. [International evidence-based PCOS guideline — texto integral 2023](https://www.monash.edu/__data/assets/pdf_file/0003/3379521/Evidence-Based-Guidelines-2023.pdf)\n3. [Microgynon 30 — Summary of Product Characteristics](https://www.medicines.org.uk/emc/product/1130/smpc)\n4. [Cambridge University Hospitals NHS — letrozole ovulation induction](https://www.cuh.nhs.uk/patient-information/using-letrozole-tablet-femara-for-ovulation-induction-oi/)\n5. [Metformin 500 mg — Summary of Product Characteristics](https://www.medicines.org.uk/emc/product/13160/smpc)\n6. [Gloucestershire Hospitals NHS — ovulation induction with clomifene/letrozole](https://www.gloshospitals.nhs.uk/your-visit/patient-information-leaflets/ovulation-induction-with-oral-agents-clomid-and-letrozole/)",
+  "factIds": [
+    "recognition",
+    "diagnosis",
+    "treatment",
+    "pharmacotherapy_v12_1",
+    "pharmacotherapy_v12_2",
+    "pharmacotherapy_v12_3",
+    "pharmacotherapy_v12_4",
+    "alternative",
+    "monitoring",
+    "foundation"
+  ],
+  "canonicalPayloadSha256": "62ee269929f7aa95cc9b845f53c4edf786694cbd5abe3d52ef0bce0503335f85",
+  "approvedReviewProjectionHash": "db149ce152b539d0158708136a2a722660857f7f7df0516ba6af40b7e4a6a1cf"
+}

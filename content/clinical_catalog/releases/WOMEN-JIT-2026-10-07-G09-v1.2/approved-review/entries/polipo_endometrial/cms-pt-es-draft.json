@@ -1,0 +1,229 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "polipo_endometrial",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "9aa3642ff5edecb53692fabe0f19cf4d9351a5f8b9e1da3b7a0998fb5371eecb",
+  "references": [
+    {
+      "id": "epolyp",
+      "title": "Chelsea and Westminster NHS — Endometrial polyps",
+      "url": "https://www.chelwest.nhs.uk/your-visit/patient-leaflets/endometrial-polyps-1.pdf",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "Chelsea and Westminster NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "hmb",
+      "title": "NICE NG88 — Heavy menstrual bleeding: assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng88/chapter/recommendations",
+      "year": 2021,
+      "status": "AUTHORITATIVE_LIVING",
+      "authority": "NICE NG88",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Pólipo endometrial",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Crescimento focal da mucosa endometrial pode causar sangramento irregular ou ser incidental. Maioria é benigna, mas risco individual e histologia orientam conduta.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Crescimento focal da mucosa endometrial pode causar sangramento irregular ou ser incidental. Maioria é benigna, mas risco individual e histologia orientam conduta."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Pesquisar sangramento intermenstrual, pós-menopausa e infertilidade; confirmar origem uterina do sangramento e avaliar anemia. Hemorragia com instabilidade exige estabilização imediata."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Ultrassonografia pode sugerir lesão; histeroscopia permite avaliação direta e remoção dirigida. Diferenciar mioma submucoso, hiperplasia e câncer; citologia cervical não avalia adequadamente o endométrio."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Opção definitiva para lesão sintomática ou suspeita: polipectomia histeroscópica com anatomopatológico. Observação pode ser discutida em lesão incidental de baixo risco, com seguimento definido."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Não remover às cegas lesão de origem incerta. Sangramento pós-menopausa, recorrente ou suspeita de malignidade pede investigação; tratamento hormonal não substitui histologia quando indicada."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Revisar laudo, sangramento e plano reprodutivo. Retornar com febre, dor intensa ou sangramento importante após procedimento; persistência dos sintomas exige reavaliação. Não há fármaco que elimine qualquer pólipo com segurança."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opção 1: observação apenas em lesão incidental de baixo risco, com seguimento acordado. Opção 2: polipectomia histeroscópica para sintomas, persistência ou suspeita, com anatomopatológico. Sangramento pós-menopausa exige investigação; hormônio não substitui remoção/amostragem quando indicada."
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12",
+        "type": "paragraph",
+        "text": "Não há fármaco de rotina que elimine pólipo endometrial. Observação selecionada ou retirada histeroscópica com histologia são as opções conforme sintomas/risco. Hormônio ou ácido tranexâmico não substituem investigação/retirada indicada, especialmente com suspeita de malignidade."
+      }
+    ]
+  },
+  "es": {
+    "title": "Pólipo endometrial",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Un crecimiento focal de la mucosa endometrial puede causar sangrado irregular o ser incidental. La mayoría es benigna, pero el riesgo individual y la histología orientan la conducta.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Un crecimiento focal de la mucosa endometrial puede causar sangrado irregular o ser incidental. La mayoría es benigna, pero el riesgo individual y la histología orientan la conducta."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Investigar sangrado intermenstrual, posmenopáusico e infertilidad; confirmar origen uterino del sangrado y evaluar anemia. Hemorragia con inestabilidad exige estabilización inmediata."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "La ecografía puede sugerir la lesión; la histeroscopia permite evaluación directa y extracción dirigida. Diferenciar mioma submucoso, hiperplasia y cáncer; la citología cervical no evalúa adecuadamente el endometrio."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Opción definitiva para lesión sintomática o sospechosa: polipectomía histeroscópica con anatomía patológica. Puede discutirse observación de una lesión incidental de bajo riesgo, con seguimiento definido."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "No extraer a ciegas una lesión de origen incierto. Sangrado posmenopáusico, recurrente o sospecha de malignidad requieren estudio; el tratamiento hormonal no sustituye la histología cuando está indicada."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Revisar informe, sangrado y plan reproductivo. Consultar ante fiebre, dolor intenso o sangrado importante tras el procedimiento; la persistencia exige reevaluación. No hay un fármaco que elimine cualquier pólipo con seguridad."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opción 1: observación solo ante lesión incidental de bajo riesgo, con seguimiento acordado. Opción 2: polipectomía histeroscópica ante síntomas, persistencia o sospecha, con anatomía patológica. Sangrado posmenopáusico requiere estudio; una hormona no sustituye resección/muestreo cuando corresponda."
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12",
+        "type": "paragraph",
+        "text": "No existe un fármaco rutinario que elimine un pólipo endometrial. Observación seleccionada o extracción histeroscópica con histología son las opciones según síntomas/riesgo. Hormona o ácido tranexámico no sustituyen investigación/extracción indicada, especialmente ante sospecha de malignidad."
+      }
+    ]
+  }
+}

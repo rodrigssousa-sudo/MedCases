@@ -1,0 +1,132 @@
+{
+  "owner": "prolapso_orgaos_pelvicos",
+  "mode": "plantao",
+  "locale": "es",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "303c32ad0486d3b1c760fa1265ab8fe5cd1ddeaedfbce67e40d5504a2afb430e",
+  "title": "Prolapso de órganos pélvicos",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "recognition_2",
+      "heading": "Reconocimiento",
+      "text": "Investigar bulto vaginal, presión, dificultad urinaria o defecatoria y función sexual; evaluar preferencias y deseo reproductivo.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "P1"
+      ]
+    },
+    {
+      "id": "redflags_7",
+      "heading": "Señales de alarma",
+      "text": "La retención urinaria o el sangrado sin explicación exige investigación; no atribuir masa, hematuria ni dolor persistente automáticamente al prolapso.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "P1"
+      ]
+    },
+    {
+      "id": "diagnosis_3",
+      "heading": "Diagnóstico y diferenciales",
+      "text": "Examen pélvico con registro de compartimentos y clasificación POP-Q; las imágenes no son rutinarias cuando el examen demuestra el prolapso.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "P1"
+      ]
+    },
+    {
+      "id": "treatment_4",
+      "heading": "Tratamiento inicial",
+      "text": "En estadios 1 o 2 sintomáticos, considerar entrenamiento supervisado del suelo pélvico durante al menos 16 semanas. El pesario y la cirugía son opciones según síntomas y elección informada.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "P1"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Para atrofia genitourinaria posmenopáusica confirmada: estradiol vaginal en comprimido de 10 microgramos, 1 comprimido por vía intravaginal una vez al día durante 2 semanas; después 1 comprimido dos veces por semana. Evaluar respuesta, menor dosis eficaz y necesidad de mantenimiento; no existe un curso curativo único. Investigar sangrado inexplicado antes de iniciar. No indicado en el embarazo; un antecedente de neoplasia hormonodependiente requiere decisión compartida con especialista. No corrige el prolapso ni trata sangrado sin diagnóstico.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "W12_Vagifem"
+      ]
+    },
+    {
+      "id": "special_8",
+      "heading": "Poblaciones especiales",
+      "text": "Individualizar ante fragilidad, incapacidad de autocuidado y deseo de embarazo; explicar alternativas y riesgos de procedimientos, incluidos materiales implantables cuando se propongan.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "P1"
+      ]
+    },
+    {
+      "id": "monitoring_6",
+      "heading": "Monitorización y seguimiento",
+      "text": "Con pesario, explicar retirada, controles y posibles sangrado, flujo o expulsión; evaluar complicaciones, capacidad de autocuidado y síntomas persistentes.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "P1"
+      ]
+    },
+    {
+      "id": "foundation_1",
+      "heading": "Definición y razonamiento",
+      "text": "La pérdida de soporte pélvico permite descenso vaginal, uterino o apical; los síntomas y el impacto funcional orientan el tratamiento, no solo el estadio anatómico.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "P1"
+      ]
+    },
+    {
+      "id": "treatment_choices_v11",
+      "heading": "Elección del tratamiento",
+      "text": "Alternativa al entrenamiento supervisado: pesario vaginal, con ajuste y seguimiento. Puede discutirse cirugía si el manejo conservador no es suficiente o se rechaza, explicando riesgos y deseo reproductivo; el estadio aislado no obliga a operar.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "P1"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "P1",
+      "title": "Urinary incontinence and pelvic organ prolapse in women: management",
+      "url": "https://www.nice.org.uk/guidance/ng123/chapter/recommendations",
+      "authority": "NICE NG123",
+      "year": 2019,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Vagifem",
+      "title": "Vagifem 10 micrograms — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/5719/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "markdown": "# Prolapso de órganos pélvicos\n\n## Reconocimiento\n\nInvestigar bulto vaginal, presión, dificultad urinaria o defecatoria y función sexual; evaluar preferencias y deseo reproductivo.\n\n## Señales de alarma\n\nLa retención urinaria o el sangrado sin explicación exige investigación; no atribuir masa, hematuria ni dolor persistente automáticamente al prolapso.\n\n## Diagnóstico y diferenciales\n\nExamen pélvico con registro de compartimentos y clasificación POP-Q; las imágenes no son rutinarias cuando el examen demuestra el prolapso.\n\n## Tratamiento inicial\n\nEn estadios 1 o 2 sintomáticos, considerar entrenamiento supervisado del suelo pélvico durante al menos 16 semanas. El pesario y la cirugía son opciones según síntomas y elección informada.\n\n## Medicamento, dosis y forma de uso\n\nPara atrofia genitourinaria posmenopáusica confirmada: estradiol vaginal en comprimido de 10 microgramos, 1 comprimido por vía intravaginal una vez al día durante 2 semanas; después 1 comprimido dos veces por semana. Evaluar respuesta, menor dosis eficaz y necesidad de mantenimiento; no existe un curso curativo único. Investigar sangrado inexplicado antes de iniciar. No indicado en el embarazo; un antecedente de neoplasia hormonodependiente requiere decisión compartida con especialista. No corrige el prolapso ni trata sangrado sin diagnóstico.\n\n## Poblaciones especiales\n\nIndividualizar ante fragilidad, incapacidad de autocuidado y deseo de embarazo; explicar alternativas y riesgos de procedimientos, incluidos materiales implantables cuando se propongan.\n\n## Monitorización y seguimiento\n\nCon pesario, explicar retirada, controles y posibles sangrado, flujo o expulsión; evaluar complicaciones, capacidad de autocuidado y síntomas persistentes.\n\n## Definición y razonamiento\n\nLa pérdida de soporte pélvico permite descenso vaginal, uterino o apical; los síntomas y el impacto funcional orientan el tratamiento, no solo el estadio anatómico.\n\n## Elección del tratamiento\n\nAlternativa al entrenamiento supervisado: pesario vaginal, con ajuste y seguimiento. Puede discutirse cirugía si el manejo conservador no es suficiente o se rechaza, explicando riesgos y deseo reproductivo; el estadio aislado no obliga a operar.\n\n## Referencias\n\n1. [Urinary incontinence and pelvic organ prolapse in women: management](https://www.nice.org.uk/guidance/ng123/chapter/recommendations)\n2. [Vagifem 10 micrograms — Summary of Product Characteristics](https://www.medicines.org.uk/emc/product/5719/smpc)",
+  "factIds": [
+    "recognition_2",
+    "redflags_7",
+    "diagnosis_3",
+    "treatment_4",
+    "pharmacotherapy_v12_1",
+    "special_8",
+    "monitoring_6",
+    "foundation_1",
+    "treatment_choices_v11"
+  ],
+  "canonicalPayloadSha256": "303c32ad0486d3b1c760fa1265ab8fe5cd1ddeaedfbce67e40d5504a2afb430e",
+  "approvedReviewProjectionHash": "df9ac44595774b68024d12f7b3d6fc2b07895c532f9586ffa8171ccbba6df1f2"
+}

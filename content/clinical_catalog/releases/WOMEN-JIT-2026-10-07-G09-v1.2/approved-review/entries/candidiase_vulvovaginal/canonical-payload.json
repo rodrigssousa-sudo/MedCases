@@ -1,0 +1,172 @@
+{
+  "schemaVersion": "1.0",
+  "owner": "candidiase_vulvovaginal",
+  "title": {
+    "pt": "Candidíase vulvovaginal",
+    "es": "Candidiasis vulvovaginal"
+  },
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "population": "Mulheres adultas; gestação/lactação e outros contextos somente quando explicitados",
+  "identity": {
+    "action": "REVIEW_EXISTING_PRESERVE_ID",
+    "existingCanonicalDocumentIds": [
+      "candidiase_vulvovaginal"
+    ],
+    "owner": "candidiase_vulvovaginal",
+    "newOwnerActivated": false,
+    "relatedButNotEquivalent": [],
+    "scope": "Infecção sintomática vulvovaginal por Candida, geralmente Candida albicans. Colonização sem sintomas não exige tratamento. Não equivale à candidíase oral nem ao intertrigo cutâneo.",
+    "preserveExistingPregnancyContent": true,
+    "existingCMSDocumentIds": [
+      "candidiase_vulvovaginal"
+    ],
+    "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+    "existingRuntimeOwnerPreserved": true
+  },
+  "review": {
+    "author": "Codex — preparação e conferência de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção sintomática vulvovaginal por Candida, geralmente Candida albicans. Colonização sem sintomas não exige tratamento. Não equivale à candidíase oral nem ao intertrigo cutâneo.",
+      "es": "Infección sintomática vulvovaginal por Candida, generalmente Candida albicans. La colonización sin síntomas no requiere tratamiento. No equivale a candidiasis oral ni a intertrigo cutáneo.",
+      "sources": [
+        "WHO_V",
+        "CDC_V"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Prurido vulvar, eritema, ardor, disúria externa e corrimento espesso são possíveis, mas não específicos. Recorrência, imunossupressão e gravidade modificam a avaliação e o esquema.",
+      "es": "Prurito vulvar, eritema, ardor, disuria externa y secreción espesa son posibles, pero no específicos. La recurrencia, inmunosupresión y gravedad modifican la evaluación y el esquema.",
+      "sources": [
+        "WHO_V",
+        "CDC_V"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Combinar sintomas e exame com microscopia vaginal; se negativa com suspeita persistente, considerar cultura. Casos complicados requerem identificação de espécie; diferenciar vaginose, tricomoníase e dermatite de contato.",
+      "es": "Combinar síntomas y examen con microscopía vaginal; si es negativa con sospecha persistente, considerar cultivo. Los casos complicados requieren identificación de especie; diferenciar vaginosis, tricomoniasis y dermatitis de contacto.",
+      "sources": [
+        "CDC_V"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Para episódio não complicado, selecionar azol vaginal ou opção oral adequada. Não tratar parceiros assintomáticos rotineiramente; evitar sucessivas automedicações sem confirmar a causa.",
+      "es": "Para episodio no complicado, seleccionar azol vaginal u opción oral adecuada. No tratar rutinariamente parejas asintomáticas; evitar automedicaciones sucesivas sin confirmar la causa.",
+      "sources": [
+        "CDC_V"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Adulta não gestante com episódio não complicado: fluconazol 150 mg por via oral em dose única é uma opção. Não aplicar este esquema à gestação, doença grave, recorrente ou por espécie resistente.",
+      "es": "Adulta no embarazada con episodio no complicado: fluconazol 150 mg por vía oral en dosis única es una opción. No aplicar este esquema al embarazo, enfermedad grave, recurrente o por especie resistente.",
+      "sources": [
+        "CDC_V",
+        "WHO_VAG"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Persistência ou retorno dos sintomas requerem exame e confirmação, não repetição automática de fluconazol. Avaliar diabetes, imunossupressão, espécie não albicans e resistência quando pertinentes.",
+      "es": "La persistencia o el retorno de síntomas requieren examen y confirmación, no repetición automática de fluconazol. Evaluar diabetes, inmunosupresión, especie no albicans y resistencia cuando corresponda.",
+      "sources": [
+        "WHO_V",
+        "CDC_V"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Febre, dor pélvica importante, ulceração ou comprometimento sistêmico não são típicos de candidíase não complicada: investigar outras causas e encaminhar conforme gravidade.",
+      "es": "Fiebre, dolor pélvico importante, ulceración o afectación sistémica no son típicos de candidiasis no complicada: investigar otras causas y derivar según gravedad.",
+      "sources": [
+        "WHO_V"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Na gestação, usar apenas azóis tópicos durante 7 dias conforme CDC; evitar fluconazol oral. Revisar interações, risco hepático e função renal antes de terapias sistêmicas ou prolongadas.",
+      "es": "Durante el embarazo, utilizar únicamente azoles tópicos durante 7 días según CDC; evitar fluconazol oral. Revisar interacciones, riesgo hepático y función renal antes de tratamientos sistémicos o prolongados.",
+      "sources": [
+        "CDC_V",
+        "WHO_VAG"
+      ],
+      "id": "special_8"
+    },
+    {
+      "id": "alternative_verified_20261007",
+      "section": "alternative",
+      "pt": "Alternativa para episódio não complicado em adulta não gestante: clotrimazol creme vaginal 1%, 5 g por via intravaginal uma vez ao dia durante 7–14 dias. Escolher uma opção, não somar tratamentos automaticamente.",
+      "es": "Alternativa para episodio no complicado en adulta no embarazada: clotrimazol crema vaginal al 1%, 5 g por vía intravaginal una vez al día durante 7–14 días. Elegir una opción, no sumar tratamientos automáticamente.",
+      "sources": [
+        "CDC_V"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "WHO_V",
+      "title": "Candidiasis",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/candidiasis-(yeast-infection)",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "CDC_V",
+      "title": "Vulvovaginal candidiasis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/candidiasis.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "WHO_VAG",
+      "title": "Recommendations: trichomoniasis, candidiasis and bacterial vaginosis",
+      "url": "https://www.who.int/publications/i/item/9789240096370",
+      "authority": "OMS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "provenance": {
+    "version": "WOMEN-JIT-2026-10-07-G09-v1.1",
+    "canonicalHash": "11a71b6f7a16e99e307c5aff4d2418ee2fe251abc012dc249a9f556f2925eb3a",
+    "sourcePath": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-women50-group09-2026-10-07/revisions/v1.1/entries/candidiase_vulvovaginal/canonical-payload.json",
+    "revisionScope": "treatment completion; no remote writes; identifiers preserved",
+    "previousProvenance": {
+      "path": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-skin30-infect20-group04-2026-10-03/entries/candidiase_vulvovaginal/canonical-payload.json",
+      "sha256": "9a37a1da3ea131c280da7c602e0fc4cefe9b783e96a2a2cffd82be4c018b63dc",
+      "version": "NEW-JIT-2026-10-03-G04-v1.0"
+    }
+  },
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

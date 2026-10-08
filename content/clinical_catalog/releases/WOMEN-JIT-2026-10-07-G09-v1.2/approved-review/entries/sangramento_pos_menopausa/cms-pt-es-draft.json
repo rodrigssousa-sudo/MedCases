@@ -1,0 +1,240 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "sangramento_pos_menopausa",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "3e3a85b3449b7f1704bbcd0509d6480e2d6b6c493de9685c89939dae6b793190",
+  "references": [
+    {
+      "id": "pmbleed",
+      "title": "NHS — Postmenopausal bleeding",
+      "url": "https://www.nhs.uk/symptoms/post-menopausal-bleeding/",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "cancerref",
+      "title": "NICE NG12 — Suspected cancer: recognition and referral",
+      "url": "https://www.nice.org.uk/guidance/ng12/chapter/recommendations-organised-by-site-of-cancer",
+      "year": null,
+      "status": "AUTHORITATIVE_LIVING",
+      "authority": "NICE NG12",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Vagifem",
+      "title": "Vagifem 10 micrograms — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/5719/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Sangramento pós-menopausa",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Sangramento vaginal após a menopausa requer investigação, mesmo pequeno ou isolado; atrofia é frequente, mas câncer endometrial ou cervical precisa ser excluído.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Sangramento vaginal após a menopausa requer investigação, mesmo pequeno ou isolado; atrofia é frequente, mas câncer endometrial ou cervical precisa ser excluído."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Confirmar fonte vaginal, urinária ou retal e uso de hormônios/anticoagulantes. Sangramento intenso, síncope ou anemia sintomática exige atendimento urgente."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Exame ginecológico e avaliação endometrial por ultrassonografia e/ou biópsia conforme risco e protocolo. Persistência ou recorrência exige investigação adicional, mesmo após avaliação inicial tranquilizadora."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "A conduta depende da causa: atrofia confirmada pode receber tratamento local; pólipo pode requerer remoção dirigida. Hiperplasia ou neoplasia segue tratamento histológico específico."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Não iniciar hormônio empiricamente para encobrir sangramento inexplicado. Uso de terapia hormonal ou anticoagulante não dispensa investigação quando indicada; rastreamento cervical não substitui avaliação endometrial."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Garantir acesso prioritário à ginecologia, resultado dos exames e plano explícito de retorno. Não dar alta definitiva apenas porque o sangramento cessou; recorrência deve reabrir investigação."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Após esclarecer a causa, atrofia pode receber hidratante vaginal ou estrogênio vaginal quando elegível; pólipo pode requerer remoção dirigida. Hiperplasia/neoplasia segue tratamento específico. Essas opções são dependentes do diagnóstico e não autorizam hormônio empírico antes da investigação."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Para atrofia geniturinária pós-menopausa confirmada: estradiol vaginal em comprimido de 10 microgramas, 1 comprimido por via intravaginal uma vez ao dia durante 2 semanas; depois 1 comprimido duas vezes por semana. Avaliar resposta, menor dose eficaz e necessidade de manutenção; não há um curso curativo único. Investigar sangramento inexplicado antes de iniciar. Não indicado na gestação; antecedente de neoplasia hormônio-dependente exige decisão compartilhada com especialista. Não corrige prolapso nem trata sangramento sem diagnóstico."
+      }
+    ]
+  },
+  "es": {
+    "title": "Sangrado posmenopáusico",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "El sangrado vaginal tras la menopausia requiere estudio, aunque sea escaso o aislado; la atrofia es frecuente, pero debe excluirse cáncer endometrial o cervical.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "El sangrado vaginal tras la menopausia requiere estudio, aunque sea escaso o aislado; la atrofia es frecuente, pero debe excluirse cáncer endometrial o cervical."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Confirmar origen vaginal, urinario o rectal y uso de hormonas/anticoagulantes. Sangrado intenso, síncope o anemia sintomática requieren atención urgente."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Examen ginecológico y evaluación endometrial mediante ecografía y/o biopsia según riesgo y protocolo. Persistencia o recurrencia exige estudio adicional, incluso tras una evaluación inicial tranquilizadora."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "La conducta depende de la causa: atrofia confirmada puede recibir tratamiento local; un pólipo puede requerir extracción dirigida. Hiperplasia o neoplasia siguen tratamiento específico según histología."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "No iniciar hormonas empíricamente para ocultar un sangrado inexplicado. El uso de terapia hormonal o anticoagulantes no elimina el estudio indicado; el cribado cervical no sustituye la evaluación endometrial."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Asegurar acceso prioritario a ginecología, resultados de estudios y un plan explícito de seguimiento. No dar alta definitiva solo porque cesó el sangrado; la recurrencia debe reabrir el estudio."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Tras aclarar la causa, la atrofia puede recibir hidratante vaginal o estrógeno vaginal si es elegible; un pólipo puede requerir resección dirigida. Hiperplasia/neoplasia sigue tratamiento específico. Estas opciones dependen del diagnóstico y no autorizan hormona empírica antes del estudio."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Para atrofia genitourinaria posmenopáusica confirmada: estradiol vaginal en comprimido de 10 microgramos, 1 comprimido por vía intravaginal una vez al día durante 2 semanas; después 1 comprimido dos veces por semana. Evaluar respuesta, menor dosis eficaz y necesidad de mantenimiento; no existe un curso curativo único. Investigar sangrado inexplicado antes de iniciar. No indicado en el embarazo; un antecedente de neoplasia hormonodependiente requiere decisión compartida con especialista. No corrige el prolapso ni trata sangrado sin diagnóstico."
+      }
+    ]
+  }
+}

@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "1.0",
+  "owner": "hiperplasia_endometrial",
+  "title": {
+    "pt": "Hiperplasia endometrial",
+    "es": "Hiperplasia endometrial"
+  },
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "population": "Mulheres adultas; gestação/lactação e outros contextos somente quando explicitados",
+  "identity": {
+    "action": "REVIEW_EXISTING_PRESERVE_ID",
+    "existingCanonicalDocumentIds": [
+      "hiperplasia_endometrial"
+    ],
+    "owner": "hiperplasia_endometrial",
+    "newOwnerActivated": false,
+    "relatedButNotEquivalent": [
+      "sangramento_uterino_anormal",
+      "sangramento_pos_menopausa"
+    ],
+    "scope": "Proliferação endometrial anormal exige histologia para distinguir hiperplasia sem atipia de neoplasia intraepitelial endometrial/hiperplasia atípica, que tem risco maior de câncer concomitante.",
+    "preserveExistingPregnancyContent": true,
+    "existingCMSDocumentIds": [],
+    "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+    "existingRuntimeOwnerPreserved": true
+  },
+  "review": {
+    "author": "Codex — preparação e conferência de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "foundation",
+      "section": "foundation",
+      "pt": "Proliferação endometrial anormal exige histologia para distinguir hiperplasia sem atipia de neoplasia intraepitelial endometrial/hiperplasia atípica, que tem risco maior de câncer concomitante.",
+      "es": "La proliferación endometrial anormal exige histología para diferenciar hiperplasia sin atipia de neoplasia intraepitelial endometrial/hiperplasia atípica, que tiene mayor riesgo de cáncer concomitante.",
+      "sources": [
+        "hyperplasia",
+        "ein"
+      ]
+    },
+    {
+      "id": "recognition",
+      "section": "recognition",
+      "pt": "Pesquisar sangramento irregular ou pós-menopausa, anovulação prolongada e exposição estrogênica sem oposição. Sangramento com instabilidade exige manejo urgente; não atribuir tudo à idade.",
+      "es": "Investigar sangrado irregular o posmenopáusico, anovulación prolongada y exposición estrogénica sin oposición. El sangrado con inestabilidad exige manejo urgente; no atribuirlo todo a la edad.",
+      "sources": [
+        "hyperplasia",
+        "ein"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "section": "diagnosis",
+      "pt": "Obter amostra endometrial adequada; ultrassonografia não distingue sozinha atipia de câncer. Lesão focal ou amostragem insuficiente pode exigir histeroscopia; excluir carcinoma antes de manejo conservador de atipia.",
+      "es": "Obtener una muestra endometrial adecuada; la ecografía no distingue por sí sola atipia de cáncer. Una lesión focal o muestra insuficiente puede exigir histeroscopia; excluir carcinoma antes del manejo conservador de atipia.",
+      "sources": [
+        "hyperplasia",
+        "ein"
+      ]
+    },
+    {
+      "id": "treatment",
+      "section": "treatment",
+      "pt": "Sem atipia, sistema intrauterino com levonorgestrel é primeira opção medicamentosa. Alternativa pelo RCOG: medroxiprogesterona oral contínua 10–20 mg ao dia quando o sistema é recusado, com supervisão e vigilância histológica.",
+      "es": "Sin atipia, el sistema intrauterino con levonorgestrel es la primera opción farmacológica. Alternativa según RCOG: medroxiprogesterona oral continua 10–20 mg al día si se rechaza el sistema, con supervisión y vigilancia histológica.",
+      "sources": [
+        "hyperplasia",
+        "ein"
+      ]
+    },
+    {
+      "id": "alternative",
+      "section": "alternative",
+      "pt": "Com atipia/neoplasia intraepitelial, histerectomia é tratamento definitivo. Preservação de fertilidade ou impossibilidade cirúrgica exige progestagênio e vigilância próxima por especialista; não equivale a observar sem tratar.",
+      "es": "Con atipia/neoplasia intraepitelial, la histerectomía es el tratamiento definitivo. La preservación de fertilidad o imposibilidad quirúrgica exige progestágeno y vigilancia estrecha por especialista; no equivale a observar sin tratar.",
+      "sources": [
+        "hyperplasia",
+        "ein"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "section": "monitoring",
+      "pt": "Acompanhar histologia, sangramento e adesão; duração e biópsias dependem da categoria e resposta. Não encerrar acompanhamento apenas por melhora dos sintomas; doença persistente/progressiva exige revisar tratamento.",
+      "es": "Controlar histología, sangrado y adherencia; duración y biopsias dependen de categoría y respuesta. No cerrar seguimiento solo por mejoría de síntomas; la enfermedad persistente/progresiva exige revisar tratamiento.",
+      "sources": [
+        "hyperplasia",
+        "ein"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "section": "dose",
+      "pt": "Sem atipia: sistema intrauterino de levonorgestrel 52 mg é primeira opção quando elegível. Se não for aceito/possível, alternativa contínua: acetato de medroxiprogesterona 10–20 mg por via oral ao dia OU noretisterona 10–15 mg por via oral ao dia, por pelo menos 6 meses, com biópsias e seguimento conforme RCOG. Escolher um esquema; não usar o curso cíclico curto de amenorreia para tratar esta doença. Com atipia/EIN, histerectomia é abordagem definitiva usual; preservação de fertilidade com progestagênio requer excluir câncer e vigilância especializada, não aplicação automática do esquema sem atipia.",
+      "es": "Sin atipia: sistema intrauterino de levonorgestrel 52 mg es la primera opción si es elegible. Si no se acepta/no es posible, alternativa continua: acetato de medroxiprogesterona 10–20 mg por vía oral al día O noretisterona 10–15 mg por vía oral al día, durante al menos 6 meses, con biopsias y seguimiento según RCOG. Elegir un esquema; no utilizar el curso cíclico breve de amenorrea para tratar esta enfermedad. Con atipia/EIN, la histerectomía es el enfoque definitivo habitual; preservar fertilidad con progestágeno requiere descartar cáncer y vigilancia especializada, no aplicar automáticamente el esquema sin atipia.",
+      "sources": [
+        "hyperplasia",
+        "W12_Mirena"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "hyperplasia",
+      "title": "RCOG/BSGE Green-top 67 — Endometrial hyperplasia",
+      "url": "https://www.rcog.org.uk/media/knmjbj5c/gtg_67_endometrial_hyperplasia.pdf",
+      "year": 2016,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "authority": "RCOG/BSGE Green-top 67",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "ein",
+      "title": "ACOG — EIN/atypical endometrial hyperplasia, 2023",
+      "url": "https://www.acog.org/clinical/clinical-guidance/clinical-consensus/articles/2023/09/management-of-endometrial-intraepithelial-neoplasia-or-atypical-endometrial-hyperplasia",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "ACOG",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Mirena",
+      "title": "Mirena 52 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/1132/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "provenance": {
+    "version": "WOMEN-JIT-2026-10-07-G09-v1.1",
+    "canonicalHash": "a7734ddcf193f8e335434014ff8246c87383ee386c50fb5b4f85e7ec2cb0da00",
+    "sourcePath": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-women50-group09-2026-10-07/revisions/v1.1/entries/hiperplasia_endometrial/canonical-payload.json",
+    "revisionScope": "treatment completion; no remote writes; identifiers preserved",
+    "previousProvenance": null
+  },
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

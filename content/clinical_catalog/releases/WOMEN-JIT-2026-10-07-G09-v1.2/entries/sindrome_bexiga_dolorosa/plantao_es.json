@@ -1,0 +1,151 @@
+{
+  "owner": "sindrome_bexiga_dolorosa",
+  "mode": "plantao",
+  "locale": "es",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "6394d45167b86a145370def73f0d3ce317b7c4acc7a1161346b64b9ae333abce",
+  "title": "Síndrome de vejiga dolorosa",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "recognition",
+      "heading": "Reconocimiento",
+      "text": "Investigar relación con llenado/vaciado, frecuencia, dispareunia y desencadenantes. Fiebre, hematuria visible, retención o dolor agudo atípico exige buscar otra causa.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "bpsaua",
+        "bps"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "heading": "Diagnóstico y diferenciales",
+      "text": "Historia, examen y análisis/cultivo urinario ayudan a excluir infección; la evaluación urológica adicional es selectiva. No existe una prueba única; considerar neoplasia, cálculo y endometriosis según hallazgos.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "bpsaua",
+        "bps"
+      ]
+    },
+    {
+      "id": "treatment",
+      "heading": "Tratamiento inicial",
+      "text": "Las opciones iniciales incluyen educación, manejo de desencadenantes y un plan de dolor. Si existe sensibilidad del suelo pélvico, ofrecer fisioterapia manual especializada; evitar fortalecimiento indiscriminado de musculatura dolorosa/tensa.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "bpsaua",
+        "bps"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Para dolor persistente seleccionado, como coadyuvante y fuera de indicación autorizada para este cuadro: amitriptilina 10 mg por vía oral por la noche; titular lentamente según tolerancia y respuesta, habitualmente a 25–75 mg al día. Este paquete utiliza 75 mg al día como límite del esquema de dolor descrito; dosis superiores requieren evaluación especializada. No es un analgésico de rescate; reevaluar beneficio a lo largo de las semanas. Revisar somnolencia, caídas, estreñimiento, retención, QT/arritmia, interacción con otros serotoninérgicos y riesgo de suicidio; el embarazo requiere evaluación propia. La evidencia de beneficio varía y el fármaco no sustituye rehabilitación/terapia multimodal.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "W12_amitrip_label"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_2",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Otra opción especializada, según autorización EMA: pentosano polisulfato sódico 100 mg por vía oral tres veces al día, al menos 1 hora antes o 2 horas después de las comidas. Aplicable a adultas con síndrome de vejiga dolorosa, glomerulaciones/lesiones de Hunner y síntomas moderados/graves; no a todo dolor pélvico. Reevaluar en 6 meses y suspender si no hay mejoría. Evaluar sangrado, anticoagulantes y retina; examen oftalmológico después de 6 meses, con seguimiento según hallazgos/tiempo de exposición por riesgo de maculopatía pigmentaria. No usar con sangrado activo ni extrapolar al embarazo.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "W12_Elmiron"
+      ]
+    },
+    {
+      "id": "alternative",
+      "heading": "Alternativas y selección",
+      "text": "Medicamentos como amitriptilina o tratamientos intravesicales pueden considerarse por especialista según perfil y respuesta; no existe un esquema único. Los antibióticos prolongados sin evidencia de infección no tratan el síndrome.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "bpsaua",
+        "bps"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "heading": "Monitorización y seguimiento",
+      "text": "Controlar dolor, sueño, funcionamiento y efectos adversos; reevaluar diagnóstico si no hay beneficio. Seleccionar procedimientos según fenotipo, sin prometer curación; los síntomas de alarma requieren evaluación independiente.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "bpsaua",
+        "bps"
+      ]
+    },
+    {
+      "id": "foundation",
+      "heading": "Definición y razonamiento",
+      "text": "Síndrome de dolor percibido en la vejiga con síntomas urinarios, sin infección ni otra causa que explique el cuadro. No equivale a cistitis bacteriana recurrente ni a urgencia sin dolor.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "bpsaua",
+        "bps"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "bpsaua",
+      "title": "AUA — Interstitial cystitis/bladder pain syndrome, amendment 2022",
+      "url": "https://www.auanet.org/documents/Guidelines/PDF/ICBPS%20Guideline.pdf",
+      "year": 2022,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "AUA",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "bps",
+      "title": "NHS — Bladder pain syndrome",
+      "url": "https://www.nhs.uk/conditions/bladder-pain-syndrome/",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_amitrip_label",
+      "title": "emc — Amitriptyline: adult neuropathic pain starting dose and titration",
+      "url": "https://www.medicines.org.uk/emc/product/10850/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Elmiron",
+      "title": "EMA — Elmiron product information, 2026",
+      "url": "https://www.ema.europa.eu/en/documents/product-information/elmiron-epar-product-information_en.pdf",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "PUBLIC_PDF_FULL_TEXT_READ",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "markdown": "# Síndrome de vejiga dolorosa\n\n## Reconocimiento\n\nInvestigar relación con llenado/vaciado, frecuencia, dispareunia y desencadenantes. Fiebre, hematuria visible, retención o dolor agudo atípico exige buscar otra causa.\n\n## Diagnóstico y diferenciales\n\nHistoria, examen y análisis/cultivo urinario ayudan a excluir infección; la evaluación urológica adicional es selectiva. No existe una prueba única; considerar neoplasia, cálculo y endometriosis según hallazgos.\n\n## Tratamiento inicial\n\nLas opciones iniciales incluyen educación, manejo de desencadenantes y un plan de dolor. Si existe sensibilidad del suelo pélvico, ofrecer fisioterapia manual especializada; evitar fortalecimiento indiscriminado de musculatura dolorosa/tensa.\n\n## Medicamento, dosis y forma de uso\n\nPara dolor persistente seleccionado, como coadyuvante y fuera de indicación autorizada para este cuadro: amitriptilina 10 mg por vía oral por la noche; titular lentamente según tolerancia y respuesta, habitualmente a 25–75 mg al día. Este paquete utiliza 75 mg al día como límite del esquema de dolor descrito; dosis superiores requieren evaluación especializada. No es un analgésico de rescate; reevaluar beneficio a lo largo de las semanas. Revisar somnolencia, caídas, estreñimiento, retención, QT/arritmia, interacción con otros serotoninérgicos y riesgo de suicidio; el embarazo requiere evaluación propia. La evidencia de beneficio varía y el fármaco no sustituye rehabilitación/terapia multimodal.\n\n## Medicamento, dosis y forma de uso\n\nOtra opción especializada, según autorización EMA: pentosano polisulfato sódico 100 mg por vía oral tres veces al día, al menos 1 hora antes o 2 horas después de las comidas. Aplicable a adultas con síndrome de vejiga dolorosa, glomerulaciones/lesiones de Hunner y síntomas moderados/graves; no a todo dolor pélvico. Reevaluar en 6 meses y suspender si no hay mejoría. Evaluar sangrado, anticoagulantes y retina; examen oftalmológico después de 6 meses, con seguimiento según hallazgos/tiempo de exposición por riesgo de maculopatía pigmentaria. No usar con sangrado activo ni extrapolar al embarazo.\n\n## Alternativas y selección\n\nMedicamentos como amitriptilina o tratamientos intravesicales pueden considerarse por especialista según perfil y respuesta; no existe un esquema único. Los antibióticos prolongados sin evidencia de infección no tratan el síndrome.\n\n## Monitorización y seguimiento\n\nControlar dolor, sueño, funcionamiento y efectos adversos; reevaluar diagnóstico si no hay beneficio. Seleccionar procedimientos según fenotipo, sin prometer curación; los síntomas de alarma requieren evaluación independiente.\n\n## Definición y razonamiento\n\nSíndrome de dolor percibido en la vejiga con síntomas urinarios, sin infección ni otra causa que explique el cuadro. No equivale a cistitis bacteriana recurrente ni a urgencia sin dolor.\n\n## Referencias\n\n1. [AUA — Interstitial cystitis/bladder pain syndrome, amendment 2022](https://www.auanet.org/documents/Guidelines/PDF/ICBPS%20Guideline.pdf)\n2. [NHS — Bladder pain syndrome](https://www.nhs.uk/conditions/bladder-pain-syndrome/)\n3. [emc — Amitriptyline: adult neuropathic pain starting dose and titration](https://www.medicines.org.uk/emc/product/10850/smpc)\n4. [EMA — Elmiron product information, 2026](https://www.ema.europa.eu/en/documents/product-information/elmiron-epar-product-information_en.pdf)",
+  "factIds": [
+    "recognition",
+    "diagnosis",
+    "treatment",
+    "pharmacotherapy_v12_1",
+    "pharmacotherapy_v12_2",
+    "alternative",
+    "monitoring",
+    "foundation"
+  ],
+  "canonicalPayloadSha256": "6394d45167b86a145370def73f0d3ce317b7c4acc7a1161346b64b9ae333abce",
+  "approvedReviewProjectionHash": "612ea7946a885059ebe8a5a48108b8f4bf2d406dbfc20f23fdb3bc338f43bc9e"
+}

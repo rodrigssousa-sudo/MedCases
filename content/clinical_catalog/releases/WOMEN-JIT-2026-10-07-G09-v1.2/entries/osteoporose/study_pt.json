@@ -1,0 +1,134 @@
+{
+  "owner": "osteoporose",
+  "mode": "study",
+  "locale": "pt",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "10ea179960ac6e6b47ad8f92ccc1bd618379605944521d705ced372b4f8c3f2f",
+  "title": "Osteoporose",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "foundation_1",
+      "heading": "Definição e raciocínio",
+      "text": "Fragilidade óssea aumenta risco de fraturas; fratura por baixo trauma deve acionar prevenção secundária, não apenas analgesia.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "PLAN"
+      ]
+    },
+    {
+      "id": "recognition_2",
+      "heading": "Reconhecimento",
+      "text": "Pesquisar quedas, fraturas prévias, perda de altura, corticoides e causas secundárias; dor vertebral nova pode representar fratura.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "PLAN"
+      ]
+    },
+    {
+      "id": "diagnosis_3",
+      "heading": "Diagnóstico e diferenciais",
+      "text": "Estratificar risco e avaliar densitometria conforme indicação; investigar função renal, cálcio e condições secundárias antes de terapia.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "NOGG",
+        "PLAN"
+      ]
+    },
+    {
+      "id": "treatment_4",
+      "heading": "Tratamento inicial",
+      "text": "Prevenir quedas, assegurar nutrição e atividade segura; selecionar antirreabsortivo ou terapia anabólica conforme risco e contraindicações.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "NOGG"
+      ]
+    },
+    {
+      "id": "dose_5",
+      "heading": "Medicamento, dose e forma de uso",
+      "text": "Opção adulta indicada: alendronato 70 mg oral uma vez por semana, em jejum com água; permanecer sentado/em pé e aguardar pelo menos 30 minutos antes de alimento ou outros medicamentos.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "NOGG"
+      ]
+    },
+    {
+      "id": "monitoring_6",
+      "heading": "Monitorização e seguimento",
+      "text": "Avaliar adesão, tolerância e novas fraturas; reavaliar duração conforme risco. Não interromper denosumabe sem plano para evitar fraturas de rebote.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "PLAN"
+      ]
+    },
+    {
+      "id": "redflags_7",
+      "heading": "Sinais de alarme",
+      "text": "Fratura de quadril, déficit neurológico ou dor incapacitante exige avaliação hospitalar. Alta após fratura requer mobilidade segura e plano de prevenção.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "PLAN"
+      ]
+    },
+    {
+      "id": "special_8",
+      "heading": "Populações especiais",
+      "text": "Corrigir hipocalcemia antes de antirreabsortivo; doença esofágica, impossibilidade de permanecer ereto ou função renal reduzida podem impedir alendronato oral.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "NOGG"
+      ]
+    },
+    {
+      "id": "alternative_verified_20261007",
+      "heading": "Alternativas e seleção",
+      "text": "Alternativa em pessoa elegível: ácido zoledrônico 5 mg por via intravenosa uma vez por ano, em infusão de pelo menos 15 minutos. Antes, verificar função renal, cálcio e adequação clínica; evitar em gestação/lactação e seguir contraindicações da bula.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "NOGG"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "NOGG",
+      "title": "Pharmacological treatment options",
+      "url": "https://www.nogg.org.uk/full-guideline/section-6-pharmacological-treatment-options",
+      "authority": "NOGG",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "PLAN",
+      "title": "Strategies for management of osteoporosis and fracture risk",
+      "url": "https://www.nogg.org.uk/full-guideline/section-7-strategies-management-osteoporosis-and-fracture-risk",
+      "authority": "NOGG",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "markdown": "# Osteoporose\n\n## Definição e raciocínio\n\nFragilidade óssea aumenta risco de fraturas; fratura por baixo trauma deve acionar prevenção secundária, não apenas analgesia.\n\n## Reconhecimento\n\nPesquisar quedas, fraturas prévias, perda de altura, corticoides e causas secundárias; dor vertebral nova pode representar fratura.\n\n## Diagnóstico e diferenciais\n\nEstratificar risco e avaliar densitometria conforme indicação; investigar função renal, cálcio e condições secundárias antes de terapia.\n\n## Tratamento inicial\n\nPrevenir quedas, assegurar nutrição e atividade segura; selecionar antirreabsortivo ou terapia anabólica conforme risco e contraindicações.\n\n## Medicamento, dose e forma de uso\n\nOpção adulta indicada: alendronato 70 mg oral uma vez por semana, em jejum com água; permanecer sentado/em pé e aguardar pelo menos 30 minutos antes de alimento ou outros medicamentos.\n\n## Monitorização e seguimento\n\nAvaliar adesão, tolerância e novas fraturas; reavaliar duração conforme risco. Não interromper denosumabe sem plano para evitar fraturas de rebote.\n\n## Sinais de alarme\n\nFratura de quadril, déficit neurológico ou dor incapacitante exige avaliação hospitalar. Alta após fratura requer mobilidade segura e plano de prevenção.\n\n## Populações especiais\n\nCorrigir hipocalcemia antes de antirreabsortivo; doença esofágica, impossibilidade de permanecer ereto ou função renal reduzida podem impedir alendronato oral.\n\n## Alternativas e seleção\n\nAlternativa em pessoa elegível: ácido zoledrônico 5 mg por via intravenosa uma vez por ano, em infusão de pelo menos 15 minutos. Antes, verificar função renal, cálcio e adequação clínica; evitar em gestação/lactação e seguir contraindicações da bula.\n\n## Referências\n\n1. [Pharmacological treatment options](https://www.nogg.org.uk/full-guideline/section-6-pharmacological-treatment-options)\n2. [Strategies for management of osteoporosis and fracture risk](https://www.nogg.org.uk/full-guideline/section-7-strategies-management-osteoporosis-and-fracture-risk)",
+  "factIds": [
+    "foundation_1",
+    "recognition_2",
+    "diagnosis_3",
+    "treatment_4",
+    "dose_5",
+    "monitoring_6",
+    "redflags_7",
+    "special_8",
+    "alternative_verified_20261007"
+  ],
+  "canonicalPayloadSha256": "10ea179960ac6e6b47ad8f92ccc1bd618379605944521d705ced372b4f8c3f2f",
+  "approvedReviewProjectionHash": "7ac44a94660d0b061b374d56c2b7c4d28405b793de37f3bb6f50ecc22963cd7b"
+}

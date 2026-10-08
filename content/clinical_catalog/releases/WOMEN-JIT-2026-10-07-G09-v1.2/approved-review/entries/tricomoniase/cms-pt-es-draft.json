@@ -1,0 +1,263 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "tricomoniase",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "98970f4d946246bc3deda44926b4bfb8c8bd683694e6f1b4daa109275f085ee6",
+  "references": [
+    {
+      "id": "WHO_T",
+      "title": "Trichomoniasis",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/trichomoniasis",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "CDC_T",
+      "title": "Trichomoniasis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/trichomoniasis.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "WHO_VAG",
+      "title": "Recommendations: trichomoniasis, candidiasis and bacterial vaginosis",
+      "url": "https://www.who.int/publications/i/item/9789240096370",
+      "authority": "OMS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Tricomoníase",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Infecção sexualmente transmissível pelo protozoário Trichomonas vaginalis. Pode ser assintomática em qualquer sexo e persistir com transmissão e reinfecção se parceiros não forem tratados.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Infecção sexualmente transmissível pelo protozoário Trichomonas vaginalis. Pode ser assintomática em qualquer sexo e persistir com transmissão e reinfecção se parceiros não forem tratados."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Corrimento, odor, prurido, irritação e disúria são apresentações possíveis; homens podem ter uretrite. Aparência do corrimento sozinha não distingue tricomoníase, vaginose e candidíase."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Preferir teste molecular quando disponível. Microscopia a fresco negativa não exclui infecção por sensibilidade limitada. Avaliar outras infecções sexualmente transmissíveis e possibilidade de gestação."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Tratar paciente e parceiros simultaneamente e evitar relações até finalizar tratamento e resolver sintomas. Metronidazol vaginal não substitui o tratamento sistêmico para tricomoníase."
+      },
+      {
+        "id": "dose_5-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "dose_5",
+        "type": "paragraph",
+        "text": "Referência OMS 2024 para adultos e adolescentes, inclusive gestantes: metronidazol 500 mg por via oral duas vezes ao dia durante 7 dias. O CDC mantém dose única de 2 g para homens; essa diferença territorial não deve ser misturada ao esquema OMS adotado aqui."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Reavaliar persistência para distinguir reinfecção, adesão inadequada e resistência antes de aumentar dose. Pelo CDC, repetir teste em mulheres sexualmente ativas aproximadamente em 3 meses."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Sinais de alarme",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Febre, dor pélvica relevante, dor testicular ou gravidez com sintomas importantes exigem avaliação de outras causas e complicações. Não atribuir sinais sistêmicos apenas à tricomoníase."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Populações especiais",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Revisar alergia a nitroimidazóis, hepatopatia e interações antes de prescrever. Tinidazol não deve ser usado na gestação. Crianças exigem avaliação própria, inclusive do contexto de transmissão."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Alternativa pelo CDC para adulta não gestante: tinidazol 2 g por via oral em dose única. Metronidazol durante 7 dias permanece preferencial em mulheres. Evitar tinidazol na gestação; após a dose única, suspender amamentação por 72 horas, com plano de alimentação do lactente."
+      }
+    ]
+  },
+  "es": {
+    "title": "Tricomoniasis",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Infección de transmisión sexual por el protozoo Trichomonas vaginalis. Puede ser asintomática en cualquier sexo y persistir con transmisión y reinfección si las parejas no reciben tratamiento.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Infección de transmisión sexual por el protozoo Trichomonas vaginalis. Puede ser asintomática en cualquier sexo y persistir con transmisión y reinfección si las parejas no reciben tratamiento."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Secreción, olor, prurito, irritación y disuria son presentaciones posibles; los hombres pueden tener uretritis. El aspecto de la secreción por sí solo no distingue tricomoniasis, vaginosis y candidiasis."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Preferir prueba molecular cuando esté disponible. La microscopía en fresco negativa no descarta infección por su sensibilidad limitada. Evaluar otras infecciones de transmisión sexual y posibilidad de embarazo."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Tratar paciente y parejas simultáneamente y evitar relaciones hasta finalizar tratamiento y resolver síntomas. El metronidazol vaginal no sustituye el tratamiento sistémico de tricomoniasis."
+      },
+      {
+        "id": "dose_5-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "dose_5",
+        "type": "paragraph",
+        "text": "Referencia OMS 2024 para adultos y adolescentes, incluso embarazadas: metronidazol 500 mg por vía oral dos veces al día durante 7 días. CDC mantiene dosis única de 2 g para hombres; esta diferencia territorial no debe mezclarse con el esquema OMS adoptado aquí."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Reevaluar persistencia para distinguir reinfección, adherencia inadecuada y resistencia antes de aumentar dosis. Según CDC, repetir prueba en mujeres sexualmente activas aproximadamente a los 3 meses."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Señales de alarma",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Fiebre, dolor pélvico importante, dolor testicular o embarazo con síntomas relevantes requieren evaluación de otras causas y complicaciones. No atribuir signos sistémicos únicamente a tricomoniasis."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Poblaciones especiales",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Revisar alergia a nitroimidazoles, hepatopatía e interacciones antes de prescribir. No debe utilizarse tinidazol durante el embarazo. Los niños requieren evaluación propia, incluso del contexto de transmisión."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Alternativa según CDC para adulta no embarazada: tinidazol 2 g por vía oral en dosis única. Metronidazol durante 7 días sigue siendo preferente en mujeres. Evitar tinidazol en embarazo; después de la dosis única, suspender lactancia durante 72 horas, con un plan de alimentación del lactante."
+      }
+    ]
+  }
+}

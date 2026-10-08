@@ -1,0 +1,206 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "mastite_lactacional",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "8ac79e49cc5ee89369c27b4586f013a7e39ba70384e07f50089590e639112c35",
+  "references": [
+    {
+      "id": "mast",
+      "title": "ABM Clinical Protocol 36 — Mastitis spectrum, 2022",
+      "url": "https://www.bfmed.org/assets/ABM%20Protocol%20%2336.pdf",
+      "year": 2022,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "authority": "ABM Clinical Protocol 36",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_paracetamol_nhs",
+      "title": "NHS — Paracetamol for adults: dosing and precautions",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Mastite lactacional",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Mastite abrange inflamação e infecção; nem toda dor/eritema mamário exige antibiótico. Edema e estímulo excessivo de produção podem perpetuar o quadro.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Mastite abrange inflamação e infecção; nem toda dor/eritema mamário exige antibiótico. Edema e estímulo excessivo de produção podem perpetuar o quadro."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Avaliar dor, eritema, febre, técnica de amamentação e sinais de abscesso. Instabilidade, progressão rápida ou massa persistente exige avaliação urgente e diagnóstico alternativo."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Distinguir inflamação de mastite bacteriana; ultrassonografia se suspeita de coleção. Cultura é indicada seletivamente, especialmente na ausência de melhora após 48 horas de tratamento adequado."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Manter amamentação fisiológica conforme tolerância, gelo e analgesia compatível com lactação. Evitar massagem profunda e extração excessiva para tentar esvaziar a mama."
+      },
+      {
+        "id": "alternative-heading",
+        "type": "heading",
+        "text": "Alternativas e seleção",
+        "level": 2
+      },
+      {
+        "id": "alternative",
+        "type": "paragraph",
+        "text": "Mastite bacteriana, pelo ABM: dicloxacilina 500 mg por via oral quatro vezes ao dia durante 10–14 dias. Alternativa: cefalexina 500 mg por via oral quatro vezes ao dia durante 10–14 dias; revisar alergias, função renal e resistência local."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Abscesso exige drenagem e cultura, além de terapia selecionada. Falha em 48 horas exige reavaliar resistência, coleção e diagnóstico; não interromper lactação automaticamente nem repetir antibióticos sem investigação."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Alívio de dor em adulta com pelo menos 50 kg: paracetamol 500–1000 mg por via oral a cada 6 horas, se necessário; máximo 4000 mg em 24 horas. Usar por curto período e reavaliar se precisar por mais de 3 dias. Reduzir limite/individualizar em baixo peso, hepatopatia, desnutrição ou uso excessivo de álcool; somar todas as apresentações que contêm paracetamol."
+      }
+    ]
+  },
+  "es": {
+    "title": "Mastitis lactacional",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "La mastitis incluye inflamación e infección; no todo dolor/eritema mamario requiere antibiótico. Edema y estimulación excesiva de producción pueden perpetuar el cuadro.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "La mastitis incluye inflamación e infección; no todo dolor/eritema mamario requiere antibiótico. Edema y estimulación excesiva de producción pueden perpetuar el cuadro."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Evaluar dolor, eritema, fiebre, técnica de lactancia y signos de absceso. Inestabilidad, progresión rápida o masa persistente exige evaluación urgente y diagnóstico alternativo."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Distinguir inflamación de mastitis bacteriana; ecografía si se sospecha colección. El cultivo se indica selectivamente, especialmente sin mejoría después de 48 horas de tratamiento adecuado."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Mantener lactancia fisiológica según tolerancia, hielo y analgesia compatible con lactancia. Evitar masaje profundo y extracción excesiva para intentar vaciar la mama."
+      },
+      {
+        "id": "alternative-heading",
+        "type": "heading",
+        "text": "Alternativas y selección",
+        "level": 2
+      },
+      {
+        "id": "alternative",
+        "type": "paragraph",
+        "text": "Mastitis bacteriana, según ABM: dicloxacilina 500 mg por vía oral cuatro veces al día durante 10–14 días. Alternativa: cefalexina 500 mg por vía oral cuatro veces al día durante 10–14 días; revisar alergias, función renal y resistencia local."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Un absceso requiere drenaje y cultivo, además de terapia seleccionada. Fracaso en 48 horas exige reevaluar resistencia, colección y diagnóstico; no suspender lactancia automáticamente ni repetir antibióticos sin estudio."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Alivio del dolor en adulta de al menos 50 kg: paracetamol 500–1000 mg por vía oral cada 6 horas, si es necesario; máximo 4000 mg en 24 horas. Usar por un período breve y reevaluar si se necesita durante más de 3 días. Reducir el límite/individualizar ante bajo peso, hepatopatía, desnutrición o consumo excesivo de alcohol; sumar todas las presentaciones que contienen paracetamol."
+      }
+    ]
+  }
+}

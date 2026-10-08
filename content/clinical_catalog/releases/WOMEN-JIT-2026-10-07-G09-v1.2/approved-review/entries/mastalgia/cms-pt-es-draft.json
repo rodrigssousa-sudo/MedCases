@@ -1,0 +1,273 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "mastalgia",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "74bd79a9a49e5f8836a109b45b34a70f3a340702d303126241c3f61b73b3a989",
+  "references": [
+    {
+      "id": "breastpain",
+      "title": "NHS — Breast pain",
+      "url": "https://www.nhs.uk/symptoms/breast-pain/",
+      "year": 2023,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "breastsalis",
+      "title": "Salisbury NHS — Benign breast problems",
+      "url": "https://www.salisbury.nhs.uk/wards-departments/departments/breast-department/benign-breast-problems/",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "Salisbury NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_paracetamol_nhs",
+      "title": "NHS — Paracetamol for adults: dosing and precautions",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Diclofenac",
+      "title": "Diclofenac 1% gel — SmPC",
+      "url": "https://www.medicines.org.uk/emc/product/10950/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Mastalgia",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Dor mamária pode ser cíclica, não cíclica ou referida da parede torácica; dor isolada é pouco sugestiva de câncer, mas não substitui avaliação de achados associados.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Dor mamária pode ser cíclica, não cíclica ou referida da parede torácica; dor isolada é pouco sugestiva de câncer, mas não substitui avaliação de achados associados."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Relacionar dor ao ciclo, gravidez, lactação, medicamentos e movimento; examinar mamas e parede torácica. Dor torácica com dispneia ou instabilidade segue avaliação emergencial própria."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Distinguir mastite, abscesso, nódulo e dor musculoesquelética. Nódulo persistente, secreção sanguinolenta, retração recente ou alteração cutânea requerem investigação mamária; imagem é orientada pelos achados."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Opção inicial: orientação e sutiã com suporte adequado. Analgesia simples ou anti-inflamatório tópico, como diclofenaco, pode ser considerado se adequado; revisar medicamentos que possam agravar sintomas."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Não aplicar produtos irritantes ou gel analgésico no mamilo de quem amamenta sem avaliação. Tratamentos hormonais para dor refratária exigem especialista; vitamina E e óleo de prímula não têm benefício bem estabelecido."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Registrar evolução e impacto; retorno se persistência ou novo achado. Febre com mama quente/vermelha, massa fixa ou alteração de pele exige reavaliação prioritária, não simples repetição de analgésico."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opção 1: suporte mamário adequado e medidas de conforto. Opção 2: analgesia simples ou diclofenaco tópico se elegível, após excluir sinais de alarme. Dor refratária exige reavaliar diagnóstico; terapia hormonal não é uma segunda prescrição automática."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Alívio de dor em adulta com pelo menos 50 kg: paracetamol 500–1000 mg por via oral a cada 6 horas, se necessário; máximo 4000 mg em 24 horas. Usar por curto período e reavaliar se precisar por mais de 3 dias. Reduzir limite/individualizar em baixo peso, hepatopatia, desnutrição ou uso excessivo de álcool; somar todas as apresentações que contêm paracetamol."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Alternativa para dor localizada em mulher não gestante e não lactante: diclofenaco gel 1% em camada fina sobre pele íntegra da área dolorosa, aproximadamente 2–4 g conforme extensão, três a quatro vezes ao dia. Não aplicar em mamilo, mucosa, ferida ou mama durante amamentação. Reavaliar em 7 dias; seguir quantidade da apresentação, sem extrapolar para gel de outra concentração. Uso para mastalgia é fora de bula da apresentação consultada; não substitui investigação de massa, secreção ou dor persistente."
+      }
+    ]
+  },
+  "es": {
+    "title": "Mastalgia",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "El dolor mamario puede ser cíclico, no cíclico o referido de la pared torácica; el dolor aislado es poco sugestivo de cáncer, pero no sustituye la evaluación de hallazgos asociados.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "El dolor mamario puede ser cíclico, no cíclico o referido de la pared torácica; el dolor aislado es poco sugestivo de cáncer, pero no sustituye la evaluación de hallazgos asociados."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Relacionar el dolor con ciclo, embarazo, lactancia, medicamentos y movimiento; examinar mamas y pared torácica. El dolor torácico con disnea o inestabilidad sigue una evaluación urgente específica."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Diferenciar mastitis, absceso, nódulo y dolor musculoesquelético. Un nódulo persistente, secreción sanguinolenta, retracción reciente o alteración cutánea requieren estudio mamario; la imagen se orienta por los hallazgos."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Opción inicial: orientación y sostén adecuado. Puede considerarse analgesia simple o antiinflamatorio tópico, como diclofenaco, si es apropiado; revisar medicamentos que puedan agravar los síntomas."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "No aplicar productos irritantes ni gel analgésico sobre el pezón durante lactancia sin evaluación. Los tratamientos hormonales para dolor refractario requieren especialista; vitamina E y aceite de onagra no tienen beneficio bien establecido."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Registrar evolución e impacto; consultar ante persistencia o nuevos hallazgos. Fiebre con mama caliente/roja, masa fija o alteración de piel requieren reevaluación prioritaria, no simple repetición de analgésicos."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opción 1: soporte mamario adecuado y medidas de confort. Opción 2: analgesia simple o diclofenaco tópico si es elegible, tras descartar señales de alarma. Dolor refractario requiere reevaluar diagnóstico; terapia hormonal no es una segunda prescripción automática."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Alivio del dolor en adulta de al menos 50 kg: paracetamol 500–1000 mg por vía oral cada 6 horas, si es necesario; máximo 4000 mg en 24 horas. Usar por un período breve y reevaluar si se necesita durante más de 3 días. Reducir el límite/individualizar ante bajo peso, hepatopatía, desnutrición o consumo excesivo de alcohol; sumar todas las presentaciones que contienen paracetamol."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Alternativa para dolor localizado en mujer no embarazada y no lactante: diclofenaco gel al 1% en capa fina sobre piel intacta del área dolorosa, aproximadamente 2–4 g según extensión, tres a cuatro veces al día. No aplicar en pezón, mucosa, herida ni mama durante lactancia. Reevaluar en 7 días; seguir cantidad de la presentación, sin extrapolar a gel de otra concentración. El uso para mastalgia es fuera de indicación autorizada de la presentación consultada; no sustituye evaluación de masa, secreción o dolor persistente."
+      }
+    ]
+  }
+}

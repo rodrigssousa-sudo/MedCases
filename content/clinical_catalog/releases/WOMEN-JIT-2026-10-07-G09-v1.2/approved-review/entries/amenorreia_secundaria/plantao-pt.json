@@ -1,0 +1,121 @@
+{
+  "owner": "amenorreia_secundaria",
+  "mode": "plantao",
+  "locale": "pt",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "85b4fafcd452a2f0bb5b83c6fd926f5bb355b49bf1edbaf247d88d57e4c8f0e6",
+  "title": "Amenorreia secundária",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "recognition",
+      "heading": "Reconhecimento",
+      "text": "Pesquisar padrão prévio, medicamentos, lactação, perda de peso, exercício, galactorreia e hiperandrogenismo. Dor ou sangramento com possível gravidez exige excluir gravidez ectópica.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "amen"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "heading": "Diagnóstico e diferenciais",
+      "text": "Excluir gestação; avaliação inicial inclui TSH, prolactina e FSH, interpretando estradiol/contexto. Ultrassonografia e exames adicionais dependem dos achados; diferenciar SOP, insuficiência ovariana e causa hipotalâmica.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "amen"
+      ]
+    },
+    {
+      "id": "treatment",
+      "heading": "Tratamento inicial",
+      "text": "Causa hipotalâmica funcional pode exigir restaurar disponibilidade energética, nutrição e reduzir exercício excessivo com apoio multidisciplinar. Tratar distúrbio tireoidiano ou prolactina elevada conforme causa, não apenas induzir sangramento.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "amen"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "heading": "Medicamento, dose e forma de uso",
+      "text": "Após excluir gestação e definir anovulação como causa, exemplo de progestagênio para sangramento de privação/proteção endometrial: acetato de medroxiprogesterona 10 mg por via oral uma vez ao dia durante 10 dias, dentro da faixa de 5–10 mg por 5–10 dias da bula. A frequência de repetição depende da causa e do plano endometrial; não repetir indefinidamente sem avaliação. Não corrige insuficiência ovariana ou baixa disponibilidade energética e não funciona como contracepção.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "W12_Provera",
+        "amen"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_2",
+      "heading": "Medicamento, dose e forma de uso",
+      "text": "Exemplo de contraceptivo combinado para adulta elegível, sem desejo imediato de gravidez: etinilestradiol 30 microgramas + levonorgestrel 150 microgramas, 1 comprimido ativo por via oral uma vez ao dia por 21 dias, seguido de 7 dias de pausa; iniciar nova cartela no dia seguinte ao fim da pausa. Esse é o esquema da apresentação de 21 comprimidos; não confundir com cartelas de placebo. Uso para sintomas requer prescrição e seguimento, sem prazo curativo universal. Antes, medir pressão e excluir gestação, trombose/trombofilia, enxaqueca com aura, hipertensão importante, hepatopatia grave e outras contraindicações; tabagismo após 35 anos pode impedir o uso. Não associar automaticamente a outros hormônios.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "W12_COC"
+      ]
+    },
+    {
+      "id": "alternative",
+      "heading": "Alternativas e seleção",
+      "text": "Em anovulação crônica, discutir proteção endometrial com progestagênio ou contracepção hormonal quando elegível; insuficiência ovariana exige abordagem própria. Desejo de gravidez muda o plano, sem indicação universal de indutor de ovulação.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "amen"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "heading": "Monitorização e seguimento",
+      "text": "Monitorar retorno dos ciclos, saúde óssea e fatores etiológicos. Cefaleia persistente, alteração visual ou hiperandrogenismo rapidamente progressivo exige investigação direcionada; evitar tratar empiricamente sem excluir gestação.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "amen"
+      ]
+    },
+    {
+      "id": "foundation",
+      "heading": "Definição e raciocínio",
+      "text": "Ausência de menstruação por mais de 3 meses após ciclos regulares ou 6 meses após ciclos irregulares exige investigação. Gravidez deve ser excluída antes desses prazos quando possível.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "amen"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "amen",
+      "title": "ASRM — Current evaluation of amenorrhea, 2024",
+      "url": "https://www.asrm.org/practice-guidance/practice-committee-documents/current-evaluation-of-amenorrhea/",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "ASRM",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Provera",
+      "title": "Provera 10 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/3547/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_COC",
+      "title": "Microgynon 30 — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/1130/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ]
+}

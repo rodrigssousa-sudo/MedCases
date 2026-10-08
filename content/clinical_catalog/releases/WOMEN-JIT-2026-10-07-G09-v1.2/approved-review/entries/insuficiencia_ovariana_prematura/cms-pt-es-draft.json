@@ -1,0 +1,339 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "insuficiencia_ovariana_prematura",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "fc94c4391ee65a10da8be3b82023af6404dc5fcde123ca17a9fff34d1d59def4",
+  "references": [
+    {
+      "id": "F1",
+      "title": "Evidence-based guideline: premature ovarian insufficiency",
+      "url": "https://academic.oup.com/hropen/article/2024/4/hoae065/7918369",
+      "authority": "ESHRE / ASRM / IMS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "F2",
+      "title": "Premature ovarian insufficiency guideline",
+      "url": "https://www.eshre.eu/Guidelines-and-Legal/Guidelines/Premature-ovarian-insufficiency",
+      "authority": "ESHRE",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_POI",
+      "title": "ASRM/ESHRE/IMS — premature ovarian insufficiency guideline",
+      "url": "https://www.asrm.org/practice-guidance/practice-committee-documents/evidence-based-guideline-premature-ovarian-insufficiency--2024/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Evorel",
+      "title": "Evorel 100 — SmPC, August 2026",
+      "url": "https://www.medicines.org.uk/emc/product/10932/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Progesterone",
+      "title": "Oral micronised progesterone 100 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/102564/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_COC",
+      "title": "Microgynon 30 — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/1130/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Insuficiência ovariana prematura",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Perda de atividade ovariana antes dos 40 anos, com efeitos reprodutivos, ósseos e cardiovasculares; função ovariana intermitente ainda pode ocorrer.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Perda de atividade ovariana antes dos 40 anos, com efeitos reprodutivos, ósseos e cardiovasculares; função ovariana intermitente ainda pode ocorrer."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Pesquisar irregularidade ou ausência menstrual, sintomas de deficiência estrogênica, tratamentos gonadotóxicos, histórico familiar e desejo reprodutivo."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Critério: ciclos alterados por pelo menos 4 meses e FSH >25 unidades internacionais/L. Repetir FSH após 4–6 semanas somente se houver incerteza diagnóstica; excluir gestação e interferência hormonal."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Oferecer terapia hormonal até a idade habitual da menopausa, salvo contraindicação, inclusive para proteção óssea e cardiovascular; discutir fertilidade e apoio emocional."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Avaliar saúde óssea, fatores cardiovasculares, adesão e investigação etiológica genética ou autoimune conforme indicação. Hormônio antimülleriano não é teste diagnóstico principal."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Sinais de alarme",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Sangramento inesperado durante terapia hormonal exige avaliação; lesões suspeitas ou contraindicações hormonais justificam manejo especializado."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Populações especiais",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Terapia hormonal não fornece contracepção; discutir prevenção de gestação quando desejada e encaminhar para planejamento reprodutivo, sem prometer recuperação da reserva ovariana."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Terapia hormonal pode utilizar estrogênio por via transdérmica ou oral, individualizando riscos, preferência e proteção endometrial quando há útero. Se também há necessidade de contracepção, discutir contraceptivo combinado elegível como opção distinta. Hormonioterapia de reposição não é contraceptiva."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Reposição sistêmica em adulta elegível: para proteção óssea na insuficiência ovariana prematura, a diretriz sugere pelo menos estradiol 2 mg por via oral uma vez ao dia OU estradiol transdérmico que libere 100 microgramas por 24 horas. Exemplo de apresentação transdérmica: adesivo de liberação de 100 microgramas por 24 horas, trocado duas vezes por semana conforme bula, não 100 microgramas por aplicação. Escolher uma via e individualizar; essas doses não são indicação universal para toda mulher após menopausa habitual. Manter até a idade habitual de menopausa se elegível, com reavaliação. Não é contracepção."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Com útero e estrogênio sistêmico, proteger endométrio: exemplo sequencial, progesterona micronizada 200 mg por via oral à noite durante 12 dias, dos dias 15–26 de cada ciclo de 28 dias. Essa é a apresentação oral para reposição; não substituir pela via vaginal ou por protocolos obstétricos. Ajustar proteção à dose de estrogênio e avaliar qualquer sangramento anormal. Rever câncer hormônio-dependente, doença tromboembólica/hepática e outras contraindicações antes de iniciar."
+      },
+      {
+        "id": "pharmacotherapy_v12_3-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_3",
+        "type": "paragraph",
+        "text": "Exemplo de contraceptivo combinado para adulta elegível, sem desejo imediato de gravidez: etinilestradiol 30 microgramas + levonorgestrel 150 microgramas, 1 comprimido ativo por via oral uma vez ao dia por 21 dias, seguido de 7 dias de pausa; iniciar nova cartela no dia seguinte ao fim da pausa. Esse é o esquema da apresentação de 21 comprimidos; não confundir com cartelas de placebo. Uso para sintomas requer prescrição e seguimento, sem prazo curativo universal. Antes, medir pressão e excluir gestação, trombose/trombofilia, enxaqueca com aura, hipertensão importante, hepatopatia grave e outras contraindicações; tabagismo após 35 anos pode impedir o uso. Não associar automaticamente a outros hormônios."
+      }
+    ]
+  },
+  "es": {
+    "title": "Insuficiencia ovárica prematura",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Pérdida de actividad ovárica antes de los 40 años, con efectos reproductivos, óseos y cardiovasculares; aún puede existir función ovárica intermitente.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Pérdida de actividad ovárica antes de los 40 años, con efectos reproductivos, óseos y cardiovasculares; aún puede existir función ovárica intermitente."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Investigar irregularidad o ausencia menstrual, síntomas de deficiencia estrogénica, tratamientos gonadotóxicos, antecedentes familiares y deseo reproductivo."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Criterio: ciclos alterados durante al menos 4 meses y FSH >25 unidades internacionales/L. Repetir FSH tras 4–6 semanas solo ante incertidumbre diagnóstica; excluir embarazo e interferencia hormonal."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Ofrecer terapia hormonal hasta la edad habitual de la menopausia, salvo contraindicación, también para protección ósea y cardiovascular; discutir fertilidad y apoyo emocional."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Evaluar salud ósea, factores cardiovasculares, adherencia e investigación etiológica genética o autoinmune según indicación. La hormona antimülleriana no es la prueba diagnóstica principal."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Señales de alarma",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "El sangrado inesperado durante terapia hormonal exige evaluación; las lesiones sospechosas o las contraindicaciones hormonales justifican manejo especializado."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Poblaciones especiales",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "La terapia hormonal no proporciona anticoncepción; discutir prevención del embarazo cuando se desee y derivar para planificación reproductiva sin prometer recuperación de la reserva ovárica."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "La terapia hormonal puede utilizar estrógeno por vía transdérmica u oral, individualizando riesgos, preferencia y protección endometrial si hay útero. Si también se necesita anticoncepción, discutir un anticonceptivo combinado elegible como opción distinta. La terapia hormonal de reemplazo no es anticonceptiva."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Reposición sistémica en adulta elegible: para protección ósea en insuficiencia ovárica prematura, la guía sugiere al menos estradiol 2 mg por vía oral una vez al día O estradiol transdérmico que libere 100 microgramos por 24 horas. Ejemplo de presentación transdérmica: parche de liberación de 100 microgramos por 24 horas, cambiado dos veces por semana según ficha, no 100 microgramos por aplicación. Elegir una vía e individualizar; estas dosis no son una indicación universal para toda mujer después de la menopausia habitual. Mantener hasta la edad habitual de menopausia si es elegible, con reevaluación. No es anticoncepción."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Con útero y estrógeno sistémico, proteger el endometrio: ejemplo secuencial, progesterona micronizada 200 mg por vía oral por la noche durante 12 días, de los días 15–26 de cada ciclo de 28 días. Esta es la presentación oral para reposición; no sustituir por vía vaginal ni por protocolos obstétricos. Ajustar protección a la dosis de estrógeno y evaluar cualquier sangrado anormal. Revisar cáncer hormonodependiente, enfermedad tromboembólica/hepática y otras contraindicaciones antes de iniciar."
+      },
+      {
+        "id": "pharmacotherapy_v12_3-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_3",
+        "type": "paragraph",
+        "text": "Ejemplo de anticonceptivo combinado para adulta elegible, sin deseo inmediato de embarazo: etinilestradiol 30 microgramos + levonorgestrel 150 microgramos, 1 comprimido activo por vía oral una vez al día durante 21 días, seguido de 7 días de descanso; iniciar un nuevo envase al día siguiente de finalizar el descanso. Este es el esquema de la presentación de 21 comprimidos; no confundir con envases con placebo. El uso para síntomas requiere prescripción y seguimiento, sin un plazo curativo universal. Antes, medir presión y descartar embarazo, trombosis/trombofilia, migraña con aura, hipertensión importante, hepatopatía grave y otras contraindicaciones; fumar después de los 35 años puede impedir su uso. No asociar automáticamente con otras hormonas."
+      }
+    ]
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "owner": "cisto_abscesso_bartholin",
+  "mode": "study",
+  "locale": "es",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "4e6a7be2a74790d7d4eb3c8dd639b90498b58c96bd1d604eec7b7fb7bf81d658",
+  "title": "Quiste / absceso de Bartholin",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "foundation",
+      "heading": "Definición y razonamiento",
+      "text": "La obstrucción del conducto de Bartholin puede producir un quiste; una infección puede causar un absceso doloroso. No equivale a cualquier masa vulvar.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "bar",
+        "barpatient"
+      ]
+    },
+    {
+      "id": "recognition",
+      "heading": "Reconocimiento",
+      "text": "Examinar con consentimiento y evaluar dolor, fluctuación, celulitis y signos sistémicos. Una masa nueva después de la menopausia, aspecto sólido o evolución atípica exige excluir neoplasia.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "bar",
+        "barpatient"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "heading": "Diagnóstico y diferenciales",
+      "text": "El diagnóstico es principalmente clínico; cultivo y pruebas de infecciones de transmisión sexual son selectivos. Reevaluar una lesión persistente o recurrente.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "bar",
+        "barpatient"
+      ]
+    },
+    {
+      "id": "treatment",
+      "heading": "Tratamiento inicial",
+      "text": "Un quiste pequeño asintomático puede observarse; un absceso sintomático suele requerir drenaje con catéter de Word. Analgesia y cuidados locales complementan la intervención.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "bar",
+        "barpatient"
+      ]
+    },
+    {
+      "id": "alternative",
+      "heading": "Alternativas y selección",
+      "text": "La marsupialización es una alternativa según recurrencia, anatomía y decisión compartida. Incisión simple o aspiración aislada aumenta riesgo de recurrencia; los antibióticos no sustituyen el drenaje de un absceso.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "bar",
+        "barpatient"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "heading": "Monitorización y seguimiento",
+      "text": "Considerar antibióticos ante celulitis, signos sistémicos o indicación microbiológica según protocolo local. Empeoramiento, fiebre o recidiva exige reevaluación; planificar control y estudio histológico cuando corresponda.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "bar",
+        "barpatient"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "El antibiótico no es rutinario tras drenaje sin celulitis ni signos de infección. Si está indicado, la guía regional NHS consultada utiliza amoxicilina + clavulanato 500 mg + 125 mg por vía oral cada 8 horas durante 5 días; alternativa seleccionada: sulfametoxazol + trimetoprima 800 mg + 160 mg por vía oral cada 12 horas durante 5 días. No sustituyen el drenaje. Elegir según alergia, cultivo y epidemiología local; revisar función renal, potasio e interacciones. No extrapolar trimetoprima al embarazo, especialmente en el primer trimestre.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "W12_Bartholin"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_2",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Alivio del dolor en adulta de al menos 50 kg: paracetamol 500–1000 mg por vía oral cada 6 horas, si es necesario; máximo 4000 mg en 24 horas. Usar por un período breve y reevaluar si se necesita durante más de 3 días. Reducir el límite/individualizar ante bajo peso, hepatopatía, desnutrición o consumo excesivo de alcohol; sumar todas las presentaciones que contienen paracetamol.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "W12_paracetamol_nhs"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "bar",
+      "title": "NHS Scotland — Management of Bartholin cyst and abscess",
+      "url": "https://www.rightdecisions.scot.nhs.uk/shared-content/ggc-clinical-guidelines/gynaecology/management-of-bartholin-s-cyst-and-abscess-gynaecology-066/",
+      "year": null,
+      "status": "AUTHORITATIVE_LOCAL_CLINICAL_GUIDANCE",
+      "authority": "NHS Scotland",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "barpatient",
+      "title": "UCLH NHS — Bartholin cyst or abscess",
+      "url": "https://www.uclh.nhs.uk/patients-and-visitors/patient-information-pages/bartholins-cyst-or-abscess",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "UCLH NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Bartholin",
+      "title": "NHS GGC — Bartholin cyst/abscess: antimicrobial indications and doses",
+      "url": "https://rightdecisions.scot.nhs.uk/ggc-referral-management/womens-health/gynaecology-clinical-guidelines/management-of-bartholin-s-cyst-and-abscess-gynaecology-066/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_paracetamol_nhs",
+      "title": "NHS — Paracetamol for adults: dosing and precautions",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "markdown": "# Quiste / absceso de Bartholin\n\n## Definición y razonamiento\n\nLa obstrucción del conducto de Bartholin puede producir un quiste; una infección puede causar un absceso doloroso. No equivale a cualquier masa vulvar.\n\n## Reconocimiento\n\nExaminar con consentimiento y evaluar dolor, fluctuación, celulitis y signos sistémicos. Una masa nueva después de la menopausia, aspecto sólido o evolución atípica exige excluir neoplasia.\n\n## Diagnóstico y diferenciales\n\nEl diagnóstico es principalmente clínico; cultivo y pruebas de infecciones de transmisión sexual son selectivos. Reevaluar una lesión persistente o recurrente.\n\n## Tratamiento inicial\n\nUn quiste pequeño asintomático puede observarse; un absceso sintomático suele requerir drenaje con catéter de Word. Analgesia y cuidados locales complementan la intervención.\n\n## Alternativas y selección\n\nLa marsupialización es una alternativa según recurrencia, anatomía y decisión compartida. Incisión simple o aspiración aislada aumenta riesgo de recurrencia; los antibióticos no sustituyen el drenaje de un absceso.\n\n## Monitorización y seguimiento\n\nConsiderar antibióticos ante celulitis, signos sistémicos o indicación microbiológica según protocolo local. Empeoramiento, fiebre o recidiva exige reevaluación; planificar control y estudio histológico cuando corresponda.\n\n## Medicamento, dosis y forma de uso\n\nEl antibiótico no es rutinario tras drenaje sin celulitis ni signos de infección. Si está indicado, la guía regional NHS consultada utiliza amoxicilina + clavulanato 500 mg + 125 mg por vía oral cada 8 horas durante 5 días; alternativa seleccionada: sulfametoxazol + trimetoprima 800 mg + 160 mg por vía oral cada 12 horas durante 5 días. No sustituyen el drenaje. Elegir según alergia, cultivo y epidemiología local; revisar función renal, potasio e interacciones. No extrapolar trimetoprima al embarazo, especialmente en el primer trimestre.\n\n## Medicamento, dosis y forma de uso\n\nAlivio del dolor en adulta de al menos 50 kg: paracetamol 500–1000 mg por vía oral cada 6 horas, si es necesario; máximo 4000 mg en 24 horas. Usar por un período breve y reevaluar si se necesita durante más de 3 días. Reducir el límite/individualizar ante bajo peso, hepatopatía, desnutrición o consumo excesivo de alcohol; sumar todas las presentaciones que contienen paracetamol.\n\n## Referencias\n\n1. [NHS Scotland — Management of Bartholin cyst and abscess](https://www.rightdecisions.scot.nhs.uk/shared-content/ggc-clinical-guidelines/gynaecology/management-of-bartholin-s-cyst-and-abscess-gynaecology-066/)\n2. [UCLH NHS — Bartholin cyst or abscess](https://www.uclh.nhs.uk/patients-and-visitors/patient-information-pages/bartholins-cyst-or-abscess)\n3. [NHS GGC — Bartholin cyst/abscess: antimicrobial indications and doses](https://rightdecisions.scot.nhs.uk/ggc-referral-management/womens-health/gynaecology-clinical-guidelines/management-of-bartholin-s-cyst-and-abscess-gynaecology-066/)\n4. [NHS — Paracetamol for adults: dosing and precautions](https://www.nhs.uk/medicines/paracetamol-for-adults/)",
+  "factIds": [
+    "foundation",
+    "recognition",
+    "diagnosis",
+    "treatment",
+    "alternative",
+    "monitoring",
+    "pharmacotherapy_v12_1",
+    "pharmacotherapy_v12_2"
+  ],
+  "canonicalPayloadSha256": "4e6a7be2a74790d7d4eb3c8dd639b90498b58c96bd1d604eec7b7fb7bf81d658",
+  "approvedReviewProjectionHash": "870a32551130b0bb997a96d42fc051fe7ab87056bd34fdadb3c6118ca3d0bb7f"
+}

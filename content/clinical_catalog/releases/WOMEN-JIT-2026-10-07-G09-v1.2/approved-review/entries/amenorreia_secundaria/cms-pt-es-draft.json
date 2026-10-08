@@ -1,0 +1,239 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "amenorreia_secundaria",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "85b4fafcd452a2f0bb5b83c6fd926f5bb355b49bf1edbaf247d88d57e4c8f0e6",
+  "references": [
+    {
+      "id": "amen",
+      "title": "ASRM — Current evaluation of amenorrhea, 2024",
+      "url": "https://www.asrm.org/practice-guidance/practice-committee-documents/current-evaluation-of-amenorrhea/",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "ASRM",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Provera",
+      "title": "Provera 10 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/3547/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_COC",
+      "title": "Microgynon 30 — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/1130/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Amenorreia secundária",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Ausência de menstruação por mais de 3 meses após ciclos regulares ou 6 meses após ciclos irregulares exige investigação. Gravidez deve ser excluída antes desses prazos quando possível.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Ausência de menstruação por mais de 3 meses após ciclos regulares ou 6 meses após ciclos irregulares exige investigação. Gravidez deve ser excluída antes desses prazos quando possível."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Pesquisar padrão prévio, medicamentos, lactação, perda de peso, exercício, galactorreia e hiperandrogenismo. Dor ou sangramento com possível gravidez exige excluir gravidez ectópica."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Excluir gestação; avaliação inicial inclui TSH, prolactina e FSH, interpretando estradiol/contexto. Ultrassonografia e exames adicionais dependem dos achados; diferenciar SOP, insuficiência ovariana e causa hipotalâmica."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Causa hipotalâmica funcional pode exigir restaurar disponibilidade energética, nutrição e reduzir exercício excessivo com apoio multidisciplinar. Tratar distúrbio tireoidiano ou prolactina elevada conforme causa, não apenas induzir sangramento."
+      },
+      {
+        "id": "alternative-heading",
+        "type": "heading",
+        "text": "Alternativas e seleção",
+        "level": 2
+      },
+      {
+        "id": "alternative",
+        "type": "paragraph",
+        "text": "Em anovulação crônica, discutir proteção endometrial com progestagênio ou contracepção hormonal quando elegível; insuficiência ovariana exige abordagem própria. Desejo de gravidez muda o plano, sem indicação universal de indutor de ovulação."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Monitorar retorno dos ciclos, saúde óssea e fatores etiológicos. Cefaleia persistente, alteração visual ou hiperandrogenismo rapidamente progressivo exige investigação direcionada; evitar tratar empiricamente sem excluir gestação."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Após excluir gestação e definir anovulação como causa, exemplo de progestagênio para sangramento de privação/proteção endometrial: acetato de medroxiprogesterona 10 mg por via oral uma vez ao dia durante 10 dias, dentro da faixa de 5–10 mg por 5–10 dias da bula. A frequência de repetição depende da causa e do plano endometrial; não repetir indefinidamente sem avaliação. Não corrige insuficiência ovariana ou baixa disponibilidade energética e não funciona como contracepção."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Exemplo de contraceptivo combinado para adulta elegível, sem desejo imediato de gravidez: etinilestradiol 30 microgramas + levonorgestrel 150 microgramas, 1 comprimido ativo por via oral uma vez ao dia por 21 dias, seguido de 7 dias de pausa; iniciar nova cartela no dia seguinte ao fim da pausa. Esse é o esquema da apresentação de 21 comprimidos; não confundir com cartelas de placebo. Uso para sintomas requer prescrição e seguimento, sem prazo curativo universal. Antes, medir pressão e excluir gestação, trombose/trombofilia, enxaqueca com aura, hipertensão importante, hepatopatia grave e outras contraindicações; tabagismo após 35 anos pode impedir o uso. Não associar automaticamente a outros hormônios."
+      }
+    ]
+  },
+  "es": {
+    "title": "Amenorrea secundaria",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Ausencia de menstruación durante más de 3 meses tras ciclos regulares o 6 meses tras ciclos irregulares requiere estudio. El embarazo debe descartarse antes de esos plazos cuando sea posible.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Ausencia de menstruación durante más de 3 meses tras ciclos regulares o 6 meses tras ciclos irregulares requiere estudio. El embarazo debe descartarse antes de esos plazos cuando sea posible."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Investigar patrón previo, medicamentos, lactancia, pérdida de peso, ejercicio, galactorrea e hiperandrogenismo. Dolor o sangrado con posible embarazo requiere excluir embarazo ectópico."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Descartar embarazo; la evaluación inicial incluye TSH, prolactina y FSH, interpretando estradiol/contexto. Ecografía y estudios adicionales dependen de los hallazgos; diferenciar SOP, insuficiencia ovárica y causa hipotalámica."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Una causa hipotalámica funcional puede requerir restaurar disponibilidad energética, nutrición y reducir ejercicio excesivo con apoyo multidisciplinario. Tratar trastorno tiroideo o prolactina elevada según causa, no solo inducir sangrado."
+      },
+      {
+        "id": "alternative-heading",
+        "type": "heading",
+        "text": "Alternativas y selección",
+        "level": 2
+      },
+      {
+        "id": "alternative",
+        "type": "paragraph",
+        "text": "En anovulación crónica, discutir protección endometrial con progestágeno o anticoncepción hormonal cuando sea elegible; insuficiencia ovárica requiere un enfoque específico. El deseo de embarazo modifica el plan, sin indicación universal de inductores de ovulación."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Controlar retorno de ciclos, salud ósea y factores etiológicos. Cefalea persistente, alteración visual o hiperandrogenismo rápidamente progresivo requiere estudio dirigido; evitar tratamiento empírico sin descartar embarazo."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Tras descartar embarazo y establecer anovulación como causa, ejemplo de progestágeno para sangrado por deprivación/protección endometrial: acetato de medroxiprogesterona 10 mg por vía oral una vez al día durante 10 días, dentro del rango de 5–10 mg durante 5–10 días de la ficha. La frecuencia de repetición depende de la causa y del plan endometrial; no repetir indefinidamente sin evaluación. No corrige insuficiencia ovárica ni baja disponibilidad energética y no funciona como anticoncepción."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Ejemplo de anticonceptivo combinado para adulta elegible, sin deseo inmediato de embarazo: etinilestradiol 30 microgramos + levonorgestrel 150 microgramos, 1 comprimido activo por vía oral una vez al día durante 21 días, seguido de 7 días de descanso; iniciar un nuevo envase al día siguiente de finalizar el descanso. Este es el esquema de la presentación de 21 comprimidos; no confundir con envases con placebo. El uso para síntomas requiere prescripción y seguimiento, sin un plazo curativo universal. Antes, medir presión y descartar embarazo, trombosis/trombofilia, migraña con aura, hipertensión importante, hepatopatía grave y otras contraindicaciones; fumar después de los 35 años puede impedir su uso. No asociar automáticamente con otras hormonas."
+      }
+    ]
+  }
+}

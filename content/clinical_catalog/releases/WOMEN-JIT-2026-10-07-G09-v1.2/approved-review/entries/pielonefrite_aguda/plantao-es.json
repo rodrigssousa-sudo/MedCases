@@ -1,0 +1,89 @@
+{
+  "owner": "pielonefrite_aguda",
+  "mode": "plantao",
+  "locale": "es",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "937fe1a774dad5e5109cefd99b2c859c8e8c881d478cb9a85045aa7d4c1893fd",
+  "title": "Pielonefritis aguda",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "recognition",
+      "heading": "Reconocimiento",
+      "text": "Fiebre, dolor en flanco y síntomas urinarios sugieren el cuadro; hipotensión, alteración mental, vómitos persistentes o embarazo requieren evaluación hospitalaria urgente.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "pyelo"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "heading": "Diagnóstico y diferenciales",
+      "text": "Recoger orina para cultivo antes del antibiótico cuando sea posible, sin retrasar el tratamiento de sepsis. Evaluar función renal; investigar cálculo/obstrucción ante sospecha o respuesta inadecuada.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "pyelo"
+      ]
+    },
+    {
+      "id": "treatment",
+      "heading": "Tratamiento inicial",
+      "text": "Si está estable y tolera la vía oral, opción según NICE: cefalexina 500 mg por vía oral tres veces al día durante 7–10 días, condicionada al contexto microbiológico local. Ajustar por disfunción renal y alergias.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "pyelo"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "heading": "Medicamento, dosis y forma de uso",
+      "text": "Si hay vómitos, enfermedad grave o necesidad de tratamiento hospitalario: ceftriaxona 1–2 g por vía intravenosa una vez al día es una opción de referencia NICE para adultas, según gravedad y resistencia local. Obtener cultivos antes cuando sea posible sin retrasar tratamiento; reevaluar en 48 horas y pasar a un antibiótico oral activo cuando haya mejoría. La duración total depende del agente de continuación y evolución; cefalexina oral suele completarse en 7–10 días. Sepsis, obstrucción o embarazo requieren un circuito específico; no utilizar nitrofurantoína para foco renal.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "pyelo"
+      ]
+    },
+    {
+      "id": "alternative",
+      "heading": "Alternativas y selección",
+      "text": "Alternativa solo con cultivo sensible: amoxicilina/ácido clavulánico 500/125 mg por vía oral tres veces al día durante 7–10 días. Enfermedad grave o imposibilidad oral requiere un esquema intravenoso hospitalario; nitrofurantoína no trata pielonefritis.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "pyelo"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "heading": "Monitorización y seguimiento",
+      "text": "Reevaluar en 48 horas o inmediatamente si empeora; revisar cultivo y ajustar antibiótico. Revisar tratamiento intravenoso en 48 horas para posible transición oral; obstrucción infectada exige control urgente del foco.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "pyelo"
+      ]
+    },
+    {
+      "id": "foundation",
+      "heading": "Definición y razonamiento",
+      "text": "La infección del parénquima renal puede evolucionar a sepsis; el antibiótico debe alcanzar tejido renal. El esquema siguiente corresponde a adultas no embarazadas y no sustituye el protocolo del embarazo.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "pyelo"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "pyelo",
+      "title": "NICE NG111 — Pyelonephritis, visual summary 2024",
+      "url": "https://www.nice.org.uk/guidance/ng111/resources/visual-summary-pdf-6544161037",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "NICE NG111",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ]
+}

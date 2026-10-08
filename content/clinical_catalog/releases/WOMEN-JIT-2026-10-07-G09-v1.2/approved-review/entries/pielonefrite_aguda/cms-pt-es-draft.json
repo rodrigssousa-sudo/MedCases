@@ -1,0 +1,195 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "pielonefrite_aguda",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "937fe1a774dad5e5109cefd99b2c859c8e8c881d478cb9a85045aa7d4c1893fd",
+  "references": [
+    {
+      "id": "pyelo",
+      "title": "NICE NG111 — Pyelonephritis, visual summary 2024",
+      "url": "https://www.nice.org.uk/guidance/ng111/resources/visual-summary-pdf-6544161037",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "NICE NG111",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Pielonefrite aguda",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Infecção do parênquima renal pode evoluir para sepse; antibiótico deve alcançar tecido renal. O esquema abaixo refere-se a adultas não gestantes e não substitui protocolo de gestação.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Infecção do parênquima renal pode evoluir para sepse; antibiótico deve alcançar tecido renal. O esquema abaixo refere-se a adultas não gestantes e não substitui protocolo de gestação."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Febre, dor em flanco e sintomas urinários sugerem o quadro; hipotensão, alteração mental, vômitos persistentes ou gravidez exigem avaliação hospitalar urgente."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Colher urina para cultura antes do antibiótico quando possível, sem atrasar tratamento de sepse. Avaliar função renal; pesquisar cálculo/obstrução diante de suspeita ou resposta inadequada."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Se estável e tolerando via oral, opção pelo NICE: cefalexina 500 mg por via oral três vezes ao dia durante 7–10 dias, condicionada ao contexto microbiológico local. Ajustar em disfunção renal e alergias."
+      },
+      {
+        "id": "alternative-heading",
+        "type": "heading",
+        "text": "Alternativas e seleção",
+        "level": 2
+      },
+      {
+        "id": "alternative",
+        "type": "paragraph",
+        "text": "Alternativa apenas com cultura sensível: amoxicilina/ácido clavulânico 500/125 mg por via oral três vezes ao dia durante 7–10 dias. Doença grave ou impossibilidade oral exige esquema intravenoso hospitalar; nitrofurantoína não é tratamento de pielonefrite."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Reavaliar em 48 horas ou imediatamente se piora; revisar cultura e adequar antibiótico. Revisar tratamento intravenoso em 48 horas para eventual transição oral; obstrução infectada exige controle urgente do foco."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Se vômitos, doença grave ou necessidade de tratamento hospitalar: ceftriaxona 1–2 g por via intravenosa uma vez ao dia é opção de referência NICE para adultas, conforme gravidade e resistência local. Colher culturas antes quando possível sem atrasar tratamento; reavaliar em 48 horas e passar a antibiótico oral ativo quando houver melhora. A duração total depende do agente de sequência e evolução; cefalexina oral é usualmente completada em 7–10 dias. Sepse, obstrução ou gestação exigem via específica; não usar nitrofurantoína para foco renal."
+      }
+    ]
+  },
+  "es": {
+    "title": "Pielonefritis aguda",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "La infección del parénquima renal puede evolucionar a sepsis; el antibiótico debe alcanzar tejido renal. El esquema siguiente corresponde a adultas no embarazadas y no sustituye el protocolo del embarazo.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "La infección del parénquima renal puede evolucionar a sepsis; el antibiótico debe alcanzar tejido renal. El esquema siguiente corresponde a adultas no embarazadas y no sustituye el protocolo del embarazo."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Fiebre, dolor en flanco y síntomas urinarios sugieren el cuadro; hipotensión, alteración mental, vómitos persistentes o embarazo requieren evaluación hospitalaria urgente."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Recoger orina para cultivo antes del antibiótico cuando sea posible, sin retrasar el tratamiento de sepsis. Evaluar función renal; investigar cálculo/obstrucción ante sospecha o respuesta inadecuada."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Si está estable y tolera la vía oral, opción según NICE: cefalexina 500 mg por vía oral tres veces al día durante 7–10 días, condicionada al contexto microbiológico local. Ajustar por disfunción renal y alergias."
+      },
+      {
+        "id": "alternative-heading",
+        "type": "heading",
+        "text": "Alternativas y selección",
+        "level": 2
+      },
+      {
+        "id": "alternative",
+        "type": "paragraph",
+        "text": "Alternativa solo con cultivo sensible: amoxicilina/ácido clavulánico 500/125 mg por vía oral tres veces al día durante 7–10 días. Enfermedad grave o imposibilidad oral requiere un esquema intravenoso hospitalario; nitrofurantoína no trata pielonefritis."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Reevaluar en 48 horas o inmediatamente si empeora; revisar cultivo y ajustar antibiótico. Revisar tratamiento intravenoso en 48 horas para posible transición oral; obstrucción infectada exige control urgente del foco."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Si hay vómitos, enfermedad grave o necesidad de tratamiento hospitalario: ceftriaxona 1–2 g por vía intravenosa una vez al día es una opción de referencia NICE para adultas, según gravedad y resistencia local. Obtener cultivos antes cuando sea posible sin retrasar tratamiento; reevaluar en 48 horas y pasar a un antibiótico oral activo cuando haya mejoría. La duración total depende del agente de continuación y evolución; cefalexina oral suele completarse en 7–10 días. Sepsis, obstrucción o embarazo requieren un circuito específico; no utilizar nitrofurantoína para foco renal."
+      }
+    ]
+  }
+}

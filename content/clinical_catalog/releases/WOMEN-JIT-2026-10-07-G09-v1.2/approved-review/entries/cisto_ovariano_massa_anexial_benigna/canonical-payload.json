@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "1.0",
+  "owner": "cisto_ovariano_massa_anexial_benigna",
+  "title": {
+    "pt": "Cisto ovariano / massa anexial presumivelmente benigna",
+    "es": "Quiste ovárico / masa anexial presumiblemente benigna"
+  },
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "population": "Mulheres adultas; gestação/lactação e outros contextos somente quando explicitados",
+  "identity": {
+    "action": "REVIEW_EXISTING_PRESERVE_ID",
+    "existingCanonicalDocumentIds": [
+      "cisto_ovariano_massa_anexial_benigna"
+    ],
+    "owner": "cisto_ovariano_massa_anexial_benigna",
+    "newOwnerActivated": false,
+    "relatedButNotEquivalent": [],
+    "scope": "Massas anexiais têm causas funcionais, benignas e malignas; classificação depende de morfologia e contexto. Presumir benignidade não dispensa avaliação de sintomas e risco.",
+    "preserveExistingPregnancyContent": true,
+    "existingCMSDocumentIds": [
+      "cisto_ovariano_massa_anexial_benigna"
+    ],
+    "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+    "existingRuntimeOwnerPreserved": true
+  },
+  "review": {
+    "author": "Codex — preparação e conferência de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "foundation",
+      "section": "foundation",
+      "pt": "Massas anexiais têm causas funcionais, benignas e malignas; classificação depende de morfologia e contexto. Presumir benignidade não dispensa avaliação de sintomas e risco.",
+      "es": "Las masas anexiales tienen causas funcionales, benignas y malignas; su clasificación depende de morfología y contexto. Presumir benignidad no elimina la evaluación de síntomas y riesgo.",
+      "sources": [
+        "cyst",
+        "cancerref"
+      ]
+    },
+    {
+      "id": "recognition",
+      "section": "recognition",
+      "pt": "Dor súbita unilateral com náuseas pode indicar torção; instabilidade ou gravidez possível exige avaliar hemorragia/gravidez ectópica. Distensão persistente, saciedade precoce ou massa complexa exige investigação.",
+      "es": "Dolor súbito unilateral con náuseas puede indicar torsión; inestabilidad o posible embarazo exige evaluar hemorragia/embarazo ectópico. Distensión persistente, saciedad precoz o masa compleja requiere estudio.",
+      "sources": [
+        "cyst",
+        "cancerref"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "section": "diagnosis",
+      "pt": "Ultrassonografia caracteriza tamanho, estrutura e componentes; investigar gestação quando aplicável. Idade, menopausa e achados determinam necessidade de marcadores e referência; marcador isolado não diagnostica câncer.",
+      "es": "La ecografía caracteriza tamaño, estructura y componentes; investigar embarazo cuando corresponda. Edad, menopausia y hallazgos determinan necesidad de marcadores y derivación; un marcador aislado no diagnostica cáncer.",
+      "sources": [
+        "cyst",
+        "cancerref"
+      ]
+    },
+    {
+      "id": "treatment",
+      "section": "treatment",
+      "pt": "Observação com acompanhamento é opção para cisto simples de baixo risco quando adequado. Controle de sintomas e plano de retorno devem ser explícitos; não aplicar o mesmo critério pré-menopausa à pós-menopausa.",
+      "es": "Observación con seguimiento es una opción para un quiste simple de bajo riesgo cuando corresponda. El control de síntomas y plan de retorno deben ser explícitos; no aplicar el mismo criterio premenopáusico a la posmenopausia.",
+      "sources": [
+        "cyst",
+        "cancerref"
+      ]
+    },
+    {
+      "id": "alternative",
+      "section": "alternative",
+      "pt": "Cirurgia é alternativa para massa sintomática, persistente, complexa ou com suspeita oncológica, preservando fertilidade quando seguro. Contraceptivo combinado não acelera resolução de cisto funcional já formado.",
+      "es": "La cirugía es alternativa ante masa sintomática, persistente, compleja o con sospecha oncológica, preservando fertilidad cuando sea seguro. El anticonceptivo combinado no acelera la resolución de un quiste funcional ya formado.",
+      "sources": [
+        "cyst",
+        "cancerref"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "section": "monitoring",
+      "pt": "Retorno e repetição de imagem dependem da classificação de risco. Sinais de torção, ruptura com instabilidade ou neoplasia exigem via urgente; registrar contexto e não criar novo owner apenas por tamanho do cisto.",
+      "es": "El control y repetición de imagen dependen de la clasificación de riesgo. Signos de torsión, rotura con inestabilidad o neoplasia requieren una vía urgente; registrar contexto y no crear un nuevo owner solo por tamaño del quiste.",
+      "sources": [
+        "cyst",
+        "cancerref"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "section": "dose",
+      "pt": "Alívio de dor em adulta com pelo menos 50 kg: paracetamol 500–1000 mg por via oral a cada 6 horas, se necessário; máximo 4000 mg em 24 horas. Usar por curto período e reavaliar se precisar por mais de 3 dias. Reduzir limite/individualizar em baixo peso, hepatopatia, desnutrição ou uso excessivo de álcool; somar todas as apresentações que contêm paracetamol.",
+      "es": "Alivio del dolor en adulta de al menos 50 kg: paracetamol 500–1000 mg por vía oral cada 6 horas, si es necesario; máximo 4000 mg en 24 horas. Usar por un período breve y reevaluar si se necesita durante más de 3 días. Reducir el límite/individualizar ante bajo peso, hepatopatía, desnutrición o consumo excesivo de alcohol; sumar todas las presentaciones que contienen paracetamol.",
+      "sources": [
+        "W12_paracetamol_nhs"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_2",
+      "section": "dose",
+      "pt": "Alternativa analgésica em adulta elegível: ibuprofeno 400 mg por via oral a cada 8 horas, com alimento, se necessário; máximo 1200 mg em 24 horas neste esquema de curta duração. Não associar a outro anti-inflamatório. Evitar em doença renal, desidratação, úlcera/sangramento digestivo, alergia a anti-inflamatórios ou alto risco cardiovascular; na gestação não utilizar por conta própria, especialmente a partir de 20 semanas.",
+      "es": "Alternativa analgésica en adulta elegible: ibuprofeno 400 mg por vía oral cada 8 horas, con alimento, si es necesario; máximo 1200 mg en 24 horas en este esquema breve. No asociar a otro antiinflamatorio. Evitar ante enfermedad renal, deshidratación, úlcera/hemorragia digestiva, alergia a antiinflamatorios o alto riesgo cardiovascular; en el embarazo no utilizar por cuenta propia, especialmente a partir de 20 semanas.",
+      "sources": [
+        "W12_ibuprofen_nhs"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "cyst",
+      "title": "RCOG — Ovarian cysts before the menopause",
+      "url": "https://www.rcog.org.uk/for-the-public/browse-our-patient-information/ovarian-cysts-before-the-menopause/",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "RCOG",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "cancerref",
+      "title": "NICE NG12 — Suspected cancer: recognition and referral",
+      "url": "https://www.nice.org.uk/guidance/ng12/chapter/recommendations-organised-by-site-of-cancer",
+      "year": null,
+      "status": "AUTHORITATIVE_LIVING",
+      "authority": "NICE NG12",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_paracetamol_nhs",
+      "title": "NHS — Paracetamol for adults: dosing and precautions",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_ibuprofen_nhs",
+      "title": "NHS — Ibuprofen for adults: dose, maximum and precautions",
+      "url": "https://www.nhs.uk/medicines/ibuprofen-for-adults/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "provenance": {
+    "version": "WOMEN-JIT-2026-10-07-G09-v1.1",
+    "canonicalHash": "e47f0ebb48f075bdea32991634e07f9e185c754db1003012e9050877cc90ce99",
+    "sourcePath": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-women50-group09-2026-10-07/revisions/v1.1/entries/cisto_ovariano_massa_anexial_benigna/canonical-payload.json",
+    "revisionScope": "treatment completion; no remote writes; identifiers preserved",
+    "previousProvenance": null
+  },
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

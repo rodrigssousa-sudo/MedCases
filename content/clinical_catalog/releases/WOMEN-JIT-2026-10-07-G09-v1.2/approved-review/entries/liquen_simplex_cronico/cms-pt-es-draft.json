@@ -1,0 +1,278 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "liquen_simplex_cronico",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "6e8fd42fbf42ed15a078a91afabe05033fc78069eaccb42b667fb1837315e716",
+  "references": [
+    {
+      "id": "PCDS",
+      "title": "Lichen simplex chronicus",
+      "url": "https://www.pcds.org.uk/clinical-guidance/lichen-simplex-chronicus",
+      "authority": "PCDS",
+      "year": 2023,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "BAD",
+      "title": "Lichen simplex",
+      "url": "https://www.bad.org.uk/pils/lichen-simplex",
+      "authority": "BAD",
+      "year": 2023,
+      "status": "AUTHORITATIVE_CURRENT_WEB_GUIDANCE",
+      "verifiedAt": "2026-10-03",
+      "publicationDateConfirmed": true,
+      "accessEvidence": "CLINICAL_TEXT_REVIEWED",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "BASHH_VULVAL24",
+      "title": "BASHH — UK national guideline on vulval conditions, 2024, publicado em 2025",
+      "url": "https://www.bashh.org/_userfiles/pages/files/bashh_vulval_guidelines_2024.pdf",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "BASHH",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-07",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Eczema",
+      "title": "NHS Ayrshire — Eczema/dermatitis topical treatment",
+      "url": "https://aaamedicines.org.uk/guidelines/dermatology/management-of-eczema-dermatitis/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Líquen simples crônico",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Ciclo prurido–coçadura produz placas espessadas e liquenificadas; pode ocorrer sobre dermatose prévia ou sem causa primária reconhecida.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Ciclo prurido–coçadura produz placas espessadas e liquenificadas; pode ocorrer sobre dermatose prévia ou sem causa primária reconhecida."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Prurido intenso com marcas cutâneas acentuadas em locais acessíveis à coçadura, como nuca, membros e genitais; avaliar sono e gatilhos."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Diagnóstico clínico; pesquisar micose ou alergia de contato conforme contexto. Lesão atípica ou resistente pode requerer biópsia para excluir outra doença."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Romper ciclo de coçadura, remover irritantes e usar emolientes; tratar causa subjacente e apoiar estratégias de mudança do hábito."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Monitorar prurido, sono, atrofia e recorrência; retorno da coçadura pode reativar lesão. Não manter corticoide potente indefinidamente."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Sinais de alarme",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Ulceração persistente, diagnóstico incerto, infecção ou padrão genital atípico exige revisão e especialista; não mascarar lesão suspeita com corticoide."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Populações especiais",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Crianças são menos frequentemente afetadas; face e genitais exigem potência apropriada. Sedativos para prurido podem prejudicar direção e causar efeitos adversos."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Selecionar hidrocortisona ou mometasona, com concentração e aplicação descritas abaixo, conforme gravidade/local. Cuidados da barreira e interrupção do ciclo coçar/lesionar são essenciais. Doença refratária exige dermatologista e exclusão de infecção, alergia e lesão suspeita; não trocar empiricamente por imunomodulador sem prescrição especializada."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Na liquenificação vulvar importante, exemplo recomendado: mometasona furoato 0,1% em pomada, camada fina por via cutânea na área afetada uma vez ao dia inicialmente, com redução progressiva em curso de 2–3 meses sob supervisão. Não aplicar um cronograma fixo de redução sem avaliar resposta/local. Em quadro leve, hidrocortisona 1% em camada fina uma vez ao dia é opção de menor potência; na vulva, duração e quantidade são definidas pelo exame e seguimento, sem um esquema universal comprovado. Não usar corticoide sobre infecção não tratada; revisar diagnóstico, irritantes e atrofia cutânea."
+      }
+    ]
+  },
+  "es": {
+    "title": "Liquen simple crónico",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "El ciclo prurito–rascado produce placas engrosadas y liquenificadas; puede aparecer sobre dermatosis previa o sin causa primaria reconocida.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "El ciclo prurito–rascado produce placas engrosadas y liquenificadas; puede aparecer sobre dermatosis previa o sin causa primaria reconocida."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Prurito intenso con marcas cutáneas acentuadas en zonas accesibles al rascado, como nuca, miembros y genitales; evaluar sueño y desencadenantes."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Diagnóstico clínico; investigar micosis o alergia de contacto según contexto. Lesiones atípicas o resistentes pueden requerir biopsia para excluir otra enfermedad."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Interrumpir rascado, eliminar irritantes y usar emolientes; tratar la causa subyacente y apoyar estrategias de cambio del hábito."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Controlar prurito, sueño, atrofia y recurrencia; volver a rascar puede reactivar lesiones. No mantener corticoides potentes indefinidamente."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Señales de alarma",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Ulceración persistente, diagnóstico incierto, infección o patrón genital atípico exige revisión y especialista; no enmascarar lesiones sospechosas con corticoides."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Poblaciones especiales",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Los niños se afectan menos frecuentemente; cara y genitales requieren potencia apropiada. Sedantes para prurito pueden perjudicar conducción y causar efectos adversos."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Seleccionar hidrocortisona o mometasona, con concentración y aplicación descritas a continuación, según gravedad/localización. Cuidado de barrera e interrupción del ciclo rascar/lesionar son esenciales. La enfermedad refractaria requiere dermatólogo y descartar infección, alergia y lesión sospechosa; no cambiar empíricamente por inmunomodulador sin prescripción especializada."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Ante liquenificación vulvar importante, ejemplo recomendado: furoato de mometasona al 0,1% en pomada, capa fina por vía cutánea en el área afectada una vez al día inicialmente, con reducción progresiva durante 2–3 meses bajo supervisión. No aplicar un calendario fijo de reducción sin evaluar respuesta/localización. En un cuadro leve, hidrocortisona al 1% en capa fina una vez al día es una opción de menor potencia; en la vulva, duración y cantidad se definen por examen y seguimiento, sin un esquema universal demostrado. No utilizar corticoide sobre infección sin tratar; revisar diagnóstico, irritantes y atrofia cutánea."
+      }
+    ]
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "owner": "infeccao_mycoplasma_genitalium",
+  "mode": "plantao",
+  "locale": "pt",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "45e2056f06319448245f0ad2e31cfcd6100fa9fe28b9c4b88d3aa498b5a0a439",
+  "title": "Infecção por Mycoplasma genitalium",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "recognition",
+      "heading": "Reconhecimento",
+      "text": "Suspeitar em cervicite recorrente após excluir reinfecção e outros agentes. Dor pélvica, febre ou sinais de infecção superior exigem abordagem de doença inflamatória pélvica.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "mgen",
+        "mgen25"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "heading": "Diagnóstico e diferenciais",
+      "text": "Confirmar por teste molecular e testar resistência quando disponível. Não rastrear pessoas assintomáticas rotineiramente; conhecer diferenças territoriais entre CDC e BASHH.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "mgen",
+        "mgen25"
+      ]
+    },
+    {
+      "id": "treatment",
+      "heading": "Tratamento inicial",
+      "text": "Pelo CDC, infecção não complicada sem teste de resistência: doxiciclina 100 mg por via oral duas vezes ao dia durante 7 dias, seguida de moxifloxacino 400 mg por via oral uma vez ao dia durante 7 dias.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "mgen",
+        "mgen25"
+      ]
+    },
+    {
+      "id": "alternative",
+      "heading": "Alternativas e seleção",
+      "text": "Com sensibilidade a macrolídeos comprovada, pelo CDC: após a mesma doxiciclina, azitromicina 1 g por via oral no primeiro dia, depois 500 mg uma vez ao dia por mais 3 dias. Azitromicina 1 g isolada não é adequada.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "mgen",
+        "mgen25"
+      ]
+    },
+    {
+      "id": "safety",
+      "heading": "Segurança e contraindicações",
+      "text": "Os esquemas descritos não se aplicam automaticamente à gestação ou infecção superior. Moxifloxacino exige revisar prolongamento de QT, interações e risco tendíneo; falha exige especialista.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "mgen",
+        "mgen25"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "heading": "Monitorização e seguimento",
+      "text": "Avaliar adesão, reinfecção e parceiros. Teste de cura depende do esquema e da diretriz; pelo CDC não é rotineiro após esquema recomendado em pessoa assintomática.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "mgen",
+        "mgen25"
+      ]
+    },
+    {
+      "id": "foundation",
+      "heading": "Definição e raciocínio",
+      "text": "Infecção sexualmente transmissível associada a cervicite persistente e doença inflamatória pélvica. A ausência de parede celular torna penicilinas e cefalosporinas ineficazes; resistência a macrolídeos é relevante.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "mgen",
+        "mgen25"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "mgen",
+      "title": "CDC — Mycoplasma genitalium",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/mycoplasmagenitalium.htm",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "authority": "CDC",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "mgen25",
+      "title": "BASHH — Mycoplasma genitalium, final 2025",
+      "url": "https://www.bashh.org/_userfiles/pages/files/bashh_mgen_2025.pdf",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "BASHH",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "markdown": "# Infecção por Mycoplasma genitalium\n\n## Reconhecimento\n\nSuspeitar em cervicite recorrente após excluir reinfecção e outros agentes. Dor pélvica, febre ou sinais de infecção superior exigem abordagem de doença inflamatória pélvica.\n\n## Diagnóstico e diferenciais\n\nConfirmar por teste molecular e testar resistência quando disponível. Não rastrear pessoas assintomáticas rotineiramente; conhecer diferenças territoriais entre CDC e BASHH.\n\n## Tratamento inicial\n\nPelo CDC, infecção não complicada sem teste de resistência: doxiciclina 100 mg por via oral duas vezes ao dia durante 7 dias, seguida de moxifloxacino 400 mg por via oral uma vez ao dia durante 7 dias.\n\n## Alternativas e seleção\n\nCom sensibilidade a macrolídeos comprovada, pelo CDC: após a mesma doxiciclina, azitromicina 1 g por via oral no primeiro dia, depois 500 mg uma vez ao dia por mais 3 dias. Azitromicina 1 g isolada não é adequada.\n\n## Segurança e contraindicações\n\nOs esquemas descritos não se aplicam automaticamente à gestação ou infecção superior. Moxifloxacino exige revisar prolongamento de QT, interações e risco tendíneo; falha exige especialista.\n\n## Monitorização e seguimento\n\nAvaliar adesão, reinfecção e parceiros. Teste de cura depende do esquema e da diretriz; pelo CDC não é rotineiro após esquema recomendado em pessoa assintomática.\n\n## Definição e raciocínio\n\nInfecção sexualmente transmissível associada a cervicite persistente e doença inflamatória pélvica. A ausência de parede celular torna penicilinas e cefalosporinas ineficazes; resistência a macrolídeos é relevante.\n\n## Referências\n\n1. [CDC — Mycoplasma genitalium](https://www.cdc.gov/std/treatment-guidelines/mycoplasmagenitalium.htm)\n2. [BASHH — Mycoplasma genitalium, final 2025](https://www.bashh.org/_userfiles/pages/files/bashh_mgen_2025.pdf)",
+  "factIds": [
+    "recognition",
+    "diagnosis",
+    "treatment",
+    "alternative",
+    "safety",
+    "monitoring",
+    "foundation"
+  ],
+  "canonicalPayloadSha256": "45e2056f06319448245f0ad2e31cfcd6100fa9fe28b9c4b88d3aa498b5a0a439",
+  "approvedReviewProjectionHash": "3794c3aa43c4b11bca7c505bd4c614b9d8d09f675d8e6ac581796b639d4469c9"
+}

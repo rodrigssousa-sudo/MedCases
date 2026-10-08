@@ -1,0 +1,91 @@
+{
+  "owner": "cervicite",
+  "mode": "plantao",
+  "locale": "pt",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "20310ce6f86ed66eee0d1923a48185eba25b812a98deaea69c38e63115b54e3e",
+  "title": "Cervicite",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "recognition",
+      "heading": "Reconhecimento",
+      "text": "Investigar sangramento pós-coito, exposição sexual e dor pélvica; examinar com consentimento. Dor uterina, anexial ou à mobilização cervical exige avaliar doença inflamatória pélvica.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "cerv"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "heading": "Diagnóstico e diferenciais",
+      "text": "Solicitar testes moleculares para clamídia/gonococo e pesquisar tricomoníase/vaginose; considerar Mycoplasma genitalium na persistência. Diferenciar ectopia, pólipo e neoplasia; não pesquisar Ureaplasma rotineiramente.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "cerv"
+      ]
+    },
+    {
+      "id": "treatment",
+      "heading": "Tratamento inicial",
+      "text": "Adulta não gestante: doxiciclina 100 mg por via oral duas vezes ao dia durante 7 dias. Alternativa: azitromicina 1 g por via oral em dose única; cobrir gonococo quando indicado pelo risco.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "cerv"
+      ]
+    },
+    {
+      "id": "safety",
+      "heading": "Segurança e contraindicações",
+      "text": "Em baixo risco com retorno garantido, pode-se aguardar resultados; não atrasar tratamento em alto risco ou seguimento incerto. Gestação requer esquema próprio; não extrapolar doxiciclina.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "cerv"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "heading": "Monitorização e seguimento",
+      "text": "Rever resolução, resultados e parceiros. Evitar relações até tratamento concluído e parceiros tratados. Persistência sem reinfecção exige investigar outra causa, não repetir antibióticos indefinidamente.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "cerv"
+      ]
+    },
+    {
+      "id": "foundation",
+      "heading": "Definição e raciocínio",
+      "text": "Inflamação cervical, frequentemente por clamídia ou gonococo; também pode ser não infecciosa. Corrimento mucopurulento e sangramento ao toque sugerem cervicite, mas não identificam o agente.",
+      "presentation": "action_item",
+      "sourceIds": [
+        "cerv"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "cerv",
+      "title": "CDC — Urethritis and Cervicitis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/urethritis-and-cervicitis.htm",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "authority": "CDC",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "markdown": "# Cervicite\n\n## Reconhecimento\n\nInvestigar sangramento pós-coito, exposição sexual e dor pélvica; examinar com consentimento. Dor uterina, anexial ou à mobilização cervical exige avaliar doença inflamatória pélvica.\n\n## Diagnóstico e diferenciais\n\nSolicitar testes moleculares para clamídia/gonococo e pesquisar tricomoníase/vaginose; considerar Mycoplasma genitalium na persistência. Diferenciar ectopia, pólipo e neoplasia; não pesquisar Ureaplasma rotineiramente.\n\n## Tratamento inicial\n\nAdulta não gestante: doxiciclina 100 mg por via oral duas vezes ao dia durante 7 dias. Alternativa: azitromicina 1 g por via oral em dose única; cobrir gonococo quando indicado pelo risco.\n\n## Segurança e contraindicações\n\nEm baixo risco com retorno garantido, pode-se aguardar resultados; não atrasar tratamento em alto risco ou seguimento incerto. Gestação requer esquema próprio; não extrapolar doxiciclina.\n\n## Monitorização e seguimento\n\nRever resolução, resultados e parceiros. Evitar relações até tratamento concluído e parceiros tratados. Persistência sem reinfecção exige investigar outra causa, não repetir antibióticos indefinidamente.\n\n## Definição e raciocínio\n\nInflamação cervical, frequentemente por clamídia ou gonococo; também pode ser não infecciosa. Corrimento mucopurulento e sangramento ao toque sugerem cervicite, mas não identificam o agente.\n\n## Referências\n\n1. [CDC — Urethritis and Cervicitis](https://www.cdc.gov/std/treatment-guidelines/urethritis-and-cervicitis.htm)",
+  "factIds": [
+    "recognition",
+    "diagnosis",
+    "treatment",
+    "safety",
+    "monitoring",
+    "foundation"
+  ],
+  "canonicalPayloadSha256": "20310ce6f86ed66eee0d1923a48185eba25b812a98deaea69c38e63115b54e3e",
+  "approvedReviewProjectionHash": "eeaa4adb24d4210134a8363d78be46b1f3d0e0cf13989ac6781975e22fd424e4"
+}

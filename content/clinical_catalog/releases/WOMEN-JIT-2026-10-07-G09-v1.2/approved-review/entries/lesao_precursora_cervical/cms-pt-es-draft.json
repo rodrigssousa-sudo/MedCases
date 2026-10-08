@@ -1,0 +1,229 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "lesao_precursora_cervical",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "407a9636e52b024effc2251a4f49c4d313061994ac368dc6b3671b1b3e99e8a2",
+  "references": [
+    {
+      "id": "asccp",
+      "title": "ASCCP — Risk-based management and Enduring Guidelines",
+      "url": "https://www.asccp.org/management-guidelines/",
+      "year": null,
+      "status": "AUTHORITATIVE_LIVING",
+      "authority": "ASCCP",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "asccp23",
+      "title": "ASCCP — 2019 consensus updates through 2023",
+      "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC10755815/",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "ASCCP",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Lesões precursoras do colo do útero",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Lesões intraepiteliais cervicais associadas a HPV podem regredir ou progredir; citologia e histologia são classificações diferentes. HPV positivo isolado não equivale a câncer.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Lesões intraepiteliais cervicais associadas a HPV podem regredir ou progredir; citologia e histologia são classificações diferentes. HPV positivo isolado não equivale a câncer."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Registrar resultados atuais e anteriores, idade, imunossupressão, gestação e tratamento prévio. Lesão visível suspeita ou sintomas de invasão exige investigação, independentemente do rastreamento."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Aplicar algoritmo de risco da diretriz vigente, com colposcopia/biópsia conforme indicação. Diferenciar lesão de baixo grau, alto grau e invasão; não tratar um resultado sem contexto."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Opções: vigilância em contextos de baixo risco ou excisão/ablação quando critérios permitem. Lesão de alto grau confirmada geralmente requer tratamento; observação seletiva depende de grau, fertilidade e seguimento garantido."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Não usar ablação quando há suspeita de invasão ou avaliação inadequada da lesão. Gestação modifica procedimentos e seguimento; não extrapolar excisão imediata de não gestante para grávida."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Seguimento pós-tratamento permanece necessário mesmo com exames negativos iniciais. Garantir resultados, adesão e intervalos conforme algoritmo individual; vacina previne novas infecções, não substitui tratamento de lesão existente."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Vigilância é opção apenas quando grau e risco permitem retorno seguro. Excisão é opção quando tratamento é indicado; ablação exige critérios de elegibilidade e exclusão de invasão. Não oferecer observação indiscriminada para lesão de alto grau nem extrapolar para gravidez."
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12",
+        "type": "paragraph",
+        "text": "Não existe fármaco de rotina que substitua vigilância, excisão ou ablação indicada para lesão precursora cervical. A escolha depende do grau/histologia, idade, gestação e risco. Não prescrever antiviral, antibiótico ou hormônio para erradicar lesão intraepitelial; vacina previne infecções futuras, mas não é tratamento da lesão existente."
+      }
+    ]
+  },
+  "es": {
+    "title": "Lesiones precursoras del cuello uterino",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Las lesiones intraepiteliales cervicales asociadas a VPH pueden regresar o progresar; citología e histología son clasificaciones diferentes. Un VPH positivo aislado no equivale a cáncer.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Las lesiones intraepiteliales cervicales asociadas a VPH pueden regresar o progresar; citología e histología son clasificaciones diferentes. Un VPH positivo aislado no equivale a cáncer."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Registrar resultados actuales y previos, edad, inmunosupresión, embarazo y tratamiento anterior. Lesión visible sospechosa o síntomas de invasión requieren estudio independientemente del cribado."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Aplicar el algoritmo de riesgo de la guía vigente, con colposcopia/biopsia según indicación. Diferenciar lesión de bajo grado, alto grado e invasión; no tratar un resultado sin contexto."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Opciones: vigilancia en contextos de bajo riesgo o escisión/ablación cuando los criterios lo permiten. Una lesión de alto grado confirmada generalmente requiere tratamiento; la observación selectiva depende de grado, fertilidad y seguimiento asegurado."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "No usar ablación cuando se sospecha invasión o la evaluación de la lesión es inadecuada. El embarazo modifica procedimientos y seguimiento; no extrapolar escisión inmediata de una no embarazada al embarazo."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "El seguimiento postratamiento sigue siendo necesario incluso con pruebas negativas iniciales. Asegurar resultados, adherencia e intervalos según algoritmo individual; la vacuna previene nuevas infecciones, no sustituye el tratamiento de una lesión existente."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Vigilancia es una opción solo si grado y riesgo permiten seguimiento seguro. Excisión es una opción cuando corresponde tratar; ablación exige criterios de elegibilidad y descartar invasión. No ofrecer observación indiscriminada para lesión de alto grado ni extrapolar al embarazo."
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12",
+        "type": "paragraph",
+        "text": "No existe un fármaco rutinario que sustituya vigilancia, escisión o ablación indicada para una lesión precursora cervical. La elección depende del grado/histología, edad, embarazo y riesgo. No prescribir antiviral, antibiótico ni hormona para erradicar una lesión intraepitelial; la vacuna previene futuras infecciones, pero no trata la lesión existente."
+      }
+    ]
+  }
+}

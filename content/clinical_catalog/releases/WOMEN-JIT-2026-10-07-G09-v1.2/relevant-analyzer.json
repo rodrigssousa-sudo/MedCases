@@ -1,0 +1,1 @@
+{"RESULT": "PASS", "command": "dart analyze canary.dart", "exitCode": 0, "output": "No issues found!", "scope": "No app source changes; real build-1717 reader and models exercised by pre-canary"}

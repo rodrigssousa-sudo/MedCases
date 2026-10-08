@@ -1,0 +1,263 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "hiperprolactinemia",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "2625bfc6671bac69f68c5238716684c45edc90a18e33a87c5ee94d45cb76bc2a",
+  "references": [
+    {
+      "id": "amen",
+      "title": "ASRM — Current evaluation of amenorrhea, 2024",
+      "url": "https://www.asrm.org/practice-guidance/practice-committee-documents/current-evaluation-of-amenorrhea/",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "ASRM",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "prolact",
+      "title": "Pituitary Society — Prolactin-secreting pituitary adenomas, consensus 2023",
+      "url": "https://www.nature.com/articles/s41574-023-00886-5.pdf",
+      "year": 2023,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "Pituitary Society",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "PRO_PATIENT",
+      "title": "Pituitary Society — Prolactinoma, opções de tratamento",
+      "url": "https://pituitarysociety.org/prolactinoma/",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "Pituitary Society",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Cabergoline",
+      "title": "Cabergoline 0.5 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/101200/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Bromocriptine",
+      "title": "Bromocriptine 2.5 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/15494/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Hiperprolactinemia",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Prolactina elevada pode suprimir função gonadal, causando irregularidade menstrual, infertilidade e galactorreia; nem toda elevação significa prolactinoma.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Prolactina elevada pode suprimir função gonadal, causando irregularidade menstrual, infertilidade e galactorreia; nem toda elevação significa prolactinoma."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Pesquisar medicamentos, gestação, lactação, sintomas tireoidianos e cefaleia/alteração visual. Cefaleia súbita intensa ou déficit visual agudo exige urgência para excluir apoplexia hipofisária."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Confirmar elevação leve em condições apropriadas, avaliar macroprolactina quando pertinente e excluir gravidez, hipotireoidismo e disfunção renal. Persistência sem causa reversível pode requerer ressonância hipofisária."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Corrigir causa reversível quando possível; não retirar antipsicótico sem o prescritor. Em prolactinoma com indicação terapêutica, cabergolina é geralmente preferida; cirurgia é opção em situações selecionadas."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Dose e titulação de agonista dopaminérgico dependem de prolactina, tumor e tolerância. Revisar hipotensão, sintomas psiquiátricos/controle de impulsos e risco valvar conforme exposição; gestação exige plano especializado."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Acompanhar prolactina, sintomas e imagem conforme indicação. Macroprolactina biologicamente inativa sem repercussão não exige tratamento automático; ausência de galactorreia não exclui doença."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "No prolactinoma com indicação de tratamento, cabergolina costuma ser preferida. Bromocriptina é alternativa conforme tolerância e contexto; cirurgia é opção especializada em situações selecionadas. Hiperprolactinemia medicamentosa exige revisar a causa com o prescritor, não iniciar agonista automaticamente."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Em hiperprolactinemia/prolactinoma com indicação de agonista dopaminérgico: cabergolina 0,5 mg por semana por via oral, em dose semanal única ou dividida em 0,25 mg duas vezes por semana, preferencialmente com alimento. Titular mensalmente pelo especialista conforme prolactina/tolerância; dose usual é 1 mg por semana, não um limite universal. Alternativa: bromocriptina 1,25 mg por via oral à noite com alimento inicialmente, depois 2,5 mg ao dia conforme tolerância; aumentos posteriores dependem da indicação e monitorização. Não iniciar para toda prolactina discretamente elevada nem suspender antipsicótico sem seu prescritor. Monitorar pressão, sintomas, prolactina, efeitos psiquiátricos e valvulares; gestação requer plano endocrinológico específico."
+      }
+    ]
+  },
+  "es": {
+    "title": "Hiperprolactinemia",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "La prolactina elevada puede suprimir la función gonadal y causar irregularidad menstrual, infertilidad y galactorrea; no toda elevación significa prolactinoma.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "La prolactina elevada puede suprimir la función gonadal y causar irregularidad menstrual, infertilidad y galactorrea; no toda elevación significa prolactinoma."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Investigar medicamentos, embarazo, lactancia, síntomas tiroideos y cefalea/alteración visual. Cefalea súbita intensa o déficit visual agudo requieren urgencia para excluir apoplejía hipofisaria."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Confirmar elevación leve en condiciones apropiadas, evaluar macroprolactina cuando corresponda y excluir embarazo, hipotiroidismo y disfunción renal. La persistencia sin causa reversible puede requerir resonancia hipofisaria."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Corregir una causa reversible cuando sea posible; no retirar un antipsicótico sin el prescriptor. En prolactinoma con indicación terapéutica, generalmente se prefiere cabergolina; la cirugía es una opción en situaciones seleccionadas."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "La dosis y titulación de un agonista dopaminérgico dependen de prolactina, tumor y tolerancia. Revisar hipotensión, síntomas psiquiátricos/control de impulsos y riesgo valvular según exposición; el embarazo requiere un plan especializado."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Controlar prolactina, síntomas e imagen según indicación. La macroprolactina biológicamente inactiva sin repercusión no exige tratamiento automático; la ausencia de galactorrea no excluye enfermedad."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "En prolactinoma con indicación de tratamiento, cabergolina suele ser preferida. Bromocriptina es alternativa según tolerancia y contexto; cirugía es una opción especializada en situaciones seleccionadas. Hiperprolactinemia medicamentosa requiere revisar la causa con el prescriptor, no iniciar un agonista automáticamente."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "En hiperprolactinemia/prolactinoma con indicación de agonista dopaminérgico: cabergolina 0,5 mg por semana por vía oral, en dosis semanal única o dividida en 0,25 mg dos veces por semana, preferentemente con alimento. Titular mensualmente por especialista según prolactina/tolerancia; la dosis habitual es 1 mg por semana, no un límite universal. Alternativa: bromocriptina 1,25 mg por vía oral por la noche con alimento inicialmente, después 2,5 mg al día según tolerancia; aumentos posteriores dependen de la indicación y control. No iniciar ante toda prolactina discretamente elevada ni suspender antipsicótico sin su prescriptor. Controlar presión, síntomas, prolactina, efectos psiquiátricos y valvulares; el embarazo requiere un plan endocrinológico específico."
+      }
+    ]
+  }
+}

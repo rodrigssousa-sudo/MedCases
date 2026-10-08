@@ -1,0 +1,170 @@
+{
+  "schemaVersion": "1.0",
+  "owner": "cisto_abscesso_bartholin",
+  "title": {
+    "pt": "Cisto / abscesso de Bartholin",
+    "es": "Quiste / absceso de Bartholin"
+  },
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "population": "Mulheres adultas; gestação/lactação e outros contextos somente quando explicitados",
+  "identity": {
+    "action": "REVIEW_EXISTING_PRESERVE_ID",
+    "existingCanonicalDocumentIds": [
+      "cisto_abscesso_bartholin"
+    ],
+    "owner": "cisto_abscesso_bartholin",
+    "newOwnerActivated": false,
+    "relatedButNotEquivalent": [],
+    "scope": "Obstrução do ducto de Bartholin pode produzir cisto; infecção pode causar abscesso doloroso. Não equivale a toda massa vulvar.",
+    "preserveExistingPregnancyContent": true,
+    "existingCMSDocumentIds": [
+      "cisto_abscesso_bartholin"
+    ],
+    "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+    "existingRuntimeOwnerPreserved": true
+  },
+  "review": {
+    "author": "Codex — preparação e conferência de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "foundation",
+      "section": "foundation",
+      "pt": "Obstrução do ducto de Bartholin pode produzir cisto; infecção pode causar abscesso doloroso. Não equivale a toda massa vulvar.",
+      "es": "La obstrucción del conducto de Bartholin puede producir un quiste; una infección puede causar un absceso doloroso. No equivale a cualquier masa vulvar.",
+      "sources": [
+        "bar",
+        "barpatient"
+      ]
+    },
+    {
+      "id": "recognition",
+      "section": "recognition",
+      "pt": "Examinar com consentimento, avaliar dor, flutuação, celulite e sinais sistêmicos. Nova massa após menopausa, aspecto sólido ou evolução atípica exige excluir neoplasia.",
+      "es": "Examinar con consentimiento y evaluar dolor, fluctuación, celulitis y signos sistémicos. Una masa nueva después de la menopausia, aspecto sólido o evolución atípica exige excluir neoplasia.",
+      "sources": [
+        "bar",
+        "barpatient"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "section": "diagnosis",
+      "pt": "O diagnóstico é principalmente clínico; cultura e testes para infecções sexualmente transmissíveis são seletivos. Reavaliar lesão persistente ou recorrente.",
+      "es": "El diagnóstico es principalmente clínico; cultivo y pruebas de infecciones de transmisión sexual son selectivos. Reevaluar una lesión persistente o recurrente.",
+      "sources": [
+        "bar",
+        "barpatient"
+      ]
+    },
+    {
+      "id": "treatment",
+      "section": "treatment",
+      "pt": "Cisto pequeno assintomático pode ser observado; abscesso sintomático frequentemente exige drenagem com cateter de Word. Analgesia e cuidados locais complementam a intervenção.",
+      "es": "Un quiste pequeño asintomático puede observarse; un absceso sintomático suele requerir drenaje con catéter de Word. Analgesia y cuidados locales complementan la intervención.",
+      "sources": [
+        "bar",
+        "barpatient"
+      ]
+    },
+    {
+      "id": "alternative",
+      "section": "alternative",
+      "pt": "Marsupialização é alternativa conforme recorrência, anatomia e decisão compartilhada. Incisão simples ou aspiração isolada aumenta risco de recorrência; antibióticos não substituem drenagem de abscesso.",
+      "es": "La marsupialización es una alternativa según recurrencia, anatomía y decisión compartida. Incisión simple o aspiración aislada aumenta riesgo de recurrencia; los antibióticos no sustituyen el drenaje de un absceso.",
+      "sources": [
+        "bar",
+        "barpatient"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "section": "monitoring",
+      "pt": "Antibióticos são considerados diante de celulite, sinais sistêmicos ou indicação microbiológica, conforme protocolo local. Piora, febre ou recidiva exige reavaliação; planejar retorno e avaliação histológica quando indicada.",
+      "es": "Considerar antibióticos ante celulitis, signos sistémicos o indicación microbiológica según protocolo local. Empeoramiento, fiebre o recidiva exige reevaluación; planificar control y estudio histológico cuando corresponda.",
+      "sources": [
+        "bar",
+        "barpatient"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "section": "dose",
+      "pt": "Antibiótico não é rotina após drenagem sem celulite ou sinais de infecção. Se houver indicação, a diretriz regional NHS consultada usa amoxicilina + clavulanato 500 mg + 125 mg por via oral a cada 8 horas por 5 dias; alternativa selecionada: sulfametoxazol + trimetoprima 800 mg + 160 mg por via oral a cada 12 horas por 5 dias. Não substituem drenagem. Escolher por alergia, cultura e epidemiologia local; rever função renal, potássio e interações. Não extrapolar trimetoprima à gestação, especialmente no primeiro trimestre.",
+      "es": "El antibiótico no es rutinario tras drenaje sin celulitis ni signos de infección. Si está indicado, la guía regional NHS consultada utiliza amoxicilina + clavulanato 500 mg + 125 mg por vía oral cada 8 horas durante 5 días; alternativa seleccionada: sulfametoxazol + trimetoprima 800 mg + 160 mg por vía oral cada 12 horas durante 5 días. No sustituyen el drenaje. Elegir según alergia, cultivo y epidemiología local; revisar función renal, potasio e interacciones. No extrapolar trimetoprima al embarazo, especialmente en el primer trimestre.",
+      "sources": [
+        "W12_Bartholin"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_2",
+      "section": "dose",
+      "pt": "Alívio de dor em adulta com pelo menos 50 kg: paracetamol 500–1000 mg por via oral a cada 6 horas, se necessário; máximo 4000 mg em 24 horas. Usar por curto período e reavaliar se precisar por mais de 3 dias. Reduzir limite/individualizar em baixo peso, hepatopatia, desnutrição ou uso excessivo de álcool; somar todas as apresentações que contêm paracetamol.",
+      "es": "Alivio del dolor en adulta de al menos 50 kg: paracetamol 500–1000 mg por vía oral cada 6 horas, si es necesario; máximo 4000 mg en 24 horas. Usar por un período breve y reevaluar si se necesita durante más de 3 días. Reducir el límite/individualizar ante bajo peso, hepatopatía, desnutrición o consumo excesivo de alcohol; sumar todas las presentaciones que contienen paracetamol.",
+      "sources": [
+        "W12_paracetamol_nhs"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "bar",
+      "title": "NHS Scotland — Management of Bartholin cyst and abscess",
+      "url": "https://www.rightdecisions.scot.nhs.uk/shared-content/ggc-clinical-guidelines/gynaecology/management-of-bartholin-s-cyst-and-abscess-gynaecology-066/",
+      "year": null,
+      "status": "AUTHORITATIVE_LOCAL_CLINICAL_GUIDANCE",
+      "authority": "NHS Scotland",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "barpatient",
+      "title": "UCLH NHS — Bartholin cyst or abscess",
+      "url": "https://www.uclh.nhs.uk/patients-and-visitors/patient-information-pages/bartholins-cyst-or-abscess",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "UCLH NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Bartholin",
+      "title": "NHS GGC — Bartholin cyst/abscess: antimicrobial indications and doses",
+      "url": "https://rightdecisions.scot.nhs.uk/ggc-referral-management/womens-health/gynaecology-clinical-guidelines/management-of-bartholin-s-cyst-and-abscess-gynaecology-066/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_paracetamol_nhs",
+      "title": "NHS — Paracetamol for adults: dosing and precautions",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "provenance": {
+    "version": "WOMEN-JIT-2026-10-07-G09-v1.1",
+    "canonicalHash": "77d81732258e459165f6c11a49aad661af4b2f26724771af44c6101b7150b05b",
+    "sourcePath": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-women50-group09-2026-10-07/revisions/v1.1/entries/cisto_abscesso_bartholin/canonical-payload.json",
+    "revisionScope": "treatment completion; no remote writes; identifiers preserved",
+    "previousProvenance": null
+  },
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

@@ -1,0 +1,273 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "sindrome_geniturinaria_menopausa",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "48d0982fb2be1aa99a9c689a60d9f6ea451d197b8f626a38a07e466b6ec1867b",
+  "references": [
+    {
+      "id": "gsm",
+      "title": "AUA/SUFU/AUGS — Genitourinary syndrome of menopause, 2025",
+      "url": "https://www.auanet.org/documents/Guidelines/PDF/2025%20Guidelines/GSM%20Unabridged%202025.pdf",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "AUA/SUFU/AUGS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "meno",
+      "title": "NICE NG23 — Menopause: identification and management, atualização 2026",
+      "url": "https://www.nice.org.uk/guidance/ng23/chapter/Recommendations",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LIVING",
+      "authority": "NICE NG23",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Vagifem",
+      "title": "Vagifem 10 micrograms — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/5719/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Prasterone",
+      "title": "Intrarosa 6.5 mg — SmPC",
+      "url": "https://www.medicines.org.uk/emc/product/9986/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Síndrome geniturinária da menopausa",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Hipoestrogenismo pode causar secura, ardor, dispareunia e sintomas urinários; não equivale automaticamente a infecção urinária ou candidíase.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Hipoestrogenismo pode causar secura, ardor, dispareunia e sintomas urinários; não equivale automaticamente a infecção urinária ou candidíase."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Perguntar sobre dor, irritação, função sexual e infecções documentadas; examinar quando indicado, com consentimento. Sangramento, ulceração, massa ou hematúria exigem investigação própria."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Diagnóstico clínico após avaliar infecção, dermatoses vulvares e neoplasia. Cultura urinária ou testes vaginais respondem a suspeita clínica; não tratar todos os sintomas como infecção."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Opções iniciais: hidratantes vaginais regulares/lubrificantes e estrogênio vaginal em baixa dose quando adequado. Escolher creme, comprimido, óvulo ou anel conforme preferência e disponibilidade; dose depende do produto."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "História de câncer de mama requer decisão compartilhada; usuárias de inibidor de aromatase devem envolver oncologia. Não oferecer laser vaginal rotineiramente; sangramento inexplicado deve ser investigado."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Rever dor, função e tolerância; sintomas podem reaparecer ao suspender tratamento. Prasterona ou ospemifeno são opções selecionadas conforme falha, praticidade e disponibilidade, não substituições universais."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Sintomas leves: hidratante vaginal e lubrificante conforme formulação. Se insuficiente, selecionar estradiol vaginal ou prasterona no esquema abaixo, conforme indicação, contraindicações e disponibilidade. Não combinar por rotina; câncer de mama exige decisão compartilhada com especialista."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Para atrofia geniturinária pós-menopausa confirmada: estradiol vaginal em comprimido de 10 microgramas, 1 comprimido por via intravaginal uma vez ao dia durante 2 semanas; depois 1 comprimido duas vezes por semana. Avaliar resposta, menor dose eficaz e necessidade de manutenção; não há um curso curativo único. Investigar sangramento inexplicado antes de iniciar. Não indicado na gestação; antecedente de neoplasia hormônio-dependente exige decisão compartilhada com especialista. Não corrige prolapso nem trata sangramento sem diagnóstico."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Alternativa local para atrofia vulvovaginal pós-menopausa moderada/grave: prasterona 6,5 mg, 1 óvulo por via intravaginal uma vez ao dia ao deitar. Reavaliar benefício/risco pelo menos a cada 6 meses e manter apenas enquanto benefício superar risco. Excluir sangramento genital sem diagnóstico e rever contraindicações hormonais, incluindo câncer de mama e doença tromboembólica conforme bula. Não usar durante gestação/lactação; não somar ao estradiol vaginal por rotina. Hidratantes e lubrificantes podem ser primeira opção nos sintomas leves."
+      }
+    ]
+  },
+  "es": {
+    "title": "Síndrome genitourinario de la menopausia",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "El hipoestrogenismo puede causar sequedad, ardor, dispareunia y síntomas urinarios; no equivale automáticamente a infección urinaria ni a candidiasis.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "El hipoestrogenismo puede causar sequedad, ardor, dispareunia y síntomas urinarios; no equivale automáticamente a infección urinaria ni a candidiasis."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Preguntar por dolor, irritación, función sexual e infecciones documentadas; examinar cuando se indique, con consentimiento. Sangrado, ulceración, masa o hematuria requieren un estudio específico."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Diagnóstico clínico tras evaluar infección, dermatosis vulvares y neoplasia. El cultivo urinario o las pruebas vaginales responden a sospecha clínica; no tratar todos los síntomas como infección."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Opciones iniciales: hidratantes vaginales regulares/lubricantes y estrógeno vaginal en dosis baja cuando sea adecuado. Elegir crema, comprimido, óvulo o anillo según preferencia y disponibilidad; la dosis depende del producto."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Los antecedentes de cáncer de mama requieren decisión compartida; quienes usan inhibidores de aromatasa deben involucrar oncología. No ofrecer láser vaginal rutinariamente; estudiar un sangrado inexplicado."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Revisar dolor, funcionamiento y tolerancia; los síntomas pueden reaparecer al suspender tratamiento. Prasterona u ospemifeno son opciones seleccionadas según fracaso, practicidad y disponibilidad, no sustituciones universales."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Síntomas leves: hidratante vaginal y lubricante según formulación. Si es insuficiente, seleccionar estradiol vaginal o prasterona en el esquema siguiente, según indicación, contraindicaciones y disponibilidad. No combinar rutinariamente; un cáncer de mama requiere decisión compartida con especialista."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Para atrofia genitourinaria posmenopáusica confirmada: estradiol vaginal en comprimido de 10 microgramos, 1 comprimido por vía intravaginal una vez al día durante 2 semanas; después 1 comprimido dos veces por semana. Evaluar respuesta, menor dosis eficaz y necesidad de mantenimiento; no existe un curso curativo único. Investigar sangrado inexplicado antes de iniciar. No indicado en el embarazo; un antecedente de neoplasia hormonodependiente requiere decisión compartida con especialista. No corrige el prolapso ni trata sangrado sin diagnóstico."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Alternativa local para atrofia vulvovaginal posmenopáusica moderada/grave: prasterona 6,5 mg, 1 óvulo por vía intravaginal una vez al día al acostarse. Reevaluar beneficio/riesgo al menos cada 6 meses y mantener solo mientras el beneficio supere el riesgo. Descartar sangrado genital sin diagnóstico y revisar contraindicaciones hormonales, incluido cáncer de mama y enfermedad tromboembólica según ficha. No usar durante embarazo/lactancia; no añadir al estradiol vaginal rutinariamente. Hidratantes y lubricantes pueden ser la primera opción en síntomas leves."
+      }
+    ]
+  }
+}

@@ -1,0 +1,250 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "prolapso_orgaos_pelvicos",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "303c32ad0486d3b1c760fa1265ab8fe5cd1ddeaedfbce67e40d5504a2afb430e",
+  "references": [
+    {
+      "id": "P1",
+      "title": "Urinary incontinence and pelvic organ prolapse in women: management",
+      "url": "https://www.nice.org.uk/guidance/ng123/chapter/recommendations",
+      "authority": "NICE NG123",
+      "year": 2019,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Vagifem",
+      "title": "Vagifem 10 micrograms — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/5719/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Prolapso de órgãos pélvicos",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Perda de suporte pélvico permite descida vaginal, uterina ou apical; sintomas e impacto funcional orientam tratamento, não apenas o estágio anatômico.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Perda de suporte pélvico permite descida vaginal, uterina ou apical; sintomas e impacto funcional orientam tratamento, não apenas o estágio anatômico."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Pesquisar abaulamento vaginal, pressão, dificuldade urinária ou evacuatória e função sexual; avaliar preferências e desejo reprodutivo."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Exame pélvico com registro dos compartimentos e classificação POP-Q; imagem não é rotineira quando o exame demonstra o prolapso."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Nos estágios 1 ou 2 sintomáticos, considerar treinamento supervisionado do assoalho pélvico por pelo menos 16 semanas. Pessário e cirurgia são opções conforme sintomas e escolha informada."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Com pessário, explicar remoção, revisões e possíveis sangramento, corrimento ou expulsão; avaliar complicações, capacidade de autocuidado e sintomas persistentes."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Sinais de alarme",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Retenção urinária ou sangramento sem explicação exige investigação; não atribuir massa, hematúria ou dor persistente automaticamente ao prolapso."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Populações especiais",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Individualizar em fragilidade, incapacidade de autocuidado e desejo de gestação; explicar alternativas e riscos de procedimentos, inclusive materiais implantáveis quando propostos."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Alternativa ao treinamento supervisionado: pessário vaginal, com ajuste e acompanhamento. Cirurgia pode ser discutida quando manejo conservador não é suficiente ou é recusado, após explicar riscos e desejo reprodutivo; o estágio isolado não obriga cirurgia."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Para atrofia geniturinária pós-menopausa confirmada: estradiol vaginal em comprimido de 10 microgramas, 1 comprimido por via intravaginal uma vez ao dia durante 2 semanas; depois 1 comprimido duas vezes por semana. Avaliar resposta, menor dose eficaz e necessidade de manutenção; não há um curso curativo único. Investigar sangramento inexplicado antes de iniciar. Não indicado na gestação; antecedente de neoplasia hormônio-dependente exige decisão compartilhada com especialista. Não corrige prolapso nem trata sangramento sem diagnóstico."
+      }
+    ]
+  },
+  "es": {
+    "title": "Prolapso de órganos pélvicos",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "La pérdida de soporte pélvico permite descenso vaginal, uterino o apical; los síntomas y el impacto funcional orientan el tratamiento, no solo el estadio anatómico.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "La pérdida de soporte pélvico permite descenso vaginal, uterino o apical; los síntomas y el impacto funcional orientan el tratamiento, no solo el estadio anatómico."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Investigar bulto vaginal, presión, dificultad urinaria o defecatoria y función sexual; evaluar preferencias y deseo reproductivo."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Examen pélvico con registro de compartimentos y clasificación POP-Q; las imágenes no son rutinarias cuando el examen demuestra el prolapso."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "En estadios 1 o 2 sintomáticos, considerar entrenamiento supervisado del suelo pélvico durante al menos 16 semanas. El pesario y la cirugía son opciones según síntomas y elección informada."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Con pesario, explicar retirada, controles y posibles sangrado, flujo o expulsión; evaluar complicaciones, capacidad de autocuidado y síntomas persistentes."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Señales de alarma",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "La retención urinaria o el sangrado sin explicación exige investigación; no atribuir masa, hematuria ni dolor persistente automáticamente al prolapso."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Poblaciones especiales",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Individualizar ante fragilidad, incapacidad de autocuidado y deseo de embarazo; explicar alternativas y riesgos de procedimientos, incluidos materiales implantables cuando se propongan."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Alternativa al entrenamiento supervisado: pesario vaginal, con ajuste y seguimiento. Puede discutirse cirugía si el manejo conservador no es suficiente o se rechaza, explicando riesgos y deseo reproductivo; el estadio aislado no obliga a operar."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Para atrofia genitourinaria posmenopáusica confirmada: estradiol vaginal en comprimido de 10 microgramos, 1 comprimido por vía intravaginal una vez al día durante 2 semanas; después 1 comprimido dos veces por semana. Evaluar respuesta, menor dosis eficaz y necesidad de mantenimiento; no existe un curso curativo único. Investigar sangrado inexplicado antes de iniciar. No indicado en el embarazo; un antecedente de neoplasia hormonodependiente requiere decisión compartida con especialista. No corrige el prolapso ni trata sangrado sin diagnóstico."
+      }
+    ]
+  }
+}

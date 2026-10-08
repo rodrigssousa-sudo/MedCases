@@ -1,0 +1,229 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "fibroadenoma_mamario",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "319f5c7010b7b1b4e384e9ed78e3967d5ada082de507ae582e968369fe7c6f5c",
+  "references": [
+    {
+      "id": "fibro",
+      "title": "Royal United Hospitals Bath NHS — Fibroadenomas",
+      "url": "https://www.ruh.nhs.uk/patients/services/breast_unit/common_problems/fibroadenomas.asp?menu_id=12",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "Royal United Hospitals Bath NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "breastlump",
+      "title": "NHS — Breast lumps",
+      "url": "https://www.nhs.uk/symptoms/breast-lump/",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Fibroadenoma mamário",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Nódulo sólido benigno composto por tecido glandular e fibroso, frequentemente móvel; aspecto clínico sugere, mas não confirma, benignidade. Não equivale a cisto líquido.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Nódulo sólido benigno composto por tecido glandular e fibroso, frequentemente móvel; aspecto clínico sugere, mas não confirma, benignidade. Não equivale a cisto líquido."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Avaliar duração, crescimento, dor, história familiar e alterações de pele/mamilo. Nódulo novo deve ser examinado; crescimento rápido exige excluir tumor filoides e outras causas."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Exame e imagem apropriada à idade/contexto; biópsia quando indicada para confirmar concordância. Diferenciar cisto, filoides e câncer; resultado benigno discordante com imagem/exame requer revisão."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Fibroadenoma confirmado e concordante pode ser observado com plano especializado. Excisão é alternativa quando crescimento, sintomas, dúvida diagnóstica ou preferência informada justificam intervenção."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Não indicar hormônio ou antibiótico para eliminar fibroadenoma. Evitar tranquilização definitiva antes de avaliação; gravidez/lactação podem modificar tamanho e exigem correlação clínica."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Reavaliar conforme plano de mastologia e retornar diante de crescimento ou novo sinal. Sangramento pelo mamilo, retração, adenopatia ou discordância diagnóstica exige investigação prioritária."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opção 1: observação após confirmação e concordância clínica/imagem. Opção 2: excisão selecionada para crescimento, sintomas, dúvida ou preferência informada. Nenhum antibiótico ou hormônio elimina comprovadamente todo fibroadenoma; suspeita exige diagnóstico, não tentativa medicamentosa."
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12",
+        "type": "paragraph",
+        "text": "Não há farmacoterapia de rotina que elimine fibroadenoma. Observação com concordância clínico-radiológica ou excisão em casos selecionados são as alternativas. Crescimento, discordância ou lesão suspeita exige avaliação; não prescrever hormônio ou antibiótico como tratamento curativo."
+      }
+    ]
+  },
+  "es": {
+    "title": "Fibroadenoma mamario",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Nódulo sólido benigno compuesto por tejido glandular y fibroso, frecuentemente móvil; el aspecto clínico sugiere, pero no confirma, benignidad. No equivale a un quiste líquido.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Nódulo sólido benigno compuesto por tejido glandular y fibroso, frecuentemente móvil; el aspecto clínico sugiere, pero no confirma, benignidad. No equivale a un quiste líquido."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Evaluar duración, crecimiento, dolor, antecedentes familiares y cambios de piel/pezón. Un nódulo nuevo debe examinarse; el crecimiento rápido exige excluir tumor filoides y otras causas."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Examen e imagen apropiada para edad/contexto; biopsia cuando esté indicada para confirmar concordancia. Diferenciar quiste, filoides y cáncer; un resultado benigno discordante con imagen/examen requiere revisión."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Un fibroadenoma confirmado y concordante puede observarse con un plan especializado. La extirpación es alternativa si crecimiento, síntomas, duda diagnóstica o preferencia informada justifican intervención."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "No indicar hormonas ni antibióticos para eliminar un fibroadenoma. Evitar tranquilidad definitiva antes de evaluación; embarazo/lactancia pueden modificar el tamaño y requieren correlación clínica."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Reevaluar según el plan de mastología y consultar ante crecimiento o un nuevo signo. Sangrado por el pezón, retracción, adenopatías o discordancia diagnóstica requieren estudio prioritario."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opción 1: observación tras confirmación y concordancia clínica/imagen. Opción 2: excisión seleccionada ante crecimiento, síntomas, duda o preferencia informada. Ningún antibiótico u hormona elimina de forma demostrada todo fibroadenoma; una sospecha requiere diagnóstico, no ensayo farmacológico."
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12",
+        "type": "paragraph",
+        "text": "No existe farmacoterapia rutinaria que elimine un fibroadenoma. Observación con concordancia clínico-radiológica o escisión en casos seleccionados son las alternativas. Crecimiento, discordancia o lesión sospechosa exige evaluación; no prescribir hormona ni antibiótico como tratamiento curativo."
+      }
+    ]
+  }
+}

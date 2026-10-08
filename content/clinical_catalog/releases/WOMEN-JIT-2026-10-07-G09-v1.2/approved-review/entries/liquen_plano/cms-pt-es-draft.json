@@ -1,0 +1,274 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "liquen_plano",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "f21f036e1f0597e719f2f7641bb84a15ba65be4a750b5d7c51ba7efa5a0c84a1",
+  "references": [
+    {
+      "id": "L1",
+      "title": "Lichen planus clinical guidance",
+      "url": "https://www.pcds.org.uk/clinical-guidance/lichen-planus",
+      "authority": "PCDS",
+      "year": "sem data editorial explícita",
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "L2",
+      "title": "Lichen planus treatment",
+      "url": "https://www.aad.org/public/diseases/a-z/lichen-planus-treatment",
+      "authority": "AAD",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "badLP",
+      "title": "British Association of Dermatologists — Lichen planus",
+      "url": "https://www.bad.org.uk/pils/lichen-planus/",
+      "year": 2024,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "British Association of Dermatologists",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-07",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Vulval",
+      "title": "BASHH — Vulval conditions, final guideline 2024 published 2025",
+      "url": "https://www.bashh.org/_userfiles/pages/files/bashh_vulval_guidelines_2024.pdf",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "PUBLIC_PDF_FULL_TEXT_READ",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Líquen plano",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Doença inflamatória imunomediada que pode afetar pele, mucosas, unhas e couro cabeludo; a localização modifica riscos e tratamento.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Doença inflamatória imunomediada que pode afetar pele, mucosas, unhas e couro cabeludo; a localização modifica riscos e tratamento."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Pápulas violáceas pruriginosas e alterações reticulares ou erosivas mucosas sugerem o diagnóstico; procurar lesões genitais, orais e cicatriciais."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Diagnóstico clínico com biópsia em dúvida ou apresentação atípica; revisar medicamentos e diferenciar outras dermatoses e reações liquenoides."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Corticoide tópico é primeira opção cutânea, com potência e veículo adequados ao local; doença extensa, erosiva ou resistente necessita dermatologista."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Reduzir potência ou frequência conforme controle; tratar lesões ativas, não hiperpigmentação residual. Vigiar efeitos cutâneos e evolução de lesões mucosas."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Sinais de alarme",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Alopecia cicatricial, destruição ungueal, ulceração persistente ou mudança suspeita exige encaminhamento prioritário e eventual biópsia."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Populações especiais",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Gestação, infância e uso em áreas sensíveis demandam prescrição própria; não repetir corticoide sistêmico sem especialista quando a doença recidiva."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Alternativa selecionada para doença vulvar: tacrolimo tópico ou pimecrolimo tópico, sob especialista, quando corticosteroide é inadequado ou insuficiente. Uso pode ser fora da indicação de bula; ardor e irritação exigem revisão. Doença erosiva extensa pode exigir terapia sistêmica especializada, sem esquema universal."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Para líquen plano vulvar, primeira opção tópica: clobetasol propionato 0,05% em pomada, camada fina sobre a área afetada uma vez ao dia por 1 mês, depois em dias alternados por 1 mês e duas vezes por semana por 1 mês, conforme resumo BASHH. Individualizar em doença erosiva, resposta incompleta e manutenção; não há regime ótimo universal comprovado. Não transferir essa aplicação cutânea a lesões vaginais/orais. Tacrolimo ou pimecrolimo são alternativas especializadas fora de bula com evidência limitada, sem dose universal validada para este local; devem ter prescrição específica, não extrapolação automática de eczema."
+      }
+    ]
+  },
+  "es": {
+    "title": "Liquen plano",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Enfermedad inflamatoria inmunomediada que puede afectar piel, mucosas, uñas y cuero cabelludo; la localización modifica riesgos y tratamiento.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Enfermedad inflamatoria inmunomediada que puede afectar piel, mucosas, uñas y cuero cabelludo; la localización modifica riesgos y tratamiento."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Las pápulas violáceas pruriginosas y los cambios reticulares o erosivos mucosos sugieren el diagnóstico; buscar lesiones genitales, orales y cicatriciales."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Diagnóstico clínico con biopsia ante duda o presentación atípica; revisar medicamentos y diferenciar otras dermatosis y reacciones liquenoides."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "El corticoide tópico es la primera opción cutánea, con potencia y vehículo adecuados al sitio; la enfermedad extensa, erosiva o resistente necesita dermatología."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Reducir potencia o frecuencia según control; tratar lesiones activas, no hiperpigmentación residual. Vigilar efectos cutáneos y evolución de lesiones mucosas."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Señales de alarma",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "La alopecia cicatricial, la destrucción ungueal, la ulceración persistente o un cambio sospechoso exige derivación prioritaria y posible biopsia."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Poblaciones especiales",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "El embarazo, la infancia y el uso en zonas sensibles requieren prescripción específica; no repetir corticoide sistémico sin especialista cuando la enfermedad recidiva."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Alternativa seleccionada para enfermedad vulvar: tacrolimus tópico o pimecrolimus tópico, bajo especialista, si corticosteroide es inadecuado o insuficiente. El uso puede ser fuera de indicación autorizada; ardor e irritación requieren revisión. Enfermedad erosiva extensa puede exigir terapia sistémica especializada, sin esquema universal."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Para liquen plano vulvar, primera opción tópica: propionato de clobetasol al 0,05% en pomada, capa fina sobre el área afectada una vez al día durante 1 mes, luego en días alternos durante 1 mes y dos veces por semana durante 1 mes, según resumen BASHH. Individualizar ante enfermedad erosiva, respuesta incompleta y mantenimiento; no existe un régimen óptimo universal demostrado. No trasladar esta aplicación cutánea a lesiones vaginales/orales. Tacrolimus o pimecrolimus son alternativas especializadas fuera de indicación autorizada con evidencia limitada, sin dosis universal validada para esta localización; requieren prescripción específica, no extrapolación automática del eczema."
+      }
+    ]
+  }
+}

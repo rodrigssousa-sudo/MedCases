@@ -1,0 +1,283 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "sintomas_vasomotores_menopausa",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "f947457df4d17bd3d20c9b8eb5a80cde1a1606c3dfadd5b52fa0ba78f836ef0b",
+  "references": [
+    {
+      "id": "meno",
+      "title": "NICE NG23 — Menopause: identification and management, atualização 2026",
+      "url": "https://www.nice.org.uk/guidance/ng23/chapter/Recommendations",
+      "year": 2026,
+      "status": "AUTHORITATIVE_LIVING",
+      "authority": "NICE NG23",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Progesterone",
+      "title": "Oral micronised progesterone 100 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/102564/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_POI",
+      "title": "ASRM/ESHRE/IMS — premature ovarian insufficiency guideline",
+      "url": "https://www.asrm.org/practice-guidance/practice-committee-documents/evidence-based-guideline-premature-ovarian-insufficiency--2024/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Estradiol",
+      "title": "Elleste Solo 1 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/9512/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Paroxetine",
+      "title": "FDA — Brisdelle prescribing information, 2025",
+      "url": "https://www.accessdata.fda.gov/drugsatfda_docs/label/2025/204516s009s014lbl.pdf",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "PUBLIC_PDF_FULL_TEXT_READ",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Sintomas vasomotores da menopausa",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Ondas de calor e sudorese relacionadas à transição menopausal podem afetar sono e função; quadro atípico exige procurar outra causa. Menopausa é uma fase fisiológica, não uma infecção.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Ondas de calor e sudorese relacionadas à transição menopausal podem afetar sono e função; quadro atípico exige procurar outra causa. Menopausa é uma fase fisiológica, não uma infecção."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Avaliar impacto, padrão menstrual, sintomas geniturinários e preferências. Febre persistente, perda ponderal inexplicada ou palpitações atípicas não devem ser atribuídas automaticamente à menopausa."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Diagnóstico é clínico em faixa etária e contexto típicos; investigar causas alternativas quando indicado. Sangramento pós-menopausa exige avaliação independente, antes de simples ajuste hormonal."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Oferecer terapia hormonal sistêmica quando elegível, com decisão compartilhada: estrogênio exige proteção endometrial com progestagênio se há útero. Terapia cognitivo-comportamental específica é opção adicional ou alternativa."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Revisar câncer hormônio-dependente, trombose, doença cardiovascular/hepática e sangramento inexplicado. Formulação, via e dose são individualizadas; terapia hormonal não é contraceptivo."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Rever benefício, efeitos e sangramento; a escolha é revisável. Quando hormônios não são apropriados, discutir opções não hormonais com especialista e disponibilidade local, evitando prescrição sem monitorização específica."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opção 1: terapia hormonal sistêmica quando elegível, com proteção endometrial se há útero. Opção 2: terapia cognitivo-comportamental específica para menopausa, isolada ou associada. Se hormônio é contraindicado e sintomas persistem, discutir tratamento não hormonal especializado e sua monitorização."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Com útero e estrogênio sistêmico, proteger endométrio: exemplo sequencial, progesterona micronizada 200 mg por via oral à noite durante 12 dias, dos dias 15–26 de cada ciclo de 28 dias. Essa é a apresentação oral para reposição; não substituir pela via vaginal ou por protocolos obstétricos. Ajustar proteção à dose de estrogênio e avaliar qualquer sangramento anormal. Rever câncer hormônio-dependente, doença tromboembólica/hepática e outras contraindicações antes de iniciar."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Para sintomas relevantes em adulta elegível: exemplo inicial, estradiol 1 mg por via oral uma vez ao dia, com proteção endometrial se houver útero. Usar a menor dose eficaz, individualizando via, risco e duração; rever resposta e risco periodicamente. Não iniciar para prevenção cardiovascular. Alternativa não hormonal: paroxetina 7,5 mg por via oral uma vez ao dia à noite, na apresentação específica estudada para sintomas vasomotores. Não substituir automaticamente por doses antidepressivas. Rever disponibilidade local, síndrome serotoninérgica, interações, gravidez e uso de tamoxifeno; esta associação deve ser evitada."
+      }
+    ]
+  },
+  "es": {
+    "title": "Síntomas vasomotores de la menopausia",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Sofocos y sudoración relacionados con la transición menopáusica pueden afectar sueño y funcionamiento; un cuadro atípico exige buscar otra causa. La menopausia es una etapa fisiológica, no una infección.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Sofocos y sudoración relacionados con la transición menopáusica pueden afectar sueño y funcionamiento; un cuadro atípico exige buscar otra causa. La menopausia es una etapa fisiológica, no una infección."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Evaluar impacto, patrón menstrual, síntomas genitourinarios y preferencias. Fiebre persistente, pérdida de peso inexplicada o palpitaciones atípicas no deben atribuirse automáticamente a la menopausia."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "El diagnóstico es clínico en edad y contexto típicos; investigar otras causas cuando se indique. El sangrado posmenopáusico exige evaluación independiente antes de un simple ajuste hormonal."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Ofrecer terapia hormonal sistémica cuando sea adecuada, mediante decisión compartida: el estrógeno requiere protección endometrial con progestágeno si hay útero. La terapia cognitivo-conductual específica es una opción adicional o alternativa."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Revisar cáncer hormonodependiente, trombosis, enfermedad cardiovascular/hepática y sangrado inexplicado. Formulación, vía y dosis se individualizan; la terapia hormonal no es anticonceptiva."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Revisar beneficio, efectos y sangrado; la elección puede reconsiderarse. Si las hormonas no son adecuadas, discutir opciones no hormonales con especialista y disponibilidad local, evitando prescripción sin control específico."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opción 1: terapia hormonal sistémica si es elegible, con protección endometrial si hay útero. Opción 2: terapia cognitivo-conductual específica para menopausia, sola o asociada. Si la hormona está contraindicada y persisten síntomas, discutir tratamiento no hormonal especializado y su monitorización."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Con útero y estrógeno sistémico, proteger el endometrio: ejemplo secuencial, progesterona micronizada 200 mg por vía oral por la noche durante 12 días, de los días 15–26 de cada ciclo de 28 días. Esta es la presentación oral para reposición; no sustituir por vía vaginal ni por protocolos obstétricos. Ajustar protección a la dosis de estrógeno y evaluar cualquier sangrado anormal. Revisar cáncer hormonodependiente, enfermedad tromboembólica/hepática y otras contraindicaciones antes de iniciar."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Para síntomas relevantes en adulta elegible: ejemplo inicial, estradiol 1 mg por vía oral una vez al día, con protección endometrial si hay útero. Utilizar la menor dosis eficaz, individualizando vía, riesgo y duración; revisar respuesta y riesgo periódicamente. No iniciar para prevención cardiovascular. Alternativa no hormonal: paroxetina 7,5 mg por vía oral una vez al día por la noche, en la presentación específica estudiada para síntomas vasomotores. No sustituir automáticamente por dosis antidepresivas. Revisar disponibilidad local, síndrome serotoninérgico, interacciones, embarazo y uso de tamoxifeno; esta asociación debe evitarse."
+      }
+    ]
+  }
+}

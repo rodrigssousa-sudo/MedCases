@@ -1,0 +1,152 @@
+{
+  "schemaVersion": "1.0",
+  "owner": "doenca_inflamatoria_pelvica",
+  "title": {
+    "pt": "Doença inflamatória pélvica",
+    "es": "Enfermedad inflamatoria pélvica"
+  },
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "population": "Mulheres adultas; gestação/lactação e outros contextos somente quando explicitados",
+  "identity": {
+    "action": "REVIEW_EXISTING_PRESERVE_ID",
+    "existingCanonicalDocumentIds": [
+      "doenca_inflamatoria_pelvica"
+    ],
+    "owner": "doenca_inflamatoria_pelvica",
+    "newOwnerActivated": false,
+    "relatedButNotEquivalent": [],
+    "scope": "Infecção/inflamação do trato genital superior, frequentemente polimicrobiana; atraso terapêutico aumenta risco de infertilidade e gestação ectópica.",
+    "preserveExistingPregnancyContent": true,
+    "existingCMSDocumentIds": [
+      "doenca_inflamatoria_pelvica"
+    ],
+    "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+    "existingRuntimeOwnerPreserved": true
+  },
+  "review": {
+    "author": "Codex — preparação e conferência de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "section": "foundation",
+      "pt": "Infecção/inflamação do trato genital superior, frequentemente polimicrobiana; atraso terapêutico aumenta risco de infertilidade e gestação ectópica.",
+      "es": "Infección/inflamación del tracto genital superior, frecuentemente polimicrobiana; el retraso terapéutico aumenta riesgo de infertilidad y embarazo ectópico.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "foundation_1"
+    },
+    {
+      "section": "recognition",
+      "pt": "Dor pélvica com dor à mobilização cervical, uterina ou anexial justifica baixo limiar para tratamento presuntivo após avaliar outras causas.",
+      "es": "Dolor pélvico con dolor a movilización cervical, uterina o anexial justifica umbral bajo para tratamiento presuntivo tras evaluar otras causas.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "recognition_2"
+    },
+    {
+      "section": "diagnosis",
+      "pt": "Realizar teste de gravidez e testes para gonococo/clamídia; avaliar abscesso por imagem quando indicado. Teste cervical negativo não exclui doença superior.",
+      "es": "Realizar prueba de embarazo y pruebas para gonococo/clamidia; evaluar absceso con imagen cuando corresponda. Una prueba cervical negativa no excluye enfermedad superior.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "diagnosis_3"
+    },
+    {
+      "section": "treatment",
+      "pt": "Tratar precocemente e manejar parceiros; evitar relações até tratamento concluído, resolução dos sintomas e tratamento dos parceiros.",
+      "es": "Tratar precozmente y manejar parejas; evitar relaciones hasta completar tratamiento, resolver síntomas y tratar parejas.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "treatment_4"
+    },
+    {
+      "section": "dose",
+      "pt": "Ambulatorial: ceftriaxona 500 mg intramuscular, dose única, mais doxiciclina 100 mg oral a cada 12 horas e metronidazol 500 mg oral a cada 12 horas, ambos durante 14 dias.",
+      "es": "Ambulatorio: ceftriaxona 500 mg intramuscular, dosis única, más doxiciclina 100 mg oral cada 12 horas y metronidazol 500 mg oral cada 12 horas, ambos durante 14 días.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "dose_5"
+    },
+    {
+      "section": "monitoring",
+      "pt": "Reavaliar até 72 horas; sem melhora, internar/reinvestigar. Oferecer testes para HIV/sífilis e seguimento de reinfecção.",
+      "es": "Reevaluar hasta 72 horas; sin mejoría, ingresar/reinvestigar. Ofrecer pruebas de VIH/sífilis y seguimiento de reinfección.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "monitoring_6"
+    },
+    {
+      "section": "redflags",
+      "pt": "Gravidez, abscesso tubo-ovariano, doença grave, intolerância oral ou impossibilidade de excluir emergência cirúrgica indicam hospitalização.",
+      "es": "Embarazo, absceso tuboovárico, enfermedad grave, intolerancia oral o imposibilidad de excluir urgencia quirúrgica indican hospitalización.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "redflags_7"
+    },
+    {
+      "section": "special",
+      "pt": "Peso >150 kg com gonorreia documentada: ceftriaxona 1 g na dose única. O regime ambulatorial descrito não é esquema para gestantes.",
+      "es": "Peso >150 kg con gonorrea documentada: ceftriaxona 1 g en dosis única. El régimen ambulatorio descrito no es una pauta para embarazadas.",
+      "sources": [
+        "CDC"
+      ],
+      "id": "special_8"
+    },
+    {
+      "id": "treatment_choices_v11",
+      "section": "treatment_choices",
+      "pt": "Se houver indicação de internação, opção pelo CDC: ceftriaxona 1 g por via intravenosa a cada 24 horas, doxiciclina 100 mg por via oral ou intravenosa a cada 12 horas e metronidazol 500 mg por via oral ou intravenosa a cada 12 horas. Após melhora clínica, transição oral para completar 14 dias de doxiciclina/metronidazol. Não é esquema automático para gestantes; abscesso requer avaliação do foco.",
+      "es": "Si existe indicación de internación, opción según CDC: ceftriaxona 1 g por vía intravenosa cada 24 horas, doxiciclina 100 mg por vía oral o intravenosa cada 12 horas y metronidazol 500 mg por vía oral o intravenosa cada 12 horas. Tras mejoría clínica, transición oral para completar 14 días de doxiciclina/metronidazol. No es un esquema automático para embarazadas; un absceso requiere evaluación del foco.",
+      "sources": [
+        "CDC"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "section": "dose",
+      "pt": "Alternativa hospitalar para adulta não gestante: ceftriaxona 1 g por via intravenosa a cada 24 horas + doxiciclina 100 mg por via oral ou intravenosa a cada 12 horas + metronidazol 500 mg por via oral ou intravenosa a cada 12 horas. Após melhora clínica, passar para doxiciclina/metronidazol oral e completar 14 dias totais. Preferir doxiciclina oral quando tolerada; abscesso, gestação, doença grave ou impossibilidade de seguimento requerem internação e abordagem específica.",
+      "es": "Alternativa hospitalaria para adulta no embarazada: ceftriaxona 1 g por vía intravenosa cada 24 horas + doxiciclina 100 mg por vía oral o intravenosa cada 12 horas + metronidazol 500 mg por vía oral o intravenosa cada 12 horas. Tras mejoría clínica, pasar a doxiciclina/metronidazol oral y completar 14 días totales. Preferir doxiciclina oral cuando se tolere; absceso, embarazo, enfermedad grave o imposibilidad de seguimiento requieren internación y un enfoque específico.",
+      "sources": [
+        "CDC"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "CDC",
+      "title": "Pelvic inflammatory disease — STI treatment guidelines",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/pid.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "provenance": {
+    "version": "WOMEN-JIT-2026-10-07-G09-v1.1",
+    "canonicalHash": "2cc1fcf525df8d900c1fa394e2db56b08edae711bcdc581903279b461d242185",
+    "sourcePath": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-women50-group09-2026-10-07/revisions/v1.1/entries/doenca_inflamatoria_pelvica/canonical-payload.json",
+    "revisionScope": "treatment completion; no remote writes; identifiers preserved",
+    "previousProvenance": {
+      "path": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-infectious-metabolic50-group05-2026-10-03/entries/doenca_inflamatoria_pelvica/canonical-payload.json",
+      "sha256": "9a6a466076003ab8af57c50e6d492e3668f375fc536f5b510039a67d12223017",
+      "version": "NEW-JIT-2026-10-03-G05-v1.0"
+    }
+  },
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

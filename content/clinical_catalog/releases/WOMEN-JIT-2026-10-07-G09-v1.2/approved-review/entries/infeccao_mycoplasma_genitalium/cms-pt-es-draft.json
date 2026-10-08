@@ -1,0 +1,207 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "infeccao_mycoplasma_genitalium",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "45e2056f06319448245f0ad2e31cfcd6100fa9fe28b9c4b88d3aa498b5a0a439",
+  "references": [
+    {
+      "id": "mgen",
+      "title": "CDC — Mycoplasma genitalium",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/mycoplasmagenitalium.htm",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "authority": "CDC",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "mgen25",
+      "title": "BASHH — Mycoplasma genitalium, final 2025",
+      "url": "https://www.bashh.org/_userfiles/pages/files/bashh_mgen_2025.pdf",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "BASHH",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Infecção por Mycoplasma genitalium",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Infecção sexualmente transmissível associada a cervicite persistente e doença inflamatória pélvica. A ausência de parede celular torna penicilinas e cefalosporinas ineficazes; resistência a macrolídeos é relevante.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Infecção sexualmente transmissível associada a cervicite persistente e doença inflamatória pélvica. A ausência de parede celular torna penicilinas e cefalosporinas ineficazes; resistência a macrolídeos é relevante."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Suspeitar em cervicite recorrente após excluir reinfecção e outros agentes. Dor pélvica, febre ou sinais de infecção superior exigem abordagem de doença inflamatória pélvica."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Confirmar por teste molecular e testar resistência quando disponível. Não rastrear pessoas assintomáticas rotineiramente; conhecer diferenças territoriais entre CDC e BASHH."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Pelo CDC, infecção não complicada sem teste de resistência: doxiciclina 100 mg por via oral duas vezes ao dia durante 7 dias, seguida de moxifloxacino 400 mg por via oral uma vez ao dia durante 7 dias."
+      },
+      {
+        "id": "alternative-heading",
+        "type": "heading",
+        "text": "Alternativas e seleção",
+        "level": 2
+      },
+      {
+        "id": "alternative",
+        "type": "paragraph",
+        "text": "Com sensibilidade a macrolídeos comprovada, pelo CDC: após a mesma doxiciclina, azitromicina 1 g por via oral no primeiro dia, depois 500 mg uma vez ao dia por mais 3 dias. Azitromicina 1 g isolada não é adequada."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Os esquemas descritos não se aplicam automaticamente à gestação ou infecção superior. Moxifloxacino exige revisar prolongamento de QT, interações e risco tendíneo; falha exige especialista."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Avaliar adesão, reinfecção e parceiros. Teste de cura depende do esquema e da diretriz; pelo CDC não é rotineiro após esquema recomendado em pessoa assintomática."
+      }
+    ]
+  },
+  "es": {
+    "title": "Infección por Mycoplasma genitalium",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Infección de transmisión sexual asociada a cervicitis persistente y enfermedad inflamatoria pélvica. La ausencia de pared celular vuelve ineficaces penicilinas y cefalosporinas; la resistencia a macrólidos es relevante.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Infección de transmisión sexual asociada a cervicitis persistente y enfermedad inflamatoria pélvica. La ausencia de pared celular vuelve ineficaces penicilinas y cefalosporinas; la resistencia a macrólidos es relevante."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Sospechar ante cervicitis recurrente tras excluir reinfección y otros agentes. Dolor pélvico, fiebre o signos de infección superior exigen abordar enfermedad inflamatoria pélvica."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Confirmar mediante prueba molecular y estudiar resistencia cuando sea posible. No realizar cribado rutinario de personas asintomáticas; conocer diferencias territoriales entre CDC y BASHH."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Según CDC, infección no complicada sin prueba de resistencia: doxiciclina 100 mg por vía oral dos veces al día durante 7 días, seguida de moxifloxacino 400 mg por vía oral una vez al día durante 7 días."
+      },
+      {
+        "id": "alternative-heading",
+        "type": "heading",
+        "text": "Alternativas y selección",
+        "level": 2
+      },
+      {
+        "id": "alternative",
+        "type": "paragraph",
+        "text": "Con sensibilidad a macrólidos comprobada, según CDC: tras la misma doxiciclina, azitromicina 1 g por vía oral el primer día, luego 500 mg una vez al día durante otros 3 días. Azitromicina 1 g aislada no es adecuada."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Los esquemas descritos no se aplican automáticamente al embarazo ni a infección superior. Moxifloxacino exige revisar prolongación del QT, interacciones y riesgo tendinoso; el fracaso requiere especialista."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Evaluar adherencia, reinfección y parejas. La prueba de curación depende del esquema y de la guía; según CDC no es rutinaria tras un esquema recomendado en una persona asintomática."
+      }
+    ]
+  }
+}

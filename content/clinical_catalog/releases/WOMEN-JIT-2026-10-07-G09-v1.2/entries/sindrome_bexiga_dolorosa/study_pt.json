@@ -1,0 +1,151 @@
+{
+  "owner": "sindrome_bexiga_dolorosa",
+  "mode": "study",
+  "locale": "pt",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "canonicalHash": "6394d45167b86a145370def73f0d3ce317b7c4acc7a1161346b64b9ae333abce",
+  "title": "Síndrome da bexiga dolorosa",
+  "status": "READY_FOR_OWNER_APPROVAL",
+  "sections": [
+    {
+      "id": "foundation",
+      "heading": "Definição e raciocínio",
+      "text": "Síndrome de dor percebida na bexiga com sintomas urinários, sem infecção ou outra causa que explique o quadro. Não equivale a cistite bacteriana recorrente nem a urgência sem dor.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "bpsaua",
+        "bps"
+      ]
+    },
+    {
+      "id": "recognition",
+      "heading": "Reconhecimento",
+      "text": "Pesquisar relação com enchimento/esvaziamento, frequência, dispareunia e fatores desencadeantes. Febre, hematúria visível, retenção ou dor aguda atípica exige investigar outra causa.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "bpsaua",
+        "bps"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "heading": "Diagnóstico e diferenciais",
+      "text": "História, exame e urinálise/cultura ajudam a excluir infecção; avaliação urológica adicional é seletiva. Não existe teste único; considerar neoplasia, cálculo e endometriose conforme achados.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "bpsaua",
+        "bps"
+      ]
+    },
+    {
+      "id": "treatment",
+      "heading": "Tratamento inicial",
+      "text": "Opções iniciais incluem educação, manejo de desencadeantes e plano de dor. Se há sensibilidade do assoalho pélvico, oferecer fisioterapia manual especializada; evitar fortalecimento indiscriminado de musculatura dolorosa/tensa.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "bpsaua",
+        "bps"
+      ]
+    },
+    {
+      "id": "alternative",
+      "heading": "Alternativas e seleção",
+      "text": "Medicamentos como amitriptilina ou tratamentos intravesicais podem ser considerados por especialista conforme perfil e resposta; não há esquema único. Antibiótico prolongado sem evidência de infecção não é tratamento da síndrome.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "bpsaua",
+        "bps"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "heading": "Monitorização e seguimento",
+      "text": "Acompanhar dor, sono, função e efeitos adversos; reavaliar diagnóstico se não houver benefício. Selecionar procedimentos conforme fenótipo, sem prometer cura; sintomas de alarme exigem avaliação independente.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "bpsaua",
+        "bps"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "heading": "Medicamento, dose e forma de uso",
+      "text": "Para dor persistente selecionada, como adjuvante e fora de bula para esta indicação: amitriptilina 10 mg por via oral à noite; titular lentamente conforme tolerância e resposta, usualmente para 25–75 mg ao dia. Este pacote usa 75 mg ao dia como limite do esquema de dor descrito; doses superiores exigem avaliação especializada. Não é analgésico de resgate; reavaliar benefício ao longo das semanas. Rever sonolência, quedas, constipação, retenção, QT/arritmia, interação com outros serotoninérgicos e risco de suicídio; gestação exige avaliação própria. Evidência de benefício varia e a medicação não substitui reabilitação/terapia multimodal.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "W12_amitrip_label"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_2",
+      "heading": "Medicamento, dose e forma de uso",
+      "text": "Outra opção especializada, conforme autorização EMA: pentosano polissulfato de sódio 100 mg por via oral três vezes ao dia, pelo menos 1 hora antes ou 2 horas depois das refeições. Aplicável a adultas com síndrome da bexiga dolorosa, glomerulações/lesões de Hunner e sintomas moderados/graves; não a toda dor pélvica. Reavaliar em 6 meses e suspender se não houver melhora. Avaliar sangramento, anticoagulantes e retina; exame oftalmológico após 6 meses, com seguimento conforme achados/tempo de exposição por risco de maculopatia pigmentária. Não usar com sangramento ativo nem extrapolar a gestação.",
+      "presentation": "paragraph",
+      "sourceIds": [
+        "W12_Elmiron"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "bpsaua",
+      "title": "AUA — Interstitial cystitis/bladder pain syndrome, amendment 2022",
+      "url": "https://www.auanet.org/documents/Guidelines/PDF/ICBPS%20Guideline.pdf",
+      "year": 2022,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "AUA",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "bps",
+      "title": "NHS — Bladder pain syndrome",
+      "url": "https://www.nhs.uk/conditions/bladder-pain-syndrome/",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_amitrip_label",
+      "title": "emc — Amitriptyline: adult neuropathic pain starting dose and titration",
+      "url": "https://www.medicines.org.uk/emc/product/10850/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_Elmiron",
+      "title": "EMA — Elmiron product information, 2026",
+      "url": "https://www.ema.europa.eu/en/documents/product-information/elmiron-epar-product-information_en.pdf",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "PUBLIC_PDF_FULL_TEXT_READ",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "markdown": "# Síndrome da bexiga dolorosa\n\n## Definição e raciocínio\n\nSíndrome de dor percebida na bexiga com sintomas urinários, sem infecção ou outra causa que explique o quadro. Não equivale a cistite bacteriana recorrente nem a urgência sem dor.\n\n## Reconhecimento\n\nPesquisar relação com enchimento/esvaziamento, frequência, dispareunia e fatores desencadeantes. Febre, hematúria visível, retenção ou dor aguda atípica exige investigar outra causa.\n\n## Diagnóstico e diferenciais\n\nHistória, exame e urinálise/cultura ajudam a excluir infecção; avaliação urológica adicional é seletiva. Não existe teste único; considerar neoplasia, cálculo e endometriose conforme achados.\n\n## Tratamento inicial\n\nOpções iniciais incluem educação, manejo de desencadeantes e plano de dor. Se há sensibilidade do assoalho pélvico, oferecer fisioterapia manual especializada; evitar fortalecimento indiscriminado de musculatura dolorosa/tensa.\n\n## Alternativas e seleção\n\nMedicamentos como amitriptilina ou tratamentos intravesicais podem ser considerados por especialista conforme perfil e resposta; não há esquema único. Antibiótico prolongado sem evidência de infecção não é tratamento da síndrome.\n\n## Monitorização e seguimento\n\nAcompanhar dor, sono, função e efeitos adversos; reavaliar diagnóstico se não houver benefício. Selecionar procedimentos conforme fenótipo, sem prometer cura; sintomas de alarme exigem avaliação independente.\n\n## Medicamento, dose e forma de uso\n\nPara dor persistente selecionada, como adjuvante e fora de bula para esta indicação: amitriptilina 10 mg por via oral à noite; titular lentamente conforme tolerância e resposta, usualmente para 25–75 mg ao dia. Este pacote usa 75 mg ao dia como limite do esquema de dor descrito; doses superiores exigem avaliação especializada. Não é analgésico de resgate; reavaliar benefício ao longo das semanas. Rever sonolência, quedas, constipação, retenção, QT/arritmia, interação com outros serotoninérgicos e risco de suicídio; gestação exige avaliação própria. Evidência de benefício varia e a medicação não substitui reabilitação/terapia multimodal.\n\n## Medicamento, dose e forma de uso\n\nOutra opção especializada, conforme autorização EMA: pentosano polissulfato de sódio 100 mg por via oral três vezes ao dia, pelo menos 1 hora antes ou 2 horas depois das refeições. Aplicável a adultas com síndrome da bexiga dolorosa, glomerulações/lesões de Hunner e sintomas moderados/graves; não a toda dor pélvica. Reavaliar em 6 meses e suspender se não houver melhora. Avaliar sangramento, anticoagulantes e retina; exame oftalmológico após 6 meses, com seguimento conforme achados/tempo de exposição por risco de maculopatia pigmentária. Não usar com sangramento ativo nem extrapolar a gestação.\n\n## Referências\n\n1. [AUA — Interstitial cystitis/bladder pain syndrome, amendment 2022](https://www.auanet.org/documents/Guidelines/PDF/ICBPS%20Guideline.pdf)\n2. [NHS — Bladder pain syndrome](https://www.nhs.uk/conditions/bladder-pain-syndrome/)\n3. [emc — Amitriptyline: adult neuropathic pain starting dose and titration](https://www.medicines.org.uk/emc/product/10850/smpc)\n4. [EMA — Elmiron product information, 2026](https://www.ema.europa.eu/en/documents/product-information/elmiron-epar-product-information_en.pdf)",
+  "factIds": [
+    "foundation",
+    "recognition",
+    "diagnosis",
+    "treatment",
+    "alternative",
+    "monitoring",
+    "pharmacotherapy_v12_1",
+    "pharmacotherapy_v12_2"
+  ],
+  "canonicalPayloadSha256": "6394d45167b86a145370def73f0d3ce317b7c4acc7a1161346b64b9ae333abce",
+  "approvedReviewProjectionHash": "4850a606b1c196f9e4db186586dace6893187324b9d6a100379c955c0caafd0b"
+}

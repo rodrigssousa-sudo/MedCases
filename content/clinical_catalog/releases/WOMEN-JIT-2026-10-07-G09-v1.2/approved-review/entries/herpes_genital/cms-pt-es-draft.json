@@ -1,0 +1,275 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "herpes_genital",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "1b6af5d85b05259b77c3811e6c206c2fa2aadb07d7d1b10a52c43ca11a509f8b",
+  "references": [
+    {
+      "id": "WHO_H",
+      "title": "Herpes simplex virus",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/herpes-simplex-virus",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "CDC_H",
+      "title": "Genital herpes",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/herpes.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "NIH_H",
+      "title": "Herpes simplex virus: adultos e adolescentes com HIV",
+      "url": "https://clinicalinfo.hiv.gov/en/guidelines/hiv-clinical-guidelines-adult-and-adolescent-opportunistic-infections/herpes-simplex",
+      "authority": "NIH",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LIVING",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "FDA_ACY",
+      "title": "Acyclovir tablets — prescribing information; renal adjustment",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/fda/fdaDrugXsl.cfm?setid=e186fdc9-b60e-4280-8d60-36cae9f2838f&type=display",
+      "authority": "FDA / DailyMed",
+      "year": "bula vigente consultada em 2026",
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Herpes genital",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Infecção genital por HSV com latência neural e possibilidade de reativação. Pode haver transmissão sem lesões visíveis; antivirais controlam manifestações, mas não erradicam o vírus.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Infecção genital por HSV com latência neural e possibilidade de reativação. Pode haver transmissão sem lesões visíveis; antivirais controlam manifestações, mas não erradicam o vírus."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Vesículas ou úlceras dolorosas, ardor e disúria sugerem herpes, mas a apresentação pode ser atípica. Diferenciar primeiro episódio, recorrência e doença extensa em imunossuprimidos."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Confirmar lesões por teste molecular para HSV quando disponível. Resultado negativo em lesão antiga não exclui herpes. Avaliar sífilis e oferecer teste para HIV; sorologia isolada não identifica toda úlcera atual."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Tratar o primeiro episódio, controlar dor e orientar abstinência durante lesões ou pródromos. Supressão contínua depende de recorrências, impacto e decisão compartilhada; preservativos reduzem, mas não eliminam transmissão."
+      },
+      {
+        "id": "dose_5-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "dose_5",
+        "type": "paragraph",
+        "text": "Adulto com primeiro episódio genital e função renal adequada: aciclovir 400 mg por via oral três vezes ao dia durante 7–10 dias. Se cicatrização incompleta, reavaliar extensão do tratamento; não usar automaticamente este esquema para recorrência ou supressão."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Reavaliar cicatrização, hidratação, efeitos adversos e adesão. Lesões persistentes em imunossuprimido requerem investigação de resistência e diagnóstico diferencial, em vez de escalonamento empírico indefinido."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Sinais de alarme",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Retenção urinária, meningismo, alteração de consciência, doença disseminada ou impossibilidade de ingestão exigem avaliação hospitalar. Doença grave pode exigir aciclovir intravenoso com monitorização própria."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Populações especiais",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Na gestação, comunicar obstetrícia pelo risco neonatal, especialmente aquisição perto do parto. Crianças, imunossuprimidos e insuficiência renal exigem esquema individual; aciclovir precisa de ajuste renal conforme bula."
+      },
+      {
+        "id": "alternative_verified_20261007-heading",
+        "type": "heading",
+        "text": "Alternativas e seleção",
+        "level": 2
+      },
+      {
+        "id": "alternative_verified_20261007",
+        "type": "paragraph",
+        "text": "Alternativa para primeiro episódio em adulta com função renal adequada: valaciclovir 1 g por via oral duas vezes ao dia durante 7–10 dias. Revisar ajuste renal; este esquema não é o de supressão contínua."
+      }
+    ]
+  },
+  "es": {
+    "title": "Herpes genital",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Infección genital por HSV con latencia neural y posibilidad de reactivación. Puede transmitirse sin lesiones visibles; los antivirales controlan manifestaciones, pero no erradican el virus.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Infección genital por HSV con latencia neural y posibilidad de reactivación. Puede transmitirse sin lesiones visibles; los antivirales controlan manifestaciones, pero no erradican el virus."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Vesículas o úlceras dolorosas, ardor y disuria sugieren herpes, pero la presentación puede ser atípica. Diferenciar primer episodio, recurrencia y enfermedad extensa en inmunosuprimidos."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Confirmar lesiones mediante prueba molecular para HSV cuando esté disponible. Un resultado negativo en lesión antigua no descarta herpes. Evaluar sífilis y ofrecer prueba de VIH; la serología aislada no identifica toda úlcera actual."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Tratar el primer episodio, controlar dolor e indicar abstinencia durante lesiones o pródromos. La supresión continua depende de recurrencias, impacto y decisión compartida; los preservativos reducen, pero no eliminan transmisión."
+      },
+      {
+        "id": "dose_5-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "dose_5",
+        "type": "paragraph",
+        "text": "Adulto con primer episodio genital y función renal adecuada: aciclovir 400 mg por vía oral tres veces al día durante 7–10 días. Si la cicatrización es incompleta, reevaluar extensión del tratamiento; no utilizar automáticamente este esquema para recurrencia o supresión."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Reevaluar cicatrización, hidratación, efectos adversos y adherencia. Las lesiones persistentes en inmunosuprimidos requieren investigación de resistencia y diagnóstico diferencial, en vez de escalamiento empírico indefinido."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Señales de alarma",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Retención urinaria, meningismo, alteración de conciencia, enfermedad diseminada o imposibilidad de ingesta requieren evaluación hospitalaria. La enfermedad grave puede requerir aciclovir intravenoso con monitorización específica."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Poblaciones especiales",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Durante el embarazo, informar a obstetricia por el riesgo neonatal, especialmente adquisición cerca del parto. Niños, inmunosuprimidos e insuficiencia renal requieren esquema individual; aciclovir necesita ajuste renal según ficha técnica."
+      },
+      {
+        "id": "alternative_verified_20261007-heading",
+        "type": "heading",
+        "text": "Alternativas y selección",
+        "level": 2
+      },
+      {
+        "id": "alternative_verified_20261007",
+        "type": "paragraph",
+        "text": "Alternativa para primer episodio en adulta con función renal adecuada: valaciclovir 1 g por vía oral dos veces al día durante 7–10 días. Revisar ajuste renal; este esquema no corresponde a supresión continua."
+      }
+    ]
+  }
+}

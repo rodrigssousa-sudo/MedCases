@@ -1,0 +1,251 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "leiomioma_uterino",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "1667e6da966b369806bcf45383f7bdf7b8e125690b268a1b500170788f170175",
+  "references": [
+    {
+      "id": "fibroid",
+      "title": "NHS — Fibroids",
+      "url": "https://www.nhs.uk/conditions/fibroids/",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "hmb",
+      "title": "NICE NG88 — Heavy menstrual bleeding: assessment and management",
+      "url": "https://www.nice.org.uk/guidance/ng88/chapter/recommendations",
+      "year": 2021,
+      "status": "AUTHORITATIVE_LIVING",
+      "authority": "NICE NG88",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Mirena",
+      "title": "Mirena 52 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/1132/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_TXA",
+      "title": "Tranexamic acid 500 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/14622/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Leiomioma uterino (mioma)",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Tumor benigno de músculo liso uterino. Localização e deformação da cavidade explicam sangramento, sintomas compressivos e possíveis efeitos reprodutivos; tamanho isolado não define tratamento.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Tumor benigno de músculo liso uterino. Localização e deformação da cavidade explicam sangramento, sintomas compressivos e possíveis efeitos reprodutivos; tamanho isolado não define tratamento."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Pesquisar sangramento, pressão pélvica, sintomas urinários, dor e anemia. Sangramento pós-menopausa ou massa suspeita exige avaliação, sem atribuição automática a mioma conhecido."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Exame, hemograma e ultrassonografia definem tamanho, número e localização. Suspeita de lesão intracavitária pode indicar histeroscopia; diferenciar adenomiose, pólipos, gravidez e neoplasia."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Assintomático pode ser observado. Para sangramento, considerar ácido tranexâmico/anti-inflamatório ou tratamento hormonal adequado; sistema com levonorgestrel depende da cavidade não deformada."
+      },
+      {
+        "id": "alternative-heading",
+        "type": "heading",
+        "text": "Alternativas e seleção",
+        "level": 2
+      },
+      {
+        "id": "alternative",
+        "type": "paragraph",
+        "text": "Miomectomia, embolização de artérias uterinas ou histerectomia são opções selecionadas por sintomas, anatomia e desejo de fertilidade. Não são intercambiáveis; discutir efeitos reprodutivos e recorrência."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Monitorar anemia, resposta e efeitos adversos; instabilidade ou retenção aguda exige urgência. Terapias com antagonistas de GnRH requerem indicação e formulação específicas, não prescrição universal."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Quando a indicação e a cavidade uterina permitem: sistema intrauterino com levonorgestrel 52 mg, inserido por profissional habilitado; liberação inicial aproximada de 20 microgramas por 24 horas, que diminui com o tempo. Não é comprimido nem aplicação diária. Para sangramento menstrual intenso, avaliar benefício em 3–6 meses e seguir o prazo de 5 anos da indicação na bula utilizada; o prazo contraceptivo não deve ser transferido automaticamente. Excluir gestação, infecção genital ativa, distorção relevante da cavidade, sangramento sem diagnóstico e contraindicações hormonais antes da inserção."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Alternativa não hormonal para sangramento menstrual intenso em adulta estável, após avaliação da causa: ácido tranexâmico 1000 mg por via oral três vezes ao dia, iniciado quando o sangramento começa, por até 4 dias por ciclo. Máximo 4000 mg em 24 horas segundo a bula consultada; não aumentar automaticamente. Ajustar na disfunção renal e evitar em trombose ativa/antecedente relevante conforme bula. Revisar risco trombótico com estrogênios; não associar por rotina. Não aplicar esse esquema a hemorragia com instabilidade, sangramento gestacional ou pós-menopausa sem diagnóstico."
+      }
+    ]
+  },
+  "es": {
+    "title": "Leiomioma uterino (mioma)",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Tumor benigno de músculo liso uterino. La ubicación y deformación de la cavidad explican sangrado, síntomas compresivos y posibles efectos reproductivos; el tamaño aislado no define tratamiento.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Tumor benigno de músculo liso uterino. La ubicación y deformación de la cavidad explican sangrado, síntomas compresivos y posibles efectos reproductivos; el tamaño aislado no define tratamiento."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Investigar sangrado, presión pélvica, síntomas urinarios, dolor y anemia. Sangrado posmenopáusico o masa sospechosa exige evaluación, sin atribuirlo automáticamente a un mioma conocido."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Examen, hemograma y ecografía definen tamaño, número y ubicación. La sospecha de lesión intracavitaria puede indicar histeroscopia; diferenciar adenomiosis, pólipos, embarazo y neoplasia."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Si es asintomático puede observarse. Para sangrado, considerar ácido tranexámico/antiinflamatorio o tratamiento hormonal adecuado; el sistema con levonorgestrel depende de una cavidad no deformada."
+      },
+      {
+        "id": "alternative-heading",
+        "type": "heading",
+        "text": "Alternativas y selección",
+        "level": 2
+      },
+      {
+        "id": "alternative",
+        "type": "paragraph",
+        "text": "Miomectomía, embolización de arterias uterinas o histerectomía son opciones elegidas según síntomas, anatomía y deseo de fertilidad. No son intercambiables; discutir efectos reproductivos y recurrencia."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Controlar anemia, respuesta y efectos adversos; inestabilidad o retención aguda requieren urgencia. Las terapias con antagonistas de GnRH requieren indicación y formulación específicas, no prescripción universal."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Cuando la indicación y la cavidad uterina lo permiten: sistema intrauterino con levonorgestrel 52 mg, insertado por un profesional capacitado; liberación inicial aproximada de 20 microgramos por 24 horas, que disminuye con el tiempo. No es un comprimido ni una aplicación diaria. Para sangrado menstrual abundante, evaluar beneficio en 3–6 meses y seguir el plazo de 5 años de la indicación en la ficha utilizada; no trasladar automáticamente el plazo anticonceptivo. Descartar embarazo, infección genital activa, distorsión relevante de la cavidad, sangrado sin diagnóstico y contraindicaciones hormonales antes de la inserción."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Alternativa no hormonal para sangrado menstrual abundante en adulta estable, tras evaluar la causa: ácido tranexámico 1000 mg por vía oral tres veces al día, iniciado cuando comienza el sangrado, durante hasta 4 días por ciclo. Máximo 4000 mg en 24 horas según la ficha consultada; no aumentar automáticamente. Ajustar ante disfunción renal y evitar ante trombosis activa/antecedente relevante según ficha. Revisar riesgo trombótico con estrógenos; no asociar rutinariamente. No aplicar este esquema a hemorragia con inestabilidad, sangrado gestacional ni posmenopáusico sin diagnóstico."
+      }
+    ]
+  }
+}

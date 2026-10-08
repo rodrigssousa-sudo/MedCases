@@ -1,0 +1,251 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "osteoporose",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "10ea179960ac6e6b47ad8f92ccc1bd618379605944521d705ced372b4f8c3f2f",
+  "references": [
+    {
+      "id": "NOGG",
+      "title": "Pharmacological treatment options",
+      "url": "https://www.nogg.org.uk/full-guideline/section-6-pharmacological-treatment-options",
+      "authority": "NOGG",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "PLAN",
+      "title": "Strategies for management of osteoporosis and fracture risk",
+      "url": "https://www.nogg.org.uk/full-guideline/section-7-strategies-management-osteoporosis-and-fracture-risk",
+      "authority": "NOGG",
+      "year": 2024,
+      "status": "AUTHORITATIVE_GUIDANCE_OR_REVIEW",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Osteoporose",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Fragilidade óssea aumenta risco de fraturas; fratura por baixo trauma deve acionar prevenção secundária, não apenas analgesia.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Fragilidade óssea aumenta risco de fraturas; fratura por baixo trauma deve acionar prevenção secundária, não apenas analgesia."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Pesquisar quedas, fraturas prévias, perda de altura, corticoides e causas secundárias; dor vertebral nova pode representar fratura."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Estratificar risco e avaliar densitometria conforme indicação; investigar função renal, cálcio e condições secundárias antes de terapia."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Prevenir quedas, assegurar nutrição e atividade segura; selecionar antirreabsortivo ou terapia anabólica conforme risco e contraindicações."
+      },
+      {
+        "id": "dose_5-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "dose_5",
+        "type": "paragraph",
+        "text": "Opção adulta indicada: alendronato 70 mg oral uma vez por semana, em jejum com água; permanecer sentado/em pé e aguardar pelo menos 30 minutos antes de alimento ou outros medicamentos."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Avaliar adesão, tolerância e novas fraturas; reavaliar duração conforme risco. Não interromper denosumabe sem plano para evitar fraturas de rebote."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Sinais de alarme",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Fratura de quadril, déficit neurológico ou dor incapacitante exige avaliação hospitalar. Alta após fratura requer mobilidade segura e plano de prevenção."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Populações especiais",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Corrigir hipocalcemia antes de antirreabsortivo; doença esofágica, impossibilidade de permanecer ereto ou função renal reduzida podem impedir alendronato oral."
+      },
+      {
+        "id": "alternative_verified_20261007-heading",
+        "type": "heading",
+        "text": "Alternativas e seleção",
+        "level": 2
+      },
+      {
+        "id": "alternative_verified_20261007",
+        "type": "paragraph",
+        "text": "Alternativa em pessoa elegível: ácido zoledrônico 5 mg por via intravenosa uma vez por ano, em infusão de pelo menos 15 minutos. Antes, verificar função renal, cálcio e adequação clínica; evitar em gestação/lactação e seguir contraindicações da bula."
+      }
+    ]
+  },
+  "es": {
+    "title": "Osteoporosis",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "La fragilidad ósea aumenta riesgo de fracturas; fractura por bajo traumatismo debe activar prevención secundaria, no solo analgesia.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "La fragilidad ósea aumenta riesgo de fracturas; fractura por bajo traumatismo debe activar prevención secundaria, no solo analgesia."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Buscar caídas, fracturas previas, pérdida de talla, corticoides y causas secundarias; dolor vertebral nuevo puede representar fractura."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Estratificar riesgo y evaluar densitometría según indicación; investigar función renal, calcio y causas secundarias antes de tratamiento."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Prevenir caídas, asegurar nutrición y actividad segura; seleccionar antirresortivo o tratamiento anabólico según riesgo y contraindicaciones."
+      },
+      {
+        "id": "dose_5-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "dose_5",
+        "type": "paragraph",
+        "text": "Opción adulta indicada: alendronato 70 mg oral una vez por semana, en ayunas con agua; permanecer sentado/de pie y esperar al menos 30 minutos antes de alimento u otros medicamentos."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Evaluar adherencia, tolerancia y nuevas fracturas; reevaluar duración según riesgo. No suspender denosumab sin plan para evitar fracturas de rebote."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Señales de alarma",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Fractura de cadera, déficit neurológico o dolor incapacitante exige evaluación hospitalaria. Alta tras fractura requiere movilidad segura y plan de prevención."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Poblaciones especiales",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Corregir hipocalcemia antes de antirresortivo; enfermedad esofágica, imposibilidad de permanecer erguido o función renal reducida pueden impedir alendronato oral."
+      },
+      {
+        "id": "alternative_verified_20261007-heading",
+        "type": "heading",
+        "text": "Alternativas y selección",
+        "level": 2
+      },
+      {
+        "id": "alternative_verified_20261007",
+        "type": "paragraph",
+        "text": "Alternativa en persona elegible: ácido zoledrónico 5 mg por vía intravenosa una vez por año, en infusión de al menos 15 minutos. Antes, comprobar función renal, calcio e idoneidad clínica; evitar en embarazo/lactancia y seguir contraindicaciones de la ficha técnica."
+      }
+    ]
+  }
+}

@@ -1,0 +1,309 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "incontinencia_urinaria_adulto",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "8f3ed59c3268588570fcd70c916e52d8bfec49158d2528f667298db8d29b1136",
+  "references": [
+    {
+      "id": "I1",
+      "title": "Urinary incontinence and pelvic organ prolapse in women: management",
+      "url": "https://www.nice.org.uk/guidance/ng123/chapter/recommendations",
+      "authority": "NICE NG123",
+      "year": 2019,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "I2",
+      "title": "Bladder control problems: definition and facts",
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-control-problems/definition-facts",
+      "authority": "NIDDK",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "I3",
+      "title": "Bladder control problems: treatment",
+      "url": "https://www.niddk.nih.gov/health-information/urologic-diseases/bladder-control-problems/treatment",
+      "authority": "NIDDK",
+      "year": "sem data editorial explícita",
+      "status": "SUPPORTIVE_OFFICIAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "O2",
+      "title": "Mirabegron extended-release tablets: prescribing information",
+      "url": "https://dailymed.nlm.nih.gov/dailymed/drugInfo.cfm?setid=5f7a1758-8691-4e53-96d6-a01626ee8140",
+      "authority": "DailyMed / bula dos EUA",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true,
+      "sourceReadStatus": "WEB_RECOMMENDATIONS_READ"
+    },
+    {
+      "id": "W12_Solifenacin",
+      "title": "Solifenacin 5 mg — Summary of Product Characteristics",
+      "url": "https://www.medicines.org.uk/emc/product/10463/smpc",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Incontinência urinária no adulto",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Perda involuntária de urina: distinguir esforço, urgência, mista e transbordamento. Incontinência é um sintoma, não sinônimo obrigatório de bexiga hiperativa.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Perda involuntária de urina: distinguir esforço, urgência, mista e transbordamento. Incontinência é um sintoma, não sinônimo obrigatório de bexiga hiperativa."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Identificar situações de perda, urgência, dificuldade miccional, mobilidade, medicamentos e cirurgias; registrar diário miccional e examinar conforme anatomia e sintomas."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Realizar urinálise; avaliar resíduo quando houver dificuldade de esvaziamento ou suspeita de retenção. Diferenciar infecção, prolapso e causas neurológicas."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Em mulheres com esforço ou mista, treinamento supervisionado do assoalho pélvico por pelo menos 3 meses; com urgência ou mista, treinamento vesical por pelo menos 6 semanas."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Medir perdas, impacto e adesão; adaptar absorventes e cuidados da pele enquanto se trata a causa. Persistência ou diagnóstico incerto justifica encaminhamento."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Sinais de alarme",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Hematúria, retenção, dor persistente, massa pélvica ou déficit neurológico não devem ser rotulados como incontinência simples; investigar ou encaminhar conforme urgência."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Populações especiais",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "As durações de treinamento acima correspondem à recomendação para mulheres. Homens após cirurgia prostática, pessoas frágeis e alterações neurológicas precisam de plano específico."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Esforço: reabilitação pélvica é inicial; persistência pode justificar cirurgia selecionada por especialista. Urgência: treinamento vesical e, quando indicado, farmacoterapia de bexiga hiperativa. Na forma mista, tratar o componente predominante; não trocar exercícios por antimuscarínico na perda de esforço isolada."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Se predomina urgência/bexiga hiperativa, após medidas comportamentais: mirabegrona 25 mg por via oral uma vez ao dia; conforme bula dos Estados Unidos, considerar 50 mg uma vez ao dia após 4–8 semanas, máximo 50 mg ao dia. Não trata incontinência puramente de esforço. Monitorar pressão e retenção urinária; não usar em hipertensão grave não controlada. Limites menores ou contraindicação dependem da função renal/hepática; conferir bula local antes de prescrever. Tratamento contínuo somente enquanto houver benefício, com revisão periódica."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Alternativa para urgência: solifenacina 5 mg por via oral uma vez ao dia; se necessário e tolerado, 10 mg uma vez ao dia, máximo 10 mg ao dia. Em depuração de creatinina até 30 mL/minuto ou insuficiência hepática moderada, máximo 5 mg ao dia; insuficiência hepática grave contraindica. Avaliar retenção, constipação, carga anticolinérgica/cognição, glaucoma de ângulo fechado e risco de QT. Não associar automaticamente a mirabegrona; rever resposta e tolerância em 4–8 semanas."
+      }
+    ]
+  },
+  "es": {
+    "title": "Incontinencia urinaria en adultos",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Pérdida involuntaria de orina: distinguir esfuerzo, urgencia, mixta y rebosamiento. La incontinencia es un síntoma, no un sinónimo obligatorio de vejiga hiperactiva.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Pérdida involuntaria de orina: distinguir esfuerzo, urgencia, mixta y rebosamiento. La incontinencia es un síntoma, no un sinónimo obligatorio de vejiga hiperactiva."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Identificar situaciones de pérdida, urgencia, dificultad miccional, movilidad, medicamentos y cirugías; registrar diario miccional y examinar según anatomía y síntomas."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Realizar análisis de orina; evaluar residuo ante dificultad de vaciamiento o sospecha de retención. Diferenciar infección, prolapso y causas neurológicas."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "En mujeres con incontinencia de esfuerzo o mixta, entrenamiento supervisado del suelo pélvico durante al menos 3 meses; con urgencia o mixta, entrenamiento vesical durante al menos 6 semanas."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Evaluar pérdidas, impacto y adherencia; adaptar absorbentes y cuidados de la piel mientras se trata la causa. La persistencia o el diagnóstico incierto justifican derivación."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Señales de alarma",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "La hematuria, la retención, el dolor persistente, una masa pélvica o un déficit neurológico no deben rotularse como incontinencia simple; investigar o derivar según urgencia."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Poblaciones especiales",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Las duraciones de entrenamiento anteriores corresponden a la recomendación para mujeres. Los hombres tras cirugía prostática, las personas frágiles y las alteraciones neurológicas necesitan un plan específico."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Esfuerzo: rehabilitación pélvica inicial; persistencia puede justificar cirugía seleccionada por especialista. Urgencia: entrenamiento vesical y, cuando corresponda, farmacoterapia de vejiga hiperactiva. En forma mixta, tratar el componente predominante; no sustituir ejercicios por antimuscarínico ante pérdida de esfuerzo aislada."
+      },
+      {
+        "id": "pharmacotherapy_v12_1-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_1",
+        "type": "paragraph",
+        "text": "Si predomina urgencia/vejiga hiperactiva, tras medidas conductuales: mirabegrón 25 mg por vía oral una vez al día; según ficha de Estados Unidos, considerar 50 mg una vez al día tras 4–8 semanas, máximo 50 mg al día. No trata la incontinencia exclusivamente de esfuerzo. Controlar presión y retención urinaria; no usar ante hipertensión grave no controlada. Límites inferiores o contraindicación dependen de función renal/hepática; comprobar ficha local antes de prescribir. Tratamiento continuo solo mientras exista beneficio, con revisión periódica."
+      },
+      {
+        "id": "pharmacotherapy_v12_2-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_v12_2",
+        "type": "paragraph",
+        "text": "Alternativa para urgencia: solifenacina 5 mg por vía oral una vez al día; si se necesita y se tolera, 10 mg una vez al día, máximo 10 mg al día. Con depuración de creatinina hasta 30 mL/minuto o insuficiencia hepática moderada, máximo 5 mg al día; la insuficiencia hepática grave contraindica. Evaluar retención, estreñimiento, carga anticolinérgica/cognición, glaucoma de ángulo cerrado y riesgo de QT. No asociar automáticamente con mirabegrón; revisar respuesta y tolerancia en 4–8 semanas."
+      }
+    ]
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "schemaVersion": "1.0",
+  "owner": "mastite_lactacional",
+  "title": {
+    "pt": "Mastite lactacional",
+    "es": "Mastitis lactacional"
+  },
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "population": "Mulheres adultas; gestação/lactação e outros contextos somente quando explicitados",
+  "identity": {
+    "action": "REVIEW_EXISTING_PRESERVE_ID",
+    "existingCanonicalDocumentIds": [
+      "mastite_lactacional"
+    ],
+    "owner": "mastite_lactacional",
+    "newOwnerActivated": false,
+    "relatedButNotEquivalent": [],
+    "scope": "Mastite abrange inflamação e infecção; nem toda dor/eritema mamário exige antibiótico. Edema e estímulo excessivo de produção podem perpetuar o quadro.",
+    "preserveExistingPregnancyContent": true,
+    "existingCMSDocumentIds": [
+      "mastite_lactacional"
+    ],
+    "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+    "existingRuntimeOwnerPreserved": true
+  },
+  "review": {
+    "author": "Codex — preparação e conferência de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "foundation",
+      "section": "foundation",
+      "pt": "Mastite abrange inflamação e infecção; nem toda dor/eritema mamário exige antibiótico. Edema e estímulo excessivo de produção podem perpetuar o quadro.",
+      "es": "La mastitis incluye inflamación e infección; no todo dolor/eritema mamario requiere antibiótico. Edema y estimulación excesiva de producción pueden perpetuar el cuadro.",
+      "sources": [
+        "mast"
+      ]
+    },
+    {
+      "id": "recognition",
+      "section": "recognition",
+      "pt": "Avaliar dor, eritema, febre, técnica de amamentação e sinais de abscesso. Instabilidade, progressão rápida ou massa persistente exige avaliação urgente e diagnóstico alternativo.",
+      "es": "Evaluar dolor, eritema, fiebre, técnica de lactancia y signos de absceso. Inestabilidad, progresión rápida o masa persistente exige evaluación urgente y diagnóstico alternativo.",
+      "sources": [
+        "mast"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "section": "diagnosis",
+      "pt": "Distinguir inflamação de mastite bacteriana; ultrassonografia se suspeita de coleção. Cultura é indicada seletivamente, especialmente na ausência de melhora após 48 horas de tratamento adequado.",
+      "es": "Distinguir inflamación de mastitis bacteriana; ecografía si se sospecha colección. El cultivo se indica selectivamente, especialmente sin mejoría después de 48 horas de tratamiento adecuado.",
+      "sources": [
+        "mast"
+      ]
+    },
+    {
+      "id": "treatment",
+      "section": "treatment",
+      "pt": "Manter amamentação fisiológica conforme tolerância, gelo e analgesia compatível com lactação. Evitar massagem profunda e extração excessiva para tentar esvaziar a mama.",
+      "es": "Mantener lactancia fisiológica según tolerancia, hielo y analgesia compatible con lactancia. Evitar masaje profundo y extracción excesiva para intentar vaciar la mama.",
+      "sources": [
+        "mast"
+      ]
+    },
+    {
+      "id": "alternative",
+      "section": "alternative",
+      "pt": "Mastite bacteriana, pelo ABM: dicloxacilina 500 mg por via oral quatro vezes ao dia durante 10–14 dias. Alternativa: cefalexina 500 mg por via oral quatro vezes ao dia durante 10–14 dias; revisar alergias, função renal e resistência local.",
+      "es": "Mastitis bacteriana, según ABM: dicloxacilina 500 mg por vía oral cuatro veces al día durante 10–14 días. Alternativa: cefalexina 500 mg por vía oral cuatro veces al día durante 10–14 días; revisar alergias, función renal y resistencia local.",
+      "sources": [
+        "mast"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "section": "monitoring",
+      "pt": "Abscesso exige drenagem e cultura, além de terapia selecionada. Falha em 48 horas exige reavaliar resistência, coleção e diagnóstico; não interromper lactação automaticamente nem repetir antibióticos sem investigação.",
+      "es": "Un absceso requiere drenaje y cultivo, además de terapia seleccionada. Fracaso en 48 horas exige reevaluar resistencia, colección y diagnóstico; no suspender lactancia automáticamente ni repetir antibióticos sin estudio.",
+      "sources": [
+        "mast"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "section": "dose",
+      "pt": "Alívio de dor em adulta com pelo menos 50 kg: paracetamol 500–1000 mg por via oral a cada 6 horas, se necessário; máximo 4000 mg em 24 horas. Usar por curto período e reavaliar se precisar por mais de 3 dias. Reduzir limite/individualizar em baixo peso, hepatopatia, desnutrição ou uso excessivo de álcool; somar todas as apresentações que contêm paracetamol.",
+      "es": "Alivio del dolor en adulta de al menos 50 kg: paracetamol 500–1000 mg por vía oral cada 6 horas, si es necesario; máximo 4000 mg en 24 horas. Usar por un período breve y reevaluar si se necesita durante más de 3 días. Reducir el límite/individualizar ante bajo peso, hepatopatía, desnutrición o consumo excesivo de alcohol; sumar todas las presentaciones que contienen paracetamol.",
+      "sources": [
+        "W12_paracetamol_nhs"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "mast",
+      "title": "ABM Clinical Protocol 36 — Mastitis spectrum, 2022",
+      "url": "https://www.bfmed.org/assets/ABM%20Protocol%20%2336.pdf",
+      "year": 2022,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "authority": "ABM Clinical Protocol 36",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "W12_paracetamol_nhs",
+      "title": "NHS — Paracetamol for adults: dosing and precautions",
+      "url": "https://www.nhs.uk/medicines/paracetamol-for-adults/",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "READ_FULL_PUBLIC_TEXT",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "provenance": {
+    "version": "WOMEN-JIT-2026-10-07-G09-v1.1",
+    "canonicalHash": "016ae7e69e66baa0da452bf429dc11e15c6bd02487d3ade4eca79a37d5e228f7",
+    "sourcePath": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-women50-group09-2026-10-07/revisions/v1.1/entries/mastite_lactacional/canonical-payload.json",
+    "revisionScope": "treatment completion; no remote writes; identifiers preserved",
+    "previousProvenance": null
+  },
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}

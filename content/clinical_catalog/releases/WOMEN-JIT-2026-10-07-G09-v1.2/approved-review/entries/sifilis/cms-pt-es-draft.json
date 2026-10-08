@@ -1,0 +1,287 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "sifilis",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "8b8ab9a4e696e207f67c2cf95fd70dbe332dd07552eddeb193fb554d849efc1f",
+  "references": [
+    {
+      "id": "WHO_S",
+      "title": "Syphilis",
+      "url": "https://www.who.int/news-room/fact-sheets/detail/syphilis",
+      "authority": "OMS",
+      "year": 2025,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "CDC_S",
+      "title": "Syphilis: diagnóstico",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/syphilis.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "CDC_E",
+      "title": "Primary and secondary syphilis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/p-and-s-syphilis.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "CDC_L",
+      "title": "Latent syphilis",
+      "url": "https://www.cdc.gov/std/treatment-guidelines/latent-syphilis.htm",
+      "authority": "CDC",
+      "year": 2021,
+      "status": "AUTHORITATIVE_OLDER_BUT_CURRENT",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "WHO_STI",
+      "title": "Updated recommendations: gonorrhoea, chlamydia, syphilis and partner services",
+      "url": "https://www.who.int/publications/i/item/9789240090767",
+      "authority": "OMS",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "verifiedAt": "2026-10-03",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": "2026-10-03",
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Sífilis",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Infecção por Treponema pallidum, transmissível por contato sexual e verticalmente. A ausência de sintomas não exclui infecção; lesões podem desaparecer sem que a doença esteja curada.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Infecção por Treponema pallidum, transmissível por contato sexual e verticalmente. A ausência de sintomas não exclui infecção; lesões podem desaparecer sem que a doença esteja curada."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Procurar úlcera geralmente indolor, exantema inclusive palmoplantar, lesões mucosas e história de exposição. Classificar estágio, tratamentos anteriores e possibilidade de gestação antes de escolher o esquema."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Combinar teste treponêmico e não treponêmico quantitativo com a história clínica. Um título isolado não determina duração da sífilis latente. Diferenciar herpes genital e outras causas de úlcera."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Tratar o estágio identificado, oferecer teste para HIV e avaliar parceiros. Explicar reação de Jarisch–Herxheimer, que não equivale automaticamente a alergia à penicilina."
+      },
+      {
+        "id": "dose_5-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "dose_5",
+        "type": "paragraph",
+        "text": "Adultos: sífilis primária, secundária ou latente recente — penicilina G benzatina 2,4 milhões de unidades internacionais por via intramuscular, dose única. Latente tardia ou de duração desconhecida — penicilina G benzatina 2,4 milhões de unidades internacionais por via intramuscular uma vez por semana, por 3 doses; total de 7,2 milhões de unidades internacionais."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Registrar título não treponêmico inicial e acompanhar resposta conforme estágio, gestação e risco de reinfecção. Persistência de teste treponêmico positivo não significa, isoladamente, falha terapêutica."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Sinais de alarme",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Alteração visual, perda auditiva, meningismo ou déficit neurológico exigem avaliação urgente para sífilis ocular, otológica ou neurossífilis. O esquema intramuscular acima não trata essas apresentações."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Populações especiais",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "Na gestação, penicilina é necessária para prevenir sífilis congênita; alergia requer avaliação para dessensibilização. Sífilis congênita e crianças exigem protocolo específico, sem reutilizar doses adultas."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Alternativa para não gestantes com alergia à penicilina, sem acometimento neurológico/ocular/ótico e com seguimento garantido: doxiciclina 100 mg por via oral duas vezes ao dia durante 14 dias na sífilis recente, ou 28 dias na latente tardia/duração desconhecida, pelo CDC. Não usar na gestação; nesse contexto, dessensibilizar e tratar com penicilina."
+      }
+    ]
+  },
+  "es": {
+    "title": "Sífilis",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Infección por Treponema pallidum, transmisible por contacto sexual y verticalmente. La ausencia de síntomas no excluye infección; las lesiones pueden desaparecer sin que la enfermedad esté curada.",
+    "sections": [
+      {
+        "id": "foundation_1-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation_1",
+        "type": "paragraph",
+        "text": "Infección por Treponema pallidum, transmisible por contacto sexual y verticalmente. La ausencia de síntomas no excluye infección; las lesiones pueden desaparecer sin que la enfermedad esté curada."
+      },
+      {
+        "id": "recognition_2-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition_2",
+        "type": "paragraph",
+        "text": "Buscar úlcera generalmente indolora, exantema incluso palmoplantar, lesiones mucosas y antecedentes de exposición. Clasificar estadio, tratamientos previos y posibilidad de embarazo antes de elegir el esquema."
+      },
+      {
+        "id": "diagnosis_3-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis_3",
+        "type": "paragraph",
+        "text": "Combinar prueba treponémica y no treponémica cuantitativa con los antecedentes clínicos. Un título aislado no determina la duración de la sífilis latente. Diferenciar herpes genital y otras causas de úlcera."
+      },
+      {
+        "id": "treatment_4-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment_4",
+        "type": "paragraph",
+        "text": "Tratar el estadio identificado, ofrecer prueba de VIH y evaluar parejas. Explicar la reacción de Jarisch–Herxheimer, que no equivale automáticamente a alergia a la penicilina."
+      },
+      {
+        "id": "dose_5-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "dose_5",
+        "type": "paragraph",
+        "text": "Adultos: sífilis primaria, secundaria o latente temprana — penicilina G benzatina 2,4 millones de unidades internacionales por vía intramuscular, dosis única. Latente tardía o de duración desconocida — penicilina G benzatina 2,4 millones de unidades internacionales por vía intramuscular una vez por semana, durante 3 dosis; total de 7,2 millones de unidades internacionales."
+      },
+      {
+        "id": "monitoring_6-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring_6",
+        "type": "paragraph",
+        "text": "Registrar título no treponémico inicial y controlar respuesta según estadio, embarazo y riesgo de reinfección. La persistencia de una prueba treponémica positiva no significa, por sí sola, fracaso terapéutico."
+      },
+      {
+        "id": "redflags_7-heading",
+        "type": "heading",
+        "text": "Señales de alarma",
+        "level": 2
+      },
+      {
+        "id": "redflags_7",
+        "type": "paragraph",
+        "text": "Alteración visual, pérdida auditiva, meningismo o déficit neurológico requieren evaluación urgente por sífilis ocular, ótica o neurosífilis. El esquema intramuscular anterior no trata estas presentaciones."
+      },
+      {
+        "id": "special_8-heading",
+        "type": "heading",
+        "text": "Poblaciones especiales",
+        "level": 2
+      },
+      {
+        "id": "special_8",
+        "type": "paragraph",
+        "text": "En el embarazo, la penicilina es necesaria para prevenir sífilis congénita; la alergia requiere evaluación para desensibilización. La sífilis congénita y los niños requieren un protocolo específico, sin reutilizar dosis adultas."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Alternativa para no embarazadas con alergia a penicilina, sin afectación neurológica/ocular/ótica y con seguimiento asegurado: doxiciclina 100 mg por vía oral dos veces al día durante 14 días en sífilis temprana, o 28 días en latente tardía/duración desconocida, según CDC. No usar en embarazo; en ese contexto, desensibilizar y tratar con penicilina."
+      }
+    ]
+  }
+}

@@ -1,0 +1,217 @@
+{
+  "schema_version": "1.0",
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "owner": "polipo_cervical",
+  "status": "DRAFT_ADMIN",
+  "isPublished": false,
+  "human_approved": false,
+  "canonicalHash": "1918a3966f7764183d297f003b61ea6e1ba75ab7d5ab453dc2499baeb37125fb",
+  "references": [
+    {
+      "id": "cpolyp",
+      "title": "NHS Cornwall — Cervical polyps, revisão 2025",
+      "url": "https://rms.cornwall.nhs.uk/rms/primary_care_clinical_referral_criteria/primary_care_clinical_referral_criteria/gynae/cervical_polyps",
+      "year": 2025,
+      "status": "AUTHORITATIVE_LOCAL_CLINICAL_GUIDANCE",
+      "authority": "NHS Cornwall",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    }
+  ],
+  "coverImageUrl": null,
+  "reviewer": null,
+  "reviewDate": "2026-10-08",
+  "runtimePublicationStatus": "REVISION_NOT_PUBLISHED",
+  "pt": {
+    "title": "Pólipo cervical",
+    "subtitle": "Saúde da mulher — atualização clínica",
+    "summary": "Projeção de tecido do colo/canal cervical, em geral benigna; não equivale a pólipo endometrial prolapsado nem a câncer cervical.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definição e raciocínio",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Projeção de tecido do colo/canal cervical, em geral benigna; não equivale a pólipo endometrial prolapsado nem a câncer cervical."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconhecimento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Pode ser incidental ou causar sangramento pós-coito/intermenstrual e corrimento. Examinar o colo com consentimento e verificar histórico de rastreamento."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico e diferenciais",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Identificar implantação e aspecto. Base não visível, lesão irregular ou origem endometrial suspeita requerem ginecologia e investigação uterina; aspecto suspeito segue via de investigação de câncer."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Lesão pequena assintomática pode ser observada após avaliação. Pólipo sintomático pode ser removido por profissional habilitado, com envio para anatomopatológico; não realizar remoção cega de base desconhecida."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Segurança e contraindicações",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Citologia normal não exclui malignidade em lesão visualmente suspeita. Sangramento persistente ou pós-menopausa não deve ser explicado pelo pólipo sem avaliar outras fontes. Gestação requer decisão obstétrica própria."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorização e seguimento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Confirmar histologia e resolução dos sintomas. Após remoção, sangramento importante, febre ou dor crescente exigem avaliação. Não há indicação de antibiótico rotineiro apenas pela presença de pólipo."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Escolha do tratamento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opção 1: observação após avaliação em lesão pequena, assintomática e não suspeita. Opção 2: remoção dirigida com anatomopatológico se sintomática ou indicada. Base desconhecida, aparência suspeita ou gravidez requerem abordagem especializada; não remover às cegas."
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12-heading",
+        "type": "heading",
+        "text": "Medicamento, dose e forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12",
+        "type": "paragraph",
+        "text": "Não há medicamento de rotina que remova pólipo cervical. Observar casos selecionados ou remover quando indicado e enviar para histologia. Não usar antibiótico empiricamente só pela presença do pólipo; cervicite confirmada é tratada como doença associada com seu esquema específico."
+      }
+    ]
+  },
+  "es": {
+    "title": "Pólipo cervical",
+    "subtitle": "Salud de la mujer — actualización clínica",
+    "summary": "Proyección de tejido del cuello/canal cervical, generalmente benigna; no equivale a un pólipo endometrial prolapsado ni a cáncer cervical.",
+    "sections": [
+      {
+        "id": "foundation-heading",
+        "type": "heading",
+        "text": "Definición y razonamiento",
+        "level": 2
+      },
+      {
+        "id": "foundation",
+        "type": "paragraph",
+        "text": "Proyección de tejido del cuello/canal cervical, generalmente benigna; no equivale a un pólipo endometrial prolapsado ni a cáncer cervical."
+      },
+      {
+        "id": "recognition-heading",
+        "type": "heading",
+        "text": "Reconocimiento",
+        "level": 2
+      },
+      {
+        "id": "recognition",
+        "type": "paragraph",
+        "text": "Puede ser incidental o causar sangrado poscoital/intermenstrual y secreción. Examinar el cuello con consentimiento y revisar antecedentes de cribado."
+      },
+      {
+        "id": "diagnosis-heading",
+        "type": "heading",
+        "text": "Diagnóstico y diferenciales",
+        "level": 2
+      },
+      {
+        "id": "diagnosis",
+        "type": "paragraph",
+        "text": "Identificar implantación y aspecto. Base no visible, lesión irregular o sospecha de origen endometrial requieren ginecología y estudio uterino; un aspecto sospechoso sigue la vía de investigación de cáncer."
+      },
+      {
+        "id": "treatment-heading",
+        "type": "heading",
+        "text": "Tratamiento inicial",
+        "level": 2
+      },
+      {
+        "id": "treatment",
+        "type": "paragraph",
+        "text": "Una lesión pequeña asintomática puede observarse tras evaluación. Un pólipo sintomático puede extraerse por personal capacitado, con envío a anatomía patológica; no realizar extracción ciega de una base desconocida."
+      },
+      {
+        "id": "safety-heading",
+        "type": "heading",
+        "text": "Seguridad y contraindicaciones",
+        "level": 2
+      },
+      {
+        "id": "safety",
+        "type": "paragraph",
+        "text": "Una citología normal no excluye malignidad en una lesión visualmente sospechosa. Sangrado persistente o posmenopáusico no debe atribuirse al pólipo sin evaluar otras fuentes. El embarazo requiere una decisión obstétrica específica."
+      },
+      {
+        "id": "monitoring-heading",
+        "type": "heading",
+        "text": "Monitorización y seguimiento",
+        "level": 2
+      },
+      {
+        "id": "monitoring",
+        "type": "paragraph",
+        "text": "Confirmar histología y resolución de los síntomas. Tras la extracción, sangrado importante, fiebre o dolor creciente requieren evaluación. La presencia de un pólipo por sí sola no indica antibióticos rutinarios."
+      },
+      {
+        "id": "treatment_choices_v11-heading",
+        "type": "heading",
+        "text": "Elección del tratamiento",
+        "level": 2
+      },
+      {
+        "id": "treatment_choices_v11",
+        "type": "paragraph",
+        "text": "Opción 1: observación tras evaluación ante lesión pequeña, asintomática y no sospechosa. Opción 2: resección dirigida con anatomía patológica si es sintomática o está indicada. Base desconocida, apariencia sospechosa o embarazo requieren atención especializada; no resecar a ciegas."
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12-heading",
+        "type": "heading",
+        "text": "Medicamento, dosis y forma de uso",
+        "level": 2
+      },
+      {
+        "id": "pharmacotherapy_not_routine_v12",
+        "type": "paragraph",
+        "text": "No existe un medicamento rutinario que elimine un pólipo cervical. Observar casos seleccionados o extraer cuando esté indicado y enviar para histología. No utilizar antibiótico empíricamente solo por la presencia del pólipo; la cervicitis confirmada se trata como enfermedad asociada con su esquema específico."
+      }
+    ]
+  }
+}

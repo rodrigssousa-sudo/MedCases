@@ -1,0 +1,204 @@
+{
+  "schemaVersion": "1.0",
+  "owner": "liquen_escleroso_vulvar",
+  "title": {
+    "pt": "Líquen escleroso vulvar",
+    "es": "Liquen escleroso vulvar"
+  },
+  "version": "WOMEN-JIT-2026-10-07-G09-v1.2",
+  "reviewDate": "2026-10-08",
+  "population": "Mulheres adultas; gestação/lactação e outros contextos somente quando explicitados",
+  "identity": {
+    "action": "REVIEW_EXISTING_PRESERVE_ID",
+    "existingCanonicalDocumentIds": [
+      "liquen_escleroso_vulvar"
+    ],
+    "owner": "liquen_escleroso_vulvar",
+    "newOwnerActivated": false,
+    "relatedButNotEquivalent": [
+      "liquen_plano",
+      "liquen_simplex_cronico"
+    ],
+    "scope": "Dermatose inflamatória crônica que pode causar placas esbranquiçadas, fissuras e alteração arquitetural vulvar. Não é infecção sexualmente transmissível e não equivale a candidíase.",
+    "preserveExistingPregnancyContent": true,
+    "existingCMSDocumentIds": [],
+    "remoteMetadataReadAt": "2026-10-07T10:18:31.283195+00:00",
+    "existingRuntimeOwnerPreserved": true
+  },
+  "review": {
+    "author": "Codex — preparação e conferência de evidências",
+    "medicalReviewer": null,
+    "ownerApproved": false,
+    "status": "READY_FOR_OWNER_APPROVAL"
+  },
+  "facts": [
+    {
+      "id": "foundation",
+      "section": "foundation",
+      "pt": "Dermatose inflamatória crônica que pode causar placas esbranquiçadas, fissuras e alteração arquitetural vulvar. Não é infecção sexualmente transmissível e não equivale a candidíase.",
+      "es": "Dermatosis inflamatoria crónica que puede causar placas blanquecinas, fisuras y alteración de la arquitectura vulvar. No es una infección de transmisión sexual ni equivale a candidiasis.",
+      "sources": [
+        "ls",
+        "lsnhs",
+        "lssouthtees"
+      ]
+    },
+    {
+      "id": "recognition",
+      "section": "recognition",
+      "pt": "Pesquisar prurido, dor, dispareunia e dificuldade urinária; examinar pele e arquitetura. Lesão ulcerada, espessamento focal ou área que não responde exige excluir neoplasia.",
+      "es": "Investigar prurito, dolor, dispareunia y dificultad urinaria; examinar piel y arquitectura. Una lesión ulcerada, engrosamiento focal o área que no responde exige excluir neoplasia.",
+      "sources": [
+        "ls",
+        "lsnhs",
+        "lssouthtees"
+      ]
+    },
+    {
+      "id": "diagnosis",
+      "section": "diagnosis",
+      "pt": "Diagnóstico clínico por profissional experiente; biópsia quando dúvida, suspeita de neoplasia ou resposta inadequada. Diferenciar líquen plano erosivo, dermatite e outras dermatoses.",
+      "es": "Diagnóstico clínico por profesional con experiencia; biopsia ante duda, sospecha de neoplasia o respuesta inadecuada. Diferenciar liquen plano erosivo, dermatitis y otras dermatosis.",
+      "sources": [
+        "ls",
+        "lsnhs",
+        "lssouthtees"
+      ]
+    },
+    {
+      "id": "treatment",
+      "section": "treatment",
+      "pt": "Corticosteroide tópico potente/ultrapotente, como clobetasol propionato 0,05% em pomada, é tratamento principal com orientação de aplicação. Emolientes e remoção de irritantes são cuidados complementares, não substitutos.",
+      "es": "Un corticosteroide tópico potente/ultrapotente, como propionato de clobetasol al 0,05% en pomada, es el tratamiento principal con instrucciones de aplicación. Emolientes y eliminación de irritantes son complementos, no sustitutos.",
+      "sources": [
+        "ls",
+        "lsnhs",
+        "lssouthtees"
+      ]
+    },
+    {
+      "id": "alternative",
+      "section": "alternative",
+      "pt": "Esquema de indução e manutenção deve ser individualizado conforme atividade e resposta. Se não há controle, verificar adesão, aplicação e diagnóstico antes de discutir outra terapia com especialista.",
+      "es": "El esquema de inducción y mantenimiento debe individualizarse según actividad y respuesta. Si no hay control, comprobar adherencia, aplicación y diagnóstico antes de discutir otra terapia con especialista.",
+      "sources": [
+        "ls",
+        "lsnhs",
+        "lssouthtees"
+      ]
+    },
+    {
+      "id": "monitoring",
+      "section": "monitoring",
+      "pt": "Seguimento é prolongado para controlar inflamação, cicatrização e risco neoplásico. Nova massa, ferida persistente ou mudança de aspecto exige revisão e eventual biópsia; não abandonar acompanhamento ao melhorar o prurido.",
+      "es": "El seguimiento es prolongado para controlar inflamación, cicatrización y riesgo neoplásico. Una masa nueva, herida persistente o cambio de aspecto exige revisión y eventual biopsia; no abandonar controles al mejorar el prurito.",
+      "sources": [
+        "ls",
+        "lsnhs",
+        "lssouthtees"
+      ]
+    },
+    {
+      "id": "treatment_choices_v11",
+      "section": "treatment_choices",
+      "pt": "Se clobetasol não for tolerado ou for inadequado, especialista pode discutir outro corticosteroide potente, como mometasona, individualizando aplicação e manutenção. Inibidores tópicos de calcineurina são alternativas selecionadas fora de bula e não equivalem à primeira linha; falha exige rever diagnóstico e excluir neoplasia.",
+      "es": "Si clobetasol no se tolera o es inadecuado, un especialista puede discutir otro corticosteroide potente, como mometasona, individualizando aplicación y mantenimiento. Inhibidores tópicos de calcineurina son alternativas seleccionadas fuera de indicación autorizada y no equivalen a primera línea; fracaso exige revisar diagnóstico y descartar neoplasia.",
+      "sources": [
+        "LS_ISSVD_REPRINT",
+        "LS_RCT",
+        "lsnhs"
+      ]
+    },
+    {
+      "id": "pharmacotherapy_v12_1",
+      "section": "dose",
+      "pt": "Indução em adulta: clobetasol propionato 0,05% em pomada, camada fina na área vulvar afetada uma vez ao dia por 1 mês, depois em dias alternados por 1 mês e duas vezes por semana por 1 mês. Alternativa: mometasona furoato 0,1% em pomada, com o mesmo esquema de indução BASHH se selecionada pelo especialista. Escolher uma opção. Revisar em 3 meses; manutenção depende da atividade e pode exigir uso prolongado supervisionado. Orientar quantidade/local na consulta; tubo de 30 g deve durar pelo menos o curso de 3 meses, não usar 30 g por aplicação. Não aplicar por via intravaginal nem interromper vigilância de neoplasia ao melhorar.",
+      "es": "Inducción en adulta: propionato de clobetasol al 0,05% en pomada, capa fina en el área vulvar afectada una vez al día durante 1 mes, después en días alternos durante 1 mes y dos veces por semana durante 1 mes. Alternativa: furoato de mometasona al 0,1% en pomada, con el mismo esquema de inducción BASHH si lo selecciona el especialista. Elegir una opción. Revisar en 3 meses; mantenimiento depende de actividad y puede requerir uso prolongado supervisado. Indicar cantidad/localización en consulta; un tubo de 30 g debe durar al menos el curso de 3 meses, no utilizar 30 g por aplicación. No aplicar por vía intravaginal ni suspender vigilancia de neoplasia al mejorar.",
+      "sources": [
+        "W12_Vulval"
+      ]
+    }
+  ],
+  "references": [
+    {
+      "id": "ls",
+      "title": "ISSVD — Lichen sclerosus practical guide, 2024",
+      "url": "https://www.issvd.org/download_file/force/1583/2238",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "ISSVD",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "lsnhs",
+      "title": "NHS — Lichen sclerosus",
+      "url": "https://www.nhs.uk/conditions/lichen-sclerosus/",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "lssouthtees",
+      "title": "South Tees NHS — Lichen sclerosus of vulva",
+      "url": "https://www.southtees.nhs.uk/resources/lichen-sclerosus/",
+      "year": null,
+      "status": "SUPPORTIVE_OFFICIAL_PATIENT_GUIDANCE",
+      "authority": "South Tees NHS",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    },
+    {
+      "id": "LS_ISSVD_REPRINT",
+      "title": "ISSVD — Lichen sclerosus practical guide, 2024, cópia PCDS",
+      "url": "https://www.pcds.org.uk/files/general/ISSVD-Lichen_Sclerosus-Practical-guide.pdf",
+      "year": 2024,
+      "status": "AUTHORITATIVE_FINAL",
+      "authority": "ISSVD",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "LS_RCT",
+      "title": "Virgili et al. — ensaio clobetasol versus mometasona em líquen escleroso vulvar",
+      "url": "https://pubmed.ncbi.nlm.nih.gov/24641522/",
+      "year": 2014,
+      "status": "SUPPORTIVE_PRIMARY_TRIAL",
+      "authority": "Virgili et al.",
+      "verifiedAt": "2026-10-07",
+      "verificationScope": "Referência de suporte ou normativa: recomendações centrais conferidas nas fontes oficiais indicadas no registro de evidências; não implica leitura integral de todas as referências.",
+      "priorVerifiedAt": null,
+      "checkedAsPrimaryDoseSourceInThisRun": false
+    },
+    {
+      "id": "W12_Vulval",
+      "title": "BASHH — Vulval conditions, final guideline 2024 published 2025",
+      "url": "https://www.bashh.org/_userfiles/pages/files/bashh_vulval_guidelines_2024.pdf",
+      "year": null,
+      "status": "OFFICIAL_GUIDELINE_OR_PRODUCT_INFORMATION",
+      "verifiedAt": "2026-10-08",
+      "verificationScope": "Indicação e posologia conferidas; bula valida formulação, não implica indicação aprovada para todo uso fora de bula.",
+      "sourceReadStatus": "PUBLIC_PDF_FULL_TEXT_READ",
+      "checkedAsPrimaryDoseSourceInThisRun": true
+    }
+  ],
+  "provenance": {
+    "version": "WOMEN-JIT-2026-10-07-G09-v1.1",
+    "canonicalHash": "1b616557e713369c0a3f0ab2072bf4957e8a51efb26e49dedbac68ad9c6681bd",
+    "sourcePath": "/Users/brunorodrigues/Downloads/MEDCASES_CODEX_AUDIT_20260921_085021/pathology-women50-group09-2026-10-07/revisions/v1.1/entries/liquen_escleroso_vulvar/canonical-payload.json",
+    "revisionScope": "treatment completion; no remote writes; identifiers preserved",
+    "previousProvenance": null
+  },
+  "publicationAuthorized": false,
+  "runtimeWrites": 0
+}
