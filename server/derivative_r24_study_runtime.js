@@ -38,7 +38,7 @@ class R24StudyRuntime {
   try {return await withProviderLimitRetry(()=>run(this.wrapped(this.primaryReviewer,input,revision)));}
   catch(e){
    const explicit=(e.code==='RETRYABLE_PROVIDER_LIMIT'&&e.metadata?.httpStatus===429)||
-    (e.code==='provider_unavailable'&&e.metadata?.httpStatus===503);
+    (e.code==='provider_unavailable'&&e.metadata?.httpStatus===503)||e.code==='output_truncated';
    if(!explicit||!this.fallbackApproved())throw e;
    // Rebuild reviewers with the actual fallback identity. Never relabel a model.
    return run(this.wrapped(this.fallbackReviewer,input,revision));

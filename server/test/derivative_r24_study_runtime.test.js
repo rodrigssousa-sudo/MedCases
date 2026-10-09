@@ -35,3 +35,27 @@ test('long key points requests a shared summary operation instead of a second pr
  await assert.rejects(engine.generate(source),{code:'derivative_dependency_pending'});
  assert.equal(generatorCalls,0);assert.equal(dependencies,1);
 });
+
+const {DerivativeError}=require('../derivative_contract');
+const fs=require('node:fs');
+function fallbackCert(identity){return {passed:true,identity,semanticReviewerSha256:hash(fs.readFileSync(require.resolve('../study_semantic_reviewer'),'utf8')),pedagogicalReviewerSha256:hash(fs.readFileSync(require.resolve('../study_pedagogical_reviewer'),'utf8'))};}
+test('known truncated reviewer output uses certified reviewer and restart never repeats paid stages',async()=>{
+ const store=new Store();let primaryCalls=0,fallbackCalls=0;const raw=reviewer();
+ const primary={identity:'google/test',complete:async()=>{primaryCalls++;throw new DerivativeError('output_truncated',true);}};
+ const fallback={identity:raw.identity,complete:async args=>{fallbackCalls++;return raw.complete(args);}};
+ const config={store,policy,primaryReviewer:primary,fallbackReviewer:fallback,fallbackCertificate:fallbackCert(fallback.identity)};
+ const first=await new R24StudyRuntime(config).generate(input('SUMMARY'));
+ const reopened=await new R24StudyRuntime(config).generate(input('SUMMARY'));
+ assert.equal(first.grounding.supported,true);assert.equal(first.pedagogicalQuality.passed,true);assert.deepEqual(first.structuredResult,reopened.structuredResult);
+ assert.equal(primaryCalls,2);assert.equal(fallbackCalls,2);
+});
+test('truncation cannot select an uncertified reviewer',async()=>{
+ let calls=0;const fallback={identity:'not-certified',complete:async()=>calls++};
+ const engine=new R24StudyRuntime({store:new Store(),policy,primaryReviewer:{identity:'primary',complete:async()=>{throw new DerivativeError('output_truncated',true);}},fallbackReviewer:fallback,fallbackCertificate:{passed:false}});
+ await assert.rejects(engine.generate(input('SUMMARY')),{code:'output_truncated'});assert.equal(calls,0);
+});
+test('unknown provider outcome does not invoke certified fallback',async()=>{
+ let calls=0;const fallback={identity:'certified',complete:async()=>calls++};
+ const engine=new R24StudyRuntime({store:new Store(),policy,primaryReviewer:{identity:'primary',complete:async()=>{throw new DerivativeError('generation_timeout',true);}},fallbackReviewer:fallback,fallbackCertificate:fallbackCert(fallback.identity)});
+ await assert.rejects(engine.generate(input('SUMMARY')),{code:'generation_timeout'});assert.equal(calls,0);
+});

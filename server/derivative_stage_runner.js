@@ -20,6 +20,9 @@ class DerivativeStageRunner {
     if(hash(JSON.stringify(row.response))!==row.responseHash)throw new DerivativeError('stage_integrity_error');
     cached=row.response;return;
    }
+   // A recorded MAX_TOKENS response is a known failed result, not an unknown request.
+   // Replay that failure so a certified independent reviewer can run; never resend this stage.
+   if(row?.status==='RECONCILIATION_REQUIRED'&&row.errorCode==='output_truncated')throw new DerivativeError('output_truncated',true);
    if(row?.status==='IN_FLIGHT'||row?.status==='RECONCILIATION_REQUIRED')throw new DerivativeError('provider_outcome_unknown');
    if(row&&row.status!=='RETRYABLE_PROVIDER_LIMIT')throw new DerivativeError('stage_not_retryable');
    if(row?.attempt>=this.maxAttempts)throw new DerivativeError('provider_retry_exhausted');
