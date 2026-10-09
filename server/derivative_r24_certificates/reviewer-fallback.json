@@ -1,0 +1,26 @@
+{
+  "identity": "assemblyai/claude-haiku-4-5-20251001",
+  "revision": "r24_separate_semantic_pedagogical_v2",
+  "passed": true,
+  "corpusSha256": "b3e85003c08f274162ff9284bf6699c6c55a6f57f98eac2d9666a907e7374b68",
+  "scope": [
+    "SUMMARY",
+    "VISUAL_SUMMARY",
+    "KEY_POINTS"
+  ],
+  "groundingReviewParity": "7/7 known approved candidates",
+  "pedagogicalReviewParity": "7/7 known approved candidates",
+  "qualifierDetection": "PASS",
+  "genericQuestionRejection": "PASS",
+  "answerLeakRejection": "PASS",
+  "adversarialAndPositiveCalibration": "9/9",
+  "exactlyOneFallback": true,
+  "pedagogicalReviewerSha256": "5fd0dc7bbf5674f3521c1f495a691f5d408efef65f1fda1e3ae8553fcb55ae8c",
+  "limits": "Empirical scoped certificate; does not approve another model, request protocol or generator. Earlier failed certification runs remain in the audit.",
+  "semanticReviewerSha256": "8a122d64fe238dcf9a35ffe55c700d6235dca38ca9bee74e32a3eb1ef035feb5",
+  "evidence": [
+    "oral-study-separate-cert.jsonl",
+    "oral-study-separate-cert-repair.jsonl",
+    "oral-review-calibration-v2.jsonl"
+  ]
+}

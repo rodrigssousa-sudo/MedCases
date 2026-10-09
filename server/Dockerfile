@@ -31,6 +31,7 @@ COPY --from=deps --chown=medcases:nodejs /app/node_modules ./node_modules
 
 # Copia código-fonte
 COPY --chown=medcases:nodejs *.js ./
+COPY --chown=medcases:nodejs derivative_r24_certificates ./derivative_r24_certificates
 
 # Variáveis de ambiente com defaults seguros
 ENV NODE_ENV=production \

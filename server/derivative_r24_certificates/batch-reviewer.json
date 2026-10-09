@@ -1,0 +1,13 @@
+{
+  "identity": "assemblyai/claude-haiku-4-5-20251001",
+  "revision": "bounded_slot_review_r24_v1",
+  "passed": true,
+  "scope": "Fixed-slot transport of exact per-claim semantics; same full source/candidate and certified semantic prompt. All aggregate claim checks and pedagogical review remain mandatory.",
+  "cases": 5,
+  "passedCases": 5,
+  "maxBatchSize": 5,
+  "semanticReviewerSha256": "8a122d64fe238dcf9a35ffe55c700d6235dca38ca9bee74e32a3eb1ef035feb5",
+  "batchedReviewerSha256": "7607150c5b057d23806d50cbb81b7d5f6e9fc7338b297b92dc356ee123b63785",
+  "evidenceSha256": "657126211940d22bc35ca26f857f4a70bbcb176b1d8a43663473a507a1dae6fc",
+  "baseCertificateSha256": "04c9444b07bceae82d9eee48428a220d39a02b89ea2695fbe30d3e51dd87f9e9"
+}

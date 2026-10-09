@@ -1317,6 +1317,33 @@ registerCalculatorSessionRoutes({
 // CORS já processou o preflight; somente as demais rotas de IA exigem Firebase Auth.
 app.use('/api/ai', authenticateFirebaseToken);
 
+// R2.4: durable derivative API; rollout is server-owned and defaults to OFF.
+// No catalog, audio, transcript or entitlement document is written here.
+{
+  const {DerivativeRollout,createDerivativeRuntime,mountDerivativeRuntime} = require('./derivative_r24_runtime');
+  let config = {};
+  try { config = JSON.parse(process.env.DERIVATIVE_R24_ROLLOUT_JSON || '{}'); }
+  catch { console.warn('DERIVATIVE_R24_CONFIG_INVALID_DISABLED'); }
+  const approvedTypes = Array.isArray(config.approvedTypes) ? config.approvedTypes : [];
+  const rollout = new DerivativeRollout({routes: config.routes || {},
+    internalUids: Array.isArray(config.internalUids) ? config.internalUids : [], approvedTypes});
+  const db = require('firebase-admin/firestore').getFirestore(firebaseAdminApp);
+  const store = new (require('./derivative_r21_firestore_store').DerivativeR21FirestoreStore)(db);
+  const policy = new (require('./derivative_policy').DerivativePolicy)(config.qualityRoutes || {});
+  const studyEngine = require('./derivative_r24_factory').createR24StudyEngine({store,policy});
+  const runtime = createDerivativeRuntime({db,store,policy,studyEngine,rollout});
+  mountDerivativeRuntime(app, runtime);
+  if (approvedTypes.some(type => ['internal','limited','full'].includes(config.routes?.[type]?.stage))) {
+    const worker = setInterval(() => {
+      runtime.tick().catch(() => console.warn('DERIVATIVE_R24_WORKER_UNAVAILABLE'));
+    }, 2000);
+    worker.unref();
+  }
+}
+
+
+
+
 // ── Rate limiting ─────────────────────────────────────────────────────────────
 
 const streamLimiter = rateLimit({
