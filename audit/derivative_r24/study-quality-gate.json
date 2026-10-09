@@ -1,0 +1,620 @@
+{
+  "gate": "PASS_FINAL_SELECTED_CORPUS_ONLY",
+  "counts": {
+    "SUMMARY": 20,
+    "VISUAL_SUMMARY": 20,
+    "KEY_POINTS": 20
+  },
+  "oralApprovedQuestions": 41,
+  "sourceShapesTotal": 44,
+  "sourceShapesSupported": 42,
+  "sourceShapesConfirmedInsufficient": 2,
+  "sourceShapesUnresolved": 0,
+  "longGenerationCheckpointPreserved": true,
+  "clinicalProfile": "PRESERVED_REGRESSION_PASS",
+  "realSource": "PENDING",
+  "releaseApproved": false,
+  "selectionPolicy": "Preserved accepted stages. Rejected short candidates use deterministic extractive visual templates, not an old rejected revision. Original long Sonnet v3 candidates unchanged; Google primary and exactly one certified Haiku reviewer fallback after bounded 429. All negative attempts remain in their original evidence files.",
+  "rows": [
+    {
+      "key": "STUDY_0_0/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "118d2c8a9b6e569cce92d74706318105f137dd41c71ba9e2f373a6a2f7729e15",
+      "candidateHash": "195d8991ec1579f61087b36525191b3e0b9e8246f06b9df4d13d67ca1096f7d6",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_0_0/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "118d2c8a9b6e569cce92d74706318105f137dd41c71ba9e2f373a6a2f7729e15",
+      "candidateHash": "0e7ebad2a0cb67dfa3515af6f27ad9eae93fa55f86e30250439fa6150823e849",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_0_0/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "118d2c8a9b6e569cce92d74706318105f137dd41c71ba9e2f373a6a2f7729e15",
+      "candidateHash": "95d0d6f4d7d0210ac5d9a022124be2f851bd0db5899b3551b786dd5c05ded1c6",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_0_1/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "8ab6eede927a0f3fd0c1790c153ba578c0e59a8bc5e7b9958847a7779c9d437e",
+      "candidateHash": "53ad0f038d8d54a2a8d6941bccb19d3819d70d7ea33c06245770c9282dcdc5cf",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_0_1/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "8ab6eede927a0f3fd0c1790c153ba578c0e59a8bc5e7b9958847a7779c9d437e",
+      "candidateHash": "2e5d55f180bb278bb9823d7643c7ef5f75f8e18d3a6bb7653b5bfa04f18d94df",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_0_1/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "8ab6eede927a0f3fd0c1790c153ba578c0e59a8bc5e7b9958847a7779c9d437e",
+      "candidateHash": "4b74564cf5cf647915ebf5e2cf1579d94f4ed94398c562fc8472acd48c2436ac",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_1_0/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "d71f36feba231801a77bc41bf846a59627533ad6d6a6794c6e53c9e89c66b491",
+      "candidateHash": "59e06acbd4bc5eebc73e876cf6e48c2eaf648b334ef01e3af63710c1bc072f38",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_1_0/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "d71f36feba231801a77bc41bf846a59627533ad6d6a6794c6e53c9e89c66b491",
+      "candidateHash": "71c1d1ce50ed581b4784399a7a376b95016efcafb239b12e703ffa759b880b4b",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_1_0/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "d71f36feba231801a77bc41bf846a59627533ad6d6a6794c6e53c9e89c66b491",
+      "candidateHash": "43807eb3f6b06bbab218b78079923a94a55a4a3559eba3a842ef5cbb49561365",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_1_1/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "a18e7880bb613ee5817f127a28bd6277d0782aa5aebf2acf7399bde4a322a511",
+      "candidateHash": "ebd93d1ea3a794eedfecb501c606158758c45519ea00cca00db50618753d576d",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_1_1/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "a18e7880bb613ee5817f127a28bd6277d0782aa5aebf2acf7399bde4a322a511",
+      "candidateHash": "327e6e933eaf4540b901561e91e0e4d1ec9548af20f1ca7d6a3d7b4f507a27ff",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_1_1/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "a18e7880bb613ee5817f127a28bd6277d0782aa5aebf2acf7399bde4a322a511",
+      "candidateHash": "d415de9ba70b99cb8b041f1742a0018c2e4bb00ae277adc48933e363a7bdd050",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_2_0/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "2df383b1047c6e5123351bc4b498b8f8871676f6b4f1120c90d5e2abbf2ce6b5",
+      "candidateHash": "1f1473c777c5b22d31a64f16e24560fb6194eed87c5a746c4216382d5f966c4a",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_2_0/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "2df383b1047c6e5123351bc4b498b8f8871676f6b4f1120c90d5e2abbf2ce6b5",
+      "candidateHash": "fee4d68a9b8db12e6aeaa5ed6d3ca473df445a806ea22d89ae5eebddb32fd415",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_2_0/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "2df383b1047c6e5123351bc4b498b8f8871676f6b4f1120c90d5e2abbf2ce6b5",
+      "candidateHash": "d097aeef972a52f474c52e9a9ac772431f240853d772b65fdd25d9be1e693d74",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_2_1/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "9fcab219f4c6e828237298f173e320760c9cad2037298a0756728390450d37f7",
+      "candidateHash": "508d937bbe20e90c1bf8bf71083ba7957d84d9a6d6be5215239b68061646f5e9",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_2_1/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "9fcab219f4c6e828237298f173e320760c9cad2037298a0756728390450d37f7",
+      "candidateHash": "e56128220bb96ea612299e5937e80be06d25231176ade236e42664224dd9e40c",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_2_1/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "9fcab219f4c6e828237298f173e320760c9cad2037298a0756728390450d37f7",
+      "candidateHash": "5fe0ac5429a5aa1a8debf8ce6ad8e5f5e8e6496e08a48fc03b927f706aa276d9",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_3_0/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "9d67db084ea560d8261e42a721c84d1431139b26c596637fdef63bb590ea1f29",
+      "candidateHash": "a85d661bb0c3cf02a9c8f5d295725316e230ea09f076e4f232122dd82ec6fc4c",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_3_0/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "9d67db084ea560d8261e42a721c84d1431139b26c596637fdef63bb590ea1f29",
+      "candidateHash": "c5c996beae20d9d245238502a9056dc1961f94f1be80fc8788e99781477fa3dd",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_3_0/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "9d67db084ea560d8261e42a721c84d1431139b26c596637fdef63bb590ea1f29",
+      "candidateHash": "006759a42114699990ffa74f87fb97d8ba71707ae2f40a0ac47ea354d44ee94f",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_3_1/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "68cccc90fd725cdd2ea3ddb774457c5a589d993b73cd599158d2e795c840885f",
+      "candidateHash": "2735288a521d9dd135966a5b6ea66f38855d37eed5f82bdb91e6a85fba5a5cb1",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_3_1/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "68cccc90fd725cdd2ea3ddb774457c5a589d993b73cd599158d2e795c840885f",
+      "candidateHash": "9156fa668f144561c0536233d75fa11c1dfb2dc26d41d0ed7f14d690b9e42151",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "deterministic/extractive_short_study_r23_v1",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_3_1/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-example-repair-v2.jsonl",
+      "sourceHash": "68cccc90fd725cdd2ea3ddb774457c5a589d993b73cd599158d2e795c840885f",
+      "candidateHash": "6f8f8418be3cce86e2a6d7221b210759c96ecde1917758452cef9a3d93871379",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "deterministic/extractive_short_study_r24_v1",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_4_0/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "c3bf817a2b6e9259c51797f184314bf19059006dee7a4d928843b5aabaa5e14b",
+      "candidateHash": "6ed4a378126593193989085a7754cfd7304efa53cd2313eeec405a5675c39898",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_4_0/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "c3bf817a2b6e9259c51797f184314bf19059006dee7a4d928843b5aabaa5e14b",
+      "candidateHash": "17120e9aca940ea488ff4644efe28c3f7f781ce374245f42dd7eddc59b57e108",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_4_0/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "c3bf817a2b6e9259c51797f184314bf19059006dee7a4d928843b5aabaa5e14b",
+      "candidateHash": "a19d068adedf98a4f63f21e551d5d7900a2fc410e7ccd24383a016035c1e1728",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_4_1/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "d5fb583f0b7af7b396c5049e9074d91521d5688233b10f25cb200a2adf9c01f5",
+      "candidateHash": "b212957aec56ce65ee6e15990ad05782df8ba29215a096ace9ef557f3cbb5b6e",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_4_1/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "d5fb583f0b7af7b396c5049e9074d91521d5688233b10f25cb200a2adf9c01f5",
+      "candidateHash": "ae8632f38512bf6de994e3ca191f43946eece453f175a21c203c57ae7f416050",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "deterministic/extractive_short_study_r23_v1",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_4_1/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "d5fb583f0b7af7b396c5049e9074d91521d5688233b10f25cb200a2adf9c01f5",
+      "candidateHash": "153b93c7b2c01abeaca2ac19ac6be939b288f1c3d6f2a9ab14f74123381f7798",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_5_0/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "30398f38a9237c09a5295515d6e6259bda807b6ee8dd04429c142e502c174f26",
+      "candidateHash": "0bc29e1f90ad9ab5c948443c8958d1b988aae2c667c7817dc044b16326a81999",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_5_0/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "30398f38a9237c09a5295515d6e6259bda807b6ee8dd04429c142e502c174f26",
+      "candidateHash": "dd5353f927d27f0034c6e2a77fa1ef313418d8a53240f368ad32fe6fc84a0a37",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_5_0/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-visual-repair.jsonl",
+      "sourceHash": "30398f38a9237c09a5295515d6e6259bda807b6ee8dd04429c142e502c174f26",
+      "candidateHash": "6592d4a2515275d51090026fa3cb5bb7b99caa0311404ce4a4458925451eb808",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "deterministic/extractive_short_study_r24_v1",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_5_1/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "08a5e44300c8a47fcf2510faa49ae34e9efd9bef32803394e1197c7907fb38b8",
+      "candidateHash": "3aa183a250a3f0a53bf6854ca6f1aa5561231a714ab1c3ebc7a29f753d6f9f37",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_5_1/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "08a5e44300c8a47fcf2510faa49ae34e9efd9bef32803394e1197c7907fb38b8",
+      "candidateHash": "99179e6c95975783a878c9b74960146a01a98f17652b0643de1bfbd0649c09f2",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_5_1/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-visual-repair.jsonl",
+      "sourceHash": "08a5e44300c8a47fcf2510faa49ae34e9efd9bef32803394e1197c7907fb38b8",
+      "candidateHash": "d19c40c1d55beb7cf9b0ef000b5d36d3aa047d7bd547440c3fc86607686f010a",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "deterministic/extractive_short_study_r24_v1",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_6_0/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "37bcd69def140b314603bb5871c6f4cfbe3244f2f464355bf416cc23604afb48",
+      "candidateHash": "8c2ff7678c1fc8d86e764205c558370f04fbdcd773997b70b5d70225f8d9847e",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_6_0/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "37bcd69def140b314603bb5871c6f4cfbe3244f2f464355bf416cc23604afb48",
+      "candidateHash": "9c2606d5f9103309e523529e45f36d855db2681cdbd18f168be652107300fbd3",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_6_0/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "37bcd69def140b314603bb5871c6f4cfbe3244f2f464355bf416cc23604afb48",
+      "candidateHash": "09886fa7fdbebeb1ce6163900a9d8a84aeb9bec028abafff01abb5fec3b85a4b",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_6_1/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "e0d0e26d9e8ed8eb43f8b94522e78375692528f1674917c065460cc0d4d6d178",
+      "candidateHash": "fea891ac3d46d8beae4f573d8184f54c3e32f41eb33124fd6e84cf486b337442",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_6_1/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "e0d0e26d9e8ed8eb43f8b94522e78375692528f1674917c065460cc0d4d6d178",
+      "candidateHash": "ec510f3f6a32d65a203911268f262c2b1b0e34f55f69a0856b9bdeca6bbe2514",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_6_1/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-visual-repair.jsonl",
+      "sourceHash": "e0d0e26d9e8ed8eb43f8b94522e78375692528f1674917c065460cc0d4d6d178",
+      "candidateHash": "ff0e15e5e5f562e035b1ebeb4733f27b223e679507054f3881734d2a6313a8eb",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "deterministic/extractive_short_study_r24_v1",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_7_0/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "5d86f0ad0ff0e89b047e6e157010b1e226f155598fd4f911b1956e9122c3ed2e",
+      "candidateHash": "adedd11749bb00b06d81f8f3eb4c5532eb988309e902056e443d3032c662c861",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_7_0/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "5d86f0ad0ff0e89b047e6e157010b1e226f155598fd4f911b1956e9122c3ed2e",
+      "candidateHash": "c5e29f3d9e121e53c139cb5dddb376f5e0bf97d6c2a4de94f335bda45d4ae2d4",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_7_0/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "5d86f0ad0ff0e89b047e6e157010b1e226f155598fd4f911b1956e9122c3ed2e",
+      "candidateHash": "8826e13afbcbbfb44835d9100a1f260ed27b7350aa92159a95bd80ff8842885e",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_7_1/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "d84b3eafdfc269bc125793c0f9254dc309b9fdb24e7904a8e6d67e6460feaa98",
+      "candidateHash": "35f2a0cc0548aa159b42f2c2d01cfc4d0f751de934c7aace08b6a64a5571c279",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_7_1/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "d84b3eafdfc269bc125793c0f9254dc309b9fdb24e7904a8e6d67e6460feaa98",
+      "candidateHash": "fe19e76222fc37ff23697e080155a3eac4bd57c376fc83369aef05b4dcbafc05",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_7_1/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "d84b3eafdfc269bc125793c0f9254dc309b9fdb24e7904a8e6d67e6460feaa98",
+      "candidateHash": "2b5e86c308390dec24b88b5b42f525f66956484632317c1b06a9bc7ed45bff01",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_8_0/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "21d17f54d91413af3d48e7ee7231853d76fc1aeb8a004ee154a19cfc4d28bf61",
+      "candidateHash": "a486dbf3e086515b97a026c59babc876a184309baceb772819bd5bde32297347",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_8_0/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "21d17f54d91413af3d48e7ee7231853d76fc1aeb8a004ee154a19cfc4d28bf61",
+      "candidateHash": "443089cb198a2d62c867edffe71debdf580ea4c0a1f8753dc79f8843b4c9dff4",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_8_0/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "21d17f54d91413af3d48e7ee7231853d76fc1aeb8a004ee154a19cfc4d28bf61",
+      "candidateHash": "1509cd137a1549dd20843b9c89cb6f9ec9e0c09a5c042da1c378a50893424a6d",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_8_1/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "4e47b01cf2ae6f228fc1f08439627d2ee605c76f38273b450d7fea7199822700",
+      "candidateHash": "11985d373d1ed48dbc799a9030d4ab808da4782abf704f0d07d2300afee9ffdf",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_8_1/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "4e47b01cf2ae6f228fc1f08439627d2ee605c76f38273b450d7fea7199822700",
+      "candidateHash": "15c0f82d7b95f736a3d3789f69ec052429e7ea3ce7d39791dd545786db8221f8",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-haiku-4-5-20251001",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_8_1/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-final.jsonl",
+      "sourceHash": "4e47b01cf2ae6f228fc1f08439627d2ee605c76f38273b450d7fea7199822700",
+      "candidateHash": "0cd2c52be4ea45e3368792e16ddf0d2147a6e4fdb53636198b353cdfd5a2535a",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "deterministic/extractive_short_study_r23_v1",
+      "reviewerIdentity": "assemblyai/claude-sonnet-4-6"
+    },
+    {
+      "key": "STUDY_9_0/KEY_POINTS",
+      "evidence": "audit/derivative_r23/oral-study-long-v3.jsonl",
+      "sourceHash": "65e49d906f1e6bfab88550b6f558b0c8ccbc97f588a31c0f310ab0191c9e9260",
+      "candidateHash": "ab93febedd9b80e83e68551dfc4ff12b61ff235f2d1bdb730896ffafe0e9b298",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-sonnet-4-6",
+      "reviewerIdentity": "google/gemini-3.1-pro-preview"
+    },
+    {
+      "key": "STUDY_9_0/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-long-fallback-recovery.jsonl",
+      "sourceHash": "65e49d906f1e6bfab88550b6f558b0c8ccbc97f588a31c0f310ab0191c9e9260",
+      "candidateHash": "68aa656bc412daf2fd550b84436bd2c028665afa203042e2293667bf0f0590e5",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-sonnet-4-6",
+      "reviewerIdentity": "assemblyai/claude-haiku-4-5-20251001"
+    },
+    {
+      "key": "STUDY_9_0/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-long-separate-recovery.jsonl",
+      "sourceHash": "65e49d906f1e6bfab88550b6f558b0c8ccbc97f588a31c0f310ab0191c9e9260",
+      "candidateHash": "114e24caee767bcc3a324c6c20c6f0d8b06c022a3fd4ac54be2b31d5a8d810f4",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-sonnet-4-6",
+      "reviewerIdentity": "assemblyai/claude-haiku-4-5-20251001"
+    },
+    {
+      "key": "STUDY_9_1/KEY_POINTS",
+      "evidence": "audit/derivative_r24/oral-study-long-fallback-recovery.jsonl",
+      "sourceHash": "ed41776fea96f0c743e396516edaf6ae7fed4b7ba5e2c51721c427f8ae54f77a",
+      "candidateHash": "580029f3aaf3504c966c19c27095dced2a17e856c12e5a971a508e297ec0882d",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-sonnet-4-6",
+      "reviewerIdentity": "assemblyai/claude-haiku-4-5-20251001"
+    },
+    {
+      "key": "STUDY_9_1/SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-long-fallback-recovery.jsonl",
+      "sourceHash": "ed41776fea96f0c743e396516edaf6ae7fed4b7ba5e2c51721c427f8ae54f77a",
+      "candidateHash": "89bd126bb43a33ce29de53f8b69279a5fc6a8db65c2e56ab10196c0da022e0e3",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-sonnet-4-6",
+      "reviewerIdentity": "assemblyai/claude-haiku-4-5-20251001"
+    },
+    {
+      "key": "STUDY_9_1/VISUAL_SUMMARY",
+      "evidence": "audit/derivative_r24/oral-study-long-separate-recovery.jsonl",
+      "sourceHash": "ed41776fea96f0c743e396516edaf6ae7fed4b7ba5e2c51721c427f8ae54f77a",
+      "candidateHash": "eb05defd71e6af68d3871861a311063ad0d884e5219ceaf4ddf2651c5bca15d7",
+      "grounding": true,
+      "pedagogical": true,
+      "generatorIdentity": "assemblyai/claude-sonnet-4-6",
+      "reviewerIdentity": "assemblyai/claude-haiku-4-5-20251001"
+    }
+  ]
+}
