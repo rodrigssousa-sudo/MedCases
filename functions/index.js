@@ -47,6 +47,7 @@ const __clinicalShadowObservationS1 =
 
 const { onDocumentCreated, onDocumentUpdated, onDocumentDeleted } = require('firebase-functions/v2/firestore');
 const { onRequest, onCall, HttpsError } = require('firebase-functions/v2/https');
+const {preserveClinicalPayload} = require('./plantao_r8_transport');
 const { defineSecret } = require('firebase-functions/params');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
 const admin      = require('firebase-admin');
@@ -3644,7 +3645,12 @@ exports.plantaoProxyStream = onRequest(
   {region: 'us-central1', secrets: [OPENAI_KEY, GEMINI_PAID_KEY], timeoutSeconds: 120, memory: '512MiB', cors: false},
   async (req, res) => handleGptStream(req, res, true),
 );
-async function handleGptStream(req, res, canonicalPlantao) {
+// R8 homologation is a separate deployment; public exports retain their route.
+exports.plantaoR8Homologation = onRequest(
+  {region: 'us-central1', secrets: [OPENAI_KEY, GEMINI_PAID_KEY], timeoutSeconds: 120, memory: '512MiB', cors: false},
+  async (req, res) => handleGptStream(req, res, true, true),
+);
+async function handleGptStream(req, res, canonicalPlantao, homologation = false) {
     const startMs = Date.now();
 
     // ── BUILD 462E-A.1 — CORS: aplicar ANTES de autenticação e de toda resposta ──
@@ -3708,6 +3714,10 @@ async function handleGptStream(req, res, canonicalPlantao) {
       return res.status(401).json({ error: 'invalid_token' });
     }
     const callerUid = decodedToken.uid;
+    if (homologation && !(await require('./plantao_r8_homologation_gate').requireHomologation({
+      firestore: admin.firestore(), uid: callerUid,
+    }))) return res.status(403).json({error:'homologation_disabled_or_unauthorized'});
+
 
     // ── 4. DESSERIALIZAÇÃO E VALIDAÇÃO DO PAYLOAD ──────────────────────────────
     const data           = req.body || {};
@@ -3725,8 +3735,20 @@ async function handleGptStream(req, res, canonicalPlantao) {
       return res.status(403).json({ error: 'permission_denied' });
     }
 
-    const safeUserMessage  = rawUserMessage.substring(0, 4000);
-    const safeSystemPrompt = rawSystemPrompt.substring(0, 12000);
+    let safeUserMessage = rawUserMessage.substring(0, 4000);
+    let safeSystemPrompt = rawSystemPrompt.substring(0, 12000);
+    if (canonicalPlantao && process.env.PLANTAO_R8_FULL_CONTEXT === 'true') {
+      try {
+        const completePayload = preserveClinicalPayload({query: rawUserMessage, context: rawSystemPrompt, history: rawHistory});
+        safeUserMessage = completePayload.query;
+        safeSystemPrompt = completePayload.context;
+        if (process.env.PLANTAO_R8_TELEMETRY === 'true') {
+          console.info('PLANTAO_R8_CONTEXT_BUDGET', JSON.stringify(completePayload.budget));
+        }
+      } catch (_) {
+        return res.status(413).json({error: 'clinical_payload_too_large', retryable: false});
+      }
+    }
 
     if (!safeUserMessage) {
       return res.status(400).json({ error: 'empty_message' });
@@ -3741,13 +3763,131 @@ async function handleGptStream(req, res, canonicalPlantao) {
         return res.status(403).json({ error: 'not_approved' });
       }
     } catch (err) {
-      console.error('[GPT_SSE_CF] firestore_error:', err.message);
+      console.error('[GPT_SSE_CF] firestore_error:', canonicalPlantao ? 'unavailable' : err.message);
       return res.status(500).json({ error: 'firestore_error' });
+    }
+
+    // The explicit technical fixture uses the same decoder and Flutter renderer.
+    // Auth, account status and the internal UID flag have already been checked.
+    if (homologation) {
+      const fixture = await require('./plantao_r8_technical_fixture').technicalFixture({
+        firestore: admin.firestore(), uid: callerUid, query: safeUserMessage, language: String(data.lang || 'pt'),
+      });
+      if (fixture) {
+        res.status(200);
+        res.setHeader('Content-Type', 'text/event-stream; charset=utf-8');
+        res.setHeader('Cache-Control', 'no-cache, no-transform');
+        res.setHeader('X-Accel-Buffering', 'no');
+        res.flushHeaders?.();
+        const meta = {requestId, attempt:2, pipeline:'plantao_canonical_v1',
+          answerContract:fixture.answerContract, renderer:'PREMIUM_CURRENT',
+          language:fixture.language, mode:'plantao', model:'technical_fixture', provider:'none'};
+        sendSseEvent(res, 'sources', {requestId,sources:fixture.sources});
+        sendSseEvent(res, 'started', meta);
+        fixture.blocks.forEach((delta,i)=>sendSseEvent(res,'text_delta',{requestId,attempt:2,sequence:i+1,delta}));
+        sendSseEvent(res, 'canonical_snapshot', {requestId,attempt:2,snapshot:fixture.snapshot});
+        sendSseEvent(res, 'transport_done', {...meta, modelCalls:0});
+        return res.end();
+      }
+    }
+    // Route A reads an exact approved source before the generated-output gate.
+    // The cohort/auth/account gates above still apply. No model or patient data
+    // is involved, and this does not approve compact R8 output or dosing.
+    if (homologation && data.approvedProtocolAccess === true) {
+      try {
+        const protocol = await require('./plantao_r8_clinical_release_guard').resolveApprovedProtocol({
+          firestore:admin.firestore(), query:String(data.catalogQuery || safeUserMessage),
+          language:String(data.lang || 'pt'),
+        });
+        if (protocol) {
+          res.status(200);
+          res.setHeader('Content-Type','text/event-stream; charset=utf-8');
+          res.setHeader('Cache-Control','no-cache, no-transform');
+          res.setHeader('X-Accel-Buffering','no');
+          res.flushHeaders?.();
+          const meta={requestId,attempt:2,pipeline:'plantao_canonical_v1',
+            answerContract:'plantao_clinical_snapshot_v4',model:'approved_protocol',
+            provider:'clinical_catalog',approvedPayloadSha256:protocol.payloadSha256};
+          sendSseEvent(res,'started',meta);
+          sendSseEvent(res,'approved_protocol',{requestId,attempt:2,protocol});
+          sendSseEvent(res,'transport_done',{...meta,modelCalls:0});
+          return res.end();
+        }
+      } catch (_) {
+        return res.status(409).json({error:'approved_protocol_unavailable'});
+      }
+    }
+    // Route C uses explicit research or a verified absence in BOTH catalogs.
+    // It never turns a blocked/unapproved owner into an external prescription.
+    let researchRoute;
+    if (homologation && data.approvedProtocolAccess === true) {
+      try {
+        researchRoute=await require('./gpt_optional_grounding').resolveResearchRoute({
+          query:String(data.catalogQuery || ''),firestore:admin.firestore(),authorization:authHeader,
+        });
+      } catch (error) {
+        const code=/^catalog_discovery_http_(401|403|404|429|500|502|503|504)$/.test(error.message || '')
+          ? error.message : 'catalog_discovery_unavailable';
+        console.warn('R8_RESEARCH_ROUTE_FAILED',code);
+        return res.status(409).json({error:'external_research_unavailable', reason:code});
+      }
+    }
+    if (researchRoute) {
+      const controller = new AbortController();
+      const onClose=()=>controller.abort();
+      res.on('close',onClose);
+      try {
+        const research=await require('./gpt_optional_grounding').generalResearch({
+          query:String(data.catalogQuery),language:String(data.lang || 'pt'),
+          apiKey:OPENAI_KEY.value(),signal:controller.signal,route:researchRoute,
+        });
+        if(controller.signal.aborted) return;
+        // Rollback and clinical-version changes during retrieval must take
+        // effect before publishing a response; do not rely on the initial gate.
+        if (!(await require('./plantao_r8_homologation_gate').requireHomologation({
+          firestore:admin.firestore(),uid:callerUid,
+        }))) return res.status(403).json({error:'homologation_disabled_or_unauthorized'});
+        if (researchRoute.activeVersion) {
+          const current=await admin.firestore().doc('app_config/clinical_content').get();
+          const pointer=current.exists && current.data();
+          if(!pointer || pointer.status!=='ACTIVE' || pointer.activeVersion!==researchRoute.activeVersion ||
+              pointer.manifestSha256!==researchRoute.manifestSha256)
+            return res.status(409).json({error:'external_research_unavailable',reason:'clinical_version_changed'});
+        }
+        res.status(200);
+        res.setHeader('Content-Type','text/event-stream; charset=utf-8');
+        res.setHeader('Cache-Control','no-cache, no-transform');
+        res.setHeader('X-Accel-Buffering','no');
+        res.flushHeaders?.();
+        const meta={requestId,attempt:2,pipeline:'plantao_canonical_v1',
+          answerContract:'plantao_clinical_snapshot_v4',model:'external_research',
+          provider:'openai',referencePayloadSha256:research.payloadSha256};
+        sendSseEvent(res,'started',meta);
+        sendSseEvent(res,'external_evidence',{requestId,attempt:2,documentJson:research.documentJson});
+        sendSseEvent(res,'transport_done',{...meta,modelCalls:1});
+        return res.end();
+      } catch (error) {
+        const safeReason = /^external_research_(?:unavailable_[a-z_]+|requires_clinical_review)$/.test(error.message || '') ? error.message : 'external_research_internal';
+        console.warn('R8_EXTERNAL_RESEARCH_FAILED', safeReason);
+        if(!controller.signal.aborted) return res.status(409).json({error:'external_research_unavailable', reason:safeReason});
+        return;
+      } finally {res.removeListener('close',onClose);}
+    }
+    let clinicalApproval;
+    if (homologation) {
+      try {
+        clinicalApproval = await require('./plantao_r8_clinical_release_guard').resolveClinicalApproval({
+          firestore: admin.firestore(), query: safeUserMessage,
+          internalContext: safeSystemPrompt, history: rawHistory,
+        });
+      } catch (_) {
+        return res.status(409).json({error:'clinical_approval_required', classification:'CLINICAL_INCOMPLETE'});
+      }
     }
 
     // ── 6. CARREGAR OPENAI_API_KEY (somente após todas as validações) ──────────
     const openAiKey = OPENAI_KEY.value();
-    if (!openAiKey) {
+    if (!openAiKey && !clinicalApproval) {
       console.error('[GPT_SSE_CF] OPENAI_API_KEY não configurado.');
       return res.status(500).json({ error: 'openai_key_not_configured' });
     }
@@ -3763,7 +3903,7 @@ async function handleGptStream(req, res, canonicalPlantao) {
     if (typeof res.flushHeaders === 'function') res.flushHeaders();
 
     console.log(
-      `[GPT_SSE_CF] → start requestId=${requestId} uid=${callerUid} mode=${mode} `
+      `[GPT_SSE_CF] → start requestId=${requestId} uid=${canonicalPlantao ? '[redacted]' : callerUid} mode=${mode} `
       + `maxOut=${maxOutputTokens} useSse=${USE_GPT_PROXY_SSE} `
       + `structured=${USE_GPT_56_STRUCTURED_OUTPUTS}`
     );
@@ -3803,8 +3943,37 @@ async function handleGptStream(req, res, canonicalPlantao) {
           const state = await getV2ConfigStateForExecution({firestore: admin.firestore(), env: process.env});
           escalationPolicy = state?.config?.plantao?.clinicalEscalation || null;
         } catch (_) { /* Missing policy leaves Terra ineligible, not the answer. */ }
+        const snapshotModule = require('./plantao_clinical_snapshot');
+        const {requestIdentity, freshnessRequested} = require('./plantao_snapshot_identity');
+        const typedAnswer = data.answerContract === snapshotModule.VERSION;
+        // No clinical response is retained by the Function. Reuse is held in the
+        // existing app session, and every reuse still passes Firebase/QA auth above.
+        // Homologation measures new generations, never cached clinical parity.
+        const reusable = !homologation && typedAnswer && !freshnessRequested(safeUserMessage);
+        const reuseKey = reusable ? snapshotModule.snapshotKey(requestIdentity({
+          uid: callerUid, query: safeUserMessage, internalContext: safeSystemPrompt,
+          history: rawHistory, knowledgeVersion: 'request-bound-source-content',
+          policyVersion: snapshotModule.hash({version:'1709', escalationPolicy}),
+        })) : null;
+        if (reuseKey && data.canonicalReuseKey === reuseKey) {
+          sendSseEvent(res, 'canonical_reuse', {requestId, attempt:2, reuseKey,
+            answerContract:snapshotModule.VERSION});
+          completedNormally = true;
+          sendSseEvent(res, 'transport_done', {requestId, attempt:2,
+            pipeline:'plantao_canonical_v1', reused:true, answerContract:snapshotModule.VERSION});
+          return;
+        }
         const result = await runPlantaoCanonicalStream({
+          r8ClinicalApprovalRequired: homologation,
+          clinicalApproval,
+          r8SkipIneligibleClassifier: process.env.PLANTAO_R8_SKIP_INELIGIBLE_CLASSIFIER === 'true',
+          r8TraceId: data.r8TraceId,
+          r8Response2: process.env.PLANTAO_R8_RESPONSE_2 === 'true',
+          r8FullContext: process.env.PLANTAO_R8_FULL_CONTEXT === 'true',
+          onMetrics: process.env.PLANTAO_R8_TELEMETRY === 'true'
+            ? (metrics) => console.info('PLANTAO_R8_METRICS', JSON.stringify(metrics)) : undefined,
           query: safeUserMessage,
+          answerContract: typedAnswer ? snapshotModule.VERSION : undefined,
           language: String(data.lang || 'es').startsWith('pt') ? 'pt' : 'es',
           internalContext: safeSystemPrompt,
           history: rawHistory,
@@ -3816,7 +3985,8 @@ async function handleGptStream(req, res, canonicalPlantao) {
           maxOutputTokens: Math.min(6000, Math.max(1600, maxOutputTokens)),
           onEvent: (event, payload) => {
             if (event === 'text_delta') deltaCount++;
-            if (!res.writableEnded) sendSseEvent(res, event, payload);
+            if (!res.writableEnded) sendSseEvent(res, event,
+              event === 'canonical_snapshot' ? {...payload, reuseKey} : payload);
           },
         });
         completedNormally = true;
@@ -3931,7 +4101,9 @@ async function handleGptStream(req, res, canonicalPlantao) {
           + `code=${errMsg.split(':')[0]}`
         );
 
-        const errCode = errMsg.includes('timeout')     ? 'cf_timeout'
+        const clinicalFailure = canonicalPlantao && /^(snapshot_|clinical_release_)/.test(errMsg);
+        const errCode = clinicalFailure ? errMsg.split(':')[0]
+                      : errMsg.includes('timeout')     ? 'cf_timeout'
                       : errMsg.includes('aborted')     ? 'client_cancelled'
                       : errMsg.includes('openai_http') ? errMsg.split(':')[0]
                       : errMsg.includes('incomplete')  ? 'openai_incomplete'
@@ -3942,6 +4114,7 @@ async function handleGptStream(req, res, canonicalPlantao) {
             requestId,
             attempt:   2,
             error:     errCode,
+            ...(clinicalFailure ? {classification: require('./plantao_r8_response_contract').classifyResponseFailure(errCode)} : {}),
             timestamp: new Date().toISOString(),
           });
         }
