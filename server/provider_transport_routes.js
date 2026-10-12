@@ -149,7 +149,22 @@ function registerProviderTransport({app,express,authenticate,limiter,db,keyProvi
     // Relative API URL: caller binds it to the configured MedCases origin.
     res.setHeader('x-goog-upload-url',`/api/ai/provider/upload-ticket/${id}`);
    }
-   if(!response.ok){await response.body?.cancel();return res.status(response.status).json({error:'PROVIDER_REQUEST_REJECTED'});}
+   if(!response.ok){
+    // Bounded diagnostic read; no retry, billing change or raw-error logging.
+    let reason='UNCLASSIFIED';const reader=response.body?.getReader();
+    if(reader){let count=0;const chunks=[];const deadline=Date.now()+250;try{
+     for(;;){let timer;const remaining=deadline-Date.now();if(remaining<=0)throw Error('DIAGNOSTIC_TIMEOUT');
+      const {done,value}=await Promise.race([reader.read(),new Promise((_,reject)=>{
+       timer=setTimeout(()=>reject(Error('DIAGNOSTIC_TIMEOUT')),remaining);})]).finally(()=>clearTimeout(timer));if(done)break;
+      count+=value.length;if(count>4096)break;chunks.push(Buffer.from(value));}
+     if(count<=4096){const payload=JSON.parse(Buffer.concat(chunks).toString('utf8'));
+      reason=payload?.error?.details?.find(d=>typeof d?.reason==='string')?.reason
+        ?? payload?.error?.status ?? 'UNCLASSIFIED';}
+    }catch(_){}finally{void reader.cancel().catch(()=>{});}}
+    const diagnosticId=crypto.randomUUID();
+    require('./private_logger').providerFailure(response.status,reason,diagnosticId);
+    return res.status(response.status).json({error:'PROVIDER_REQUEST_REJECTED'});
+   }
    const type=response.headers.get('content-type')||'application/json';res.setHeader('Content-Type',type);res.setHeader('Cache-Control','no-store');
    if(type.includes('text/event-stream'))return await pipeline(Readable.fromWeb(response.body),res);
    const text=await response.text();
