@@ -1388,6 +1388,7 @@ const streamLimiter = rateLimit({
  * @param {boolean} forcedMode  false = MOTOR PLANTÃO | true = MOTOR ESTUDOS
  */
 async function handleStreamRequest(req, res, forcedMode) {
+  if (!forcedMode) return res.status(409).json({error:'plantao_route_retired'});
   const requestId = req.headers['x-request-id'] ?? `req_${Date.now()}`;
   const routeName = forcedMode ? '/stream/estudo' : '/stream/plantao';
   log.info(`[${requestId}] POST ${routeName}`);
@@ -1519,6 +1520,9 @@ app.post('/api/ai/stream', streamLimiter, (req, res) => {
 // ════════════════════════════════════════════════════════════════════════════
 
 app.post('/api/ai/sync', streamLimiter, async (req, res) => {
+  if (!['estudo','ai_study','study'].includes(req.body?.mode) &&
+      (req.body?.mode === 'plantao' || req.body?.model_tier === 'speed' || req.body?.tier === 'speed'))
+    return res.status(409).json({error:'plantao_route_retired'});
   const requestId =
     req.headers['x-request-id'] ?? `req_${Date.now()}`;
 
