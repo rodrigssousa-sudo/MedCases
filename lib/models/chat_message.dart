@@ -8,6 +8,7 @@ class ChatMessage {
   final String id;
   final String role;
   final String text;
+  final bool preserveReferenceText;
 
   /// Display-only provenance for deterministic action-button user messages.
   /// [text] remains canonical for provider/history/routing/editing.
@@ -22,6 +23,7 @@ class ChatMessage {
   ChatMessage({
     required this.role,
     required this.text,
+    this.preserveReferenceText = false,
     this.userDisplayText,
     this.clinicalOutput,
   }) : id = '${role}_${DateTime.now().microsecondsSinceEpoch}';
@@ -30,6 +32,7 @@ class ChatMessage {
     required this.id,
     required this.role,
     required this.text,
+    this.preserveReferenceText = false,
     this.userDisplayText,
     this.clinicalOutput,
   });
@@ -43,6 +46,7 @@ class ChatMessage {
     String? id,
     String? role,
     String? text,
+    bool? preserveReferenceText,
     String? userDisplayText,
     bool clearUserDisplayText = false,
     ClinicalStructuredOutput? clinicalOutput,
@@ -52,6 +56,7 @@ class ChatMessage {
       id: id ?? this.id,
       role: role ?? this.role,
       text: text ?? this.text,
+      preserveReferenceText: preserveReferenceText ?? this.preserveReferenceText,
       userDisplayText: clearUserDisplayText
           ? null
           : userDisplayText ?? this.userDisplayText,

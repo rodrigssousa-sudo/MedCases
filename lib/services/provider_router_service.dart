@@ -848,11 +848,13 @@ class ProviderRouterService {
     String mode = 'plantao',
     String lang = 'pt',
     String requestId = '',
+    String? sessionId,
+    String? catalogQuery,
     int maxOutputTokens = 800,
     void Function(GptSseClient client)? onClientCreated,
   }) async* {
     // ── KILL SWITCH: kUseGptProxySse = false → legado ──────────────────────
-    if (!kUseGptProxySse) {
+    if (!kUseGptProxySse && mode != 'plantao') {
       if (kDebugMode) {
         debugPrint('[GPT_PROXY_STREAM] kUseGptProxySse=false → legado simulado '
             'requestId=$requestId');
@@ -872,7 +874,7 @@ class ProviderRouterService {
     // ── SSE REAL (kUseGptProxySse = true) ──────────────────────────────────
     if (kDebugMode) {
       debugPrint('[GPT_PROXY_STREAM] kUseGptProxySse=true → SSE real '
-          'requestId=$requestId endpoint=$_gptSseUrl');
+          'requestId=$requestId endpoint=${mode == 'plantao' ? GptSseClient.kPlantaoEndpoint : _gptSseUrl}');
     }
 
     // Buscar token se não foi fornecido (idêntico ao padrão de callGptProxy)
@@ -929,6 +931,8 @@ class ProviderRouterService {
     }
 
     final payload = GptSsePayload(
+      sessionId: sessionId,
+      catalogQuery: catalogQuery,
       userMessage: userMessage,
       systemPrompt: systemPrompt,
       history: history.cast<Map<String, String>>(),
@@ -939,7 +943,7 @@ class ProviderRouterService {
     );
 
     final client = GptSseClient(
-      endpointUrl: _gptSseUrl,
+      endpointUrl: mode == 'plantao' ? GptSseClient.kPlantaoEndpoint : _gptSseUrl,
       idToken: resolvedToken,
     );
 

@@ -7,8 +7,8 @@
 
 'use strict';
 
-const SW_VERSION   = '48.1.3';
-const CACHE_APP    = 'medcases-app-v48.1.3';  // ← Build 155: Dois motores independentes /stream/plantao + /stream/estudo
+const SW_VERSION   = '48.1.5-r15-plantao';
+const CACHE_APP    = 'medcases-app-v48.1.5-r15-plantao';  // ← Build 155: Dois motores independentes /stream/plantao + /stream/estudo
 const CACHE_FONTS  = 'medcases-fonts-v2';
 
 // Assets pré-cacheados no install (críticos para o boot)

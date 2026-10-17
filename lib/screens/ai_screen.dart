@@ -2092,6 +2092,7 @@ class _AiScreenState extends State<AiScreen> {
                       id: exchange.assistantMessageId,
                       role: 'ai',
                       text: exchange.assistantText,
+                      preserveReferenceText: exchange.preserveReferenceText,
                       clinicalOutput: exchange.clinicalOutput,
                     ),
                   );
@@ -3387,6 +3388,27 @@ class _AiScreenState extends State<AiScreen> {
             return; // pula _enforceMedicalFormat, _plantaoTruncationGuard e renderers
           }
 
+          if (!_longResponse && p.approvedProtocolDocument(finalText) != null) {
+            _streamingTextNotifier?.dispose();
+            _streamingTextNotifier = null;
+            setState(() {
+              _thinking = false;
+              _isStreaming = false;
+              _networkError = false;
+              final message = _ChatMsg(role:'ai',text:finalText,preserveReferenceText:true);
+              if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
+                _messages[streamingMsgIdx] = message;
+              } else {
+                _messages.add(message);
+                streamingMsgIdx = _messages.length - 1;
+              }
+              _lastAiIndex = streamingMsgIdx;
+            });
+            _saveCurrentSessionToHistory(p);
+            _scrollDown(force:true);
+            return;
+          }
+
           // ── BUILD 101 FIX: Desacopla texto final do flag _isStreaming ─────
           // PROBLEMA RAIZ: o setState anterior combinava _isStreaming=false +
           // texto final em um único setState. Isso fazia o AiBubble receber
@@ -4669,6 +4691,8 @@ class _AiScreenState extends State<AiScreen> {
                 if (useGuardiaPresentation)
                   GuardiaClinicalResponseView(
                     key: ValueKey('guardia_${msg.id}'),
+                    referenceDocument: p.approvedProtocolDocument(cleanDisplayText),
+                    preserveReferenceText: msg.preserveReferenceText,
                     rawText: cleanDisplayText,
                     output: msg.clinicalOutput,
                     dark: dark,

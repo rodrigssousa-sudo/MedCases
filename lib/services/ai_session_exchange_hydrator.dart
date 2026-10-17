@@ -9,8 +9,10 @@ final class AiHydratedExchange {
     required this.userDisplayText,
     required this.assistantText,
     required this.clinicalOutput,
+    this.preserveReferenceText = false,
   });
 
+  final bool preserveReferenceText;
   final String requestId;
   final String userMessageId;
   final String assistantMessageId;
@@ -46,7 +48,14 @@ abstract final class AiSessionExchangeHydrator {
       final providerOutput = exchange['assistantOutput']?.toString() ?? '';
       final presentation =
           (exchange['assistantPresentation']?.toString() ?? '').trim();
-      final assistantText =
+      // Read-only presentation of the already committed server reference.
+      // This flag cannot authorize a request, calculation or clinical source.
+      final preserveReferenceText = exchange['mode'] == 'plantao' && const {
+        'MEDCASES_APPROVED_PROTOCOL',
+        'CANONICAL_DRUG_INFORMATION_NOT_PRESCRIPTION',
+        'EXTERNAL_GENERAL_INFORMATION_NOT_APPROVED_PROTOCOL',
+      }.contains(exchange['provenance']);
+      final assistantText = preserveReferenceText ? providerOutput :
           presentation.isNotEmpty ? presentation : providerOutput;
 
       // Only a reconciled presentation may revive its structured metadata.
@@ -60,6 +69,7 @@ abstract final class AiSessionExchangeHydrator {
       hydrated.add(
         AiHydratedExchange(
           requestId: requestId,
+          preserveReferenceText: preserveReferenceText,
           userMessageId: '$idPrefix:user',
           assistantMessageId: '$idPrefix:assistant',
           userInput: userInput,

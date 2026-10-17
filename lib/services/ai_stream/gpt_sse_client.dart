@@ -1,3 +1,4 @@
+import '../../models/canonical_clinical_snapshot.dart';
 // ══════════════════════════════════════════════════════════════════════════════
 // lib/services/ai_stream/gpt_sse_client.dart
 // BUILD 462B-REDIRECIONADA — Real GPT SSE Client
@@ -53,6 +54,8 @@ class GptSsePayload {
   final String lang;
   final String requestId;
   final int maxOutputTokens;
+  final String? sessionId;
+  final String? catalogQuery;
 
   const GptSsePayload({
     required this.userMessage,
@@ -62,10 +65,18 @@ class GptSsePayload {
     this.lang = 'pt',
     this.requestId = '',
     this.maxOutputTokens = 800,
+    this.sessionId,
+    this.catalogQuery,
   });
 
   Map<String, dynamic> toJson() => {
         'userMessage': userMessage,
+        if (mode == 'plantao') ...{
+          'approvedProtocolAccess': true,
+          'catalogQuery': catalogQuery ?? userMessage,
+          'sessionId': sessionId,
+          'answerContract': CanonicalClinicalSnapshot.version,
+        },
         'systemPrompt': systemPrompt,
         ...ClinicalIdentityTransportEnvelope.fromStructuredSystemPrompt(systemPrompt),
         'history': history,
@@ -122,6 +133,9 @@ class GptSseClient {
   /// Produção: us-central1-medcases-pro (mesmo projeto).
   static const String kDefaultEndpoint =
       'https://us-central1-medcases-pro.cloudfunctions.net/gptProxyStream';
+
+  static const String kPlantaoEndpoint =
+      'https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream';
 
   /// Attempt fixo para GPT fallback (Layer 2).
   static const int kGptAttempt = 2;
@@ -194,6 +208,11 @@ class GptSseClient {
     // Acumulador de texto para AiCompleted / AiFailed parcial
     final accumulator = StringBuffer();
     bool transportDoneReceived = false;
+    bool canonicalStarted = false;
+    String? approvedProtocolHash;
+    String? externalEvidenceHash;
+    bool drugReferenceExpected = false;
+    CanonicalClinicalSnapshot? completedSnapshot;
     int sequence = 0;
 
     // Escutar erros de protocolo SSE
@@ -339,6 +358,23 @@ class GptSseClient {
         switch (sseEvent.type) {
           case 'started':
             final data = sseEvent.data ?? {};
+            if (payload.mode == 'plantao') {
+              final protocol = endpointUrl == kPlantaoEndpoint &&
+                  data['model'] == 'approved_protocol' && data['provider'] == 'clinical_catalog' &&
+                  RegExp(r'^[a-f0-9]{64}$').hasMatch(data['approvedPayloadSha256']?.toString() ?? '');
+              final reference = endpointUrl == kPlantaoEndpoint &&
+                  ((data['model'] == 'external_research' && data['provider'] == 'openai') ||
+                   (data['model'] == 'canonical_drug_reference' && data['provider'] == 'canonical_drug_catalog')) &&
+                  RegExp(r'^[a-f0-9]{64}$').hasMatch(data['referencePayloadSha256']?.toString() ?? '');
+              if (canonicalStarted || data['pipeline'] != 'plantao_canonical_v1' ||
+                  data['answerContract'] != CanonicalClinicalSnapshot.version || !(protocol || reference)) {
+                throw const FormatException('plantao_contract_mismatch');
+              }
+              canonicalStarted = true;
+              if (protocol) approvedProtocolHash = data['approvedPayloadSha256'] as String;
+              if (reference) externalEvidenceHash = data['referencePayloadSha256'] as String;
+              drugReferenceExpected = reference && data['model'] == 'canonical_drug_reference';
+            }
 
             _activeModel = data['model'] as String? ?? _activeModel;
             _activeProvider = data['provider'] as String? ?? _activeProvider;
@@ -350,7 +386,47 @@ class GptSseClient {
               provider: _activeProvider,
             );
 
+          case 'drug_reference':
+          case 'external_evidence':
+            if ((sseEvent.type == 'drug_reference') != drugReferenceExpected) {
+              throw const FormatException('reference_origin_mismatch');
+            }
+            if (externalEvidenceHash == null ||
+                !canonicalStarted ||
+                approvedProtocolHash != null ||
+                completedSnapshot != null ||
+                accumulator.isNotEmpty) {
+              throw const FormatException(
+                  'external_evidence_handshake_required');
+            }
+            final external = drugReferenceExpected
+                ? CanonicalClinicalSnapshot.fromDrugReference(
+                    sseEvent.data!['documentJson'] as String,
+                    externalEvidenceHash)
+                : CanonicalClinicalSnapshot.fromExternalEvidence(
+                    sseEvent.data!['documentJson'] as String,
+                    externalEvidenceHash);
+            completedSnapshot = external;
+            accumulator.write(external.blocks(payload.lang).join());
+            break;
+          case 'approved_protocol':
+            if (approvedProtocolHash == null ||
+                externalEvidenceHash != null ||
+                !canonicalStarted ||
+                accumulator.isNotEmpty ||
+                completedSnapshot != null) {
+              throw const FormatException(
+                  'approved_protocol_handshake_required');
+            }
+            final protocol =
+                Map<String, dynamic>.from(sseEvent.data!['protocol'] as Map);
+            completedSnapshot = CanonicalClinicalSnapshot.fromApprovedProtocol(
+                protocol, approvedProtocolHash);
+            accumulator.write(completedSnapshot.blocks(payload.lang).join());
+          // Whole authenticated document: never stream unverified/provisional text.
+
           case 'text_delta':
+            if (payload.mode == 'plantao') throw const FormatException('approved_protocol_mutation');
             final data = sseEvent.data ?? {};
             final delta = data['delta'] as String? ?? '';
             if (delta.isNotEmpty) {
@@ -383,6 +459,9 @@ class GptSseClient {
             }
 
           case 'transport_done':
+            if (payload.mode == 'plantao' && (!canonicalStarted || completedSnapshot == null || accumulator.toString().trim().isEmpty)) {
+              throw const FormatException('canonical_snapshot_missing');
+            }
             // Backend sinaliza conclusão do transporte
             // AppProvider emitirá AiCompleted APÓS sanitizeAndCheck()
             transportDoneReceived = true;
@@ -460,6 +539,7 @@ class GptSseClient {
               outputTokensApprox: outputTok,
               durationMs: durationMs,
               clinicalOutput: clinicalOutput,
+              referenceDocument: completedSnapshot,
             );
             break;
 

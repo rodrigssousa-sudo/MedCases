@@ -1,3 +1,4 @@
+import '../../models/canonical_clinical_snapshot.dart';
 import '../../models/clinical_structured_output.dart';
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -312,6 +313,10 @@ final class AiCompleted extends AiEvent {
   /// Null no caminho legado ou quando a resposta não possui estrutura aplicável.
   final ClinicalStructuredOutput? clinicalOutput;
 
+  /// Set only after the SSE client validates the snapshot and visible binding.
+  final bool canonicalSnapshotValidated;
+  final CanonicalClinicalSnapshot? referenceDocument;
+
   const AiCompleted({
     required super.requestId,
     required super.attempt,
@@ -322,6 +327,8 @@ final class AiCompleted extends AiEvent {
     this.durationMs = 0,
     this.usedProvider = '',
     this.clinicalOutput,
+    this.canonicalSnapshotValidated = false,
+    this.referenceDocument,
   });
 
   factory AiCompleted.now({
@@ -333,6 +340,8 @@ final class AiCompleted extends AiEvent {
     int outputTokensApprox = 0,
     int durationMs = 0,
     ClinicalStructuredOutput? clinicalOutput,
+    bool canonicalSnapshotValidated = false,
+    CanonicalClinicalSnapshot? referenceDocument,
   }) =>
       AiCompleted(
         requestId: requestId,
@@ -344,6 +353,8 @@ final class AiCompleted extends AiEvent {
         durationMs: durationMs,
         usedProvider: usedProvider,
         clinicalOutput: clinicalOutput,
+        canonicalSnapshotValidated: canonicalSnapshotValidated,
+        referenceDocument: referenceDocument,
       );
 }
 

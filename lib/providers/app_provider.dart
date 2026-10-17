@@ -1,3 +1,5 @@
+import '../models/canonical_clinical_snapshot.dart';
+import '../services/ai/plantao_canonical_request.dart';
 import '../services/gi_batch01_publication_state.dart';
 import '../services/approved_pathology_time_output.dart';
 import '../data/new_pathology_approved_context.dart';
@@ -7317,7 +7319,14 @@ class AppProvider extends ChangeNotifier {
     return result.text;
   }
 
+  CanonicalClinicalSnapshot? _approvedProtocolDocument;
+  CanonicalClinicalSnapshot? approvedProtocolDocument(String text) =>
+      text == _approvedProtocolResult ? _approvedProtocolDocument : null;
+  String? _approvedProtocolRequest;
+  String? _approvedProtocolResult;
+
   Future<void> _finalizeGptSuccessfulRequest({
+    CanonicalClinicalSnapshot? referenceDocument,
     required String requestId,
     required String validatedOutput,
     required String input,
@@ -7331,6 +7340,32 @@ class AppProvider extends ChangeNotifier {
     required ActiveAiSessionContext sessionCtx,
     ClinicalStructuredOutput? clinicalOutput,
   }) async {
+    if (referenceDocument != null) {
+      if (longResponse || !referenceDocument.isReferenceDocument ||
+          referenceDocument.blocks(sessionCtx.locale).join() != validatedOutput ||
+          _activeRequestId != requestId || sessionCtx.uid != (_currentUser?.uid ?? '') ||
+          sessionCtx.sessionId != _currentConversationSessionId) {
+        throw StateError('approved_protocol_finalization_mismatch');
+      }
+      _approvedProtocolDocument = referenceDocument;
+      _approvedProtocolRequest = requestId;
+      _approvedProtocolResult = validatedOutput;
+      // The candidate commits this exchange and its ledger atomically before SSE.
+      // Reuse its exact identity; never generate a second exchange or charge here.
+      _persistedExchangeIds.add(requestId);
+      _upsertLocalSessionIndex(
+        sessionId: sessionCtx.sessionId, uid: sessionCtx.uid,
+        title: _generateConversationTitle(visibleUserInput), mode: sessionCtx.mode,
+        locale: sessionCtx.locale, requestId: requestId,
+        userPreview: WellFormedUtf16.truncate(visibleUserInput,120),
+        assistantPreview: WellFormedUtf16.truncate(validatedOutput,160));
+      _isFirstMessageOfSession = false;
+      _currentConversationTitle = _generateConversationTitle(visibleUserInput);
+      wrappedOnDone(validatedOutput);
+      ExternalToolLinkEngine.releaseCanonicalDecision(requestId:requestId,decision:canonicalDecision);
+      _completeAiRequestOnce(requestId);
+      return;
+    }
     // ── Step A: Clinical Numeric Determinism Gate (Validation) ───────────
     // Unit-coupled extraction: only values paired with a clinical dose unit
     // (mcg/kg/min, mg/h, U/min) are evaluated. Standalone numbers (weights,
@@ -8358,6 +8393,17 @@ class AppProvider extends ChangeNotifier {
           return;
         }
         _wrapperFired = true;
+        if (!longResponse && _approvedProtocolRequest == thisRequestId &&
+            _approvedProtocolResult == text) {
+          if (_activeRequestId != thisRequestId || activeSessionCtx.uid != (_currentUser?.uid ?? '')) return;
+          _aiHistory..add({'role':'user','content':persistedUserInput})
+            ..add({'role':'assistant','content':text});
+          while (_aiHistory.length > 20) { _aiHistory.removeAt(0); }
+          onDone(text);
+          onStructuredDone?.call(text,null);
+          notifyListeners();
+          return;
+        }
 
         final utf16SafeProviderText =
             !longResponse ? WellFormedUtf16.normalize(text) : text;
@@ -8450,8 +8496,7 @@ class AppProvider extends ChangeNotifier {
           'fallback=${aiPriority == "critical" ? "gemini_paid" : "paid"}',
         );
       }
-      final bool shouldUseGptSse = shouldForceGptFallbackForQa ||
-          (!longResponse && aiPriority == 'critical');
+      final bool shouldUseGptSse = !longResponse || shouldForceGptFallbackForQa;
 
       // ══════════════════════════════════════════════════════════════════════════
       // BUILD 462E-A / 462E-A.3 — QA BYPASS: shouldForceGptFallbackForQa
@@ -8659,7 +8704,7 @@ class AppProvider extends ChangeNotifier {
           );
         }
 
-        final qaSystemPrompt = AiService.buildClinicalSystemPrompt(
+        final qaSystemPrompt = longResponse ? AiService.buildClinicalSystemPrompt(
           lang: qaSessionLang,
           matchedProtocolSummaries: qaFinalProtos,
           matchedDrugSummaries: const [],
@@ -8677,7 +8722,28 @@ class AppProvider extends ChangeNotifier {
           isFirstMessage: _aiHistory.isEmpty,
           isPlantaoMode: !longResponse,
           proprietaryDrugContext: null,
-        );
+        ) : PlantaoCanonicalRequest.compile(query: persistedUserInput, context: {
+          'patient': {
+            if (_patient.age.isNotEmpty) 'age': _patient.age,
+            if (_patient.sex.isNotEmpty && (_patient.age.isNotEmpty || _patient.weight.isNotEmpty || _patient.patientId.isNotEmpty)) 'sex': _patient.sex,
+            if (_patient.weight.isNotEmpty) 'weight': _patient.weight,
+            if (_patient.medications.isNotEmpty) 'medications': _patient.medications,
+          },
+          'renalCalculation': clcr == null ? null : {'value': clcr},
+          'memory': _sessionMemory.buildMemoryBlock(false),
+          'drugEvidence': const <String, Object?>{},
+          'deterministicTools': const <String, Object?>{},
+          'laboratoryEvidence': const <Object?>[],
+          'localEvidence': input == persistedUserInput ? qaLocalCtx : '$input\n\n$qaLocalCtx',
+          'crosscuttingEvidence': qaCrosscuttingEvidenceContext,
+          'protocols': qaMatchedProtocols.map((p) => {
+            'id': p.canonicalProtocolId ?? p.id, 'family': p.canonicalFamilyId,
+            'title': p.title, 'actions': p.actions, 'avoid': p.avoid,
+            'treatment': p.drugsFirstLine, 'monitoring': p.monitoring,
+            'alerts': p.redFlags, 'contraindications': p.drugsContraindicated,
+            'references': p.references,
+          }).toList(),
+        });
 
         final qaHistory = List<Map<String, String>>.from(
           ClinicalThreadManager.buildThreadHistory(
@@ -8719,6 +8785,19 @@ class AppProvider extends ChangeNotifier {
           _activeGptClient = null;
 
           if (_activeRequestId != thisRequestId) {
+            return;
+          }
+
+          // Plantão fallback is server-owned (homologated 1721 behavior).
+          if (!longResponse) {
+            _aiStreamActive = false;
+            aiChatProvider.setStreaming(false);
+            wrappedOnError(_lang == 'es'
+                ? 'No se pudo completar la respuesta. Intenta nuevamente.'
+                : 'Não foi possível concluir a resposta. Tente novamente.');
+            ExternalToolLinkEngine.releaseCanonicalDecision(
+                requestId: thisRequestId, decision: canonicalDecision);
+            _completeAiRequestOnce(thisRequestId);
             return;
           }
 
@@ -8889,7 +8968,9 @@ class AppProvider extends ChangeNotifier {
 
         // Criar stream SSE real
         final qaStream = ProviderRouterService.callGptProxyStream(
-          userMessage: input,
+          sessionId: activeSessionCtx.sessionId,
+          catalogQuery: persistedUserInput,
+          userMessage: longResponse ? input : persistedUserInput,
           systemPrompt: qaSystemPrompt,
           idToken: gptQaToken,
           history: qaHistory,
@@ -8989,6 +9070,19 @@ class AppProvider extends ChangeNotifier {
                 //   7. AiCompleted UI event + EXT_TOOL Card
                 // Modo Plantão: content provisional until validation passes.
                 // ──────────────────────────────────────────────────────────────────
+                if (!longResponse && e.referenceDocument != null) {
+                  _gptStreamSub = null;
+                  _activeGptClient = null;
+                  _aiStreamActive = false;
+                  aiChatProvider.setStreaming(false);
+                  await _finalizeGptSuccessfulRequest(
+                    referenceDocument:e.referenceDocument, requestId:thisRequestId,
+                    validatedOutput:e.fullText, input:input,visibleUserInput:persistedUserInput,
+                    userDisplayText:persistedUserDisplayText,longResponse:false,
+                    canonicalDecision:canonicalDecision,wrappedOnDone:wrappedOnDone,
+                    sessionCtx:activeSessionCtx);
+                  return;
+                }
                 final qaRawText = e.fullText.trim();
                 // ignore: avoid_print
                 print(

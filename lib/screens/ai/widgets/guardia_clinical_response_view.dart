@@ -1,3 +1,5 @@
+import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:medcases/models/canonical_clinical_snapshot.dart';
 import 'package:flutter/material.dart';
 import 'package:medcases/home_v2/theme/home_v2_palette.dart';
 import 'package:medcases/models/clinical_structured_output.dart';
@@ -15,6 +17,8 @@ String _guardiaUtf16Safe(String value) => WellFormedUtf16.normalize(value);
 
 class GuardiaClinicalResponseView extends StatefulWidget {
   final String rawText;
+  final bool preserveReferenceText;
+  final CanonicalClinicalSnapshot? referenceDocument;
   final String userText;
   final bool userInitiatedByAction;
   final ClinicalStructuredOutput? output;
@@ -33,6 +37,8 @@ class GuardiaClinicalResponseView extends StatefulWidget {
   const GuardiaClinicalResponseView({
     super.key,
     required this.rawText,
+    this.preserveReferenceText = false,
+    this.referenceDocument,
     this.userText = '',
     this.userInitiatedByAction = false,
     required this.dark,
@@ -188,6 +194,12 @@ class _GuardiaClinicalResponseViewState
 
   @override
   Widget build(BuildContext context) {
+    final reference = widget.referenceDocument;
+    if (!widget.isStreaming && (widget.preserveReferenceText ||
+        (reference?.isReferenceDocument == true &&
+        reference!.blocks(widget.languageCode).join() == widget.rawText))) {
+      return MarkdownBody(data: widget.rawText, selectable: true, softLineBreak: true);
+    }
     final palette = HomeV2Palette.resolve(widget.dark);
     final effectiveText =
         !widget.isStreaming && widget.rawText.trim().isNotEmpty
