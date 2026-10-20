@@ -1,0 +1,137 @@
+00:00 +0: loading /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart
+00:00 +0: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_30turn_verbatim_memory_contract_test.dart: Study 30-turn verbatim memory keeps last 30 exchanges verbatim
+[STUDY_30TURN][HISTORY_SANITIZER] mode=estudo strategy=verbatim_30_exchanges sent=60/70 taskLabel=geral
+00:00 +1: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_30turn_verbatim_memory_contract_test.dart: Study 30-turn verbatim memory automatic inactivity timeout is Plantao-only
+00:00 +2: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_30turn_verbatim_memory_contract_test.dart: Study 30-turn verbatim memory task label changes do not wipe Study transport
+[STUDY_30TURN][HISTORY_SANITIZER] mode=estudo strategy=verbatim_30_exchanges sent=6/6 taskLabel=geral
+[STUDY_30TURN][HISTORY_SANITIZER] mode=estudo strategy=verbatim_30_exchanges sent=6/6 taskLabel=dose
+00:00 +3: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_30turn_verbatim_memory_contract_test.dart: Study 30-turn verbatim memory preserves Study window and Plantao case anchor plus recent turns
+[HISTORY_SANITIZER] mode=plantao strategy=case_anchor_plus_recent sent=6 anchor=2 recent=4 topic=synthetic reason=same_topic
+[HISTORY_SANITIZER] mode=plantao strategy=empty sent=0 removed=12 reason=new_case
+00:00 +4: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: Plantão canonical boundary (nonclinical transport fixtures) legacy generation cannot bypass Plantão contract pt
+[GPT_SSE] → connecting requestId=legacy_pt attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=legacy_pt status=200 durationToConnect=14ms
+[GPT_SSE] stream_error requestId=legacy_pt error=FormatException: plantao_contract_mismatch
+[GPT_SSE] closed requestId=legacy_pt cancelled=false completed=false deltaCount=0 durationMs=21
+00:00 +5: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: Plantão canonical boundary (nonclinical transport fixtures) verified complete reference survives SSE pt
+[GPT_SSE] → connecting requestId=reference_pt attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=reference_pt status=200 durationToConnect=1ms
+[GPT_SSE] ✅ transport_done requestId=reference_pt attempt=2 deltaCount=0 textLen=162 durationMs=12
+[GPT_SSE] closed requestId=reference_pt cancelled=false completed=true deltaCount=0 durationMs=13
+00:00 +6: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: Plantão canonical boundary (nonclinical transport fixtures) legacy generation cannot bypass Plantão contract es
+[GPT_SSE] → connecting requestId=legacy_es attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=legacy_es status=200 durationToConnect=0ms
+[GPT_SSE] stream_error requestId=legacy_es error=FormatException: plantao_contract_mismatch
+[GPT_SSE] closed requestId=legacy_es cancelled=false completed=false deltaCount=0 durationMs=0
+00:00 +7: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: Plantão canonical boundary (nonclinical transport fixtures) verified complete reference survives SSE es
+[GPT_SSE] → connecting requestId=reference_es attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=reference_es status=200 durationToConnect=0ms
+[GPT_SSE] ✅ transport_done requestId=reference_es attempt=2 deltaCount=0 textLen=170 durationMs=2
+[GPT_SSE] closed requestId=reference_es cancelled=false completed=true deltaCount=0 durationMs=2
+00:00 +8: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: GptSseClient Study structured transport_done converte structuredOutput em ClinicalStructuredOutput tipado
+[GPT_SSE] → connecting requestId=req_structured_transport attempt=2 endpoint=https://example.test/gpt
+[GPT_SSE] ← connected requestId=req_structured_transport status=200 durationToConnect=0ms
+[GPT_SSE] ✅ transport_done requestId=req_structured_transport attempt=2 deltaCount=2 textLen=16 durationMs=7
+[GPT_SSE] closed requestId=req_structured_transport cancelled=false completed=true deltaCount=2 durationMs=7
+00:00 +9: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: GptSseClient Study structured transport_done falha de forma não recuperável quando structuredOutput não nulo é inválido
+[GPT_SSE] → connecting requestId=req_invalid_structured_transport attempt=2 endpoint=https://example.test/gpt
+[GPT_SSE] ← connected requestId=req_invalid_structured_transport status=200 durationToConnect=0ms
+[GPT_SSE] closed requestId=req_invalid_structured_transport cancelled=false completed=false deltaCount=1 durationMs=1
+00:00 +10: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: GptSseClient Study structured transport_done mantém clinicalOutput null no transport_done legado
+[GPT_SSE] → connecting requestId=req_legacy_transport attempt=2 endpoint=https://example.test/gpt
+[GPT_SSE] ← connected requestId=req_legacy_transport status=200 durationToConnect=1ms
+[GPT_SSE] ✅ transport_done requestId=req_legacy_transport attempt=2 deltaCount=1 textLen=15 durationMs=1
+[GPT_SSE] closed requestId=req_legacy_transport cancelled=false completed=true deltaCount=1 durationMs=1
+00:00 +11: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity history details stay in active abdominal case
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=fossa_iliaca turnCount=2
+00:00 +11: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/plantao_context_anchor_tep_full_classification_v1_b_r0_test.dart: Plantao context anchor + TEP full classification V1-B-R0 physical Spanish follow-up sequence remains in the active TEP case
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=anos_agudo_confirmado_angiotc_sintomatico_embolia turnCount=2
+00:00 +12: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/plantao_context_anchor_tep_full_classification_v1_b_r0_test.dart: Plantao context anchor + TEP full classification V1-B-R0 physical Spanish follow-up sequence remains in the active TEP case
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=anos_agudo_confirmado_angiotc_sintomatico_embolia turnCount=3
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=short_query topic=anos_agudo_confirmado_angiotc_sintomatico_embolia turnCount=4
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=short_query topic=anos_agudo_confirmado_angiotc_sintomatico_embolia turnCount=5
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=anos_agudo_confirmado_angiotc_sintomatico_embolia turnCount=6
+00:00 +12: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity laboratory and imaging results stay in active case
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=fossa_iliaca turnCount=2
+00:00 +12: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/plantao_context_anchor_tep_full_classification_v1_b_r0_test.dart: Plantao context anchor + TEP full classification V1-B-R0 physical Spanish follow-up sequence remains in the active TEP case
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=anos_agudo_confirmado_angiotc_sintomatico_embolia turnCount=7
+00:00 +12: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity laboratory and imaging results stay in active case
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=fossa_iliaca turnCount=3
+00:00 +13: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/plantao_context_anchor_tep_full_classification_v1_b_r0_test.dart: Plantao context anchor + TEP full classification V1-B-R0 physical Spanish follow-up sequence remains in the active TEP case
+00:00 +14: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity single different complaint with only one evolution marker remains a new thread
+[THREAD_MANAGER] mode=plantao action=new_thread reason=short_clinical_switch oldTopic=fossa_iliaca newTopic=cefaleia_comecou_hoje
+00:00 +15: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/plantao_context_anchor_tep_full_classification_v1_b_r0_test.dart: Plantao context anchor + TEP full classification V1-B-R0 ClinicalSessionMemory does not reset across the same sequence
+00:00 +16: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity strong IAMCSST switch leaves unrelated abdominal thread
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=fossa_iliaca turnCount=2
+[THREAD_MANAGER] mode=plantao action=new_thread reason=new_case_signal oldTopic=fossa_iliaca newTopic=iamcsst_confirmado
+00:00 +17: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/plantao_context_anchor_tep_full_classification_v1_b_r0_test.dart: Plantao context anchor + TEP full classification V1-B-R0 Plantao transport keeps original case anchor after many follow-ups
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=anos_agudo_confirmado_angiotc_sintomatico_embolia turnCount=2
+[HISTORY_SANITIZER] mode=plantao strategy=case_anchor_plus_recent sent=6 anchor=2 recent=4 topic=anos_agudo_confirmado_angiotc_sintomatico_embolia reason=contextual_clinical_followup
+00:00 +17: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity short STEMI alias also leaves unrelated abdominal thread
+[THREAD_MANAGER] mode=plantao action=new_thread reason=short_clinical_switch oldTopic=fossa_iliaca newTopic=stemi_confirmado
+00:00 +18: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/plantao_context_anchor_tep_full_classification_v1_b_r0_test.dart: Plantao context anchor + TEP full classification V1-B-R0 Plantao transport keeps original case anchor after many follow-ups
+00:00 +19: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity confirmed IAM remains same thread when progressing from chest pain
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=compatible_diagnostic_progression topic=toracica_opressiva turnCount=2
+00:00 +20: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/plantao_context_anchor_tep_full_classification_v1_b_r0_test.dart: Plantao context anchor + TEP full classification V1-B-R0 direct classification renders the complete A-E plus R framework
+00:00 +20: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity explicit new case still starts another thread
+[THREAD_MANAGER] mode=plantao action=new_thread reason=new_case_signal oldTopic=fossa_iliaca newTopic=novo_caso_outro_cefaleia_subita_intensa
+00:00 +21: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/plantao_context_anchor_tep_full_classification_v1_b_r0_test.dart: Plantao context anchor + TEP full classification V1-B-R0 direct classification renders the complete A-E plus R framework
+00:00 +22: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/plantao_context_anchor_tep_full_classification_v1_b_r0_test.dart: Plantao context anchor + TEP full classification V1-B-R0 explanatory category question is not hijacked by classification renderer
+00:00 +23: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/plantao_context_anchor_tep_full_classification_v1_b_r0_test.dart: Plantao context anchor + TEP full classification V1-B-R0 classify plus management still uses complete management renderer
+00:00 +24: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/plantao_context_anchor_tep_full_classification_v1_b_r0_test.dart: Plantao context anchor + TEP full classification V1-B-R0 explicit new case still breaks inheritance
+[THREAD_MANAGER] mode=plantao action=new_thread reason=new_case_signal oldTopic=anos_agudo_confirmado_angiotc_sintomatico_embolia newTopic=nuevo_caso_meningitis_bacteriana_necesita_internacion
+00:00 +25: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/plantao_context_anchor_tep_full_classification_v1_b_r0_test.dart: Plantao context anchor + TEP full classification V1-B-R0 first-message dependent phrase still has no old case to inherit
+00:01 +26: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/gemini_v2_study_30turn_context_window_contract_test.dart: Gemini V2 downstream context window allows 30 exchange pairs
+00:06 +27: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiEvent — base contract AiStarted carrega requestId + attempt + timestamp + model + provider
+00:06 +28: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiEvent — base contract AiTextDelta carrega delta bruto + sequence (não acumulado)
+00:06 +29: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiEvent — base contract AiTextDelta GPT attempt=2 sequence começa em 1
+00:06 +30: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiEvent — base contract AiCompleted carrega fullText + usedProvider + durationMs
+00:06 +31: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiProviderSwitched — Anti-Frankenstein carrega fromProvider + toProvider + reason + requestId + attempt + timestamp
+00:06 +32: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiProviderSwitched — Anti-Frankenstein é uma AiEvent (sealed class member)
+00:06 +33: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiStreamReset — Anti-Frankenstein carrega reason + requestId + attempt + timestamp
+00:06 +34: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiStreamReset — Anti-Frankenstein é uma AiEvent (sealed class member)
+00:06 +35: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiFailed — falha clínica carrega code + message + retryable + partialText
+00:06 +36: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiFailed — falha clínica sem partialText quando nenhum texto foi recebido
+00:06 +37: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiFailed — falha clínica hasSignificantPartial false quando parcial < 80 chars
+00:06 +38: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiFailed — falha clínica hasSignificantPartial true quando parcial >= 80 chars
+00:06 +39: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiFailed — falha clínica kSignificantPartialThreshold = 80
+00:06 +40: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiFailed — falha clínica retryable=true para erros de rede (timeout, network)
+00:06 +41: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiFailed — falha clínica retryable=false para erros de autenticação
+00:06 +42: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: AiFailed — falha clínica é uma AiEvent (sealed class member)
+00:06 +43: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: Sealed class — switch exaustivo switch cobre todos os cases sem default necessário
+00:06 +44: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: Identidade de fragmento requestId + attempt + sequence identificam unicamente um fragmento
+00:06 +45: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/ai_event_test.dart: Factory .now() timestamp nowIso retorna string ISO-8601 UTC válida
+00:06 +46: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_continuation_resolver_test.dart: R18.6AA-R1F-R3 — StudyContinuationResolver tag remota válida possui precedência
+00:06 +47: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseParser — robustez básica parseia evento simples text_delta
+00:06 +48: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_continuation_resolver_test.dart: R18.6AA-R1F-R3 — StudyContinuationResolver sem tag usa motor local ou fallback genérico
+00:06 +49: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_continuation_resolver_test.dart: R18.6AA-R1F-R3 — StudyContinuationResolver sem tag usa motor local ou fallback genérico
+00:06 +50: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_continuation_resolver_test.dart: R18.6AA-R1F-R3 — StudyContinuationResolver sem tag usa motor local ou fallback genérico
+00:06 +51: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseParser — robustez básica parseia dois eventos no mesmo chunk de 5 bytes
+00:06 +52: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_continuation_resolver_test.dart: R18.6AA-R1F-R3 — StudyContinuationResolver remove frase antiga com pin e cria botão
+00:06 +53: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_continuation_resolver_test.dart: R18.6AA-R1F-R3 — StudyContinuationResolver remove frase antiga com pin e cria botão
+00:06 +54: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseParser — robustez básica tolera \r\n como terminador
+00:06 +55: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_continuation_resolver_test.dart: R18.6AA-R1F-R3 — StudyContinuationResolver não produz continuação durante streaming
+00:06 +56: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseParser — robustez básica tolera linhas data: múltiplas (concatenadas)
+00:06 +57: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_continuation_resolver_test.dart: R18.6AA-R1F-R3 — StudyContinuationResolver safe-card nunca recebe continuação
+00:06 +58: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseParser — robustez básica tolera linhas vazias espúrias entre eventos
+00:06 +59: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_continuation_resolver_test.dart: R18.6AA-R1F-R3 — StudyContinuationResolver Plantão permanece sem continuação pedagógica
+00:06 +60: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseParser — UTF-8 fragmentado emoji dividido entre dois chunks
+00:06 +61: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_continuation_resolver_test.dart: R18.6AA-R1F-R3 — StudyContinuationResolver prompt remoto repetido não cria loop
+00:06 +62: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseParser — UTF-8 fragmentado ç fragmentado entre chunks
+00:06 +63: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseParser — UTF-8 fragmentado resposta de 1000+ chars aparece em múltiplos chunks
+00:06 +64: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseParser — erros de protocolo JSON inválido → SseParseError emitido (não silencioso)
+00:06 +65: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseEventFilter — descarte de fragmentos descarta event com requestId diferente
+00:06 +66: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseEventFilter — descarte de fragmentos descarta event com attempt anterior
+00:06 +67: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseEventFilter — descarte de fragmentos descarta sequence duplicada
+00:06 +68: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseEventFilter — descarte de fragmentos descarta sequence inferior à última aceita
+00:06 +69: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseEventFilter — descarte de fragmentos aceita attempt correto com requestId correto
+00:06 +70: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseEventFilter — descarte de fragmentos attempt 1 ignorado depois do início do attempt 2
+00:06 +71: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseEventFilter — descarte de fragmentos requestId antigo ignorado
+00:06 +72: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: AiFailed — parcial clínico hasSignificantPartial false quando partialText < 80 chars
+00:06 +73: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: AiFailed — parcial clínico EOF sem transport_done → AiFailed local criado pelo cliente
+00:06 +74: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseParser — prove de streaming vs batch primeiro evento chegou antes da resposta completa
+00:06 +75: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: SseParser — prove de streaming vs batch kill switch: flag false retorna ao caminho legado
+00:06 +76: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: Contrato Anti-Frankenstein AiProviderSwitched tem requestId + attempt + timestamp
+00:06 +77: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: Contrato Anti-Frankenstein AiStreamReset tem requestId + attempt + timestamp
+00:06 +78: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/sse_parser_test.dart: Contrato Anti-Frankenstein AiFailed tem code + message + retryable + partialText
+00:06 +79: All tests passed!

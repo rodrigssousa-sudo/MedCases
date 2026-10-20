@@ -1,0 +1,27 @@
+{
+  "baseline": "1f469d46648a921c28be940af993b66a2eff1dcc",
+  "results": {
+    "SSE_LEGACY_TESTS": "PASS",
+    "STUDY_MEMORY_TESTS": "PASS",
+    "MEDICAL_DECISION_VALIDATOR": "PASS",
+    "SCHEMA_2_IMPORT": "PASS",
+    "PT_ES_HASH_BINDING": "PASS",
+    "INVALID_RECORD_REJECTION": "PASS",
+    "PLANTAO_REGRESSION": "PASS",
+    "ESTUDO_REGRESSION": "PASS",
+    "WEB_BUILD": "NOT_REQUIRED",
+    "READY_TO_RECEIVE_FINAL_1000_JSON": "YES",
+    "PRODUCTION_MUTATIONS": 0
+  },
+  "uniqueTests": {
+    "flutter": 79,
+    "historicalValidator": 10,
+    "stagingAdapter": 32,
+    "schema2Preparer": 10,
+    "total": 131
+  },
+  "analyzerAffected": "No issues found",
+  "scope": "Technical local intake/staging readiness only; no real medical approval or commercial release asserted",
+  "final1000Imported": false,
+  "runtimeChanged": false
+}

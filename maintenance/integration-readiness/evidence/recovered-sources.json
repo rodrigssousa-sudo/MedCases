@@ -1,0 +1,18 @@
+{
+  "tool/clinical_catalog/publication.mjs": {
+    "source": "/Users/brunorodrigues/Developer/MedCases-1718-Android/tool/clinical_catalog/publication.mjs",
+    "sha256": "c5913b486b383b3792aec0e9ef2be4a1c176ab742740ed0454da28dce2de16e1"
+  },
+  "tool/clinical_catalog/functional_schema.mjs": {
+    "source": "/Users/brunorodrigues/Developer/MedCases-1718-Android/tool/clinical_catalog/functional_schema.mjs",
+    "sha256": "f965129251089ce36c66f37871288f2fdc01e8a2d8af712547f1db10a46b3127"
+  },
+  "tool/clinical_catalog/migration-baseline-allowlist.json": {
+    "source": "/Users/brunorodrigues/Developer/MedCases-1718-Android/tool/clinical_catalog/migration-baseline-allowlist.json",
+    "sha256": "2c5755b0ae7d8ee070b96985b28e1c26b3269781a6bd44c3fddcfbfd1bdc448e"
+  },
+  "tool/clinical_catalog/medical_review/validar_decisoes.py": {
+    "source": "/Users/brunorodrigues/Desktop/PACOTE/02_REIMPORTACAO/validar_decisoes.py",
+    "sha256": "00334284f74bcef0e1edb28b6ff3e614e4d44ab4ddaa4ba55f634555f10f26e3"
+  }
+}

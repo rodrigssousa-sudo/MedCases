@@ -4,6 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:medcases/services/ai_stream/ai_event.dart';
 import 'package:medcases/services/ai_stream/gpt_sse_client.dart';
+import 'package:medcases/models/canonical_clinical_snapshot.dart';
 
 final class _FakeStreamingClient extends http.BaseClient {
   final String responseBody;
@@ -46,7 +47,109 @@ String _sseEvent(
 }
 
 void main() {
-  group('GptSseClient structured transport_done', () {
+  group('Plantão canonical boundary (nonclinical transport fixtures)', () {
+    for (final lang in ['pt', 'es']) {
+      test('legacy generation cannot bypass Plantão contract $lang', () async {
+        final client = _FakeStreamingClient(_sseEvent('started', {
+          'requestId': 'legacy_$lang',
+          'attempt': 2,
+          'model': 'gpt-5.6',
+          'provider': 'gpt_5_6',
+        }));
+        final events = await GptSseClient(
+          endpointUrl: GptSseClient.kPlantaoEndpoint,
+          idToken: 'synthetic-test-token',
+          clientFactory: () => client,
+        )
+            .stream(GptSsePayload(
+              userMessage: 'SYNTHETIC NONCLINICAL FIXTURE',
+              systemPrompt: '',
+              requestId: 'legacy_$lang',
+              lang: lang,
+            ))
+            .toList();
+        expect(events.whereType<AiCompleted>(), isEmpty);
+        expect(events.whereType<AiTextDelta>(), isEmpty);
+        expect(events.whereType<AiFailed>(), hasLength(1));
+        expect(client.wasClosed, isTrue);
+      });
+
+      test('verified complete reference survives SSE $lang', () async {
+        final requestId = 'reference_$lang';
+        const pt = 'Texto sintético de transporte; sem aprovação médica real.';
+        const es = 'Texto sintético de transporte; sin aprobación médica real.';
+        final raw = jsonEncode({
+          // Sorted keys make these nonclinical bytes match the shared canonical
+          // hash function without introducing another package dependency.
+          'es': {'plantao': es},
+          'owner': 'synthetic_fixture',
+          'pt': {'plantao': pt},
+          'references': <dynamic>[],
+          'version': 'TEST_ONLY',
+        });
+        final digest = CanonicalClinicalSnapshot.hash(jsonDecode(raw));
+        final sse = _sseEvent('started', {
+              'requestId': requestId,
+              'attempt': 2,
+              'model': 'approved_protocol',
+              'provider': 'clinical_catalog',
+              'pipeline': 'plantao_canonical_v1',
+              'answerContract': CanonicalClinicalSnapshot.version,
+              'approvedPayloadSha256': digest,
+            }) +
+            _sseEvent('approved_protocol', {
+              'requestId': requestId,
+              'attempt': 2,
+              'protocol': {
+                'owner': 'synthetic_fixture',
+                'version': 'TEST_ONLY',
+                'activeVersion': 'SYNTHETIC_ONLY',
+                'payloadSha256': digest,
+                'approvedClinicalPayloadJson': raw,
+                'scope':
+                    'UNCHANGED_GENERAL_PROTOCOL_NOT_INDIVIDUAL_PRESCRIPTION',
+                'review': {
+                  'recordId': 'SYNTHETIC_REVIEW_NOT_REAL',
+                  'reviewerId': 'SYNTHETIC_TEST_ONLY',
+                  'reviewedAt': '2026-10-14T00:00:00Z',
+                  'evidenceSha256': '0' * 64,
+                },
+              },
+            }) +
+            _sseEvent('transport_done', {
+              'requestId': requestId,
+              'attempt': 2,
+              'model': 'approved_protocol',
+              'provider': 'clinical_catalog',
+            });
+        final client = _FakeStreamingClient(sse);
+        final events = await GptSseClient(
+          endpointUrl: GptSseClient.kPlantaoEndpoint,
+          idToken: 'synthetic-test-token',
+          clientFactory: () => client,
+        )
+            .stream(GptSsePayload(
+              userMessage: 'SYNTHETIC NONCLINICAL FIXTURE',
+              systemPrompt: '',
+              requestId: requestId,
+              lang: lang,
+            ))
+            .toList();
+        expect(events.whereType<AiFailed>(), isEmpty);
+        final completed = events.whereType<AiCompleted>().single;
+        expect(completed.fullText, contains(lang == 'pt' ? pt : es));
+        expect(completed.referenceDocument?.factsHash, digest);
+        expect(
+            completed.referenceDocument
+                ?.approvedProtocolData?['approvedClinicalPayloadJson'],
+            raw);
+        expect(client.wasClosed, isTrue);
+      });
+    }
+  });
+  // Since 6c10a8bd, Plantão accepts only the canonical reference handshake.
+  // These legacy provider-generation cases belong to the Study transport.
+  group('GptSseClient Study structured transport_done', () {
     test(
       'converte structuredOutput em ClinicalStructuredOutput tipado',
       () async {
@@ -127,6 +230,7 @@ void main() {
               const GptSsePayload(
                 userMessage: 'Caso clínico',
                 systemPrompt: 'Prompt clínico',
+                mode: 'study',
                 requestId: requestId,
               ),
             )
@@ -240,6 +344,7 @@ void main() {
               const GptSsePayload(
                 userMessage: 'Caso clínico',
                 systemPrompt: 'Prompt clínico',
+                mode: 'study',
                 requestId: requestId,
               ),
             )
@@ -315,6 +420,7 @@ void main() {
               const GptSsePayload(
                 userMessage: 'Pergunta',
                 systemPrompt: 'Prompt',
+                mode: 'study',
                 requestId: requestId,
               ),
             )

@@ -1,0 +1,37 @@
+test_active_snapshot_preserves_disabled_identity (test_stage_reviewed_protocols.StagingTests.test_active_snapshot_preserves_disabled_identity) ... ok
+test_alias_collision_preserves_unaffected_record (test_stage_reviewed_protocols.StagingTests.test_alias_collision_preserves_unaffected_record) ... ok
+test_approval_flag_alone_not_accepted (test_stage_reviewed_protocols.StagingTests.test_approval_flag_alone_not_accepted) ... ok
+test_artifact_changed (test_stage_reviewed_protocols.StagingTests.test_artifact_changed) ... ok
+test_cli_creates_only_new_local_staging (test_stage_reviewed_protocols.StagingTests.test_cli_creates_only_new_local_staging) ... ok
+test_clinical_pending (test_stage_reviewed_protocols.StagingTests.test_clinical_pending) ... ok
+test_current_manifest_tampered (test_stage_reviewed_protocols.StagingTests.test_current_manifest_tampered) ... ok
+test_duplicate_json_keys_rejected (test_stage_reviewed_protocols.StagingTests.test_duplicate_json_keys_rejected) ... ok
+test_duplicate_owner_not_overwritten (test_stage_reviewed_protocols.StagingTests.test_duplicate_owner_not_overwritten) ... ok
+test_es_hash_changed (test_stage_reviewed_protocols.StagingTests.test_es_hash_changed) ... ok
+test_identity_hash_binding (test_stage_reviewed_protocols.StagingTests.test_identity_hash_binding) ... ok
+test_invalid_record_does_not_discard_valid_record (test_stage_reviewed_protocols.StagingTests.test_invalid_record_does_not_discard_valid_record) ... ok
+test_malformed_record_isolated (test_stage_reviewed_protocols.StagingTests.test_malformed_record_isolated) ... ok
+test_missing_es (test_stage_reviewed_protocols.StagingTests.test_missing_es) ... ok
+test_missing_human_acceptance (test_stage_reviewed_protocols.StagingTests.test_missing_human_acceptance) ... ok
+test_missing_reviewer (test_stage_reviewed_protocols.StagingTests.test_missing_reviewer) ... ok
+test_missing_scope (test_stage_reviewed_protocols.StagingTests.test_missing_scope) ... ok
+test_new_dose_or_condition_after_review_rejected (test_stage_reviewed_protocols.StagingTests.test_new_dose_or_condition_after_review_rejected) ... ok
+test_no_dose_scope (test_stage_reviewed_protocols.StagingTests.test_no_dose_scope) ... ok
+test_numeric_list_id_not_promoted (test_stage_reviewed_protocols.StagingTests.test_numeric_list_id_not_promoted) ... ok
+test_other_registry_change_after_review_rejected (test_stage_reviewed_protocols.StagingTests.test_other_registry_change_after_review_rejected) ... ok
+test_pt_hash_changed (test_stage_reviewed_protocols.StagingTests.test_pt_hash_changed) ... ok
+test_rejected_review (test_stage_reviewed_protocols.StagingTests.test_rejected_review) ... ok
+test_scope_added_after_acceptance (test_stage_reviewed_protocols.StagingTests.test_scope_added_after_acceptance) ... ok
+test_scope_list_order_does_not_change_meaning (test_stage_reviewed_protocols.StagingTests.test_scope_list_order_does_not_change_meaning) ... ok
+test_separate_legitimate_pt_es_reviewers_supported (test_stage_reviewed_protocols.StagingTests.test_separate_legitimate_pt_es_reviewers_supported) ... ok
+test_signature_changed (test_stage_reviewed_protocols.StagingTests.test_signature_changed) ... ok
+test_source_hash_changed (test_stage_reviewed_protocols.StagingTests.test_source_hash_changed) ... ok
+test_stale_review_snapshot (test_stage_reviewed_protocols.StagingTests.test_stale_review_snapshot) ... ok
+test_translation_pending (test_stage_reviewed_protocols.StagingTests.test_translation_pending) ... ok
+test_valid_fixture_stages_exact_bytes_without_publication (test_stage_reviewed_protocols.StagingTests.test_valid_fixture_stages_exact_bytes_without_publication) ... ok
+test_version_mismatch (test_stage_reviewed_protocols.StagingTests.test_version_mismatch) ... ok
+
+----------------------------------------------------------------------
+Ran 32 tests in 4.663s
+
+OK
