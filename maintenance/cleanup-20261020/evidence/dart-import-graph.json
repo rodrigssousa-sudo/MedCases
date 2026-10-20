@@ -1,0 +1,3101 @@
+{
+  "lib/study_oauth_physical_canary_app_v1.dart": [
+    "package:firebase_core/firebase_core.dart",
+    "package:flutter/material.dart",
+    "services/study/study_google_ai_oauth_physical_canary_client_v1.dart"
+  ],
+  "lib/firebase_options.dart": [
+    "package:firebase_core/firebase_core.dart",
+    "package:flutter/foundation.dart"
+  ],
+  "lib/main.dart": [
+    "widgets/guide_intent_entry.dart",
+    "testimonials/testimonial_entry.dart",
+    "testimonials/testimonial_screen.dart",
+    "dart:async",
+    "dart:convert",
+    "dart:ui",
+    "package:flutter/cupertino.dart",
+    "package:flutter/material.dart",
+    "package:flutter_svg/flutter_svg.dart",
+    "home_v2/home_screen_v2.dart",
+    "screens/home_screen.dart",
+    "package:flutter/services.dart",
+    "package:flutter/foundation.dart",
+    "package:flutter_localizations/flutter_localizations.dart",
+    "package:flutter_native_splash/flutter_native_splash.dart",
+    "package:url_launcher/url_launcher.dart",
+    "package:provider/provider.dart",
+    "package:firebase_core/firebase_core.dart",
+    "package:firebase_auth/firebase_auth.dart",
+    "package:cloud_firestore/cloud_firestore.dart",
+    "package:http/http.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "package:image_picker/image_picker.dart",
+    "package:image_cropper/image_cropper.dart",
+    "firebase_options.dart",
+    "theme/app_theme.dart",
+    "providers/app_provider.dart",
+    "providers/ui_provider.dart",
+    "providers/ai_chat_provider.dart",
+    "providers/tools_state_provider.dart",
+    "services/auth_service.dart",
+    "services/firebase_runtime_guard.dart",
+    "models/user_model.dart",
+    "screens/login_screen.dart",
+    "screens/pre_login_screen.dart",
+    "screens/upgrade_screen.dart",
+    "screens/drugs_screen.dart",
+    "screens/protocols_screen.dart",
+    "screens/tools_screen.dart",
+    "screens/ai_screen.dart",
+    "screens/admin_screen.dart",
+    "screens/history_screen.dart",
+    "screens/maintenance_screen.dart",
+    "screens/cases_screen.dart",
+    "screens/prescripciones_screen.dart",
+    "screens/legal_screen.dart",
+    "screens/support_ticket_screen.dart",
+    "screens/professional_gate_screen.dart",
+    "screens/fontes_screen.dart",
+    "screens/notes_screen.dart",
+    "screens/library_screen.dart",
+    "screens/vaccines_screen.dart",
+    "screens/avaliacao_screen.dart",
+    "screens/laboratory_screen.dart",
+    "screens/remote_audio_consent_sheet.dart",
+    "screens/notes_audio_local_runtime_screen.dart",
+    "screens/calculadora_screen.dart",
+    "services/firestore_service.dart",
+    "services/activity_service.dart",
+    "services/gemini_service.dart",
+    "services/notification_service.dart",
+    "services/update_service.dart",
+    "services/offline_calculator_cache_service.dart",
+    "services/calculator_webview_prewarm_service.dart",
+    "services/app_resume_coordinator.dart",
+    "widgets/brand_mark.dart",
+    "widgets/common_widgets.dart",
+    "screens/study_workspace_screen.dart",
+    "screens/study_history_screen.dart",
+    "home_v2/components/navigation/home_card_transition.dart",
+    "widgets/medcases_webview_screen.dart",
+    "platform/web_impl.dart"
+  ],
+  "lib/main_admin.dart": [
+    "package:firebase_core/firebase_core.dart",
+    "package:flutter/material.dart",
+    "firebase_options.dart",
+    "screens/admin_v2/admin_v2_screen.dart"
+  ],
+  "lib/home_v2/migration_home_screen_reference.dart": [
+    "dart:async",
+    "dart:convert",
+    "dart:ui",
+    "package:firebase_core/firebase_core.dart",
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "../services/auth_service.dart",
+    "../services/firebase_runtime_guard.dart",
+    "../theme/app_theme.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "../providers/app_provider.dart",
+    "../services/firestore_service.dart",
+    "../widgets/common_widgets.dart",
+    "../models/drug_model.dart",
+    "../services/drug_interaction_service.dart",
+    "../services/notification_service.dart",
+    "cockpit_screen.dart",
+    "internacion/internacion_screen.dart",
+    "internacion/services/internacion_persistence.dart",
+    "drugs_screen.dart",
+    "prescripciones_screen.dart",
+    "tools_screen.dart",
+    "calculadora_screen.dart",
+    "prescripciones_screen.dart",
+    "drug_interactions_screen.dart",
+    "protocols_screen.dart",
+    "../models/protocol_model.dart",
+    "avaliacao_screen.dart",
+    "../widgets/meu_plantao_dashboard.dart",
+    "ai_screen.dart",
+    "package:flutter_markdown/flutter_markdown.dart"
+  ],
+  "lib/home_v2/migration_calculadora_reference.dart": [
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "package:webview_flutter/webview_flutter.dart",
+    "package:webview_flutter_android/webview_flutter_android.dart",
+    "package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart",
+    "../providers/app_provider.dart",
+    "../services/offline_calculator_cache_service.dart",
+    "../platform/calcu_stub.dart"
+  ],
+  "lib/home_v2/migration_internacion_reference.dart": [
+    "dart:async",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../../providers/app_provider.dart",
+    "models/evolucion_model.dart",
+    "components/resumen_header.dart",
+    "components/patient_accordion.dart",
+    "components/internacion_theme.dart",
+    "components/copilot_button.dart",
+    "components/farmacos_accordion.dart",
+    "components/soap/soap_section.dart",
+    "services/internacion_persistence.dart",
+    "services/internacion_firestore_service.dart",
+    "services/soap_copilot_service.dart",
+    "services/drug_interaction_service.dart"
+  ],
+  "lib/home_v2/migration_webview_reference.dart": [
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "package:webview_flutter/webview_flutter.dart",
+    "package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart",
+    "../providers/app_provider.dart"
+  ],
+  "lib/home_v2/home_screen_v2.dart": [
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../screens/home_screen.dart",
+    "components/chat/inline_chat.dart",
+    "components/home_web_latest_guides_grid.dart",
+    "components/common/home_v2_press_surface.dart",
+    "components/home_v2_modules_view.dart",
+    "theme/home_v2_palette.dart"
+  ],
+  "lib/home_v2/migration_avaliacao_reference.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../models/clinical_history_model.dart"
+  ],
+  "lib/home_v2/migration_notes_reference.dart": [
+    "dart:async",
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../services/firestore_service.dart",
+    "../services/notification_service.dart"
+  ],
+  "lib/testimonials/testimonial_entry.dart": [
+    "package:flutter/material.dart",
+    "../models/user_model.dart",
+    "testimonial_intent.dart",
+    "testimonial_screen.dart"
+  ],
+  "lib/testimonials/testimonial_service.dart": [
+    "dart:convert",
+    "package:flutter/foundation.dart",
+    "package:http/http.dart",
+    "../firebase_options.dart",
+    "../services/auth_service.dart"
+  ],
+  "lib/testimonials/testimonial_intent.dart": [
+    "package:shared_preferences/shared_preferences.dart"
+  ],
+  "lib/testimonials/testimonial_screen.dart": [
+    "dart:convert",
+    "dart:ui",
+    "package:flutter/material.dart",
+    "package:flutter/foundation.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "../models/user_model.dart",
+    "../services/auth_service.dart",
+    "testimonial_service.dart"
+  ],
+  "lib/config/legal_urls.dart": [],
+  "lib/providers/ui_provider.dart": [
+    "dart:ui",
+    "package:flutter/foundation.dart"
+  ],
+  "lib/providers/tools_state_provider.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/providers/ai_chat_provider.dart": [
+    "package:flutter/foundation.dart"
+  ],
+  "lib/providers/app_provider.dart": [
+    "../models/canonical_clinical_snapshot.dart",
+    "../services/ai/plantao_canonical_request.dart",
+    "../services/gi_batch01_publication_state.dart",
+    "../services/approved_pathology_time_output.dart",
+    "../data/new_pathology_approved_context.dart",
+    "dart:async",
+    "dart:convert",
+    "dart:ui",
+    "package:firebase_auth/firebase_auth.dart",
+    "package:flutter/foundation.dart",
+    "ui_provider.dart",
+    "ai_chat_provider.dart",
+    "../services/ls_stub.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "../models/drug_model.dart",
+    "../models/protocol_model.dart",
+    "../models/clinical_case_model.dart",
+    "../models/clinical_history_model.dart",
+    "../models/user_model.dart",
+    "../data/protocols_database.dart",
+    "../data/cases_database.dart",
+    "../services/firestore_service.dart",
+    "../services/drug_interaction_service.dart",
+    "../services/ai_service.dart",
+    "../services/tep_2026_plantao_response_guard.dart",
+    "../services/plantao_iamcest_killip_classification_guard.dart",
+    "../services/clinical_session_memory.dart",
+    "../services/clinical_thread_manager.dart",
+    "../services/well_formed_utf16.dart",
+    "../services/clinical_crosscutting_evidence_resolver.dart",
+    "../services/gemini_service.dart",
+    "../services/gemini_service_v2.dart",
+    "../services/ai_gateway_service.dart",
+    "../services/ai_smart_router.dart",
+    "../services/provider_router_service.dart",
+    "../services/app_resume_coordinator.dart",
+    "../models/clinical_structured_output.dart",
+    "../services/ai_pipeline/plantao_clinical_response_consistency_guard.dart",
+    "../services/ai_pipeline/plantao/plantao_clinical_regimen_output_guard.dart",
+    "../services/ai_pipeline/plantao/plantao_generic_acs_whole_response_semantic_core.dart",
+    "../services/ai_pipeline/plantao/plantao_explicit_named_topic_semantic_guard.dart",
+    "../services/ai_pipeline/plantao_local_clinical_output_adapter.dart",
+    "../services/ai_pipeline/plantao/contracts/plantao_continuation_type.dart",
+    "../services/ai_pipeline/plantao/contracts/plantao_request.dart",
+    "../services/ai_pipeline/plantao/contracts/plantao_section.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_request_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_finalization_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_validation_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_persistence_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_retrieval_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/adapters/plantao_generated_drug_evidence_readonly_adapter.dart",
+    "../services/ai_pipeline/plantao/adapters/plantao_versioned_remote_drug_evidence_json_loader.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_remote_drug_evidence_runtime_observer.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_shadow_execution_isolator.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_drug_evidence_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_drug_evidence_request_observer.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_drug_evidence_finalization_join_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_drug_identity_provenance_binding_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_drug_provenance_persistence_payload_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_drug_provenance_persistence_payload_parity_gate_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_drug_provenance_semantic_equality_gate_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_drug_provenance_persistence_review_envelope_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_drug_persistence_cutover_blocker_audit_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_drug_typed_regimen_capability_matrix_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_drug_explicit_typed_regimen_evidence_projection_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_drug_projected_evidence_bundle_overlay_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/shadow/plantao_drug_projected_evidence_validation_replay_comparison_shadow_adapter.dart",
+    "../services/ai_pipeline/plantao/plantao_buffered_cutover_controller.dart",
+    "../services/ai_stream/ai_event.dart",
+    "../services/ai_stream/gpt_sse_client.dart",
+    "../services/auth_service.dart",
+    "../services/firebase_runtime_guard.dart",
+    "../services/calculator_mcc1_bridge_service.dart",
+    "../services/external_tool_link_engine.dart",
+    "../services/ai_stream/truncation_inspector.dart",
+    "../services/ai/timeout_content_safety_guard.dart",
+    "../services/ai/ai_finalization_transaction.dart",
+    "../services/ai_pipeline/ai_pipeline_contracts.dart",
+    "../services/ai/clinical_dosage_presets.dart",
+    "../screens/internacion/services/internacion_firestore_service.dart",
+    "../screens/internacion/components/patient_accordion.dart",
+    "../screens/internacion/services/internacion_persistence.dart",
+    "../services/ai_pipeline/ai_request_contract.dart",
+    "../services/ai_pipeline/plantao/plantao_qa_cutover_support.dart",
+    "../services/ai_pipeline/app_provider_ai_response_pipeline.dart",
+    "../services/dkahhs/dkahhs_runtime_safety_contract.dart",
+    "../services/clinical_identity_transport_envelope.dart",
+    "../services/plantao_machine_native_context_prefetch.dart",
+    "../services/clinical_crosscutting_evidence_compliance_guard.dart",
+    "../services/entitlement_service.dart"
+  ],
+  "lib/platform/pdf_picker_web.dart": [
+    "dart:html",
+    "dart:async",
+    "dart:typed_data"
+  ],
+  "lib/platform/web_stub.dart": [
+    "dart:typed_data"
+  ],
+  "lib/platform/pdf_picker_stub.dart": [
+    "dart:typed_data"
+  ],
+  "lib/platform/calcu_web.dart": [
+    "dart:convert",
+    "dart:async",
+    "dart:ui_web",
+    "dart:html",
+    "package:flutter/material.dart",
+    "../screens/upgrade_screen.dart"
+  ],
+  "lib/platform/calcu_stub.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/platform/web_impl.dart": [
+    "dart:html",
+    "dart:js",
+    "dart:js_interop",
+    "dart:async",
+    "dart:typed_data"
+  ],
+  "lib/design_system/design_system.dart": [
+    "components/med_avatar.dart",
+    "components/med_badge.dart",
+    "components/med_bottom_sheet.dart",
+    "components/med_button.dart",
+    "components/med_card.dart",
+    "components/med_chip.dart",
+    "components/med_dialog.dart",
+    "components/med_divider.dart",
+    "components/med_empty_state.dart",
+    "components/med_floating_button.dart",
+    "components/med_header.dart",
+    "components/med_icon_button.dart",
+    "components/med_input.dart",
+    "components/med_list_tile.dart",
+    "components/med_loading.dart",
+    "components/med_menu_tile.dart",
+    "components/med_modal.dart",
+    "components/med_navigation_tile.dart",
+    "components/med_search_bar.dart",
+    "components/med_section.dart",
+    "components/med_text_field.dart",
+    "components/med_toolbar.dart",
+    "layout/med_content_layout.dart",
+    "layout/med_grid.dart",
+    "layout/med_page_layout.dart",
+    "layout/med_responsive_builder.dart",
+    "layout/med_safe_area.dart",
+    "navigation/med_app_shell.dart",
+    "navigation/med_bottom_navigation.dart",
+    "navigation/med_navigation_destination.dart",
+    "navigation/med_navigation_drawer.dart",
+    "navigation/med_side_navigation.dart",
+    "foundation/med_typography.dart",
+    "theme/med_theme.dart",
+    "tokens/med_animation.dart",
+    "tokens/med_breakpoints.dart",
+    "tokens/med_colors.dart",
+    "tokens/med_durations.dart",
+    "tokens/med_elevation.dart",
+    "tokens/med_icons.dart",
+    "tokens/med_radius.dart",
+    "tokens/med_spacing.dart"
+  ],
+  "lib/utils/clinical_time_unit_presentation.dart": [
+    "../data/new_pathology_approved_hashes.dart"
+  ],
+  "lib/models/chat_message.dart": [
+    "clinical_structured_output.dart"
+  ],
+  "lib/models/remote_clinical_response.dart": [],
+  "lib/models/lab_reference_model.dart": [],
+  "lib/models/clinical_case_model.dart": [
+    "package:flutter/foundation.dart"
+  ],
+  "lib/models/clinical_guide_article.dart": [],
+  "lib/models/study_workspace_model.dart": [],
+  "lib/models/clinical_history_model.dart": [],
+  "lib/models/user_model.dart": [
+    "package:cloud_firestore/cloud_firestore.dart"
+  ],
+  "lib/models/lab_result_model.dart": [],
+  "lib/models/influencer_model.dart": [
+    "package:cloud_firestore/cloud_firestore.dart"
+  ],
+  "lib/models/canonical_clinical_snapshot.dart": [
+    "dart:convert",
+    "package:crypto/crypto.dart"
+  ],
+  "lib/models/clinical_structured_output.dart": [
+    "clinical_treatment_presentation.dart"
+  ],
+  "lib/models/clinical_treatment_presentation.dart": [],
+  "lib/models/drug_model.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/models/protocol_model.dart": [
+    "../utils/clinical_time_unit_presentation.dart"
+  ],
+  "lib/models/study_long_form_audio_handoff.dart": [],
+  "lib/models/guide_model.dart": [
+    "package:flutter/foundation.dart"
+  ],
+  "lib/screens/study_workspace_screen.dart": [
+    "dart:ui",
+    "dart:math",
+    "dart:typed_data",
+    "package:file_picker/file_picker.dart",
+    "package:flutter/material.dart",
+    "package:flutter_svg/flutter_svg.dart",
+    "../home_v2/theme/home_v2_palette.dart",
+    "../home_v2/components/common/home_v2_press_surface.dart",
+    "package:flutter_markdown/flutter_markdown.dart",
+    "../models/study_long_form_audio_handoff.dart",
+    "../models/study_workspace_model.dart",
+    "../services/study/study_artifact_generator.dart",
+    "../services/study/study_title_suggestion_service.dart",
+    "../services/study/study_first_use_notice_service.dart",
+    "../services/study/study_library_service.dart",
+    "../services/study/study_large_file_extraction_service.dart",
+    "../services/study/study_imported_audio_pipeline.dart",
+    "../services/study/study_long_form_segment_loader.dart",
+    "../services/study/study_background_transcription_coordinator.dart",
+    "../services/study/study_multimodal_extraction_service.dart",
+    "../services/study/study_pdf_export_service.dart",
+    "../services/study/study_visual_result_codec.dart",
+    "notes_audio_local_runtime_screen.dart"
+  ],
+  "lib/screens/upgrade_screen.dart": [
+    "package:flutter/material.dart",
+    "package:flutter_svg/flutter_svg.dart",
+    "revenuecat_purchase_sheet.dart"
+  ],
+  "lib/screens/clinical_guide_article_screen.dart": [
+    "package:flutter/material.dart",
+    "../models/clinical_guide_article.dart"
+  ],
+  "lib/screens/avaliacao_screen.dart": [
+    "dart:ui",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../models/clinical_history_model.dart"
+  ],
+  "lib/screens/notes_screen.dart": [
+    "dart:async",
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../services/firestore_service.dart",
+    "../services/notification_service.dart",
+    "../design_system/foundation/med_typography.dart",
+    "../design_system/tokens/med_spacing.dart",
+    "home_screen.dart"
+  ],
+  "lib/screens/electrolytes_score_detail_screen.dart": [
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../providers/tools_state_provider.dart",
+    "../services/electrolytes/electrolytes_score_engine_2026.dart",
+    "calculadora_screen.dart"
+  ],
+  "lib/screens/hepato_premium_workspace_screen.dart": [
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "hepato_score_detail_screen.dart"
+  ],
+  "lib/screens/fontes_screen.dart": [
+    "package:flutter/material.dart",
+    "package:url_launcher/url_launcher.dart"
+  ],
+  "lib/screens/remote_audio_consent_sheet.dart": [
+    "package:flutter/material.dart",
+    "../services/audio/clinical_long_form_remote_audio_consent_store.dart",
+    "legal_screen.dart"
+  ],
+  "lib/screens/drug_interactions_screen.dart": [
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../data/evidence_database.dart",
+    "../widgets/common_widgets.dart",
+    "../services/drug_interaction_service.dart"
+  ],
+  "lib/screens/tools_patient_import.dart": [
+    "package:firebase_auth/firebase_auth.dart",
+    "package:flutter/material.dart",
+    "internacion/services/internacion_firestore_service.dart",
+    "internacion/services/internacion_persistence.dart"
+  ],
+  "lib/screens/drugs_screen.dart": [
+    "dart:async",
+    "package:flutter/material.dart",
+    "../theme/app_theme.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../models/drug_model.dart",
+    "../data/evidence_database.dart",
+    "../services/drug_interaction_service.dart",
+    "../widgets/common_widgets.dart",
+    "../services/activity_service.dart",
+    "calculadora_screen.dart",
+    "../services/entitlement_service.dart"
+  ],
+  "lib/screens/electrolytes_tools_screen.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../providers/tools_state_provider.dart",
+    "calculadora_screen.dart",
+    "tools_patient_import.dart",
+    "tools_restore_banner.dart",
+    "internacion/services/internacion_persistence.dart",
+    "internacion/services/internacion_firestore_service.dart",
+    "../design_system/foundation/med_typography.dart",
+    "../design_system/tokens/med_spacing.dart"
+  ],
+  "lib/screens/hepato_score_detail_screen.dart": [
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../providers/tools_state_provider.dart",
+    "../services/hepato/hepato_score_engine_2026.dart",
+    "calculadora_screen.dart"
+  ],
+  "lib/screens/history_screen.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:flutter/rendering.dart",
+    "package:flutter/foundation.dart",
+    "package:provider/provider.dart",
+    "package:image_picker/image_picker.dart",
+    "package:permission_handler/permission_handler.dart",
+    "package:printing/printing.dart",
+    "package:pdf/pdf.dart",
+    "dart:async",
+    "dart:convert",
+    "dart:ui",
+    "../providers/app_provider.dart",
+    "../main.dart",
+    "../models/clinical_history_model.dart",
+    "../services/firestore_service.dart",
+    "../services/suggestion_service.dart",
+    "../services/ai_service.dart",
+    "../services/gemini_service.dart",
+    "../widgets/common_widgets.dart",
+    "../services/stt_helper.dart",
+    "dart:typed_data",
+    "package:http/http.dart",
+    "../platform/web_impl.dart",
+    "clinical_recorder_sheet.dart",
+    "../design_system/foundation/med_typography.dart",
+    "../services/entitlement_service.dart",
+    "upgrade_screen.dart",
+    "../services/clinical_recorder_service.dart"
+  ],
+  "lib/screens/lab_review_screen.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "../models/lab_result_model.dart",
+    "../services/lab_interpreter.dart"
+  ],
+  "lib/screens/notes_audio_local_runtime_screen.dart": [
+    "notes_audio_local_runtime_screen_web.dart"
+  ],
+  "lib/screens/cockpit_screen.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../services/drug_interaction_service.dart",
+    "../services/notification_service.dart",
+    "../widgets/common_widgets.dart"
+  ],
+  "lib/screens/pre_login_screen.dart": [
+    "../services/guide_navigation_intent.dart",
+    "../testimonials/testimonial_intent.dart",
+    "package:flutter/material.dart",
+    "package:flutter/foundation.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "package:url_launcher/url_launcher.dart",
+    "../screens/login_screen.dart",
+    "../widgets/public_landing/public_landing.dart",
+    "../screens/legal_screen.dart"
+  ],
+  "lib/screens/laboratory_screen.dart": [
+    "dart:ui",
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../data/laboratory/lab_reference_catalog.dart",
+    "../models/lab_reference_model.dart",
+    "../providers/app_provider.dart"
+  ],
+  "lib/screens/nephrology_tools_screen.dart": [
+    "dart:math",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../providers/tools_state_provider.dart",
+    "calculadora_screen.dart",
+    "tools_patient_import.dart",
+    "tools_restore_banner.dart",
+    "internacion/services/internacion_persistence.dart",
+    "internacion/services/internacion_firestore_service.dart",
+    "../design_system/foundation/med_typography.dart",
+    "../design_system/tokens/med_spacing.dart"
+  ],
+  "lib/screens/cardio_premium_workspace_screen.dart": [
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "cardio_score_detail_screen.dart"
+  ],
+  "lib/screens/reference_screens.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../widgets/common_widgets.dart",
+    "../widgets/medcases_webview_screen.dart"
+  ],
+  "lib/screens/plus_scores_mb2_workspace_screen.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "package:url_launcher/url_launcher.dart",
+    "../providers/app_provider.dart",
+    "plus_scores_mb2_engine.dart"
+  ],
+  "lib/screens/prescripciones_screen.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../data/evidence_database.dart",
+    "../widgets/common_widgets.dart"
+  ],
+  "lib/screens/protocols_screen.dart": [
+    "dart:async",
+    "dart:ui",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../models/protocol_model.dart",
+    "../data/evidence_database.dart",
+    "../widgets/common_widgets.dart",
+    "../widgets/protocol_checklist_widget.dart",
+    "../services/activity_service.dart"
+  ],
+  "lib/screens/support_ticket_screen.dart": [
+    "package:flutter/material.dart",
+    "../providers/app_provider.dart",
+    "../services/support_ticket_service.dart"
+  ],
+  "lib/screens/electrolytes_premium_workspace_screen.dart": [
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "electrolytes_score_detail_screen.dart"
+  ],
+  "lib/screens/admin_screen.dart": [
+    "dart:async",
+    "dart:convert",
+    "dart:typed_data",
+    "package:flutter/foundation.dart",
+    "package:http/http.dart",
+    "package:flutter/services.dart",
+    "../platform/pdf_picker_stub.dart",
+    "package:flutter/material.dart",
+    "package:cloud_firestore/cloud_firestore.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "../models/user_model.dart",
+    "../models/guide_model.dart",
+    "admin_clinical_guide_editor_screen.dart",
+    "../models/influencer_model.dart",
+    "../services/auth_service.dart",
+    "../services/firestore_service.dart",
+    "../services/storage_service.dart",
+    "../services/referral_service.dart",
+    "../services/provider_router_service.dart",
+    "../widgets/common_widgets.dart"
+  ],
+  "lib/screens/nephro_score_detail_screen.dart": [
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../providers/tools_state_provider.dart",
+    "../services/nephro/nephro_score_engine_2026.dart",
+    "calculadora_screen.dart"
+  ],
+  "lib/screens/hepatology_tools_screen.dart": [
+    "dart:math",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../providers/tools_state_provider.dart",
+    "calculadora_screen.dart",
+    "tools_patient_import.dart",
+    "tools_restore_banner.dart",
+    "internacion/services/internacion_persistence.dart",
+    "internacion/services/internacion_firestore_service.dart",
+    "../design_system/foundation/med_typography.dart",
+    "../design_system/tokens/med_spacing.dart"
+  ],
+  "lib/screens/cardio_tools_screen.dart": [
+    "dart:math",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../providers/tools_state_provider.dart",
+    "calculadora_screen.dart",
+    "tools_patient_import.dart",
+    "tools_restore_banner.dart",
+    "internacion/services/internacion_persistence.dart",
+    "internacion/services/internacion_firestore_service.dart",
+    "../design_system/foundation/med_typography.dart",
+    "../design_system/tokens/med_spacing.dart"
+  ],
+  "lib/screens/login_screen.dart": [
+    "dart:convert",
+    "package:flutter/material.dart",
+    "package:flutter_svg/flutter_svg.dart",
+    "package:image_picker/image_picker.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "../services/auth_service.dart",
+    "../services/social_auth_service.dart"
+  ],
+  "lib/screens/plus_scores_mb1_engine.dart": [],
+  "lib/screens/calculadora_screen.dart": [
+    "dart:async",
+    "dart:convert",
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "package:webview_flutter/webview_flutter.dart",
+    "package:webview_flutter_android/webview_flutter_android.dart",
+    "package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart",
+    "../providers/app_provider.dart",
+    "../services/offline_calculator_cache_service.dart",
+    "../services/calculator_mcc1_bridge_service.dart",
+    "../platform/calcu_stub.dart",
+    "upgrade_screen.dart",
+    "../services/entitlement_service.dart"
+  ],
+  "lib/screens/clinical_recorder_sheet.dart": [
+    "dart:async",
+    "../widgets/medcases_audio_recorder_view.dart",
+    "package:flutter/material.dart",
+    "package:image_picker/image_picker.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../services/clinical_recorder_service.dart",
+    "../services/soap_ai_processor.dart"
+  ],
+  "lib/screens/legal_screen.dart": [
+    "dart:ui",
+    "package:flutter/material.dart",
+    "package:shared_preferences/shared_preferences.dart"
+  ],
+  "lib/screens/notes_audio_local_runtime_screen_web.dart": [
+    "package:flutter/material.dart",
+    "../models/study_long_form_audio_handoff.dart"
+  ],
+  "lib/screens/revenuecat_purchase_sheet.dart": [
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "../services/entitlement_service.dart",
+    "../services/revenuecat_billing_service.dart"
+  ],
+  "lib/screens/tools_screen.dart": [
+    "dart:ui",
+    "dart:math",
+    "package:flutter/material.dart",
+    "package:flutter/scheduler.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../widgets/medcases_webview_screen.dart",
+    "reference_screens.dart",
+    "hepatology_tools_screen.dart",
+    "../providers/app_provider.dart",
+    "../providers/tools_state_provider.dart",
+    "../data/evidence_database.dart",
+    "../data/pediatrics/pediatric_growth_engine_v2026.dart",
+    "../data/pediatrics/pediatric_pews_engine_v2026.dart",
+    "../data/pediatrics/pediatric_reference_registry_v2026.dart",
+    "../data/pediatrics/pediatric_renal_engine_v2026.dart",
+    "../widgets/common_widgets.dart",
+    "../widgets/lab_exam_bottom_sheet.dart",
+    "../services/activity_service.dart",
+    "../design_system/foundation/med_typography.dart",
+    "../main.dart",
+    "nephrology_tools_screen.dart",
+    "cardio_tools_screen.dart",
+    "cardio_premium_workspace_screen.dart",
+    "nephro_premium_workspace_screen.dart",
+    "hepato_premium_workspace_screen.dart",
+    "electrolytes_premium_workspace_screen.dart",
+    "electrolytes_tools_screen.dart",
+    "plus_scores_mb1_workspace_screen.dart",
+    "plus_scores_mb2_workspace_screen.dart"
+  ],
+  "lib/screens/cases_screen.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "package:share_plus/share_plus.dart",
+    "../providers/app_provider.dart",
+    "../models/clinical_case_model.dart",
+    "../widgets/common_widgets.dart"
+  ],
+  "lib/screens/library_screen.dart": [
+    "dart:async",
+    "dart:ui",
+    "package:cached_network_image/cached_network_image.dart",
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../widgets/medcases_webview_screen.dart",
+    "../providers/app_provider.dart",
+    "../main.dart",
+    "../services/firestore_service.dart",
+    "../services/clinical_guides_editorial_service.dart",
+    "../models/guide_model.dart",
+    "clinical_guide_article_screen.dart",
+    "../models/protocol_model.dart",
+    "../widgets/common_widgets.dart",
+    "../home_v2/theme/home_v2_palette.dart",
+    "../home_v2/components/common/home_v2_press_surface.dart",
+    "package:flutter_svg/flutter_svg.dart",
+    "package:http/http.dart",
+    "package:share_plus/share_plus.dart",
+    "protocols_screen.dart"
+  ],
+  "lib/screens/notes_audio_local_runtime_screen_io.dart": [
+    "dart:async",
+    "dart:io",
+    "package:flutter/material.dart",
+    "package:path_provider/path_provider.dart",
+    "../services/audio/clinical_long_form_audio_contract.dart",
+    "../services/audio/clinical_long_form_recording_manifest.dart",
+    "../services/audio/clinical_long_form_durable_store.dart",
+    "../services/audio/clinical_long_form_recording_session.dart",
+    "../services/audio/clinical_long_form_session_directory_layout.dart",
+    "../services/audio/record_long_form_audio_provider.dart",
+    "../services/clinical_recorder_service.dart",
+    "../models/study_long_form_audio_handoff.dart",
+    "../services/entitlement_service.dart",
+    "upgrade_screen.dart",
+    "../widgets/medcases_audio_recorder_view.dart"
+  ],
+  "lib/screens/study_history_screen.dart": [
+    "dart:ui",
+    "package:flutter/material.dart",
+    "../models/study_workspace_model.dart",
+    "../services/study/study_library_service.dart",
+    "study_workspace_screen.dart"
+  ],
+  "lib/screens/vaccines_screen.dart": [
+    "dart:ui",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../data/vaccines/vaccine_clinical_catalog_v2026.dart",
+    "../providers/app_provider.dart"
+  ],
+  "lib/screens/plus_scores_mb1_workspace_screen.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "plus_scores_mb1_engine.dart"
+  ],
+  "lib/screens/cardio_score_detail_screen.dart": [
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../providers/tools_state_provider.dart",
+    "../services/cardio/cardio_acute_risk_engine_2026.dart",
+    "../services/cardio/cardio_chronic_score_engine_2026.dart",
+    "calculadora_screen.dart"
+  ],
+  "lib/screens/nephro_premium_workspace_screen.dart": [
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "nephro_score_detail_screen.dart"
+  ],
+  "lib/screens/ai_screen.dart": [
+    "dart:async",
+    "dart:ui",
+    "package:flutter/material.dart",
+    "package:flutter/rendering.dart",
+    "package:flutter/foundation.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "../widgets/common_widgets.dart",
+    "../models/chat_message.dart",
+    "../widgets/clinical/structured_clinical_output_view.dart",
+    "ai/widgets/guardia_clinical_response_view.dart",
+    "../services/ai_pipeline/structured_output_text_equivalence.dart",
+    "../services/ai_pipeline/plantao/contracts/plantao_continuation_type.dart",
+    "../services/ai_pipeline/plantao/contracts/plantao_section.dart",
+    "ai/widgets/prompt_composer.dart",
+    "ai/widgets/message_render_policy.dart",
+    "ai/widgets/clinical_reference_resolver.dart",
+    "ai/widgets/action_buttons_row.dart",
+    "ai/widgets/study_continuation_button.dart",
+    "ai/widgets/user_bubble.dart",
+    "ai/widgets/user_message_display_policy.dart",
+    "ai/widgets/mobile_ai_action_bar.dart",
+    "ai/widgets/collapsible_content_blocks.dart",
+    "ai/widgets/ambassador_panel.dart",
+    "ai/widgets/ai_bubble.dart",
+    "ai/widgets/ai_shimmer_dots.dart",
+    "ai/widgets/response_mode_toggle.dart",
+    "ai/widgets/chat_history_sheet.dart",
+    "ai/widgets/ai_status_sheet.dart",
+    "ai/widgets/disconnected_input_lock.dart",
+    "ai/widgets/google_auth_barrier_card.dart",
+    "ai/widgets/wa_header.dart",
+    "ai/widgets/empty_chat.dart",
+    "ai/widgets/ai_error_banner.dart",
+    "../widgets/error_state_widget.dart",
+    "../services/clinical_tts_service.dart",
+    "dart:convert",
+    "../providers/app_provider.dart",
+    "../services/stt_helper.dart",
+    "../services/firestore_service.dart",
+    "../services/ai_session_exchange_hydrator.dart",
+    "../services/ai/ai_finalization_transaction.dart",
+    "../services/activity_service.dart",
+    "../home_v2/theme/home_v2_palette.dart",
+    "../services/external_tool_link_engine.dart",
+    "../services/plantao_pipeline.dart",
+    "../services/ai_smart_router.dart",
+    "../services/study_continuation_resolver.dart",
+    "../services/app_resume_coordinator.dart",
+    "../services/auth_service.dart",
+    "../services/plantao_global_clinical_response_gate.dart",
+    "../services/plantao_machine_native_context_prefetch.dart",
+    "../services/plantao_machine_native_rich_phase_completion.dart",
+    "../services/well_formed_utf16.dart"
+  ],
+  "lib/screens/admin_clinical_guide_editor_screen.dart": [
+    "dart:typed_data",
+    "dart:ui",
+    "package:file_picker/file_picker.dart",
+    "package:flutter/material.dart",
+    "../models/clinical_guide_article.dart",
+    "../models/guide_model.dart",
+    "../services/clinical_guide_cms_import_service.dart",
+    "../services/clinical_guides_editorial_service.dart",
+    "../services/storage_service.dart",
+    "clinical_guide_article_screen.dart"
+  ],
+  "lib/screens/plus_scores_mb2_engine.dart": [
+    "dart:math"
+  ],
+  "lib/screens/professional_gate_screen.dart": [
+    "package:firebase_auth/firebase_auth.dart",
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "../providers/app_provider.dart",
+    "../services/auth_service.dart"
+  ],
+  "lib/screens/tools_restore_banner.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/home_screen.dart": [
+    "dart:ui",
+    "dart:async",
+    "dart:convert",
+    "package:firebase_core/firebase_core.dart",
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "../services/auth_service.dart",
+    "../services/firebase_runtime_guard.dart",
+    "../theme/app_theme.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "../providers/app_provider.dart",
+    "../services/firestore_service.dart",
+    "../widgets/common_widgets.dart",
+    "../models/drug_model.dart",
+    "../services/drug_interaction_service.dart",
+    "../services/notification_service.dart",
+    "cockpit_screen.dart",
+    "internacion/internacion_screen.dart",
+    "internacion/services/internacion_persistence.dart",
+    "drugs_screen.dart",
+    "prescripciones_screen.dart",
+    "tools_screen.dart",
+    "calculadora_screen.dart",
+    "prescripciones_screen.dart",
+    "drug_interactions_screen.dart",
+    "protocols_screen.dart",
+    "../models/protocol_model.dart",
+    "avaliacao_screen.dart",
+    "../widgets/meu_plantao_dashboard.dart",
+    "../home_v2/components/home_v2_modules_view.dart",
+    "../home_v2/theme/home_v2_palette.dart",
+    "ai_screen.dart",
+    "../home_v2/components/chat/inline_chat_view.dart",
+    "ai/widgets/streaming_text_drain.dart",
+    "package:flutter_markdown/flutter_markdown.dart",
+    "../services/stt_helper.dart",
+    "../home_v2/components/navigation/home_card_transition.dart"
+  ],
+  "lib/screens/maintenance_screen.dart": [
+    "package:flutter/material.dart",
+    "../services/auth_service.dart",
+    "../widgets/brand_mark.dart"
+  ],
+  "lib/theme/app_theme.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/data/protocols_database.dart": [
+    "../models/protocol_model.dart",
+    "gi_batch01_approved_projections.dart",
+    "../services/gi_batch01_publication_state.dart"
+  ],
+  "lib/data/clinical_crosscutting_evidence_compliance_profiles.dart": [],
+  "lib/data/gi_batch01_approved_projections.dart": [
+    "../models/protocol_model.dart"
+  ],
+  "lib/data/cases_database.dart": [
+    "../models/clinical_case_model.dart"
+  ],
+  "lib/data/clinical_crosscutting_evidence_database.dart": [],
+  "lib/data/evidence_database.dart": [
+    "../models/drug_model.dart",
+    "package:flutter/material.dart"
+  ],
+  "lib/data/new_pathology_approved_context.dart": [
+    "../models/protocol_model.dart",
+    "new_pathology_approved_hashes.dart",
+    "protocols_database.dart"
+  ],
+  "lib/data/new_pathology_approved_hashes.dart": [
+    "../services/gi_batch01_publication_state.dart"
+  ],
+  "lib/services/tep_2026_plantao_response_guard.dart": [],
+  "lib/services/stt_helper_web.dart": [
+    "dart:async",
+    "dart:html"
+  ],
+  "lib/services/clinical_guides_editorial_service.dart": [
+    "dart:convert",
+    "package:flutter/foundation.dart",
+    "package:cloud_firestore/cloud_firestore.dart",
+    "package:http/http.dart",
+    "auth_service.dart",
+    "../models/clinical_guide_article.dart"
+  ],
+  "lib/services/notification_web_stub.dart": [
+    "dart:typed_data"
+  ],
+  "lib/services/plantao_avc_approved_medication_identity_guard.dart": [],
+  "lib/services/clinical_tts_service.dart": [
+    "package:flutter/foundation.dart",
+    "package:flutter_tts/flutter_tts.dart",
+    "package:shared_preferences/shared_preferences.dart"
+  ],
+  "lib/services/ls_stub.dart": [],
+  "lib/services/global_scores_batch01_contract.dart": [],
+  "lib/services/gemini_cache_service.dart": [
+    "dart:async",
+    "dart:convert",
+    "package:flutter/foundation.dart",
+    "package:http/http.dart",
+    "package:shared_preferences/shared_preferences.dart"
+  ],
+  "lib/services/ls_web.dart": [
+    "dart:js"
+  ],
+  "lib/services/ai_prompt_modules.dart": [
+    "package:flutter/foundation.dart"
+  ],
+  "lib/services/entitlement_service.dart": [
+    "package:firebase_auth/firebase_auth.dart",
+    "package:flutter/foundation.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "calculator_mcc1_bridge_service.dart"
+  ],
+  "lib/services/firestore_service.dart": [
+    "dart:async",
+    "dart:convert",
+    "package:flutter/foundation.dart",
+    "package:cloud_firestore/cloud_firestore.dart",
+    "package:firebase_auth/firebase_auth.dart",
+    "package:firebase_core/firebase_core.dart",
+    "package:http/http.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "../firebase_options.dart",
+    "../models/clinical_case_model.dart",
+    "../models/clinical_history_model.dart",
+    "../models/guide_model.dart",
+    "auth_service.dart",
+    "firebase_runtime_guard.dart"
+  ],
+  "lib/services/guide_navigation_intent.dart": [
+    "dart:convert",
+    "package:flutter/services.dart",
+    "package:shared_preferences/shared_preferences.dart"
+  ],
+  "lib/services/clinical_crosscutting_evidence_resolver.dart": [
+    "../data/clinical_crosscutting_evidence_database.dart"
+  ],
+  "lib/services/gi_batch01_publication_state.dart": [
+    "dart:async",
+    "package:cloud_firestore/cloud_firestore.dart",
+    "package:firebase_auth/firebase_auth.dart",
+    "package:flutter/foundation.dart"
+  ],
+  "lib/services/lab_normalizer.dart": [
+    "../models/lab_result_model.dart"
+  ],
+  "lib/services/firebase_auth_adapter.dart": [
+    "package:firebase_auth/firebase_auth.dart"
+  ],
+  "lib/services/plantao_machine_native_rich_phase_completion.dart": [],
+  "lib/services/support_ticket_service.dart": [
+    "package:cloud_firestore/cloud_firestore.dart",
+    "package:flutter/foundation.dart"
+  ],
+  "lib/services/calculator_webview_prewarm_service.dart": [
+    "dart:async",
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "package:webview_flutter/webview_flutter.dart",
+    "offline_calculator_cache_service.dart"
+  ],
+  "lib/services/ai_gateway_service.dart": [
+    "dart:async",
+    "package:flutter/foundation.dart",
+    "gemini_service_v2.dart",
+    "gemini_cache_service.dart",
+    "ai_smart_router.dart",
+    "plantao_pipeline.dart",
+    "ai_pipeline/plantao/contracts/plantao_canonical_route_decision.dart",
+    "ai_gateway_service_io.dart"
+  ],
+  "lib/services/att_service.dart": [
+    "dart:io",
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "package:app_tracking_transparency/app_tracking_transparency.dart"
+  ],
+  "lib/services/offline_calculator_cache_service.dart": [
+    "dart:async",
+    "dart:convert",
+    "dart:io",
+    "package:flutter/foundation.dart",
+    "package:http/http.dart",
+    "package:path_provider/path_provider.dart",
+    "package:shared_preferences/shared_preferences.dart"
+  ],
+  "lib/services/approved_pathology_time_output.dart": [
+    "../data/new_pathology_approved_context.dart",
+    "../models/protocol_model.dart",
+    "../utils/clinical_time_unit_presentation.dart"
+  ],
+  "lib/services/plantao_machine_native_context_prefetch.dart": [
+    "gi_batch01_publication_state.dart",
+    "../utils/clinical_time_unit_presentation.dart",
+    "../data/new_pathology_approved_hashes.dart",
+    "dart:async",
+    "dart:convert",
+    "package:cloud_firestore/cloud_firestore.dart",
+    "package:firebase_core/firebase_core.dart",
+    "package:flutter/foundation.dart",
+    "package:flutter/services.dart",
+    "plantao_global_clinical_response_gate.dart",
+    "plantao_canonical_phenotype_resolver.dart"
+  ],
+  "lib/services/ai_next_action_engine.dart": [
+    "ai_pipeline/plantao/contracts/plantao_continuation_type.dart",
+    "ai_pipeline/plantao/contracts/plantao_section.dart",
+    "dkahhs/dkahhs_runtime_safety_contract.dart"
+  ],
+  "lib/services/study_continuation_resolver.dart": [
+    "../screens/ai/widgets/message_render_policy.dart",
+    "ai_next_action_engine.dart"
+  ],
+  "lib/services/clinical_thread_manager.dart": [
+    "package:flutter/foundation.dart"
+  ],
+  "lib/services/plantao_presentation_contract.dart": [
+    "ai/safety/clinical_query_scope.dart"
+  ],
+  "lib/services/lab_interpreter.dart": [
+    "../models/lab_result_model.dart"
+  ],
+  "lib/services/well_formed_utf16.dart": [],
+  "lib/services/provider_router_service.dart": [
+    "dart:async",
+    "dart:convert",
+    "package:firebase_auth/firebase_auth.dart",
+    "package:flutter/foundation.dart",
+    "package:http/http.dart",
+    "auth_service.dart",
+    "gemini_service_v2.dart",
+    "ai_stream/ai_event.dart",
+    "ai_stream/gpt_sse_client.dart",
+    "clinical_identity_transport_envelope.dart"
+  ],
+  "lib/services/clinical_session_memory.dart": [
+    "clinical_thread_manager.dart"
+  ],
+  "lib/services/update_service_web.dart": [
+    "dart:js",
+    "dart:js_interop",
+    "package:flutter/foundation.dart"
+  ],
+  "lib/services/plantao_continuation_policy.dart": [
+    "ai_next_action_engine.dart",
+    "ai_pipeline/plantao/contracts/plantao_continuation_type.dart",
+    "ai_pipeline/plantao/contracts/plantao_section.dart"
+  ],
+  "lib/services/auth_service.dart": [
+    "dart:async",
+    "dart:convert",
+    "package:flutter/foundation.dart",
+    "package:flutter/widgets.dart",
+    "package:firebase_auth/firebase_auth.dart",
+    "package:cloud_firestore/cloud_firestore.dart",
+    "package:firebase_core/firebase_core.dart",
+    "package:http/http.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "../models/user_model.dart",
+    "firebase_runtime_guard.dart",
+    "firestore_service.dart"
+  ],
+  "lib/services/ai_session_exchange_hydrator.dart": [
+    "../models/clinical_structured_output.dart"
+  ],
+  "lib/services/plantao_global_clinical_response_gate.dart": [
+    "plantao_avc_approved_medication_identity_guard.dart"
+  ],
+  "lib/services/stt_helper_mobile.dart": [
+    "package:flutter/foundation.dart",
+    "package:speech_to_text/speech_to_text.dart"
+  ],
+  "lib/services/revenuecat_billing_service.dart": [
+    "package:firebase_auth/firebase_auth.dart",
+    "package:flutter/foundation.dart",
+    "package:flutter/services.dart",
+    "package:purchases_flutter/purchases_flutter.dart"
+  ],
+  "lib/services/calculator_mcc1_bridge_service.dart": [
+    "dart:convert",
+    "package:firebase_auth/firebase_auth.dart",
+    "package:http/http.dart"
+  ],
+  "lib/services/soap_ai_processor.dart": [
+    "dart:convert",
+    "package:flutter/foundation.dart",
+    "package:http/http.dart",
+    "gemini_service.dart",
+    "clinical_recorder_service.dart"
+  ],
+  "lib/services/external_tool_link_engine.dart": [
+    "dart:collection",
+    "dkahhs/dkahhs_runtime_safety_contract.dart"
+  ],
+  "lib/services/stt_helper_stub.dart": [],
+  "lib/services/gemini_service.dart": [
+    "dart:async",
+    "dart:convert",
+    "package:flutter/foundation.dart",
+    "package:shared_preferences/shared_preferences.dart",
+    "package:http/http.dart",
+    "ls_stub.dart",
+    "package:google_sign_in/google_sign_in.dart",
+    "study/study_google_ai_server_auth_code_gate_v1.dart"
+  ],
+  "lib/services/activity_service.dart": [
+    "dart:convert",
+    "package:flutter/foundation.dart",
+    "package:shared_preferences/shared_preferences.dart"
+  ],
+  "lib/services/notification_service.dart": [
+    "dart:async",
+    "dart:typed_data",
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "package:flutter_local_notifications/flutter_local_notifications.dart",
+    "package:timezone/data/latest_all.dart",
+    "package:timezone/timezone.dart"
+  ],
+  "lib/services/plantao_canonical_phenotype_resolver.dart": [],
+  "lib/services/clinical_guide_cms_import_service.dart": [
+    "dart:convert",
+    "dart:typed_data"
+  ],
+  "lib/services/update_service.dart": [
+    "update_service_stub.dart",
+    "package:flutter/foundation.dart"
+  ],
+  "lib/services/suggestion_service.dart": [
+    "package:shared_preferences/shared_preferences.dart"
+  ],
+  "lib/services/ai_engine_service.dart": [
+    "dart:async",
+    "package:flutter/foundation.dart",
+    "package:cloud_functions/cloud_functions.dart",
+    "clinical_identity_transport_envelope.dart",
+    "gemini_service_v2.dart",
+    "ai_gateway_service.dart",
+    "ai_stream/ai_event.dart"
+  ],
+  "lib/services/social_auth_service.dart": [
+    "package:firebase_auth/firebase_auth.dart",
+    "package:flutter/foundation.dart",
+    "package:google_sign_in/google_sign_in.dart",
+    "auth_service.dart"
+  ],
+  "lib/services/firebase_runtime_guard.dart": [
+    "package:firebase_core/firebase_core.dart",
+    "package:flutter/foundation.dart"
+  ],
+  "lib/services/gemini_service_v2.dart": [
+    "dart:async",
+    "dart:convert",
+    "dart:math",
+    "package:flutter/foundation.dart",
+    "package:http/http.dart",
+    "ai_prompt_modules.dart"
+  ],
+  "lib/services/lab_parser_service.dart": [
+    "dart:convert",
+    "dart:typed_data",
+    "package:http/http.dart",
+    "gemini_service.dart",
+    "../models/lab_result_model.dart",
+    "lab_normalizer.dart"
+  ],
+  "lib/services/clinical_recorder_service.dart": [
+    "dart:async",
+    "package:flutter/foundation.dart",
+    "stt_helper.dart"
+  ],
+  "lib/services/fcm_service.dart": [
+    "dart:async",
+    "package:cloud_firestore/cloud_firestore.dart",
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "package:firebase_messaging/firebase_messaging.dart"
+  ],
+  "lib/services/ai_smart_router.dart": [
+    "package:flutter/foundation.dart"
+  ],
+  "lib/services/update_service_stub.dart": [],
+  "lib/services/app_resume_coordinator.dart": [
+    "package:flutter/foundation.dart",
+    "package:flutter/widgets.dart"
+  ],
+  "lib/services/stt_helper.dart": [
+    "package:flutter/foundation.dart",
+    "stt_helper_stub.dart"
+  ],
+  "lib/services/clinical_identity_transport_envelope.dart": [],
+  "lib/services/plantao_pipeline.dart": [
+    "package:flutter/foundation.dart"
+  ],
+  "lib/services/ai_gateway_service_web.dart": [
+    "dart:js_interop",
+    "dart:async",
+    "dart:convert",
+    "package:flutter/foundation.dart",
+    "gemini_service_v2.dart"
+  ],
+  "lib/services/fcm_service_web_stub.dart": [
+    "package:firebase_messaging/firebase_messaging.dart"
+  ],
+  "lib/services/ai_service.dart": [
+    "package:flutter/foundation.dart",
+    "ai_stream/truncation_inspector.dart",
+    "clinical_session_memory.dart",
+    "ai_pipeline/plantao/contracts/plantao_clinical_regimen_contract.dart",
+    "provider_router_service.dart",
+    "global_scores_batch01_contract.dart"
+  ],
+  "lib/services/ai_gateway_service_io.dart": [
+    "dart:async",
+    "dart:convert",
+    "dart:io",
+    "package:flutter/foundation.dart",
+    "gemini_service_v2.dart"
+  ],
+  "lib/services/storage_service.dart": [
+    "dart:typed_data",
+    "package:firebase_storage/firebase_storage.dart"
+  ],
+  "lib/services/drug_interaction_service.dart": [],
+  "lib/services/clinical_crosscutting_evidence_compliance_guard.dart": [
+    "../data/clinical_crosscutting_evidence_compliance_profiles.dart"
+  ],
+  "lib/services/plantao_iamcest_killip_classification_guard.dart": [],
+  "lib/services/referral_service.dart": [
+    "dart:convert",
+    "package:flutter/foundation.dart",
+    "package:cloud_firestore/cloud_firestore.dart",
+    "package:http/http.dart",
+    "../models/influencer_model.dart",
+    "auth_service.dart"
+  ],
+  "lib/widgets/legal_links.dart": [
+    "package:flutter/material.dart",
+    "package:url_launcher/url_launcher.dart",
+    "../config/legal_urls.dart"
+  ],
+  "lib/widgets/brand_mark.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/widgets/medcases_audio_recorder_view.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/widgets/protocol_checklist_widget.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "../widgets/common_widgets.dart"
+  ],
+  "lib/widgets/lab_exam_bottom_sheet.dart": [
+    "dart:typed_data",
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "package:file_picker/file_picker.dart",
+    "package:image_picker/image_picker.dart",
+    "package:permission_handler/permission_handler.dart",
+    "../models/lab_result_model.dart",
+    "../screens/lab_review_screen.dart",
+    "../services/lab_parser_service.dart",
+    "../services/gemini_service.dart"
+  ],
+  "lib/widgets/medcases_webview_screen.dart": [
+    "dart:ui",
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "package:webview_flutter/webview_flutter.dart",
+    "package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart",
+    "../providers/app_provider.dart"
+  ],
+  "lib/widgets/guide_intent_entry.dart": [
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../screens/clinical_guide_article_screen.dart",
+    "../services/clinical_guides_editorial_service.dart",
+    "../services/guide_navigation_intent.dart"
+  ],
+  "lib/widgets/dose_calculator_widget.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/widgets/common_widgets.dart": [
+    "package:flutter/material.dart",
+    "../theme/app_theme.dart",
+    "package:flutter/services.dart",
+    "package:flutter/foundation.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../services/drug_interaction_service.dart",
+    "../models/drug_model.dart"
+  ],
+  "lib/widgets/error_state_widget.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/widgets/meu_plantao_dashboard.dart": [
+    "dart:async",
+    "package:firebase_core/firebase_core.dart",
+    "package:flutter/foundation.dart",
+    "../services/firebase_runtime_guard.dart",
+    "package:flutter/material.dart",
+    "package:flutter_svg/flutter_svg.dart",
+    "../home_v2/theme/home_v2_palette.dart",
+    "../theme/app_theme.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../providers/app_provider.dart",
+    "../models/drug_model.dart",
+    "../widgets/common_widgets.dart",
+    "../screens/internacion/services/internacion_firestore_service.dart",
+    "../screens/internacion/services/internacion_persistence.dart",
+    "../screens/internacion/models/evolucion_model.dart",
+    "../screens/internacion/components/soap/soap_section.dart",
+    "../screens/internacion/components/patient_accordion.dart"
+  ],
+  "lib/widgets/ecg_loading.dart": [
+    "dart:math",
+    "package:flutter/material.dart"
+  ],
+  "lib/widgets/cardio/cardio_acute_risk_hub.dart": [
+    "package:flutter/material.dart",
+    "../../services/cardio/cardio_acute_risk_engine_2026.dart"
+  ],
+  "lib/widgets/clinical/structured_clinical_output_view.dart": [
+    "package:flutter/material.dart",
+    "../../models/clinical_structured_output.dart"
+  ],
+  "lib/widgets/public_landing/public_landing_web.dart": [
+    "dart:async",
+    "dart:convert",
+    "../../testimonials/testimonial_service.dart",
+    "dart:html",
+    "dart:js_interop",
+    "dart:js_interop_unsafe",
+    "dart:ui_web",
+    "package:flutter/widgets.dart",
+    "landing_message.dart",
+    "startup_cover.dart"
+  ],
+  "lib/widgets/public_landing/public_landing.dart": [
+    "public_landing_stub.dart"
+  ],
+  "lib/widgets/public_landing/public_landing_stub.dart": [
+    "package:flutter/widgets.dart"
+  ],
+  "lib/widgets/public_landing/landing_message.dart": [
+    "dart:convert"
+  ],
+  "lib/widgets/public_landing/startup_cover.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/services/electrolytes/electrolytes_score_engine_2026.dart": [],
+  "lib/services/study/study_imported_audio_pipeline_io.dart": [
+    "dart:io",
+    "package:flutter/foundation.dart",
+    "package:flutter/services.dart",
+    "package:path_provider/path_provider.dart",
+    "../../models/study_workspace_model.dart",
+    "../audio/clinical_long_form_audio_contract.dart",
+    "../audio/clinical_long_form_batch_transcription_provider.dart",
+    "../audio/clinical_long_form_batch_transcription_queue.dart",
+    "../audio/clinical_long_form_checkpointed_batch_runner.dart",
+    "../audio/clinical_long_form_durable_store.dart",
+    "../audio/clinical_long_form_engine_state_recovery_orchestrator.dart",
+    "../audio/clinical_long_form_recording_manifest.dart",
+    "../audio/clinical_long_form_segment_transcript_checkpoint_store.dart",
+    "../audio/clinical_long_form_transcript_assembler.dart",
+    "study_background_transcription_coordinator.dart",
+    "study_multimodal_extraction_service.dart"
+  ],
+  "lib/services/study/study_google_ai_server_auth_code_gate_v1.dart": [],
+  "lib/services/study/study_pdf_export_service.dart": [
+    "dart:typed_data",
+    "package:pdf/pdf.dart",
+    "package:pdf/widgets.dart",
+    "package:printing/printing.dart",
+    "../../models/study_workspace_model.dart",
+    "study_visual_result_codec.dart"
+  ],
+  "lib/services/study/study_long_form_segment_loader.dart": [
+    "study_long_form_segment_loader_web.dart"
+  ],
+  "lib/services/study/study_ai_identity_connection_policy_v1.dart": [],
+  "lib/services/study/study_library_service.dart": [
+    "dart:convert",
+    "package:shared_preferences/shared_preferences.dart",
+    "../../models/study_workspace_model.dart"
+  ],
+  "lib/services/study/study_imported_audio_pipeline_web.dart": [
+    "study_multimodal_extraction_service.dart"
+  ],
+  "lib/services/study/study_background_transcription_coordinator.dart": [
+    "dart:async",
+    "dart:convert",
+    "dart:io",
+    "package:firebase_auth/firebase_auth.dart",
+    "package:flutter/foundation.dart",
+    "package:flutter/services.dart",
+    "package:http/http.dart"
+  ],
+  "lib/services/study/study_artifact_generator.dart": [
+    "../../models/study_workspace_model.dart",
+    "../ai_service.dart",
+    "study_context_chunker.dart"
+  ],
+  "lib/services/study/study_long_form_segment_loader_web.dart": [
+    "dart:typed_data"
+  ],
+  "lib/services/study/study_first_use_notice_service.dart": [
+    "package:shared_preferences/shared_preferences.dart"
+  ],
+  "lib/services/study/study_google_ai_oauth_physical_canary_client_v1.dart": [
+    "dart:convert",
+    "dart:io",
+    "package:firebase_auth/firebase_auth.dart",
+    "package:google_sign_in/google_sign_in.dart",
+    "study_google_ai_server_auth_code_gate_v1.dart"
+  ],
+  "lib/services/study/study_title_suggestion_service.dart": [
+    "../ai_service.dart"
+  ],
+  "lib/services/study/study_imported_audio_pipeline.dart": [
+    "study_imported_audio_pipeline_web.dart"
+  ],
+  "lib/services/study/study_visual_result_codec.dart": [
+    "dart:convert"
+  ],
+  "lib/services/study/study_long_form_segment_loader_io.dart": [
+    "dart:io",
+    "dart:typed_data"
+  ],
+  "lib/services/study/study_google_ai_oauth_link_adapter_v1.dart": [
+    "study_ai_identity_connection_policy_v1.dart"
+  ],
+  "lib/services/study/study_context_chunker.dart": [
+    "../../models/study_workspace_model.dart"
+  ],
+  "lib/services/study/study_large_file_extraction_service.dart": [
+    "dart:async",
+    "dart:convert",
+    "package:http/http.dart",
+    "../../models/study_workspace_model.dart",
+    "../gemini_service.dart",
+    "study_multimodal_extraction_service.dart"
+  ],
+  "lib/services/study/study_multimodal_extraction_service.dart": [
+    "dart:convert",
+    "dart:typed_data",
+    "package:http/http.dart",
+    "../../models/study_workspace_model.dart",
+    "../gemini_service.dart"
+  ],
+  "lib/services/nephro/nephro_score_engine_2026.dart": [
+    "dart:math"
+  ],
+  "lib/services/cardio/cardio_acute_risk_engine_2026.dart": [],
+  "lib/services/cardio/cardio_chronic_score_engine_2026.dart": [
+    "dart:math"
+  ],
+  "lib/services/clinical_catalog/clinical_catalog_index.dart": [
+    "dart:collection"
+  ],
+  "lib/services/audio/clinical_asr_provider.dart": [
+    "dart:typed_data",
+    "clinical_audio_capture_provider.dart"
+  ],
+  "lib/services/audio/clinical_transcript_reconciler.dart": [],
+  "lib/services/audio/clinical_long_form_ed25519_no_retention_attestation_verifier.dart": [
+    "dart:convert",
+    "package:cryptography/cryptography.dart",
+    "clinical_long_form_backend_no_retention_attestation.dart",
+    "clinical_long_form_no_retention_attestation_canonical_payload.dart"
+  ],
+  "lib/services/audio/clinical_long_form_remote_transcription_policy.dart": [],
+  "lib/services/audio/clinical_medical_vocabulary.dart": [],
+  "lib/services/audio/file_clinical_long_form_local_audio_inspector.dart": [
+    "dart:io",
+    "openai_file_transcription_shadow_protocol.dart"
+  ],
+  "lib/services/audio/clinical_long_form_aes_gcm_at_rest_protector.dart": [
+    "dart:convert",
+    "package:cryptography/cryptography.dart",
+    "clinical_long_form_at_rest_key_provider.dart",
+    "clinical_long_form_sensitive_at_rest_policy.dart"
+  ],
+  "lib/services/audio/clinical_long_form_segment_transcript_checkpoint_store.dart": [
+    "dart:convert",
+    "dart:io",
+    "clinical_long_form_segment_transcript_checkpoint.dart"
+  ],
+  "lib/services/audio/clinical_long_form_batch_transcription_queue.dart": [
+    "clinical_long_form_recording_manifest.dart"
+  ],
+  "lib/services/audio/clinical_long_form_reviewed_artifact_store.dart": [
+    "dart:convert",
+    "dart:io",
+    "clinical_long_form_reviewed_transcript_artifact.dart"
+  ],
+  "lib/services/audio/openai_realtime_transcription_shadow_provider.dart": [
+    "dart:async",
+    "dart:typed_data",
+    "clinical_asr_provider.dart",
+    "openai_realtime_transcription_shadow_protocol.dart"
+  ],
+  "lib/services/audio/clinical_long_form_session_garbage_collector.dart": [
+    "dart:io",
+    "clinical_long_form_reviewed_transcript_artifact.dart",
+    "clinical_long_form_session_directory_layout.dart"
+  ],
+  "lib/services/audio/clinical_audio_shadow_session_pipeline.dart": [
+    "dart:async",
+    "dart:typed_data",
+    "clinical_asr_provider.dart",
+    "clinical_asr_stream_coordinator.dart",
+    "clinical_audio_capture_provider.dart",
+    "clinical_medical_vocabulary.dart",
+    "clinical_transcript_reconciler.dart",
+    "clinical_transcription_accuracy_eval.dart",
+    "openai_realtime_transcription_shadow_provider.dart",
+    "openai_realtime_transcription_shadow_protocol.dart"
+  ],
+  "lib/services/audio/clinical_long_form_session_directory_layout.dart": [
+    "dart:io"
+  ],
+  "lib/services/audio/clinical_long_form_batch_transcription_provider.dart": [],
+  "lib/services/audio/clinical_long_form_backend_proxy_gateway_sandbox.dart": [
+    "dart:async",
+    "clinical_long_form_backend_auth_contract.dart",
+    "clinical_long_form_backend_no_retention_attestation.dart",
+    "clinical_long_form_backend_proxy_server_contract.dart",
+    "openai_file_transcription_shadow_protocol.dart"
+  ],
+  "lib/services/audio/clinical_long_form_recording_session.dart": [
+    "clinical_long_form_audio_contract.dart",
+    "clinical_long_form_recording_manifest.dart"
+  ],
+  "lib/services/audio/clinical_long_form_recording_manifest.dart": [
+    "clinical_long_form_audio_contract.dart"
+  ],
+  "lib/services/audio/clinical_long_form_pre_cutover_gate.dart": [],
+  "lib/services/audio/record_pcm_capture_provider.dart": [
+    "dart:async",
+    "dart:typed_data",
+    "package:record/record.dart",
+    "clinical_audio_capture_provider.dart",
+    "clinical_pcm16_chunk_framer.dart"
+  ],
+  "lib/services/audio/openai_realtime_transcription_shadow_protocol.dart": [
+    "dart:convert",
+    "dart:typed_data",
+    "clinical_asr_provider.dart"
+  ],
+  "lib/services/audio/record_long_form_audio_provider.dart": [
+    "dart:io",
+    "package:flutter/services.dart",
+    "package:record/record.dart",
+    "clinical_long_form_audio_contract.dart"
+  ],
+  "lib/services/audio/openai_file_transcription_shadow_protocol.dart": [
+    "clinical_long_form_backend_auth_contract.dart",
+    "clinical_long_form_remote_transcription_policy.dart"
+  ],
+  "lib/services/audio/clinical_asr_stream_coordinator.dart": [
+    "dart:async",
+    "dart:collection",
+    "dart:typed_data",
+    "clinical_asr_provider.dart"
+  ],
+  "lib/services/audio/clinical_long_form_batch_transcription_runner.dart": [
+    "clinical_long_form_batch_transcription_provider.dart",
+    "clinical_long_form_batch_transcription_queue.dart",
+    "clinical_long_form_transcript_assembler.dart"
+  ],
+  "lib/services/audio/clinical_long_form_no_retention_attestation_canonical_payload.dart": [
+    "dart:convert",
+    "clinical_long_form_backend_no_retention_attestation.dart"
+  ],
+  "lib/services/audio/clinical_long_form_remote_synthetic_callsite.dart": [
+    "package:http/http.dart",
+    "clinical_long_form_backend_auth_contract.dart",
+    "clinical_long_form_backend_proxy_gateway_sandbox.dart",
+    "clinical_long_form_batch_transcription_provider.dart",
+    "clinical_long_form_ed25519_no_retention_attestation_verifier.dart",
+    "clinical_long_form_https_backend_grant_provider.dart",
+    "clinical_long_form_https_backend_proxy_transport.dart",
+    "clinical_long_form_remote_audio_consent_store.dart",
+    "clinical_long_form_remote_batch_sandbox_provider.dart",
+    "file_clinical_long_form_local_audio_inspector.dart"
+  ],
+  "lib/services/audio/clinical_long_form_sensitive_at_rest_policy.dart": [],
+  "lib/services/audio/clinical_long_form_at_rest_key_provider.dart": [
+    "package:cryptography/cryptography.dart"
+  ],
+  "lib/services/audio/clinical_long_form_backend_auth_contract.dart": [],
+  "lib/services/audio/clinical_long_form_durable_store.dart": [
+    "dart:convert",
+    "dart:io",
+    "clinical_long_form_batch_transcription_queue.dart",
+    "clinical_long_form_recording_manifest.dart"
+  ],
+  "lib/services/audio/clinical_long_form_remote_audio_consent_store.dart": [
+    "package:shared_preferences/shared_preferences.dart",
+    "clinical_long_form_remote_transcription_policy.dart"
+  ],
+  "lib/services/audio/clinical_audio_capture_provider.dart": [
+    "dart:typed_data"
+  ],
+  "lib/services/audio/clinical_long_form_native_secure_persistence_adapters.dart": [
+    "dart:convert",
+    "dart:io",
+    "package:flutter/services.dart",
+    "clinical_long_form_batch_transcription_queue.dart",
+    "clinical_long_form_durable_store.dart",
+    "clinical_long_form_native_at_rest_platform_bridge.dart",
+    "clinical_long_form_recording_manifest.dart",
+    "clinical_long_form_reviewed_artifact_store.dart",
+    "clinical_long_form_reviewed_transcript_artifact.dart",
+    "clinical_long_form_segment_transcript_checkpoint.dart",
+    "clinical_long_form_segment_transcript_checkpoint_store.dart",
+    "clinical_long_form_sensitive_at_rest_policy.dart"
+  ],
+  "lib/services/audio/clinical_long_form_native_at_rest_platform_bridge.dart": [
+    "dart:io",
+    "package:flutter/services.dart",
+    "clinical_long_form_sensitive_at_rest_policy.dart"
+  ],
+  "lib/services/audio/clinical_long_form_engine_state_recovery_orchestrator.dart": [
+    "clinical_long_form_audio_contract.dart",
+    "clinical_long_form_batch_transcription_queue.dart",
+    "clinical_long_form_recording_manifest.dart",
+    "clinical_long_form_reviewed_transcript_artifact.dart",
+    "clinical_long_form_segment_transcript_checkpoint.dart",
+    "clinical_long_form_segment_transcript_checkpoint_store.dart",
+    "clinical_long_form_transcript_assembler.dart"
+  ],
+  "lib/services/audio/clinical_pcm_runtime_metrics.dart": [
+    "dart:math",
+    "dart:typed_data",
+    "clinical_audio_capture_provider.dart"
+  ],
+  "lib/services/audio/clinical_long_form_local_audio_cleanup.dart": [
+    "dart:io",
+    "clinical_long_form_recording_manifest.dart"
+  ],
+  "lib/services/audio/clinical_transcription_accuracy_eval.dart": [],
+  "lib/services/audio/clinical_long_form_remote_batch_sandbox_provider.dart": [
+    "clinical_long_form_backend_auth_contract.dart",
+    "clinical_long_form_batch_transcription_provider.dart",
+    "clinical_long_form_remote_transcription_policy.dart",
+    "openai_file_transcription_shadow_protocol.dart"
+  ],
+  "lib/services/audio/clinical_long_form_checkpointed_batch_runner.dart": [
+    "clinical_long_form_batch_transcription_provider.dart",
+    "clinical_long_form_batch_transcription_queue.dart",
+    "clinical_long_form_durable_store.dart",
+    "clinical_long_form_segment_transcript_checkpoint.dart",
+    "clinical_long_form_segment_transcript_checkpoint_store.dart",
+    "clinical_long_form_transcript_assembler.dart"
+  ],
+  "lib/services/audio/clinical_long_form_audio_contract.dart": [],
+  "lib/services/audio/clinical_long_form_staging_to_backend_sandbox_adapter.dart": [
+    "dart:io",
+    "clinical_long_form_batch_transcription_provider.dart",
+    "clinical_long_form_remote_batch_sandbox_provider.dart",
+    "clinical_long_form_secure_plaintext_staging_lifecycle.dart"
+  ],
+  "lib/services/audio/clinical_long_form_segment_transcript_checkpoint.dart": [
+    "clinical_long_form_batch_transcription_provider.dart"
+  ],
+  "lib/services/audio/clinical_long_form_https_backend_proxy_transport.dart": [
+    "dart:convert",
+    "dart:io",
+    "package:http/http.dart",
+    "clinical_long_form_backend_auth_contract.dart",
+    "clinical_long_form_backend_no_retention_attestation.dart",
+    "clinical_long_form_backend_proxy_server_contract.dart"
+  ],
+  "lib/services/audio/clinical_long_form_backend_proxy_server_contract.dart": [
+    "clinical_long_form_backend_auth_contract.dart",
+    "clinical_long_form_backend_no_retention_attestation.dart"
+  ],
+  "lib/services/audio/clinical_long_form_retention_finalizer.dart": [
+    "clinical_long_form_local_audio_cleanup.dart",
+    "clinical_long_form_recording_manifest.dart",
+    "clinical_long_form_review_lifecycle.dart",
+    "clinical_long_form_reviewed_artifact_store.dart",
+    "clinical_long_form_reviewed_transcript_artifact.dart"
+  ],
+  "lib/services/audio/clinical_long_form_backend_no_retention_attestation.dart": [],
+  "lib/services/audio/clinical_long_form_secure_plaintext_staging_lifecycle.dart": [
+    "dart:async",
+    "dart:io",
+    "dart:math",
+    "clinical_long_form_native_secure_persistence_adapters.dart",
+    "clinical_long_form_sensitive_at_rest_policy.dart"
+  ],
+  "lib/services/audio/clinical_long_form_https_backend_grant_provider.dart": [
+    "dart:async",
+    "dart:convert",
+    "package:http/http.dart",
+    "clinical_long_form_backend_auth_contract.dart"
+  ],
+  "lib/services/audio/clinical_long_form_reviewed_transcript_artifact.dart": [
+    "clinical_long_form_review_lifecycle.dart"
+  ],
+  "lib/services/audio/clinical_long_form_review_lifecycle.dart": [
+    "clinical_long_form_local_audio_cleanup.dart",
+    "clinical_long_form_recording_manifest.dart",
+    "clinical_long_form_transcript_assembler.dart"
+  ],
+  "lib/services/audio/clinical_long_form_transcript_assembler.dart": [
+    "clinical_long_form_batch_transcription_provider.dart"
+  ],
+  "lib/services/audio/clinical_pcm16_chunk_framer.dart": [
+    "dart:typed_data",
+    "clinical_audio_capture_provider.dart"
+  ],
+  "lib/services/ai/timeout_content_safety_guard.dart": [
+    "../ai_stream/truncation_inspector.dart",
+    "package:medcases/services/ai/timeout_content_safety_guard.dart"
+  ],
+  "lib/services/ai/clinical_dosage_presets.dart": [],
+  "lib/services/ai/plantao_canonical_request.dart": [
+    "dart:convert",
+    "../../data/evidence_database.dart",
+    "../clinical_catalog/clinical_catalog_index.dart",
+    "../../models/canonical_clinical_snapshot.dart",
+    "../plantao_presentation_contract.dart"
+  ],
+  "lib/services/ai/ai_finalization_transaction.dart": [
+    "package:medcases/services/ai/ai_finalization_transaction.dart",
+    "dart:async",
+    "package:flutter/foundation.dart",
+    "../external_tool_link_engine.dart",
+    "timeout_content_safety_guard.dart"
+  ],
+  "lib/services/hepato/hepato_score_engine_2026.dart": [
+    "dart:math"
+  ],
+  "lib/services/ai_pipeline/structured_output_text_equivalence.dart": [],
+  "lib/services/ai_pipeline/ai_request_contract.dart": [],
+  "lib/services/ai_pipeline/plantao_local_clinical_output_adapter.dart": [
+    "../../models/clinical_structured_output.dart",
+    "../plantao_pipeline.dart",
+    "clinical_treatment_presentation_adapter.dart"
+  ],
+  "lib/services/ai_pipeline/ai_response_structure_parser.dart": [
+    "../../models/clinical_structured_output.dart",
+    "../plantao_pipeline.dart",
+    "ai_request_contract.dart"
+  ],
+  "lib/services/ai_pipeline/ai_legacy_callback_pipeline.dart": [
+    "dart:async",
+    "ai_request_contract.dart",
+    "ai_response_accumulator.dart",
+    "ai_response_event.dart",
+    "ai_response_pipeline.dart",
+    "ai_response_result.dart",
+    "ai_terminal_coordinator.dart"
+  ],
+  "lib/services/ai_pipeline/ai_response_event.dart": [
+    "ai_response_result.dart"
+  ],
+  "lib/services/ai_pipeline/ai_terminal_coordinator.dart": [
+    "dart:async",
+    "ai_response_result.dart"
+  ],
+  "lib/services/ai_pipeline/ai_response_accumulator.dart": [],
+  "lib/services/ai_pipeline/clinical_treatment_visual_readiness.dart": [],
+  "lib/services/ai_pipeline/ai_truncation_repair_coordinator.dart": [
+    "../ai_stream/truncation_inspector.dart",
+    "ai_request_contract.dart",
+    "ai_response_result.dart"
+  ],
+  "lib/services/ai_pipeline/ai_pipeline_contracts.dart": [
+    "ai_response_finalization_processor.dart",
+    "ai_response_structure_parser.dart",
+    "ai_response_sanitizer.dart",
+    "ai_truncation_repair_coordinator.dart",
+    "ai_response_accumulator.dart",
+    "ai_terminal_coordinator.dart",
+    "app_provider_ai_response_pipeline.dart",
+    "ai_legacy_callback_pipeline.dart",
+    "ai_request_contract.dart",
+    "ai_response_event.dart",
+    "ai_response_pipeline.dart",
+    "ai_response_result.dart"
+  ],
+  "lib/services/ai_pipeline/app_provider_ai_response_pipeline.dart": [
+    "../../providers/app_provider.dart",
+    "ai_legacy_callback_pipeline.dart",
+    "ai_request_contract.dart",
+    "ai_response_event.dart",
+    "ai_response_pipeline.dart"
+  ],
+  "lib/services/ai_pipeline/ai_response_sanitizer.dart": [
+    "../ai_smart_router.dart",
+    "ai_request_contract.dart"
+  ],
+  "lib/services/ai_pipeline/ai_response_pipeline.dart": [
+    "ai_request_contract.dart",
+    "ai_response_event.dart"
+  ],
+  "lib/services/ai_pipeline/plantao_clinical_response_consistency_guard.dart": [],
+  "lib/services/ai_pipeline/ai_response_result.dart": [],
+  "lib/services/ai_pipeline/ai_response_finalization_processor.dart": [
+    "../ai/ai_finalization_transaction.dart",
+    "../ai_service.dart",
+    "ai_request_contract.dart",
+    "ai_response_result.dart",
+    "ai_response_sanitizer.dart",
+    "ai_response_structure_parser.dart",
+    "ai_truncation_repair_coordinator.dart"
+  ],
+  "lib/services/ai_pipeline/clinical_treatment_presentation_adapter.dart": [
+    "../../models/clinical_treatment_presentation.dart"
+  ],
+  "lib/services/ai_stream/sse_parser.dart": [
+    "dart:async",
+    "dart:convert"
+  ],
+  "lib/services/ai_stream/truncation_inspector.dart": [],
+  "lib/services/ai_stream/ai_event.dart": [
+    "../../models/canonical_clinical_snapshot.dart",
+    "../../models/clinical_structured_output.dart"
+  ],
+  "lib/services/ai_stream/gpt_sse_client.dart": [
+    "../../models/canonical_clinical_snapshot.dart",
+    "dart:async",
+    "dart:convert",
+    "package:flutter/foundation.dart",
+    "package:http/http.dart",
+    "../../models/clinical_structured_output.dart",
+    "ai_event.dart",
+    "sse_parser.dart",
+    "../clinical_identity_transport_envelope.dart"
+  ],
+  "lib/services/dkahhs/dkahhs_runtime_safety_contract.dart": [],
+  "lib/services/ai_pipeline/plantao/plantao_explicit_named_topic_semantic_guard.dart": [],
+  "lib/services/ai_pipeline/plantao/plantao_generic_acs_whole_response_semantic_core.dart": [],
+  "lib/services/ai_pipeline/plantao/plantao_clinical_regimen_output_guard.dart": [
+    "contracts/plantao_clinical_regimen_contract.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/plantao_buffered_cutover_controller.dart": [
+    "../ai_request_contract.dart",
+    "../ai_response_event.dart",
+    "../ai_response_pipeline.dart",
+    "../ai_response_result.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/plantao_qa_cutover_support.dart": [
+    "dart:collection",
+    "dart:convert",
+    "package:flutter/foundation.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/plantao_pipeline.dart": [
+    "contracts/plantao_continuation_type.dart",
+    "contracts/plantao_drug_relation.dart",
+    "contracts/plantao_evidence_bundle.dart",
+    "contracts/plantao_pipeline_event.dart",
+    "contracts/plantao_provenance.dart",
+    "contracts/plantao_request.dart",
+    "contracts/plantao_response_structure.dart",
+    "contracts/plantao_result.dart",
+    "contracts/plantao_section.dart",
+    "plantao_response_pipeline.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/plantao_response_pipeline.dart": [
+    "contracts/plantao_pipeline_event.dart",
+    "contracts/plantao_request.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_persistence_record.dart": [
+    "plantao_continuation_type.dart",
+    "plantao_provenance.dart",
+    "plantao_request.dart",
+    "plantao_response_structure.dart",
+    "plantao_section.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_evidence_bundle.dart": [],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_canonical_route_decision.dart": [
+    "../../../plantao_pipeline.dart",
+    "plantao_query_shape.dart",
+    "plantao_response_contract.dart",
+    "plantao_response_shadow_resolver.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_clinical_regimen_contract.dart": [],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_drug_relation.dart": [],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_response_structure.dart": [
+    "plantao_drug_relation.dart",
+    "plantao_section.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_continuation_type.dart": [
+    "plantao_section.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_request.dart": [
+    "plantao_continuation_type.dart",
+    "plantao_section.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_pipeline_event.dart": [
+    "plantao_result.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_query_shape.dart": [
+    "../../../plantao_pipeline.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_canonical_drug_evidence.dart": [],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_section.dart": [],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_provenance.dart": [
+    "plantao_continuation_type.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_result.dart": [
+    "plantao_provenance.dart",
+    "plantao_response_structure.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_response_contract.dart": [],
+  "lib/services/ai_pipeline/plantao/contracts/plantao_response_shadow_resolver.dart": [
+    "../../../plantao_pipeline.dart",
+    "plantao_response_contract.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_projected_evidence_validation_replay_comparison_shadow_adapter.dart": [
+    "../contracts/plantao_request.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_finalization_shadow_snapshot.dart": [
+    "../../../../models/clinical_structured_output.dart",
+    "../contracts/plantao_response_structure.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_validation_shadow_adapter.dart": [
+    "../contracts/plantao_evidence_bundle.dart",
+    "../contracts/plantao_provenance.dart",
+    "../contracts/plantao_request.dart",
+    "../contracts/plantao_drug_relation.dart",
+    "../ports/plantao_provider_port.dart",
+    "plantao_deterministic_drug_validator.dart",
+    "plantao_finalization_shadow_snapshot.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_identity_provenance_binding_shadow_adapter.dart": [
+    "../contracts/plantao_canonical_drug_evidence.dart",
+    "../contracts/plantao_provenance.dart",
+    "../contracts/plantao_request.dart",
+    "plantao_drug_evidence_finalization_join_shadow_adapter.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_response_structure_shadow_adapter.dart": [
+    "../../../../models/clinical_structured_output.dart",
+    "../../ai_response_structure_parser.dart",
+    "../contracts/plantao_request.dart",
+    "../contracts/plantao_response_structure.dart",
+    "../contracts/plantao_section.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_finalization_shadow_adapter.dart": [
+    "../../../../models/clinical_structured_output.dart",
+    "../../../ai/ai_finalization_transaction.dart",
+    "../../../ai_stream/truncation_inspector.dart",
+    "../../ai_request_contract.dart",
+    "../../ai_response_finalization_processor.dart",
+    "../../ai_truncation_repair_coordinator.dart",
+    "../../plantao_local_clinical_output_adapter.dart",
+    "../contracts/plantao_request.dart",
+    "plantao_finalization_shadow_snapshot.dart",
+    "plantao_response_structure_shadow_adapter.dart",
+    "plantao_finalization_shadow_snapshot.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_deterministic_drug_validator.dart": [
+    "../contracts/plantao_drug_relation.dart",
+    "../contracts/plantao_evidence_bundle.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_remote_drug_evidence_runtime_observer.dart": [],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_typed_regimen_capability_matrix_shadow_adapter.dart": [
+    "../contracts/plantao_request.dart",
+    "plantao_drug_evidence_finalization_join_shadow_adapter.dart",
+    "plantao_drug_identity_provenance_binding_shadow_adapter.dart",
+    "plantao_drug_persistence_cutover_blocker_audit_shadow_adapter.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_projected_evidence_bundle_overlay_shadow_adapter.dart": [
+    "../contracts/plantao_evidence_bundle.dart",
+    "../contracts/plantao_request.dart",
+    "plantao_drug_explicit_typed_regimen_evidence_projection_shadow_adapter.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_retrieval_shadow_adapter.dart": [
+    "../contracts/plantao_evidence_bundle.dart",
+    "../contracts/plantao_request.dart",
+    "dart:convert",
+    "../../../../data/protocols_database.dart",
+    "../adapters/plantao_protocol_matcher_evidence_adapter.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_shadow_execution_isolator.dart": [
+    "dart:async"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_provenance_persistence_payload_shadow_adapter.dart": [
+    "../contracts/plantao_request.dart",
+    "plantao_drug_identity_provenance_binding_shadow_adapter.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_evidence_shadow_adapter.dart": [
+    "../contracts/plantao_canonical_drug_evidence.dart",
+    "../ports/plantao_drug_evidence_port.dart",
+    "plantao_drug_candidate_resolver.dart",
+    "plantao_drug_original_input_identity_extractor.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_original_input_identity_extractor.dart": [
+    "../contracts/plantao_canonical_drug_evidence.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_provenance_persistence_payload_parity_gate_shadow_adapter.dart": [
+    "../contracts/plantao_request.dart",
+    "plantao_drug_identity_provenance_binding_shadow_adapter.dart",
+    "plantao_drug_provenance_persistence_payload_shadow_adapter.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_normalized_drug_evidence_identity.dart": [
+    "dart:convert"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_candidate_resolver.dart": [
+    "../contracts/plantao_canonical_drug_evidence.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_provenance_semantic_equality_gate_shadow_adapter.dart": [
+    "../contracts/plantao_request.dart",
+    "plantao_drug_identity_provenance_binding_shadow_adapter.dart",
+    "plantao_drug_provenance_persistence_payload_parity_gate_shadow_adapter.dart",
+    "plantao_drug_provenance_persistence_payload_shadow_adapter.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_evidence_finalization_join_shadow_adapter.dart": [
+    "dart:async",
+    "../contracts/plantao_request.dart",
+    "plantao_drug_evidence_request_observer.dart",
+    "plantao_finalization_shadow_snapshot.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_original_input_intent_resolver.dart": [
+    "plantao_drug_original_input_identity_extractor.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_persistence_cutover_blocker_audit_shadow_adapter.dart": [
+    "../contracts/plantao_request.dart",
+    "plantao_drug_identity_provenance_binding_shadow_adapter.dart",
+    "plantao_drug_provenance_persistence_review_envelope_shadow_adapter.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_request_shadow_adapter.dart": [
+    "../contracts/plantao_continuation_type.dart",
+    "../contracts/plantao_request.dart",
+    "../contracts/plantao_section.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_evidence_request_observer.dart": [
+    "../contracts/plantao_canonical_drug_evidence.dart",
+    "plantao_drug_evidence_shadow_adapter.dart",
+    "plantao_drug_original_input_identity_extractor.dart",
+    "plantao_drug_original_input_intent_resolver.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_provenance_persistence_review_envelope_shadow_adapter.dart": [
+    "../contracts/plantao_request.dart",
+    "plantao_drug_provenance_persistence_payload_parity_gate_shadow_adapter.dart",
+    "plantao_drug_provenance_persistence_payload_shadow_adapter.dart",
+    "plantao_drug_provenance_semantic_equality_gate_shadow_adapter.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_explicit_typed_regimen_evidence_projection_shadow_adapter.dart": [
+    "../contracts/plantao_evidence_bundle.dart",
+    "../contracts/plantao_request.dart",
+    "plantao_drug_evidence_finalization_join_shadow_adapter.dart",
+    "plantao_drug_typed_regimen_capability_matrix_shadow_adapter.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_persistence_shadow_adapter.dart": [
+    "../contracts/plantao_persistence_record.dart",
+    "../contracts/plantao_request.dart",
+    "../contracts/plantao_response_structure.dart",
+    "../contracts/plantao_drug_relation.dart",
+    "plantao_finalization_shadow_snapshot.dart",
+    "plantao_validation_shadow_adapter.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/shadow/plantao_drug_evidence_parity_shadow_comparator.dart": [
+    "dart:convert",
+    "../contracts/plantao_canonical_drug_evidence.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/adapters/plantao_versioned_remote_drug_evidence_json_loader.dart": [
+    "dart:async",
+    "dart:convert",
+    "package:http/http.dart",
+    "../shadow/plantao_remote_drug_evidence_runtime_observer.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/adapters/plantao_http_drug_evidence_adapter.dart": [
+    "dart:convert",
+    "package:http/http.dart",
+    "../contracts/plantao_canonical_drug_evidence.dart",
+    "../ports/plantao_drug_evidence_port.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/adapters/plantao_generated_drug_evidence_readonly_adapter.dart": [
+    "dart:convert",
+    "../contracts/plantao_canonical_drug_evidence.dart",
+    "../ports/plantao_drug_evidence_port.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/adapters/plantao_protocol_matcher_evidence_adapter.dart": [
+    "dart:convert",
+    "package:crypto/crypto.dart",
+    "../../../../models/protocol_model.dart",
+    "../contracts/plantao_evidence_bundle.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/ports/plantao_persistence_port.dart": [
+    "../contracts/plantao_persistence_record.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/ports/plantao_drug_evidence_port.dart": [
+    "../contracts/plantao_canonical_drug_evidence.dart"
+  ],
+  "lib/services/ai_pipeline/plantao/ports/plantao_provider_port.dart": [
+    "../contracts/plantao_evidence_bundle.dart",
+    "../contracts/plantao_request.dart"
+  ],
+  "lib/services/ai/safety/clinical_patient_quantity.dart": [],
+  "lib/services/ai/safety/clinical_query_scope.dart": [
+    "clinical_patient_quantity.dart"
+  ],
+  "lib/data/laboratory/lab_reference_catalog.dart": [
+    "../../models/lab_reference_model.dart"
+  ],
+  "lib/data/pediatrics/pediatric_renal_engine_v2026.dart": [
+    "dart:math",
+    "pediatric_growth_engine_v2026.dart"
+  ],
+  "lib/data/pediatrics/pediatric_growth_engine_v2026.dart": [
+    "dart:math",
+    "who_growth_lms_v2026.dart"
+  ],
+  "lib/data/pediatrics/pediatric_pews_engine_v2026.dart": [],
+  "lib/data/pediatrics/pediatric_reference_registry_v2026.dart": [],
+  "lib/data/pediatrics/who_growth_lms_v2026.dart": [],
+  "lib/data/vaccines/vaccine_clinical_catalog_v2026.dart": [],
+  "lib/screens/internacion/internacion_screen.dart": [
+    "dart:async",
+    "dart:ui",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:provider/provider.dart",
+    "../../providers/app_provider.dart",
+    "models/evolucion_model.dart",
+    "components/resumen_header.dart",
+    "components/patient_accordion.dart",
+    "components/internacion_theme.dart",
+    "components/copilot_button.dart",
+    "components/farmacos_accordion.dart",
+    "components/soap/soap_section.dart",
+    "services/internacion_persistence.dart",
+    "services/internacion_firestore_service.dart",
+    "services/soap_copilot_service.dart",
+    "services/drug_interaction_service.dart",
+    "../../design_system/foundation/med_typography.dart"
+  ],
+  "lib/screens/v3/home_screen_v3.dart": [
+    "package:flutter/material.dart",
+    "../../design_system/foundation/med_typography.dart",
+    "../../design_system/tokens/med_colors.dart",
+    "../../design_system/tokens/med_radius.dart",
+    "../../design_system/tokens/med_spacing.dart"
+  ],
+  "lib/screens/admin_v2/support_admin_section.dart": [
+    "package:flutter/material.dart",
+    "../../models/user_model.dart",
+    "../../services/support_ticket_service.dart"
+  ],
+  "lib/screens/admin_v2/admin_v2_screen.dart": [
+    "dart:convert",
+    "dart:ui",
+    "package:cloud_firestore/cloud_firestore.dart",
+    "package:firebase_auth/firebase_auth.dart",
+    "package:flutter/material.dart",
+    "package:http/http.dart",
+    "../../models/user_model.dart",
+    "support_admin_section.dart",
+    "../../services/auth_service.dart",
+    "../../models/guide_model.dart",
+    "../admin_clinical_guide_editor_screen.dart"
+  ],
+  "lib/screens/ai/widgets/clinical_markdown_presentation.dart": [],
+  "lib/screens/ai/widgets/empty_chat.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/info_row.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/mobile_ai_action_bar.dart": [
+    "dart:ui",
+    "package:flutter/material.dart",
+    "package:flutter_svg/flutter_svg.dart"
+  ],
+  "lib/screens/ai/widgets/user_message_display_policy.dart": [],
+  "lib/screens/ai/widgets/remote_clinical_content_sheet.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/message_render_policy.dart": [
+    "../../../providers/app_provider.dart"
+  ],
+  "lib/screens/ai/widgets/remote_clinical_action_button.dart": [
+    "package:flutter/material.dart",
+    "../../../models/remote_clinical_response.dart"
+  ],
+  "lib/screens/ai/widgets/remote_clinical_response_renderer.dart": [
+    "package:flutter/material.dart",
+    "../../../models/remote_clinical_response.dart",
+    "immutable_local_progressive_reveal.dart",
+    "remote_clinical_action_button.dart"
+  ],
+  "lib/screens/ai/widgets/remote_clinical_action_dispatcher.dart": [
+    "package:flutter/material.dart",
+    "../../../models/remote_clinical_response.dart",
+    "remote_clinical_content_sheet.dart"
+  ],
+  "lib/screens/ai/widgets/ai_bubble.dart": [
+    "dart:async",
+    "package:flutter/foundation.dart",
+    "package:flutter/material.dart",
+    "ai_block_bubble.dart",
+    "ai_skeleton_lines.dart",
+    "streaming_text_drain.dart"
+  ],
+  "lib/screens/ai/widgets/ai_error_banner.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/google_auth_barrier_card.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/remote_clinical_runtime_bridge.dart": [
+    "package:flutter/material.dart",
+    "../../../models/remote_clinical_response.dart",
+    "remote_clinical_action_dispatcher.dart",
+    "remote_clinical_response_renderer.dart"
+  ],
+  "lib/screens/ai/widgets/disconnected_input_lock.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/study_continuation_button.dart": [
+    "dart:async",
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/collapsible_content_blocks.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/action_card_button.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/immutable_local_progressive_reveal.dart": [
+    "dart:async",
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/guardia_clinical_response_view.dart": [
+    "package:flutter_markdown/flutter_markdown.dart",
+    "package:medcases/models/canonical_clinical_snapshot.dart",
+    "package:flutter/material.dart",
+    "package:medcases/home_v2/theme/home_v2_palette.dart",
+    "package:medcases/models/clinical_structured_output.dart",
+    "package:medcases/services/well_formed_utf16.dart",
+    "package:medcases/screens/ai/widgets/clinical_treatment_presentation_shadow_view.dart"
+  ],
+  "lib/screens/ai/widgets/clinical_treatment_presentation_shadow_view.dart": [
+    "package:flutter/material.dart",
+    "package:medcases/home_v2/theme/home_v2_palette.dart",
+    "package:medcases/models/clinical_treatment_presentation.dart"
+  ],
+  "lib/screens/ai/widgets/action_button_policy.dart": [],
+  "lib/screens/ai/widgets/action_buttons_row.dart": [
+    "package:flutter/material.dart",
+    "../../calculadora_screen.dart",
+    "../../../services/ai_next_action_engine.dart",
+    "../../../services/plantao_continuation_policy.dart",
+    "../../../services/ai_pipeline/plantao/contracts/plantao_continuation_type.dart",
+    "../../../services/ai_pipeline/plantao/contracts/plantao_section.dart",
+    "../../../services/external_tool_link_engine.dart",
+    "action_button_policy.dart",
+    "action_card_button.dart",
+    "plantao_continuation_button.dart"
+  ],
+  "lib/screens/ai/widgets/response_mode_toggle.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/ai_status_sheet.dart": [
+    "package:flutter/material.dart",
+    "package:flutter_svg/flutter_svg.dart",
+    "package:provider/provider.dart",
+    "../../../providers/ai_chat_provider.dart",
+    "../../../providers/app_provider.dart"
+  ],
+  "lib/screens/ai/widgets/prompt_composer.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "../../../home_v2/theme/home_v2_palette.dart"
+  ],
+  "lib/screens/ai/widgets/user_bubble.dart": [
+    "package:flutter/material.dart",
+    "../../../home_v2/theme/home_v2_palette.dart"
+  ],
+  "lib/screens/ai/widgets/suggestion_carousel.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/clinical_reference_resolver.dart": [
+    "../../../data/new_pathology_approved_hashes.dart",
+    "../../../data/evidence_database.dart",
+    "../../../data/protocols_database.dart",
+    "../../../models/drug_model.dart",
+    "../../../models/protocol_model.dart"
+  ],
+  "lib/screens/ai/widgets/ai_skeleton_lines.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/ai_block_bubble.dart": [
+    "package:flutter/material.dart",
+    "package:flutter_markdown/flutter_markdown.dart",
+    "../../calculadora_screen.dart",
+    "collapsible_content_blocks.dart",
+    "clinical_markdown_presentation.dart",
+    "../../../home_v2/theme/home_v2_palette.dart"
+  ],
+  "lib/screens/ai/widgets/ai_shimmer_dots.dart": [
+    "dart:math",
+    "package:flutter/material.dart",
+    "../../../home_v2/theme/home_v2_palette.dart"
+  ],
+  "lib/screens/ai/widgets/drug_evidence_detector.dart": [
+    "../../../data/evidence_database.dart",
+    "../../../models/drug_model.dart"
+  ],
+  "lib/screens/ai/widgets/plantao_continuation_button.dart": [
+    "dart:async",
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/ambassador_panel.dart": [
+    "dart:ui",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:flutter_markdown/flutter_markdown.dart",
+    "package:url_launcher/url_launcher.dart",
+    "../../../models/chat_message.dart",
+    "../../../models/user_model.dart",
+    "../../../providers/app_provider.dart",
+    "../../../services/referral_service.dart",
+    "ambassador_panel_helpers.dart"
+  ],
+  "lib/screens/ai/widgets/streaming_text_drain.dart": [
+    "package:characters/characters.dart"
+  ],
+  "lib/screens/ai/widgets/wa_header.dart": [
+    "package:flutter/material.dart",
+    "mobile_ai_action_bar.dart"
+  ],
+  "lib/screens/ai/widgets/ambassador_panel_helpers.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/ai/widgets/chat_history_sheet.dart": [
+    "package:flutter/material.dart",
+    "../../../services/ai/ai_finalization_transaction.dart"
+  ],
+  "lib/screens/internacion/models/evolucion_model.dart": [
+    "package:flutter/foundation.dart"
+  ],
+  "lib/screens/internacion/components/resumen_header.dart": [
+    "package:flutter/material.dart",
+    "internacion_theme.dart"
+  ],
+  "lib/screens/internacion/components/farmacos_accordion.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "../models/evolucion_model.dart",
+    "internacion_theme.dart",
+    "../services/drug_interaction_service.dart",
+    "../../../design_system/foundation/med_typography.dart"
+  ],
+  "lib/screens/internacion/components/patient_accordion.dart": [
+    "package:flutter/material.dart",
+    "internacion_theme.dart",
+    "../../../design_system/foundation/med_typography.dart"
+  ],
+  "lib/screens/internacion/components/revision_sheet.dart": [
+    "package:flutter/material.dart",
+    "../services/soap_copilot_service.dart",
+    "internacion_theme.dart",
+    "../../../design_system/foundation/med_typography.dart"
+  ],
+  "lib/screens/internacion/components/copilot_button.dart": [
+    "dart:typed_data",
+    "package:flutter/material.dart",
+    "package:flutter_svg/flutter_svg.dart",
+    "package:image_picker/image_picker.dart",
+    "../services/soap_copilot_service.dart",
+    "../../../services/gemini_service.dart",
+    "internacion_theme.dart",
+    "revision_sheet.dart",
+    "../../../design_system/foundation/med_typography.dart"
+  ],
+  "lib/screens/internacion/components/historial_section.dart": [
+    "package:flutter/material.dart",
+    "../models/evolucion_model.dart",
+    "../components/internacion_theme.dart"
+  ],
+  "lib/screens/internacion/components/internacion_theme.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/screens/internacion/services/internacion_persistence.dart": [
+    "dart:convert",
+    "package:shared_preferences/shared_preferences.dart",
+    "../models/evolucion_model.dart",
+    "../components/patient_accordion.dart"
+  ],
+  "lib/screens/internacion/services/internacion_firestore_service.dart": [
+    "dart:async",
+    "package:cloud_firestore/cloud_firestore.dart",
+    "package:firebase_auth/firebase_auth.dart",
+    "package:firebase_core/firebase_core.dart",
+    "package:flutter/foundation.dart",
+    "../models/evolucion_model.dart",
+    "../components/patient_accordion.dart",
+    "internacion_persistence.dart",
+    "../../../services/auth_service.dart",
+    "../../../services/firebase_runtime_guard.dart"
+  ],
+  "lib/screens/internacion/services/soap_copilot_service.dart": [
+    "dart:convert",
+    "package:flutter/foundation.dart",
+    "package:http/http.dart"
+  ],
+  "lib/screens/internacion/services/drug_interaction_service.dart": [
+    "dart:convert",
+    "package:flutter/foundation.dart",
+    "package:http/http.dart",
+    "package:shared_preferences/shared_preferences.dart"
+  ],
+  "lib/screens/internacion/components/soap/soap_plan.dart": [
+    "package:flutter/material.dart",
+    "../../models/evolucion_model.dart",
+    "../internacion_theme.dart"
+  ],
+  "lib/screens/internacion/components/soap/soap_subjetivo.dart": [
+    "package:flutter/material.dart",
+    "../../models/evolucion_model.dart",
+    "../internacion_theme.dart"
+  ],
+  "lib/screens/internacion/components/soap/soap_section.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "../../models/evolucion_model.dart",
+    "../internacion_theme.dart",
+    "../patient_accordion.dart",
+    "../../services/soap_copilot_service.dart",
+    "soap_subjetivo.dart",
+    "soap_objetivo.dart",
+    "soap_evaluacion.dart",
+    "soap_plan.dart",
+    "../../../../design_system/foundation/med_typography.dart"
+  ],
+  "lib/screens/internacion/components/soap/soap_objetivo.dart": [
+    "package:flutter/material.dart",
+    "../../models/evolucion_model.dart",
+    "../internacion_theme.dart",
+    "../../../../design_system/foundation/med_typography.dart"
+  ],
+  "lib/screens/internacion/components/soap/soap_evaluacion.dart": [
+    "package:flutter/material.dart",
+    "../../models/evolucion_model.dart",
+    "../internacion_theme.dart"
+  ],
+  "lib/design_system/layout/med_safe_area.dart": [
+    "package:flutter/widgets.dart"
+  ],
+  "lib/design_system/layout/med_grid.dart": [
+    "package:flutter/widgets.dart",
+    "../tokens/med_breakpoints.dart",
+    "../tokens/med_spacing.dart",
+    "med_responsive_builder.dart"
+  ],
+  "lib/design_system/layout/med_page_layout.dart": [
+    "package:flutter/material.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_spacing.dart",
+    "med_content_layout.dart",
+    "med_safe_area.dart"
+  ],
+  "lib/design_system/layout/med_responsive_builder.dart": [
+    "package:flutter/widgets.dart",
+    "../tokens/med_breakpoints.dart"
+  ],
+  "lib/design_system/layout/med_content_layout.dart": [
+    "package:flutter/widgets.dart",
+    "../tokens/med_breakpoints.dart",
+    "../tokens/med_spacing.dart",
+    "med_responsive_builder.dart"
+  ],
+  "lib/design_system/navigation/med_navigation_drawer.dart": [
+    "package:flutter/material.dart",
+    "../components/med_icon_button.dart",
+    "../components/med_navigation_tile.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_icons.dart",
+    "../tokens/med_spacing.dart",
+    "med_navigation_destination.dart"
+  ],
+  "lib/design_system/navigation/med_side_navigation.dart": [
+    "package:flutter/material.dart",
+    "../components/med_avatar.dart",
+    "../components/med_navigation_tile.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_elevation.dart",
+    "../tokens/med_spacing.dart",
+    "med_navigation_destination.dart"
+  ],
+  "lib/design_system/navigation/med_navigation_destination.dart": [
+    "package:flutter/widgets.dart"
+  ],
+  "lib/design_system/navigation/med_bottom_navigation.dart": [
+    "package:flutter/material.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_elevation.dart",
+    "../tokens/med_spacing.dart",
+    "../components/med_navigation_tile.dart",
+    "med_navigation_destination.dart"
+  ],
+  "lib/design_system/navigation/med_app_shell.dart": [
+    "package:flutter/material.dart",
+    "../components/med_toolbar.dart",
+    "../layout/med_responsive_builder.dart",
+    "../tokens/med_breakpoints.dart",
+    "../tokens/med_colors.dart",
+    "med_bottom_navigation.dart",
+    "med_navigation_destination.dart",
+    "med_navigation_drawer.dart",
+    "med_side_navigation.dart"
+  ],
+  "lib/design_system/foundation/med_typography.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/design_system/components/med_badge.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_radius.dart",
+    "../tokens/med_spacing.dart"
+  ],
+  "lib/design_system/components/med_bottom_sheet.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_elevation.dart",
+    "../tokens/med_icons.dart",
+    "../tokens/med_radius.dart",
+    "../tokens/med_spacing.dart",
+    "med_icon_button.dart"
+  ],
+  "lib/design_system/components/med_card.dart": [
+    "package:flutter/material.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_elevation.dart",
+    "../tokens/med_radius.dart",
+    "../tokens/med_spacing.dart"
+  ],
+  "lib/design_system/components/med_navigation_tile.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_animation.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_icons.dart",
+    "../tokens/med_radius.dart",
+    "../tokens/med_spacing.dart",
+    "med_badge.dart"
+  ],
+  "lib/design_system/components/med_floating_button.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_animation.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_elevation.dart",
+    "../tokens/med_icons.dart",
+    "../tokens/med_radius.dart",
+    "../tokens/med_spacing.dart"
+  ],
+  "lib/design_system/components/med_list_tile.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_animation.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_icons.dart",
+    "../tokens/med_radius.dart",
+    "../tokens/med_spacing.dart"
+  ],
+  "lib/design_system/components/med_header.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_spacing.dart"
+  ],
+  "lib/design_system/components/med_section.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_spacing.dart"
+  ],
+  "lib/design_system/components/med_empty_state.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_icons.dart",
+    "../tokens/med_radius.dart",
+    "../tokens/med_spacing.dart",
+    "med_button.dart"
+  ],
+  "lib/design_system/components/med_divider.dart": [
+    "package:flutter/material.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_spacing.dart"
+  ],
+  "lib/design_system/components/med_input.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_radius.dart",
+    "../tokens/med_spacing.dart"
+  ],
+  "lib/design_system/components/med_toolbar.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_elevation.dart",
+    "../tokens/med_spacing.dart"
+  ],
+  "lib/design_system/components/med_icon_button.dart": [
+    "package:flutter/material.dart",
+    "../tokens/med_animation.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_icons.dart",
+    "../tokens/med_radius.dart"
+  ],
+  "lib/design_system/components/med_text_field.dart": [
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "med_input.dart"
+  ],
+  "lib/design_system/components/med_modal.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_elevation.dart",
+    "../tokens/med_icons.dart",
+    "../tokens/med_radius.dart",
+    "../tokens/med_spacing.dart",
+    "med_icon_button.dart"
+  ],
+  "lib/design_system/components/med_menu_tile.dart": [
+    "package:flutter/material.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_icons.dart",
+    "../tokens/med_radius.dart",
+    "../tokens/med_spacing.dart",
+    "med_list_tile.dart"
+  ],
+  "lib/design_system/components/med_avatar.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_icons.dart"
+  ],
+  "lib/design_system/components/med_dialog.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_icons.dart",
+    "../tokens/med_radius.dart",
+    "../tokens/med_spacing.dart",
+    "med_button.dart",
+    "med_icon_button.dart"
+  ],
+  "lib/design_system/components/med_chip.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_animation.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_icons.dart",
+    "../tokens/med_radius.dart",
+    "../tokens/med_spacing.dart"
+  ],
+  "lib/design_system/components/med_search_bar.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_animation.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_icons.dart",
+    "../tokens/med_radius.dart",
+    "../tokens/med_spacing.dart"
+  ],
+  "lib/design_system/components/med_button.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_animation.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_radius.dart",
+    "../tokens/med_spacing.dart"
+  ],
+  "lib/design_system/components/med_loading.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_animation.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_spacing.dart"
+  ],
+  "lib/design_system/theme/med_theme.dart": [
+    "package:flutter/material.dart",
+    "../foundation/med_typography.dart",
+    "../tokens/med_colors.dart",
+    "../tokens/med_radius.dart"
+  ],
+  "lib/design_system/tokens/med_elevation.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/design_system/tokens/med_animation.dart": [
+    "package:flutter/animation.dart",
+    "med_durations.dart"
+  ],
+  "lib/design_system/tokens/med_colors.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/design_system/tokens/med_spacing.dart": [
+    "package:flutter/widgets.dart"
+  ],
+  "lib/design_system/tokens/med_icons.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/design_system/tokens/med_breakpoints.dart": [],
+  "lib/design_system/tokens/med_radius.dart": [
+    "package:flutter/widgets.dart"
+  ],
+  "lib/design_system/tokens/med_durations.dart": [],
+  "lib/home_v2/migration_blocks/_QuickShortcuts.dart": [],
+  "lib/home_v2/migration_blocks/_HomeCalculadoraFarmacosCard.dart": [],
+  "lib/home_v2/migration_blocks/_HomeBibliotecaHClinicaRow.dart": [],
+  "lib/home_v2/migration_blocks/_HomeMiGuardiaSection.dart": [],
+  "lib/home_v2/migration_blocks/_HistorialCompactCard.dart": [],
+  "lib/home_v2/migration_blocks/_HomeAdultoPediatriaRow.dart": [],
+  "lib/home_v2/components/home_v2_modules_view.dart": [
+    "package:flutter/material.dart",
+    "package:flutter_svg/flutter_svg.dart",
+    "../theme/home_v2_palette.dart",
+    "common/home_v2_press_surface.dart"
+  ],
+  "lib/home_v2/components/home_web_latest_guides_grid.dart": [
+    "dart:async",
+    "package:flutter/material.dart",
+    "package:provider/provider.dart",
+    "../../models/guide_model.dart",
+    "../../providers/app_provider.dart",
+    "../../screens/clinical_guide_article_screen.dart",
+    "../../services/clinical_guides_editorial_service.dart",
+    "../../services/firestore_service.dart",
+    "../../widgets/medcases_webview_screen.dart",
+    "navigation/home_card_transition.dart"
+  ],
+  "lib/home_v2/webviews/webview_router.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/home_v2/theme/home_v2_palette.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/home_v2/theme/home_v2_icon_palette.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/home_v2/preview/home_v2_preview_screen.dart": [
+    "dart:async",
+    "package:flutter/material.dart",
+    "package:flutter/services.dart",
+    "package:flutter_svg/flutter_svg.dart",
+    "../../screens/ai_screen.dart"
+  ],
+  "lib/home_v2/components/chat/chat_controller.dart": [
+    "package:flutter/material.dart",
+    "chat_storage.dart",
+    "chat_stream.dart"
+  ],
+  "lib/home_v2/components/chat/chat_storage.dart": [
+    "dart:convert",
+    "package:shared_preferences/shared_preferences.dart"
+  ],
+  "lib/home_v2/components/chat/chat_header.dart": [
+    "package:flutter/material.dart",
+    "package:flutter_svg/flutter_svg.dart"
+  ],
+  "lib/home_v2/components/chat/ai_bubble.dart": [
+    "package:flutter/material.dart",
+    "package:flutter_svg/flutter_svg.dart",
+    "chat_theme.dart"
+  ],
+  "lib/home_v2/components/chat/chat_navigation.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/home_v2/components/chat/thinking_indicator.dart": [
+    "package:flutter/material.dart",
+    "chat_theme.dart"
+  ],
+  "lib/home_v2/components/chat/chat_stream.dart": [
+    "dart:async"
+  ],
+  "lib/home_v2/components/chat/chat_messages.dart": [
+    "package:flutter/material.dart",
+    "ai_bubble.dart",
+    "user_bubble.dart",
+    "thinking_indicator.dart"
+  ],
+  "lib/home_v2/components/chat/chat_input.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/home_v2/components/chat/user_bubble.dart": [
+    "package:flutter/material.dart",
+    "chat_theme.dart"
+  ],
+  "lib/home_v2/components/chat/inline_chat.dart": [
+    "package:flutter/material.dart",
+    "../../../screens/home_screen.dart"
+  ],
+  "lib/home_v2/components/chat/inline_chat_view.dart": [
+    "package:flutter/material.dart",
+    "package:flutter_svg/flutter_svg.dart",
+    "package:flutter_markdown/flutter_markdown.dart",
+    "../../theme/home_v2_palette.dart",
+    "../common/home_v2_press_surface.dart"
+  ],
+  "lib/home_v2/components/chat/chat_theme.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/home_v2/components/cards/assessment_card.dart": [
+    "package:flutter/material.dart",
+    "../common/med_card.dart",
+    "../common/card_title.dart"
+  ],
+  "lib/home_v2/components/cards/calculator_card.dart": [
+    "package:flutter/material.dart",
+    "../common/med_card.dart",
+    "../common/card_title.dart"
+  ],
+  "lib/home_v2/components/cards/library_card.dart": [
+    "package:flutter/material.dart",
+    "../common/med_card.dart",
+    "../common/card_title.dart"
+  ],
+  "lib/home_v2/components/cards/drugs_card.dart": [
+    "package:flutter/material.dart",
+    "../common/med_card.dart",
+    "../common/card_title.dart"
+  ],
+  "lib/home_v2/components/cards/notes_card.dart": [
+    "package:flutter/material.dart",
+    "../common/med_card.dart",
+    "../common/card_title.dart"
+  ],
+  "lib/home_v2/components/cards/patient_card.dart": [
+    "package:flutter/material.dart",
+    "../common/med_card.dart",
+    "../common/card_title.dart"
+  ],
+  "lib/home_v2/components/cards/pediatrics_card.dart": [
+    "package:flutter/material.dart",
+    "../common/med_card.dart",
+    "../common/card_title.dart"
+  ],
+  "lib/home_v2/components/cards/history_card.dart": [
+    "package:flutter/material.dart",
+    "../common/med_card.dart",
+    "../common/card_title.dart"
+  ],
+  "lib/home_v2/components/cards/home_cards_registry.dart": [],
+  "lib/home_v2/components/cards/quick_actions.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/home_v2/components/cards/adult_card.dart": [
+    "package:flutter/material.dart",
+    "../common/med_card.dart",
+    "../common/card_title.dart"
+  ],
+  "lib/home_v2/components/navigation/home_navigator.dart": [
+    "package:flutter/material.dart",
+    "../../webviews/webview_router.dart"
+  ],
+  "lib/home_v2/components/navigation/home_routes.dart": [],
+  "lib/home_v2/components/navigation/home_actions.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/home_v2/components/navigation/home_card_transition.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/home_v2/components/common/home_v2_press_surface.dart": [
+    "package:flutter/material.dart",
+    "../../theme/home_v2_palette.dart"
+  ],
+  "lib/home_v2/components/common/card_title.dart": [
+    "package:flutter/material.dart"
+  ],
+  "lib/home_v2/components/common/med_card.dart": [
+    "package:flutter/material.dart"
+  ]
+}

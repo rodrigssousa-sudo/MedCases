@@ -992,10 +992,6 @@ class _GuidesTab extends StatelessWidget {
     // MEDCASES_GUIA_CLINICA_COMPACT_CLINICAL_HUB_V1_B_R0
     final hasSearch = searchCtrl.text.isNotEmpty;
     final safeBottom = MediaQuery.paddingOf(context).bottom;
-    final primary = dark ? Colors.white : const Color(0xFF05070A);
-    final secondary = dark ? const Color(0xFFCBD5E1) : const Color(0xFF59636E);
-    final surface = dark ? const Color(0xFF252930) : Colors.white;
-    final border = dark ? const Color(0xFF374151) : const Color(0xFFE2E7EC);
 
     final bodySliver = loading
         ? const SliverFillRemaining(

@@ -1,0 +1,22 @@
+[
+  {
+    "path": "lib/screens/internacion/components/soap/soap_evaluacion.dart",
+    "kind": "unused_import",
+    "reason": "Dart analyzer unused_import; no referenced identifiers"
+  },
+  {
+    "path": "lib/screens/internacion/components/soap/soap_plan.dart",
+    "kind": "unused_import",
+    "reason": "Dart analyzer unused_import; no referenced identifiers"
+  },
+  {
+    "path": "lib/screens/internacion/components/soap/soap_subjetivo.dart",
+    "kind": "unused_import",
+    "reason": "Dart analyzer unused_import; no referenced identifiers"
+  },
+  {
+    "path": "lib/screens/library_screen.dart",
+    "kind": "4_unused_local_variables",
+    "reason": "Dart analyzer; constant color expressions without side effects"
+  }
+]

@@ -1,0 +1,13 @@
+[
+  "lib/home_v2/migration_blocks/_QuickShortcuts.dart",
+  "lib/home_v2/migration_blocks/_HomeCalculadoraFarmacosCard.dart",
+  "lib/home_v2/migration_blocks/_HomeBibliotecaHClinicaRow.dart",
+  "lib/home_v2/migration_blocks/_HomeMiGuardiaSection.dart",
+  "lib/home_v2/migration_blocks/_HistorialCompactCard.dart",
+  "lib/home_v2/migration_blocks/_HomeAdultoPediatriaRow.dart",
+  "lib/home_v2/migration_notes_reference.dart",
+  "lib/services/ai_gateway_service.dart",
+  "lib/services/auth_service.dart",
+  "lib/services/firestore_service.dart",
+  "lib/screens/library_screen.dart"
+]

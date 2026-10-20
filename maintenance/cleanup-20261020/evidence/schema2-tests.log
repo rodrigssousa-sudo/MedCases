@@ -1,0 +1,18 @@
+✔ schema 2 prepares DRAFT and preserves PT/ES in both modes (3.034583ms)
+✔ altered chunk bytes rejected (0.48825ms)
+✔ payload hash mismatch rejected (0.272666ms)
+✔ missing ES projection rejected (0.2545ms)
+✔ reference divergence rejected (0.248834ms)
+✔ duplicate identity rejected (0.156542ms)
+✔ missing collection rejected (0.082208ms)
+✔ technical DRAFT validation is not medical authorization (0.369958ms)
+✔ activation and rollback preserve version pointer in transaction model (7.150083ms)
+✔ concurrent pointer conflict leaves all documents unchanged (0.775083ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 76.8815

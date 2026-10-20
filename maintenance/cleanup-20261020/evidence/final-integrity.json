@@ -1,0 +1,24 @@
+{
+  "trackedFilesVerified": 3378,
+  "changed": [
+    "lib/screens/internacion/components/soap/soap_evaluacion.dart",
+    "lib/screens/internacion/components/soap/soap_plan.dart",
+    "lib/screens/internacion/components/soap/soap_subjetivo.dart",
+    "lib/screens/library_screen.dart"
+  ],
+  "externalFilesVerified": 223,
+  "externalChanged": [],
+  "analyzer": {
+    "before": {
+      "error": 418,
+      "warning": 237,
+      "info": 2531
+    },
+    "after": {
+      "error": 418,
+      "warning": 230,
+      "info": 2531
+    }
+  },
+  "buildMainDartSha256": "3b34ff7052b9cc4ab631cfb6d10dac2f12138743e078ade1c27774cd594c626d"
+}
