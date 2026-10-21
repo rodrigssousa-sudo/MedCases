@@ -1,0 +1,24 @@
+[
+  {
+    "url": "https://medcasescalcu.com/health",
+    "status": 404
+  },
+  {
+    "url": "https://medcasescalcu.com/api/drugs/paracetamol",
+    "status": 404
+  },
+  {
+    "url": "https://plankton-app-9dgnu.ondigitalocean.app/health",
+    "status": 200,
+    "json": {
+      "ok": true,
+      "service": "medcases-calculator-gateway",
+      "freeDrugCount": 60,
+      "productionReady": true
+    }
+  },
+  {
+    "url": "https://plankton-app-9dgnu.ondigitalocean.app/api/drugs/paracetamol",
+    "status": 401
+  }
+]

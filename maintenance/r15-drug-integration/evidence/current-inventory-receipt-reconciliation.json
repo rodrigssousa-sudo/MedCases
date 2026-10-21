@@ -1,0 +1,14 @@
+{
+  "currentCommit": "79b73f43453f50339fea550c217ca11bb985624c",
+  "publishedTreeRecords": 1018,
+  "recordReceipts": 1018,
+  "recordReceiptsWhoseGitBlobMatchesCurrentPublishedTree": 1018,
+  "mismatches": [],
+  "uniqueIds": 1018,
+  "ptAvailable": 1018,
+  "esAvailable": 1018,
+  "publishedApprovalMetadataAssertions": 827,
+  "approvedPackageHashes": 84,
+  "scope": "Existing per-record read receipts reconciled cryptographically to fresh published tree and live deployment, not a fresh MCC1 HTTP read or independent medical review",
+  "productionMutations": 0
+}

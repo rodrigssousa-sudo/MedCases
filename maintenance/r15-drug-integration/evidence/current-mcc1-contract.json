@@ -1,0 +1,13 @@
+{
+  "publishedCommit": "79b73f43453f50339fea550c217ca11bb985624c",
+  "gatewayServerGitBlob": "9d8f0af8dcda62fc9cff451505acf408a17e0921",
+  "issuer": "https://medcasespro.com/api/calculator/session",
+  "drugEndpoint": "https://plankton-app-9dgnu.ondigitalocean.app/api/drugs/{canonicalId}",
+  "privateIndex": "/api/drug-catalog",
+  "indexCapability": "DRUG_CATALOG_FULL",
+  "indexResponseFields": ["id", "name", "category", "icon", "referenceOnly"],
+  "freeAliasLimitation": "Free does not receive the Premium discovery index. Canonical IDs remain subject to the gateway Free allowlist; no capability is expanded by this patch.",
+  "sourceAliasLimitation": "Inventory keywords are not all exposed by the authenticated index. Runtime resolution uses only labels actually returned by the authority.",
+  "currentAuthenticatedMcc1SessionVerified": false,
+  "scope": "Current deployed gateway source read through GitHub; not a positive authenticated HTTP response."
+}

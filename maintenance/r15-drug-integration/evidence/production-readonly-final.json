@@ -1,0 +1,14 @@
+{
+  "status": {
+    "latestReadyRevisionName": "plantaoproxystream-00014-tul",
+    "traffic": [
+      {
+        "percent": 100,
+        "revisionName": "plantaoproxystream-00012-dak"
+      }
+    ],
+    "url": "https://plantaoproxystream-szn4xjh4xq-uc.a.run.app"
+  },
+  "readOnly": true,
+  "atUTC": "2026-10-21T01:18:39.987678+00:00"
+}

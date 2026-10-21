@@ -1,0 +1,12 @@
+Analyzing 6 items...                                            
+
+   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/screens/ai/widgets/guardia_clinical_response_view.dart:1146:7 • curly_braces_in_flow_control_structures
+   info • Invalid use of a private type in a public API. Try making the private type public, or making the API that uses the private type also be private • lib/screens/ai/widgets/guardia_clinical_response_view.dart:2114:37 • library_private_types_in_public_api
+   info • Invalid use of a private type in a public API. Try making the private type public, or making the API that uses the private type also be private • lib/screens/ai/widgets/guardia_clinical_response_view.dart:2129:44 • library_private_types_in_public_api
+   info • Invalid use of a private type in a public API. Try making the private type public, or making the API that uses the private type also be private • lib/screens/ai/widgets/guardia_clinical_response_view.dart:2133:10 • library_private_types_in_public_api
+   info • Invalid use of a private type in a public API. Try making the private type public, or making the API that uses the private type also be private • lib/screens/ai/widgets/guardia_clinical_response_view.dart:2231:10 • library_private_types_in_public_api
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/screens/ai/widgets/guardia_clinical_response_view.dart:2532:40 • deprecated_member_use
+   info • 'withOpacity' is deprecated and shouldn't be used. Use .withValues() to avoid precision loss. Try replacing the use of the deprecated member with the replacement • lib/screens/ai/widgets/guardia_clinical_response_view.dart:2533:56 • deprecated_member_use
+   info • Statements in an if should be enclosed in a block. Try wrapping the statement in a block • lib/screens/ai/widgets/guardia_clinical_response_view.dart:2824:9 • curly_braces_in_flow_control_structures
+
+8 issues found. (ran in 1.3s)

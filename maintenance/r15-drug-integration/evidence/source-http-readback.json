@@ -1,0 +1,10 @@
+[
+  {
+    "route": "https://medcasescalcu.com/data/manifest.json",
+    "httpStatus": 404
+  },
+  {
+    "route": "https://medcasescalcu.com/api/ai-drug-data/current.json",
+    "httpStatus": 404
+  }
+]

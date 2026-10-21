@@ -10,6 +10,7 @@ import 'package:medcases/services/clinical_tts_service.dart';
 import 'package:medcases/screens/ai/widgets/ai_bubble.dart';
 import '../test/fixtures/r15_ux_fixtures.dart';
 import '../test/fixtures/r15_drug_reference_snapshots.dart';
+import '../test/fixtures/r15_current_drug_preview.dart';
 
 void main() => runApp(const _ReviewApp());
 
@@ -105,8 +106,18 @@ class _ReviewPageState extends State<_ReviewPage> {
   }
 
   CanonicalClinicalSnapshot get snapshot {
-    if (scenario == 'C' || scenario == 'D') {
-      final raw = r15DrugReferenceSnapshots[locale]!;
+    if (['C', 'D', 'F', 'G'].contains(scenario)) {
+      String raw = r15DrugReferenceSnapshots[locale]!;
+      if (scenario == 'F') {
+        raw = r15CurrentDrugPreview['noradrenalina/$locale']['documentJson']
+            as String;
+      } else if (scenario == 'G') {
+        final document = jsonDecode(r15CurrentDrugPreview['ceftriaxona/$locale']
+            ['documentJson'] as String) as Map<String, dynamic>;
+        document['lookupField'] =
+            locale == 'pt' ? 'contraindicacoes' : 'contraindicaciones';
+        raw = jsonEncode(document);
+      }
       final hash = PlantaoPresentationContract.textHash(raw);
       final drug = CanonicalClinicalSnapshot.fromDrugReference(raw, hash);
       if (scenario == 'D') {
@@ -164,15 +175,20 @@ class _ReviewPageState extends State<_ReviewPage> {
                                 for (final entry in {
                                   'A': 'A · EXECUTIVE sintético',
                                   'B': 'B · FULL sintético',
-                                  'C': 'C · Fármaco histórico',
+                                  'C': 'C · Paracetamol',
                                   'D': 'D · Histórico local',
-                                  'E': 'E · Estudo local'
+                                  'E': 'E · Estudo local',
+                                  'F': 'F · Noradrenalina',
+                                  'G': 'G · Contraindicações'
                                 }.entries)
                                   ChoiceChip(
                                       label: Text(entry.value),
                                       selected: scenario == entry.key,
-                                      onSelected: (_) =>
-                                          setState(() => scenario = entry.key))
+                                      onSelected: (_) => setState(() {
+                                            scenario = entry.key;
+                                            receipt =
+                                                'Revisão local da fonte; sem geração ou cobrança.';
+                                          }))
                               ]),
                               Wrap(spacing: 8, children: [
                                 for (final e in {
@@ -187,8 +203,8 @@ class _ReviewPageState extends State<_ReviewPage> {
                                       child: Text(e.value))
                               ]),
                               Text(
-                                  scenario == 'C' || scenario == 'D'
-                                      ? 'Fonte real preservada de 16/10/2026; conexão atual não testada.'
+                                  ['C', 'D', 'F', 'G'].contains(scenario)
+                                      ? 'Fonte publicada 79b73f4: bytes PT/ES conferidos. Prévia local; sessão MCC1 real ainda não comprovada.'
                                       : 'Fixture de contrato; aprovação sintética, não utilizável clinicamente.',
                                   style: const TextStyle(fontSize: 12)),
                               Text(receipt,
@@ -216,15 +232,31 @@ class _ReviewPageState extends State<_ReviewPage> {
                                   onTts: () => _play(full),
                                   onCopy: () => _copy(full),
                                 )
-                              else
+                              else ...[
+                                if (['C', 'D', 'F', 'G'].contains(scenario))
+                                  Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8),
+                                      child: Text(scenario == 'F'
+                                          ? 'Pergunta / Pregunta: Noradrenalina'
+                                          : scenario == 'G'
+                                              ? (locale == 'pt'
+                                                  ? 'Pergunta: Contraindicações da ceftriaxona'
+                                                  : 'Pregunta: Contraindicaciones de ceftriaxona')
+                                              : 'Pergunta / Pregunta: Paracetamol')),
                                 GuardiaClinicalResponseView(
                                     key: ValueKey('$locale-$scenario'),
                                     createdAt: createdAt,
                                     rawText: full,
                                     referenceDocument: source,
-                                    userText: scenario == 'C' || scenario == 'D'
-                                        ? 'Paracetamol'
-                                        : '',
+                                    userText: switch (scenario) {
+                                      'C' || 'D' => 'Paracetamol',
+                                      'F' => 'Noradrenalina',
+                                      'G' => locale == 'pt'
+                                          ? 'Contraindicações da ceftriaxona'
+                                          : 'Contraindicaciones de ceftriaxona',
+                                      _ => '',
+                                    },
                                     preserveReferenceText: true,
                                     dark: true,
                                     languageCode: locale,
@@ -232,6 +264,7 @@ class _ReviewPageState extends State<_ReviewPage> {
                                     ttsPlaying: playing,
                                     onTts: () => _play(full),
                                     onCopy: () => _copy(full)),
+                              ],
                             ]))))));
   }
 }

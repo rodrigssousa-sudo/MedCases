@@ -1,0 +1,13 @@
+✔ CATALOG authenticated drug continuation pt Qual o ajuste renal? (6526.979917ms)
+✔ CATALOG authenticated drug continuation es ¿Cuáles son las interacciones? (324.098917ms)
+✔ CATALOG authenticated drug continuation pt Como diluir? (294.673875ms)
+✔ CATALOG authenticated drug continuation pt E quanto ao ajuste renal? (254.471667ms)
+✔ CATALOG authenticated drug continuation es ¿Y el ajuste renal? (249.323125ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8174.283542

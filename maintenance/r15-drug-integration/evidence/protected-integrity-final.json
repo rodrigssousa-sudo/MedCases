@@ -1,0 +1,10 @@
+{
+  "atUTC": "2026-10-21T01:18:36.101034+00:00",
+  "externalProtectedFilesChecked": 223,
+  "externalMismatches": [],
+  "candidate1721FilesChecked": 1869,
+  "candidateMismatches": [],
+  "candidate1721ReleaseAotSha256": "34858dd43cac6286573c02e27cdde9bbd308a933aa863ce9c4b6aedc0d1d5b2f",
+  "localFirestoreEmulatorClosed": true,
+  "productionMutations": 0
+}

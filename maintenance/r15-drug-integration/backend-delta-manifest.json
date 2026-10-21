@@ -1,0 +1,29 @@
+{
+  "base": "/Users/brunorodrigues/Documents/Codex/MEDCASES-R15-COMMERCIAL-PATCH/candidate/functions",
+  "files": [
+    {
+      "path": "plantao_drug_reference.js",
+      "before": "006c0f8c0924ed631d4af8fc9f23a1dba4bcc71d5fe5e93f7d639142269fdd3e",
+      "after": "ca66334cda5c60a3ea7cf1df9d99542ebf980121928b10fe088263aca7339d65"
+    },
+    {
+      "path": "plantao_public_restore.js",
+      "before": "dbfdc527073bb9828a7301cf2ea24415a149bee679c2bc3d0633d8f8f2047dd3",
+      "after": "6f625b39c9a8555fb12a21b5bf9535da7e55c577fb9101bad0ab3edae863f82b"
+    }
+  ],
+  "productionMutation": false,
+  "rollback": "Use the unchanged original candidate/functions files matching before hashes.",
+  "harness": {
+    "path": "/Users/brunorodrigues/Documents/Codex/MEDCASES-R15-COMMERCIAL-PATCH/tests/frame-fix-http.test.cjs",
+    "sha256": "39f9b4182064f1975b0a18ed0517611de9e90dfd9493eeaf261ce8a9d917320c",
+    "after": "a1d24e05bbd420d73e36b271e2d78ff30aac7a5b5050a4dafaf6ae3d0e0cd488"
+  },
+  "sampleSourceDirectory": "/Users/brunorodrigues/Documents/Codex/MEDCASES-R15-COMMERCIAL-PATCH/coordinated-release/knowledge-recovery/published-drug-source/data/drugs",
+  "sampleHashes": {
+    "ceftriaxona": "3088feac81c03ff39ef6b5923e1873eb7791d7b9b1ac1a1213986b3f7fd09792",
+    "metformina": "708231af4e64f23b1c219a6487b3785a733c3ea12cc62284e255e5d49101a8d3",
+    "noradrenalina": "770363b14d694a0becc88d4e579049adf2d4441fbcf81641ab4f2ac4f43d22eb",
+    "paracetamol": "d677315e170b3f20001231ef4ebd3d0a6ed1562b6ad0e3a2199e0688b7ec48bc"
+  }
+}

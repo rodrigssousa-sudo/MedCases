@@ -1,0 +1,20 @@
+
+for(const lang of ['pt','es'])for(const q of ['Paracetamol 500 mg','Contraindicações da ceftriaxona','Como diluir noradrenalina?','Ajuste renal de metformina'])test('CATALOG integration specific '+q+' '+lang,async()=>{
+ drugFixtureEnabled=true;try{const d=generalRequest(q,lang),r=await post(d);assert.equal(r.status,200,await r.clone().text());const e=events(await r.text());assert.equal(e[1].event,'drug_reference');const doc=JSON.parse(e[1].data.documentJson);assert.equal(doc.canonicalDrugId,q.includes('500')?'paracetamol':q.includes('ceftriaxona')?'ceftriaxona':q.includes('noradrenalina')?'noradrenalina':'metformina');assert.deepEqual(JSON.parse(doc.sourceJson),verifiedDrugSources[doc.canonicalDrugId]);assert.equal(doc.calculationAuthorized,false);assert.equal(doc.clinicalApprovalGranted,false);assert.equal(e.at(-1).data.modelCalls,0);
+ }finally{drugFixtureEnabled=false;}
+});
+for(const [lang,q] of [['pt','Qual o ajuste renal?'],['es','¿Cuáles son las interacciones?'],['pt','Como diluir?'],['pt','E quanto ao ajuste renal?'],['es','¿Y el ajuste renal?']])test('CATALOG authenticated drug continuation '+lang+' '+q,async()=>{
+ drugFixtureEnabled=true;try{const first=generalRequest('Paracetamol',lang),r=await post(first);assert.equal(r.status,200,await r.clone().text());const full=events(await r.text());const second={...generalRequest(q,lang),sessionId:first.sessionId,history:[{role:'user',content:'Paracetamol'},{role:'assistant',content:JSON.parse(full[1].data.documentJson).text}]};const before=secretAccess,follow=await post(second);assert.equal(follow.status,200,await follow.clone().text());const e=events(await follow.text()),doc=JSON.parse(e[1].data.documentJson);assert.equal(doc.canonicalDrugId,'paracetamol');assert.ok(doc.lookupField);assert.equal(secretAccess,before);const parent=(await db.doc('users/synthetic-premium/ai_sessions/'+first.sessionId).get()).data();assert.equal(parent.lastRequestId,second.requestId);const saved=(await db.doc('users/synthetic-premium/ai_sessions/'+first.sessionId+'/exchanges/'+second.requestId).get()).data();assert.equal(saved.userInput,q);assert.equal(saved.provenance,'CANONICAL_DRUG_INFORMATION_NOT_PRESCRIPTION');assert.equal((await post(second)).status,409);
+ }finally{drugFixtureEnabled=false;}
+});
+test('CATALOG corrupted saved drug cannot authorize a continuation',async()=>{
+ drugFixtureEnabled=true;try{const first=generalRequest('Paracetamol'),r=await post(first);assert.equal(r.status,200);await r.text();const ref=db.doc('users/synthetic-premium/ai_sessions/'+first.sessionId+'/exchanges/'+first.requestId),saved=(await ref.get()).data();saved.drugReference.documentJson+=' ';await ref.set(saved);const follow=await post({...generalRequest('Como diluir?'),sessionId:first.sessionId,history:[{role:'user',content:'Paracetamol'}]});assert.notEqual(follow.status,200);assert.equal((await db.doc('users/synthetic-premium/ai_sessions/'+first.sessionId).get()).data().lastRequestId,first.requestId);
+ }finally{drugFixtureEnabled=false;}
+});
+test('CATALOG known pending drug never becomes pathology or WEB',async()=>{
+ drugFixtureEnabled=true;const prior=verifiedDrugSources.paracetamol;try{verifiedDrugSources.paracetamol={...prior,mc_gold_standard_v1:{...prior.mc_gold_standard_v1,publicationAuthorized:false}};const calls=researchCalls,d=generalRequest('Paracetamol'),r=await post(d);assert.equal(r.status,409);assert.equal((await r.json()).error,'drug_review_required');assert.equal(researchCalls,calls);const op=(await db.doc('aiQueryOperations/'+hash('synthetic-premium\n'+d.requestId)).get()).data();assert.equal(op.state,'refunded');
+ }finally{verifiedDrugSources.paracetamol=prior;drugFixtureEnabled=false;}
+});
+test('CATALOG individualized child dose is not converted to general drug reference',async()=>{
+ drugFixtureEnabled=true;try{const r=await post(generalRequest('Dose de paracetamol em criança de 15 kg'));assert.equal(r.status,409);const body=await r.json();assert.ok(!JSON.stringify(body).includes('mg/kg'));}finally{drugFixtureEnabled=false;}
+});

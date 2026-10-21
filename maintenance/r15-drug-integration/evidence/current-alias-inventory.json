@@ -1,0 +1,11 @@
+{
+  "currentCommit": "79b73f43453f50339fea550c217ca11bb985624c",
+  "indexGitBlob": "71d573997b96feb865104c94d54cdf170bee86f4",
+  "records": 1018,
+  "uniqueIds": 1018,
+  "canonicalIdCollisions": 0,
+  "distinctLabelsOrAliases": 2682,
+  "ambiguousLabels": 44,
+  "ambiguousLabelsAreNotAutomaticallyResolved": true,
+  "scope": "Current published private index bytes; not a user entitlement grant"
+}

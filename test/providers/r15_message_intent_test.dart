@@ -54,7 +54,15 @@ void main() {
     expect(provider.classifyIntentForTesting('Paracetamol', plantao: false),
         'geral');
   });
-  for (final q in ['E quanto ao ajuste renal?', '¿Y el ajuste renal?']) {
+  for (final q in [
+    'E quanto ao ajuste renal?',
+    '¿Y el ajuste renal?',
+    'Qual o ajuste renal?',
+    'Quais as interações?',
+    'Como diluir?',
+    '¿Cuáles son las interacciones?',
+    '¿Cómo diluir?'
+  ]) {
     test('actual thread manager retains follow-up: $q', () {
       final thread = ClinicalThreadManager();
       thread.evaluate(currentUserText: 'Metformina', isPlantaoMode: true);

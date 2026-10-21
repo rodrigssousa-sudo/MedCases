@@ -1,0 +1,40 @@
+✔ R15 load unchanged real catalog evidence in isolated emulator (3352.737167ms)
+✔ R15 authorized nominal full source without request frame Hipocalemia pt (710.913042ms)
+✔ R15 authorized nominal full source without request frame Hipopotasemia es (584.91625ms)
+✔ R15 authorized nominal full source without request frame Hemorragia subconjuntival pt (495.908709ms)
+✔ R15 authorized nominal full source without request frame Hemorragia subconjuntival es (404.507292ms)
+✔ R15 drug information HTTP ledger history pt synthetic-premium (76.292041ms)
+✔ R15 drug information HTTP ledger history pt synthetic-trial (67.581ms)
+✔ R15 drug information HTTP ledger history pt synthetic-free (68.272959ms)
+✔ R15 drug information HTTP ledger history es synthetic-premium (62.739458ms)
+✔ R15 drug information HTTP ledger history es synthetic-trial (64.26825ms)
+✔ R15 drug information HTTP ledger history es synthetic-free (61.184167ms)
+✔ R15 drug authorized synonym and no calculated authority (39.822708ms)
+✔ R15 pharmacological denial refunds before dispatch without granting Free drug access (253.578875ms)
+✔ R15 explicitly absent medication has distinct safe code and no paid research (23.901084ms)
+✔ R15 real compiler drug frame pt (32.660333ms)
+✔ R15 real compiler drug frame es (31.96475ms)
+✔ R15 compiler drug frame with real Provider editorial suffix pt (32.912ms)
+✔ R15 compiler drug frame with real Provider editorial suffix es (31.308042ms)
+✔ CATALOG integration specific Paracetamol 500 mg pt (36.74775ms)
+✔ CATALOG integration specific Contraindicações da ceftriaxona pt (36.768875ms)
+✔ CATALOG integration specific Como diluir noradrenalina? pt (34.473667ms)
+✔ CATALOG integration specific Ajuste renal de metformina pt (33.003458ms)
+✔ CATALOG integration specific Paracetamol 500 mg es (33.628083ms)
+✔ CATALOG integration specific Contraindicações da ceftriaxona es (41.915916ms)
+✔ CATALOG integration specific Como diluir noradrenalina? es (31.155458ms)
+✔ CATALOG integration specific Ajuste renal de metformina es (30.107458ms)
+✔ CATALOG authenticated drug continuation pt Qual o ajuste renal? (78.333875ms)
+✔ CATALOG authenticated drug continuation es ¿Cuáles son las interacciones? (74.640542ms)
+✔ CATALOG authenticated drug continuation pt Como diluir? (74.517459ms)
+✔ CATALOG corrupted saved drug cannot authorize a continuation (58.566125ms)
+✔ CATALOG known pending drug never becomes pathology or WEB (19.593375ms)
+✔ CATALOG individualized child dose is not converted to general drug reference (235.967ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7577.419583

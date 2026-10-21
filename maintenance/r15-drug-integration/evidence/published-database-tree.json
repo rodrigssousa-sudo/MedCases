@@ -1,0 +1,295 @@
+{
+  "sha": "0789ae164a65a09164fa491c6f9628877520bcbd",
+  "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/trees/0789ae164a65a09164fa491c6f9628877520bcbd",
+  "tree": [
+    {
+      "path": "alergia_imunologia.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "24024075491bd0bfe6eaf8918ed5f3f3b929a90b",
+      "size": 264023,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/24024075491bd0bfe6eaf8918ed5f3f3b929a90b"
+    },
+    {
+      "path": "analgesia_opioides.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7b51f6648e4196db3d8450bd109acf9681482b83",
+      "size": 44992,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/7b51f6648e4196db3d8450bd109acf9681482b83"
+    },
+    {
+      "path": "analgesicos.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "9739f8baf3b4feaf22c9f58f54add9715a091129",
+      "size": 821926,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/9739f8baf3b4feaf22c9f58f54add9715a091129"
+    },
+    {
+      "path": "anticoag.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "35cc23b60fd01a316e1bce3898cd8300e7e4faf0",
+      "size": 223082,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/35cc23b60fd01a316e1bce3898cd8300e7e4faf0"
+    },
+    {
+      "path": "antimicrobianos.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fd6b6ab32b9fcf878c3ee3ce07ee58b2419f42e2",
+      "size": 2261324,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/fd6b6ab32b9fcf878c3ee3ce07ee58b2419f42e2"
+    },
+    {
+      "path": "cardio.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "7cd4a2d632ade9b79dc4673fcdf6291178af1b80",
+      "size": 4635777,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/7cd4a2d632ade9b79dc4673fcdf6291178af1b80"
+    },
+    {
+      "path": "cardiologia.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "186b6c428dbef0e21e9b391c657a1e5bbef9e338",
+      "size": 265035,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/186b6c428dbef0e21e9b391c657a1e5bbef9e338"
+    },
+    {
+      "path": "emergencia.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5d12a3cce7a5b56be6ddc55947fda71d6aa51047",
+      "size": 574703,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/5d12a3cce7a5b56be6ddc55947fda71d6aa51047"
+    },
+    {
+      "path": "endocrino.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0834543794f8b4684fdf2e598a5768f2b7f8098d",
+      "size": 300613,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/0834543794f8b4684fdf2e598a5768f2b7f8098d"
+    },
+    {
+      "path": "endocrino_glp1.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "72340507d898096aa945acf2b0004d55a7008705",
+      "size": 43660,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/72340507d898096aa945acf2b0004d55a7008705"
+    },
+    {
+      "path": "gastro.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "84932862555d4aeb6a2387b5c82294c5030cc387",
+      "size": 128812,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/84932862555d4aeb6a2387b5c82294c5030cc387"
+    },
+    {
+      "path": "gastro_imuno.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "abcfbffc7ca84dc0da8e53c13273def6479f5e9d",
+      "size": 29068,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/abcfbffc7ca84dc0da8e53c13273def6479f5e9d"
+    },
+    {
+      "path": "gastroenterologia.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "687495f88d3103c503b410614ca39ca865c712e1",
+      "size": 508860,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/687495f88d3103c503b410614ca39ca865c712e1"
+    },
+    {
+      "path": "ginecologia.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "0ae457fbd61e5560a1cad49195bb8013df8718b1",
+      "size": 75222,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/0ae457fbd61e5560a1cad49195bb8013df8718b1"
+    },
+    {
+      "path": "gold33_nova_lista.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "40d4116731708f661e7afb8a3640fd47d69ae7df",
+      "size": 3228875,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/40d4116731708f661e7afb8a3640fd47d69ae7df"
+    },
+    {
+      "path": "gold33_novo_093.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ac9edabe5b857cf5964edeadb11d188148fabcbf",
+      "size": 712172,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/ac9edabe5b857cf5964edeadb11d188148fabcbf"
+    },
+    {
+      "path": "hematologia.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "fbe60787d52d80efc9c36fb51b12b15eb3473d94",
+      "size": 221050,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/fbe60787d52d80efc9c36fb51b12b15eb3473d94"
+    },
+    {
+      "path": "imuno_corticoide.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2a31a2227b2206284e3552a3d31b6a2d64802610",
+      "size": 94905,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/2a31a2227b2206284e3552a3d31b6a2d64802610"
+    },
+    {
+      "path": "infectologia.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "d195ae07c084a17df87be8287d660212abd1f4a3",
+      "size": 1069614,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/d195ae07c084a17df87be8287d660212abd1f4a3"
+    },
+    {
+      "path": "infusoes.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "da56828d6e92a90a7e9a92bb642fe819aae05951",
+      "size": 72069,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/da56828d6e92a90a7e9a92bb642fe819aae05951"
+    },
+    {
+      "path": "interacoes.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "2c196ccc3f409021e74a04c025dab734598fc33d",
+      "size": 1610648,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/2c196ccc3f409021e74a04c025dab734598fc33d"
+    },
+    {
+      "path": "nefro.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "b07def49a2486c8bd1d1eb35d724cb0d2078b43d",
+      "size": 614617,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/b07def49a2486c8bd1d1eb35d724cb0d2078b43d"
+    },
+    {
+      "path": "neuro.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f4e5d53b2491f0d7d5d73a947601d6a6ef00b4f9",
+      "size": 557,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/f4e5d53b2491f0d7d5d73a947601d6a6ef00b4f9"
+    },
+    {
+      "path": "neurologia.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "642a29e74a206a700abe8da36fea5e1b85f24a93",
+      "size": 1557806,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/642a29e74a206a700abe8da36fea5e1b85f24a93"
+    },
+    {
+      "path": "obesidade.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "ce6119dfd835148b4845a5c10478f5b99142e67e",
+      "size": 47457,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/ce6119dfd835148b4845a5c10478f5b99142e67e"
+    },
+    {
+      "path": "oftalmologia.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "58c5c96bccb70cc66d14309216ec001d83137297",
+      "size": 62555,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/58c5c96bccb70cc66d14309216ec001d83137297"
+    },
+    {
+      "path": "pneumo.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "05639378084825bf2bd0b7ad8cc8f519a70712c7",
+      "size": 577,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/05639378084825bf2bd0b7ad8cc8f519a70712c7"
+    },
+    {
+      "path": "pneumologia.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "e5b2a8de4bcc661f76a6370308cb2a8f3167636c",
+      "size": 662028,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/e5b2a8de4bcc661f76a6370308cb2a8f3167636c"
+    },
+    {
+      "path": "pneumologia_otorrino.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "34b4b571ee00db3ad1eef4daf5a0624f157e7af5",
+      "size": 63547,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/34b4b571ee00db3ad1eef4daf5a0624f157e7af5"
+    },
+    {
+      "path": "prescricoes.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "86f75396fb2f9623d93533770ad96bd884c1b8d4",
+      "size": 259957,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/86f75396fb2f9623d93533770ad96bd884c1b8d4"
+    },
+    {
+      "path": "psicofarmacos.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4516664768d451c8a3542eaf5aa4a41e2cbb7c9a",
+      "size": 562862,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/4516664768d451c8a3542eaf5aa4a41e2cbb7c9a"
+    },
+    {
+      "path": "psiquiatria.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "152cb74a724dc7cf50d8b839ced4044a2f51dffe",
+      "size": 753819,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/152cb74a724dc7cf50d8b839ced4044a2f51dffe"
+    },
+    {
+      "path": "reumatologia.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "4130016543ecf40ab0a8a00b069c8ec0d193d745",
+      "size": 57878,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/4130016543ecf40ab0a8a00b069c8ec0d193d745"
+    },
+    {
+      "path": "sedacao.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c521e0bd42ff8cd0ecc99dd9f999a8aaccf1a2ad",
+      "size": 72171,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/c521e0bd42ff8cd0ecc99dd9f999a8aaccf1a2ad"
+    },
+    {
+      "path": "toxicologia.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "c80cd98667745321c8e9b252b25d46eb7b98cda7",
+      "size": 91723,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/c80cd98667745321c8e9b252b25d46eb7b98cda7"
+    },
+    {
+      "path": "uro_ginecologia.js",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "be192e3948dafcb7b4cf15c03a9f094da816f7c0",
+      "size": 131200,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/be192e3948dafcb7b4cf15c03a9f094da816f7c0"
+    }
+  ],
+  "truncated": false
+}

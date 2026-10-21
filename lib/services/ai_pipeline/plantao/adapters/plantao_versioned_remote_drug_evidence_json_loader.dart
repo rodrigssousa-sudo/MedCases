@@ -20,7 +20,7 @@ class PlantaoVersionedRemoteDrugEvidenceJsonLoader {
         now = now ?? DateTime.now,
         baseUri = baseUri ??
             Uri.parse(
-              'https://medcasescalcu.com/api/ai-drug-data/',
+              'https://plankton-app-9dgnu.ondigitalocean.app/api/ai-drug-data/',
             ),
         _ownsClient = client == null;
 

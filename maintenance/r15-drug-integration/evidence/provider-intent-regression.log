@@ -1,0 +1,38 @@
+00:00 +0: loading /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/providers/r15_message_intent_test.dart
+00:00 +0: actual provider selects drug intent: Paracetamol
+00:00 +1: actual provider selects drug intent: Noradrenalina
+00:00 +2: actual provider selects drug intent: Ceftriaxona
+00:00 +3: actual provider selects drug intent: Metformina
+00:00 +4: actual provider selects drug intent: Paracetamol dosis
+00:00 +5: actual provider selects drug intent: Ceftriaxona contraindicaciones
+00:00 +6: actual provider selects drug intent: Ajuste renal de metformina
+00:00 +7: actual provider preserves toxicological context: Intoxicação por paracetamol
+00:00 +8: actual provider preserves toxicological context: Sobredosis de paracetamol
+00:00 +9: actual provider preserves toxicological context: ¿Sobredosis de paracetamol?
+00:00 +10: actual provider preserves toxicological context:   Intoxicação por paracetamol
+00:00 +11: actual provider preserves toxicological context: Paciente ingeriu 20 g de paracetamol
+00:00 +12: actual provider retains pathology intent: Hipocalemia
+00:00 +13: actual provider retains pathology intent: Hipopotasemia
+00:00 +14: actual provider retains pathology intent: Sepse
+00:00 +15: contextual dose is a case, not a name-only card
+00:00 +16: short case retains clinical context
+00:00 +17: typo and ambiguous name cannot authorize a drug lookup
+00:00 +18: scope-specific corrections leave Study legacy intent intact
+00:00 +19: actual thread manager retains follow-up: E quanto ao ajuste renal?
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=metformina turnCount=2
+00:00 +20: actual thread manager retains follow-up: ¿Y el ajuste renal?
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=metformina turnCount=2
+00:00 +21: actual thread manager retains follow-up: Qual o ajuste renal?
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=metformina turnCount=2
+00:00 +22: actual thread manager retains follow-up: Quais as interações?
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=short_query topic=metformina turnCount=2
+00:00 +23: actual thread manager retains follow-up: Como diluir?
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=followup_phrase topic=metformina turnCount=2
+00:00 +24: actual thread manager retains follow-up: ¿Cuáles son las interacciones?
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=followup_phrase topic=metformina turnCount=2
+00:00 +25: actual thread manager retains follow-up: ¿Cómo diluir?
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=short_query topic=metformina turnCount=2
+00:00 +26: explicit new case and different drug do not inherit adjustment context
+[THREAD_MANAGER] mode=plantao action=new_thread reason=short_clinical_switch oldTopic=metformina newTopic=novo_caso_pneumonia
+[THREAD_MANAGER] mode=plantao action=new_thread reason=short_drug_switch oldTopic=noradrenalina newTopic=ajuste_renal_ceftriaxona query="ajuste renal da ceftriaxona"
+00:00 +27: All tests passed!

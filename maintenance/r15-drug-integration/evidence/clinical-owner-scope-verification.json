@@ -1,0 +1,54 @@
+[
+  {
+    "id": "paracetamol",
+    "sourceOwner": "database/analgesicos.js",
+    "ownerGitBlobVerified": "9739f8baf3b4feaf22c9f58f54add9715a091129",
+    "approvalPackageSha256": "6777d951b60768ad775b47ac152241bd9b37057d90fcf3c5784894d7c4d507e4",
+    "payloadFound": true,
+    "approvedHashMatchesOwnerPayload": true,
+    "publicationAuthorized": true,
+    "requiredFieldCount": 33,
+    "ptExact": true,
+    "esExact": true,
+    "scope": "Existing published clinical payload equality, not a new signature or human medical review"
+  },
+  {
+    "id": "noradrenalina",
+    "sourceOwner": "database/emergencia.js",
+    "ownerGitBlobVerified": "5d12a3cce7a5b56be6ddc55947fda71d6aa51047",
+    "approvalPackageSha256": "498cafa4e0fbd5a28b86b77472df89a94eaa0fa96bde0eb3b706fdf18d0e7236",
+    "payloadFound": true,
+    "approvedHashMatchesOwnerPayload": true,
+    "publicationAuthorized": true,
+    "requiredFieldCount": 33,
+    "ptExact": true,
+    "esExact": true,
+    "scope": "Existing published clinical payload equality, not a new signature or human medical review"
+  },
+  {
+    "id": "ceftriaxona",
+    "sourceOwner": "database/infectologia.js",
+    "ownerGitBlobVerified": "d195ae07c084a17df87be8287d660212abd1f4a3",
+    "approvalPackageSha256": "edd955962363f9efc0d22d2a79299d1e785692bced8bf248426d86777ef530d0",
+    "payloadFound": true,
+    "approvedHashMatchesOwnerPayload": true,
+    "publicationAuthorized": true,
+    "requiredFieldCount": 33,
+    "ptExact": true,
+    "esExact": true,
+    "scope": "Existing published clinical payload equality, not a new signature or human medical review"
+  },
+  {
+    "id": "metformina",
+    "sourceOwner": "database/endocrino.js",
+    "ownerGitBlobVerified": "0834543794f8b4684fdf2e598a5768f2b7f8098d",
+    "approvalPackageSha256": "05f711b06c165ab09da3326a0a672735b3efd2c46bd3e881bcfe3ec6606ae4a0",
+    "payloadFound": true,
+    "approvedHashMatchesOwnerPayload": true,
+    "publicationAuthorized": true,
+    "requiredFieldCount": 33,
+    "ptExact": true,
+    "esExact": true,
+    "scope": "Existing published clinical payload equality, not a new signature or human medical review"
+  }
+]

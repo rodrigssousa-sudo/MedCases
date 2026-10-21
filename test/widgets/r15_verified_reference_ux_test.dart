@@ -354,4 +354,60 @@ void main() {
       expect(body(tester), isNot(contains('clinicalContentSha256')));
     });
   }
+  for (final locale in ['pt', 'es']) {
+    for (final field in ['ajuste renal', 'interacoes', 'diluir']) {
+      testWidgets(
+          'saved source field survives history without guessing: $field $locale',
+          (tester) async {
+        final sourceDocument = jsonDecode(
+            namedDocuments['noradrenalina/$locale']['documentJson']
+                as String) as Map<String, dynamic>;
+        sourceDocument['lookupField'] = field;
+        final raw = jsonEncode(sourceDocument);
+        final hash = PlantaoPresentationContract.textHash(raw);
+        final reference =
+            CanonicalClinicalSnapshot.fromDrugReference(raw, hash);
+        final hydrated = AiSessionExchangeHydrator.hydrate(
+            sessionId: 'LOCAL_FIELD_TEST',
+            exchanges: [
+              {
+                'requestId': 'LOCAL_FIELD_REQUEST',
+                'mode': 'plantao',
+                'locale': locale,
+                'userInput': '',
+                'provenance': 'CANONICAL_DRUG_INFORMATION_NOT_PRESCRIPTION',
+                'assistantOutput': reference.blocks(locale).join(),
+                'drugReference': {'documentJson': raw, 'payloadSha256': hash},
+              }
+            ]).single.referenceDocument!;
+        await show(tester, hydrated, hydrated.blocks(locale).join(), locale);
+        final visible = body(tester).replaceAll('**', '');
+        final source = jsonDecode(sourceDocument['sourceJson']) as Map;
+        final expected = source[locale][field == 'ajuste renal'
+            ? 'renalDose'
+            : field == 'interacoes'
+                ? 'interactions'
+                : 'infusionProtocol'] as String;
+        expect(
+            visible,
+            contains(
+                GuardiaClinicalResponseView.normalizeDrugIntervalsForDisplay(
+                    expected, locale)));
+        expect(visible, isNot(contains('## Posologia de referência')));
+        expect(visible, isNot(contains('## Posología de referencia')));
+        if (field != 'diluir') {
+          expect(visible, isNot(contains('8-12 microgramas/min')));
+        }
+        expect(hydrated.drugReferenceData!['sourceJson'],
+            sourceDocument['sourceJson']);
+        await tester.ensureVisible(
+            find.byKey(const ValueKey('guardia_full_response_action')));
+        await tester
+            .tap(find.byKey(const ValueKey('guardia_full_response_action')));
+        await tester.pumpAndSettle();
+        expect(body(tester).replaceAll('**', ''),
+            contains(source[locale]['dose']));
+      });
+    }
+  }
 }

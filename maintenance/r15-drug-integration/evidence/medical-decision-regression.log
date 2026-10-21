@@ -1,0 +1,15 @@
+test_changed_artifact (test_historical_decisions.Tests.test_changed_artifact) ... ok
+test_changed_catalog (test_historical_decisions.Tests.test_changed_catalog) ... ok
+test_duplicate (test_historical_decisions.Tests.test_duplicate) ... ok
+test_missing_reviewer (test_historical_decisions.Tests.test_missing_reviewer) ... ok
+test_missing_signature_acceptance (test_historical_decisions.Tests.test_missing_signature_acceptance) ... ok
+test_path_traversal (test_historical_decisions.Tests.test_path_traversal) ... ok
+test_pending_not_approval (test_historical_decisions.Tests.test_pending_not_approval) ... ok
+test_signature_changed (test_historical_decisions.Tests.test_signature_changed) ... ok
+test_valid_fixture_never_publishes (test_historical_decisions.Tests.test_valid_fixture_never_publishes) ... ok
+test_wrong_language (test_historical_decisions.Tests.test_wrong_language) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.023s
+
+OK

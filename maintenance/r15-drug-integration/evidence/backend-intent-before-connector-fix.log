@@ -1,0 +1,40 @@
+✔ not a general medication card: Intoxicação por paracetamol (5.615125ms)
+✔ not a general medication card: Intoxicación por paracetamol (0.439459ms)
+✔ not a general medication card: Sobredosis de paracetamol (0.231042ms)
+✔ not a general medication card: Dose de paracetamol em criança de 15 kg (8.919791ms)
+✔ strength qualifier resolves identity without authorizing that dose (3.836917ms)
+✖ field-only question requires saved canonical identity (5.06575ms)
+✔ named contraindications stay independent of prior drug (2.164916ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 6
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 234.222792
+
+✖ failing tests:
+
+test at maintenance/r15-drug-integration/intent-regression.test.cjs:25:1
+✖ field-only question requires saved canonical identity (5.06575ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'e quanto ao ajuste renal'
+  - 'metformina'
+  
+      at TestContext.<anonymous> (/Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/maintenance/r15-drug-integration/intent-regression.test.cjs:29:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1201:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:831:18)
+      at Test.postRun (node:internal/test_runner/test:1330:19)
+      at Test.run (node:internal/test_runner/test:1258:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'e quanto ao ajuste renal',
+    expected: 'metformina',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

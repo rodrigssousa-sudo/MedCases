@@ -119,7 +119,7 @@ class ClinicalThreadManager {
     'dilución', 'infusión',
     'qué hacer', 'siguiente paso', 'próximo paso',
     'detallar', 'más detalles', 'explica',
-    'interacción',
+    'interacción', 'interacciones',
   };
 
   // ── Follow-ups clínicos contextuais com dados novos ───────────────────────
@@ -743,7 +743,6 @@ static const _kNewCaseSignals = <String>[
         _activeTopic.isNotEmpty &&
         _lastActivityMs > 0 &&
         (now - _lastActivityMs) > kThreadTimeoutMs) {
-      final oldTopic = _activeTopic;
       _startNewThread(q, now);
       return ClinicalThreadStatus(
         action: ThreadAction.newThread,
@@ -856,8 +855,10 @@ static const _kNewCaseSignals = <String>[
     }
 
     // ── Query muito curta / follow-up phrase → continuation ───────────────
+    final phraseQuery = q.replaceFirst(RegExp(r'^[¿¡\s]+'), '')
+        .replaceFirst(RegExp(r'[?!.]+$'), '').trim();
     final isFollowUpPhrase = _kFollowUpPhrases.any(
-      (p) => q == p || q.startsWith('$p ') || q.endsWith(' $p'),
+      (p) => phraseQuery == p || phraseQuery.startsWith('$p ') || phraseQuery.endsWith(' $p'),
     );
     final isTooShort = wordCount <= 3;
     final shortContextualFollowUp = isContextualClinicalFollowUp(

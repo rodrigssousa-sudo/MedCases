@@ -1,0 +1,45 @@
+{
+  "sha": "deed7e6b62b6e81db2f6be7a8dd036f3e2615ca6",
+  "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/trees/deed7e6b62b6e81db2f6be7a8dd036f3e2615ca6",
+  "tree": [
+    {
+      "path": "ai-drug-data",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "6b6ce265b3cad83d526445a21e253700f9854912",
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/trees/6b6ce265b3cad83d526445a21e253700f9854912"
+    },
+    {
+      "path": "drug_access_free60.v2.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "5b34d519c455bf1b8b1e7d631f9bb4d47cc04a52",
+      "size": 1526,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/5b34d519c455bf1b8b1e7d631f9bb4d47cc04a52"
+    },
+    {
+      "path": "drugs",
+      "mode": "040000",
+      "type": "tree",
+      "sha": "bf6065fe4a4cdf859e362d79f20b300c987cbaca",
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/trees/bf6065fe4a4cdf859e362d79f20b300c987cbaca"
+    },
+    {
+      "path": "drugs_index.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "71d573997b96feb865104c94d54cdf170bee86f4",
+      "size": 442946,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/71d573997b96feb865104c94d54cdf170bee86f4"
+    },
+    {
+      "path": "manifest.json",
+      "mode": "100644",
+      "type": "blob",
+      "sha": "f193c1765b2ffe3055ac499bc39a37a945e77b23",
+      "size": 6679,
+      "url": "https://api.github.com/repos/rodrigssousa-sudo/medcases-calculadora/git/blobs/f193c1765b2ffe3055ac499bc39a37a945e77b23"
+    }
+  ],
+  "truncated": false
+}

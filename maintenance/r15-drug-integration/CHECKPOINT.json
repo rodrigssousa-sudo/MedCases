@@ -1,0 +1,10 @@
+{
+  "baseline": "f7409fb57db5cd4e78028e6f8c2bfc93e8b96151",
+  "authorizedStartUTC": "2026-10-21T00:43:28Z",
+  "deadlineUTC": "2026-10-21T02:43:28Z",
+  "mission": "Current canonical pharmacology integration; local changes and authorized source reads only",
+  "productionMutations": 0,
+  "candidate1721Mutable": false,
+  "existingBackendCandidate": "/Users/brunorodrigues/Documents/Codex/MEDCASES-R15-COMMERCIAL-PATCH/candidate/functions",
+  "backendStrategy": "Apply only proven adapter/transport delta in a temporary copy of existing candidate, preserve original frozen package; commit unified patch and regression evidence"
+}

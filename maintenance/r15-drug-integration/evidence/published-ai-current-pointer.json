@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "medcases-ai-drug-data-current-v1",
+  "bundleId": "clinical-data-v1-750031a7bf922def-ai-84c80acb08153a18",
+  "bundleVersion": "clinical-data-v1-750031a7bf922def-ai-84c80acb08153a18",
+  "bundleSha256": "84c80acb08153a1851a7f65656abb19ecdb284042e566bfbff56a858e86629eb",
+  "sourceBundleVersion": "clinical-data-v1-750031a7bf922def",
+  "sourceBundleSha256": "750031a7bf922defdb092c6fd958af62e3db0dc50a2c50ff2d76792ddb67012e",
+  "publicationPath": "bundles/clinical-data-v1-750031a7bf922def-ai-84c80acb08153a18/publication.json",
+  "manifestPath": "bundles/clinical-data-v1-750031a7bf922def-ai-84c80acb08153a18/manifest.json",
+  "indexPath": "bundles/clinical-data-v1-750031a7bf922def-ai-84c80acb08153a18/index.json",
+  "drugPathTemplate": "bundles/clinical-data-v1-750031a7bf922def-ai-84c80acb08153a18/drugs/{id}.json",
+  "drugCount": 838,
+  "typedRegimenCount": 0,
+  "deterministicDosingPublishableCount": 0,
+  "textToRegimenInferenceUsed": false,
+  "generatedAtUtc": "2026-09-20T21:14:08.049Z",
+  "clinicalBaseline": {
+    "version": "clinical-data-v1-750031a7bf922def",
+    "sha256": "750031a7bf922defdb092c6fd958af62e3db0dc50a2c50ff2d76792ddb67012e"
+  },
+  "previousBundleId": "clinical-data-v1-3cdfc00d12759dc3-ai-4463a5557ad55dbc"
+}
+

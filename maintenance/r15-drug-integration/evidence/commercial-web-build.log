@@ -1,0 +1,19 @@
+Compiling lib/main.dart for the Web...                          
+Wasm dry run findings:
+Found incompatibilities with WebAssembly.
+
+package:medcases/platform/web_impl.dart 5:1 - dart:html unsupported (0)
+package:medcases/platform/web_impl.dart 7:1 - dart:js unsupported (1)
+file:///Users/brunorodrigues/.pub-cache/hosted/pub.dev/image-4.5.4/lib/src/exif/ifd_directory.dart 174:26 - avoid_double_and_int_checks lint violation: Explicit check for double or int. (13)
+file:///Users/brunorodrigues/.pub-cache/hosted/pub.dev/image-4.5.4/lib/src/exif/ifd_directory.dart 183:26 - avoid_double_and_int_checks lint violation: Explicit check for double or int. (13)
+file:///Users/brunorodrigues/.pub-cache/hosted/pub.dev/flutter_tts-4.2.0/lib/flutter_tts_web.dart 104:23 - invalid_runtime_check_with_js_interop_types lint violation: Cast from 'JSAny?' to 'int' casts a JS interop value to a Dart type, which might not be platform-consistent. (8)
+file:///Users/brunorodrigues/.pub-cache/hosted/pub.dev/flutter_tts-4.2.0/lib/flutter_tts_web.dart 105:21 - invalid_runtime_check_with_js_interop_types lint violation: Cast from 'JSAny?' to 'String' casts a JS interop value to a Dart type, which might not be platform-consistent. (8)
+file:///Users/brunorodrigues/.pub-cache/hosted/pub.dev/flutter_tts-4.2.0/lib/flutter_tts_web.dart 107:21 - invalid_runtime_check_with_js_interop_types lint violation: Cast from 'JSAny?' to 'String' casts a JS interop value to a Dart type, which might not be platform-consistent. (8)
+
+Consider addressing these issues to enable wasm builds. See docs for more info: https://docs.flutter.dev/platform-integration/web/wasm
+
+Use --no-wasm-dry-run to disable these warnings.
+Font asset "CupertinoIcons.ttf" was tree-shaken, reducing it from 257628 to 1472 bytes (99.4% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
+Font asset "MaterialIcons-Regular.otf" was tree-shaken, reducing it from 1645184 to 78204 bytes (95.2% reduction). Tree-shaking can be disabled by providing the --no-tree-shake-icons flag when building your app.
+Compiling lib/main.dart for the Web...                            105,2s
+✓ Built build/web

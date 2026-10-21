@@ -1,0 +1,19 @@
+{
+  "atUTC": "2026-10-21T01:25:23.954387+00:00",
+  "files": {
+    "build/web/main.dart.js": "f949e7bc505d17aa53b13f00f1ffabec19f8ec5f48ff92648d99e6c5d4fe4abb",
+    "build/web/flutter_bootstrap.js": "43b08db9fc773d9e9f2ab8f3aa60d8f142d09bc2784cffa5ce4224d73539c01c",
+    "build/web/version.json": "9d0eea96bf724f2bb8749a304a25c31e6ac174a4a516a0b3337f963874d1b9bb",
+    "build/r15-ux-preview/main.dart.js": "6bb927fa33d92ea3c0f896b5fd63b6d3feb85137aa161dd9f709eb4f7bd6d621",
+    "tool/clinical_catalog/publication.mjs": "c5913b486b383b3792aec0e9ef2be4a1c176ab742740ed0454da28dce2de16e1",
+    "tool/clinical_catalog/functional_schema.mjs": "f965129251089ce36c66f37871288f2fdc01e8a2d8af712547f1db10a46b3127",
+    "tool/clinical_catalog/stage_reviewed_protocols.py": "27139c12830fdc97e763c9fea7e833ae47b5d5d7809275ef8a694e974c747bf6",
+    "tool/clinical_catalog/medical_review/validar_decisoes.py": "00334284f74bcef0e1edb28b6ff3e614e4d44ab4ddaa4ba55f634555f10f26e3"
+  },
+  "version": {
+    "app_name": "medcases",
+    "version": "7.0.2",
+    "build_number": "1704",
+    "package_name": "medcases"
+  }
+}

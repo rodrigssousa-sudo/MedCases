@@ -262,7 +262,8 @@ class _GuardiaClinicalResponseViewState
       final quick = _drugQuickText(
           reference.drugReferenceData!['text'] as String,
           es: _isSpanish,
-          question: widget.userText);
+          question:
+              '${reference.drugReferenceData!['lookupField'] is String ? reference.drugReferenceData!['lookupField'] : ''} ${widget.userText}');
       if (quick != null) {
         short =
             '${_isSpanish ? CanonicalClinicalSnapshot.drugNoticeEs : CanonicalClinicalSnapshot.drugNoticePt}\n\n$quick';
@@ -416,6 +417,15 @@ class _GuardiaClinicalResponseViewState
       (r'farmacocin', r'farmacocin'),
       (r'gesta|embarazo', r'gesta|embarazo'),
       (r'lacta', r'lacta'),
+      (r'ajuste renal|funcion renal|função renal', r'renal'),
+      (
+        r'ajuste hepatico|ajuste hepático|funcion hepatica|função hepática',
+        r'hep[aá]tic'
+      ),
+      (
+        r'diluir|dilui[cç][aã]o|diluci[oó]n|preparo|preparaci|infus',
+        r'^apresenta|^presenta|administra|preparo|preparaci|infus|contraindica|precau|seguran|seguridad|alerta|graves'
+      ),
     ];
     for (final request in requested) {
       if (RegExp(request.$1, caseSensitive: false).hasMatch(question)) {

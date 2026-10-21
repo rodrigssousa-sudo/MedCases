@@ -1,0 +1,22 @@
+{
+  "observedAtUTC": "2026-10-21T00:45:00.062665+00:00",
+  "id": "56c8a039-10e9-4136-b546-599aa5cff529",
+  "liveUrl": "https://medcasescalcu.com",
+  "activeDeployment": {
+    "id": "50aaa8c9-84ba-42c6-b8d4-239563f2def8",
+    "phase": "ACTIVE",
+    "createdAt": "2026-09-30T22:20:39Z"
+  },
+  "services": [
+    {
+      "name": "calculator-gateway",
+      "sourceDir": "/",
+      "github": {
+        "repo": "rodrigssousa-sudo/medcases-calculadora",
+        "branch": "main",
+        "deploy_on_push": true
+      }
+    }
+  ],
+  "productionMutations": 0
+}

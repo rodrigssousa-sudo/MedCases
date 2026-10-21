@@ -1,0 +1,120 @@
+--- a/plantao_public_restore.js
++++ b/plantao_public_restore.js
+@@ -3,6 +3,25 @@
+ const {resolveMedCasesTier}=require('./lib/query_entitlement_source');
+ const {preserveClinicalPayload}=require('./plantao_r8_transport');
+ const reject=(code,status=409)=>{throw Object.assign(new Error(code),{code,status});};
++async function savedDrugContext(firestore,uid,sessionId) {
++ if(typeof sessionId!=='string'||!sessionId||sessionId.includes('/'))return null;
++ const parent=await firestore.doc('users/'+uid+'/ai_sessions/'+sessionId).get();
++ const data=parent.exists&&parent.data();
++ if(!data||data.uid!==uid||data.isDeleted===true||!data.lastRequestId)return null;
++ const id=data.lastRequestId;if(typeof id!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(id))return null;
++ const snapshot=await firestore.doc('users/'+uid+'/ai_sessions/'+sessionId+'/exchanges/'+id).get();
++ const exchange=snapshot.exists&&snapshot.data();
++ if(!exchange||exchange.uid!==uid||exchange.sessionId!==sessionId||exchange.requestId!==id||exchange.provenance!=='CANONICAL_DRUG_INFORMATION_NOT_PRESCRIPTION')return null;
++ const ref=exchange.drugReference;
++ if(!ref||typeof ref.documentJson!=='string'||hash(ref.documentJson)!==ref.payloadSha256)return null;
++ try {
++  const doc=JSON.parse(ref.documentJson);
++  if(doc.scope!=='CANONICAL_DRUG_INFORMATION_NOT_PRESCRIPTION'||!['pt','es'].includes(doc.language)||
++     !/^[a-z0-9_]+$/.test(doc.canonicalDrugId)||doc.calculationAuthorized!==false||doc.clinicalApprovalGranted!==false||
++     exchange.assistantOutput!==require('./plantao_drug_reference').referenceText(ref,doc.language))return null;
++  return {canonicalDrugId:doc.canonicalDrugId,requestId:id,payloadSha256:ref.payloadSha256};
++ }catch(_){return null;}
++}
+ async function restoreApprovedProtocol({firestore,uid,data,now=Date.now(),external}) {
+   const user=await firestore.doc('users/'+uid).get();
+   const account=user.exists&&user.data();
+@@ -12,11 +31,33 @@
+   const entitlement=resolveMedCasesTier(account,now);
+   if(!['free','premium'].includes(entitlement.tier))reject('permission_denied',403);
+   if(data.mode!=='plantao'||data.approvedProtocolAccess!==true||!['pt','es'].includes(data.lang)||
+-      typeof data.catalogQuery!=='string'||!Array.isArray(data.history)||data.history.length!==0)
++      typeof data.catalogQuery!=='string'||!Array.isArray(data.history))
+     reject('clinical_approval_required');
+   // Preserve the complete frame before resolving the current remote registry.
+   try { preserveClinicalPayload({query:data.userMessage,context:data.systemPrompt,history:data.history}); }
+   catch (_) { reject('clinical_approval_required'); }
++  let priorDrug=null,drugFailure=null;
++  if(external) {
++    priorDrug=await savedDrugContext(firestore,uid,data.sessionId);
++    try {
++      const drugReference=await require('./plantao_drug_reference').resolveDrugReference({
++        query:data.catalogQuery,language:data.lang,data,authorization:external.authorization,
++        contextDrugId:priorDrug?.canonicalDrugId,fetchImpl:external.fetchImpl,
++      });
++      if(drugReference)return {drugReference,entitlement,priorDrugRequestId:priorDrug?.requestId||null,
++        contextDrugId:priorDrug?.canonicalDrugId||null};
++    }catch(error) {
++      // A known pending/ambiguous source can never become a pathology or WEB
++      // fallback. Dependency/permission failure may still allow an independently
++      // authorized clinical protocol; it cannot manufacture catalog absence.
++      if(!['permission_denied','drug_catalog_unavailable'].includes(error.code))throw error;
++      drugFailure=error;
++    }
++  }
++  if(data.history.length!==0) {
++    if(drugFailure)throw drugFailure;
++    reject('clinical_approval_required');
++  }
+   try {
+     const {protocol}=await require('./plantao_dynamic_catalog').resolveDynamicProtocol({firestore,data});
+     return {protocol,entitlement};
+@@ -24,12 +65,7 @@
+     // Only a valid catalog with no matching identity in BOTH clinical/drug
+     // catalogs may enter research. Never translate broken catalog reads to absence.
+     if(error.code!=='clinical_approval_required'||!external)throw error;
+-    const catalog=await require('./plantao_r8_clinical_release_guard').readCatalogIdentities(firestore);
+-    const drugReference=await require('./plantao_drug_reference').resolveDrugReference({
+-      query:data.catalogQuery,language:data.lang,data,catalogVersion:catalog.activeVersion,
+-      authorization:external.authorization,fetchImpl:external.fetchImpl,
+-    });
+-    if(drugReference)return {drugReference,entitlement,referenceVersion:{activeVersion:catalog.activeVersion,manifestSha256:catalog.manifestSha256}};
++    if(drugFailure)throw drugFailure;
+     const route=await require('./gpt_optional_grounding').resolveResearchRoute({
+       query:data.catalogQuery,language:data.lang,firestore,authorization:external.authorization,
+       fetchImpl:external.fetchImpl,requireCatalogAbsence:true,
+@@ -59,12 +95,12 @@
+       // The commit below checks it again, together with current cohort/version.
+       const [parent,existing,pointer]=await Promise.all([session.get(),exchange.get(),firestore.doc('app_config/clinical_content').get()]);
+       const prior=parent.exists&&parent.data(),c=pointer.exists&&pointer.data();
+-      if(prior&&(prior.uid!==uid||prior.isDeleted===true||(prior.lastRequestId&&prior.lastRequestId!==data.requestId)))throw new QueryError('SESSION_NOT_EMPTY');
++      if(prior&&(prior.uid!==uid||prior.isDeleted===true||(prior.lastRequestId&&prior.lastRequestId!==data.requestId&&(!result.drugReference||prior.lastRequestId!==result.priorDrugRequestId))))throw new QueryError('SESSION_NOT_EMPTY');
+       if(existing.exists)throw new QueryError('PERSISTENCE_CONFLICT');
+       if(!c||c.status!=='ACTIVE'||c.activeVersion!==result.researchRoute.activeVersion||c.manifestSha256!==result.researchRoute.manifestSha256)reject('clinical_approval_required');
+     }
+     if(result.drugReference){
+-      const current=await require('./plantao_drug_reference').resolveDrugReference({query:data.catalogQuery,language:data.lang,data,catalogVersion:result.referenceVersion.activeVersion,authorization:external.authorization,fetchImpl:external.fetchImpl});
++      const current=await require('./plantao_drug_reference').resolveDrugReference({query:data.catalogQuery,language:data.lang,data,contextDrugId:result.contextDrugId,authorization:external.authorization,fetchImpl:external.fetchImpl});
+       if(!current||current.payloadSha256!==result.drugReference.payloadSha256)reject('drug_source_unavailable');
+     }
+     await ledger.transition(uid,permit,'dispatching');
+@@ -92,15 +128,15 @@
+     // together; a disconnected client can recover the answer from History.
+     await firestore.runTransaction(async tx=>{
+       const opRef=firestore.doc('aiQueryOperations/'+permit.id);
+-      const [op,user,cfg,parent,existing,catalogPointer]=await Promise.all([tx.get(opRef),tx.get(firestore.doc('users/'+uid)),tx.get(firestore.doc('app_config/plantao_query_migration')),tx.get(session),tx.get(exchange),tx.get(firestore.doc('app_config/clinical_content'))]);
++      const [op,user,cfg,parent,existing,catalogPointer]=await Promise.all([tx.get(opRef),tx.get(firestore.doc('users/'+uid)),tx.get(firestore.doc('app_config/plantao_query_migration')),tx.get(session),tx.get(exchange),result.drugReference?Promise.resolve(null):tx.get(firestore.doc('app_config/clinical_content'))]);
+       const p=op.data(),account=user.exists&&user.data(),prior=parent.exists&&parent.data();
+-      if(!catalogPointer.exists||catalogPointer.data().status!=='ACTIVE'||catalogPointer.data().activeVersion!==version.activeVersion||catalogPointer.data().manifestSha256!==(version.catalogManifestSha256||version.manifestSha256))throw Object.assign(Error('clinical_approval_required'),{code:'clinical_approval_required'});
++      if(!result.drugReference&&(!catalogPointer.exists||catalogPointer.data().status!=='ACTIVE'||catalogPointer.data().activeVersion!==version.activeVersion||catalogPointer.data().manifestSha256!==(version.catalogManifestSha256||version.manifestSha256)))throw Object.assign(Error('clinical_approval_required'),{code:'clinical_approval_required'});
+       if(!p||p.uid!==uid||p.token!==permit.token||p.state!=='dispatching')throw new QueryError('REQUEST_REPLAY');
+       if(!ledger.active(cfg.exists&&cfg.data(),now()))throw new QueryError('MIGRATION_NOT_ACTIVE');
+       if(!alive()||!account||account.status!=='approved'||account.accountStatus==='blocked')throw new QueryError('REQUEST_REVOKED');
+       if(new Date(p.createdAt).toISOString().slice(0,10)!==new Date(now()).toISOString().slice(0,10))throw new QueryError('REQUEST_REVOKED');
+       if(p.tier==='premium'&&resolveMedCasesTier(account,now()).tier!=='premium')throw new QueryError('ENTITLEMENT_CHANGED');
+-      if(prior&&(prior.uid!==uid||prior.isDeleted===true||(prior.lastRequestId&&prior.lastRequestId!==data.requestId)))throw new QueryError('SESSION_NOT_EMPTY');
++      if(prior&&(prior.uid!==uid||prior.isDeleted===true||(prior.lastRequestId&&prior.lastRequestId!==data.requestId&&(!result.drugReference||prior.lastRequestId!==result.priorDrugRequestId))))throw new QueryError('SESSION_NOT_EMPTY');
+       if(existing.exists)throw new QueryError('PERSISTENCE_CONFLICT');
+       await ledger.assertCohort(tx,uid);
+       const date=stamp();
+@@ -130,7 +166,7 @@
+  if(/^external_research_(?:unavailable_[a-z_]+|requires_clinical_review)$/.test(error.message||'')||/^catalog_discovery_/.test(error.message||''))return {status:503,code:'external_research_unavailable'};
+ 
+  if(/^clinical_release_/.test(error.message||''))return {status:503,code:'approved_protocol_unavailable'};
+- const codes={drug_not_found:[404,'drug_not_found'],clinical_scope_not_authorized:[409,'clinical_scope_not_authorized'],drug_catalog_unavailable:[503,'drug_catalog_unavailable'],drug_source_unavailable:[409,'drug_source_unavailable'],drug_identity_ambiguous:[409,'drug_identity_ambiguous'],COHORT_DISABLED:[403,'public_test_not_authorized'],COHORT_NOT_AUTHORIZED:[403,'public_test_not_authorized'],FREE_PLANTAO_DAILY_LIMIT_REACHED:[429,'free_plantao_daily_limit_reached'],MIGRATION_NOT_ACTIVE:[503,'public_accounting_not_active'],REQUEST_REPLAY:[409,'request_replay'],REQUEST_CONFLICT:[409,'request_conflict'],INVALID_REQUEST:[400,'invalid_request'],ACCOUNT_REVOKED:[403,'not_approved'],AUTH_REQUIRED:[401,'unauthenticated'],REQUEST_REVOKED:[409,'request_revoked'],ENTITLEMENT_CHANGED:[403,'entitlement_changed'],SESSION_NOT_EMPTY:[409,'session_not_empty'],PERSISTENCE_CONFLICT:[409,'persistence_conflict'],clinical_approval_required:[409,'clinical_approval_required'],not_approved:[403,'not_approved'],permission_denied:[403,'permission_denied']};
++ const codes={drug_review_required:[409,'drug_review_required'],drug_not_found:[404,'drug_not_found'],clinical_scope_not_authorized:[409,'clinical_scope_not_authorized'],drug_catalog_unavailable:[503,'drug_catalog_unavailable'],drug_source_unavailable:[409,'drug_source_unavailable'],drug_identity_ambiguous:[409,'drug_identity_ambiguous'],COHORT_DISABLED:[403,'public_test_not_authorized'],COHORT_NOT_AUTHORIZED:[403,'public_test_not_authorized'],FREE_PLANTAO_DAILY_LIMIT_REACHED:[429,'free_plantao_daily_limit_reached'],MIGRATION_NOT_ACTIVE:[503,'public_accounting_not_active'],REQUEST_REPLAY:[409,'request_replay'],REQUEST_CONFLICT:[409,'request_conflict'],INVALID_REQUEST:[400,'invalid_request'],ACCOUNT_REVOKED:[403,'not_approved'],AUTH_REQUIRED:[401,'unauthenticated'],REQUEST_REVOKED:[409,'request_revoked'],ENTITLEMENT_CHANGED:[403,'entitlement_changed'],SESSION_NOT_EMPTY:[409,'session_not_empty'],PERSISTENCE_CONFLICT:[409,'persistence_conflict'],clinical_approval_required:[409,'clinical_approval_required'],not_approved:[403,'not_approved'],permission_denied:[403,'permission_denied']};
+  const [status,code]=codes[error.code]||[503,'persistence_unavailable'];return {status,code};
+ }
+ module.exports.deliverApprovedProtocol=deliverApprovedProtocol;

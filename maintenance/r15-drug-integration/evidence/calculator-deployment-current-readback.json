@@ -1,0 +1,10 @@
+{
+  "id": "50aaa8c9-84ba-42c6-b8d4-239563f2def8",
+  "phase": "ACTIVE",
+  "services": [
+    {
+      "name": "calculator-gateway",
+      "source_commit_hash": "79b73f43453f50339fea550c217ca11bb985624c"
+    }
+  ]
+}

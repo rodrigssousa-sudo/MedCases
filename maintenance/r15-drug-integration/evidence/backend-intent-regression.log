@@ -1,0 +1,15 @@
+✔ not a general medication card: Intoxicação por paracetamol (9.958083ms)
+✔ not a general medication card: Intoxicación por paracetamol (0.996458ms)
+✔ not a general medication card: Sobredosis de paracetamol (0.439917ms)
+✔ not a general medication card: Dose de paracetamol em criança de 15 kg (21.22325ms)
+✔ strength qualifier resolves identity without authorizing that dose (5.5425ms)
+✔ field-only question requires saved canonical identity (1.264834ms)
+✔ named contraindications stay independent of prior drug (3.562875ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 465.1455

@@ -1,0 +1,10 @@
+{
+  "total": 1018,
+  "canonicalUnique": 1018,
+  "publishedApprovalAssertions": 827,
+  "eligibleByExistingSourceContract": 827,
+  "pendingOrIncomplete": 191,
+  "independentlyReconciledOwnerPayloadSamples": 4,
+  "runtimeEligibilityIsConditionalOnLiveMCC1RightsAndFreshUnchangedSource": true,
+  "scope": "1018 existing read receipts match fresh current Git blobs; eligibility is source metadata, not 827 new signatures or current authenticated MCC1 responses"
+}

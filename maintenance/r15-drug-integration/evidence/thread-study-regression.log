@@ -1,0 +1,27 @@
+00:00 +0: loading /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_30turn_verbatim_memory_contract_test.dart
+00:00 +0: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_30turn_verbatim_memory_contract_test.dart: Study 30-turn verbatim memory keeps last 30 exchanges verbatim
+[STUDY_30TURN][HISTORY_SANITIZER] mode=estudo strategy=verbatim_30_exchanges sent=60/70 taskLabel=geral
+00:00 +1: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_30turn_verbatim_memory_contract_test.dart: Study 30-turn verbatim memory automatic inactivity timeout is Plantao-only
+00:00 +2: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_30turn_verbatim_memory_contract_test.dart: Study 30-turn verbatim memory task label changes do not wipe Study transport
+[STUDY_30TURN][HISTORY_SANITIZER] mode=estudo strategy=verbatim_30_exchanges sent=6/6 taskLabel=geral
+[STUDY_30TURN][HISTORY_SANITIZER] mode=estudo strategy=verbatim_30_exchanges sent=6/6 taskLabel=dose
+00:00 +3: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_30turn_verbatim_memory_contract_test.dart: Study 30-turn verbatim memory preserves Study window and Plantao case anchor plus recent turns
+[HISTORY_SANITIZER] mode=plantao strategy=case_anchor_plus_recent sent=6 anchor=2 recent=4 topic=synthetic reason=same_topic
+[HISTORY_SANITIZER] mode=plantao strategy=empty sent=0 removed=12 reason=new_case
+00:00 +4: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity history details stay in active abdominal case
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=fossa_iliaca turnCount=2
+00:00 +5: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity laboratory and imaging results stay in active case
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=fossa_iliaca turnCount=2
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=fossa_iliaca turnCount=3
+00:00 +6: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity single different complaint with only one evolution marker remains a new thread
+[THREAD_MANAGER] mode=plantao action=new_thread reason=short_clinical_switch oldTopic=fossa_iliaca newTopic=cefaleia_comecou_hoje
+00:00 +7: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity strong IAMCSST switch leaves unrelated abdominal thread
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=contextual_clinical_followup topic=fossa_iliaca turnCount=2
+[THREAD_MANAGER] mode=plantao action=new_thread reason=new_case_signal oldTopic=fossa_iliaca newTopic=iamcsst_confirmado
+00:00 +8: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity short STEMI alias also leaves unrelated abdominal thread
+[THREAD_MANAGER] mode=plantao action=new_thread reason=short_clinical_switch oldTopic=fossa_iliaca newTopic=stemi_confirmado
+00:00 +9: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity confirmed IAM remains same thread when progressing from chest pain
+[THREAD_MANAGER] mode=plantao action=continue_thread reason=compatible_diagnostic_progression topic=toracica_opressiva turnCount=2
+00:00 +10: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_thread_manager_stage_continuity_contract_test.dart: Plantão stage continuity explicit new case still starts another thread
+[THREAD_MANAGER] mode=plantao action=new_thread reason=new_case_signal oldTopic=fossa_iliaca newTopic=novo_caso_outro_cefaleia_subita_intensa
+00:00 +11: All tests passed!
