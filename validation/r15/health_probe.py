@@ -50,6 +50,8 @@ def wait_health(path, attempts=40, interval=1, probe=probe_health, sleep=time.sl
 def collect_runtime(output, runner=subprocess.run):
     """Always run before docker rm. Individual collection errors cannot mask B1 failure."""
     captures = {
+        'localhost-resolution-and-sockets': ['docker', 'exec', 'r15-web', 'sh', '-c', 'cat /etc/hosts; cat /proc/net/tcp; cat /proc/net/tcp6'],
+        'localhost-http-health': ['docker', 'exec', 'r15-web', 'wget', '-S', '-T', '2', '-O', '-', 'http://localhost:8080/health'],
         'container-logs': ['docker', 'logs', '--timestamps', 'r15-web'],
         'container-state': ['docker', 'inspect', '--format', '{{json .State}}', 'r15-web'],
         'container-health-policy': ['docker', 'inspect', '--format', '{{json .Config.Healthcheck}}', 'r15-web'],

@@ -58,7 +58,7 @@ class Tests(unittest.TestCase):
             return subprocess.CompletedProcess(args,1,b'controlled diagnostic fixture')
         with tempfile.TemporaryDirectory() as d:
             records=collect_runtime(pathlib.Path(d),runner=run)
-            self.assertEqual(len(calls),7);self.assertEqual(records['container-logs']['collectionErrorClass'],'TimeoutExpired')
+            self.assertEqual(len(calls),9);self.assertEqual(records['container-logs']['collectionErrorClass'],'TimeoutExpired')
             self.assertEqual(records['internal-http-health']['exitCode'],1)
             self.assertTrue((pathlib.Path(d)/'container-state.log').exists())
             self.assertTrue(any('http://127.0.0.1:8080/health' in c for c in calls))

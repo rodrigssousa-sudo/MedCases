@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          fetch-depth: 3
+          fetch-depth: 4
           persist-credentials: false
       - name: Freeze and verify tested inputs
         run: |
@@ -40,6 +40,7 @@ jobs:
         if: always()
         run: |
           docker rm -f r15-web 2>/dev/null || true
+          python3 validation/r15/network_guard.py cleanup
           docker network rm r15-validation 2>/dev/null || true
           sudo chown -R "$(id -u):$(id -g)" receipts
           find receipts -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > receipts/SHA256SUMS
