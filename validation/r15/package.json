@@ -1,0 +1,1 @@
+{"name":"r15-isolated-validation-only","private":true,"version":"1.0.0","dependencies":{"playwright":"1.51.1","firebase-tools":"13.35.1"}}

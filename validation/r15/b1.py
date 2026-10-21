@@ -1,6 +1,7 @@
 import pathlib,subprocess,json,time,hashlib,urllib.request,shutil
 from health_probe import wait_health, collect_runtime
 from network_guard import setup, verify as verify_network, require_mapping
+from isolation_probe import prove_isolation
 R=pathlib.Path.cwd();O=R/'receipts';O.mkdir(exist_ok=True)
 result={k:'FAIL' for k in ['B1_LINUX_IMAGE','B1_NGINX_STARTUP','B1_PORT_8080','B1_HTTP_HEALTH','B1_RESTART']}
 result.update(testedCommit='6d0ac951fe5368d2b5a116e5c8fc18c850bc75f9',productionMutations=0)
@@ -9,6 +10,7 @@ def save(): (O/'b1.json').write_text(json.dumps(result,indent=2))
 try:
  assert json.loads(cmd(['docker','info','--format','{{json .}}']))['OSType']=='linux'
  (O/'build.log').write_text(cmd(['docker','build','--platform=linux/amd64','--network=none','--progress=plain','-t','r15-validation', '.']))
+ (O/'docker-version.json').write_text(cmd(['docker','version','--format','{{json .}}']))
  i=json.loads(cmd(['docker','inspect','r15-validation']))[0];assert i['Architecture']=='amd64' and i['Os']=='linux'
  result['imageId']=i['Id'];result['B1_LINUX_IMAGE']='PASS'
  (O/'nginx-syntax-test.log').write_text(cmd(['docker','run','--rm','--network=none','r15-validation','nginx','-t']))
@@ -21,6 +23,7 @@ try:
  require_mapping(runtime)
  verify_network()
  result['network']='BRIDGE_EGRESS_DENIED_BY_FIREWALL'
+ result['outboundIsolation']=prove_isolation(O)
  b=json.loads((R/'validation-data/binding.json').read_text())
  def verify(label):
   require_mapping(json.loads(cmd(['docker','inspect','r15-web']))[0])
@@ -35,16 +38,23 @@ try:
    if health=='healthy':break
    if health=='unhealthy' or time.monotonic()>=deadline:raise RuntimeError('DOCKER_HEALTH_NOT_HEALTHY:'+str(health))
    time.sleep(1)
+  internal=cmd(['docker','exec','r15-web','wget','-qO-','http://127.0.0.1:8080/health'])
+  assert json.loads(internal)['status']=='ok'
+  result[label+'InternalHTTP']='PASS_REAL'
   records={}
   for p in ['main.dart.js','flutter_bootstrap.js','pwa-sw.js','flutter_service_worker.js','deploy_meta.json']:
    raw=urllib.request.urlopen('http://127.0.0.1:18080/'+p,timeout=30).read()
-   if p=='deploy_meta.json':assert json.loads(raw)['deployCommit']==result['testedCommit']
+   if p=='deploy_meta.json':
+    assert json.loads(raw)['deployCommit']==result['testedCommit']
+    (O/(label+'-deploy-meta.json')).write_bytes(raw)
    else:assert hashlib.sha256(raw).hexdigest()==b['bundle']['files'][p]
    records[p]=hashlib.sha256(raw).hexdigest()
   result[label]=records
  verify('startup');result.update(B1_NGINX_STARTUP='PASS',B1_PORT_8080='PASS',B1_HTTP_HEALTH='PASS')
  cmd(['docker','restart','r15-web']);verify('restart');result['B1_RESTART']='PASS'
- (O/'entrypoint.log').write_text(cmd(['docker','logs','r15-web']))
+ logs=cmd(['docker','logs','r15-web'])
+ (O/'entrypoint.log').write_text(logs)
+ assert not any(level in logs for level in ['[emerg]','[alert]','[crit]','[error]']), 'NGINX_RUNTIME_ERROR'
  # Test bad/missing nginx config at image construction, without changing frozen inputs.
  temp=R/'negative-context';temp.mkdir(exist_ok=True)
  for p in ['.dockerignore','Dockerfile','nginx/nginx.conf','docker/40-generate-deploy-meta.sh','release-web-r15.tar.gz']:

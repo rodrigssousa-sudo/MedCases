@@ -15,15 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          fetch-depth: 4
+          fetch-depth: 5
           persist-credentials: false
       - name: Freeze and verify tested inputs
         run: |
           set -eu
-          git merge-base --is-ancestor 6d0ac951fe5368d2b5a116e5c8fc18c850bc75f9 HEAD
-          test -z "$(git diff 6d0ac951fe5368d2b5a116e5c8fc18c850bc75f9 HEAD -- Dockerfile .dockerignore docker nginx lib web pubspec.yaml pubspec.lock release-web-r15.tar.gz)"
           mkdir -p receipts
+          python3 validation/r15/verify_inputs.py
           git rev-parse HEAD > receipts/validation-commit.txt
+          python3 -m unittest discover -s validation/r15 -p 'test_*.py' -v
+          node --test validation/r15/b2_contract.test.cjs
           python3 validation/r15/prepare.py
           cp validation-data/old-readback.json receipts/
       - name: Prepare browser dependencies before isolation
@@ -39,9 +40,10 @@ jobs:
       - name: Close and seal receipts
         if: always()
         run: |
-          docker rm -f r15-web 2>/dev/null || true
-          python3 validation/r15/network_guard.py cleanup
-          docker network rm r15-validation 2>/dev/null || true
+          python3 validation/r15/cleanup.py
+      - name: Seal receipts
+        if: always()
+        run: |
           sudo chown -R "$(id -u):$(id -g)" receipts
           find receipts -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > receipts/SHA256SUMS
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02

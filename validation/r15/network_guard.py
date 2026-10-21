@@ -47,7 +47,11 @@ def cleanup(command=run):
  for chain,rule in RULES:
   try:command(firewall_args('-C',chain,rule))
   except subprocess.CalledProcessError:continue
-  try:command(firewall_args('-D',chain,rule))
+  try:
+   command(firewall_args('-D',chain,rule))
+   try:command(firewall_args('-C',chain,rule))
+   except subprocess.CalledProcessError:pass
+   else:failed.append(chain)
   except Exception:failed.append(chain)
  if failed:raise RuntimeError('FIREWALL_CLEANUP_FAILED')
 if __name__=='__main__':

@@ -1,0 +1,7 @@
+const {test}=require('node:test'),assert=require('node:assert/strict');
+const {mime,clinicalRequest,assetContract,cacheContract,safePath}=require('./b2_contract.cjs');
+test('artifact hashes must match individually',()=>{assetContract({a:'1'},{a:'1'});assert.throws(()=>assetContract({a:'2'},{a:'1'}));assert.throws(()=>assetContract({},{a:'1'}))});
+test('empty cache cannot pass and stale main is rejected',()=>{assert.throws(()=>cacheContract([],'a'));assert.throws(()=>cacheContract([{hash:'b'}],'a'));cacheContract([{hash:'a'}],'a')});
+test('clinical attempt detection',()=>{for(const u of ['https://x/stream/plantao','https://plantaoproxystream.run.app/','https://x/mcc1','https://x/quota'])assert.ok(clinicalRequest(u));assert.ok(!clinicalRequest('http://127.0.0.1:8080/main.dart.js'))});
+test('static paths cannot escape bundle',()=>{assert.equal(safePath('/data/new','main.dart.js'),'/data/new/main.dart.js');assert.throws(()=>safePath('/data/new','../../private'))});
+test('browser assets have executable mime types',()=>{assert.equal(mime('main.dart.js'),'text/javascript');assert.equal(mime('canvaskit.wasm'),'application/wasm');assert.equal(mime('index.html'),'text/html')});
