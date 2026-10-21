@@ -6,7 +6,7 @@ import 'package:medcases/services/clinical_tts_service.dart';
 
 void main() {
   group('ClinicalTtsService fixed natural profile', () {
-    test('loads the product-owned automatic natural profile', () async {
+    test('loads the feminine natural profile', () async {
       final FakeClinicalTtsAdapter adapter = FakeClinicalTtsAdapter();
       final FakeClinicalTtsPreferenceStore store =
           FakeClinicalTtsPreferenceStore();
@@ -20,7 +20,7 @@ void main() {
 
       expect(
         service.preferences.voicePreference,
-        ClinicalTtsVoicePreference.automatic,
+        ClinicalTtsVoicePreference.feminine,
       );
       expect(
         service.preferences.speechRate,
@@ -29,7 +29,8 @@ void main() {
       expect(adapter.awaitCompletionEnabled, isTrue);
     });
 
-    test('ignores legacy stored voice and speed during runtime configuration', () async {
+    test('ignores legacy stored voice and speed during runtime configuration',
+        () async {
       final FakeClinicalTtsPreferenceStore store =
           FakeClinicalTtsPreferenceStore();
       store.values['clinical_tts_voice_preference'] = 'masculine';
@@ -157,6 +158,101 @@ void main() {
         ),
         'es-ES',
       );
+    });
+  });
+
+  group('Natural feminine playback regression', () {
+    test(
+        'selected feminine Web voice reads a continuous paragraph on its first playback',
+        () async {
+      final adapter = FakeClinicalTtsAdapter(
+        voices: [
+          {'name': 'Luciana', 'locale': 'pt-BR', 'quality': 'enhanced'}
+        ],
+        languages: ['pt-BR'],
+      );
+      final service = ClinicalTtsService(
+        adapter: adapter,
+        preferenceStore: FakeClinicalTtsPreferenceStore(),
+        webPlayback: true,
+      );
+      final text = List.filled(6,
+              'Esta frase deve ser lida de forma contínua, com pausas na pontuação.')
+          .join(' ');
+      await service.speak(text, languageCode: 'pt');
+      expect(adapter.spoken, hasLength(1));
+      expect(adapter.spoken.single,
+          service.normalizeForSpeech(text, languageCode: 'pt'));
+      expect(service.selectedVoice?.name, 'Luciana');
+    });
+
+    test(
+        'web clauses finish before the plugin periodic pause without losing text',
+        () {
+      final service = ClinicalTtsService(
+        adapter: FakeClinicalTtsAdapter(),
+        preferenceStore: FakeClinicalTtsPreferenceStore(),
+        webPlayback: true,
+      );
+      final source = List.filled(8,
+              'Dose 0,5 mg por via oral a cada 8 horas, somente quando indicada; não duplicar.')
+          .join(' ');
+      final normalized = service.normalizeForSpeech(source, languageCode: 'pt');
+      final segments = service.buildSegments(source, languageCode: 'pt');
+      expect(segments.every((s) => s.text.length <= 160), isTrue);
+      expect(segments.map((s) => s.text).join(' '), normalized);
+      expect(segments.every((s) => s.pauseAfter == Duration.zero), isTrue);
+    });
+
+    test('web rate uses the browser natural scale; native rate is unchanged',
+        () {
+      expect(
+          FlutterTtsClinicalAdapter.platformSpeechRate(0.47, web: true), 0.94);
+      expect(
+          FlutterTtsClinicalAdapter.platformSpeechRate(0.47, web: false), 0.47);
+    });
+
+    test(
+        'recognizes an installed feminine catalog voice without gender metadata',
+        () {
+      final selected = _service().selectBestVoice(
+        voices: [
+          _voice(
+              name: 'Daniel',
+              locale: 'pt-BR',
+              quality: 'enhanced',
+              gender: 'male'),
+          _voice(name: 'Luciana', locale: 'pt-BR', quality: 'enhanced'),
+        ],
+        locale: 'pt-BR',
+      );
+      expect(selected?.name, 'Luciana');
+    });
+
+    test(
+        'never substitutes another language when no matching voice is installed',
+        () {
+      expect(
+          _service().selectBestVoice(
+            voices: [
+              _voice(name: 'Luciana', locale: 'pt-BR', quality: 'enhanced')
+            ],
+            locale: 'es-AR',
+          ),
+          isNull);
+    });
+
+    test('long reading is chunked at sentences without losing clinical values',
+        () {
+      final service = _service();
+      final source = List.filled(
+              20, 'Dose 0,5 mg por via oral a cada 8 horas; não duplicar.')
+          .join(' ');
+      final normalized = service.normalizeForSpeech(source, languageCode: 'pt');
+      final segments = service.buildSegments(source, languageCode: 'pt');
+      expect(segments.length, greaterThan(1));
+      expect(segments.every((segment) => segment.text.length <= 900), isTrue);
+      expect(segments.map((segment) => segment.text).join(' '), normalized);
     });
   });
 
@@ -457,7 +553,8 @@ print('não falar');
       expect(pauses, isEmpty);
     });
 
-    test('a newer generation invalidates pending long-form utterances', () async {
+    test('a newer generation invalidates pending long-form utterances',
+        () async {
       final Completer<void> firstSpeakGate = Completer<void>();
       final FakeClinicalTtsAdapter adapter = FakeClinicalTtsAdapter(
         firstSpeakGate: firstSpeakGate,

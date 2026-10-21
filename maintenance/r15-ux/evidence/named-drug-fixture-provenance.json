@@ -1,0 +1,17 @@
+{
+  "scope": "FROZEN_REAL_SOURCE_SYNTHETIC_TRANSPORT_NOT_REAL_MCC1",
+  "inputs": {
+    "/Users/brunorodrigues/Documents/Codex/MEDCASES-R15-COMMERCIAL-PATCH/coordinated-release/knowledge-recovery/published-drug-source/data/drugs/noradrenalina.json": "770363b14d694a0becc88d4e579049adf2d4441fbcf81641ab4f2ac4f43d22eb",
+    "/Users/brunorodrigues/Documents/Codex/MEDCASES-R15-COMMERCIAL-PATCH/coordinated-release/knowledge-recovery/published-drug-source/data/drugs/ceftriaxona.json": "3088feac81c03ff39ef6b5923e1873eb7791d7b9b1ac1a1213986b3f7fd09792",
+    "/Users/brunorodrigues/Documents/Codex/MEDCASES-R15-COMMERCIAL-PATCH/coordinated-release/knowledge-recovery/published-drug-source/data/drugs/metformina.json": "708231af4e64f23b1c219a6487b3785a733c3ea12cc62284e255e5d49101a8d3"
+  },
+  "outputSha256": "b14dbf9a76457ca8e6b74bcdeaa1c1135190ce4f1619314b9ca3343fc36641fb",
+  "documents": [
+    "noradrenalina/pt",
+    "noradrenalina/es",
+    "ceftriaxona/pt",
+    "ceftriaxona/es",
+    "metformina/pt",
+    "metformina/es"
+  ]
+}

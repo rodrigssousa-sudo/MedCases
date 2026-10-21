@@ -428,7 +428,8 @@ class ClinicalThreadManager {
       'funcion renal',
       'depuracao',
       'depuracion',
-    ].any(qFolded.contains);
+    ].any(qFolded.contains) ||
+        RegExp(r'\b(?:renal|hepatic[ao])\b').hasMatch(qFolded);
     final hasAdjustmentCue = lexicalTokens.any(
       (token) =>
           token.startsWith('ajust') ||

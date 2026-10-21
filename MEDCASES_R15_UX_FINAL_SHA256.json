@@ -1,0 +1,564 @@
+{
+  "createdAtUTC": "2026-10-21T00:19:04.729601+00:00",
+  "baselineCommit": "923ff75e8eef6a1e5b352d166217de95be624ff8",
+  "branch": "maintenance/code-cleanup-20261020",
+  "scope": "Local Flutter/intent/presentation/audio only; no push, deploy or production mutation",
+  "selfHashExcluded": true,
+  "rollback": "git revert <commit containing this manifest>; no data migration or remote change",
+  "files": [
+    {
+      "path": "MEDCASES_AI_INTENT_AUDIT.md",
+      "beforeSha256": null,
+      "afterSha256": "cdb3d563f10ec213e1c3ccb9465cb2692a10f73860142d97a8b585406981d058",
+      "bytes": 2228
+    },
+    {
+      "path": "MEDCASES_DRUG_CONNECTION_REPORT.md",
+      "beforeSha256": null,
+      "afterSha256": "7b730d137e723b7199ef46dccf5c0c3fbd959be0db16a3966acd23c3621285de",
+      "bytes": 2322
+    },
+    {
+      "path": "MEDCASES_PLANTAO_UX_FINAL.md",
+      "beforeSha256": null,
+      "afterSha256": "02a309663266009930e023dc71b940e87ded6d560f7be6cf6c372a73a0a0b1da",
+      "bytes": 6862
+    },
+    {
+      "path": "MEDCASES_STREAMING_HISTORY_REGRESSION.md",
+      "beforeSha256": null,
+      "afterSha256": "e1ef3e56184550c8b46e0f90380e46989178f2eb2340df5fbfc9cfd96aef6287",
+      "bytes": 3113
+    },
+    {
+      "path": "lib/models/canonical_clinical_snapshot.dart",
+      "beforeSha256": "c35f935573ec62c4ded061f1facea8105584275c24ce9d18723e214367ef6fff",
+      "afterSha256": "59729850424a97696322fa4f82ccab40bc69f3072fadf56c727a9a8fa333d4b2",
+      "bytes": 18605
+    },
+    {
+      "path": "lib/models/chat_message.dart",
+      "beforeSha256": "fdde7076584db99a6e6d3f245cb3638e3355ab12478f1d34a9f789de4b27a06c",
+      "afterSha256": "88ca71f980eb4418d82acf69222f128b5199f66fc7968dc26262bb255604d253",
+      "bytes": 3058
+    },
+    {
+      "path": "lib/models/plantao_catalog_presentation.dart",
+      "beforeSha256": null,
+      "afterSha256": "c0a2d480e72b3f5ec68186f74394c6d11bcab9be7d8d19b11f6fdd34b8a63f70",
+      "bytes": 2098,
+      "historicalSource": {
+        "path": "/Users/brunorodrigues/Library/Developer/MedCases-R8-Homologation/RELEASE-R14-IOS/source/lib/models/plantao_catalog_presentation.dart",
+        "sha256": "c0a2d480e72b3f5ec68186f74394c6d11bcab9be7d8d19b11f6fdd34b8a63f70"
+      }
+    },
+    {
+      "path": "lib/models/plantao_lossless_source_layout.dart",
+      "beforeSha256": null,
+      "afterSha256": "39ff55dcd07f6ac9c4be96cd4578e142a11ee7cf153a2f7245c1f4e2a27308df",
+      "bytes": 5009,
+      "historicalSource": {
+        "path": "/Users/brunorodrigues/Library/Developer/MedCases-R8-Homologation/RELEASE-R14-IOS/source/lib/models/plantao_lossless_source_layout.dart",
+        "sha256": "9f36bc4564d1c3161f6f61d59fbdd7cd352c0a7a4c3383c5efccb9ba46ed6a6a"
+      }
+    },
+    {
+      "path": "lib/models/plantao_presentation_contract.dart",
+      "beforeSha256": null,
+      "afterSha256": "5232cb55638daf5a1f9fd13d3f73569136dbe378edf5de85e7c9bf6f0c27b36f",
+      "bytes": 7830,
+      "historicalSource": {
+        "path": "/Users/brunorodrigues/Library/Developer/MedCases-R8-Homologation/RELEASE-R14-IOS/source/lib/models/plantao_presentation_contract.dart",
+        "sha256": "93f3993361190fc94dd360d03cf845762032fbfaf20082aff5987c5f95e7b4f1"
+      }
+    },
+    {
+      "path": "lib/providers/app_provider.dart",
+      "beforeSha256": "0534a4533a9998f1832a2827d1c56d5f3bd46d26d710842ddcc214dc7770bde7",
+      "afterSha256": "181031c42f05f324006d9aef2fe3a530cb635bb914319856f5173ff05fed7d6b",
+      "bytes": 733477
+    },
+    {
+      "path": "lib/screens/ai/widgets/ai_block_bubble.dart",
+      "beforeSha256": "451604ec1748557dea3771e4d39d125121e7a425a67d37dd8728f8d1c55c261a",
+      "afterSha256": "7dd4ae526fe83c6b0e652c6419a6c5096a258b1eda6ac15d695819a74fd95f45",
+      "bytes": 8976
+    },
+    {
+      "path": "lib/screens/ai/widgets/ai_bubble.dart",
+      "beforeSha256": "fbdddc54c48ce135eea64f2903403f5609ecd6d369dad81e343654d65b443d04",
+      "afterSha256": "686dcc64d306149fc2d8210ea8958fdcfa32447b9f89768d0158245e06dbb0cb",
+      "bytes": 45620
+    },
+    {
+      "path": "lib/screens/ai/widgets/collapsible_content_blocks.dart",
+      "beforeSha256": "92c2b7aa1a2a7d5400110d0c30d6bc94ace03da7f7f5945c205ce76ac5ffe01c",
+      "afterSha256": "cf89a9bb413ad5f4eec35667c86a5891f01620c06270580b3db2b39ff2a2a4f8",
+      "bytes": 20296
+    },
+    {
+      "path": "lib/screens/ai/widgets/guardia_clinical_response_view.dart",
+      "beforeSha256": "6c81863fd44647074ac22468007f4b4ff8613cc727b2e1686c38b921c158ea95",
+      "afterSha256": "cd90c19641156c27f33d7f3a9d5991ff7d4adb46b254bd79de40ea0984e27c66",
+      "bytes": 123684
+    },
+    {
+      "path": "lib/screens/ai_screen.dart",
+      "beforeSha256": "f3cc99176587df43f8ea4f2047c82131aa8c129e88b16e82107249e306efa679",
+      "afterSha256": "2f791c2ed86c8fe9d94d4e6705ca6023ab9e09ccaa6d76417cd9519fa7d013cc",
+      "bytes": 292523
+    },
+    {
+      "path": "lib/services/ai/r8/plantao_presentation_catalog.dart",
+      "beforeSha256": null,
+      "afterSha256": "8aeec170c4cd333912dd15eebc898af6f55e320261aae6a6fe754bfb627a7e76",
+      "bytes": 11726,
+      "historicalSource": {
+        "path": "/Users/brunorodrigues/Library/Developer/MedCases-R8-Homologation/RELEASE-R14-IOS/source/lib/services/ai/r8/plantao_presentation_catalog.dart",
+        "sha256": "b3ff979684242e4e9638a4f68ca26927d5ad2c100c41f77845cea65eded800be"
+      }
+    },
+    {
+      "path": "lib/services/ai_session_exchange_hydrator.dart",
+      "beforeSha256": "c307db3fdf7e0b5088fd6109e93acb7af53bc84a2219826670ca210918ff854b",
+      "afterSha256": "a858a8541c45696448b996fd4016fb2c13d241ad8365c06464577feb3fde50bf",
+      "bytes": 4785
+    },
+    {
+      "path": "lib/services/clinical_catalog/clinical_catalog_presentation_remote.dart",
+      "beforeSha256": null,
+      "afterSha256": "be153f70fb7bbf85aa94999e0a548e865da166a8e042f69cdaadb56c65c35725",
+      "bytes": 1365
+    },
+    {
+      "path": "lib/services/clinical_thread_manager.dart",
+      "beforeSha256": "2dd5f2026dde4fbcc7e68edca83272ccdcdb04771b3c480e0a93205ab29108e5",
+      "afterSha256": "db7bd706e437596181c691944bee2d64dbc5e68881c9fe65d48a0d33f36c8149",
+      "bytes": 62409
+    },
+    {
+      "path": "lib/services/clinical_tts_service.dart",
+      "beforeSha256": "21f90a3c757a5150592ba2b6b60d09e65902bf574e0e8161dcb257aab82754c2",
+      "afterSha256": "804eb48f4257b144a7e26d613a84a03feb37bf767be0469ff80682f7e07fbdec",
+      "bytes": 37642
+    },
+    {
+      "path": "maintenance/r15-ux/RESULTADO.json",
+      "beforeSha256": null,
+      "afterSha256": "4123dfd6de703591a876440974273e1b96daa73332793f5e92ac687d57390847",
+      "bytes": 2390
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/A-pathology-executive-flutter.png",
+      "beforeSha256": null,
+      "afterSha256": "d76a5af09931688c6d8ef9f40e4aeeaded8d4c174c39de5e1f04e72483e89d07",
+      "bytes": 68156
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/A-premium-footer-desktop-1200.png",
+      "beforeSha256": null,
+      "afterSha256": "c2e5d8f6a8df2925cff3396b324d3b5b59a460d90f95e13e61d3c135031dd213",
+      "bytes": 72433
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/B-pathology-full-flutter.png",
+      "beforeSha256": null,
+      "afterSha256": "f52dfc0c59ad74fc7801198bba6e48b74bf319c86b0b29b15022b4f0305efdbd",
+      "bytes": 48228
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/B-premium-footer-full-1200.png",
+      "beforeSha256": null,
+      "afterSha256": "6f54f1e6f0d2f44c32fb265c56d97b3e98ee3a42409582b082f3f3daba75b6c7",
+      "bytes": 51515
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/C-drug-quick-premium-1200.png",
+      "beforeSha256": null,
+      "afterSha256": "51d67de9113a379c2dd021ef70f7b3081e8f53bfe70d383cd6cd66129497644a",
+      "bytes": 160525
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/D-history-es-premium-1200.png",
+      "beforeSha256": null,
+      "afterSha256": "588908aafb92d9fc62a446946e97be811436de363a71bd1a1dc93544c6359157",
+      "bytes": 161647
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/E-study-footer-es-768.png",
+      "beforeSha256": null,
+      "afterSha256": "b379819f1039b264ac1292c5c2f76e5a879530fdecae8edfe8442d348b4fb91e",
+      "bytes": 41141
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/analyzed-files.json",
+      "beforeSha256": null,
+      "afterSha256": "3062d577bbab28a2190560fa41831fcdc9c96a285dc2824e187fee30c2e8b91d",
+      "bytes": 1303
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/analyzer-baseline-all-affected.machine",
+      "beforeSha256": null,
+      "afterSha256": "444fc4f9b34442dad9485223eeeb592f4351e1994c5bed2f680c077687f27704",
+      "bytes": 30341
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/analyzer-baseline-footer.machine",
+      "beforeSha256": null,
+      "afterSha256": "6cf2e2a0cbc25a817363758b70778c667f32d77e31a98bd2d46f577e4b3f27a2",
+      "bytes": 30842
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/analyzer-baseline-thread.machine",
+      "beforeSha256": null,
+      "afterSha256": "4843cd58ffd04b47e35ffd4cd77d1b492a026cd25d7ae7cd60cfffe2bda04d00",
+      "bytes": 239
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/analyzer-baseline.machine",
+      "beforeSha256": null,
+      "afterSha256": "6d52508c5714da7a39350ea10ddb3949e06dd0b4f9ec79fd8ee188aa2ecb99c6",
+      "bytes": 30102
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/analyzer-comparison.json",
+      "beforeSha256": null,
+      "afterSha256": "5181d979583ff3ad1b08ce01945973db40cfa59579247686c587c796aab0085d",
+      "bytes": 419
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/analyzer-final-source-comparison.json",
+      "beforeSha256": null,
+      "afterSha256": "41686a8f4d47f2be767f65b7687b1992e17fe4ec45ec9e8d77fb42c679b50fda",
+      "bytes": 144
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/analyzer-final-source.machine",
+      "beforeSha256": null,
+      "afterSha256": "b6eee744dd04b4aae23cb2e5fa8fe7d4039f02c22bc739221c40f7587255a372",
+      "bytes": 26943
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/analyzer-final.machine",
+      "beforeSha256": null,
+      "afterSha256": "da9256c5fb28e92ec53fbaea2bb4803c4ec6d20499159cbd93b3936caae5fba0",
+      "bytes": 26502
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/analyzer-footer-final.machine",
+      "beforeSha256": null,
+      "afterSha256": "73da003d4989119798697cfd819bd9e101b296055a4c861d1b1198365617ee22",
+      "bytes": 26943
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/audio-continuous-verified.log",
+      "beforeSha256": null,
+      "afterSha256": "d9b8664df995cc225c12a3dcc88097464a780474b83b937f3b790e83e077ad34",
+      "bytes": 8158
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/audio-renderer-history-final.log",
+      "beforeSha256": null,
+      "afterSha256": "0fc1b0aa24b005a3101eaf5adb6254be79e0914940b12bf48d318436af7452d7",
+      "bytes": 11685
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/audio-short-web-final.log",
+      "beforeSha256": null,
+      "afterSha256": "ee9e526656379b36aee9cc16d93a7a6632862299107b454715b57d16cf992476",
+      "bytes": 7810
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/baseline-analysis-path.txt",
+      "beforeSha256": null,
+      "afterSha256": "96ca8ef544c161a089f6ac283d9c8bfbc83a112e4d81f33f75a29e271a02234a",
+      "bytes": 79
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/browser-copy-receipt.json",
+      "beforeSha256": null,
+      "afterSha256": "198036739534b62462b99241b49d3491cec9b1be896db4d7da79bf8dafb68c81",
+      "bytes": 202
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/final-desktop-1200.png",
+      "beforeSha256": null,
+      "afterSha256": "eb92cff54ff3732684f933ef98f5ffdfe52d78ce42504e57822e5f49b017d01c",
+      "bytes": 66092
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/final-full-references-closed.png",
+      "beforeSha256": null,
+      "afterSha256": "b5e6056d0974ee2374629e0e06114f2dbefa1c045b59c7e74f8a846a91534e97",
+      "bytes": 46435
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/final-mobile-es-375.png",
+      "beforeSha256": null,
+      "afterSha256": "323411269d6a24eee21b07b3745eba9d426963c4204462fd1d80851bbf5437eb",
+      "bytes": 55620
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/final-mobile-pt-320.png",
+      "beforeSha256": null,
+      "afterSha256": "632c85f8e9d6bde4557e30b802fedc10be0006554d7308d33c991373dc9ecd43",
+      "bytes": 53666
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/final-study-references-closed.png",
+      "beforeSha256": null,
+      "afterSha256": "9a692ef23b90b01864c055abd94973161ad87c6d6c720b7fc712a33801ecfa20",
+      "bytes": 39509
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/final-study-references-open.png",
+      "beforeSha256": null,
+      "afterSha256": "cac27061f737c587e9bb71f970788595a41c9fd215ad15b79ca52296cd48ecd7",
+      "bytes": 39843
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/final-tablet-768.png",
+      "beforeSha256": null,
+      "afterSha256": "eb9980f2afb6b1d5c35fa02c873b88fcf0cbe2c0a360e17c83fd8ad1c360502e",
+      "bytes": 61603
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/final-visual-readback.json",
+      "beforeSha256": null,
+      "afterSha256": "4a551250329ebe8371409f86290981f1f8fbea47695bfba38df94e1863bdea2e",
+      "bytes": 754
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/focused-regression.log",
+      "beforeSha256": null,
+      "afterSha256": "7430f456cae117a56884adbb00c78ec0ebff34a15e0adb3229ef2c50b6a0e5e3",
+      "bytes": 22821
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/history-authority.log",
+      "beforeSha256": null,
+      "afterSha256": "0a57ea5b08afdc5cb16a57aff55ab45f6e3e80bf1ac205c8a31149661f3a5a25",
+      "bytes": 479
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/intent-audio-negative-final.log",
+      "beforeSha256": null,
+      "afterSha256": "43238253d8890b8597187cb80eb9c1be8bca93b24e50abdaf317a9ac7ea0f74a",
+      "bytes": 13290
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/intent-final.log",
+      "beforeSha256": null,
+      "afterSha256": "39c4ad4190fac6f121d43fd5c00ed580281f2a816e4a3c125f9d0ff15883cb4e",
+      "bytes": 2202
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/loopback-sse-final.log",
+      "beforeSha256": null,
+      "afterSha256": "0ec4d72a4389d48208933153e2e6b24df6b13d2f05940408c5a03d3a8b2c77f6",
+      "bytes": 4404
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/loopback-sse.log",
+      "beforeSha256": null,
+      "afterSha256": "bf6b414f03511e08d4490ef681c9de4e396dc86ecc711245ceada89ed2481fbf",
+      "bytes": 4425
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/named-drug-fixture-provenance.json",
+      "beforeSha256": null,
+      "afterSha256": "c726b2c66975e2c6e8cd6fe2cb831967ae67543951f5a569dd297030e5498e3b",
+      "bytes": 1026
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/operator-copy-audio-confirmations.json",
+      "beforeSha256": null,
+      "afterSha256": "63e79a00fc2b3d207184b903eb618531234697656c9c8b89e5e4903d74445253",
+      "bytes": 1033
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/premium-footer-final-21.log",
+      "beforeSha256": null,
+      "afterSha256": "8fe6dcc30641fcc2678b1b12bb74505ccf274477d4a8f58e5fdd7af592ef3d04",
+      "bytes": 1280
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/premium-footer-mobile-320.png",
+      "beforeSha256": null,
+      "afterSha256": "5ee17df697ba7a0f08e1360d3995d76a84f847728d2b0827e82b337d5d5bbd8f",
+      "bytes": 51631
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/premium-footer-mobile-es-375.png",
+      "beforeSha256": null,
+      "afterSha256": "9fc78e8cc046d849cbc8c29b66e9efae350eedfbb9dc6ef7f06f67ca901f252e",
+      "bytes": 59027
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/premium-footer-regression-final.log",
+      "beforeSha256": null,
+      "afterSha256": "382163303b5b651199feb1461cdffca4c26cf110d1c788bbb5f72c207e54a200",
+      "bytes": 25176
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/premium-footer-tablet-es-768.png",
+      "beforeSha256": null,
+      "afterSha256": "5892c1e9a4114607bb094f89ad40798584e7a9cf2a13415efa25582490f2432e",
+      "bytes": 66900
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/premium-study-references-final.log",
+      "beforeSha256": null,
+      "afterSha256": "09aec2f41d11a71c6506acf6f2def9b48aa0f84a17036139fc3e05f880254f05",
+      "bytes": 6282
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/prepared-backend-directed.log",
+      "beforeSha256": null,
+      "afterSha256": "39a352ce7677589223d6f0ba25f71374bf715337bb01d5704d80ed08555678c6",
+      "bytes": 1468
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/prepared-resolver-matrix.json",
+      "beforeSha256": null,
+      "afterSha256": "b047a096fedf614df7da603d167848d6f3764223d0030af18b7d8014f20a4a00",
+      "bytes": 5576
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/preview-build-final-source.log",
+      "beforeSha256": null,
+      "afterSha256": "a2263f5b6afe572110d9d8bcba40b5a657c8d706f8be8e237ec5fc6728294c00",
+      "bytes": 104
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/protected-integrity-final.json",
+      "beforeSha256": null,
+      "afterSha256": "e17611a81e96061bfb021adae3b2accd924f463e4cc49c9a508f8994baaf1371",
+      "bytes": 276
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/provider-intent-reproduction.log",
+      "beforeSha256": null,
+      "afterSha256": "5cc4bc587289c57a2395588fa320de59491f977e0b0fa9a53a98438ae6a4c7d8",
+      "bytes": 4947
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/references-footer-delivery-tests.log",
+      "beforeSha256": null,
+      "afterSha256": "2843bd352f22b8159ff31e5dd61090957880b444d2a96f15206143d918abba94",
+      "bytes": 12702
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/references-technical-label-final.log",
+      "beforeSha256": null,
+      "afterSha256": "cc72b58a82480dae7c5cd6ea54865b486061b251c3b2773b499d9f3cc94c78de",
+      "bytes": 1607
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/renderer-history-last-change.log",
+      "beforeSha256": null,
+      "afterSha256": "2ca50d006254af1f7d9e292abe4b3140093bda2d09816fc11e84282c22d25f26",
+      "bytes": 4441
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/web-build-final-source.log",
+      "beforeSha256": null,
+      "afterSha256": "eac8d49e973820222f378dc46572f91e9c4454dcd39dd192f75571be1aa26ed0",
+      "bytes": 93
+    },
+    {
+      "path": "maintenance/r15-ux/inspect-prepared-resolver.cjs",
+      "beforeSha256": null,
+      "afterSha256": "5e93a86a9c0fe10c6b04360b8e2a08049ac33824f478787a3134143fec555f7a",
+      "bytes": 1556
+    },
+    {
+      "path": "maintenance/r15-ux/prepare-drug-test-fixtures.cjs",
+      "beforeSha256": null,
+      "afterSha256": "239c56ed0535e7d17fb36db27234f49d0e208372f279d863d3ee14dcea754a56",
+      "bytes": 1992
+    },
+    {
+      "path": "test/ai_stream/r15_loopback_reference_stream_test.dart",
+      "beforeSha256": null,
+      "afterSha256": "93a38d543a9647d5625286431e5c0f7d2b0ba93d7f00d3f919ccdcda2b38ee37",
+      "bytes": 5166
+    },
+    {
+      "path": "test/fixtures/r15_drug_reference_snapshots.dart",
+      "beforeSha256": null,
+      "afterSha256": "dff57ccdf74b22b74faf6f100057a5caf8798c52b43c2007ce9ebfccf7d604d8",
+      "bytes": 40912
+    },
+    {
+      "path": "test/fixtures/r15_named_drug_documents.json",
+      "beforeSha256": null,
+      "afterSha256": "b14dbf9a76457ca8e6b74bcdeaa1c1135190ce4f1619314b9ca3343fc36641fb",
+      "bytes": 112167
+    },
+    {
+      "path": "test/fixtures/r15_ux_fixtures.dart",
+      "beforeSha256": null,
+      "afterSha256": "f5b71770b485c0e32784e87b35da0093fbe70d89eade626a1503af45baa1570a",
+      "bytes": 4140
+    },
+    {
+      "path": "test/providers/r15_message_intent_test.dart",
+      "beforeSha256": null,
+      "afterSha256": "c37ddeaacee50d3941149b6269c1ec48ba7c9f737d7c2813b7b9e4095eec48e1",
+      "bytes": 3125
+    },
+    {
+      "path": "test/services/clinical_tts_service_test.dart",
+      "beforeSha256": "34521c52b71276dbed22bf9fa300586a31fa81034ef18a65737e1ba672ae8613",
+      "afterSha256": "d1ae94054df2128b6ab856a7779291e020e95a4fe63087c3f4ef8eb702e1635b",
+      "bytes": 22026
+    },
+    {
+      "path": "test/services/r15_drug_intent_boundary_test.dart",
+      "beforeSha256": null,
+      "afterSha256": "a420513ba7b6c4fa19482e1dda83523893de08318b456cd96f134f8412c672c2",
+      "bytes": 2829
+    },
+    {
+      "path": "test/services/r15_presentation_history_authority_test.dart",
+      "beforeSha256": null,
+      "afterSha256": "8ea8cd46aa6918e165c25b3ab073081afedbe98a0a1e9919bdf767ccbc860877",
+      "bytes": 5399
+    },
+    {
+      "path": "test/widgets/r15_premium_footer_test.dart",
+      "beforeSha256": null,
+      "afterSha256": "cce1268f9108bc223c9d97b084a1222e7146e42e222e279118be22b60597dd1d",
+      "bytes": 11351
+    },
+    {
+      "path": "test/widgets/r15_verified_reference_ux_test.dart",
+      "beforeSha256": null,
+      "afterSha256": "5ac69c7ba4b51b2ccbf888a7884de0222c0d7aa72f24329e1de28c0d2e57c0bc",
+      "bytes": 10422
+    },
+    {
+      "path": "tool/r15_ux_preview.dart",
+      "beforeSha256": null,
+      "afterSha256": "c8fa358d6c3497adb66ea74040ece7bc4fd4963dee03b30027ad5a88b2a2fd73",
+      "bytes": 11137
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "build/web/main.dart.js",
+      "sha256": "bdba3c28c8784e69626f893ee06b20c52f472d91b171fe8886bb010daedff772",
+      "bytes": 14847896
+    },
+    {
+      "path": "build/r15-ux-preview/main.dart.js",
+      "sha256": "6e7bce45d7b6b6b864581837924de8af8d930a03cbe47840ab06f2c7e4a29c51",
+      "bytes": 3105420
+    }
+  ],
+  "protectedIntegrityReceipt": {
+    "path": "maintenance/r15-ux/evidence/protected-integrity-final.json",
+    "sha256": "e17611a81e96061bfb021adae3b2accd924f463e4cc49c9a508f8994baaf1371"
+  }
+}

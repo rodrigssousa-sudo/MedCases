@@ -1,0 +1,42 @@
+00:00 +0: loading /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart
+00:00 +0: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService fixed natural profile loads the feminine natural profile
+00:00 +1: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService fixed natural profile ignores legacy stored voice and speed during runtime configuration
+[ClinicalTts][voice] selectedVoice=Premium Natural identifier=voice.premium.natural locale=pt-BR quality=premium gender=female rate=0.47
+00:00 +2: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService fixed natural profile clamps and persists the speech rate
+00:00 +3: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService fixed natural profile persists the public voice preference
+00:00 +4: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService locale selection forces pt-BR for Portuguese
+00:00 +5: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService locale selection uses the approved Spanish priority
+00:00 +6: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: Natural feminine playback regression selected feminine Web voice reads a continuous paragraph on its first playback
+[ClinicalTts][voice] selectedVoice=Luciana identifier=unknown locale=pt-BR quality=enhanced gender=unknown rate=0.47
+00:00 +7: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: Natural feminine playback regression web clauses finish before the plugin periodic pause without losing text
+00:00 +8: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: Natural feminine playback regression web rate uses the browser natural scale; native rate is unchanged
+00:00 +9: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: Natural feminine playback regression recognizes an installed feminine catalog voice without gender metadata
+00:00 +10: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: Natural feminine playback regression never substitutes another language when no matching voice is installed
+00:00 +11: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: Natural feminine playback regression long reading is chunked at sentences without losing clinical values
+00:00 +12: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService voice selection prioritizes premium and enhanced voices
+00:00 +13: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService voice selection uses gender only when metadata declares it
+00:00 +14: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService voice selection does not infer an unavailable gender
+00:00 +15: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService normalization expands Portuguese clinical notation
+00:00 +16: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService normalization expands Spanish clinical notation
+00:00 +17: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService normalization removes visual-only and non-spoken content
+00:00 +18: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService segmentation and queue prepares the native audio session once before speaking
+00:00 +19: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService segmentation and queue merges titles and short paragraphs into one natural utterance
+00:00 +20: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService segmentation and queue turns clinical list lines into clean continuous speech
+00:00 +21: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService segmentation and queue packs long paragraphs only at complete sentence boundaries
+00:00 +22: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService segmentation and queue speaks prepared segments serially
+[ClinicalTts][voice] selectedVoice=Premium AR identifier=com.apple.voice.premium.es-AR.PremiumAR locale=es-AR quality=premium gender=unknown rate=0.47
+00:00 +23: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService segmentation and queue a newer generation invalidates pending long-form utterances
+00:00 +24: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_ios_audio_session_contract_test.dart: Clinical TTS iOS audio-session contract (setUpAll)
+00:00 +24: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_ios_audio_session_contract_test.dart: Clinical TTS iOS audio-session contract keeps iOS audio ownership inside the native adapter
+00:00 +25: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_ios_audio_session_contract_test.dart: Clinical TTS iOS audio-session contract reclaims audible playback after STT or silent mode
+00:00 +26: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_ios_audio_session_contract_test.dart: Clinical TTS iOS audio-session contract exposes native lifecycle and explicit speak failures
+00:00 +27: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_ios_audio_session_contract_test.dart: Clinical TTS iOS audio-session contract does not move audio-session ownership to AiScreen
+00:00 +28: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_ios_audio_session_contract_test.dart: Clinical TTS iOS audio-session contract (tearDownAll)
+00:00 +28: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_screen_clinical_tts_ownership_contract_test.dart: (setUpAll)
+00:00 +28: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_screen_clinical_tts_ownership_contract_test.dart: AiScreen ClinicalTtsService ownership contract removes direct ownership of flutter_tts
+00:00 +29: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_screen_clinical_tts_ownership_contract_test.dart: AiScreen ClinicalTtsService ownership contract delegates the complete clinical reading pipeline
+00:00 +30: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_screen_clinical_tts_ownership_contract_test.dart: AiScreen ClinicalTtsService ownership contract keeps only visual playback state in AiScreen
+00:00 +31: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_screen_clinical_tts_ownership_contract_test.dart: AiScreen ClinicalTtsService ownership contract removes local normalization and legacy speed
+00:00 +32: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_screen_clinical_tts_ownership_contract_test.dart: AiScreen ClinicalTtsService ownership contract does not expose TTS settings through the M status sheet
+00:00 +33: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_screen_clinical_tts_ownership_contract_test.dart: (tearDownAll)
+00:00 +33: All tests passed!

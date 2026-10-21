@@ -8,6 +8,8 @@ import 'clinical_markdown_presentation.dart';
 import '../../../home_v2/theme/home_v2_palette.dart';
 
 class AiBlockBubble extends StatelessWidget {
+  final DateTime? createdAt;
+  final List<String> relatedReferences;
   final String block;
   final bool dark;
   final bool isLast;
@@ -17,12 +19,15 @@ class AiBlockBubble extends StatelessWidget {
   final bool ttsReady;
   final String lang; // globalLanguageLock — controla textos da UI
   final bool studyMode;
+
   /// Build 120 — ActionChip: ao clicar, injeta texto no input e dispara _send()
   final void Function(String chipText)? onChipTap;
 
   const AiBlockBubble({
     super.key,
     required this.block,
+    this.createdAt,
+    this.relatedReferences = const [],
     required this.dark,
     this.isLast = false,
     this.onCopy,
@@ -42,63 +47,8 @@ class AiBlockBubble extends StatelessWidget {
   // ── Build 122: Separa linhas do bloco de referências (📚) ────────────────
   // O bloco termina ao encontrar uma nova seção clínica estruturada.
   (List<String>, List<String>) _splitRefLines(List<String> lines) {
-    bool inRef = false;
-    final body = <String>[];
-    final refs = <String>[];
-
-    bool isReferenceHeader(String value) {
-      final normalized = value
-          .replaceAll(RegExp(r'^[#*\s]+'), '')
-          .replaceAll(':', '')
-          .trim()
-          .toUpperCase();
-
-      return normalized == '📚 REFERENCIAS' ||
-          normalized == '📚 REFERÊNCIAS' ||
-          normalized == 'REFERENCIAS' ||
-          normalized == 'REFERÊNCIAS';
-    }
-
-    bool startsNewSection(String value) {
-      if (value.isEmpty) return false;
-
-      return value.startsWith('#') ||
-          value.startsWith('🟥') ||
-          value.startsWith('⛔') ||
-          value.startsWith('📌') ||
-          value.startsWith('🎯') ||
-          value.startsWith('🚨') ||
-          value.startsWith('💊') ||
-          value.startsWith('📊') ||
-          value.startsWith('⚠️') ||
-          value.startsWith('✅') ||
-          value.startsWith('🔴') ||
-          value.startsWith('🟡') ||
-          value.startsWith('🟢');
-    }
-
-    for (final line in lines) {
-      final trimmed = line.trim();
-
-      if (!inRef) {
-        if (isReferenceHeader(trimmed)) {
-          inRef = true;
-        } else {
-          body.add(line);
-        }
-        continue;
-      }
-
-      if (startsNewSection(trimmed) && !isReferenceHeader(trimmed)) {
-        inRef = false;
-        body.add(line);
-        continue;
-      }
-
-      refs.add(line);
-    }
-
-    return (body, refs);
+    final projection = CollapsibleReferencesBlock.project(lines.join('\n'));
+    return (projection.$1.split('\n'), projection.$2);
   }
 
   @override
@@ -110,7 +60,6 @@ class AiBlockBubble extends StatelessWidget {
     // sub-containers, sem Row/Padding segregados por tipo de linha.
 
     final palette = HomeV2Palette.resolve(dark);
-    final kGreen = palette.accent;
     final textColor = palette.textPrimary;
 
     // ── M2: Normalização de soft-line-breaks ─────────────────────────────────
@@ -285,93 +234,22 @@ class AiBlockBubble extends StatelessWidget {
                 },
               ),
 
-            // ── Build 120: Bloco de Referências Colapsável ────────────────
-            if (hasRefBlock)
-              CollapsibleReferencesBlock(
-                lines: refLines,
-                dark: dark,
-                lang: lang,
-              ),
-
-            // ── Rodapé: hora + TTS + copiar (apenas última bolha) ────────
-            if (isLast) ...[
-              const SizedBox(height: 5),
-              Row(children: [
-                Text(
-                  _fakeTime(),
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: palette.textMuted.withValues(alpha: 0.42),
-                  ),
-                ),
-                const Spacer(),
-                if (onTts != null && ttsReady) ...[
-                  GestureDetector(
-                    onTap: onTts,
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(8),
-                        color: ttsPlaying
-                            ? palette.accentSoft
-                            : Colors.transparent,
-                      ),
-                      child: Row(mainAxisSize: MainAxisSize.min, children: [
-                        Icon(
-                          ttsPlaying
-                              ? Icons.stop_circle_rounded
-                              : Icons.volume_up_rounded,
-                          size: 13,
-                          color: ttsPlaying
-                              ? kGreen
-                              : (palette.textSecondary.withValues(alpha: 0.58)),
-                        ),
-                        const SizedBox(width: 3),
-                        Text(
-                          ttsPlaying
-                              ? (lang == 'es' ? 'Detener' : 'Parar')
-                              : (lang == 'es' ? 'Escuchar' : 'Ouvir'),
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: FontWeight.w600,
-                            color: ttsPlaying
-                                ? kGreen
-                                : (palette.textSecondary
-                                    .withValues(alpha: 0.58)),
-                          ),
-                        ),
-                      ]),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                ],
-                if (onCopy != null)
-                  GestureDetector(
-                    onTap: onCopy,
-                    child: Row(mainAxisSize: MainAxisSize.min, children: [
-                      Icon(Icons.copy_rounded,
-                          size: 12,
-                          color: palette.textMuted.withValues(alpha: 0.42)),
-                      const SizedBox(width: 3),
-                      Text(lang == 'es' ? 'Copiar' : 'Copiar',
-                          style: TextStyle(
-                              fontSize: 10,
-                              color:
-                                  palette.textMuted.withValues(alpha: 0.42))),
-                    ]),
-                  ),
-              ]),
-            ],
+            if (!isLast && hasRefBlock)
+              CollapsibleReferencesBlock(lines: refLines, dark: dark, lang: lang),
+            if (isLast)
+              ClinicalResponseFooter(
+                  dark: dark,
+                  lang: lang,
+                  createdAt: createdAt,
+                  relatedReferences: relatedReferences,
+                  references: hasRefBlock ? refLines : const [],
+                  onCopy: onCopy,
+                  onTts: onTts,
+                  ttsPlaying: ttsPlaying,
+                  ttsReady: ttsReady),
           ],
         ),
       ),
     );
-  }
-
-  String _fakeTime() {
-    final now = DateTime.now();
-    return '${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
   }
 }

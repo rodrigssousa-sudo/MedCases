@@ -1,3 +1,5 @@
+import '../services/ai/r8/plantao_presentation_catalog.dart';
+import '../services/clinical_catalog/clinical_catalog_presentation_remote.dart';
 // MEDCASES_PRODUCTIVE_SECOND_BRAND_B1_V2_R1_AI
 import 'dart:async';
 import 'dart:ui' show ImageFilter;
@@ -22,7 +24,6 @@ import 'ai/widgets/study_continuation_button.dart';
 import 'ai/widgets/user_bubble.dart';
 import 'ai/widgets/user_message_display_policy.dart';
 import 'ai/widgets/mobile_ai_action_bar.dart';
-import 'ai/widgets/collapsible_content_blocks.dart';
 import 'ai/widgets/ambassador_panel.dart';
 import 'ai/widgets/ai_bubble.dart';
 import 'ai/widgets/ai_shimmer_dots.dart';
@@ -93,6 +94,7 @@ class _ChatSession {
                 'id': m.id,
                 'role': m.role,
                 'text': m.text,
+                if (m.createdAt != null) 'createdAt': m.createdAt!.toIso8601String(),
                 if (m.userDisplayText?.trim().isNotEmpty == true)
                   'userDisplayText': m.userDisplayText!.trim(),
               },
@@ -144,6 +146,7 @@ class _ChatSession {
         parsedMessages.add(
           _ChatMsg.withId(
             id: msgId,
+            createdAt: ChatMessage.parseTimestamp(map['createdAt']) ?? ChatMessage.timeFromLegacyId(map['id']?.toString()),
             role: role,
             text: text,
             userDisplayText:
@@ -2068,6 +2071,15 @@ class _AiScreenState extends State<AiScreen> {
                 'messageCount=${exchanges.length * 2}',
               );
 
+              // R12: saved fields are hints, never authority for an executive.
+              // A failed catalog read leaves the original FULL/history intact.
+              if (summary.mode == 'plantao') {
+                await PlantaoPresentationCatalog.restoreHistoryPresentations(
+                    exchanges, FirestoreClinicalCatalogRemote());
+                if (!mounted || restoreGeneration != _historyRestoreGeneration) {
+                  return;
+                }
+              }
               final hydratedExchanges = AiSessionExchangeHydrator.hydrate(
                 sessionId: summary.sessionId,
                 exchanges: exchanges,
@@ -2079,6 +2091,7 @@ class _AiScreenState extends State<AiScreen> {
                   chatMsgs.add(
                     _ChatMsg.withId(
                       id: exchange.userMessageId,
+                      createdAt: exchange.createdAt,
                       role: 'user',
                       text: exchange.userInput,
                       userDisplayText: exchange.userDisplayText,
@@ -2090,9 +2103,11 @@ class _AiScreenState extends State<AiScreen> {
                   chatMsgs.add(
                     _ChatMsg.withId(
                       id: exchange.assistantMessageId,
+                      createdAt: exchange.createdAt,
                       role: 'ai',
                       text: exchange.assistantText,
                       preserveReferenceText: exchange.preserveReferenceText,
+                      referenceDocument: exchange.referenceDocument,
                       clinicalOutput: exchange.clinicalOutput,
                     ),
                   );
@@ -3395,7 +3410,8 @@ class _AiScreenState extends State<AiScreen> {
               _thinking = false;
               _isStreaming = false;
               _networkError = false;
-              final message = _ChatMsg(role:'ai',text:finalText,preserveReferenceText:true);
+              final message = _ChatMsg(role:'ai',text:finalText,preserveReferenceText:true,
+                referenceDocument: p.approvedProtocolDocument(finalText));
               if (streamingMsgIdx >= 0 && streamingMsgIdx < _messages.length) {
                 _messages[streamingMsgIdx] = message;
               } else {
@@ -4148,8 +4164,13 @@ class _AiScreenState extends State<AiScreen> {
     }
   }
 
-  void _copyMsg(String text) {
-    Clipboard.setData(ClipboardData(text: text));
+  Future<void> _copyMsg(String text) async {
+    try {
+      await Clipboard.setData(ClipboardData(text: text));
+    } catch (_) {
+      return; // Never acknowledge a failed clipboard operation.
+    }
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(context.read<AppProvider>().t('copied')),
@@ -4609,7 +4630,11 @@ class _AiScreenState extends State<AiScreen> {
             break;
           }
         }
-        final clinicalReference = isSafeCard || isActiveStreamingBubble
+        final clinicalReference = isSafeCard || isActiveStreamingBubble ||
+            GuardiaClinicalResponseView.hasReferenceSection(msg.text) ||
+            (!_longResponse && (msg.preserveReferenceText ||
+              GuardiaClinicalResponseView.hasReferenceSection(msg.text) ||
+              p.approvedProtocolDocument(msg.text)?.isReferenceDocument == true))
             ? null
             : ClinicalReferenceResolver.resolve(
                 userText: precedingUserText,
@@ -4691,7 +4716,9 @@ class _AiScreenState extends State<AiScreen> {
                 if (useGuardiaPresentation)
                   GuardiaClinicalResponseView(
                     key: ValueKey('guardia_${msg.id}'),
-                    referenceDocument: p.approvedProtocolDocument(cleanDisplayText),
+                    createdAt: msg.createdAt,
+                    relatedReferences: clinicalReference?.lines ?? const [],
+                    referenceDocument: msg.referenceDocument ?? p.approvedProtocolDocument(cleanDisplayText),
                     preserveReferenceText: msg.preserveReferenceText,
                     rawText: cleanDisplayText,
                     output: msg.clinicalOutput,
@@ -4714,6 +4741,8 @@ class _AiScreenState extends State<AiScreen> {
                 else
                   AiBubble(
                     key: ValueKey('ai_${msg.id}'),
+                    createdAt: msg.createdAt,
+                    relatedReferences: clinicalReference?.lines ?? const [],
                     text: cleanDisplayText,
                     dark: dark,
                     studyMode: _longResponse,
@@ -4934,34 +4963,6 @@ class _AiScreenState extends State<AiScreen> {
                             },
                           ),
                         ],
-                      );
-                    },
-                  ),
-                // ── Referência clínica textual e colapsável ───────────────
-                // Um fármaco usa sua ficha específica; polifarmácia usa
-                // referências do protocolo temático; sem match usa livros-base.
-                if (clinicalReference != null)
-                  Builder(
-                    builder: (_) {
-                      if (kDebugMode) {
-                        final evKey = '${msg.id}_${msg.text.hashCode}';
-                        if (!_loggedEvidenceIds.contains(evKey)) {
-                          _loggedEvidenceIds.add(evKey);
-                          debugPrint(
-                            '[REFERENCE_RESOLVER] messageId=${msg.id} '
-                            'source=${clinicalReference.sourceType} '
-                            'protocol=${clinicalReference.protocolId ?? "none"} '
-                            'drugs=${clinicalReference.drugKeys.length}',
-                          );
-                        }
-                      }
-                      return Padding(
-                        padding: const EdgeInsets.fromLTRB(12, 20, 12, 18),
-                        child: CollapsibleClinicalReferenceBlock(
-                          lines: clinicalReference.lines,
-                          dark: dark,
-                          lang: p.lang,
-                        ),
                       );
                     },
                   ),

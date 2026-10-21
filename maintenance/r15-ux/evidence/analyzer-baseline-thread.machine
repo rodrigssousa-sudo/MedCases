@@ -1,0 +1,1 @@
+WARNING|STATIC_WARNING|UNUSED_LOCAL_VARIABLE|/private/var/folders/xj/tq3trtjj5l74n_0llrwl1nhm0000gn/T/medcases-r15-baseline-uxjhmojn/lib/services/clinical_thread_manager.dart|745|13|8|The value of the local variable 'oldTopic' isn't used.

@@ -1,0 +1,24 @@
+00:00 +0: loading /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart
+00:00 +0: shared footer 320.0 dark=true pt
+00:00 +1: shared footer 320.0 dark=true es
+00:01 +2: shared footer 320.0 dark=false pt
+00:01 +3: shared footer 320.0 dark=false es
+00:01 +4: shared footer 375.0 dark=true pt
+00:01 +5: shared footer 375.0 dark=true es
+00:01 +6: shared footer 375.0 dark=false pt
+00:01 +7: shared footer 375.0 dark=false es
+00:01 +8: shared footer 768.0 dark=true pt
+00:01 +9: shared footer 768.0 dark=true es
+00:01 +10: shared footer 768.0 dark=false pt
+00:01 +11: shared footer 768.0 dark=false es
+00:01 +12: shared footer 1200.0 dark=true pt
+00:02 +13: shared footer 1200.0 dark=true es
+00:02 +14: shared footer 1200.0 dark=false pt
+00:02 +15: shared footer 1200.0 dark=false es
+00:02 +16: reference heading compatibility does not expose legacy emoji controls
+00:02 +17: large accessible text keeps all actions at 320 pixels
+00:02 +18: Study streaming does not expose final actions prematurely
+[CPU_GUARD] _cleanAiText called — isStreaming=true (legítimo)
+00:02 +19: Study uses same footer without fictitious expansion or time
+00:02 +20: saved exchange timestamp is preserved; unknown time is never now
+00:02 +21: All tests passed!

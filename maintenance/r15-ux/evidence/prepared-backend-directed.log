@@ -1,0 +1,26 @@
+✔ real approved source scope sample hipocalemia pt (107.165958ms)
+✔ real approved source scope sample hipocalemia es (73.921667ms)
+✔ no individualized approval Paciente con potasio de 2.8 como debo tratamiento (71.976416ms)
+✔ no individualized approval Hipocalemia em criança 12 kg (76.034ms)
+✔ no individualized approval Hipopotasemia embarazo (96.619167ms)
+✔ no individualized approval Hipocalemia dose renal 10 (98.139667ms)
+✔ drug exact identity without toxicity or calculation pt Paracetamol (20.985625ms)
+✔ drug exact identity without toxicity or calculation pt acetaminofeno (3.737375ms)
+✔ drug exact identity without toxicity or calculation es Paracetamol (0.884ms)
+✔ drug exact identity without toxicity or calculation es acetaminofeno (0.97175ms)
+✔ drug reference cannot swallow qualifiers Intoxicação por paracetamol (0.965ms)
+✔ drug reference cannot swallow qualifiers Paracetamol 15 mg/kg para criança (0.428041ms)
+✔ negative clinical distinction Não é IAM com supra (99.939416ms)
+✔ negative clinical distinction Sem IAM com supra (94.442208ms)
+✔ negative clinical distinction Suspeita de IAM com supra (114.523ms)
+✔ negative clinical distinction NSTEMI (91.367208ms)
+✔ negative clinical distinction SCASEST (79.816375ms)
+✔ negative clinical distinction Supra inespecífico no ECG (94.722125ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1279.963167

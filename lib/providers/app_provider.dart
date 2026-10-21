@@ -4181,7 +4181,12 @@ class AppProvider extends ChangeNotifier {
   /// Retorna string descritiva usada no system prompt como contexto para o Gemini.
   /// Classifica o intent em chave canônica curta usada pelo switch no system prompt.
   /// Ordem importa: mais específico antes de mais genérico.
-  String _classifyIntent(String input) {
+  @visibleForTesting
+  String classifyIntentForTesting(String input, {bool plantao = true}) =>
+      _classifyIntent(input, plantao: plantao);
+
+  String _classifyIntent(String input, {bool plantao = false}) {
+    if (plantao && PlantaoCanonicalRequest.isKnownDrugNameOnly(input)) return 'farmaco';
     final q = _normalize(input);
 
     // ── Referências bibliográficas ──────────────────────────────────────────
@@ -4291,6 +4296,18 @@ class AppProvider extends ChangeNotifier {
       'sepse grave',
     ])) {
       return 'emergencia';
+    }
+
+    // Intent only, after emergency priority. Explicit toxicology and supplied
+    // population context must not fall through to a generic drug monograph.
+    // This does not infer intoxication, select a regimen or grant approval.
+    if (plantao &&
+        (RegExp(r'^[¿¡\s]*(?:intoxicacao|intoxicacion|sobredose|sobredosis|overdose)\s+(?:(?:por|de|del|com|con)\s+)?\S')
+            .hasMatch(q) ||
+         (input.trim().split(RegExp(r'\s+')).length >= 5 &&
+          RegExp(r'\b(?:em|en|no|na|com|con)\s+(?:crianca|nino|idoso|anciano|paciente)\b')
+              .hasMatch(q)))) {
+      return 'caso_clinico';
     }
 
     // ── Caso clínico — dados clínicos estruturados ──────────────────────────
@@ -8628,7 +8645,7 @@ class AppProvider extends ChangeNotifier {
         // Montar systemPrompt para este ciclo QA
         // Reutiliza o mesmo pipeline de contexto (RAG, sessionLang, intent)
         final qaSessionLang = _resolveSessionLang(input);
-        final qaIntent = _classifyIntent(input);
+        final qaIntent = _classifyIntent(input, plantao: !longResponse);
         // GLOBAL_CONTEXT_BUILD1: ClinicalThreadManager is the only productive
         // continue/switch decision owner. SessionMemory is reset only after
         // a proven ThreadAction.newThread below.
@@ -8672,11 +8689,13 @@ class AppProvider extends ChangeNotifier {
             : input;
         final qaNormalized = _normalize(qaExpandedInput);
         final qaMatchedProtocols = <ProtocolModel>[];
-        final qaProtos = _matchProtocolsExtended(
+        final qaDrugLookup = !longResponse &&
+            PlantaoCanonicalRequest.isKnownDrugNameOnly(input);
+        final qaProtos = qaDrugLookup ? <String>[] : _matchProtocolsExtended(
           qaNormalized,
           matchedProtocols: qaMatchedProtocols,
         );
-        var qaFinalProtos = qaProtos.isNotEmpty
+        var qaFinalProtos = qaDrugLookup || qaProtos.isNotEmpty
             ? qaProtos
             : _matchProtocols(
                 qaNormalized,
@@ -8689,8 +8708,8 @@ class AppProvider extends ChangeNotifier {
             currentInput: input,
           );
         }
-        final qaLocalCtx = _buildLocalAnswer(qaExpandedInput);
-        final qaCrosscuttingEvidenceContext =
+        final qaLocalCtx = qaDrugLookup ? '' : _buildLocalAnswer(qaExpandedInput);
+        final qaCrosscuttingEvidenceContext = qaDrugLookup ? '' :
             ClinicalCrosscuttingEvidenceResolver.enrich(
           query: qaExpandedInput,
           baseContext: '',
@@ -9464,7 +9483,7 @@ class AppProvider extends ChangeNotifier {
         );
       }
       final sessionLang = _resolveSessionLang(input);
-      final intent = _classifyIntent(input);
+      final intent = _classifyIntent(input, plantao: !longResponse);
       // BUILD 249/250: após HARD RESET, _expandedQuery() lê histórico já vazio →
       // zero contaminação de contexto anterior no payload enviado.
       final expandedInput = threadStatus.isContinuation
@@ -9474,11 +9493,13 @@ class AppProvider extends ChangeNotifier {
 
       // BUILD 325: drug RAG removed — Google Search Grounding + system prompt directives.
       final matchedProtocolModels = <ProtocolModel>[];
-      final _extProtos = _matchProtocolsExtended(
+      final directDrugLookup = !longResponse &&
+          PlantaoCanonicalRequest.isKnownDrugNameOnly(input);
+      final _extProtos = directDrugLookup ? <String>[] : _matchProtocolsExtended(
         normalized,
         matchedProtocols: matchedProtocolModels,
       );
-      var finalProtocols = _extProtos.isNotEmpty
+      var finalProtocols = directDrugLookup || _extProtos.isNotEmpty
           ? _extProtos
           : _matchProtocols(
               normalized,
@@ -9491,8 +9512,8 @@ class AppProvider extends ChangeNotifier {
           currentInput: input,
         );
       }
-      final localContext = _buildLocalAnswer(expandedInput);
-      final crosscuttingEvidenceContext =
+      final localContext = directDrugLookup ? '' : _buildLocalAnswer(expandedInput);
+      final crosscuttingEvidenceContext = directDrugLookup ? '' :
           ClinicalCrosscuttingEvidenceResolver.enrich(
         query: expandedInput,
         baseContext: '',

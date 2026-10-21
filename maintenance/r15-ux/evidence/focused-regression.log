@@ -1,0 +1,133 @@
+00:00 +0: loading /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart
+00:00 +0: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: preserved reference keeps copy and audio actions
+00:00 +0: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_clinical_response_view_test.dart: renderiza as cinco seções em formato plano e compacto
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=1 notes=0 keyPoints=1 typed=false alertsPayload= hardStopsPayload=No usar nitratos con PAS menor de 90 mmHg notesPayload= keyPointsPayload=Activar reperfusión cuando esté indicada
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792536944105295 rawTextLen=348 displayTextLen=348 effectiveTextLen=348 dto=true rx=3 first=2 second=1 keys=1 hard=1 structured=true
+00:00 +0: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: preserved reference keeps copy and audio actions
+00:00 +1: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: preserved reference keeps copy and audio actions
+00:00 +2: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: preserved reference keeps copy and audio actions
+00:00 +3: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: preserved reference keeps copy and audio actions
+00:00 +4: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: preserved reference keeps copy and audio actions
+00:00 +5: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: preserved reference keeps copy and audio actions
+00:01 +6: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: preserved reference keeps copy and audio actions
+00:01 +7: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: preserved reference keeps copy and audio actions
+00:01 +8: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: preserved reference keeps copy and audio actions
+00:01 +9: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration default enabled renders typed once
+00:01 +9: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_clinical_response_view_test.dart: notifier atualiza texto sem reconstruir a tela pai
+[GUARDIA_TRACE] stage=I5_renderer_snapshot_in snapshotLen=46 displayBefore=29
+[GUARDIA_TRACE] stage=I5_renderer_snapshot_out snapshotLen=46 displayAfter=46
+00:01 +10: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration default enabled renders typed once
+00:01 +10: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_clinical_response_view_test.dart: parcial e final preservam o mesmo Element pela key
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=1 notes=0 keyPoints=1 typed=false alertsPayload= hardStopsPayload=No usar nitratos con PAS menor de 90 mmHg notesPayload= keyPointsPayload=Activar reperfusión cuando esté indicada
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792536944884278 rawTextLen=348 displayTextLen=348 effectiveTextLen=348 dto=true rx=3 first=2 second=1 keys=1 hard=1 structured=true
+00:01 +11: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration default enabled renders typed once
+00:01 +11: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_clinical_response_view_test.dart: payload legado não recebe prioridade inventada
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=0 notes=0 keyPoints=0 typed=false alertsPayload= hardStopsPayload= notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792536944952758 rawTextLen=123 displayTextLen=123 effectiveTextLen=123 dto=true rx=1 first=0 second=0 keys=0 hard=0 structured=true
+00:01 +12: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration default enabled renders typed once
+00:01 +12: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_clinical_response_view_test.dart: RED FLAGS e avaliação inicial são aceitos no raw novo
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=1 notes=0 keyPoints=0 typed=false alertsPayload= hardStopsPayload=Inestabilidad hemodinámica o deterioro clínico notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792536945073721 rawTextLen=171 displayTextLen=171 effectiveTextLen=171 dto=false rx=0 first=0 second=0 keys=0 hard=0 structured=true
+00:01 +13: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration default enabled renders typed once
+00:02 +13: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_clinical_response_view_test.dart: copy e ouvir permanecem funcionais no final
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=1 notes=0 keyPoints=1 typed=false alertsPayload= hardStopsPayload=No usar nitratos con PAS menor de 90 mmHg notesPayload= keyPointsPayload=Activar reperfusión cuando esté indicada
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792536945311759 rawTextLen=348 displayTextLen=348 effectiveTextLen=348 dto=true rx=3 first=2 second=1 keys=1 hard=1 structured=true
+00:02 +13: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration default enabled renders typed once
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=1 hardStops=1 notes=0 keyPoints=0 typed=true alertsPayload=Monitorar hipotensão hardStopsPayload=Não administrar nitrato com PAS menor de 90 mmHg notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792536945501929 rawTextLen=212 displayTextLen=212 effectiveTextLen=212 dto=true rx=2 first=0 second=0 keys=0 hard=1 structured=true
+00:02 +14: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration default enabled renders typed once
+00:03 +15: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:03 +15: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration explicit disabled preserves legacy rollback
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=1 hardStops=1 notes=0 keyPoints=0 typed=false alertsPayload=Monitorar hipotensão hardStopsPayload=Não administrar nitrato com PAS menor de 90 mmHg notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792536946497762 rawTextLen=212 displayTextLen=212 effectiveTextLen=212 dto=true rx=2 first=0 second=0 keys=0 hard=1 structured=true
+00:03 +16: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:04 +16: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration typed owns alert and hard stop without duplication
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=1 hardStops=1 notes=0 keyPoints=0 typed=true alertsPayload=Monitorar hipotensão hardStopsPayload=Não administrar nitrato com PAS menor de 90 mmHg notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792536947589517 rawTextLen=212 displayTextLen=212 effectiveTextLen=212 dto=true rx=2 first=0 second=0 keys=0 hard=1 structured=true
+00:04 +17: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration typed owns alert and hard stop without duplication
+00:06 +18: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: Plantão canonical boundary (nonclinical transport fixtures) legacy generation cannot bypass Plantão contract pt
+[GPT_SSE] → connecting requestId=legacy_pt attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=legacy_pt status=200 durationToConnect=163ms
+00:06 +18: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration first and second line force legacy
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=0 notes=0 keyPoints=0 typed=false alertsPayload= hardStopsPayload= notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792536950191388 rawTextLen=100 displayTextLen=100 effectiveTextLen=100 dto=true rx=2 first=1 second=1 keys=0 hard=0 structured=true
+00:06 +18: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: Plantão canonical boundary (nonclinical transport fixtures) legacy generation cannot bypass Plantão contract pt
+[GPT_SSE] stream_error requestId=legacy_pt error=FormatException: plantao_contract_mismatch
+[GPT_SSE] closed requestId=legacy_pt cancelled=false completed=false deltaCount=0 durationMs=459
+00:07 +19: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: FULL is immediate, references collapsed, one accessible footer pt
+00:07 +19: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: Plantão canonical boundary (nonclinical transport fixtures) verified complete reference survives SSE pt
+[GPT_SSE] → connecting requestId=reference_pt attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=reference_pt status=200 durationToConnect=2ms
+[GPT_SSE] ✅ transport_done requestId=reference_pt attempt=2 deltaCount=0 textLen=162 durationMs=45
+[GPT_SSE] closed requestId=reference_pt cancelled=false completed=true deltaCount=0 durationMs=49
+00:07 +20: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: FULL is immediate, references collapsed, one accessible footer pt
+00:07 +21: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: FULL is immediate, references collapsed, one accessible footer pt
+00:08 +21: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: Plantão canonical boundary (nonclinical transport fixtures) legacy generation cannot bypass Plantão contract es
+[GPT_SSE] → connecting requestId=legacy_es attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=legacy_es status=200 durationToConnect=13ms
+[GPT_SSE] stream_error requestId=legacy_es error=FormatException: plantao_contract_mismatch
+[GPT_SSE] closed requestId=legacy_es cancelled=false completed=false deltaCount=0 durationMs=19
+00:08 +22: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: FULL is immediate, references collapsed, one accessible footer pt
+00:08 +22: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: Plantão canonical boundary (nonclinical transport fixtures) verified complete reference survives SSE es
+[GPT_SSE] → connecting requestId=reference_es attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=reference_es status=200 durationToConnect=1ms
+[GPT_SSE] ✅ transport_done requestId=reference_es attempt=2 deltaCount=0 textLen=170 durationMs=4
+[GPT_SSE] closed requestId=reference_es cancelled=false completed=true deltaCount=0 durationMs=5
+00:08 +23: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: FULL is immediate, references collapsed, one accessible footer pt
+00:08 +23: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: GptSseClient Study structured transport_done converte structuredOutput em ClinicalStructuredOutput tipado
+[GPT_SSE] → connecting requestId=req_structured_transport attempt=2 endpoint=https://example.test/gpt
+[GPT_SSE] ← connected requestId=req_structured_transport status=200 durationToConnect=16ms
+00:08 +23: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration generic prescription forces legacy
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=0 notes=0 keyPoints=0 typed=false alertsPayload= hardStopsPayload= notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792536951684618 rawTextLen=105 displayTextLen=105 effectiveTextLen=105 dto=true rx=2 first=0 second=0 keys=0 hard=0 structured=true
+00:08 +23: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: GptSseClient Study structured transport_done converte structuredOutput em ClinicalStructuredOutput tipado
+[GPT_SSE] ✅ transport_done requestId=req_structured_transport attempt=2 deltaCount=2 textLen=16 durationMs=297
+[GPT_SSE] closed requestId=req_structured_transport cancelled=false completed=true deltaCount=2 durationMs=298
+00:08 +24: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: FULL is immediate, references collapsed, one accessible footer pt
+00:08 +24: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: GptSseClient Study structured transport_done falha de forma não recuperável quando structuredOutput não nulo é inválido
+[GPT_SSE] → connecting requestId=req_invalid_structured_transport attempt=2 endpoint=https://example.test/gpt
+[GPT_SSE] ← connected requestId=req_invalid_structured_transport status=200 durationToConnect=16ms
+[GPT_SSE] closed requestId=req_invalid_structured_transport cancelled=false completed=false deltaCount=1 durationMs=19
+00:08 +25: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: FULL is immediate, references collapsed, one accessible footer pt
+00:08 +25: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/gpt_sse_client_test.dart: GptSseClient Study structured transport_done mantém clinicalOutput null no transport_done legado
+[GPT_SSE] → connecting requestId=req_legacy_transport attempt=2 endpoint=https://example.test/gpt
+[GPT_SSE] ← connected requestId=req_legacy_transport status=200 durationToConnect=6ms
+[GPT_SSE] ✅ transport_done requestId=req_legacy_transport attempt=2 deltaCount=1 textLen=15 durationMs=12
+[GPT_SSE] closed requestId=req_legacy_transport cancelled=false completed=true deltaCount=1 durationMs=12
+00:08 +26: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: FULL is immediate, references collapsed, one accessible footer pt
+00:09 +27: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: FULL is immediate, references collapsed, one accessible footer pt
+00:11 +27: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration Spanish dark typed is exclusive and narrow-safe
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=1 hardStops=1 notes=0 keyPoints=0 typed=true alertsPayload=Vigilar hipotensión hardStopsPayload=No administrar nitrato con PAS menor de 90 mmHg notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792536954122042 rawTextLen=201 displayTextLen=201 effectiveTextLen=201 dto=true rx=2 first=0 second=0 keys=0 hard=1 structured=true
+00:12 +28: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration Spanish dark typed is exclusive and narrow-safe
+00:12 +29: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically pt
+00:18 +29: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_30turn_verbatim_memory_contract_test.dart: Study 30-turn verbatim memory keeps last 30 exchanges verbatim
+[STUDY_30TURN][HISTORY_SANITIZER] mode=estudo strategy=verbatim_30_exchanges sent=60/70 taskLabel=geral
+00:18 +30: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically pt
+00:18 +31: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically pt
+00:18 +31: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_30turn_verbatim_memory_contract_test.dart: Study 30-turn verbatim memory task label changes do not wipe Study transport
+[STUDY_30TURN][HISTORY_SANITIZER] mode=estudo strategy=verbatim_30_exchanges sent=6/6 taskLabel=geral
+[STUDY_30TURN][HISTORY_SANITIZER] mode=estudo strategy=verbatim_30_exchanges sent=6/6 taskLabel=dose
+00:18 +32: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically pt
+00:18 +32: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/study_30turn_verbatim_memory_contract_test.dart: Study 30-turn verbatim memory preserves Study window and Plantao case anchor plus recent turns
+[HISTORY_SANITIZER] mode=plantao strategy=case_anchor_plus_recent sent=6 anchor=2 recent=4 topic=synthetic reason=same_topic
+[HISTORY_SANITIZER] mode=plantao strategy=empty sent=0 removed=12 reason=new_case
+00:18 +33: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically pt
+00:20 +34: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: corrupt executive fails back to integral pt
+00:20 +35: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle es
+00:22 +36: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: FULL is immediate, references collapsed, one accessible footer es
+00:22 +37: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:23 +38: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:23 +39: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:23 +40: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:23 +41: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:23 +42: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:23 +43: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:23 +44: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:23 +45: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:23 +46: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:23 +47: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:23 +48: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:24 +49: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: corrupt executive fails back to integral es
+00:24 +50: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: corrupt saved drug attachment grants no projection authority
+00:24 +51: All tests passed!

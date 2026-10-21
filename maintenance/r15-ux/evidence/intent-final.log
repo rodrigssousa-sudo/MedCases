@@ -1,0 +1,24 @@
+00:00 +0: loading /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/r15_drug_intent_boundary_test.dart
+00:00 +0: whole-name drug lookup removes unrelated case and toxicity: Paracetamol
+00:00 +1: whole-name drug lookup removes unrelated case and toxicity:  PARACETAMOL? 
+00:00 +2: whole-name drug lookup removes unrelated case and toxicity: Noradrenalina
+00:00 +3: whole-name drug lookup removes unrelated case and toxicity: Ceftriaxona
+00:00 +4: whole-name drug lookup removes unrelated case and toxicity: Metformina
+00:00 +5: qualifier, follow-up or uncertainty cannot become nominal card: Paracetamol dosis
+00:00 +6: qualifier, follow-up or uncertainty cannot become nominal card: Intoxicação por paracetamol
+00:00 +7: qualifier, follow-up or uncertainty cannot become nominal card: Sobredosis de paracetamol
+00:00 +8: qualifier, follow-up or uncertainty cannot become nominal card: Paciente ingeriu 20 g de paracetamol
+00:00 +9: qualifier, follow-up or uncertainty cannot become nominal card: Hipocalemia
+00:00 +10: qualifier, follow-up or uncertainty cannot become nominal card: Hipopotasemia
+00:00 +11: qualifier, follow-up or uncertainty cannot become nominal card: Sepse
+00:00 +12: qualifier, follow-up or uncertainty cannot become nominal card: Ceftriaxona contraindicaciones
+00:00 +13: qualifier, follow-up or uncertainty cannot become nominal card: Contraindicaciones de ceftriaxona
+00:00 +14: qualifier, follow-up or uncertainty cannot become nominal card: Ajuste renal de metformina
+00:00 +15: qualifier, follow-up or uncertainty cannot become nominal card: Dose de paracetamol em criança de 15 kg
+00:00 +16: qualifier, follow-up or uncertainty cannot become nominal card: Sepse no idoso com hipotensão
+00:00 +17: qualifier, follow-up or uncertainty cannot become nominal card: E quanto ao ajuste renal?
+00:00 +18: qualifier, follow-up or uncertainty cannot become nominal card: Paracetamo
+00:00 +19: qualifier, follow-up or uncertainty cannot become nominal card: Metformina ou ceftriaxona
+00:00 +20: contextual pediatric dose retains individualized scope PT/ES
+00:00 +21: catalog aliases must be unique, never inferred from spelling
+00:00 +22: All tests passed!

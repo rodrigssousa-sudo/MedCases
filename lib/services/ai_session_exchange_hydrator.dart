@@ -1,8 +1,11 @@
+import '../models/canonical_clinical_snapshot.dart';
+import '../models/chat_message.dart';
 import '../models/clinical_structured_output.dart';
 
 final class AiHydratedExchange {
   const AiHydratedExchange({
     required this.requestId,
+    this.createdAt,
     required this.userMessageId,
     required this.assistantMessageId,
     required this.userInput,
@@ -10,9 +13,12 @@ final class AiHydratedExchange {
     required this.assistantText,
     required this.clinicalOutput,
     this.preserveReferenceText = false,
+    this.referenceDocument,
   });
 
   final bool preserveReferenceText;
+  final CanonicalClinicalSnapshot? referenceDocument;
+  final DateTime? createdAt;
   final String requestId;
   final String userMessageId;
   final String assistantMessageId;
@@ -33,8 +39,7 @@ abstract final class AiSessionExchangeHydrator {
 
     for (var index = 0; index < exchanges.length; index++) {
       final exchange = exchanges[index];
-      final requestId =
-          (exchange['requestId']?.toString() ?? '').trim();
+      final requestId = (exchange['requestId']?.toString() ?? '').trim();
 
       if (requestId.isNotEmpty && !seenRequestIds.add(requestId)) {
         continue;
@@ -50,13 +55,44 @@ abstract final class AiSessionExchangeHydrator {
           (exchange['assistantPresentation']?.toString() ?? '').trim();
       // Read-only presentation of the already committed server reference.
       // This flag cannot authorize a request, calculation or clinical source.
-      final preserveReferenceText = exchange['mode'] == 'plantao' && const {
-        'MEDCASES_APPROVED_PROTOCOL',
-        'CANONICAL_DRUG_INFORMATION_NOT_PRESCRIPTION',
-        'EXTERNAL_GENERAL_INFORMATION_NOT_APPROVED_PROTOCOL',
-      }.contains(exchange['provenance']);
-      final assistantText = preserveReferenceText ? providerOutput :
-          presentation.isNotEmpty ? presentation : providerOutput;
+      final preserveReferenceText = exchange['mode'] == 'plantao' &&
+          const {
+            'MEDCASES_APPROVED_PROTOCOL',
+            'CANONICAL_DRUG_INFORMATION_NOT_PRESCRIPTION',
+            'EXTERNAL_GENERAL_INFORMATION_NOT_APPROVED_PROTOCOL',
+          }.contains(exchange['provenance']);
+      final assistantText = preserveReferenceText
+          ? providerOutput
+          : presentation.isNotEmpty
+              ? presentation
+              : providerOutput;
+
+      // Read-only reconstruction of a saved drug reference. Exact source and
+      // assistant bytes must match. This grants neither clinical approval nor
+      // calculation/request authority; corrupt attachments keep FULL text.
+      CanonicalClinicalSnapshot? referenceDocument;
+      final drug = exchange['drugReference'];
+      if (preserveReferenceText &&
+          exchange['provenance'] ==
+              'CANONICAL_DRUG_INFORMATION_NOT_PRESCRIPTION' &&
+          drug is Map &&
+          drug['documentJson'] is String &&
+          drug['payloadSha256'] is String) {
+        try {
+          final candidate = CanonicalClinicalSnapshot.fromDrugReference(
+              drug['documentJson'], drug['payloadSha256']);
+          final locale = exchange['locale'];
+          if (locale is String &&
+              ['pt', 'es'].contains(locale) &&
+              candidate.blocks(locale).join() == assistantText) {
+            referenceDocument = candidate;
+          }
+        } on FormatException {
+          // No repair, inferred translation or approval from stored content.
+        } on TypeError {
+          // Legacy attachments may not have the current shape.
+        }
+      }
 
       // Only a reconciled presentation may revive its structured metadata.
       // Old provider-stage records remain text-only and therefore fail closed.
@@ -69,7 +105,10 @@ abstract final class AiSessionExchangeHydrator {
       hydrated.add(
         AiHydratedExchange(
           requestId: requestId,
+          createdAt: ChatMessage.parseTimestamp(
+              exchange['completedAt'] ?? exchange['createdAt']),
           preserveReferenceText: preserveReferenceText,
+          referenceDocument: referenceDocument,
           userMessageId: '$idPrefix:user',
           assistantMessageId: '$idPrefix:assistant',
           userInput: userInput,

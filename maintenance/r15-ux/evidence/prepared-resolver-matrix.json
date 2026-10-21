@@ -1,0 +1,246 @@
+{
+  "scope": "FROZEN_CATALOG_ONLY_NOT_CURRENT_PRODUCTION",
+  "fixtureSha256": "c7469995275ee3f6a929d70f278d0212928fed425419a5cf30fb2f079a775377",
+  "results": [
+    {
+      "input": "Paracetamol",
+      "locale": "pt",
+      "state": "AMBIGUOUS",
+      "candidateOwners": [
+        "intox_paracetamol"
+      ],
+      "general": false
+    },
+    {
+      "input": "Noradrenalina",
+      "locale": "pt",
+      "state": "ABSENT",
+      "candidateOwners": [],
+      "general": true
+    },
+    {
+      "input": "Ceftriaxona",
+      "locale": "pt",
+      "state": "UNKNOWN_ABBREVIATION",
+      "candidateOwners": [],
+      "general": false
+    },
+    {
+      "input": "Metformina",
+      "locale": "pt",
+      "state": "UNKNOWN_ABBREVIATION",
+      "candidateOwners": [],
+      "general": false
+    },
+    {
+      "input": "Hipocalemia",
+      "locale": "pt",
+      "state": "RESOLVED",
+      "owner": "hipocalemia",
+      "candidateOwners": [
+        "hipocalemia"
+      ],
+      "general": true
+    },
+    {
+      "input": "Hipopotasemia",
+      "locale": "pt",
+      "state": "RESOLVED",
+      "owner": "hipocalemia",
+      "candidateOwners": [
+        "hipocalemia"
+      ],
+      "general": true
+    },
+    {
+      "input": "Sepse",
+      "locale": "pt",
+      "state": "RESOLVED",
+      "owner": "sepse",
+      "candidateOwners": [
+        "caso_sepse_idoso",
+        "obstetr_corioamnionite_sepse_intraparto",
+        "pedi_sepse_neonatal_choque",
+        "sepse",
+        "sepse_foco_urinario"
+      ],
+      "general": true
+    },
+    {
+      "input": "Intoxicação por paracetamol",
+      "locale": "pt",
+      "state": "ABSENT",
+      "candidateOwners": [],
+      "general": true
+    },
+    {
+      "input": "Sobredosis de paracetamol",
+      "locale": "pt",
+      "state": "ABSENT",
+      "candidateOwners": [],
+      "general": true
+    },
+    {
+      "input": "Paciente ingeriu 20 g de paracetamol",
+      "locale": "pt",
+      "state": "CONTEXT_REQUIRES_REVIEW",
+      "candidateOwners": [],
+      "general": false
+    },
+    {
+      "input": "Paracetamol dosis",
+      "locale": "pt",
+      "state": "ABSENT",
+      "candidateOwners": [],
+      "general": true
+    },
+    {
+      "input": "Ceftriaxona contraindicaciones",
+      "locale": "pt",
+      "state": "ABSENT",
+      "candidateOwners": [],
+      "general": true
+    },
+    {
+      "input": "Dose de paracetamol em criança de 15 kg",
+      "locale": "pt",
+      "state": "CONTEXT_REQUIRES_REVIEW",
+      "candidateOwners": [],
+      "general": false
+    },
+    {
+      "input": "Paracetamo",
+      "locale": "pt",
+      "state": "UNKNOWN_ABBREVIATION",
+      "candidateOwners": [],
+      "general": false
+    },
+    {
+      "input": "Não é intoxicação por paracetamol",
+      "locale": "pt",
+      "state": "CONTEXT_REQUIRES_REVIEW",
+      "candidateOwners": [],
+      "general": false
+    },
+    {
+      "input": "Paracetamol",
+      "locale": "es",
+      "state": "AMBIGUOUS",
+      "candidateOwners": [
+        "intox_paracetamol"
+      ],
+      "general": false
+    },
+    {
+      "input": "Noradrenalina",
+      "locale": "es",
+      "state": "ABSENT",
+      "candidateOwners": [],
+      "general": true
+    },
+    {
+      "input": "Ceftriaxona",
+      "locale": "es",
+      "state": "UNKNOWN_ABBREVIATION",
+      "candidateOwners": [],
+      "general": false
+    },
+    {
+      "input": "Metformina",
+      "locale": "es",
+      "state": "UNKNOWN_ABBREVIATION",
+      "candidateOwners": [],
+      "general": false
+    },
+    {
+      "input": "Hipocalemia",
+      "locale": "es",
+      "state": "RESOLVED",
+      "owner": "hipocalemia",
+      "candidateOwners": [
+        "hipocalemia"
+      ],
+      "general": true
+    },
+    {
+      "input": "Hipopotasemia",
+      "locale": "es",
+      "state": "RESOLVED",
+      "owner": "hipocalemia",
+      "candidateOwners": [
+        "hipocalemia"
+      ],
+      "general": true
+    },
+    {
+      "input": "Sepse",
+      "locale": "es",
+      "state": "RESOLVED",
+      "owner": "sepse",
+      "candidateOwners": [
+        "caso_sepse_idoso",
+        "obstetr_corioamnionite_sepse_intraparto",
+        "pedi_sepse_neonatal_choque",
+        "sepse",
+        "sepse_foco_urinario"
+      ],
+      "general": true
+    },
+    {
+      "input": "Intoxicação por paracetamol",
+      "locale": "es",
+      "state": "ABSENT",
+      "candidateOwners": [],
+      "general": true
+    },
+    {
+      "input": "Sobredosis de paracetamol",
+      "locale": "es",
+      "state": "ABSENT",
+      "candidateOwners": [],
+      "general": true
+    },
+    {
+      "input": "Paciente ingeriu 20 g de paracetamol",
+      "locale": "es",
+      "state": "CONTEXT_REQUIRES_REVIEW",
+      "candidateOwners": [],
+      "general": false
+    },
+    {
+      "input": "Paracetamol dosis",
+      "locale": "es",
+      "state": "ABSENT",
+      "candidateOwners": [],
+      "general": true
+    },
+    {
+      "input": "Ceftriaxona contraindicaciones",
+      "locale": "es",
+      "state": "ABSENT",
+      "candidateOwners": [],
+      "general": true
+    },
+    {
+      "input": "Dose de paracetamol em criança de 15 kg",
+      "locale": "es",
+      "state": "CONTEXT_REQUIRES_REVIEW",
+      "candidateOwners": [],
+      "general": false
+    },
+    {
+      "input": "Paracetamo",
+      "locale": "es",
+      "state": "UNKNOWN_ABBREVIATION",
+      "candidateOwners": [],
+      "general": false
+    },
+    {
+      "input": "Não é intoxicação por paracetamol",
+      "locale": "es",
+      "state": "CONTEXT_REQUIRES_REVIEW",
+      "candidateOwners": [],
+      "general": false
+    }
+  ]
+}

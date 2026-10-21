@@ -1,0 +1,131 @@
+00:00 +0: loading /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart
+00:00 +0: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:01 +0: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_clinical_response_view_test.dart: renderiza as cinco seções em formato plano e compacto
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=1 notes=0 keyPoints=1 typed=false alertsPayload= hardStopsPayload=No usar nitratos con PAS menor de 90 mmHg notesPayload= keyPointsPayload=Activar reperfusión cuando esté indicada
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792540009069950 rawTextLen=348 displayTextLen=348 effectiveTextLen=348 dto=true rx=3 first=2 second=1 keys=1 hard=1 structured=true
+00:01 +0: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration default enabled renders typed once
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=1 hardStops=1 notes=0 keyPoints=0 typed=true alertsPayload=Monitorar hipotensão hardStopsPayload=Não administrar nitrato com PAS menor de 90 mmHg notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792540009249284 rawTextLen=212 displayTextLen=212 effectiveTextLen=212 dto=true rx=2 first=0 second=0 keys=0 hard=1 structured=true
+00:01 +1: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:01 +2: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:01 +3: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:01 +4: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:01 +4: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration explicit disabled preserves legacy rollback
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=1 hardStops=1 notes=0 keyPoints=0 typed=false alertsPayload=Monitorar hipotensão hardStopsPayload=Não administrar nitrato com PAS menor de 90 mmHg notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792540009808400 rawTextLen=212 displayTextLen=212 effectiveTextLen=212 dto=true rx=2 first=0 second=0 keys=0 hard=1 structured=true
+00:02 +4: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_clinical_response_view_test.dart: notifier atualiza texto sem reconstruir a tela pai
+[GUARDIA_TRACE] stage=I5_renderer_snapshot_in snapshotLen=46 displayBefore=29
+[GUARDIA_TRACE] stage=I5_renderer_snapshot_out snapshotLen=46 displayAfter=46
+00:02 +5: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:02 +6: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:02 +6: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration typed owns alert and hard stop without duplication
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=1 hardStops=1 notes=0 keyPoints=0 typed=true alertsPayload=Monitorar hipotensão hardStopsPayload=Não administrar nitrato com PAS menor de 90 mmHg notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792540009982420 rawTextLen=212 displayTextLen=212 effectiveTextLen=212 dto=true rx=2 first=0 second=0 keys=0 hard=1 structured=true
+00:02 +6: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_clinical_response_view_test.dart: parcial e final preservam o mesmo Element pela key
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=1 notes=0 keyPoints=1 typed=false alertsPayload= hardStopsPayload=No usar nitratos con PAS menor de 90 mmHg notesPayload= keyPointsPayload=Activar reperfusión cuando esté indicada
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792540010043176 rawTextLen=348 displayTextLen=348 effectiveTextLen=348 dto=true rx=3 first=2 second=1 keys=1 hard=1 structured=true
+00:02 +7: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:02 +8: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:02 +8: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration first and second line force legacy
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=0 notes=0 keyPoints=0 typed=false alertsPayload= hardStopsPayload= notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792540010106100 rawTextLen=100 displayTextLen=100 effectiveTextLen=100 dto=true rx=2 first=1 second=1 keys=0 hard=0 structured=true
+00:02 +8: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_clinical_response_view_test.dart: payload legado não recebe prioridade inventada
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=0 notes=0 keyPoints=0 typed=false alertsPayload= hardStopsPayload= notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792540010162482 rawTextLen=123 displayTextLen=123 effectiveTextLen=123 dto=true rx=1 first=0 second=0 keys=0 hard=0 structured=true
+00:02 +9: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: preserved reference keeps copy and audio actions
+00:02 +10: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: preserved reference keeps copy and audio actions
+00:02 +11: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: preserved reference keeps copy and audio actions
+00:02 +11: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_clinical_response_view_test.dart: RED FLAGS e avaliação inicial são aceitos no raw novo
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=1 notes=0 keyPoints=0 typed=false alertsPayload= hardStopsPayload=Inestabilidad hemodinámica o deterioro clínico notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792540010247289 rawTextLen=171 displayTextLen=171 effectiveTextLen=171 dto=false rx=0 first=0 second=0 keys=0 hard=0 structured=true
+00:02 +11: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration generic prescription forces legacy
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=0 notes=0 keyPoints=0 typed=false alertsPayload= hardStopsPayload= notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792540010247706 rawTextLen=105 displayTextLen=105 effectiveTextLen=105 dto=true rx=2 first=0 second=0 keys=0 hard=0 structured=true
+00:02 +12: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true es
+00:02 +13: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true es
+00:02 +14: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true es
+00:02 +14: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_clinical_response_view_test.dart: copy e ouvir permanecem funcionais no final
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=1 notes=0 keyPoints=1 typed=false alertsPayload= hardStopsPayload=No usar nitratos con PAS menor de 90 mmHg notesPayload= keyPointsPayload=Activar reperfusión cuando esté indicada
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792540010387040 rawTextLen=348 displayTextLen=348 effectiveTextLen=348 dto=true rx=3 first=2 second=1 keys=1 hard=1 structured=true
+00:02 +14: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/guardia_typed_treatment_controlled_integration_test.dart: PHASE3I-J2F10B controlled productive visual integration Spanish dark typed is exclusive and narrow-safe
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=1 hardStops=1 notes=0 keyPoints=0 typed=true alertsPayload=Vigilar hipotensión hardStopsPayload=No administrar nitrato con PAS menor de 90 mmHg notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792540010421694 rawTextLen=201 displayTextLen=201 effectiveTextLen=201 dto=true rx=2 first=0 second=0 keys=0 hard=1 structured=true
+00:02 +15: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true es
+00:02 +16: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:02 +17: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:03 +18: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:03 +19: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:03 +20: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 375.0 dark=true pt
+00:03 +21: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: FULL is immediate, references collapsed, one accessible footer pt
+00:03 +22: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 375.0 dark=true es
+00:03 +23: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically pt
+00:03 +24: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically pt
+00:04 +25: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically pt
+00:04 +26: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically pt
+00:04 +27: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 768.0 dark=true es
+00:04 +28: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 768.0 dark=true es
+00:04 +29: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle es
+00:04 +30: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle es
+00:04 +31: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle es
+00:05 +32: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 1200.0 dark=true pt
+00:05 +33: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: FULL is immediate, references collapsed, one accessible footer es
+00:05 +34: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 1200.0 dark=true es
+00:05 +35: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:05 +36: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:05 +37: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:05 +38: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: Study uses same footer without fictitious expansion or time
+00:05 +39: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: corrupt executive fails back to integral es
+00:05 +40: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: corrupt executive fails back to integral es
+00:05 +41: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: corrupt saved drug attachment grants no projection authority
+00:05 +42: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: conversational references have one collapsed disclosure
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=0 notes=0 keyPoints=0 typed=false alertsPayload= hardStopsPayload= notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792540013756035 rawTextLen=142 displayTextLen=142 effectiveTextLen=142 dto=false rx=0 first=0 second=0 keys=0 hard=0 structured=true
+00:05 +43: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: mismatched reference cannot replace the displayed full text
+00:06 +44: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: noradrenalina/pt
+00:06 +45: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: noradrenalina/es
+00:07 +46: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:08 +47: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:08 +48: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:08 +49: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:08 +50: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:08 +51: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:08 +52: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:08 +53: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:08 +54: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:08 +55: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:08 +56: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:08 +57: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:08 +58: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:08 +59: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:08 +60: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_bubble_static_first_frame_stability_test.dart: R18.6Y-R3-R2 — static bubble first-frame stability bolha histórica aparece no primeiro frame
+00:09 +61: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/study_continuation_button_test.dart: exibe somente label curto e bloqueia toque duplo imediato
+00:09 +62: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/study_continuation_button_test.dart: exibe somente label curto e bloqueia toque duplo imediato
+00:09 +63: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/study_continuation_button_test.dart: exibe somente label curto e bloqueia toque duplo imediato
+00:09 +64: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/study_continuation_button_test.dart: exibe somente label curto e bloqueia toque duplo imediato
+00:09 +65: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: metformina/pt
+00:09 +66: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/study_continuation_button_test.dart: remove emoji residual do label visível
+00:09 +67: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: metformina/es
+00:10 +68: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: metformina/es
+00:10 +69: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/r15_presentation_history_authority_test.dart: history uses current catalog authority, not its own approval pt
+00:10 +70: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/r15_presentation_history_authority_test.dart: changed manifest, pending review and tampering cannot revive executive pt
+00:10 +71: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/r15_presentation_history_authority_test.dart: history uses current catalog authority, not its own approval es
+00:10 +72: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/r15_presentation_history_authority_test.dart: changed manifest, pending review and tampering cannot revive executive es
+00:10 +73: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/m74b_post_final_persistence_hydration_parity_v1_b_r0_test.dart: M74B canonical post-final persistence hydration parity presentation overlay wins and reconciled DTO restores
+00:10 +74: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/m74b_post_final_persistence_hydration_parity_v1_b_r0_test.dart: M74B canonical post-final persistence hydration parity old exchange falls back to provider output without trusting DTO
+00:10 +75: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/m74b_post_final_persistence_hydration_parity_v1_b_r0_test.dart: M74B canonical post-final persistence hydration parity duplicate non-empty requestId projects once
+00:10 +76: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/m74b_post_final_persistence_hydration_parity_v1_b_r0_test.dart: M74B canonical post-final persistence hydration parity old entries without requestId remain distinct
+00:10 +77: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/m74b_post_final_persistence_hydration_parity_v1_b_r0_test.dart: M74B canonical post-final persistence hydration parity same exchange hydrates to stable message IDs
+00:10 +78: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/m74b_post_final_persistence_hydration_parity_v1_b_r0_test.dart: M74B canonical post-final persistence hydration parity Firestore reconciliation is additive and counter-free
+00:11 +79: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/m74b_post_final_persistence_hydration_parity_v1_b_r0_test.dart: M74B canonical post-final persistence hydration parity AppProvider reconcile is class-level after persist and before title
+00:11 +80: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/m74b_post_final_persistence_hydration_parity_v1_b_r0_test.dart: M74B canonical post-final persistence hydration parity AiScreen text reconcile is after M73B and safe final commit
+00:11 +81: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/m74b_post_final_persistence_hydration_parity_v1_b_r0_test.dart: M74B canonical post-final persistence hydration parity structured reconcile is after successful DTO attach
+00:11 +82: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/m74b_post_final_persistence_hydration_parity_v1_b_r0_test.dart: M74B canonical post-final persistence hydration parity canonicalV2/localMemory shared restore uses deterministic helper
+00:11 +83: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/plantao/m74b_post_final_persistence_hydration_parity_v1_b_r0_test.dart: M74B canonical post-final persistence hydration parity canonical Plantao wiring cardinality remains one
+00:11 +84: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_screen_clinical_tts_ownership_contract_test.dart: (setUpAll)
+00:11 +84: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_screen_clinical_tts_ownership_contract_test.dart: AiScreen ClinicalTtsService ownership contract removes direct ownership of flutter_tts
+00:11 +85: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_screen_clinical_tts_ownership_contract_test.dart: AiScreen ClinicalTtsService ownership contract delegates the complete clinical reading pipeline
+00:11 +86: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_screen_clinical_tts_ownership_contract_test.dart: AiScreen ClinicalTtsService ownership contract keeps only visual playback state in AiScreen
+00:11 +87: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_screen_clinical_tts_ownership_contract_test.dart: AiScreen ClinicalTtsService ownership contract removes local normalization and legacy speed
+00:11 +88: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_screen_clinical_tts_ownership_contract_test.dart: AiScreen ClinicalTtsService ownership contract does not expose TTS settings through the M status sheet
+00:11 +89: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/ai_screen_clinical_tts_ownership_contract_test.dart: (tearDownAll)
+00:11 +89: All tests passed!

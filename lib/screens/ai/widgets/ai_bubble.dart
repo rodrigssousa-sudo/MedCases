@@ -396,6 +396,8 @@ String _cleanAiText(String raw) {
 /// Widget pai que divide a resposta completa em múltiplas AiBlockBubble.
 class AiBubble extends StatefulWidget {
   final String text;
+  final DateTime? createdAt;
+  final List<String> relatedReferences;
   final bool dark;
   final VoidCallback onCopy;
   final bool animate;
@@ -430,6 +432,8 @@ class AiBubble extends StatefulWidget {
   const AiBubble({
     super.key,
     required this.text,
+    this.createdAt,
+    this.relatedReferences = const [],
     required this.dark,
     required this.onCopy,
     this.animate = false,
@@ -1049,8 +1053,10 @@ class AiBubbleState extends State<AiBubble> {
     return RepaintBoundary(
       child: AiBlockBubble(
         block: unified,
+        createdAt: widget.createdAt,
+        relatedReferences: widget.relatedReferences,
         dark: widget.dark,
-        isLast: true,
+        isLast: !widget.isStreaming,
         onCopy: widget.onCopy,
         onTts: widget.onTts,
         ttsPlaying: widget.ttsPlaying,

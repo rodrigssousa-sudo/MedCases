@@ -1,0 +1,21 @@
+{
+  "baselineIssues": 130,
+  "currentIssues": 131,
+  "baselineBySeverity": {
+    "WARNING": 14,
+    "INFO": 116
+  },
+  "currentBySeverity": {
+    "WARNING": 14,
+    "INFO": 117
+  },
+  "newIssues": [
+    [
+      "INFO",
+      "CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES",
+      "test/widgets/r15_premium_footer_test.dart",
+      "Statements in an if should be enclosed in a block."
+    ]
+  ],
+  "newErrorsOrWarnings": []
+}

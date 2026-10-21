@@ -1,0 +1,28 @@
+{
+  "scope": "LOCAL_FLUTTER_PREVIEW_ONLY_NOT_COMMERCIAL_ENTITLEMENT_OR_MEDICAL_APPROVAL",
+  "copy": {
+    "operatorReported": "Sim, colou o integral com a referência",
+    "fullSentinelAndReferenceConfirmed": true,
+    "virtualClipboardRead": "EMPTY_TOOL_CLIPBOARD_NOT_SYSTEM_READBACK"
+  },
+  "audioBeforePatch": {
+    "operatorHeard": true,
+    "operatorQuality": "Robotic, slow and stuttering"
+  },
+  "audioPatch": {
+    "webRate": 0.94,
+    "nativeRate": 0.47,
+    "voicePreference": "feminine_when_available",
+    "sentenceChunkTargetCharacters": {
+      "selectedVoice": 900,
+      "unidentifiedWebDefault": 160
+    },
+    "physicalQualityAfterPatch": "PASS_OPERATOR_CONFIRMED_IN_CHROME",
+    "selectedVoice": "Luciana",
+    "operatorReported": "Sim, ficou adequada",
+    "sample": "NONCLINICAL_NATURAL_PT_TEXT_WITH_MARKDOWN_HEADINGS",
+    "browser": "Google Chrome on macOS",
+    "internalBrowserLimitation": "PT voice not identified; robotic/default rendering not approved",
+    "nativeIosPhysicalTest": "NOT_EXECUTED"
+  }
+}

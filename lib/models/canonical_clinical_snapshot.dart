@@ -139,6 +139,12 @@ class CanonicalClinicalSnapshot {
     return value is Map ? Map<String, dynamic>.from(value) : null;
   }
 
+  /// Read-only source fields; this does not grant calculation or approval.
+  Map<String, dynamic>? get drugReferenceData {
+    final value = (jsonDecode(_encoded) as Map)['drugReference'];
+    return value is Map ? Map<String, dynamic>.from(value) : null;
+  }
+
   static const protocolNoticePt =
       'Protocolo homologado integral — referência geral, não é prescrição individualizada.';
   static const protocolNoticeEs =
@@ -171,6 +177,9 @@ class CanonicalClinicalSnapshot {
     }
     return value;
   }
+
+  static String textHash(String text) =>
+      sha256.convert(utf8.encode(text)).toString();
 
   static String hash(Object? value) =>
       sha256.convert(utf8.encode(jsonEncode(_sorted(value)))).toString();

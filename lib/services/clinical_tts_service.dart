@@ -17,7 +17,7 @@ enum ClinicalTtsSpeedPreset {
 
 class ClinicalTtsPreferences {
   const ClinicalTtsPreferences({
-    this.voicePreference = ClinicalTtsVoicePreference.automatic,
+    this.voicePreference = ClinicalTtsVoicePreference.feminine,
     this.speechRate = comfortableSpeechRate,
   });
 
@@ -102,6 +102,13 @@ class ClinicalTtsVoice {
 
     return null;
   }
+
+  // Some platforms (including Web) omit gender metadata. Recognize only
+  // established voice catalog names; do not guess gender from arbitrary names.
+  bool get isKnownFeminineVoice => RegExp(
+        r'\b(luciana|joana|francisca|paulina|monica|mónica|helena|sabina)\b',
+        caseSensitive: false,
+      ).hasMatch(name);
 
   int get qualityScore {
     final String qualityText = <dynamic>[
@@ -289,8 +296,15 @@ class FlutterTtsClinicalAdapter implements ClinicalTtsAdapter {
 
   @override
   Future<void> setSpeechRate(double speechRate) async {
-    await _flutterTts.setSpeechRate(speechRate);
+    // flutter_tts Web forwards the rate directly to SpeechSynthesis (1 =
+    // natural speed); native engines use the plugin's 0..1 scale.
+    await _flutterTts
+        .setSpeechRate(platformSpeechRate(speechRate, web: kIsWeb));
   }
+
+  @visibleForTesting
+  static double platformSpeechRate(double rate, {required bool web}) =>
+      web ? (rate * 2).clamp(0.5, 1.3).toDouble() : rate;
 
   @override
   Future<void> setVoice(Map<String, String> voice) async {
@@ -370,7 +384,9 @@ class ClinicalTtsService {
     ClinicalTtsAdapter? adapter,
     ClinicalTtsPreferenceStore? preferenceStore,
     Future<void> Function(Duration duration)? delay,
-  })  : _adapter = adapter ?? FlutterTtsClinicalAdapter(),
+    bool webPlayback = kIsWeb,
+  })  : _webPlayback = webPlayback,
+        _adapter = adapter ?? FlutterTtsClinicalAdapter(),
         _preferenceStore =
             preferenceStore ?? SharedPreferencesClinicalTtsStore(),
         _delay = delay ?? _defaultDelay;
@@ -388,6 +404,7 @@ class ClinicalTtsService {
     'es-ES',
   ];
 
+  final bool _webPlayback;
   final ClinicalTtsAdapter _adapter;
   final ClinicalTtsPreferenceStore _preferenceStore;
   final Future<void> Function(Duration duration) _delay;
@@ -397,6 +414,8 @@ class ClinicalTtsService {
   Future<void>? _initialization;
   int _generation = 0;
 
+  ClinicalTtsVoice? _selectedVoice;
+  ClinicalTtsVoice? get selectedVoice => _selectedVoice;
   ClinicalTtsPreferences get preferences => _preferences;
 
   Future<void> initialize() {
@@ -408,7 +427,7 @@ class ClinicalTtsService {
     // intentionally ignored so every user receives the same clinical reading
     // profile while PT/ES locale resolution remains automatic.
     _preferences = const ClinicalTtsPreferences(
-      voicePreference: ClinicalTtsVoicePreference.automatic,
+      voicePreference: ClinicalTtsVoicePreference.feminine,
       speechRate: ClinicalTtsPreferences.naturalSpeechRate,
     );
 
@@ -544,7 +563,9 @@ class ClinicalTtsService {
     }
 
     if (candidates.isEmpty) {
-      candidates = List<ClinicalTtsVoice>.from(voices);
+      // Let the language-configured engine choose its default, never an
+      // unrelated installed voice from another language.
+      return null;
     }
 
     final ClinicalTtsVoicePreference effectivePreference =
@@ -554,7 +575,10 @@ class ClinicalTtsService {
     if (requestedGender != null) {
       final List<ClinicalTtsVoice> genderMatches =
           candidates.where((ClinicalTtsVoice voice) {
-        return voice.declaredGender == requestedGender;
+        return voice.declaredGender == requestedGender ||
+            (requestedGender == 'female' &&
+                voice.declaredGender == null &&
+                voice.isKnownFeminineVoice);
       }).toList(growable: false);
 
       if (genderMatches.isNotEmpty) {
@@ -724,14 +748,18 @@ class ClinicalTtsService {
       return <ClinicalTtsSegment>[];
     }
 
+    // Keep continuous passages with a selected voice. An unidentified Web
+    // default uses shorter clauses because the plugin force-pauses it every 14s.
+    final int utteranceLimit =
+        _webPlayback && _selectedVoice == null ? 160 : 900;
     final List<String> utterances;
 
-    if (continuous.length <= 4200) {
+    if (continuous.length <= utteranceLimit) {
       utterances = <String>[continuous];
     } else {
       utterances = _packNaturalUtterances(
         _splitSentences(continuous),
-        maximumCharacters: 4200,
+        maximumCharacters: utteranceLimit,
       );
     }
 
@@ -782,6 +810,25 @@ class ClinicalTtsService {
         flush();
       }
 
+      if (cleanSentence.length > maximumCharacters) {
+        flush();
+        String remaining = cleanSentence;
+        while (remaining.length > maximumCharacters) {
+          int boundary =
+              remaining.lastIndexOf(RegExp(r'[,;:]\s'), maximumCharacters);
+          if (boundary >= maximumCharacters ~/ 2) {
+            boundary += 1; // Keep punctuation with its clause.
+          } else {
+            boundary = remaining.lastIndexOf(' ', maximumCharacters);
+          }
+          if (boundary <= 0) break; // Never cut a number or a single token.
+          utterances.add(remaining.substring(0, boundary).trim());
+          remaining = remaining.substring(boundary).trim();
+        }
+        if (remaining.isNotEmpty) current.write(remaining);
+        continue;
+      }
+
       if (current.isNotEmpty) {
         current.write(' ');
       }
@@ -811,12 +858,7 @@ class ClinicalTtsService {
       return;
     }
 
-    final List<ClinicalTtsSegment> segments = buildSegments(
-      rawText,
-      languageCode: languageCode,
-    );
-
-    if (segments.isEmpty) {
+    if (normalizeForSpeech(rawText, languageCode: languageCode).isEmpty) {
       return;
     }
 
@@ -832,6 +874,9 @@ class ClinicalTtsService {
       return;
     }
 
+    // Resolve the voice before deciding passage size; otherwise the first
+    // reading would use the fallback segmentation even with a local voice.
+    final segments = buildSegments(rawText, languageCode: languageCode);
     for (final ClinicalTtsSegment segment in segments) {
       if (generation != _generation) {
         return;
@@ -880,9 +925,10 @@ class ClinicalTtsService {
     final ClinicalTtsVoice? voice = selectBestVoice(
       voices: voices,
       locale: locale,
-      preference: ClinicalTtsVoicePreference.automatic,
+      preference: _preferences.voicePreference,
     );
 
+    _selectedVoice = voice;
     await _adapter.setLanguage(locale);
 
     if (voice != null) {
@@ -893,7 +939,7 @@ class ClinicalTtsService {
       }
     }
 
-    const double safeRate = ClinicalTtsPreferences.naturalSpeechRate;
+    final double safeRate = _preferences.speechRate;
 
     await _adapter.setSpeechRate(safeRate);
     await _adapter.setPitch(1.0);
@@ -1227,9 +1273,7 @@ String _prepareNaturalProsody(
         return portuguese ? 'uma vez por dia' : 'una vez al día';
       }
 
-      return portuguese
-          ? '$count vezes por dia'
-          : '$count veces al día';
+      return portuguese ? '$count vezes por dia' : '$count veces al día';
     },
   );
 
@@ -1288,9 +1332,7 @@ String _prepareNaturalProsody(
       r'\bvia oral\s*/\s*via sublingual\b',
       caseSensitive: false,
     ),
-    portuguese
-        ? 'via oral ou via sublingual'
-        : 'vía oral o vía sublingual',
+    portuguese ? 'via oral ou via sublingual' : 'vía oral o vía sublingual',
   );
   result = result.replaceAll(
     RegExp(

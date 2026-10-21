@@ -1,0 +1,12 @@
+{
+  "baseline": {
+    "WARNING": 14,
+    "INFO": 116
+  },
+  "current": {
+    "WARNING": 14,
+    "INFO": 116
+  },
+  "new": [],
+  "removed": []
+}

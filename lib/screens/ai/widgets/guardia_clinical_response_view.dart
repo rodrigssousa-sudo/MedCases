@@ -1,3 +1,6 @@
+import 'package:url_launcher/url_launcher.dart';
+import 'package:medcases/services/ai/r8/plantao_presentation_catalog.dart';
+import 'collapsible_content_blocks.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:medcases/models/canonical_clinical_snapshot.dart';
 import 'package:flutter/material.dart';
@@ -24,6 +27,8 @@ class GuardiaClinicalResponseView extends StatefulWidget {
   final ClinicalStructuredOutput? output;
   final bool dark;
   final String languageCode;
+  final DateTime? createdAt;
+  final List<String> relatedReferences;
   final VoidCallback onCopy;
   final VoidCallback? onTts;
   final bool ttsPlaying;
@@ -33,6 +38,12 @@ class GuardiaClinicalResponseView extends StatefulWidget {
   final int scrollGeneration;
   final void Function(int generation)? onTextRevealed;
   final bool typedTreatmentVisualEnabled;
+
+  static const referenceHeadingPattern =
+      r'^(?:#{1,6}\s+)?(?:📚\s*)?(?:Refer[eê]ncias?|Referencias?|Fuentes|Fontes)(?:\s+(?:bibliogr[aá]ficas?|cient[ií]ficas?|e fontes|y fuentes))?\s*:?$';
+  static bool hasReferenceSection(String text) =>
+      text.split('\n').any(CollapsibleReferencesBlock.isReferenceHeading) ||
+      RegExp(r'https?://').hasMatch(text);
 
   const GuardiaClinicalResponseView({
     super.key,
@@ -44,6 +55,8 @@ class GuardiaClinicalResponseView extends StatefulWidget {
     required this.dark,
     required this.languageCode,
     required this.onCopy,
+    this.createdAt,
+    this.relatedReferences = const [],
     this.output,
     this.onTts,
     this.ttsPlaying = false,
@@ -80,6 +93,10 @@ class _GuardiaClinicalResponseViewState
   void didUpdateWidget(GuardiaClinicalResponseView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    if (oldWidget.rawText != widget.rawText ||
+        oldWidget.languageCode != widget.languageCode) {
+      _referenceExpanded = false;
+    }
     if (oldWidget.streamingTextNotifier != widget.streamingTextNotifier) {
       _detachNotifier();
       _attachNotifier(widget.streamingTextNotifier);
@@ -178,6 +195,186 @@ class _GuardiaClinicalResponseViewState
     _scheduleScrollNotification();
   }
 
+  bool _matchesReference(CanonicalClinicalSnapshot reference) {
+    try {
+      return reference.blocks(widget.languageCode).join() == widget.rawText;
+    } on FormatException {
+      return false;
+    }
+  }
+
+  bool _referenceExpanded = false;
+
+  // Presentation only. FULL remains the immutable copy/audio/history source.
+  Widget _buildReference(HomeV2Palette palette) {
+    final full = widget.rawText;
+    final reference = widget.referenceDocument;
+    String? short;
+    final matchedReference = reference != null && _matchesReference(reference);
+    final selected = matchedReference && reference.isApprovedProtocol
+        ? PlantaoPresentationCatalog.acceptValidatedProtocol(
+            reference, _isSpanish ? 'es' : 'pt')
+        : PlantaoPresentationCatalog.resolve(full, _isSpanish ? 'es' : 'pt');
+    if (selected != null) {
+      if (selected.isExecutive && selected.fullText == full) {
+        final data = selected.data;
+        final drugs = (data['medications'] as List).cast<Map>();
+        String medication(Map drug) {
+          final details = <String>[
+            '**${drug['name']}** — ${drug['dose']} ${drug['unit']}, '
+                '${drug['route']}, ${drug['frequency']}.',
+            drug['strategy'] as String,
+            if (drug['duration'] is String) drug['duration'] as String,
+            ...(drug['conditions'] as List).cast<String>(),
+            ...(drug['clinicalLimits'] as List).cast<String>(),
+            ...(drug['alternatives'] as List).cast<String>(),
+          ];
+          if (drug['relation'] == 'concomitant') {
+            details.insert(
+                0,
+                _isSpanish
+                    ? '**Tratamiento asociado**'
+                    : '**Tratamento associado**');
+          }
+          return details.join('; ');
+        }
+
+        final main = drugs.where((d) => d['relation'] != 'alternative');
+        final alternatives = drugs.where((d) => d['relation'] == 'alternative');
+        short = '# ${data['clinicalTitle']}\n\n'
+            '## ${_isSpanish ? 'Conducta inmediata' : 'Conduta imediata'}\n\n'
+            '${[
+          ...(data['immediateActions'] as List),
+          ...(data['monitoring'] as List)
+        ].join('\n\n')}\n\n'
+            '## ${_isSpanish ? 'Tratamiento farmacológico principal' : 'Tratamento farmacológico principal'}\n\n'
+            '${main.map(medication).join('\n\n')}\n\n'
+            '## ${_isSpanish ? 'Tratamiento farmacológico alternativo' : 'Tratamento farmacológico alternativo'}\n\n'
+            '${alternatives.isEmpty ? (_isSpanish ? 'No documentado en la proyección aprobada.' : 'Não documentado na projeção aprovada.') : alternatives.map(medication).join('\n\n')}\n\n'
+            '## Red flags\n\n${(data['criticalAlerts'] as List).join('\n\n')}';
+      }
+    } else if (matchedReference &&
+        reference.drugReferenceData?['language'] ==
+            (_isSpanish ? 'es' : 'pt')) {
+      final quick = _drugQuickText(reference.drugReferenceData!['text'] as String);
+      if (quick != null) {
+        short = '${_isSpanish ? CanonicalClinicalSnapshot.drugNoticeEs : CanonicalClinicalSnapshot.drugNoticePt}\n\n$quick';
+      }
+    }
+    final canExpand = short != null && short != full;
+    final references = _splitReferences(full).$2;
+    final visible = CollapsibleReferencesBlock.project(
+        _referenceExpanded || !canExpand ? full : short,
+        knownReferences: references);
+    final safeText = visible.$1
+        .replaceAll(RegExp(r'\[(?:redflags|dose|alert|source)_\d+\]'), '');
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      MarkdownBody(
+          data: safeText,
+          selectable: true,
+          softLineBreak: true,
+          onTapLink: _openReferenceLink,
+          styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+            p: TextStyle(fontSize: 14, height: 1.4, color: palette.textPrimary),
+            h1: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: palette.textPrimary),
+            h2: TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w700,
+                color: palette.textPrimary),
+            blockSpacing: 10,
+          )),
+      if (!widget.isStreaming) ClinicalResponseFooter(
+          dark: widget.dark, lang: _isSpanish ? 'es' : 'pt',
+          createdAt: widget.createdAt, references: references,
+          relatedReferences: widget.relatedReferences,
+          onToggleFull: canExpand ? () => setState(() => _referenceExpanded = !_referenceExpanded) : null,
+          fullExpanded: _referenceExpanded,
+          onCopy: widget.onCopy, onTts: widget.onTts,
+          ttsPlaying: widget.ttsPlaying, ttsReady: widget.ttsReady),
+    ]);
+  }
+
+  static void _openReferenceLink(String text, String? href, String title) {
+    final uri = Uri.tryParse(href ?? '');
+    if (uri != null &&
+        uri.scheme == 'https' &&
+        uri.host.isNotEmpty &&
+        uri.userInfo.isEmpty) {
+      launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
+  static (String, List<String>) _splitReferences(String text) =>
+      CollapsibleReferencesBlock.project(text);
+
+  // Field selection only: retain complete source sections and all dosing/safety
+  // qualifiers. No numeric extraction, translation, truncation or calculation.
+  static String? _drugQuickText(String full) {
+    final sections = <(String, String)>[];
+    String? heading;
+    final lines = <String>[];
+    String name = '';
+    void flush() {
+      if (heading != null) {
+        sections.add((heading, lines.join('\n').trim()));
+      }
+      lines.clear();
+    }
+
+    for (final line in full.split('\n')) {
+      if (line.startsWith('# ')) {
+        name = line.substring(2).trim();
+      } else if (line.startsWith('## ')) {
+        flush();
+        heading = line.substring(3).trim();
+      } else {
+        lines.add(line);
+      }
+    }
+    flush();
+    String select(String pattern) {
+      final seen = <String>{};
+      return sections.where((s) =>
+          RegExp(pattern, caseSensitive: false).hasMatch(s.$1))
+        .where((s) {
+          // Singular/plural presentation aliases may carry identical bytes.
+          // Never merge different populations, regimens or organ qualifiers.
+          final key = RegExp(r'^(?:apresenta|presenta)', caseSensitive: false)
+              .hasMatch(s.$1) ? 'presentation:${s.$2}' : '${s.$1}:${s.$2}';
+          return seen.add(key);
+        })
+        .map((s) => '**${s.$1}**\n\n${s.$2}').join('\n\n');
+    }
+    const usePattern = r'^indica|^apresenta|^presenta';
+    const dosePattern =
+        r'posolog|dosis|doses|dose|pediatr|renal|hep[aá]tic|administra|preparo|preparaci|infus|popula|poblaci';
+    const safetyPattern =
+        r'contraindica|precau|intera|monitori|seguran|seguridad|alerta|graves|gesta|embarazo|lacta|observa|orienta';
+    // Unknown source sections may hold a safety qualifier. Keep FULL rather
+    // than silently treating a new field as optional explanatory material.
+    const detailPattern =
+        r'^classe|^clase|^mecanismo|^farmaco|^nomes comerciais|^nombres comerciales|^diretri|^directri|^gu[ií]a|^refer|(?:efeitos|efectos) adversos(?: comuns| comunes)?$';
+    if (sections.any((s) => !RegExp(
+            '$usePattern|$dosePattern|$safetyPattern|$detailPattern',
+            caseSensitive: false)
+        .hasMatch(s.$1))) {
+      return null;
+    }
+    final use = select(usePattern);
+    final dose = select(dosePattern);
+    final cautions = select(safetyPattern);
+    if (name.isEmpty || use.isEmpty || dose.isEmpty || cautions.isEmpty) {
+      return null;
+    }
+    final es = full.contains('## Contraindicaciones');
+    return '# $name\n\n## ${es ? 'Uso' : 'Uso'}\n\n$use\n\n'
+        '## ${es ? 'Posología' : 'Posologia'}\n\n$dose\n\n'
+        '## ${es ? 'Contraindicaciones y precauciones' : 'Contraindicações e precauções'}\n\n$cautions';
+  }
+
   void _scheduleScrollNotification() {
     if (_scrollNotificationScheduled) return;
 
@@ -196,9 +393,9 @@ class _GuardiaClinicalResponseViewState
   Widget build(BuildContext context) {
     final reference = widget.referenceDocument;
     if (!widget.isStreaming && (widget.preserveReferenceText ||
-        (reference?.isReferenceDocument == true &&
-        reference!.blocks(widget.languageCode).join() == widget.rawText))) {
-      return MarkdownBody(data: widget.rawText, selectable: true, softLineBreak: true);
+        (reference != null && reference.isReferenceDocument &&
+        _matchesReference(reference)))) {
+      return _buildReference(HomeV2Palette.resolve(widget.dark));
     }
     final palette = HomeV2Palette.resolve(widget.dark);
     final effectiveText =
@@ -207,9 +404,10 @@ class _GuardiaClinicalResponseViewState
         : (_displayText.trim().isNotEmpty
               ? _guardiaUtf16Safe(_displayText)
               : _guardiaUtf16Safe(widget.rawText));
+    final referenceProjection = _splitReferences(effectiveText);
     final stablePresentationText = _guardiaUtf16Safe(
       GuardiaStreamingPresentation.stableBeforeHardStop(
-        rawText: _guardiaUtf16Safe(effectiveText),
+        rawText: _guardiaUtf16Safe(referenceProjection.$1),
         isStreaming: widget.isStreaming,
       ),
     );
@@ -680,14 +878,12 @@ class _GuardiaClinicalResponseViewState
             const SizedBox(height: 2),
             _StreamingCursor(palette: palette),
           ] else ...[
-            const SizedBox(height: 7),
-            _FooterActions(
-              palette: palette,
-              isSpanish: _isSpanish,
-              onCopy: widget.onCopy,
-              onTts: widget.onTts,
-              ttsPlaying: widget.ttsPlaying,
-              ttsReady: widget.ttsReady,
+            ClinicalResponseFooter(
+              dark: widget.dark, lang: _isSpanish ? 'es' : 'pt',
+              createdAt: widget.createdAt, references: referenceProjection.$2,
+              relatedReferences: widget.relatedReferences,
+              onCopy: widget.onCopy, onTts: widget.onTts,
+              ttsPlaying: widget.ttsPlaying, ttsReady: widget.ttsReady,
             ),
           ],
         ],
@@ -2502,103 +2698,6 @@ class _StreamingCursor extends StatelessWidget {
         fontWeight: FontWeight.w400,
       ),
     );
-  }
-}
-
-class _FooterActions extends StatelessWidget {
-  final HomeV2Palette palette;
-  final bool isSpanish;
-  final VoidCallback onCopy;
-  final VoidCallback? onTts;
-  final bool ttsPlaying;
-  final bool ttsReady;
-
-  const _FooterActions({
-    required this.palette,
-    required this.isSpanish,
-    required this.onCopy,
-    required this.onTts,
-    required this.ttsPlaying,
-    required this.ttsReady,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Text(
-          _currentTime(),
-          style: TextStyle(
-            fontSize: 10,
-            color: palette.textMuted.withValues(alpha: 0.42),
-          ),
-        ),
-        const Spacer(),
-        if (onTts != null && ttsReady) ...[
-          GestureDetector(
-            key: const ValueKey('guardia_tts_action'),
-            onTap: onTts,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  ttsPlaying
-                      ? Icons.stop_circle_rounded
-                      : Icons.volume_up_rounded,
-                  size: 13,
-                  color: ttsPlaying
-                      ? palette.accent
-                      : palette.textSecondary.withValues(alpha: 0.58),
-                ),
-                const SizedBox(width: 3),
-                Text(
-                  ttsPlaying
-                      ? (isSpanish ? 'Detener' : 'Parar')
-                      : (isSpanish ? 'Escuchar' : 'Ouvir'),
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.w600,
-                    color: ttsPlaying
-                        ? palette.accent
-                        : palette.textSecondary.withValues(alpha: 0.58),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(width: 9),
-        ],
-        GestureDetector(
-          key: const ValueKey('guardia_copy_action'),
-          onTap: onCopy,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.copy_rounded,
-                size: 12,
-                color: palette.textMuted.withValues(alpha: 0.42),
-              ),
-              const SizedBox(width: 3),
-              Text(
-                'Copiar',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: palette.textMuted.withValues(alpha: 0.42),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  static String _currentTime() {
-    final now = DateTime.now();
-
-    return '${now.hour.toString().padLeft(2, '0')}:'
-        '${now.minute.toString().padLeft(2, '0')}';
   }
 }
 

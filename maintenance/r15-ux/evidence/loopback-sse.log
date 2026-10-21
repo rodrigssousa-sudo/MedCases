@@ -1,0 +1,42 @@
+00:00 +0: loading /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/ai_stream/r15_loopback_reference_stream_test.dart
+00:00 +0: HTTP SSE protocol pt complete=true; one request, no provisional FULL
+[GPT_SSE] → connecting requestId=LOOPBACK_TECHNICAL_ONLY attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=LOOPBACK_TECHNICAL_ONLY status=200 durationToConnect=189ms
+[GPT_SSE] ✅ transport_done requestId=LOOPBACK_TECHNICAL_ONLY attempt=2 deltaCount=0 textLen=309 durationMs=284
+[GPT_SSE] closed requestId=LOOPBACK_TECHNICAL_ONLY cancelled=false completed=true deltaCount=0 durationMs=318
+00:00 +1: HTTP SSE protocol pt complete=false; one request, no provisional FULL
+[GPT_SSE] → connecting requestId=LOOPBACK_TECHNICAL_ONLY attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=LOOPBACK_TECHNICAL_ONLY status=200 durationToConnect=38ms
+[GPT_SSE] eof_no_transport_done requestId=LOOPBACK_TECHNICAL_ONLY partialLen=309 durationMs=65
+[GPT_SSE] closed requestId=LOOPBACK_TECHNICAL_ONLY cancelled=false completed=false deltaCount=0 durationMs=72
+00:00 +2: HTTP SSE drug pt complete=true; one request, no provisional FULL
+[GPT_SSE] → connecting requestId=LOOPBACK_TECHNICAL_ONLY attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=LOOPBACK_TECHNICAL_ONLY status=200 durationToConnect=35ms
+[GPT_SSE] ✅ transport_done requestId=LOOPBACK_TECHNICAL_ONLY attempt=2 deltaCount=0 textLen=3540 durationMs=219
+[GPT_SSE] closed requestId=LOOPBACK_TECHNICAL_ONLY cancelled=false completed=true deltaCount=0 durationMs=221
+00:00 +3: HTTP SSE drug pt complete=false; one request, no provisional FULL
+[GPT_SSE] → connecting requestId=LOOPBACK_TECHNICAL_ONLY attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=LOOPBACK_TECHNICAL_ONLY status=200 durationToConnect=56ms
+[GPT_SSE] eof_no_transport_done requestId=LOOPBACK_TECHNICAL_ONLY partialLen=3540 durationMs=137
+[GPT_SSE] closed requestId=LOOPBACK_TECHNICAL_ONLY cancelled=false completed=false deltaCount=0 durationMs=138
+00:01 +4: HTTP SSE protocol es complete=true; one request, no provisional FULL
+[GPT_SSE] → connecting requestId=LOOPBACK_TECHNICAL_ONLY attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=LOOPBACK_TECHNICAL_ONLY status=200 durationToConnect=21ms
+[GPT_SSE] ✅ transport_done requestId=LOOPBACK_TECHNICAL_ONLY attempt=2 deltaCount=0 textLen=316 durationMs=29
+[GPT_SSE] closed requestId=LOOPBACK_TECHNICAL_ONLY cancelled=false completed=true deltaCount=0 durationMs=30
+00:01 +5: HTTP SSE protocol es complete=false; one request, no provisional FULL
+[GPT_SSE] → connecting requestId=LOOPBACK_TECHNICAL_ONLY attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=LOOPBACK_TECHNICAL_ONLY status=200 durationToConnect=19ms
+[GPT_SSE] eof_no_transport_done requestId=LOOPBACK_TECHNICAL_ONLY partialLen=316 durationMs=30
+[GPT_SSE] closed requestId=LOOPBACK_TECHNICAL_ONLY cancelled=false completed=false deltaCount=0 durationMs=33
+00:01 +6: HTTP SSE drug es complete=true; one request, no provisional FULL
+[GPT_SSE] → connecting requestId=LOOPBACK_TECHNICAL_ONLY attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=LOOPBACK_TECHNICAL_ONLY status=200 durationToConnect=23ms
+[GPT_SSE] ✅ transport_done requestId=LOOPBACK_TECHNICAL_ONLY attempt=2 deltaCount=0 textLen=3566 durationMs=99
+[GPT_SSE] closed requestId=LOOPBACK_TECHNICAL_ONLY cancelled=false completed=true deltaCount=0 durationMs=101
+00:01 +7: HTTP SSE drug es complete=false; one request, no provisional FULL
+[GPT_SSE] → connecting requestId=LOOPBACK_TECHNICAL_ONLY attempt=2 endpoint=https://us-central1-medcases-pro.cloudfunctions.net/plantaoProxyStream
+[GPT_SSE] ← connected requestId=LOOPBACK_TECHNICAL_ONLY status=200 durationToConnect=28ms
+[GPT_SSE] eof_no_transport_done requestId=LOOPBACK_TECHNICAL_ONLY partialLen=3566 durationMs=105
+[GPT_SSE] closed requestId=LOOPBACK_TECHNICAL_ONLY cancelled=false completed=false deltaCount=0 durationMs=106
+00:01 +8: All tests passed!

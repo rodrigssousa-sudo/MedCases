@@ -1,0 +1,25 @@
+{
+  "atUTC": "2026-10-21T00:18:12.897337+00:00",
+  "source": "real Flutter build served on 127.0.0.1:8891; no clinical/production queries",
+  "widthsVerified": [
+    320,
+    375,
+    768,
+    1200
+  ],
+  "referencesClosedInitially": true,
+  "studyReferencesOpenOnButtonOnly": true,
+  "fullReferencesClosedInitially": true,
+  "lowerDividerRemoved": true,
+  "temporaryCopyCheckFieldRemoved": true,
+  "screenshots": [
+    "final-desktop-1200.png",
+    "final-full-references-closed.png",
+    "final-mobile-es-375.png",
+    "final-mobile-pt-320.png",
+    "final-study-references-closed.png",
+    "final-study-references-open.png",
+    "final-tablet-768.png"
+  ],
+  "nativeChromeFinalFooter": "not completed; app inspection timed out; no success inferred"
+}
