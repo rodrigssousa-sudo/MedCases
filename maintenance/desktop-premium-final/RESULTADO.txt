@@ -12,7 +12,8 @@ Implementação:
   verde #009C3B. Inset físico mobile preservado.
 - Ações desktop continuam operantes; ajuste de encaixe evita overflow em 1024.
 - Proporção comercial 40/60, breakpoint 1024, navegação e cartões preservados.
-- Rail existente de 72 px mantido. Atalho Fármacos ocultado por falta de
+- Rail reduzido de 72 para 50,4 px (-30%), conforme confirmação do operador.
+  Botões de 44 px preservados e centralizados. Atalho Fármacos ocultado por falta de
   comprovação visual da função comercial atual; rota e módulo preservados.
   Inventário separa WebView informada como placeholder de ramo Premium nativo.
 - Prescrições já não constava no rail; rota interna preservada.
@@ -32,20 +33,30 @@ Validação dirigida:
 - Build comercial lib/main.dart --release PASS; não é build de tool/preview.
 - 1869 arquivos iOS 1721 e AOT preservados; ZIP backend R15 preservado.
 
-PENDÊNCIA EXCLUSIVA DE VERIFICAÇÃO VISUAL:
-A aba local http://127.0.0.1:8892/ chegou ao login real do aplicativo.
-Não foi copiada a sessão/token de produção. Operador deve autenticar-se
-na interface, sem consulta, para as capturas autenticadas 1920/1440/1200/
-1024/768/375. Nenhuma captura de login substitui aprovação visual da Home.
-Ainda não se declara FLUTTER_VISUAL_REVIEW=PASS nem aprovação humana.
+VERIFICAÇÃO VISUAL LOCAL:
+Capturas do build comercial autenticado salvas em 1920/1440/1200/1024/768/375.
+Barra de 50,4px conferida em desktop; botões mantidos em 44px.
+PT/ES capturados em tema escuro. Tema claro validado por testes de widgets.
+O painel Clinical mostra a exigência existente de conexão Google; nenhuma
+consulta foi executada nem isso é declarado como validação clínica.
+Aprovação visual humana da nova largura permanece pendente.
 
-Não houve push, deploy, tráfego, IAM, consulta clínica ou edição remota.
+Não houve push, deploy, tráfego, IAM ou consulta clínica.
+A troca visual ES → PT pelo seletor do app invocou a persistência normal de
+preferência de idioma no perfil. Não foi escrita administrativa nem alteração
+clínica; por transparência não se declara ausência absoluta de escrita remota.
+O idioma original ES foi restaurado pela interface; duas tentativas normais de
+persistência de preferência (PT e ES), sem confirmação remota independente.
 Arquivo release-web-r15.tar.gz anterior mantido como baseline de rollback.
 O novo artefato está separado em Downloads e exige novo manifesto antes
 que qualquer executor de publicação possa utilizá-lo.
 
 HUMAN_VISUAL_APPROVAL=PENDING
 RELEASE_MANIFEST_STATUS=REQUIRES_REGENERATION
-PRODUCTION_MUTATIONS=0
+PRODUCTION_MUTATIONS=PROFILE_LANGUAGE_PREFERENCE_ATTEMPT (sucesso remoto não verificado)
 DEPLOY=NOT_EXECUTED
-FINAL_RESULT=PARTIAL (capturas autenticadas pendentes)
+FINAL_RESULT=PARTIAL (aprovação visual humana pendente)
+
+SIDEBAR_REDUCTION=30_PERCENT
+SIDEBAR_WIDTH=50.4_PX
+SIDEBAR_DIRECTED_REGRESSION=PASS (1 contrato + 4 cenários 1024)

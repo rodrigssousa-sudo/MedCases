@@ -11,7 +11,11 @@
     "test/home_v2/web_desktop_home_ai_topbar_geometry_v1_b_r1_contract_test.dart",
     "test/screens/ai/mobile_ai_action_bar_ia_009c3b_single_element_contract_test.dart"
   ],
-  "remote_writes_executed": false,
   "deploy_executed": false,
-  "release_manifest_status": "REQUIRES_REGENERATION"
+  "release_manifest_status": "REQUIRES_REGENERATION",
+  "remote_admin_writes_executed": false,
+  "normal_client_language_preference_write_attempts": 1,
+  "clinical_queries": 0,
+  "profile_language_preference_attempts": 2,
+  "original_language_restored": "ES"
 }

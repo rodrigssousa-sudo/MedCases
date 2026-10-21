@@ -2,10 +2,10 @@
   "baseline_commit": "43f0efcf5df44ddb580ee0a3924299047bd4a4a0",
   "entrypoint": "lib/main.dart",
   "artifact": "/Users/brunorodrigues/Downloads/MEDCASES_DESKTOP_PREMIUM_FINAL_20261021/web-desktop-premium.tar.gz",
-  "artifact_sha256": "3752e176b3168c14fce00146a9f4bc99f2c284b8c45d8287d0f1c51ea2d50724",
+  "artifact_sha256": "e998ac37ea1b1dde4122873ca191146eb7eb2ff47e769e0f1f7669b9465d2b82",
   "source_sha256": {
     "lib/home_v2/components/chat/inline_chat_view.dart": "fc7beafa7f5df49bc50e721dbd70dc516b6670ee8cca1c08055c63bf14002fa4",
-    "lib/main.dart": "1c07b1260688a3781da10610d58c269bbe2c189747b86be7e15637792ab61d44",
+    "lib/main.dart": "744ca1f475feafa75ea56480b1431316280754c533c0545370dd4ca83df4b08a",
     "lib/screens/ai/widgets/mobile_ai_action_bar.dart": "3911d5c7bf255ad708b8292a68835b35a19a268e66ce07a711005857dd885bb7",
     "lib/screens/ai/widgets/wa_header.dart": "cb7506f5f8de38a3db69439dcd6f48d0fb9a7a7b7f2e0554f354fe54374a2347",
     "test/home_v2/ai_tab_home_topbar_parity_contract_test.dart": "d61d5f1bdc6c5e69235f046a358976bedc6a7b2df37eb10336435b9f1410fdb6",
@@ -14,7 +14,7 @@
     "test/home_v2/web_desktop_home_ai_topbar_geometry_v1_b_r1_contract_test.dart": "45afdf80989729c0ccf2651649cf256c2fb7ee867081ccb7301bbbc9e8036711",
     "test/screens/ai/mobile_ai_action_bar_ia_009c3b_single_element_contract_test.dart": "52379744e108736b4377101450cf9d244613ce3fe4a91c064dd081b6d1841d2d",
     "lib/widgets/medcases_topbar_glass.dart": "d9d3ce5539cfa6146bf67cd22182de5b0b16f57fe97f7b3bd9ff013208ea2fbd",
-    "test/home_v2/desktop_premium_final_widget_test.dart": "181cbcd0fd42735c334b7db79777544b3e28e9cdc0892f68982b6f4f56489b7b"
+    "test/home_v2/desktop_premium_final_widget_test.dart": "ccdfa1e88d018320630562b5a2730c66bced778e95699ba293f3011892af945b"
   },
   "web_files": {
     ".last_build_id": "a83fc0516f449f9755075c4582f1e24f1ce34d7304c9778d7038f02d0c3e4b09",
@@ -174,7 +174,7 @@
     "legal/subscriptions.html": "37b2419aafb7ed54cbbc2d0f500644c36107ffc1fa9b8812a3a14aececb9c109",
     "legal/support.html": "bbc82e7840ef7f9adad9d6d469f2b0d3362f2382ecc73d2fb74af4195e92a3ea",
     "legal/terms.html": "837a1e29a6bc7a0334c00994c0488426d775779e93dca73fa370b67fbf7b2596",
-    "main.dart.js": "8f78657e50b7e0743faa647f15acadca8b9eb06fd4b0d8ecd6bf9ec285d19597",
+    "main.dart.js": "3812b27768a5c417c7acde2406175d77bc14d110fc3e73995433c87b25212667",
     "manifest.json": "9c2356138b276d64d787843b429efa02f41c5a89fa18522b8422b427ef26e692",
     "pwa-sw.js": "f3d8b3c4ccde5c572d776a27e2c5f8c50d6eb036a46bd17cd99c9d11e26debde",
     "sw_killer.js": "af64adeb97d6bbd98f41fd25bbee6ce494eea2332786ccb7ae52151b7e0f17f4",
@@ -182,5 +182,8 @@
   },
   "production_manifest": "REQUIRES_REGENERATION",
   "human_visual_approval": "PENDING",
-  "authenticated_visual_capture": "PENDING_OPERATOR_LOGIN"
+  "authenticated_visual_capture": "PENDING_OPERATOR_LOGIN",
+  "sidebar_width_px": 50.4,
+  "sidebar_reduction_percent": 30,
+  "authenticated_capture": "COMPLETED_LOCAL_BUILD"
 }

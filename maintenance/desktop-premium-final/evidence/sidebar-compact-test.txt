@@ -1,0 +1,3 @@
+00:00 +0: loading /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/desktop_premium_final_widget_test.dart
+00:00 +0: commercial split, routes and protected renderer remain at their owners
+00:01 +1: All tests passed!

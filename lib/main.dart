@@ -3803,7 +3803,7 @@ class _DesktopSidebar extends StatelessWidget {
 
     return RepaintBoundary(
       child: SizedBox(
-        width: 72,
+        width: 50.4, // Operator-approved 30% reduction from 72px.
         child: ClipRect(
           child: BackdropFilter(
             filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
@@ -3826,6 +3826,7 @@ class _DesktopSidebar extends StatelessWidget {
                 ),
               ),
               child: Stack(
+                alignment: Alignment.topCenter,
                 children: [
                   Positioned(
                     top: 0,

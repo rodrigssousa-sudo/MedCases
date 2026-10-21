@@ -24,7 +24,7 @@ void main() {
                 body: Align(
                   alignment: Alignment.topRight,
                   child: SizedBox(
-                      width: (width - 74) * .6,
+                      width: (width - 52.4) * .6,
                       child: WaHeader(
                         lang: lang,
                         onSettings: () {},
@@ -82,6 +82,6 @@ void main() {
     expect(sidebar, isNot(contains("tooltip: 'Fármacos'")));
     expect(sidebar, isNot(contains("tooltip: 'Prescrições'")));
     expect(sidebar, contains("tooltip: 'MedCases Clinical'"));
-    expect(sidebar, contains('width: 72'));
+    expect(sidebar, contains('width: 50.4'));
   });
 }
