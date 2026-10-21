@@ -1,0 +1,9 @@
+# Only the frozen commercial bundle and runtime configuration enter the image.
+**
+!Dockerfile
+!.dockerignore
+!release-web-r15.tar.gz
+!nginx/
+!nginx/nginx.conf
+!docker/
+!docker/40-generate-deploy-meta.sh

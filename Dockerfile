@@ -1,5 +1,5 @@
 # R15 approved-artifact delivery; build recipe recorded in coordinated manifest.
-FROM nginx:1.25.5-alpine
+FROM nginx:1.25.5-alpine@sha256:721fa00bc549df26b3e67cc558ff176112d4ba69847537766f3c28e171d180e7
 
 # Remove config padrão do Nginx
 RUN rm /etc/nginx/conf.d/default.conf
@@ -8,7 +8,15 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Keep the app config separate from the base-image file removed above.
 # A cached deletion of default.conf must never suppress the app listener.
 COPY nginx/nginx.conf /etc/nginx/conf.d/medcases.conf
-RUN test -s /etc/nginx/conf.d/medcases.conf && nginx -t
+# The official image links /var/run to /run. Build validation must not depend
+# on that transient directory. Keep the PID in nginx's existing root-owned cache dir,
+# in both build and runtime, rather than creating or masking /var/run.
+RUN test "$(id -u)" = 0 \
+    && test -d /var/cache/nginx && test -w /var/cache/nginx \
+    && grep -Eq '^pid[[:space:]]+/var/run/nginx.pid;' /etc/nginx/nginx.conf \
+    && sed -i 's@/var/run/nginx.pid@/var/cache/nginx/nginx.pid@' /etc/nginx/nginx.conf \
+    && test -s /etc/nginx/conf.d/medcases.conf \
+    && nginx -t
 
 # ── PILAR 2: Runtime metadata bootstrapper ────────────────────────────────────
 # Hooks into nginx:alpine's /docker-entrypoint.d/ initialization sequence.
