@@ -466,6 +466,32 @@ class _GuardiaClinicalResponseViewState
 
   @override
   Widget build(BuildContext context) {
+    // A terminal validation notice is not a clinical answer. Keep this exact
+    // provider notice out of diagnosis/body projection and success actions.
+    final failureNotice = widget.rawText.trim().replaceFirst(
+      RegExp(r'\s*⚕\uFE0F?\s*$'),
+      '',
+    );
+    if (!widget.isStreaming &&
+        (failureNotice ==
+                'Resposta interrompida (validação falhou). Tente novamente.' ||
+            failureNotice ==
+                'Respuesta interrumpida (validación fallida). Intenta nuevamente.')) {
+      return Semantics(
+        liveRegion: true,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: SelectableText(
+            failureNotice,
+            style: TextStyle(
+              color: HomeV2Palette.resolve(widget.dark).textPrimary,
+              fontSize: 14,
+              height: 1.45,
+            ),
+          ),
+        ),
+      );
+    }
     final reference = widget.referenceDocument;
     if (!widget.isStreaming &&
         (widget.preserveReferenceText ||
