@@ -15,13 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          fetch-depth: 2
+          fetch-depth: 3
           persist-credentials: false
       - name: Freeze and verify tested inputs
         run: |
           set -eu
-          test "$(git rev-parse HEAD^)" = 6d0ac951fe5368d2b5a116e5c8fc18c850bc75f9
-          test -z "$(git diff HEAD^ HEAD -- Dockerfile .dockerignore docker nginx lib web pubspec.yaml pubspec.lock release-web-r15.tar.gz)"
+          git merge-base --is-ancestor 6d0ac951fe5368d2b5a116e5c8fc18c850bc75f9 HEAD
+          test -z "$(git diff 6d0ac951fe5368d2b5a116e5c8fc18c850bc75f9 HEAD -- Dockerfile .dockerignore docker nginx lib web pubspec.yaml pubspec.lock release-web-r15.tar.gz)"
           mkdir -p receipts
           git rev-parse HEAD > receipts/validation-commit.txt
           python3 validation/r15/prepare.py
