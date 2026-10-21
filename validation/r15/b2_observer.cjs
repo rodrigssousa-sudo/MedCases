@@ -5,7 +5,7 @@ function createObserver(out,phase){
  const events=[];const append=(type,data)=>{const event={utc:new Date().toISOString(),phase:phase(),type,...data};events.push(event);fs.appendFileSync(out+'/browser-events.jsonl',JSON.stringify(event)+'\n')};
  function attach(page){
   page.on('console',m=>append('console',{level:m.type(),message:sanitize(m.text())}));
-  page.on('pageerror',e=>append('pageerror',{name:e.name,message:sanitize(e.message)}));
+  page.on('pageerror',e=>append('pageerror',{name:e.name,message:sanitize(e.message),stack:sanitize(e.stack)}));
   page.on('requestfailed',r=>append('requestfailed',{url:safeURL(r.url()),resourceType:r.resourceType(),reason:sanitize(r.failure()?.errorText)}));
   page.on('response',r=>{if(r.status()>=400||['script','font','wasm'].includes(r.request().resourceType())||/\.(wasm|woff2?|ttf)(\?|$)/.test(r.url()))append('response',{url:safeURL(r.url()),status:r.status(),resourceType:r.request().resourceType()})});
  }

@@ -1,5 +1,6 @@
 const fs=require('fs'),http=require('http'),crypto=require('crypto'),cp=require('child_process');
 const {chromium}=require('playwright');
+const {installLocaleProbe,localeReadback}=require('./b2_locale.cjs');
 const {createObserver,sanitize}=require('./b2_observer.cjs');
 const {startStaticOrigin}=require('./b2_static_origin.cjs');
 const {mime,clinicalRequest,assetContract,cacheContract,warmCacheContract,safePath}=require('./b2_contract.cjs');
@@ -42,7 +43,10 @@ function observe(p){observer.attach(p);p.on('request',r=>{if(r.isNavigationReque
  staticOrigin=await startStaticOrigin(root,()=>phase,observer);
  browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage',...staticOrigin.args]});
  result.chromiumVersion=browser.version();
+ result.runnerLocale={LANG:process.env.LANG||null,LC_ALL:process.env.LC_ALL||null,LC_CTYPE:process.env.LC_CTYPE||null};
  const context=await browser.newContext({viewport:{width:1440,height:1000},serviceWorkers:'allow'});
+ await context.exposeBinding('__r15RecordLocaleFailure',(_,event)=>observer.append('intl-failure',event));
+ await context.addInitScript(installLocaleProbe);
  await context.addInitScript(()=>{window.__r15FirstFrame=false;window.addEventListener('flutter-first-frame',()=>{window.__r15FirstFrame=true})});
  await context.route('**/*',async route=>{
   const u=new URL(route.request().url());if(u.hostname==='127.0.0.1'&&['8080','9099'].includes(u.port))return route.continue();
@@ -50,7 +54,10 @@ function observe(p){observer.attach(p);p.on('request',r=>{if(r.isNavigationReque
   blocked.add(u.hostname);observer.blocked(u.href);return route.abort('blockedbyclient');
  });
  context.on('request',r=>{if(clinicalRequest(r.url()))clinical++});
- page=await context.newPage();observe(page);stage='OLD_CLIENT_FIRST_FRAME';
+ page=await context.newPage();observe(page);
+ result.localePreflight=await page.evaluate(localeReadback);
+ fs.writeFileSync(out+'/locale-preflight.json',JSON.stringify(result.localePreflight,null,2));
+ stage='OLD_CLIENT_FIRST_FRAME';
  await page.goto('http://127.0.0.1:8080/',{waitUntil:'domcontentloaded'});await observer.snapshot(page,phase+'-dom-ready');await firstFrame(page);
  stage='OLD_SW_CACHE';await page.waitForFunction(()=>navigator.serviceWorker.controller!==null,{},{timeout:30000});
  const oldHashes=await hashes(page);assetContract(oldHashes,binding.old);
@@ -85,4 +92,4 @@ function observe(p){observer.attach(p);p.on('request',r=>{if(r.isNavigationReque
  Object.assign(result,{B2_CACHE_UPDATE:'PASS_REAL',B2_SESSION_PRESERVED:'PASS_EMULATED',B2_SERVICE_WORKER:'PASS_REAL',B2_NO_CLINICAL_QUERIES:'PASS_REAL',reopened:'PASS_REAL',quotaDebits:0,quotaEvidence:'network=none, no commercial credentials, no clinical request attempted; not commercial ledger validation'});
  assert(!observer.fatal(),'NEW_CLIENT_FATAL_ERROR');stage='COMPLETE';
 }catch(e){result.errorClass=e.name;result.error=sanitize(e.message).split('\n')[0].slice(0,180);result.failedStage=stage;process.exitCode=1;await observer.snapshot(page,'failed-stage')
-}finally{result.stage=stage;result.blockedHosts=[...blocked];result.clinicalRequests=clinical;result.scriptHashes=scriptHashes;fs.writeFileSync(out+'/b2.json',JSON.stringify(result,null,2));if(browser)await browser.close();if(server)server.close();if(staticOrigin)await staticOrigin.close();if(emulator)emulator.kill('SIGTERM')}})();
+}finally{if(page&&!page.isClosed()){try{fs.writeFileSync(out+'/locale-final.json',JSON.stringify(await page.evaluate(localeReadback),null,2))}catch{}}result.stage=stage;result.blockedHosts=[...blocked];result.clinicalRequests=clinical;result.scriptHashes=scriptHashes;fs.writeFileSync(out+'/b2.json',JSON.stringify(result,null,2));if(browser)await browser.close();if(server)server.close();if(staticOrigin)await staticOrigin.close();if(emulator)emulator.kill('SIGTERM')}})();
