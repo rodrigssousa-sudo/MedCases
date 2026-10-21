@@ -1,0 +1,52 @@
+name: R15 B1 B2 isolated validation
+on:
+  push:
+    branches: [validation/r15-b1-b2-6d0ac951]
+permissions:
+  contents: read
+concurrency:
+  group: r15-b1-b2-one-authorized-run
+  cancel-in-progress: false
+jobs:
+  validate:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          fetch-depth: 2
+          persist-credentials: false
+      - name: Freeze and verify tested inputs
+        run: |
+          set -eu
+          test "$(git rev-parse HEAD^)" = 6d0ac951fe5368d2b5a116e5c8fc18c850bc75f9
+          test -z "$(git diff HEAD^ HEAD -- Dockerfile .dockerignore docker nginx lib web pubspec.yaml pubspec.lock release-web-r15.tar.gz)"
+          mkdir -p receipts
+          git rev-parse HEAD > receipts/validation-commit.txt
+          python3 validation/r15/prepare.py
+          cp validation-data/old-readback.json receipts/
+      - name: Prepare browser dependencies before isolation
+        run: docker build -f validation/r15/Browser.Dockerfile -t r15-browser validation/r15
+      - name: B1 real Linux amd64 frozen image
+        run: python3 validation/r15/b1.py
+      - name: B2 Chromium same-origin warm update without egress
+        run: |
+          docker run --rm --network=none --shm-size=1g \
+            -v "$PWD/validation-data:/data:ro" \
+            -v "$PWD/validation/r15:/tests:ro" \
+            -v "$PWD/receipts:/receipts" r15-browser
+      - name: Close and seal receipts
+        if: always()
+        run: |
+          docker rm -f r15-web 2>/dev/null || true
+          docker network rm r15-validation 2>/dev/null || true
+          sudo chown -R "$(id -u):$(id -g)" receipts
+          find receipts -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > receipts/SHA256SUMS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: r15-b1-b2-receipts
+          path: receipts/
+          retention-days: 7
+          if-no-files-found: error
