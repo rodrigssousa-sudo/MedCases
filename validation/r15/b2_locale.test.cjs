@@ -1,8 +1,13 @@
 const {test}=require('node:test'),assert=require('node:assert/strict'),vm=require('node:vm');
-const {installLocaleProbe,localeReadback}=require('./b2_locale.cjs');
+const {installLocaleProbe,localeReadback,requireConfiguredLocale}=require('./b2_locale.cjs');
 function realm(language){const c=vm.createContext({navigator:{language,languages:[language]},window:{}});vm.runInContext('('+installLocaleProbe.toString()+')()',c);return c}
 for(const locale of ['pt-BR','es-AR'])test('native Intl accepts '+locale,()=>{const c=realm(locale),r=vm.runInContext('('+localeReadback.toString()+')()',c);assert(r.cases.every(x=>x.status==='PASS'));assert.equal(r.language,locale);assert.equal(r.failures.length,0)});
 test('invalid synthetic locale is recorded and rethrown, never repaired',()=>{const c=realm('en-US@posix');assert.throws(()=>vm.runInContext('new Intl.Locale(navigator.language)',c),/Incorrect locale/);assert.equal(c.window.__r15LocaleEvents[0].locale,'en-US@posix');assert.equal(c.window.__r15LocaleEvents[0].api,'Locale');assert.equal(c.window.__r15LocaleEvents[0].name,'RangeError')});
 test('formatters and canonicalizer preserve native rejection',()=>{for(const api of ['DateTimeFormat','NumberFormat','getCanonicalLocales','Segmenter']){const c=realm('pt-BR');assert.throws(()=>vm.runInContext('Intl.'+api+'("not_a_locale")',c));assert.equal(c.window.__r15LocaleEvents[0].api,api)}});
 
-test('B2 does not replace navigator or force a locale',()=>{const s=require('node:fs').readFileSync(__dirname+'/b2.cjs','utf8');assert(!s.includes("locale:'pt-BR'"));assert(s.includes("context.addInitScript(installLocaleProbe)"))});
+test('B2 uses Playwright locale and retains diagnostics before navigation',()=>{const s=require('node:fs').readFileSync(__dirname+'/b2.cjs','utf8');assert(s.includes("serviceWorkers:'allow',locale:'pt-BR'"));assert(s.includes('context.addInitScript(installLocaleProbe)'));assert(s.indexOf('requireConfiguredLocale(result.localePreflight)')<s.indexOf("page.goto('http://127.0.0.1:8080/'"));assert(!s.includes('Object.defineProperty(navigator'))});
+function readback(){return vm.runInContext('('+localeReadback.toString()+')()',realm('pt-BR'))}
+test('configured locale readback passes',()=>assert.doesNotThrow(()=>requireConfiguredLocale(readback())));
+test('invalid default locale fails before application navigation',()=>{const r=readback();r.language='en-US@posix';r.languages=['en-US@posix'];assert.throws(()=>requireConfiguredLocale(r),/MISMATCH/)});
+test('secondary invalid locale cannot pass',()=>{const r=readback();r.languages.push('en-US@posix');assert.throws(()=>requireConfiguredLocale(r),/MISMATCH/)});
+test('missing or failed formatter evidence cannot pass',()=>{for(const field of ['canonical','intlLocale','date','number','segmenter']){const r=readback();r.cases[0][field]=null;assert.throws(()=>requireConfiguredLocale(r),/INVALID/)}const r=readback();r.failures.push({api:'Locale'});assert.throws(()=>requireConfiguredLocale(r),/FAILURE/)});

@@ -1,6 +1,6 @@
 const fs=require('fs'),http=require('http'),crypto=require('crypto'),cp=require('child_process');
 const {chromium}=require('playwright');
-const {installLocaleProbe,localeReadback}=require('./b2_locale.cjs');
+const {installLocaleProbe,localeReadback,requireConfiguredLocale}=require('./b2_locale.cjs');
 const {createObserver,sanitize}=require('./b2_observer.cjs');
 const {startStaticOrigin}=require('./b2_static_origin.cjs');
 const {mime,clinicalRequest,assetContract,cacheContract,warmCacheContract,safePath}=require('./b2_contract.cjs');
@@ -44,7 +44,7 @@ function observe(p){observer.attach(p);p.on('request',r=>{if(r.isNavigationReque
  browser=await chromium.launch({headless:true,args:['--no-sandbox','--disable-dev-shm-usage',...staticOrigin.args]});
  result.chromiumVersion=browser.version();
  result.runnerLocale={LANG:process.env.LANG||null,LC_ALL:process.env.LC_ALL||null,LC_CTYPE:process.env.LC_CTYPE||null};
- const context=await browser.newContext({viewport:{width:1440,height:1000},serviceWorkers:'allow'});
+ const context=await browser.newContext({viewport:{width:1440,height:1000},serviceWorkers:'allow',locale:'pt-BR'});
  await context.exposeBinding('__r15RecordLocaleFailure',(_,event)=>observer.append('intl-failure',event));
  await context.addInitScript(installLocaleProbe);
  await context.addInitScript(()=>{window.__r15FirstFrame=false;window.addEventListener('flutter-first-frame',()=>{window.__r15FirstFrame=true})});
@@ -57,6 +57,7 @@ function observe(p){observer.attach(p);p.on('request',r=>{if(r.isNavigationReque
  page=await context.newPage();observe(page);
  result.localePreflight=await page.evaluate(localeReadback);
  fs.writeFileSync(out+'/locale-preflight.json',JSON.stringify(result.localePreflight,null,2));
+ requireConfiguredLocale(result.localePreflight);
  stage='OLD_CLIENT_FIRST_FRAME';
  await page.goto('http://127.0.0.1:8080/',{waitUntil:'domcontentloaded'});await observer.snapshot(page,phase+'-dom-ready');await firstFrame(page);
  stage='OLD_SW_CACHE';await page.waitForFunction(()=>navigator.serviceWorker.controller!==null,{},{timeout:30000});

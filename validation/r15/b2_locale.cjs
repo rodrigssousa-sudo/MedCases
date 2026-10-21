@@ -12,4 +12,12 @@ function localeReadback(){
  const cases=[...new Set([...navigator.languages,'pt-BR','es-AR'])];
  return {language:navigator.language,languages:[...navigator.languages],defaultDateLocale:new Intl.DateTimeFormat().resolvedOptions().locale,cases:cases.map(locale=>{try{return {locale,canonical:Intl.getCanonicalLocales(locale),intlLocale:new Intl.Locale(locale).toString(),date:new Intl.DateTimeFormat(locale).resolvedOptions().locale,number:new Intl.NumberFormat(locale).resolvedOptions().locale,segmenter:typeof Intl.Segmenter==='function'?new Intl.Segmenter(locale).resolvedOptions().locale:null,status:'PASS'}}catch(e){return {locale,status:'FAIL',error:e.name,message:e.message}}}),failures:window.__r15LocaleEvents||[]};
 }
-module.exports={installLocaleProbe,localeReadback};
+function requireConfiguredLocale(r){
+ if(r.language!=='pt-BR'||!Array.isArray(r.languages)||!r.languages.length||!r.languages.includes('pt-BR')||r.languages.includes('en-US@posix'))throw Error('BROWSER_LOCALE_MISMATCH');
+ for(const locale of [...r.languages,'pt-BR','es-AR']){
+  const c=r.cases.find(x=>x.locale===locale);
+  if(!c||c.status!=='PASS'||!c.canonical?.length||!c.intlLocale||!c.date||!c.number||!c.segmenter)throw Error('BROWSER_INTL_LOCALE_INVALID');
+ }
+ if(r.failures.length)throw Error('BROWSER_INTL_FAILURE');
+}
+module.exports={installLocaleProbe,localeReadback,requireConfiguredLocale};
