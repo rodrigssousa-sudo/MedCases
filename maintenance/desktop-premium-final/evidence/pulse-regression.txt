@@ -1,0 +1,5 @@
+00:00 +0: loading /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/ai_tab_home_topbar_parity_contract_test.dart
+00:00 +0: (setUpAll)
+00:00 +0: AI-VIS-B.2.4-R2 — topbar IA igual à Home M+ permanece proprietário e intocado
+00:00 +1: (tearDownAll)
+00:00 +1: All tests passed!

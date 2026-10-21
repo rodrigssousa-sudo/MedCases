@@ -1,0 +1,16 @@
+icon,label,route,module,state,visibility,evidence
+home_outlined,Início / Inicio,tab:0,HomeScreenV2,ACTIVE_VERIFIED,visible,main.dart _staticScreens[0]
+psychology_rounded,MedCases Clinical,tab:2,AiScreen,ACTIVE_WITH_ACCESS_RESTRICTION,visible,auth clinical eligibility and tier remain in AiScreen
+medication_rounded,Fármacos,tab:1/sub:1,DrugsScreen,UNKNOWN,hidden,Free route is calculator WebView placeholder per operator; Premium native route exists but not verified here; module and deep links preserved
+folder_shared_rounded,H. Clínica,tab:3,HistoryScreen,ACTIVE_WITH_ACCESS_RESTRICTION,visible,main.dart _staticScreens[3]; History entitlement retained
+calculate_rounded,Ferramentas / Herramientas,tab:4,ToolsScreen,ACTIVE_WITH_ACCESS_RESTRICTION,visible,existing calculator and scores workspace; no changes to module
+menu_book_rounded,Guias / Guías,tab:5,ClinicalGuideScreen,ACTIVE_WITH_ACCESS_RESTRICTION,visible,library_screen.dart actual guide workspace
+medical_services_rounded,Vacinas / Vacunas,tab:6,VaccinesScreen,ACTIVE_VERIFIED,visible,existing catalog workspace in main.dart
+play_circle_outline_rounded,Simulação / Simulación,tab:7,ClinicalSimulationScreen,ACTIVE_WITH_ACCESS_RESTRICTION,visible,library_screen.dart actual simulation workspace
+child_care_rounded,Pediatria / Pediatría,tab:8,PediatricsMainShellWorkspace,ACTIVE_VERIFIED,visible,home_screen.dart wrapper to _PediatricsShell
+science_rounded,Laboratório / Laboratorio,tab:9,LaboratoryMainShellWorkspace,ACTIVE_VERIFIED,visible,laboratory_screen.dart catalog filters and session bridge
+edit_note_rounded,Notas,tab:10,_NotesAudioWorkspace,ACTIVE_WITH_ACCESS_RESTRICTION,visible,existing local notes/audio workspace; no audio change
+groups_rounded,Pacientes,tab:11,InternacionMainShellWorkspace,ACTIVE_WITH_ACCESS_RESTRICTION,visible,home_screen.dart wrapper to InternacionScreen
+fitness_center_rounded,Avaliação / Evaluación,tab:12,AvaliacaoScreen,ACTIVE_VERIFIED,visible,existing embedded workspace
+menu_rounded,Menu / Menú,endDrawer,_AppDrawer,ACTIVE_VERIFIED,visible,unchanged drawer navigation
+none,Prescrições / Prescripciones,tab:1/sub:0,PrescripcionesScreen,UNKNOWN,hidden from rail before and after,route retained without new commercial claim

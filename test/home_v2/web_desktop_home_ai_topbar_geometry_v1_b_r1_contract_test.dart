@@ -148,7 +148,7 @@ void main() {
         contains('mainAxisAlignment: MainAxisAlignment.end'),
       );
       expect(desktopAiTopbar, contains("text: 'MEDCASES '"));
-      expect(desktopAiTopbar, contains("text: 'IA'"));
+      expect(desktopAiTopbar, contains("text: 'CLINICAL'"));
     });
 
     test('brand IA usa verde canônico #009C3B', () {

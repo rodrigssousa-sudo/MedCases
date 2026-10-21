@@ -275,14 +275,14 @@ void main() {
           expect(
             header,
             contains(
-              "text: 'MedCases '",
+              "text: 'MEDCASES '",
             ),
           );
 
           expect(
             header,
             contains(
-              "text: 'IA'",
+              "text: 'CLINICAL'",
             ),
           );
 

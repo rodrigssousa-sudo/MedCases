@@ -131,47 +131,16 @@ void main() {
       test(
         'usa o mesmo vidro da Home',
         () {
-          for (final token in const [
-            "import 'dart:ui' show ImageFilter;",
-            'const Color(0xFF252930)'
-                '.withOpacity(0.70)',
-            'Colors.white'
-                '.withOpacity(0.70)',
-            'const Color(0xFF374151)',
-            'const Color(0xFFE2E7EC)',
-            'ClipRect(',
-            'BackdropFilter(',
-            'ImageFilter.blur'
-                '(sigmaX: 14, sigmaY: 14)',
+          expect(homeTopbar, contains('MedcasesTopbarGlass('));
+          expect(aiTopbar, contains('MedcasesTopbarGlass('));
+          final glass =
+              File('lib/widgets/medcases_topbar_glass.dart').readAsStringSync();
+          for (final token in [
+            'ImageFilter.blur(sigmaX: 16, sigmaY: 16)',
             'width: 0.7',
+            'blurRadius: 14'
           ]) {
-            expect(
-              mobileSource,
-              contains(token),
-              reason: token,
-            );
-          }
-
-          for (final token in const [
-            'const Color(0xFF252930)'
-                '.withOpacity(0.70)',
-            'Colors.white'
-                '.withOpacity(0.70)',
-            'ImageFilter.blur'
-                '(sigmaX: 14, sigmaY: 14)',
-            'width: 0.7',
-          ]) {
-            expect(
-              homeTopbar,
-              contains(token),
-              reason: token,
-            );
-
-            expect(
-              aiTopbar,
-              contains(token),
-              reason: token,
-            );
+            expect(glass, contains(token));
           }
         },
       );
@@ -276,16 +245,16 @@ void main() {
 
           expect(
             aiTopbar,
-            contains("text: 'IA'"),
+            contains("text: 'CLINICAL'"),
           );
 
           expect(
             aiTopbar,
-            contains('const Color(0xFF00C781)'),
+            contains('const Color(0xFF009C3B)'),
           );
           expect(
             aiTopbar,
-            contains('const Color(0xFF059669)'),
+            contains('const Color(0xFF009C3B)'),
           );
         },
       );
@@ -296,15 +265,15 @@ void main() {
           for (final token in const [
             'onTap: onSettings',
             'behavior: HitTestBehavior.opaque',
-            '? const MplusPulse()',
-            "'Conectar IA'",
+            'AiConnectionIdentity(',
+            'MplusPulse(',
             'class MplusPulse '
                 'extends StatefulWidget',
             'class MplusPulseState '
                 'extends State<MplusPulse>',
             'AnimationController(',
             'duration: const Duration'
-                '(milliseconds: 1500)',
+                '(milliseconds: 1900)',
           ]) {
             expect(
               mobileSource,

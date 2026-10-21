@@ -1,0 +1,17 @@
+{
+  "baseline": "43f0efcf5df44ddb580ee0a3924299047bd4a4a0",
+  "modified_tracked_files": [
+    "lib/home_v2/components/chat/inline_chat_view.dart",
+    "lib/main.dart",
+    "lib/screens/ai/widgets/mobile_ai_action_bar.dart",
+    "lib/screens/ai/widgets/wa_header.dart",
+    "test/home_v2/ai_tab_home_topbar_parity_contract_test.dart",
+    "test/home_v2/home_topbar_true_liquid_glass_v1_b_r0_contract_test.dart",
+    "test/home_v2/home_v2_inline_chat_whatsapp_composer_contract_test.dart",
+    "test/home_v2/web_desktop_home_ai_topbar_geometry_v1_b_r1_contract_test.dart",
+    "test/screens/ai/mobile_ai_action_bar_ia_009c3b_single_element_contract_test.dart"
+  ],
+  "remote_writes_executed": false,
+  "deploy_executed": false,
+  "release_manifest_status": "REQUIRES_REGENERATION"
+}

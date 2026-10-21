@@ -1,0 +1,18 @@
+00:00 +0: loading /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/web_desktop_home_ai_topbar_geometry_v1_b_r1_contract_test.dart
+00:00 +0: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/web_desktop_home_ai_topbar_geometry_v1_b_r1_contract_test.dart: (setUpAll)
+00:00 +0: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/home_topbar_true_liquid_glass_v1_b_r0_contract_test.dart: Home topbar True Liquid Glass V1-B-R0 Home-only callsite remains exclusive
+00:00 +1: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/home_topbar_true_liquid_glass_v1_b_r0_contract_test.dart: Home topbar True Liquid Glass V1-B-R0 Home-only callsite remains exclusive
+00:00 +2: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/home_topbar_true_liquid_glass_v1_b_r0_contract_test.dart: Home topbar True Liquid Glass V1-B-R0 Home-only callsite remains exclusive
+00:00 +3: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/home_topbar_true_liquid_glass_v1_b_r0_contract_test.dart: Home topbar True Liquid Glass V1-B-R0 Home-only callsite remains exclusive
+00:00 +4: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/home_topbar_true_liquid_glass_v1_b_r0_contract_test.dart: Home topbar True Liquid Glass V1-B-R0 Home-only callsite remains exclusive
+00:00 +5: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/home_topbar_true_liquid_glass_v1_b_r0_contract_test.dart: Home topbar True Liquid Glass V1-B-R0 Home-only callsite remains exclusive
+00:00 +6: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/home_topbar_true_liquid_glass_v1_b_r0_contract_test.dart: Home topbar True Liquid Glass V1-B-R0 Home-only callsite remains exclusive
+00:00 +7: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/home_topbar_true_liquid_glass_v1_b_r0_contract_test.dart: Home topbar True Liquid Glass V1-B-R0 Home-only callsite remains exclusive
+00:00 +8: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/web_desktop_home_ai_topbar_geometry_v1_b_r1_contract_test.dart: MEDCASES WEB — Home / IA topbar parity V1-B-R1 ações desktop continuam presentes
+00:00 +9: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/home_topbar_true_liquid_glass_v1_b_r0_contract_test.dart: Home topbar True Liquid Glass V1-B-R0 Home topbar owns Liquid Glass material
+00:00 +10: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/web_desktop_home_ai_topbar_geometry_v1_b_r1_contract_test.dart: MEDCASES WEB — Home / IA topbar parity V1-B-R1 widget compila, mede 48px e não renderiza back arrow
+00:00 +11: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/web_desktop_home_ai_topbar_geometry_v1_b_r1_contract_test.dart: MEDCASES WEB — Home / IA topbar parity V1-B-R1 widget compila, mede 48px e não renderiza back arrow
+00:00 +12: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/web_desktop_home_ai_topbar_geometry_v1_b_r1_contract_test.dart: MEDCASES WEB — Home / IA topbar parity V1-B-R1 widget compila, mede 48px e não renderiza back arrow
+00:00 +13: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/web_desktop_home_ai_topbar_geometry_v1_b_r1_contract_test.dart: MEDCASES WEB — Home / IA topbar parity V1-B-R1 widget compila, mede 48px e não renderiza back arrow
+00:01 +14: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/web_desktop_home_ai_topbar_geometry_v1_b_r1_contract_test.dart: (tearDownAll)
+00:01 +14: All tests passed!

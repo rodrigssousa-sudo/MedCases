@@ -253,13 +253,13 @@ class _InlineChatHeader extends StatelessWidget {
                       ),
                       children: [
                         TextSpan(
-                          text: 'MedCases ',
+                          text: 'MEDCASES ',
                           style: TextStyle(
                             color: palette.textPrimary,
                           ),
                         ),
                         TextSpan(
-                          text: 'IA',
+                          text: 'CLINICAL',
                           style: TextStyle(
                             color: _homeAccent(palette),
                           ),

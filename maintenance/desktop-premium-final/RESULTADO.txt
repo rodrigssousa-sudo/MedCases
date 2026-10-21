@@ -1,0 +1,51 @@
+DESKTOP PREMIUM FINAL — checkpoint local (21/10/2026)
+
+Baseline: 43f0efcf5df44ddb580ee0a3924299047bd4a4a0
+Checkout: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020
+Branch: maintenance/code-cleanup-20261020
+
+Implementação:
+- Extraído o vidro existente da Home para MedcasesTopbarGlass. Home,
+  WaHeader e MobileAiActionBar usam a mesma superfície, sem sobreposição
+  de materiais. Blur 16, transparências, borda, brilho e sombra preservados.
+- Altura útil 48 px; marcas MEDCASES PRO / MEDCASES CLINICAL em 16/w900,
+  verde #009C3B. Inset físico mobile preservado.
+- Ações desktop continuam operantes; ajuste de encaixe evita overflow em 1024.
+- Proporção comercial 40/60, breakpoint 1024, navegação e cartões preservados.
+- Rail existente de 72 px mantido. Atalho Fármacos ocultado por falta de
+  comprovação visual da função comercial atual; rota e módulo preservados.
+  Inventário separa WebView informada como placeholder de ramo Premium nativo.
+- Prescrições já não constava no rail; rota interna preservada.
+- Não alterados renderer clínico, rodapé, composer, Estudo/Plantão,
+  Histórico, cópia, áudio, serviços, Calculadora, backend ou contratos SSE.
+
+Validação dirigida:
+- 14 testes Home/topbar PASS.
+- 25 cenários/contratos de cabeçalho: desktop 1920/1440/1200/1024,
+  mobile 768/375, PT/ES, claro/escuro, callbacks e ausência de overflow PASS.
+- 17 contratos de marca/composer/topbar: 16 PASS na suíte; o único contrato
+  restante esperava pulso legado de 1500ms. Baseline já usa 1900ms.
+  Contrato corrigido para o baseline, teste isolado PASS, implementação intacta.
+- Analyzer afetado sem erros. Avisos legados em main.dart e depreciações
+  registrados no log; não foi feita limpeza geral. Superfície compartilhada
+  e MobileAiActionBar: nenhum diagnóstico.
+- Build comercial lib/main.dart --release PASS; não é build de tool/preview.
+- 1869 arquivos iOS 1721 e AOT preservados; ZIP backend R15 preservado.
+
+PENDÊNCIA EXCLUSIVA DE VERIFICAÇÃO VISUAL:
+A aba local http://127.0.0.1:8892/ chegou ao login real do aplicativo.
+Não foi copiada a sessão/token de produção. Operador deve autenticar-se
+na interface, sem consulta, para as capturas autenticadas 1920/1440/1200/
+1024/768/375. Nenhuma captura de login substitui aprovação visual da Home.
+Ainda não se declara FLUTTER_VISUAL_REVIEW=PASS nem aprovação humana.
+
+Não houve push, deploy, tráfego, IAM, consulta clínica ou edição remota.
+Arquivo release-web-r15.tar.gz anterior mantido como baseline de rollback.
+O novo artefato está separado em Downloads e exige novo manifesto antes
+que qualquer executor de publicação possa utilizá-lo.
+
+HUMAN_VISUAL_APPROVAL=PENDING
+RELEASE_MANIFEST_STATUS=REQUIRES_REGENERATION
+PRODUCTION_MUTATIONS=0
+DEPLOY=NOT_EXECUTED
+FINAL_RESULT=PARTIAL (capturas autenticadas pendentes)

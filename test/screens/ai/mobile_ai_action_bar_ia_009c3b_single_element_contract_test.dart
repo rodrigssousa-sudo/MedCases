@@ -29,12 +29,12 @@ void main() {
     final owner = classBlock(source, 'MobileAiActionBar');
 
     expect(owner, contains("text: 'MEDCASES '"));
-    expect(owner, contains("text: 'IA'"));
+    expect(owner, contains("text: 'CLINICAL'"));
     expect(owner, contains('AiConnectionIdentity('));
 
     final iaBlock = RegExp(
       r"TextSpan\(\s*"
-      r"text:\s*'IA'\s*,\s*"
+      r"text:\s*'CLINICAL'\s*,\s*"
       r"style:\s*TextStyle\(\s*"
       r"fontSize:\s*16\s*,\s*"
       r"fontWeight:\s*FontWeight\.w900\s*,\s*"

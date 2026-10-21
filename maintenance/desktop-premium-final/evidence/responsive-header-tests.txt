@@ -1,0 +1,19 @@
+00:00 +0: loading /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/home_v2/desktop_premium_final_widget_test.dart
+00:00 +0: Clinical header 1920.0 dark=false pt
+00:03 +1: Clinical header 1920.0 dark=false es
+00:04 +2: Clinical header 1920.0 dark=true pt
+00:04 +3: Clinical header 1920.0 dark=true es
+00:04 +4: Clinical header 1440.0 dark=false pt
+00:05 +5: Clinical header 1440.0 dark=false es
+00:05 +6: Clinical header 1440.0 dark=true pt
+00:05 +7: Clinical header 1440.0 dark=true es
+00:05 +8: Clinical header 1200.0 dark=false pt
+00:05 +9: Clinical header 1200.0 dark=false es
+00:05 +10: Clinical header 1200.0 dark=true pt
+00:05 +11: Clinical header 1200.0 dark=true es
+00:05 +12: Clinical header 1024.0 dark=false pt
+00:05 +13: Clinical header 1024.0 dark=false es
+00:05 +14: Clinical header 1024.0 dark=true pt
+00:05 +15: Clinical header 1024.0 dark=true es
+00:06 +16: commercial split, routes and protected renderer remain at their owners
+00:06 +17: All tests passed!

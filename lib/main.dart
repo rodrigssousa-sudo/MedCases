@@ -1,3 +1,4 @@
+import 'widgets/medcases_topbar_glass.dart';
 import 'widgets/guide_intent_entry.dart';
 import 'testimonials/testimonial_entry.dart';
 import 'testimonials/testimonial_screen.dart';
@@ -3667,76 +3668,9 @@ class _MobileAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // MEDCASES_HOME_TOPBAR_TRUE_LIQUID_GLASS_V1_B_R0
-    // Mesmo idioma óptico do dock global, adaptado ao topbar edge-to-edge.
-    final glassColor = dark
-        ? const Color(0xFF161B22).withValues(alpha: 0.58)
-        : Colors.white.withValues(alpha: 0.56);
-    final liquidTop = dark
-        ? Colors.white.withValues(alpha: 0.10)
-        : Colors.white.withValues(alpha: 0.46);
-    final liquidMid = dark
-        ? Colors.white.withValues(alpha: 0.025)
-        : Colors.white.withValues(alpha: 0.12);
-    final borderColor = dark
-        ? Colors.white.withValues(alpha: 0.13)
-        : Colors.white.withValues(alpha: 0.78);
-    final liquidSpecular = dark
-        ? Colors.white.withValues(alpha: 0.18)
-        : Colors.white.withValues(alpha: 0.86);
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: dark ? 0.16 : 0.07),
-            blurRadius: 14,
-            spreadRadius: -8,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: ClipRect(
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            decoration: BoxDecoration(
-              color: glassColor,
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  liquidTop,
-                  liquidMid,
-                  Colors.transparent,
-                ],
-                stops: const [0.0, 0.42, 1.0],
-              ),
-              border: Border(
-                bottom: BorderSide(color: borderColor, width: 0.7),
-              ),
-            ),
-            child: Stack(
-              children: [
-                Positioned(
-                  left: 24,
-                  right: 24,
-                  bottom: 0.7,
-                  child: Container(
-                    height: 0.7,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          liquidSpecular,
-                          Colors.transparent,
-                        ],
-                        stops: const [0.0, 0.5, 1.0],
-                      ),
-                    ),
-                  ),
-                ),
-                SafeArea(
+    return MedcasesTopbarGlass(
+      dark: dark,
+      child: SafeArea(
                   bottom: false,
                   child: SizedBox(
                     // BUILD 316 M1: altura útil 36px — SafeArea acima já absorve o
@@ -3770,7 +3704,7 @@ class _MobileAppBar extends StatelessWidget {
                                     ),
                                   ),
                                   TextSpan(
-                                    text: currentTab == _kAiTab ? 'IA' : 'PRO',
+                                    text: currentTab == _kAiTab ? 'CLINICAL' : 'PRO',
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.w900,
@@ -3804,11 +3738,6 @@ class _MobileAppBar extends StatelessWidget {
                     ),
                   ),
                 ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
@@ -3952,16 +3881,11 @@ class _DesktopSidebar extends StatelessWidget {
                             children: [
                               nav(
                                 icon: Icons.psychology_rounded,
-                                tooltip: 'IA',
+                                tooltip: 'MedCases Clinical',
                                 active: currentTab == 2,
                                 onTap: () => onTabChange(2),
                               ),
-                              nav(
-                                icon: Icons.medication_rounded,
-                                tooltip: 'Fármacos',
-                                active: currentTab == 1 && currentRxSubTab == 1,
-                                onTap: onOpenDrugs,
-                              ),
+                              // Drug WebView placeholder: route retained; rail entry hidden.
                               nav(
                                 icon: Icons.folder_shared_rounded,
                                 tooltip: 'H. Clínica',

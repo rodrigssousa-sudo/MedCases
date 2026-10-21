@@ -1,0 +1,5 @@
+Local visual patch only. Baseline: 43f0efcf5df44ddb580ee0a3924299047bd4a4a0.
+Rollback after commit: git revert <visual-commit>, review resulting diff.
+Do not execute deployment rollback: this work does not mutate production.
+Old release-web-r15.tar.gz is the baseline artifact until a new artifact and manifest are explicitly prepared.
+No prior publication manifest authorizes these visual changes.

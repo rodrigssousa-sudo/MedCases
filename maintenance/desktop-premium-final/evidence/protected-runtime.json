@@ -1,0 +1,32 @@
+{
+  "lib/screens/ai/widgets/guardia_clinical_response_view.dart": {
+    "baseline_sha256": "f4a256d8a0d2f226f60af53298a9cbb22feaa527a12728ababdc878ea15e16ae",
+    "current_sha256": "f4a256d8a0d2f226f60af53298a9cbb22feaa527a12728ababdc878ea15e16ae",
+    "unchanged": true
+  },
+  "lib/services/clinical_thread_manager.dart": {
+    "baseline_sha256": "084b7c17f16f554e26880efce5714bc359edea7068353c47a7af2ef2d3f476a7",
+    "current_sha256": "084b7c17f16f554e26880efce5714bc359edea7068353c47a7af2ef2d3f476a7",
+    "unchanged": true
+  },
+  "lib/services/ai_stream/gpt_sse_client.dart": {
+    "baseline_sha256": "8572352ff9f2d6db6a640fa3492177fe64306c8aefc5ad24c6076c65f8cd1f4b",
+    "current_sha256": "8572352ff9f2d6db6a640fa3492177fe64306c8aefc5ad24c6076c65f8cd1f4b",
+    "unchanged": true
+  },
+  "lib/services/ai_pipeline/plantao/adapters/plantao_versioned_remote_drug_evidence_json_loader.dart": {
+    "baseline_sha256": "208e9fbdb2a977130b232234a59b74eb1b796859fef1be1979c627bd63899581",
+    "current_sha256": "208e9fbdb2a977130b232234a59b74eb1b796859fef1be1979c627bd63899581",
+    "unchanged": true
+  },
+  "lib/screens/calculadora_screen.dart": {
+    "baseline_sha256": "1943f75a7898252bb1dc7006cf4c13e01eebe412e9a499a06803bb0dfe76cd7a",
+    "current_sha256": "1943f75a7898252bb1dc7006cf4c13e01eebe412e9a499a06803bb0dfe76cd7a",
+    "unchanged": true
+  },
+  "lib/screens/ai_screen.dart": {
+    "baseline_sha256": "2f791c2ed86c8fe9d94d4e6705ca6023ab9e09ccaa6d76417cd9519fa7d013cc",
+    "current_sha256": "2f791c2ed86c8fe9d94d4e6705ca6023ab9e09ccaa6d76417cd9519fa7d013cc",
+    "unchanged": true
+  }
+}

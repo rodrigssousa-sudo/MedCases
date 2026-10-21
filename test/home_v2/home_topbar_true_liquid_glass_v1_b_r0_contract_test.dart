@@ -26,11 +26,12 @@ void main() {
       expect(main, contains('isHome: true,'));
 
       final tokenCount = RegExp(r'_MobileAppBar\(').allMatches(main).length;
-      expect(tokenCount, 2); // constructor + one productive call
+      expect(tokenCount, 3); // constructor + mobile + desktop Home
     });
 
     test('Home topbar owns Liquid Glass material', () {
-      final bar = classBlock(main, '_MobileAppBar');
+      final bar = File('lib/widgets/medcases_topbar_glass.dart').readAsStringSync();
+      expect(classBlock(main, '_MobileAppBar'), contains('MedcasesTopbarGlass('));
 
       expect(
         bar,
@@ -68,7 +69,7 @@ void main() {
       expect(bar, contains('fontSize: 16'));
       expect(bar, contains('FontWeight.w900'));
       expect(bar, contains('letterSpacing: 1.2'));
-      expect(bar, contains('width: 0.7'));
+      expect(File('lib/widgets/medcases_topbar_glass.dart').readAsStringSync(), contains('width: 0.7'));
     });
 
     test('global action-bar Liquid Glass remains untouched', () {
