@@ -5,7 +5,10 @@ FROM nginx:1.25.5-alpine
 RUN rm /etc/nginx/conf.d/default.conf
 
 # Copia nossa config Nginx customizada (anti-cache, SPA routing, health check)
-COPY nginx/nginx.conf /etc/nginx/conf.d/default.conf
+# Keep the app config separate from the base-image file removed above.
+# A cached deletion of default.conf must never suppress the app listener.
+COPY nginx/nginx.conf /etc/nginx/conf.d/medcases.conf
+RUN test -s /etc/nginx/conf.d/medcases.conf && nginx -t
 
 # ── PILAR 2: Runtime metadata bootstrapper ────────────────────────────────────
 # Hooks into nginx:alpine's /docker-entrypoint.d/ initialization sequence.
