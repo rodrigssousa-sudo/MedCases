@@ -1,0 +1,24 @@
+{
+  "run": 39666996269,
+  "commit": "440b406f43eba9b6b1b2d1e31376abb5957fb91a",
+  "artifact": 12378136865,
+  "artifactSHA256": "2459caffd2dcc609eb427f54fa158c13e1c10f9c3d773e0f088fae84ba8e28a0",
+  "sourceHashes": {
+    "Dockerfile": "83ab57ec00ba916a51729956cb5572566c4084765428dbcd66f74aa620ea2a8c",
+    ".dockerignore": "ec03cbdb3fb398619535d822dc13b8eacc905f55e2533672833a145d99a5d1d2",
+    "nginx/nginx.conf": "74fa56c098174ed190403e89e87f530f62f793c340fe1db2ae9b802e39549754",
+    "docker/40-generate-deploy-meta.sh": "537474a18fe9f1b0e4fe6271457566a69557def88315566920967d225e779210",
+    "validation/r15/b1.py": "8418f84d1e7fd0aeeb6391973600f1a1f9d24b4e904556fc671c02303e53936d",
+    "validation/r15/network_guard.py": "7c072d82492e158670246dc02fd0b5a43adfe31547881315ca97f67167ada262",
+    "validation/r15/health_probe.py": "427770df01d552de393c867c85b538083176bbf0a642c38af021d87c2a6ec32a",
+    "validation/r15/isolation_probe.py": "bd53073588952f84902aed2513c2a1bc13c3b147b790269db4d8c92bf5646741"
+  },
+  "receiptHashes": {
+    "outbound-probes.json": "9c6e32a837e9b668a12c1c5a4f3a308ec2eb516db416b0869f3504dd4e5bef88",
+    "startup-deploy-meta.json": "6605c66799b01fd2d15cdbcedec08664b84f21cd422a74411b86931c273ed270",
+    "cleanup.json": "18cda5ccab05e2abc3286703f017a05e52c1ba0df4d2cc240a99ecdc1bdc2f0e",
+    "b1.json": "eaddf846e29fb214de6b5b3c6db22710b662a520538c97c262c02c1882326841",
+    "restart-docker-health.json": "3e25a55ebdc74fe367d9e07069bda216bce6c40db40f20a4e0d765f40f964e8e",
+    "startup-docker-health.json": "4ec8eab8e05b873cfe6f685dbb2fbe2f30bdd5fac0f9467eeefe63907e76dd3a"
+  }
+}

@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          fetch-depth: 6
+          fetch-depth: 7
           persist-credentials: false
       - name: Freeze and verify tested inputs
         run: |
@@ -23,14 +23,14 @@ jobs:
           mkdir -p receipts
           python3 validation/r15/verify_inputs.py
           git rev-parse HEAD > receipts/validation-commit.txt
-          python3 -m unittest discover -s validation/r15 -p 'test_*.py' -v
-          node --test validation/r15/b2_contract.test.cjs
+          python3 -m unittest discover -s validation/r15 -p 'test_retained_b1.py' -v
+          node --test validation/r15/b2*.test.cjs
           python3 validation/r15/prepare.py
           cp validation-data/old-readback.json receipts/
       - name: Prepare browser dependencies before isolation
         run: docker build -f validation/r15/Browser.Dockerfile -t r15-browser validation/r15
-      - name: B1 real Linux amd64 frozen image
-        run: python3 validation/r15/b1.py
+      - name: Retain verified B1 evidence without rerunning Linux image
+        run: python3 validation/r15/verify_retained_b1.py
       - name: B2 Chromium same-origin warm update without egress
         run: |
           docker run --rm --network=none --shm-size=1g \

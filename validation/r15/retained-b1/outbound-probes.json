@@ -1,0 +1,18 @@
+[
+  {
+    "chain": "INPUT",
+    "target": "controlled-local-canary",
+    "controlHTTP": 200,
+    "containerExitCode": 1,
+    "dropCounterBefore": 0,
+    "dropCounterAfter": 2
+  },
+  {
+    "chain": "DOCKER-USER",
+    "target": "controlled-local-canary",
+    "controlHTTP": 200,
+    "containerExitCode": 1,
+    "dropCounterBefore": 0,
+    "dropCounterAfter": 2
+  }
+]

@@ -1,0 +1,64 @@
+{
+  "B1_LINUX_IMAGE": "PASS",
+  "B1_NGINX_STARTUP": "PASS",
+  "B1_PORT_8080": "PASS",
+  "B1_HTTP_HEALTH": "PASS",
+  "B1_RESTART": "PASS",
+  "testedCommit": "6d0ac951fe5368d2b5a116e5c8fc18c850bc75f9",
+  "productionMutations": 0,
+  "imageId": "sha256:22d38b51126b6d6f7d53d710efe550b5eac36f6326a66af6c158ed08bce8207a",
+  "networkPolicy": {
+    "bridge": "br-r15-b1",
+    "ipv6": false,
+    "outbound": "DROP",
+    "hostAccess": "DROP",
+    "replyTraffic": "ESTABLISHED_RELATED_ONLY"
+  },
+  "network": "BRIDGE_EGRESS_DENIED_BY_FIREWALL",
+  "outboundIsolation": {
+    "status": "PASS_REAL",
+    "scope": "all new IPv4 outbound flows denied by interface-wide rules; two controlled host/forward canaries; IPv6 disabled; no production calls",
+    "probes": [
+      {
+        "chain": "INPUT",
+        "target": "controlled-local-canary",
+        "controlHTTP": 200,
+        "containerExitCode": 1,
+        "dropCounterBefore": 0,
+        "dropCounterAfter": 2
+      },
+      {
+        "chain": "DOCKER-USER",
+        "target": "controlled-local-canary",
+        "controlHTTP": 200,
+        "containerExitCode": 1,
+        "dropCounterBefore": 0,
+        "dropCounterAfter": 2
+      }
+    ]
+  },
+  "startupInternalHTTP": "PASS_REAL",
+  "startup": {
+    "main.dart.js": "ca3d1b1833908af25901af688e167d5c95a787dc61b5f11d9437f763cb067c98",
+    "flutter_bootstrap.js": "e9f18e532a836188056c52be4cbbbf5b0530e71a975e265993ef23cb47f8b134",
+    "pwa-sw.js": "f3d8b3c4ccde5c572d776a27e2c5f8c50d6eb036a46bd17cd99c9d11e26debde",
+    "flutter_service_worker.js": "a131df5ca46154cc4eb79044f7f5a14029c2f8bfccf8cef34e3ec3b5a9f5a88c",
+    "deploy_meta.json": "6605c66799b01fd2d15cdbcedec08664b84f21cd422a74411b86931c273ed270"
+  },
+  "restartInternalHTTP": "PASS_REAL",
+  "restart": {
+    "main.dart.js": "ca3d1b1833908af25901af688e167d5c95a787dc61b5f11d9437f763cb067c98",
+    "flutter_bootstrap.js": "e9f18e532a836188056c52be4cbbbf5b0530e71a975e265993ef23cb47f8b134",
+    "pwa-sw.js": "f3d8b3c4ccde5c572d776a27e2c5f8c50d6eb036a46bd17cd99c9d11e26debde",
+    "flutter_service_worker.js": "a131df5ca46154cc4eb79044f7f5a14029c2f8bfccf8cef34e3ec3b5a9f5a88c",
+    "deploy_meta.json": "7488655fedd1c35a95ae096aa7a8b22a96d6969da0e0641ac27e35f650c6b38e"
+  },
+  "negativeConfig": "PASS",
+  "inputHashes": {
+    "Dockerfile": "83ab57ec00ba916a51729956cb5572566c4084765428dbcd66f74aa620ea2a8c",
+    ".dockerignore": "ec03cbdb3fb398619535d822dc13b8eacc905f55e2533672833a145d99a5d1d2",
+    "nginx/nginx.conf": "74fa56c098174ed190403e89e87f530f62f793c340fe1db2ae9b802e39549754",
+    "docker/40-generate-deploy-meta.sh": "537474a18fe9f1b0e4fe6271457566a69557def88315566920967d225e779210",
+    "release-web-r15.tar.gz": "f924db5f77a336fb906f22fd985c117bb990fc3e9ca0962c1566947ce747617a"
+  }
+}

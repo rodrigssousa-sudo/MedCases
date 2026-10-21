@@ -1,0 +1,7 @@
+{
+  "r15-web": "REMOVED",
+  "r15-egress-canary": "REMOVED",
+  "firewall": "OWN_RULES_REMOVED",
+  "r15-validation": "REMOVED",
+  "r15-egress-canary-net": "REMOVED"
+}

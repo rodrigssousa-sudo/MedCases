@@ -1,0 +1,31 @@
+{
+  "Status": "running",
+  "Running": true,
+  "Paused": false,
+  "Restarting": false,
+  "OOMKilled": false,
+  "Dead": false,
+  "Pid": 3620,
+  "ExitCode": 0,
+  "Error": "",
+  "StartedAt": "2026-10-21T20:04:40.840002519Z",
+  "FinishedAt": "2026-10-21T20:04:40.745850656Z",
+  "Health": {
+    "Status": "healthy",
+    "FailingStreak": 0,
+    "Log": [
+      {
+        "Start": "2026-10-21T20:04:39.725879543Z",
+        "End": "2026-10-21T20:04:39.759818229Z",
+        "ExitCode": 0,
+        "Output": "{\"status\":\"ok\",\"app\":\"MedCases Pro\"}"
+      },
+      {
+        "Start": "2026-10-21T20:04:45.978042758Z",
+        "End": "2026-10-21T20:04:46.012180255Z",
+        "ExitCode": 0,
+        "Output": "{\"status\":\"ok\",\"app\":\"MedCases Pro\"}"
+      }
+    ]
+  }
+}
