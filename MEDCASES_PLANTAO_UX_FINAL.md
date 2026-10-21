@@ -47,3 +47,7 @@ Conferência visual real do Flutter no navegador interno Chromium: 320, 375, 768
 O áudio foi aprovado pelo operador no Chrome; a tentativa de nova conferência do rodapé pelo aplicativo nativo Chrome não terminou. A prova visual final do rodapé é do Flutter no navegador interno, sem converter essa limitação em PASS de Chrome nativo.
 
 A matriz completa, incluindo limites ainda não comprovados em produção, está em `maintenance/r15-ux/RESULTADO.json`. Resultado global PARTIAL: conectividade MCC1 atual, relação autorizada do protocolo toxicológico e revisão editorial ES permanecem fora da comprovação desta entrega. O pedido visual de referências e rodapé passou localmente. Nenhum deploy foi executado.
+
+## Adendo farmacológico posterior
+
+A evolução local posterior ao commit inicial está documentada em `MEDCASES_R15_DRUG_MINIMAL.md`, com manifesto próprio. O recibo `MEDCASES_R15_UX_FINAL_SHA256.json` continua referindo-se ao commit original; não deve ser comparado ao código posterior como se fosse a mesma revisão. Fontes clínicas, cálculo, direitos e iOS 1721 permanecem preservados.

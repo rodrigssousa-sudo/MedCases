@@ -1232,6 +1232,12 @@ String _prepareNaturalProsody(
 }) {
   String result = text;
 
+  result = result.replaceAllMapped(
+    RegExp(r'(?<![A-Za-z0-9_/])q(4|6|8|12|24)h(?![A-Za-z0-9_/])',
+        caseSensitive: false),
+    (m) => '${portuguese ? 'a cada' : 'cada'} ${m[1]} horas',
+  );
+
   result = result.replaceAll(
     RegExp(r'\bHARD\s+STOP\b', caseSensitive: false),
     'Alerta clínico crítico',

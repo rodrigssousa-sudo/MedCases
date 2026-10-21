@@ -38,7 +38,7 @@ void main() {
       .join('\n');
   Future<void> show(WidgetTester tester, CanonicalClinicalSnapshot? snapshot,
       String full, String locale,
-      {bool preserved = true}) async {
+      {bool preserved = true, String question = ''}) async {
     await tester.pumpWidget(MaterialApp(
         home: Scaffold(
             body: SingleChildScrollView(
@@ -46,6 +46,7 @@ void main() {
                     key: ValueKey('$locale-${snapshot?.factsHash}-$full'),
                     rawText: full,
                     referenceDocument: snapshot,
+                    userText: question,
                     preserveReferenceText: preserved,
                     dark: false,
                     languageCode: locale,
@@ -63,6 +64,9 @@ void main() {
       final full = snapshot.blocks(locale).join();
       await show(tester, snapshot, full, locale);
       expect(body(tester), isNot(contains('FULL_SENTINEL')));
+      expect(body(tester), isNot(contains('q8h')));
+      expect(body(tester),
+          contains(locale == 'pt' ? 'a cada 8 horas' : 'cada 8 horas'));
       expect(RegExp(r'^## ', multiLine: true).allMatches(body(tester)),
           hasLength(4));
       expect(body(tester), contains('TEST_CONDITION'));
@@ -81,6 +85,9 @@ void main() {
       await tester.tap(expand);
       await tester.pumpAndSettle();
       expect(body(tester), contains('FULL_SENTINEL'));
+      expect(body(tester), isNot(contains('q8h')));
+      expect(body(tester),
+          contains(locale == 'pt' ? 'a cada 8 horas' : 'cada 8 horas'));
       expect(body(tester), isNot(contains('FIXTURE_MAIN')));
       await tester.ensureVisible(expand);
       await tester.tap(expand);
@@ -94,14 +101,15 @@ void main() {
       final snapshot = r15ProtocolSnapshot(locale, executive: false);
       await show(tester, snapshot, snapshot.blocks(locale).join(), locale);
       expect(body(tester), contains('FULL_SENTINEL'));
+      expect(body(tester), isNot(contains('q8h')));
+      expect(body(tester),
+          contains(locale == 'pt' ? 'a cada 8 horas' : 'cada 8 horas'));
       expect(find.byKey(const ValueKey('guardia_full_response_action')),
           findsNothing);
       expect(find.byKey(const ValueKey('guardia_copy_action')), findsOneWidget);
       expect(find.byKey(const ValueKey('guardia_tts_action')), findsOneWidget);
       expect(body(tester), isNot(contains('example.org')));
-      final refs = find.text(locale == 'pt'
-          ? 'Referências'
-          : 'Referencias');
+      final refs = find.text(locale == 'pt' ? 'Referências' : 'Referencias');
       expect(refs, findsOneWidget);
       await tester.ensureVisible(refs);
       await tester.tap(refs);
@@ -118,9 +126,9 @@ void main() {
       final full = snapshot.blocks(locale).join();
       await show(tester, snapshot, full, locale);
       final quick = body(tester);
-      expect(quick, contains('75 mg/kg'));
-      expect(quick, contains('<50 kg'));
-      expect(quick, contains('4.000 mg'));
+      expect(quick.replaceAll('**', ''), contains('75 mg/kg'));
+      expect(quick.replaceAll('**', ''), contains('<50 kg'));
+      expect(quick.replaceAll('**', ''), contains('4.000 mg'));
       expect(quick, isNot(contains('## Farmacocinética')));
       final hydrated = AiSessionExchangeHydrator.hydrate(
           sessionId: 'local-fixture',
@@ -150,7 +158,106 @@ void main() {
           source, source['payloadSha256']);
       await show(tester, snapshot, snapshot.blocks(locale).join(), locale);
       expect(body(tester), contains('FULL_SENTINEL'));
+      expect(body(tester), isNot(contains('q8h')));
+      expect(body(tester),
+          contains(locale == 'pt' ? 'a cada 8 horas' : 'cada 8 horas'));
       expect(body(tester), isNot(contains('999')));
+    });
+  }
+  for (final locale in ['pt', 'es']) {
+    testWidgets(
+        'minimal historic Paracetamol and specific contraindications $locale',
+        (tester) async {
+      final raw = r15DrugReferenceSnapshots[locale]!;
+      final snapshot = CanonicalClinicalSnapshot.fromDrugReference(
+          raw, PlantaoPresentationContract.textHash(raw));
+      final full = snapshot.blocks(locale).join();
+      await show(tester, snapshot, full, locale, question: 'Paracetamol');
+      final quick = body(tester);
+      expect(quick,
+          contains(locale == 'pt' ? '## Apresentação' : '## Presentación'));
+      expect(
+          quick,
+          contains(locale == 'pt'
+              ? '## Posologia de referência'
+              : '## Posología de referencia'));
+      expect(
+          quick, contains(locale == 'pt' ? 'a cada 6 horas' : 'cada 6 horas'));
+      expect(quick, isNot(contains('q6h')));
+      expect(quick, contains('**1.000 mg**'));
+      expect(quick, isNot(contains('AUTOMATABLE=')));
+      expect(quick, isNot(contains('## Classe')));
+      expect(quick, isNot(contains('## Farmacocinética')));
+      expect(quick, isNot(contains('**Gestação**')));
+      expect(quick, isNot(contains('**Lactação**')));
+      expect(find.text('Ver ficha completa'), findsOneWidget);
+      await show(tester, snapshot, full, locale,
+          question: locale == 'pt'
+              ? 'Contraindicações do Paracetamol'
+              : 'Contraindicaciones del Paracetamol');
+      expect(body(tester), contains('Hipersensibilidade'));
+      expect(body(tester), isNot(contains('75 mg/kg')));
+      expect(body(tester), isNot(contains('## Apresentação')));
+    });
+  }
+  test(
+      'hour interval localization is exact; weekly frequency and infusion units stay untouched',
+      () {
+    const input =
+        'q4h q6h q8h q12h q24h; 0,5 mcg/kg/min; 7 dias; 2 vezes/semana; q48h; q6h30; seq6h; q4-6h; 4 mg/h';
+    for (final locale in ['pt', 'es']) {
+      final text = GuardiaClinicalResponseView.normalizeDrugIntervalsForDisplay(
+          input, locale);
+      for (final hour in [4, 6, 8, 12, 24]) {
+        expect(text,
+            contains('${locale == 'pt' ? 'a cada' : 'cada'} $hour horas'));
+      }
+      for (final unchanged in [
+        '0,5 mcg/kg/min',
+        '7 dias',
+        '2 vezes/semana',
+        'q48h',
+        'q6h30',
+        'seq6h',
+        'q4-6h',
+        '4 mg/h'
+      ]) {
+        expect(text, contains(unchanged));
+      }
+    }
+  });
+  for (final locale in ['pt', 'es']) {
+    testWidgets(
+        'technical missing-dose fixture states absence and retains specific reproductive warning $locale',
+        (tester) async {
+      // Synthetic contract-only negative case, never medical homologation.
+      final source = {
+        'id': 'TECHNICAL_NO_DOSE',
+        'dataVersion': 'TEST_ONLY',
+        'clinicalContentSha256': 'TEST_ONLY'
+      };
+      final raw = jsonEncode({
+        'scope': 'CANONICAL_DRUG_INFORMATION_NOT_PRESCRIPTION',
+        'language': locale,
+        'canonicalDrugId': 'TECHNICAL_NO_DOSE',
+        'sourceVersion': 'TEST_ONLY',
+        'sourceContentHash': 'TEST_ONLY',
+        'sourceJson': jsonEncode(source),
+        'calculationAuthorized': false,
+        'clinicalApprovalGranted': false,
+        'text':
+            '# TECHNICAL_NO_DOSE\n\n## Apresentação\n\nTEST_FORMS\n\n## Indicações\n\nTEST_INDICATION\n\n## Gestação\n\nTEST_SPECIFIC_REPRODUCTIVE_WARNING'
+      });
+      final snapshot = CanonicalClinicalSnapshot.fromDrugReference(
+          raw, PlantaoPresentationContract.textHash(raw));
+      await show(tester, snapshot, snapshot.blocks(locale).join(), locale);
+      expect(
+          body(tester),
+          contains(locale == 'pt'
+              ? 'Dose não documentada'
+              : 'Dosis no documentada'));
+      expect(body(tester), contains('TEST_SPECIFIC_REPRODUCTIVE_WARNING'));
+      expect(body(tester), isNot(contains('mg')));
     });
   }
   test('corrupt saved drug attachment grants no projection authority', () {
@@ -232,7 +339,16 @@ void main() {
       ]) {
         final text = source[locale][field];
         if (text is String && text.isNotEmpty) {
-          expect(body(tester), contains(text), reason: field);
+          expect(
+              body(tester).replaceAll('**', ''),
+              contains(
+                  GuardiaClinicalResponseView.normalizeDrugIntervalsForDisplay(
+                          text, locale)
+                      .replaceAll(
+                          RegExp(r'\bAUTOMATABLE=(?:YES|NO)\.?',
+                              caseSensitive: false),
+                          '')),
+              reason: field);
         }
       }
       expect(body(tester), isNot(contains('clinicalContentSha256')));

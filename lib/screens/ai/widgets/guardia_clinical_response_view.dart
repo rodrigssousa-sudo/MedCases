@@ -19,6 +19,9 @@ const bool _typedTreatmentVisualEnabledByDefault = bool.fromEnvironment(
 String _guardiaUtf16Safe(String value) => WellFormedUtf16.normalize(value);
 
 class GuardiaClinicalResponseView extends StatefulWidget {
+  static String normalizeDrugIntervalsForDisplay(String text, String locale) =>
+      _GuardiaClinicalResponseViewState.normalizeDrugIntervalsForDisplay(
+          text, locale);
   final String rawText;
   final bool preserveReferenceText;
   final CanonicalClinicalSnapshot? referenceDocument;
@@ -256,9 +259,13 @@ class _GuardiaClinicalResponseViewState
     } else if (matchedReference &&
         reference.drugReferenceData?['language'] ==
             (_isSpanish ? 'es' : 'pt')) {
-      final quick = _drugQuickText(reference.drugReferenceData!['text'] as String);
+      final quick = _drugQuickText(
+          reference.drugReferenceData!['text'] as String,
+          es: _isSpanish,
+          question: widget.userText);
       if (quick != null) {
-        short = '${_isSpanish ? CanonicalClinicalSnapshot.drugNoticeEs : CanonicalClinicalSnapshot.drugNoticePt}\n\n$quick';
+        short =
+            '${_isSpanish ? CanonicalClinicalSnapshot.drugNoticeEs : CanonicalClinicalSnapshot.drugNoticePt}\n\n$quick';
       }
     }
     final canExpand = short != null && short != full;
@@ -266,8 +273,21 @@ class _GuardiaClinicalResponseViewState
     final visible = CollapsibleReferencesBlock.project(
         _referenceExpanded || !canExpand ? full : short,
         knownReferences: references);
-    final safeText = visible.$1
-        .replaceAll(RegExp(r'\[(?:redflags|dose|alert|source)_\d+\]'), '');
+    final displayBody =
+        normalizeDrugIntervalsForDisplay(visible.$1, _isSpanish ? 'es' : 'pt');
+    final emphasisBody = matchedReference &&
+            reference.drugReferenceData != null &&
+            canExpand &&
+            !_referenceExpanded
+        ? displayBody.replaceAllMapped(
+            RegExp(
+                r'(?<![A-Za-z0-9_*])(?:[<>≤≥]?\d+(?:[.,]\d+)*(?:[-–]\d+(?:[.,]\d+)*)?\s*(?:microgramas|mcg|µg|mg|g|mL|UI|mmol)(?:/(?:kg|min|h|dia|día))*\b)'),
+            (m) => '**${m[0]}**')
+        : displayBody;
+    final safeText = emphasisBody
+        .replaceAll(RegExp(r'\[(?:redflags|dose|alert|source)_\d+\]'), '')
+        .replaceAll(
+            RegExp(r'\bAUTOMATABLE=(?:YES|NO)\.?', caseSensitive: false), '');
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       MarkdownBody(
           data: safeText,
@@ -286,14 +306,23 @@ class _GuardiaClinicalResponseViewState
                 color: palette.textPrimary),
             blockSpacing: 10,
           )),
-      if (!widget.isStreaming) ClinicalResponseFooter(
-          dark: widget.dark, lang: _isSpanish ? 'es' : 'pt',
-          createdAt: widget.createdAt, references: references,
-          relatedReferences: widget.relatedReferences,
-          onToggleFull: canExpand ? () => setState(() => _referenceExpanded = !_referenceExpanded) : null,
-          fullExpanded: _referenceExpanded,
-          onCopy: widget.onCopy, onTts: widget.onTts,
-          ttsPlaying: widget.ttsPlaying, ttsReady: widget.ttsReady),
+      if (!widget.isStreaming)
+        ClinicalResponseFooter(
+            dark: widget.dark,
+            lang: _isSpanish ? 'es' : 'pt',
+            createdAt: widget.createdAt,
+            references: references,
+            relatedReferences: widget.relatedReferences,
+            onToggleFull: canExpand
+                ? () => setState(() => _referenceExpanded = !_referenceExpanded)
+                : null,
+            fullExpanded: _referenceExpanded,
+            isDrugSheet:
+                matchedReference && reference.drugReferenceData != null,
+            onCopy: widget.onCopy,
+            onTts: widget.onTts,
+            ttsPlaying: widget.ttsPlaying,
+            ttsReady: widget.ttsReady),
     ]);
   }
 
@@ -310,17 +339,25 @@ class _GuardiaClinicalResponseViewState
   static (String, List<String>) _splitReferences(String text) =>
       CollapsibleReferencesBlock.project(text);
 
-  // Field selection only: retain complete source sections and all dosing/safety
-  // qualifiers. No numeric extraction, translation, truncation or calculation.
-  static String? _drugQuickText(String full) {
+  /// Display-only expansion of unambiguous hour intervals. No unit conversion,
+  /// weekly frequency, duration, ranges or continuous-infusion interpretation.
+  static String normalizeDrugIntervalsForDisplay(String text, String locale) =>
+      text.replaceAllMapped(
+        RegExp(r'(?<![A-Za-z0-9_/])q(4|6|8|12|24)h(?![A-Za-z0-9_/])',
+            caseSensitive: false),
+        (m) => '${locale.startsWith('es') ? 'cada' : 'a cada'} ${m[1]} horas',
+      );
+
+  // Field selection, never clinical synthesis. Source section bytes remain
+  // available in FULL, copy and history; unknown fields conservatively use FULL.
+  static String? _drugQuickText(String full,
+      {required bool es, required String question}) {
     final sections = <(String, String)>[];
     String? heading;
     final lines = <String>[];
     String name = '';
     void flush() {
-      if (heading != null) {
-        sections.add((heading, lines.join('\n').trim()));
-      }
+      if (heading != null) sections.add((heading, lines.join('\n').trim()));
       lines.clear();
     }
 
@@ -335,44 +372,72 @@ class _GuardiaClinicalResponseViewState
       }
     }
     flush();
-    String select(String pattern) {
-      final seen = <String>{};
-      return sections.where((s) =>
-          RegExp(pattern, caseSensitive: false).hasMatch(s.$1))
+    const presentation = r'^apresenta|^presenta';
+    const dose =
+        r'^indica|posolog|dosis|doses|dose|pediatr|renal|hep[aá]tic|administra|preparo|preparaci|infus|popula|poblaci';
+    const safety =
+        r'contraindica|precau|intera|monitori|seguran|seguridad|alerta|graves|observa|^gesta|^embarazo|^lacta';
+    const details =
+        r'^classe|^clase|^mecanismo|^farmaco|^nomes comerciais|^nombres comerciales|^diretri|^directri|^gu[ií]a|^refer|^gesta|^embarazo|^lacta|^orienta|(?:efeitos|efectos) adversos(?: comuns| comunes)?$';
+    if (sections.any((s) =>
+        !RegExp('$presentation|$dose|$safety|$details', caseSensitive: false)
+            .hasMatch(s.$1))) {
+      return null;
+    }
+    final seen = <String>{};
+    String select(String pattern, {bool captions = true}) => sections
+        .where((s) => RegExp(pattern, caseSensitive: false).hasMatch(s.$1))
         .where((s) {
-          // Singular/plural presentation aliases may carry identical bytes.
-          // Never merge different populations, regimens or organ qualifiers.
-          final key = RegExp(r'^(?:apresenta|presenta)', caseSensitive: false)
-              .hasMatch(s.$1) ? 'presentation:${s.$2}' : '${s.$1}:${s.$2}';
-          return seen.add(key);
+          // Only verbatim generic template fields are folded into FULL. Any
+          // specific pregnancy/lactation warning remains visible conservatively.
+          const genericReproduction = {
+            'Avaliar risco fetal e bula aplicável; não usar linguagem categórica sem fonte.',
+            'Avaliar risco fetal y bula aplicável; no usar linguagem categórica sem fonte.',
+            'Avaliar excreção e risco-benefício conforme fonte.',
+            'Avaliar excreção y risco-benefício conforme fonte.',
+          };
+          return !(RegExp(r'^gesta|^embarazo|^lacta', caseSensitive: false)
+                  .hasMatch(s.$1) &&
+              genericReproduction.contains(s.$2));
         })
-        .map((s) => '**${s.$1}**\n\n${s.$2}').join('\n\n');
+        .where((s) => s.$2.isNotEmpty && seen.add(s.$2))
+        .map((s) => captions &&
+                !RegExp(r'^posolog', caseSensitive: false).hasMatch(s.$1)
+            ? '**${s.$1}:** ${s.$2}'
+            : s.$2)
+        .join('\n\n');
+    if (name.isEmpty) return null;
+    // A specific field request is a presentation filter, not a new router or
+    // permission. Preserve the entire requested field and its existing scope.
+    final requested = <(String, String)>[
+      (r'contraindica', r'contraindica'),
+      (r'intera', r'intera'),
+      (r'mecanismo', r'mecanismo'),
+      (r'farmacocin', r'farmacocin'),
+      (r'gesta|embarazo', r'gesta|embarazo'),
+      (r'lacta', r'lacta'),
+    ];
+    for (final request in requested) {
+      if (RegExp(request.$1, caseSensitive: false).hasMatch(question)) {
+        final content = select(request.$2);
+        return content.isEmpty ? null : '# $name\n\n$content';
+      }
     }
-    const usePattern = r'^indica|^apresenta|^presenta';
-    const dosePattern =
-        r'posolog|dosis|doses|dose|pediatr|renal|hep[aá]tic|administra|preparo|preparaci|infus|popula|poblaci';
-    const safetyPattern =
-        r'contraindica|precau|intera|monitori|seguran|seguridad|alerta|graves|gesta|embarazo|lacta|observa|orienta';
-    // Unknown source sections may hold a safety qualifier. Keep FULL rather
-    // than silently treating a new field as optional explanatory material.
-    const detailPattern =
-        r'^classe|^clase|^mecanismo|^farmaco|^nomes comerciais|^nombres comerciales|^diretri|^directri|^gu[ií]a|^refer|(?:efeitos|efectos) adversos(?: comuns| comunes)?$';
-    if (sections.any((s) => !RegExp(
-            '$usePattern|$dosePattern|$safetyPattern|$detailPattern',
-            caseSensitive: false)
-        .hasMatch(s.$1))) {
-      return null;
-    }
-    final use = select(usePattern);
-    final dose = select(dosePattern);
-    final cautions = select(safetyPattern);
-    if (name.isEmpty || use.isEmpty || dose.isEmpty || cautions.isEmpty) {
-      return null;
-    }
-    final es = full.contains('## Contraindicaciones');
-    return '# $name\n\n## ${es ? 'Uso' : 'Uso'}\n\n$use\n\n'
-        '## ${es ? 'Posología' : 'Posologia'}\n\n$dose\n\n'
-        '## ${es ? 'Contraindicaciones y precauciones' : 'Contraindicações e precauções'}\n\n$cautions';
+    final forms = select(presentation, captions: false);
+    final dosing = select(dose);
+    final alerts = select(safety);
+    final hasDoseField = sections.any((s) =>
+        RegExp(r'^posolog|^dosis|^doses|^dose', caseSensitive: false)
+            .hasMatch(s.$1) &&
+        s.$2.isNotEmpty);
+    // Absence is stated, never converted into a fabricated dose/formulation.
+    return '# $name\n\n'
+        '## ${es ? 'Presentación' : 'Apresentação'}\n\n'
+        '${forms.isEmpty ? (es ? 'No documentada en esta fuente.' : 'Não documentada nesta fonte.') : forms}\n\n'
+        '## ${es ? 'Posología de referencia' : 'Posologia de referência'}\n\n'
+        '$dosing${!hasDoseField ? (es ? '\n\nDosis no documentada en esta fuente; no inferir.' : '\n\nDose não documentada nesta fonte; não inferir.') : ''}\n\n'
+        '## ${es ? 'Alertas esenciales' : 'Alertas essenciais'}\n\n'
+        '${alerts.isEmpty ? (es ? 'Consultar la ficha íntegra; ausencia de datos no significa ausencia de riesgos.' : 'Consultar a ficha integral; ausência de dados não significa ausência de riscos.') : alerts}';
   }
 
   void _scheduleScrollNotification() {
@@ -392,18 +457,20 @@ class _GuardiaClinicalResponseViewState
   @override
   Widget build(BuildContext context) {
     final reference = widget.referenceDocument;
-    if (!widget.isStreaming && (widget.preserveReferenceText ||
-        (reference != null && reference.isReferenceDocument &&
-        _matchesReference(reference)))) {
+    if (!widget.isStreaming &&
+        (widget.preserveReferenceText ||
+            (reference != null &&
+                reference.isReferenceDocument &&
+                _matchesReference(reference)))) {
       return _buildReference(HomeV2Palette.resolve(widget.dark));
     }
     final palette = HomeV2Palette.resolve(widget.dark);
     final effectiveText =
         !widget.isStreaming && widget.rawText.trim().isNotEmpty
-        ? _guardiaUtf16Safe(widget.rawText)
-        : (_displayText.trim().isNotEmpty
-              ? _guardiaUtf16Safe(_displayText)
-              : _guardiaUtf16Safe(widget.rawText));
+            ? _guardiaUtf16Safe(widget.rawText)
+            : (_displayText.trim().isNotEmpty
+                ? _guardiaUtf16Safe(_displayText)
+                : _guardiaUtf16Safe(widget.rawText));
     final referenceProjection = _splitReferences(effectiveText);
     final stablePresentationText = _guardiaUtf16Safe(
       GuardiaStreamingPresentation.stableBeforeHardStop(
@@ -438,16 +505,13 @@ class _GuardiaClinicalResponseViewState
     final m67Limitations = _guardiaM67ExtractLimitations(
       tableProjection.textWithoutTables,
     );
-    final m67LimitationNorms = m67Limitations
-        .map(_normalizeClinicalText)
-        .toSet();
-    final m67HardStops = content.hardStops
-        .where((item) {
-          final normalized = _normalizeClinicalText(item);
-          return !_guardiaM67IsLimitationsHeading(item) &&
-              !m67LimitationNorms.contains(normalized);
-        })
-        .toList(growable: false);
+    final m67LimitationNorms =
+        m67Limitations.map(_normalizeClinicalText).toSet();
+    final m67HardStops = content.hardStops.where((item) {
+      final normalized = _normalizeClinicalText(item);
+      return !_guardiaM67IsLimitationsHeading(item) &&
+          !m67LimitationNorms.contains(normalized);
+    }).toList(growable: false);
 
     final m67PriorBaseTitleProjection = _GuardiaTitleProjection.resolve(
       diagnosis: content.diagnosis,
@@ -457,9 +521,8 @@ class _GuardiaClinicalResponseViewState
     );
     final baseTitleProjection = m67DestinationTable
         ? _GuardiaTitleProjection(
-            headerTitle: _isSpanish
-                ? 'Destino del paciente'
-                : 'Destino do paciente',
+            headerTitle:
+                _isSpanish ? 'Destino del paciente' : 'Destino do paciente',
             diagnosisCore: m67PriorBaseTitleProjection.diagnosisCore,
             demoteDiagnosisToHypothesis: false,
           )
@@ -478,10 +541,9 @@ class _GuardiaClinicalResponseViewState
         ? _guardiaM54RawConcreteDiseaseTitle(stablePresentationText)
         : null;
     final m54DiagnosisCore = baseTitleProjection.diagnosisCore.trim();
-    final m54CanonicalDiseaseTitle =
-        _guardiaConcreteClinicalIdentity(
-          _normalizeClinicalText(m54DiagnosisCore),
-        )
+    final m54CanonicalDiseaseTitle = _guardiaConcreteClinicalIdentity(
+      _normalizeClinicalText(m54DiagnosisCore),
+    )
         ? m54DiagnosisCore
         : null;
     final m54DiseaseTitle =
@@ -489,8 +551,7 @@ class _GuardiaClinicalResponseViewState
     final m54GenericBaseTitle = _guardiaM54GenericTopLevelTitle(
       baseTitleProjection.headerTitle,
     );
-    var titleProjection =
-        !widget.userInitiatedByAction &&
+    var titleProjection = !widget.userInitiatedByAction &&
             !baseTitleProjection.demoteDiagnosisToHypothesis &&
             m54GenericBaseTitle &&
             m54DiseaseTitle != null
@@ -513,11 +574,11 @@ class _GuardiaClinicalResponseViewState
       final m55eUserNorm = _normalizeClinicalText(widget.userText);
       final m55eDependentTaskTitle =
           _guardiaDependentTaskOnlyFollowup(m55eUserNorm)
-          ? _guardiaTaskAwareTitle(
-              userNorm: m55eUserNorm,
-              isSpanish: _isSpanish,
-            )
-          : null;
+              ? _guardiaTaskAwareTitle(
+                  userNorm: m55eUserNorm,
+                  isSpanish: _isSpanish,
+                )
+              : null;
       final m55eHeaderTitle = m55eDependentTaskTitle != null
           ? '$m55eDependentTaskTitle — $m55eDiseaseTitle'
           : m55eDiseaseTitle;
@@ -539,17 +600,16 @@ class _GuardiaClinicalResponseViewState
     final displayDiagnosis = titleProjection.headerTitle.trim();
     final displayImmediate =
         GuardiaM55ePresentationPolicy.withoutDuplicatedDiseaseTitle(
-          items: content.immediate,
-          title: displayDiagnosis,
-        );
+      items: content.immediate,
+      title: displayDiagnosis,
+    );
     final keyPointsAreHypotheses =
         titleProjection.demoteDiagnosisToHypothesis &&
-        _guardiaKeyPointsContainHypothesis(content.keyPoints);
+            _guardiaKeyPointsContainHypothesis(content.keyPoints);
     final hasUserCertaintyContext = widget.userText.trim().isNotEmpty;
     final hasExplicitConfirmedDiagnosis =
         _guardiaUserTextHasExplicitConfirmedDiagnosis(widget.userText);
-    final allowMedicationPresentation =
-        !content.isDifferential &&
+    final allowMedicationPresentation = !content.isDifferential &&
         (hasExplicitConfirmedDiagnosis ||
             !hasUserCertaintyContext ||
             !titleProjection.demoteDiagnosisToHypothesis);
@@ -561,8 +621,7 @@ class _GuardiaClinicalResponseViewState
     ).hasMatch(visiblePresentationText);
 
     final output = widget.output;
-    final useTypedTreatmentVisual =
-        widget.typedTreatmentVisualEnabled &&
+    final useTypedTreatmentVisual = widget.typedTreatmentVisualEnabled &&
         output != null &&
         output.treatmentPresentation.items.isNotEmpty &&
         output.primeiraLinha.isEmpty &&
@@ -711,11 +770,9 @@ class _GuardiaClinicalResponseViewState
             ),
             const SizedBox(height: 5),
             const SizedBox(height: 10),
-            for (
-              var tableIndex = 0;
-              tableIndex < tableProjection.tables.length;
-              tableIndex++
-            )
+            for (var tableIndex = 0;
+                tableIndex < tableProjection.tables.length;
+                tableIndex++)
               if (GuardiaMarkdownTableProjection.isClassificationTable(
                 tableProjection.tables[tableIndex],
               ))
@@ -775,8 +832,8 @@ class _GuardiaClinicalResponseViewState
               key: const ValueKey('guardia_key_points_section'),
               title: keyPointsAreHypotheses
                   ? (_isSpanish
-                        ? 'Posibilidades clínicas prioritarias'
-                        : 'Possibilidades clínicas prioritárias')
+                      ? 'Posibilidades clínicas prioritarias'
+                      : 'Possibilidades clínicas prioritárias')
                   : (_isSpanish ? 'Puntos clave' : 'Pontos-chave'),
               palette: palette,
             ),
@@ -842,11 +899,9 @@ class _GuardiaClinicalResponseViewState
             tableProjection.tables,
           )) ...[
             const SizedBox(height: 10),
-            for (
-              var tableIndex = 0;
-              tableIndex < tableProjection.tables.length;
-              tableIndex++
-            )
+            for (var tableIndex = 0;
+                tableIndex < tableProjection.tables.length;
+                tableIndex++)
               if (!GuardiaMarkdownTableProjection.isClassificationTable(
                 tableProjection.tables[tableIndex],
               ))
@@ -879,11 +934,15 @@ class _GuardiaClinicalResponseViewState
             _StreamingCursor(palette: palette),
           ] else ...[
             ClinicalResponseFooter(
-              dark: widget.dark, lang: _isSpanish ? 'es' : 'pt',
-              createdAt: widget.createdAt, references: referenceProjection.$2,
+              dark: widget.dark,
+              lang: _isSpanish ? 'es' : 'pt',
+              createdAt: widget.createdAt,
+              references: referenceProjection.$2,
               relatedReferences: widget.relatedReferences,
-              onCopy: widget.onCopy, onTts: widget.onTts,
-              ttsPlaying: widget.ttsPlaying, ttsReady: widget.ttsReady,
+              onCopy: widget.onCopy,
+              onTts: widget.onTts,
+              ttsPlaying: widget.ttsPlaying,
+              ttsReady: widget.ttsReady,
             ),
           ],
         ],
@@ -957,8 +1016,7 @@ class _GuardiaTitleProjection {
       userNorm: userNorm,
       isSpanish: isSpanish,
     );
-    final differential =
-        diagnosisNorm.contains('diferenciales prioritarios') ||
+    final differential = diagnosisNorm.contains('diferenciales prioritarios') ||
         diagnosisNorm.contains('diferenciais prioritarios');
     final explicit = _guardiaUserExplicitlySupportsDiagnosis(
       userNorm: userNorm,
@@ -969,10 +1027,10 @@ class _GuardiaTitleProjection {
     // PLANTAO_PRESENTATION_IDENTITY_LONG_FORM_TASK_TITLE_V1
     final longFormIdentitySupport =
         _guardiaLongFormUserSupportsDiagnosisIdentity(
-          userNorm: userNorm,
-          diagnosisNorm: diagnosisNorm,
-          diagnosisBaseNorm: diagnosisBaseNorm,
-        );
+      userNorm: userNorm,
+      diagnosisNorm: diagnosisNorm,
+      diagnosisBaseNorm: diagnosisBaseNorm,
+    );
     final taskAwareTitle = _guardiaTaskAwareTitle(
       userNorm: userNorm,
       isSpanish: isSpanish,
@@ -985,36 +1043,29 @@ class _GuardiaTitleProjection {
           )
         : null;
 
-    final directTopicOverride = !explicit && !longFormIdentitySupport
-        ? directTopicTitle
-        : null;
-    final dependentTaskIdentityTitle =
-        !longFormIdentitySupport &&
+    final directTopicOverride =
+        !explicit && !longFormIdentitySupport ? directTopicTitle : null;
+    final dependentTaskIdentityTitle = !longFormIdentitySupport &&
             taskAwareTitle != null &&
             _guardiaDependentTaskOnlyFollowup(userNorm) &&
             _guardiaConcreteClinicalIdentity(diagnosisNorm)
         ? '$taskAwareTitle — $core'
         : null;
     final hasUserCertaintyContext = userNorm.isNotEmpty;
-    final keep =
-        core.isNotEmpty &&
+    final keep = core.isNotEmpty &&
         (isContinuation ||
             !hasUserCertaintyContext ||
             (!differential && (explicit || longFormIdentitySupport)));
     return _GuardiaTitleProjection(
-      headerTitle:
-          continuationActionTitle ??
+      headerTitle: continuationActionTitle ??
           directTopicOverride ??
           (keep
               ? core
               : (dependentTaskIdentityTitle ??
-                    taskAwareTitle ??
-                    (isSpanish
-                        ? 'Orientación clínica'
-                        : 'Orientação clínica'))),
+                  taskAwareTitle ??
+                  (isSpanish ? 'Orientación clínica' : 'Orientação clínica'))),
       diagnosisCore: core.isEmpty ? diagnosis.trim() : core,
-      demoteDiagnosisToHypothesis:
-          directTopicOverride == null &&
+      demoteDiagnosisToHypothesis: directTopicOverride == null &&
           continuationActionTitle == null &&
           taskAwareTitle == null &&
           core.isNotEmpty &&
@@ -1078,8 +1129,7 @@ bool _guardiaUserExplicitlySupportsDiagnosis({
     'pcr': <String>['parada cardiorrespiratoria', 'paro cardiorrespiratorio'],
   };
   for (final entry in aliases.entries) {
-    final diagnosisAlias =
-        diagnosisCompact == entry.key ||
+    final diagnosisAlias = diagnosisCompact == entry.key ||
         entry.value.any((value) => diagnosisNorm.contains(value));
     if (!diagnosisAlias) continue;
     if (userCompact == entry.key || entry.value.any(userNorm.contains))
@@ -1094,8 +1144,7 @@ bool _guardiaCrossLanguageDiverticulitisIdentityMatch({
 }) {
   final userHas =
       userNorm.contains('diverticulite') || userNorm.contains('diverticulitis');
-  final diagnosisHas =
-      diagnosisNorm.contains('diverticulitis') ||
+  final diagnosisHas = diagnosisNorm.contains('diverticulitis') ||
       diagnosisNorm.contains('diverticulite');
   if (!userHas || !diagnosisHas) return false;
 
@@ -1156,8 +1205,7 @@ bool _guardiaLongFormUserSupportsDiagnosisIdentity({
 
   for (final group in aliasGroups) {
     final userHas = group.any(userNorm.contains);
-    final diagnosisHas =
-        group.any(diagnosisNorm.contains) ||
+    final diagnosisHas = group.any(diagnosisNorm.contains) ||
         group.any(diagnosisBaseNorm.contains);
     if (userHas && diagnosisHas) return true;
   }
@@ -1436,10 +1484,8 @@ String? _guardiaExplicitDirectTopicTitle({
     }
   }
 
-  final tokenCount = normalized
-      .split(RegExp(r'\s+'))
-      .where((e) => e.isNotEmpty)
-      .length;
+  final tokenCount =
+      normalized.split(RegExp(r'\s+')).where((e) => e.isNotEmpty).length;
   if (tokenCount == 0 || tokenCount > 7) return null;
 
   const symptomSignals = <String>[
@@ -1524,10 +1570,8 @@ String? _guardiaExplicitDirectTopicTitle({
 }
 
 String _guardiaDiagnosisBaseNorm(String diagnosis) {
-  final base = diagnosis
-      .split(RegExp(r'\s*[—–]\s*', unicode: true))
-      .first
-      .trim();
+  final base =
+      diagnosis.split(RegExp(r'\s*[—–]\s*', unicode: true)).first.trim();
   return _normalizeClinicalText(base);
 }
 
@@ -1655,9 +1699,8 @@ class _SectionTitle extends StatelessWidget {
     return Text(
       title,
       style: TextStyle(
-        color: warning
-            ? Theme.of(context).colorScheme.error
-            : palette.textPrimary,
+        color:
+            warning ? Theme.of(context).colorScheme.error : palette.textPrimary,
         fontSize: 14.0,
         height: 1.20,
         fontWeight: warning ? FontWeight.w700 : FontWeight.w600,
@@ -1833,9 +1876,8 @@ class _BulletLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = warning
-        ? Theme.of(context).colorScheme.error
-        : palette.textPrimary;
+    final color =
+        warning ? Theme.of(context).colorScheme.error : palette.textPrimary;
 
     return Padding(
       padding: const EdgeInsets.only(top: 3, left: 8),
@@ -1945,8 +1987,7 @@ abstract final class GuardiaM55ePresentationPolicy {
     if (value.isEmpty) return value;
     final out = StringBuffer();
     for (final rune in value.runes) {
-      final pictographic =
-          (rune >= 0x1F000 && rune <= 0x1FAFF) ||
+      final pictographic = (rune >= 0x1F000 && rune <= 0x1FAFF) ||
           (rune >= 0x2600 && rune <= 0x27BF) ||
           rune == 0xFE0F ||
           rune == 0x200D ||
@@ -1965,8 +2006,7 @@ abstract final class GuardiaM55ePresentationPolicy {
     if (!_isConcreteTitle(candidate)) candidate = _firstConcreteTitle(rawText);
     if (candidate.isEmpty) return '';
     final folded = _fold(candidate);
-    final explicitStemi =
-        folded.contains('iamcest') ||
+    final explicitStemi = folded.contains('iamcest') ||
         folded.contains('iamcsst') ||
         folded.contains('stemi') ||
         (folded.contains('infarto') &&
@@ -1983,9 +2023,10 @@ abstract final class GuardiaM55ePresentationPolicy {
   static List<String> withoutDuplicatedDiseaseTitle({
     required List<String> items,
     required String title,
-  }) => items
-      .where((item) => !sameClinicalIdentity(item, title))
-      .toList(growable: false);
+  }) =>
+      items
+          .where((item) => !sameClinicalIdentity(item, title))
+          .toList(growable: false);
 
   static bool sameClinicalIdentity(String left, String right) {
     final a = _fold(visibleText(left));
@@ -2069,8 +2110,7 @@ abstract final class GuardiaMarkdownTableProjection {
     }
     final categoryLike =
         header.contains('categoria') || header.contains('category');
-    final resultLike =
-        header.contains('resultado') ||
+    final resultLike = header.contains('resultado') ||
         header.contains('result') ||
         header.contains('final');
     return categoryLike && resultLike;
@@ -2081,7 +2121,8 @@ abstract final class GuardiaMarkdownTableProjection {
 
   static bool hasNonClassificationTables(
     List<_GuardiaMarkdownTableData> tables,
-  ) => tables.any((table) => !isClassificationTable(table));
+  ) =>
+      tables.any((table) => !isClassificationTable(table));
 
   static String _foldSemanticHeader(String value) => value
       .toLowerCase()
@@ -2196,8 +2237,7 @@ abstract final class GuardiaMarkdownTableProjection {
         final header = _splitRow(lines[index]);
         final separator = _splitRow(lines[index + 1]);
 
-        final isTableStart =
-            header.length >= 2 &&
+        final isTableStart = header.length >= 2 &&
             separator.length == header.length &&
             separator.every(_isSeparatorCell);
 
@@ -2307,12 +2347,10 @@ bool _guardiaM67IsLimitationsHeading(String value) {
       .replaceAll(RegExp(r'\s+'), ' ')
       .trim();
 
-  final isSpanish =
-      normalized.contains('limitaciones') &&
+  final isSpanish = normalized.contains('limitaciones') &&
       normalized.contains('datos') &&
       (normalized.contains('faltantes') || normalized.contains('ausentes'));
-  final isPortuguese =
-      normalized.contains('limitacoes') &&
+  final isPortuguese = normalized.contains('limitacoes') &&
       normalized.contains('dados') &&
       (normalized.contains('faltantes') || normalized.contains('ausentes'));
 
@@ -2487,37 +2525,37 @@ class _GuardiaMarkdownTable extends StatelessWidget {
     );
 
     Widget buildTable({Map<int, TableColumnWidth>? columnWidths}) => Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: divider, width: 0.7),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      clipBehavior: Clip.antiAlias,
-      child: Table(
-        columnWidths: columnWidths,
-        defaultColumnWidth: const IntrinsicColumnWidth(),
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        border: TableBorder(
-          horizontalInside: BorderSide(color: divider, width: 0.6),
-          verticalInside: BorderSide(color: divider, width: 0.6),
-        ),
-        children: <TableRow>[
-          TableRow(
-            decoration: BoxDecoration(color: headerBackground),
-            children: <Widget>[
-              for (final header in table.headers)
-                _GuardiaMarkdownTableCell(text: header, header: true),
+          decoration: BoxDecoration(
+            border: Border.all(color: divider, width: 0.7),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          clipBehavior: Clip.antiAlias,
+          child: Table(
+            columnWidths: columnWidths,
+            defaultColumnWidth: const IntrinsicColumnWidth(),
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            border: TableBorder(
+              horizontalInside: BorderSide(color: divider, width: 0.6),
+              verticalInside: BorderSide(color: divider, width: 0.6),
+            ),
+            children: <TableRow>[
+              TableRow(
+                decoration: BoxDecoration(color: headerBackground),
+                children: <Widget>[
+                  for (final header in table.headers)
+                    _GuardiaMarkdownTableCell(text: header, header: true),
+                ],
+              ),
+              for (final row in table.rows)
+                TableRow(
+                  children: <Widget>[
+                    for (final cell in row)
+                      _GuardiaMarkdownTableCell(text: cell, header: false),
+                  ],
+                ),
             ],
           ),
-          for (final row in table.rows)
-            TableRow(
-              children: <Widget>[
-                for (final cell in row)
-                  _GuardiaMarkdownTableCell(text: cell, header: false),
-              ],
-            ),
-        ],
-      ),
-    );
+        );
 
     if (fitToViewport && table.headers.length == 2) {
       return LayoutBuilder(
@@ -2764,11 +2802,10 @@ class _RawGuardiaSections {
     final fallbackLines = <String>[];
     var section = _RawSection.none;
 
-    for (final rawLine
-        in rawText
-            .replaceAll('\r\n', '\n')
-            .replaceAll('\r', '\n')
-            .split('\n')) {
+    for (final rawLine in rawText
+        .replaceAll('\r\n', '\n')
+        .replaceAll('\r', '\n')
+        .split('\n')) {
       final trimmed = rawLine.trim();
 
       if (trimmed.isEmpty) continue;
@@ -3403,20 +3440,17 @@ class _GuardiaDisplayContent {
   }) {
     final parsed = _RawGuardiaSections.parse(rawText);
 
-    final hasContinuationSections =
-        parsed.exams.isNotEmpty ||
+    final hasContinuationSections = parsed.exams.isNotEmpty ||
         parsed.evolution.isNotEmpty ||
         parsed.questions.isNotEmpty;
 
-    final firstLine =
-        !hasContinuationSections &&
+    final firstLine = !hasContinuationSections &&
             output != null &&
             output.primeiraLinha.isNotEmpty
         ? _medicationTexts(output.primeiraLinha)
         : parsed.firstLine;
 
-    final secondLine =
-        !hasContinuationSections &&
+    final secondLine = !hasContinuationSections &&
             output != null &&
             output.segundaLinha.isNotEmpty
         ? _medicationTexts(output.segundaLinha)
@@ -3434,9 +3468,9 @@ class _GuardiaDisplayContent {
     final typedUnclassified = hasContinuationSections || output == null
         ? const <String>[]
         : output.prescricao
-              .where((item) => !classified.contains(_medicationIdentity(item)))
-              .map(_medicationText)
-              .toList(growable: false);
+            .where((item) => !classified.contains(_medicationIdentity(item)))
+            .map(_medicationText)
+            .toList(growable: false);
 
     final unclassified = _mergeMedicationTextSemantically(
       typedUnclassified,
@@ -3520,19 +3554,19 @@ class _GuardiaDisplayContent {
     final rawHardStops = hasContinuationSections
         ? sourceHardStops
         : sourceHardStops
-              .expand(_splitInlinePinnedHardStopClinicalLine)
-              .toList(growable: false);
+            .expand(_splitInlinePinnedHardStopClinicalLine)
+            .toList(growable: false);
 
     final demotedHardStops = hasContinuationSections
         ? const <String>[]
         : rawHardStops
-              .where(
-                (line) =>
-                    _isGeneralRecommendationClinicalLine(line) ||
-                    _isBracketedPureClinicalActionLine(line) ||
-                    _isImmediateAntibioticTreatmentActionLine(line),
-              )
-              .toList(growable: false);
+            .where(
+              (line) =>
+                  _isGeneralRecommendationClinicalLine(line) ||
+                  _isBracketedPureClinicalActionLine(line) ||
+                  _isImmediateAntibioticTreatmentActionLine(line),
+            )
+            .toList(growable: false);
 
     final hardStops = rawHardStops
         .where((line) => !_duplicatesClinicalLine(line, demotedHardStops))

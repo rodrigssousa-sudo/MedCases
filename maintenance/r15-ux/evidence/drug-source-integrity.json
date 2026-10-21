@@ -1,0 +1,22 @@
+{
+  "baseline": "d8d77d5912c71a683b2c07e746e7bbc0689e2a04",
+  "files": [
+    {
+      "path": "test/fixtures/r15_drug_reference_snapshots.dart",
+      "unchanged": true,
+      "sha256": "dff57ccdf74b22b74faf6f100057a5caf8798c52b43c2007ce9ebfccf7d604d8"
+    },
+    {
+      "path": "test/fixtures/r15_named_drug_documents.json",
+      "unchanged": true,
+      "sha256": "b14dbf9a76457ca8e6b74bcdeaa1c1135190ce4f1619314b9ca3343fc36641fb"
+    },
+    {
+      "path": "lib/models/canonical_clinical_snapshot.dart",
+      "unchanged": true,
+      "sha256": "59729850424a97696322fa4f82ccab40bc69f3072fadf56c727a9a8fa333d4b2"
+    }
+  ],
+  "productionMutations": 0,
+  "candidate1721Writes": 0
+}

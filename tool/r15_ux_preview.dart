@@ -222,6 +222,9 @@ class _ReviewPageState extends State<_ReviewPage> {
                                     createdAt: createdAt,
                                     rawText: full,
                                     referenceDocument: source,
+                                    userText: scenario == 'C' || scenario == 'D'
+                                        ? 'Paracetamol'
+                                        : '',
                                     preserveReferenceText: true,
                                     dark: true,
                                     languageCode: locale,

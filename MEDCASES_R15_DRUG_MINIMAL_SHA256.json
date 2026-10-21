@@ -1,0 +1,126 @@
+{
+  "baselineCommit": "d8d77d5912c71a683b2c07e746e7bbc0689e2a04",
+  "createdAtUTC": "2026-10-21T00:35:38.546140+00:00",
+  "scope": "Local display projection and spoken/display hour notation; no drug source/MCC1/rights/backend/iOS modification",
+  "files": [
+    {
+      "path": "MEDCASES_PLANTAO_UX_FINAL.md",
+      "beforeSha256": "02a309663266009930e023dc71b940e87ded6d560f7be6cf6c372a73a0a0b1da",
+      "afterSha256": "28f145f1c7eb8dbac6368c1ede3432963f3be374ddf24aa7fd287ecf86656c7e"
+    },
+    {
+      "path": "MEDCASES_R15_DRUG_MINIMAL.md",
+      "beforeSha256": null,
+      "afterSha256": "4517b3377842b3935a221497364347566d7e1b6d1ee389ac9f835e606691c1f5"
+    },
+    {
+      "path": "lib/screens/ai/widgets/collapsible_content_blocks.dart",
+      "beforeSha256": "cf89a9bb413ad5f4eec35667c86a5891f01620c06270580b3db2b39ff2a2a4f8",
+      "afterSha256": "59fbef857f5679e84c26f11e242868455d3ab8a0ac753ee788d423636b539d52"
+    },
+    {
+      "path": "lib/screens/ai/widgets/guardia_clinical_response_view.dart",
+      "beforeSha256": "cd90c19641156c27f33d7f3a9d5991ff7d4adb46b254bd79de40ea0984e27c66",
+      "afterSha256": "c6e163426395831087342852c21bff77df0f9cb34e92df7f748bc44c08e8f613"
+    },
+    {
+      "path": "lib/services/clinical_tts_service.dart",
+      "beforeSha256": "804eb48f4257b144a7e26d613a84a03feb37bf767be0469ff80682f7e07fbdec",
+      "afterSha256": "1134495850714a756422dca62272346063cbe6dc2c9c5c11ff2affe719164fc3"
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/drug-minimal-analyzer-comparison.json",
+      "beforeSha256": null,
+      "afterSha256": "3c3f41d559ba2c9fc9a4abbad9d958302061dc0f40ab922d49f2cf5902524cc1"
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/drug-minimal-analyzer-directed.machine",
+      "beforeSha256": null,
+      "afterSha256": "aa38ea3ad6147ab4185b9feb0203a0b458e2107bd525bb23a2667237eb548202"
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/drug-minimal-analyzer.machine",
+      "beforeSha256": null,
+      "afterSha256": "f9b4cbe2e378297b5885a3476c39ea0692749ec3fed7de6764214c6ec3146b74"
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/drug-minimal-audio-final.log",
+      "beforeSha256": null,
+      "afterSha256": "92d7b448d7e5df6ea029f8cd9200f5e19e2ff8c747570f7819589c7d08415a78"
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/drug-minimal-directed-analysis-summary.json",
+      "beforeSha256": null,
+      "afterSha256": "ef03b43067ee2fb06fc53ff412fe92793e48de0a98dc52f409c5b10ff50be49f"
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/drug-minimal-preview-build.log",
+      "beforeSha256": null,
+      "afterSha256": "dea692d59577cff506528ccda986af13d07e349dc32c731f4a684566983ec8b9"
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/drug-minimal-web-build.log",
+      "beforeSha256": null,
+      "afterSha256": "61f8f5441adf42f72caf4c76296e1f65ac1f2bc6ac09735c98629da21180af19"
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/drug-source-integrity.json",
+      "beforeSha256": null,
+      "afterSha256": "2cde6f54f4ec1a72e0c2e44e051ea2cd13d41ec2040ccc52153dbcb692d98996"
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/paracetamol-full-pt-1200.png",
+      "beforeSha256": null,
+      "afterSha256": "5daaa02b739fb492f6ea73c4f5b8105f9668535a57a1be0d4db96e6a916894fd"
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/paracetamol-minimal-es-375.png",
+      "beforeSha256": null,
+      "afterSha256": "2bc28c665d95ce380f818cf71b012eb4acb5815d94538a4d99b7ee7983c9443a"
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/paracetamol-minimal-pt-1200.png",
+      "beforeSha256": null,
+      "afterSha256": "a5f5b2dcfe339b5d64b1792bf093ea0e521df39e884e37b73d08e6d95c6faff4"
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/synthetic-a-interval-pt.png",
+      "beforeSha256": null,
+      "afterSha256": "b65bf7bdfae344930107302c4b9b847d1548849d80884ab29bbd3ce0ac1e53c7"
+    },
+    {
+      "path": "maintenance/r15-ux/evidence/synthetic-b-interval-pt.png",
+      "beforeSha256": null,
+      "afterSha256": "b4098426c6481de401492d196f78f7a43b5c7ab760e33b1a80ac7e6c8eff4d25"
+    },
+    {
+      "path": "test/services/clinical_tts_service_test.dart",
+      "beforeSha256": "d1ae94054df2128b6ab856a7779291e020e95a4fe63087c3f4ef8eb702e1635b",
+      "afterSha256": "70093f69556e3ba8e342fad457fb95f7f1120caf8583bc0eb3a806d18e43fe63"
+    },
+    {
+      "path": "test/widgets/r15_verified_reference_ux_test.dart",
+      "beforeSha256": "5ac69c7ba4b51b2ccbf888a7884de0222c0d7aa72f24329e1de28c0d2e57c0bc",
+      "afterSha256": "ec3d09a48685b54f8136466bd6a42db51f3b608f6b3412a6af8d677c0d33434a"
+    },
+    {
+      "path": "tool/r15_ux_preview.dart",
+      "beforeSha256": "c8fa358d6c3497adb66ea74040ece7bc4fd4963dee03b30027ad5a88b2a2fd73",
+      "afterSha256": "c68fb5465594ef4e281b0b1573c6cb6cb4a163002362e61b0244a2711e93a9a6"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "build/web/main.dart.js",
+      "sha256": "22dd41115e8a02920ed13d20812741862c95ee57cc8627b65ddbd3f7d7a2cd59"
+    },
+    {
+      "path": "build/r15-ux-preview/main.dart.js",
+      "sha256": "61a9184d51c5b61ff14e65d06b2906bcbac2622df6baa97c76dd7b8ce06a3d47"
+    }
+  ],
+  "rollback": "git revert <commit containing this delta manifest>",
+  "sourceIntegrityReceipt": "maintenance/r15-ux/evidence/drug-source-integrity.json",
+  "selfHashExcluded": true,
+  "productionMutations": 0
+}

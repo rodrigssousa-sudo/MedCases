@@ -5,6 +5,21 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:medcases/services/clinical_tts_service.dart';
 
 void main() {
+  test('unambiguous q-hour intervals are natural in PT/ES audio', () {
+    for (final locale in ['pt-BR', 'es-ES']) {
+      final result = _service().normalizeForSpeech(
+          'q4h q6h q8h q12h q24h; 2 vezes/semana; 7 dias; q48h',
+          languageCode: locale);
+      for (final h in [4, 6, 8, 12, 24]) {
+        expect(
+            result,
+            contains(
+                '${locale.startsWith('pt') ? 'a cada' : 'cada'} $h horas'));
+      }
+      expect(result, contains('q48h'));
+      expect(result, isNot(contains('q6h')));
+    }
+  });
   group('ClinicalTtsService fixed natural profile', () {
     test('loads the feminine natural profile', () async {
       final FakeClinicalTtsAdapter adapter = FakeClinicalTtsAdapter();

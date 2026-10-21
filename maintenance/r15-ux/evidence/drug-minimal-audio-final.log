@@ -1,0 +1,90 @@
+00:00 +0: loading /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart
+00:00 +0: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: preserved reference keeps copy and audio actions
+00:06 +1: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:06 +2: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:06 +3: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:06 +4: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:06 +5: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:07 +6: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:07 +7: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:07 +7: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService fixed natural profile ignores legacy stored voice and speed during runtime configuration
+[ClinicalTts][voice] selectedVoice=Premium Natural identifier=voice.premium.natural locale=pt-BR quality=premium gender=female rate=0.47
+00:07 +8: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:07 +9: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:07 +10: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:07 +11: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:07 +12: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:07 +12: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: Natural feminine playback regression selected feminine Web voice reads a continuous paragraph on its first playback
+[ClinicalTts][voice] selectedVoice=Luciana identifier=unknown locale=pt-BR quality=enhanced gender=unknown rate=0.47
+00:07 +13: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle pt
+00:07 +14: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +15: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +16: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +17: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +18: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +19: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +20: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +21: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +22: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +23: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +24: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +25: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +26: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +27: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +28: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +29: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +29: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/services/clinical_tts_service_test.dart: ClinicalTtsService segmentation and queue speaks prepared segments serially
+[ClinicalTts][voice] selectedVoice=Premium AR identifier=com.apple.voice.premium.es-AR.PremiumAR locale=es-AR quality=premium gender=unknown rate=0.47
+00:07 +30: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:07 +31: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:08 +32: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:08 +33: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:09 +34: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true pt
+00:09 +35: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: verified executive four blocks, conditional doses and full toggle es
+00:10 +36: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=true es
+00:10 +37: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: FULL is immediate, references collapsed, one accessible footer es
+00:10 +38: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=false pt
+00:10 +39: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: historic real drug sections retain populations and restore identically es
+00:11 +40: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 320.0 dark=false es
+00:11 +41: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: corrupt executive fails back to integral es
+00:11 +42: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 375.0 dark=true pt
+00:11 +43: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: minimal historic Paracetamol and specific contraindications pt
+00:12 +44: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 375.0 dark=true es
+00:12 +45: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: minimal historic Paracetamol and specific contraindications es
+00:12 +46: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: minimal historic Paracetamol and specific contraindications es
+00:12 +47: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 375.0 dark=false es
+00:12 +48: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 375.0 dark=false es
+00:12 +49: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: technical missing-dose fixture states absence and retains specific reproductive warning pt
+00:12 +50: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 768.0 dark=true pt
+00:13 +51: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: technical missing-dose fixture states absence and retains specific reproductive warning es
+00:13 +52: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 768.0 dark=true es
+00:13 +53: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 768.0 dark=true es
+00:13 +53: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: conversational references have one collapsed disclosure
+[GUARDIA_PROVENANCE] rawReassessmentOccurrences=0 alerts=0 hardStops=0 notes=0 keyPoints=0 typed=false alertsPayload= hardStopsPayload= notesPayload= keyPointsPayload=
+[GUARDIA_TRACE] stage=I5_renderer_final tsUs=1792542783386520 rawTextLen=142 displayTextLen=142 effectiveTextLen=142 dto=false rx=0 first=0 second=0 keys=0 hard=0 structured=true
+00:13 +54: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 768.0 dark=true es
+00:13 +55: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: mismatched reference cannot replace the displayed full text
+00:13 +56: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 768.0 dark=false pt
+00:14 +57: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: noradrenalina/pt
+00:14 +58: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 768.0 dark=false es
+00:14 +59: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: noradrenalina/es
+00:14 +60: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: noradrenalina/es
+00:14 +61: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 1200.0 dark=true es
+00:15 +62: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: ceftriaxona/pt
+00:16 +63: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: shared footer 1200.0 dark=false pt
+00:16 +64: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: ceftriaxona/es
+00:17 +65: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: ceftriaxona/es
+00:17 +66: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: ceftriaxona/es
+00:17 +67: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: ceftriaxona/es
+00:17 +68: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: related clinical references use the same closed source button
+00:17 +69: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: metformina/pt
+00:17 +70: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: metformina/pt
+00:17 +71: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: metformina/pt
+00:17 +72: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: metformina/pt
+00:17 +72: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: Study streaming does not expose final actions prematurely
+[CPU_GUARD] _cleanAiText called — isStreaming=true (legítimo)
+00:17 +73: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: metformina/pt
+00:17 +74: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_premium_footer_test.dart: Study uses same footer without fictitious expansion or time
+00:17 +75: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: metformina/es
+00:17 +76: /Users/brunorodrigues/Developer/MedCases-Cleanup-20261020/test/widgets/r15_verified_reference_ux_test.dart: source-specific populations and safety stay intact: metformina/es
+00:18 +77: All tests passed!

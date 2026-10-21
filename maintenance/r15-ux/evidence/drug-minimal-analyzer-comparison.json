@@ -1,0 +1,20 @@
+{
+  "before": {
+    "WARNING": 14,
+    "INFO": 116
+  },
+  "after": {
+    "WARNING": 14,
+    "INFO": 117
+  },
+  "new": [
+    [
+      "INFO",
+      "CURLY_BRACES_IN_FLOW_CONTROL_STRUCTURES",
+      "lib/screens/ai/widgets/guardia_clinical_response_view.dart",
+      "Statements in an if should be enclosed in a block.",
+      1
+    ]
+  ],
+  "removed": []
+}

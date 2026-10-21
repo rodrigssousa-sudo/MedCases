@@ -348,13 +348,14 @@ class ClinicalResponseFooter extends StatefulWidget {
     this.ttsPlaying = false,
     this.onToggleFull,
     this.fullExpanded = false,
+    this.isDrugSheet = false,
   });
   final bool dark;
   final String lang;
   final DateTime? createdAt;
   final List<String> references, relatedReferences;
   final VoidCallback? onCopy, onTts, onToggleFull;
-  final bool ttsReady, ttsPlaying, fullExpanded;
+  final bool ttsReady, ttsPlaying, fullExpanded, isDrugSheet;
 
   @override
   State<ClinicalResponseFooter> createState() => _ClinicalResponseFooterState();
@@ -395,13 +396,24 @@ class _ClinicalResponseFooterState extends State<ClinicalResponseFooter> {
           }
 
           final labels = [
-            if (hasReferences) es ? 'Referencias' : 'Referências',
+            if (hasReferences)
+              widget.isDrugSheet
+                  ? (es ? 'Fuentes' : 'Fontes')
+                  : (es ? 'Referencias' : 'Referências'),
             if (widget.onToggleFull != null)
               widget.fullExpanded
                   ? (es
-                      ? 'Ocultar respuesta completa'
-                      : 'Recolher resposta completa')
-                  : (es ? 'Ver respuesta completa' : 'Ver resposta completa'),
+                      ? (widget.isDrugSheet
+                          ? 'Ocultar ficha completa'
+                          : 'Ocultar respuesta completa')
+                      : (widget.isDrugSheet
+                          ? 'Recolher ficha completa'
+                          : 'Recolher resposta completa'))
+                  : (widget.isDrugSheet
+                      ? (es ? 'Ver ficha completa' : 'Ver ficha completa')
+                      : (es
+                          ? 'Ver respuesta completa'
+                          : 'Ver resposta completa')),
             if (widget.onTts != null && widget.ttsReady)
               widget.ttsPlaying
                   ? (es ? 'Detener' : 'Parar')
@@ -455,7 +467,9 @@ class _ClinicalResponseFooterState extends State<ClinicalResponseFooter> {
             if (hasReferences)
               action(
                   id: 'clinical_references_action',
-                  label: es ? 'Referencias' : 'Referências',
+                  label: widget.isDrugSheet
+                      ? (es ? 'Fuentes' : 'Fontes')
+                      : (es ? 'Referencias' : 'Referências'),
                   icon: Icons.menu_book_outlined,
                   active: referencesExpanded,
                   callback: () =>
@@ -465,11 +479,19 @@ class _ClinicalResponseFooterState extends State<ClinicalResponseFooter> {
                   id: 'guardia_full_response_action',
                   label: widget.fullExpanded
                       ? (es
-                          ? 'Ocultar respuesta completa'
-                          : 'Recolher resposta completa')
+                          ? (widget.isDrugSheet
+                              ? 'Ocultar ficha completa'
+                              : 'Ocultar respuesta completa')
+                          : (widget.isDrugSheet
+                              ? 'Recolher ficha completa'
+                              : 'Recolher resposta completa'))
                       : (es
-                          ? 'Ver respuesta completa'
-                          : 'Ver resposta completa'),
+                          ? (widget.isDrugSheet
+                              ? 'Ver ficha completa'
+                              : 'Ver respuesta completa')
+                          : (widget.isDrugSheet
+                              ? 'Ver ficha completa'
+                              : 'Ver resposta completa')),
                   icon: widget.fullExpanded
                       ? Icons.unfold_less_rounded
                       : Icons.unfold_more_rounded,
