@@ -12,6 +12,30 @@ class Tests(unittest.TestCase):
    with self.assertRaisesRegex(RuntimeError,'PORT_MAPPING'):require_mapping({'NetworkSettings':{'Ports':ports}})
  def test_external_dns_rejected(self):
   with self.assertRaisesRegex(RuntimeError,'DNS'):require_mapping({'NetworkSettings':{'Ports':{'8080/tcp':[{'HostIp':'127.0.0.1','HostPort':'18080'}]}},'HostConfig':{'Dns':['8.8.8.8']}})
+ def mapping(self,ports,dns=None):
+  return require_mapping({'NetworkSettings':{'Ports':ports},'HostConfig':{'Dns':['127.0.0.1'] if dns is None else dns}})
+ def binding(self,ip='127.0.0.1',port='18080'):
+  return [{'HostIp':ip,'HostPort':port}]
+ def test_unpublished_null_port_accepted(self):
+  self.assertTrue(self.mapping({'80/tcp':None,'8080/tcp':self.binding()}))
+ def test_unpublished_empty_port_accepted(self):
+  self.assertTrue(self.mapping({'80/tcp':[],'8080/tcp':self.binding()}))
+ def test_expected_binding_absent_rejected(self):
+  for ports in [None,{}, {'8080/tcp':None},{'8080/tcp':[]}]:
+   with self.subTest(ports=ports),self.assertRaisesRegex(RuntimeError,'PORT_MAPPING'):self.mapping(ports)
+ def test_ipv6_and_public_hosts_rejected(self):
+  for ip in ['0.0.0.0','::','203.0.113.1','']:
+   with self.subTest(ip=ip),self.assertRaisesRegex(RuntimeError,'PORT_MAPPING'):self.mapping({'8080/tcp':self.binding(ip=ip)})
+ def test_wrong_host_port_rejected(self):
+  with self.assertRaisesRegex(RuntimeError,'PORT_MAPPING'):self.mapping({'8080/tcp':self.binding(port='8080')})
+ def test_additional_published_port_rejected(self):
+  with self.assertRaisesRegex(RuntimeError,'PORT_MAPPING'):self.mapping({'8080/tcp':self.binding(),'80/tcp':self.binding(port='18081')})
+ def test_multiple_bindings_rejected(self):
+  for extra in [self.binding(),self.binding(ip='0.0.0.0')]:
+   with self.subTest(extra=extra),self.assertRaisesRegex(RuntimeError,'PORT_MAPPING'):self.mapping({'8080/tcp':self.binding()+extra})
+ def test_malformed_additional_binding_not_ignored(self):
+  for invalid in ['',False,0,{}]:
+   with self.subTest(invalid=invalid),self.assertRaisesRegex(RuntimeError,'PORT_MAPPING'):self.mapping({'8080/tcp':self.binding(),'80/tcp':invalid})
  def test_rule_readback(self):self.assertEqual(verify(self.readback)['outbound'],'DROP')
  def test_shadowed_rule_rejected(self):
   with self.assertRaisesRegex(RuntimeError,'FIREWALL'):

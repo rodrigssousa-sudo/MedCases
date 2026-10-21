@@ -33,7 +33,11 @@ def verify(command=run):
  return {'bridge':BRIDGE,'ipv6':False,'outbound':'DROP','hostAccess':'DROP','replyTraffic':'ESTABLISHED_RELATED_ONLY'}
 def require_mapping(inspect):
  expected={'8080/tcp':[{'HostIp':'127.0.0.1','HostPort':'18080'}]}
- if inspect.get('NetworkSettings',{}).get('Ports')!=expected:
+ ports=inspect.get('NetworkSettings',{}).get('Ports')
+ if not isinstance(ports,dict):
+  raise RuntimeError('PORT_MAPPING_MISSING_OR_UNSAFE')
+ published={port:bindings for port,bindings in ports.items() if bindings is not None and bindings!=[]}
+ if published!=expected:
   raise RuntimeError('PORT_MAPPING_MISSING_OR_UNSAFE')
  if inspect.get('HostConfig',{}).get('Dns')!=['127.0.0.1']:
   raise RuntimeError('EXTERNAL_DNS_NOT_DISABLED')

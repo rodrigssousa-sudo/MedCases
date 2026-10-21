@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
-          fetch-depth: 5
+          fetch-depth: 6
           persist-credentials: false
       - name: Freeze and verify tested inputs
         run: |
