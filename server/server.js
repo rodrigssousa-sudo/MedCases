@@ -1223,14 +1223,33 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,  // SSE requer ausência de COEP
 }));
 
-app.use(cors({
+app.use((req, res, next) => cors({
   origin: (origin, cb) => {
-    // Loopback is available only under explicit sovereign local configuration.
+    // Optional, exact preview origin for this issuer only. Disabled by default.
+    // This affects browser transport, never Firebase verification or entitlement.
+    const sessionPreviewAllowed =
+      process.env.CALCULATOR_SESSION_PREVIEW_ORIGIN === 'http://127.0.0.1:8895' &&
+      origin === 'http://127.0.0.1:8895' &&
+      req.path === '/api/calculator/session' &&
+      ['OPTIONS', 'POST'].includes(req.method);
+    if (sessionPreviewAllowed) {
+      if (req.method === 'OPTIONS') {
+        const requestedMethod = req.headers['access-control-request-method'];
+        const rawHeaders = req.headers['access-control-request-headers'] || '';
+        const requestedHeaders = rawHeaders ? rawHeaders.split(',').map(h => h.trim().toLowerCase()) : [];
+        if (requestedMethod !== 'POST' || requestedHeaders.some(h =>
+          !['authorization', 'content-type', 'accept', 'x-request-id'].includes(h))) {
+          return cb(Object.assign(new Error('Invalid session preflight'), { code: 'CORS_PREFLIGHT_INVALID' }));
+        }
+      }
+      return cb(null, true);
+    }
+    // All other loopback is available only under explicit local configuration.
     // Deny before ALLOWED_ORIGIN so a production misconfiguration cannot allow it.
     const localCorsEnabled = ['development', 'local'].includes(process.env.NODE_ENV);
     const loopback = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin || '');
     if (loopback && !localCorsEnabled) {
-      return cb(new Error('Not allowed by CORS'));
+      return cb(Object.assign(new Error('Not allowed by CORS'), { code: 'CORS_ORIGIN_DENIED' }));
     }
     const allowed = [
       ALLOWED_ORIGIN,
@@ -1243,10 +1262,10 @@ app.use(cors({
       cb(null, true);
     } else {
       log.warn('CORS bloqueou origem:', origin);
-      cb(new Error('Not allowed by CORS'));
+      cb(Object.assign(new Error('Not allowed by CORS'), { code: 'CORS_ORIGIN_DENIED' }));
     }
   },
-  methods:          ['GET', 'POST', 'DELETE', 'OPTIONS'],
+  methods: req.path === '/api/calculator/session' ? ['POST', 'OPTIONS'] : ['GET', 'POST', 'DELETE', 'OPTIONS'],
   allowedHeaders: [
     'Content-Type',
     'Authorization',
@@ -1264,7 +1283,7 @@ app.use(cors({
   exposedHeaders:   ['X-Request-ID', 'X-Goog-Upload-URL'],
   credentials:      true,
   maxAge:           86_400,
-}));
+})(req, res, next));
 
 // Rotas de áudio têm autenticação/parser próprios e PRECISAM ser registradas
 const { registerStudyBackgroundTranscriptionRoutes } = require('./study_background_transcription_routes');
@@ -1766,6 +1785,12 @@ app.use((_req, res) => {
 app.use((err, _req, res, _next) => {
   log.error('Erro não tratado:', err.message);
   if (!res.headersSent) {
+    if (err.code === 'CORS_PREFLIGHT_INVALID') {
+      return res.status(400).json({ error: 'CORS_PREFLIGHT_INVALID' });
+    }
+    if (err.code === 'CORS_ORIGIN_DENIED') {
+      return res.status(403).json({ error: 'CORS_ORIGIN_DENIED' });
+    }
     res.status(500).json({ error: 'internal_server_error' });
   }
 });
