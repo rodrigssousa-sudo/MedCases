@@ -1223,6 +1223,13 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,  // SSE requer ausência de COEP
 }));
 
+// Isolated route owns strict HML CORS before the legacy global middleware.
+const { createEngine3Gateway } = require('./engine3_gateway');
+app.use('/api/engine3/stream', createEngine3Gateway({
+  verifyFirebase: (token, revoked) => firebaseAuth.verifyIdToken(token, revoked),
+  log: event => log.warn(JSON.stringify(event)),
+}));
+
 app.use((req, res, next) => cors({
   origin: (origin, cb) => {
     // Optional, exact preview origin for this issuer only. Disabled by default.
