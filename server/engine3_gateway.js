@@ -17,7 +17,7 @@ function configuration(env) {
   if (env.FIREBASE_PROJECT_ID !== PROJECT || !origins.length ||
       origins.some(x => !ALLOWED_ORIGINS.has(x))) throw Error('ENGINE3_HML_CONFIGURATION');
   // No client-selected URL, service, audience or impersonation target.
-  return { enabled: true, origins: new Set(origins) };
+  return { enabled: true, origins: new Set(origins), nativeIos: env.ENGINE3_HML_NATIVE_IOS_ENABLED === 'true' };
 }
 
 function runtimeIdTokenProvider(env) {
@@ -74,8 +74,11 @@ function createEngine3Gateway({ env=process.env, verifyFirebase, getInvokerToken
     if((req.originalUrl || req.url)!==ROUTE) return sendError(res,404,'NOT_FOUND');
     const origin=req.headers.origin;
     res.setHeader('Vary','Origin');
-    if(!config.origins.has(origin))return sendError(res,403,'ENGINE3_ORIGIN_DENIED');
-    res.setHeader('Access-Control-Allow-Origin',origin);
+    // Transport marker is NOT identity or authorization: Firebase and invoker checks still run.
+    const nativeIos = origin === undefined && config.nativeIos &&
+      req.headers['x-medcases-client'] === 'ios-hml' && req.method === 'POST';
+    if(!nativeIos && !config.origins.has(origin))return sendError(res,403,'ENGINE3_ORIGIN_DENIED');
+    if(!nativeIos)res.setHeader('Access-Control-Allow-Origin',origin);
     res.setHeader('Access-Control-Expose-Headers','X-Request-Id');
     if(req.method==='OPTIONS') {
       const headers=(req.headers['access-control-request-headers']||'').toLowerCase().split(',').map(x=>x.trim()).filter(Boolean);
