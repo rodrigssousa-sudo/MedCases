@@ -54,12 +54,13 @@ async function readBounded(body, limit) {
   return Buffer.concat(chunks);
 }
 function requestBody(b, headerId) {
-  const fields=['requestId','question','language','mode','use'];
+  const fields=['requestId','question','language','mode','use','responseCapabilities'];
   if (!b || typeof b!=='object' || Object.keys(b).some(k=>!fields.includes(k)) ||
       typeof b.requestId!=='string' || !/^[a-zA-Z0-9_-]{1,100}$/.test(b.requestId) || typeof b.question!=='string' ||
       !b.question.trim() || b.question.length>4000 || !['pt','es'].includes(b.language) ||
       b.mode!=='plantao' || !['general_education','individual_case'].includes(b.use) ||
-      (headerId && headerId!==b.requestId)) throw Error('ENGINE3_REQUEST_INVALID');
+      (headerId && headerId!==b.requestId) ||
+      (Object.hasOwn(b,'responseCapabilities') && (!Array.isArray(b.responseCapabilities) || b.responseCapabilities.length!==1 || b.responseCapabilities[0]!=='DRUG_RECORD_RESPONSE_V1'))) throw Error('ENGINE3_REQUEST_INVALID');
   return b;
 }
 

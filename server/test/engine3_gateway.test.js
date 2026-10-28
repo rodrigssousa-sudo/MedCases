@@ -73,3 +73,7 @@ test('real JWT exchange transport has explicit no-retry and correct target audie
  };
  try{const get=runtimeIdTokenProvider({FIREBASE_SERVICE_ACCOUNT_JSON:JSON.stringify({type:'service_account',project_id:PROJECT,client_email:GATEWAY_IDENTITY,private_key:privateKey.export({type:'pkcs8',format:'pem'})})});assert.equal(await get(),token());assert.equal(calls,1);}finally{proto.request=original;}
 });
+
+// Exact HML Flutter capability handshake: no new clinical authority.
+test('HML drug capability is preserved through gateway',async t=>{const {post,calls}=await setup(t);const b={...body,responseCapabilities:['DRUG_RECORD_RESPONSE_V1']};const r=await post(b);assert.equal(r.status,200);assert.deepEqual(JSON.parse(calls.options.body),b);});
+for(const responseCapabilities of [null,'DRUG_RECORD_RESPONSE_V1',[],['UNKNOWN'],['DRUG_RECORD_RESPONSE_V1','DRUG_RECORD_RESPONSE_V1'],['DRUG_RECORD_RESPONSE_V1','UNKNOWN']])test('malformed or unknown capability denied '+JSON.stringify(responseCapabilities),async t=>{const {post,calls}=await setup(t);assert.equal((await post({...body,responseCapabilities})).status,400);assert.equal(calls.upstream,0);assert.equal(calls.token,0);});
