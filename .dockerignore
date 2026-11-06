@@ -1,0 +1,8 @@
+**
+!Dockerfile
+!.dockerignore
+!nginx/
+!nginx/nginx.conf
+!docker/
+!docker/40-generate-deploy-meta.sh
+!release-web-703-1728.tar.gz
